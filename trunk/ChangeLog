@@ -1,0 +1,127 @@
+8/2/05 	Version 0.1 	Brian White 
+	- Created ChangeLog to keep Beata and I from confusing
+	  versions as we share code.  This is not actually the
+	  first version of the code-- Beata is responsible for the
+	  vast majority of this implementation; I have only added
+	  a few methods.
+	- The SageIRInterface now partially implements the following
+	  interfaces:
+		OA::SSA::SSAIRInterface,
+		OA::CFG::CFGIRInterfaceDefault,  
+		OA::CallGraph::CallGraphIRInterface,
+		OA::Alias::AliasIRInterfaceDefault,
+		OA::ReachDefs::ReachDefsIRInterface,
+		OA::UDDUChains::UDDUChainsIRInterface,
+		OA::XAIF::XAIFIRInterface,
+		OA::DataFlow::ParamBindingsIRInterface,
+		OA::SideEffect::InterSideEffectIRInterfaceDefault,
+		OA::SideEffect::SideEffectIRInterface
+          Of the above, the following were added:
+		OA::SSA::SSAIRInterface,
+		OA::DataFlow::ParamBindingsIRInterface,
+		OA::SideEffect::InterSideEffectIRInterfaceDefault,
+		OA::SideEffect::SideEffectIRInterface
+	  Made all inheritance of these interfaces virtual
+	  (public OA::CFG::CFGIRInterfaceDefault and 
+	  public OA::Alias::AliasIRInterfaceDefault were not previously
+	  virtual).  
+	- The control flow graph, call graph, and param binding
+	  interfaces have been superficially tested within
+	  extensions to ROSE 0.8.4c.  This requires wrappers not
+	  present here.
+	- Renamed files (and changed Makefile accordingly) to be
+	  consistent with ROSE naming conventions (as these files
+	  will eventually reside in the ROSE tree):
+		MemSage2OA.cpp      -> MemSage2OA.C
+		MemSage2OA.hpp      -> MemSage2OA.h
+		NewSage2OA.cpp      -> Sage2OA.C
+		NewSage2OA.hpp      -> Sage2OA.h
+		SageOACallGraph.cpp -> SageOACallGraph.C
+		SageOACallGraph.hpp -> SageOACallGraph.h
+	- Attempted to convert any 'for now's or otherwise
+	  seemingly unimplemented methods to call abort().  This
+	  makes it clear when running a test what remains to
+	  be implemented.
+	- Retired MemSageIRTopMemRefIterator in MemSage2OA.h.
+	- Changed SageIRProcIterator in SageOACallGraph.h so that
+	  it operates on a SgNode rather than being restricted
+	  to a SgProject (which isa SgNode).
+	- Added the following typedefs/types:
+		SageMemRefHandleIterator    (MemSage2OA.h)
+		SageSymHandleIterator       (Sage2OA.h)
+		SageIRSymIterator	    (Sage2OA.h)
+		SageIRFormalParamIterator   (Sage2OA.h)
+		SageExprHandleIterator	    (Sage2OA.h)
+		SageIRCallsiteParamIterator (Sage2OA.h)
+	- Implemented the following methods:
+		OA::OA_ptr<OA::IRFormalParamIterator> getFormalParamIterator(OA::SymHandle h);
+		OA::OA_ptr<OA::IRCallsiteParamIterator> getCallsiteParams(OA::ExprHandle h);
+		bool isRefParam(OA::SymHandle);
+		OA::SymHandle getFormalForActual(OA::ProcHandle caller, OA::ExprHandle call,
+						 OA::ProcHandle callee, OA::ExprHandle param);
+		OA::OA_ptr<OA::ExprTree> getExprTree(OA::ExprHandle h);
+		OA::StmtLabel SageIRInterface::getTargetLabel(OA::StmtHandle h, int);
+		OA::StmtLabel SageIRInterface::getLabel(OA::StmtHandle h);
+		OA::SymHandle SageIRInterface::getSymHandle(OA::LeafHandle h);
+	- Changed getSymHandle to use the helper function
+	  getFunctionDeclaration which accounts for the fact that
+	  the SgFunctionCallExp (i.e., the ExprHandle argument) may
+	  be a C++ method.  Notice that getFunctionDeclaration
+	  still does not handle the case of a dereferenced function
+	  pointer (i.e., SgPointerDerefExp).  In this case, there is
+	  potentially more than one function declaration (since
+	  control flow may dictate that multiple definitions can
+	  reach the same function pointer variable).
+	- Changed return type of getDefMemRefs from IRTopMemRefIterator
+	  to MemRefHandleIterator.
+
+8/24/05 Version 0.2 	Brian White 
+	- Re-implemented getDefMemRefs, getUseMemRefs, getAllMemRefs;
+	  all of which use getMemRefIterator.  The real workhorse
+	  here is SageIRMemRefIterator.  Passes all examples
+	  on the OpenAnalysis Wiki.
+	- Allowed NULL ProcHandle to be passed to getProcSymHandle.
+	- Added a slew of output methods:
+	  void dump(OA::OA_ptr<OA::NamedLoc> loc, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::UnnamedLoc> loc, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::InvisibleLoc> loc, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::UnknownLoc> loc, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::Location> loc, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::NamedRef> memRefExp, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::UnnamedRef> memRefExp, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::UnknownRef> memRefExp, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::Deref> memRefExp, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, std::ostream &os);
+
+8/29/05 Version 0.3 	Brian White
+ 	- Modified OA::OA_ptr<OA::ExprTree> SageIRInterface::getExprTree
+	  to invoke isMemRefNode (defined in MemSage2OA.C) to determine
+	  whether a node is a MemRefNode.  Moved isMemRefNode out of
+	  a class definition so that it may be used as a general utility
+	  function.  Note that isMemRefNode returns true for nodes that
+	  are also CallNodes and OpNodes.  i.e., these distinctions are
+	  not disjoint.  For now, if a node is a MemRefNode, we create
+	  a MemRefNode for it in the ExprTree.  In the future, we may
+	  want a node that captures more than one of these designations
+	  (e.g., CallMemRefNode and OpMemRefNode).
+	- Added ifdef guards (BWHITE_VERSION) that should only be
+	  defined by Brian when he's using a local version of OpenAnalysis
+	  which includes new MemRefExpr constructors and the following
+	  methods:
+		isDefUse()
+		isUseDef()
+		setMemRefType()
+	  These should be added to the OpenAnalysis distribution "soon".
+	- Added OAConfig.h to the distribution.  I had forgotten to 
+	  include this in earlier versions.
+
+8/29/05 Version 0.4 	Brian White	
+	- Added the following unimplemented methods to SageIRInterface
+	  that have been added to the OpenAnalysis interface:
+	OA::OA_ptr<OA::IRSymIterator> getRefSymIterator(OA::ProcHandle h);
+	bool isParam(OA::SymHandle);
+	OA::OA_ptr<OA::SSA::IRUseDefIterator> getUses(OA::StmtHandle h);
+	OA::OA_ptr<OA::SSA::IRUseDefIterator> getDefs(OA::StmtHandle h);
+	  They simply ROSE_ABORT();
+	- Defined SageIRUseDefIterator
+	- Compiled testAll
