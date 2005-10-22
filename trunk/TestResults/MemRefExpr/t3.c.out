@@ -1,0 +1,37 @@
+In build_EDG_CommandLine(): Option -c not found (compile AND link) set autoInstantiation = true ... 
+In build_EDG_CommandLine(): autoInstantiation = true adding --auto_instantiation -tused ... 
+============================================
+OA::StmtHandle: int *foo(int *x){*x = 4;return x;}
+============================================
+OA::StmtHandle: {*x = 4;return x;}
+============================================
+OA::StmtHandle: *x = 4;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(x))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(x)	)
+	mNumDeref: 1)
+
+============================================
+OA::StmtHandle: return x;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(x))
+

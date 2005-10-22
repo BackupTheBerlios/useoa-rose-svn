@@ -1,0 +1,942 @@
+In build_EDG_CommandLine(): Option -c not found (compile AND link) set autoInstantiation = true ... 
+In build_EDG_CommandLine(): autoInstantiation = true adding --auto_instantiation -tused ... 
+============================================
+Output throw modifier (incomplete implementation) 
+OA::StmtHandle: extern "C" {inline unsigned int gnu_dev_major(unsigned long long __dev) throw( /* from unparseFuncDeclStmt() type list output not implemented */ ){}
+============================================
+OA::StmtHandle: {}
+============================================
+OA::StmtHandle: return(((__dev >> 8) & 4095) |((((unsigned int )(__dev >> 32)) & 4294963200)));
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(__dev))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(__dev))
+
+============================================
+Output throw modifier (incomplete implementation) 
+OA::StmtHandle: extern "C" {inline unsigned int gnu_dev_minor(unsigned long long __dev) throw( /* from unparseFuncDeclStmt() type list output not implemented */ ){}
+============================================
+OA::StmtHandle: {}
+============================================
+OA::StmtHandle: return((__dev & 255) |((((unsigned int )(__dev >> 12)) & 4294967040)));
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(__dev))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(__dev))
+
+============================================
+Output throw modifier (incomplete implementation) 
+OA::StmtHandle: extern "C" {inline unsigned long long gnu_dev_makedev(unsigned int __major,unsigned int __minor) throw( /* from unparseFuncDeclStmt() type list output not implemented */ ){}
+============================================
+OA::StmtHandle: {}
+============================================
+OA::StmtHandle: return((((__minor & 255) |((__major & 4095) << 8))) |(((unsigned long long )(__minor & 4294967040)) << 12)) |(((unsigned long long )(__major & 4294963200)) << 32);
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(__minor))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(__major))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(__minor))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(__major))
+
+============================================
+OA::StmtHandle: int bar(){int x;int y;struct myStruct *p;int **q;int *r;struct myStruct sta[40][10][30];int a;int b;int c;class hiClass *hi;struct myStruct *ignoreStructPtr;struct anotherStruct *ignoreAnotherStructPtr;struct anotherStruct **ignoreAnotherStructPtrPtr;struct myStruct ignoreStruct;int ignoreInt;int *ignoreIntPtr;struct myStruct(*ignoreArrayPtr;p = ignoreStructPtr;p;ignoreStructPtr = p;*(((sta[3])[4])[2].bPtr) = ignoreInt;ignoreIntPtr = &x;ignoreStructPtr =((struct myStruct *)(malloc(12)));foobar(p);foo(&p);*hello() = ignoreInt;*hi -> hello() = ignoreInt;*( *q) = ignoreInt;( *(gp -> a)).d = ignoreInt;ignoreAnotherStructPtr =(p -> a);p -> a = ignoreAnotherStructPtr;ignoreAnotherStructPtrPtr = &p -> a;ignoreArrayPtr =((sta[3]) + 4);*(((r < *q)?r: *q)) = ignoreInt;*(r +((int )( *q))) = ignoreInt;fp = bar;( *fp)();a =(b = c);int i = 3;int j = 4;int d;int e;int f;int g;for(int d = 0;e < 3;++f) {g =(g + 1);}while(d < 3){g =(g + 1);}if(d < 3) {g =(g + 1);}else {f++;}int A;int *ptr = &A;int &B = A;int &C = B;int *&F = ptr;int *&G = F;int *const &D = &A;int *const &E = &B;int *const *ptr3 = &D;return x;}
+============================================
+OA::StmtHandle: {int x;int y;struct myStruct *p;int **q;int *r;struct myStruct sta[40][10][30];int a;int b;int c;class hiClass *hi;struct myStruct *ignoreStructPtr;struct anotherStruct *ignoreAnotherStructPtr;struct anotherStruct **ignoreAnotherStructPtrPtr;struct myStruct ignoreStruct;int ignoreInt;int *ignoreIntPtr;struct myStruct(*ignoreArrayPtr;p = ignoreStructPtr;p;ignoreStructPtr = p;*(((sta[3])[4])[2].bPtr) = ignoreInt;ignoreIntPtr = &x;ignoreStructPtr =((struct myStruct *)(malloc(12)));foobar(p);foo(&p);*hello() = ignoreInt;*hi -> hello() = ignoreInt;*( *q) = ignoreInt;( *(gp -> a)).d = ignoreInt;ignoreAnotherStructPtr =(p -> a);p -> a = ignoreAnotherStructPtr;ignoreAnotherStructPtrPtr = &p -> a;ignoreArrayPtr =((sta[3]) + 4);*(((r < *q)?r: *q)) = ignoreInt;*(r +((int )( *q))) = ignoreInt;fp = bar;( *fp)();a =(b = c);int i = 3;int j = 4;int d;int e;int f;int g;for(int d = 0;e < 3;++f) {g =(g + 1);}while(d < 3){g =(g + 1);}if(d < 3) {g =(g + 1);}else {f++;}int A;int *ptr = &A;int &B = A;int &C = B;int *&F = ptr;int *&G = F;int *const &D = &A;int *const &E = &B;int *const *ptr3 = &D;return x;}
+============================================
+OA::StmtHandle: int x;
+============================================
+OA::StmtHandle: int y;
+============================================
+OA::StmtHandle: struct myStruct *p;
+============================================
+OA::StmtHandle: int **q;
+============================================
+OA::StmtHandle: int *r;
+============================================
+OA::StmtHandle: struct myStruct sta[40][10][30];
+============================================
+OA::StmtHandle: int a;
+============================================
+OA::StmtHandle: int b;
+============================================
+OA::StmtHandle: int c;
+============================================
+OA::StmtHandle: class hiClass *hi;
+============================================
+OA::StmtHandle: struct myStruct *ignoreStructPtr;
+============================================
+OA::StmtHandle: struct anotherStruct *ignoreAnotherStructPtr;
+============================================
+OA::StmtHandle: struct anotherStruct **ignoreAnotherStructPtrPtr;
+============================================
+OA::StmtHandle: struct myStruct ignoreStruct;
+============================================
+OA::StmtHandle: int ignoreInt;
+============================================
+OA::StmtHandle: int *ignoreIntPtr;
+============================================
+OA::StmtHandle: struct myStruct(*ignoreArrayPtr;
+============================================
+OA::StmtHandle: p = ignoreStructPtr;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(p))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(ignoreStructPtr))
+
+============================================
+OA::StmtHandle: p;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(p))
+
+============================================
+OA::StmtHandle: ignoreStructPtr = p;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(ignoreStructPtr))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(p))
+
+============================================
+OA::StmtHandle: *(((sta[3])[4])[2].bPtr) = ignoreInt;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(sta))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(sta))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(sta)	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(ignoreInt))
+
+============================================
+OA::StmtHandle: ignoreIntPtr = &x;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(ignoreIntPtr))
+
+	mre = 
+NamedRef(
+	mAddressOf: 1
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(x))
+
+============================================
+OA::StmtHandle: ignoreStructPtr =((struct myStruct *)(malloc(12)));
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(ignoreStructPtr))
+
+	mre = 
+UnnamedRef(
+	mAddressOf: 1
+	mFullAccuracy: 0
+	mMemRefType: USE
+	mStmtHandle: StmtHandle((malloc(12))))
+
+============================================
+OA::StmtHandle: foobar(p);
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(p))
+
+============================================
+OA::StmtHandle: foo(&p);
+	mre = 
+NamedRef(
+	mAddressOf: 1
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(p))
+
+============================================
+OA::StmtHandle: *hello() = ignoreInt;
+	mre = 
+UnknownRef(
+	mAddressOf: 1
+	mFullAccuracy: 0
+	mMemRefType: USE)
+
+	mre = 
+Deref(
+	mAddressOf: 1
+	mFullAccuracy: 0
+	mMemRefType: USE
+	mMRE: 
+	UnknownRef(
+		mAddressOf: 1
+		mFullAccuracy: 0
+		mMemRefType: USE	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(ignoreInt))
+
+============================================
+OA::StmtHandle: *hi -> hello() = ignoreInt;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(hi))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(hi)	)
+	mNumDeref: 1)
+
+	mre = 
+UnknownRef(
+	mAddressOf: 1
+	mFullAccuracy: 0
+	mMemRefType: USE)
+
+	mre = 
+Deref(
+	mAddressOf: 1
+	mFullAccuracy: 0
+	mMemRefType: USE
+	mMRE: 
+	UnknownRef(
+		mAddressOf: 1
+		mFullAccuracy: 0
+		mMemRefType: USE	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(ignoreInt))
+
+============================================
+OA::StmtHandle: *( *q) = ignoreInt;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(q))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(q)	)
+	mNumDeref: 1)
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	Deref(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mMRE: 
+		NamedRef(
+			mAddressOf: 0
+			mFullAccuracy: 1
+			mMemRefType: USE
+			mSymHandle: SymHandle(q)		)
+		mNumDeref: 1	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(ignoreInt))
+
+============================================
+OA::StmtHandle: ( *(gp -> a)).d = ignoreInt;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(gp))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(gp)	)
+	mNumDeref: 1)
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	Deref(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mMRE: 
+		NamedRef(
+			mAddressOf: 0
+			mFullAccuracy: 1
+			mMemRefType: USE
+			mSymHandle: SymHandle(gp)		)
+		mNumDeref: 1	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(ignoreInt))
+
+============================================
+OA::StmtHandle: ignoreAnotherStructPtr =(p -> a);
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(ignoreAnotherStructPtr))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(p))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(p)	)
+	mNumDeref: 1)
+
+============================================
+OA::StmtHandle: p -> a = ignoreAnotherStructPtr;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(p))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(p)	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(ignoreAnotherStructPtr))
+
+============================================
+OA::StmtHandle: ignoreAnotherStructPtrPtr = &p -> a;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(ignoreAnotherStructPtrPtr))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(p))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(p)	)
+	mNumDeref: 1)
+
+============================================
+OA::StmtHandle: ignoreArrayPtr =((sta[3]) + 4);
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(ignoreArrayPtr))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(sta))
+
+============================================
+OA::StmtHandle: *(((r < *q)?r: *q)) = ignoreInt;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(r))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(q))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(q)	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(r))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(q))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(q)	)
+	mNumDeref: 1)
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(r)	)
+	mNumDeref: 1)
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	Deref(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mMRE: 
+		NamedRef(
+			mAddressOf: 0
+			mFullAccuracy: 1
+			mMemRefType: USE
+			mSymHandle: SymHandle(q)		)
+		mNumDeref: 1	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(ignoreInt))
+
+============================================
+OA::StmtHandle: *(r +((int )( *q))) = ignoreInt;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(r))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(q))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(q)	)
+	mNumDeref: 1)
+
+	mre = 
+UnknownRef(
+	mAddressOf: 1
+	mFullAccuracy: 0
+	mMemRefType: USE)
+
+	mre = 
+Deref(
+	mAddressOf: 1
+	mFullAccuracy: 0
+	mMemRefType: USE
+	mMRE: 
+	UnknownRef(
+		mAddressOf: 1
+		mFullAccuracy: 0
+		mMemRefType: USE	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(ignoreInt))
+
+============================================
+OA::StmtHandle: fp = bar;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(fp))
+
+	mre = 
+NamedRef(
+	mAddressOf: 1
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(bar))
+
+============================================
+OA::StmtHandle: ( *fp)();
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(fp))
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(fp)	)
+	mNumDeref: 1)
+
+============================================
+OA::StmtHandle: a =(b = c);
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(a))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEFUSE
+	mSymHandle: SymHandle(b))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(c))
+
+============================================
+OA::StmtHandle: int i = 3;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(i))
+
+============================================
+OA::StmtHandle: int j = 4;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(j))
+
+============================================
+OA::StmtHandle: int d;
+============================================
+OA::StmtHandle: int e;
+============================================
+OA::StmtHandle: int f;
+============================================
+OA::StmtHandle: int g;
+============================================
+OA::StmtHandle: for(int d = 0;e < 3;++f) {g =(g + 1);}
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(d))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(e))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEFUSE
+	mSymHandle: SymHandle(f))
+
+============================================
+OA::StmtHandle: {g =(g + 1);}
+============================================
+OA::StmtHandle: g =(g + 1);
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(g))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(g))
+
+============================================
+OA::StmtHandle: while(d < 3){g =(g + 1);}
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(d))
+
+============================================
+OA::StmtHandle: {g =(g + 1);}
+============================================
+OA::StmtHandle: g =(g + 1);
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(g))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(g))
+
+============================================
+OA::StmtHandle: if(d < 3) {g =(g + 1);}else {f++;}
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(d))
+
+============================================
+OA::StmtHandle: {g =(g + 1);}
+============================================
+OA::StmtHandle: g =(g + 1);
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(g))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(g))
+
+============================================
+OA::StmtHandle: {f++;}
+============================================
+OA::StmtHandle: f++;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USEDEF
+	mSymHandle: SymHandle(f))
+
+============================================
+OA::StmtHandle: int A;
+============================================
+OA::StmtHandle: int *ptr = &A;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(ptr))
+
+============================================
+OA::StmtHandle: int &B = A;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(B))
+
+============================================
+OA::StmtHandle: int &C = B;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(C))
+
+============================================
+OA::StmtHandle: int *&F = ptr;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(F))
+
+============================================
+OA::StmtHandle: int *&G = F;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(G))
+
+============================================
+OA::StmtHandle: int *const &D = &A;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(D))
+
+============================================
+OA::StmtHandle: int *const &E = &B;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(E))
+
+============================================
+OA::StmtHandle: int *const *ptr3 = &D;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(ptr3))
+
+============================================
+OA::StmtHandle: return x;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(x))
+
