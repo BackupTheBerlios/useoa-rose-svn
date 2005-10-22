@@ -58,10 +58,10 @@ void SageIRCallsiteIterator::FindCallsitesInSgStmt(SgStatement *sgstmt, SgExpres
 }
 
 // Returns the current item.
-OA::ExprHandle SageIRCallsiteIterator::current() const
+OA::CallHandle SageIRCallsiteIterator::current() const
 {
   SgExpression* cur = *st_iter;
-  OA::ExprHandle h = 0;
+  OA::CallHandle h = 0;
 
   if (isValid()) {
     //cerr << "cur expr: " << cur->unparseToString() << endl;
@@ -144,8 +144,13 @@ void FindCallsitesPass::visit(SgNode* node)
 
 void FindProcsPass::visit(SgNode* node)
 {
-	if(!node) { printf("visited with 0-Node!\n"); return; }
+  if(!node) { printf("visited with 0-Node!\n"); return; }
+	
+#if 1
   if(isSgFunctionDefinition(node))
+#else
+  if(isSgFunctionDeclaration(node))
+#endif
     proc_lst.push_back(isSgStatement(node));
   return;
 }

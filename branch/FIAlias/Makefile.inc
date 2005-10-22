@@ -8,7 +8,7 @@ ROSE_INCLUDES=-I$(ROSE_INST_ROOT)/include
 ROSE_LIBS=-Wl,-rpath,$(ROSE_INST_ROOT)/lib -L$(ROSE_INST_ROOT)/lib -lrose -ledg -lrt
 
 
-OPENANALYSIS_DIR=/s/parsons/c/fac/mstrout/OA/trunk/OpenAnalysis
+OPENANALYSIS_DIR=/s/parsons/c/fac/mstrout/OA/OpenAnalysis
 
 
 CXX = g++33

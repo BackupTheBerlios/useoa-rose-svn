@@ -80,7 +80,7 @@ class SageIRCallsiteIterator: public OA::IRCallsiteIterator
   SageIRCallsiteIterator() { valid=FALSE;}
   ~SageIRCallsiteIterator() { }
 
-  OA::ExprHandle current() const;  // Returns the current item.
+  OA::CallHandle current() const;  // Returns the current item.
   bool isValid() const { return (valid && (st_iter!=end)); }        // False when all items are exhausted.
         
   void operator++();
