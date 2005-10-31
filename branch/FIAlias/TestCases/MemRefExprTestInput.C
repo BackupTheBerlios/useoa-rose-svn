@@ -18,6 +18,7 @@ class hiClass {
 };
 
 struct myStruct *gp; 
+struct myStruct gy; 
 
 int (*fp)(); 
 int bar(); 
@@ -90,6 +91,9 @@ int bar()
   // < use, T, SymHandle(gp), 0, F, full >
   // < use, T, SymHandle(gp), 1, F, partial >
   // < def, T, SymHandle(gp), 2, F, partial >
+
+  gy.b = ignoreInt;
+  // < use, T, SymHandle(m), 0, F, partial >
 
   ignoreAnotherStructPtr = (*p).a;
   // < use, T, SymHandle(p), 0, F, full >

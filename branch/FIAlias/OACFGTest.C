@@ -13,8 +13,10 @@
 #endif
 
 #include <rose.h>
-#include <OpenAnalysis/CFG/CFGAll.hpp>
 #include "Sage2OA.h"
+#include "SageOACallGraph.h"
+#include "MemSage2OA.h"
+#include <OpenAnalysis/CFG/ManagerCFGStandard.hpp>
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
 
 #include <string>
@@ -60,8 +62,13 @@ int DoOpenAnalysis(SgFunctionDefinition* f)
 	int returnvalue=FALSE;
 	printf("*******start of DoOpenAnalysis\n");
 	OA::OA_ptr<SageIRInterface> irInterface; 
-    irInterface = new SageIRInterface;
-  ir->createNodeArray(f); //what about global vars?
+
+	bool p_h=FALSE; //for debugging only switch between persistent and "pointer" handles (pointers are faster, persistent are easier to debug
+	
+	std::vector<SgNode*> nodeArray;
+
+	irInterface = new SageIRInterface(f, &nodeArray, p_h);
+	irInterface->createNodeArray(f); //what about global vars?
 	if(!f->get_body())
 	{
 		printf("forward declaration, will not create CFG\n");
@@ -73,8 +80,9 @@ int DoOpenAnalysis(SgFunctionDefinition* f)
         // create CFG Manager and then CFG
         OA::OA_ptr<OA::CFG::ManagerStandard> cfgmanstd;
         cfgmanstd= new OA::CFG::ManagerStandard(irInterface);
+
         OA::OA_ptr<OA::CFG::CFGStandard> cfg
-          = cfgmanstd->performAnalysis((OA::irhandle_t)getNodeNumber(f));
+          = cfgmanstd->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f));
         cfg->dump(std::cout, irInterface);
 	//}
 	//catch(Exception &e)
@@ -114,7 +122,7 @@ int DoOpenAnalysis(SgFunctionDefinition* f)
 		for (; stmtItPtr->isValid(); ++(*stmtItPtr)) 
 		{
 			//for now we just unparse SgStatement
-			SgStatement * sgstmt=(SgStatement*)getNodePtr(stmtItPtr->current());
+			SgStatement * sgstmt=(SgStatement*)irInterface->getNodePtr(stmtItPtr->current());
 			cfgxaifout+=sgstmt->unparseToString();
 			cfgxaifout+="\n";
 			

@@ -125,3 +125,121 @@
 	  They simply ROSE_ABORT();
 	- Defined SageIRUseDefIterator
 	- Compiled testAll
+
+8/31/05 Version 0.5 	Brian White		
+	- Modified OA::Alias::IRStmtType getAliasStmtType(OA::StmtHandle h)
+	  to generalize the notion of assignment from SgAssignOp to include
+	  SgAndAssignOp, SgDivAssignOp, etc.  These may or may not
+	  make sense here (in the context of pointer assignments), but
+	  it is safe to include them.  I think some of them will
+	  apply in the context of pointer arithmetic. 
+	  [Thought better of this and commented it out.]
+	  Also modified this method to handle typedefs, as per Beata's
+	  comment.
+	- Implemented 
+	  OA::OA_ptr<OA::Alias::PtrAssignPairStmtIterator>
+                getPtrAssignStmtPairIterator(OA::StmtHandle stmt)
+	  and
+	  class SgPtrAssignPairStmtIterator
+	  The latter is the workhorse here.
+	- Modified findAllMemRefsAndMemRefExprs to return a MemRefExp
+	  for SgThisExp.  Also modified toString(SymHandle) to expect
+	  a SgThisExp.
+	- Changed constructor of SageIRInterface to take a SgNode*
+	  rather than a SgProject*.  Note that a SgProject isa SgNode.
+	- Added new method needed for FIAlias:
+	  OA_ptr<ParamBindPtrAssignIterator>
+	  getParamBindPtrAssignIterator(ExprHandle callsite);	
+          and implemented the following class which does all of the work:
+	  SgParamBindPtrAssignIterator
+	- Implemented the following methods to support FIAlias:
+	  OA::SymHandle getFormalSym(OA::ProcHandle, int);
+	  OA::OA_ptr<OA::MemRefExpr> getCallMemRefExpr(OA::CallHandle h);
+	  OA::ProcHandle getProcHandle(OA::SymHandle sym);
+	- Changed SageIRCallsiteIterator::current() to return a CallHandle
+	  instead of an ExprHandle.
+	- Changed getFormalParamIterator, getFormalForActual,
+	  and findAllMemRefsAndMemRefExprs to
+	  return a symbol handle representing a SgClassSymbol whenever
+	  we encounter a SgThisExp.  This includes both this->blah
+	  expressions and the first (pseudo-)actual of a method 
+	  invocation.  This pseudo-actual reprsents the class object
+	  upon which the method is invoked.
+	- Moved utility function isMemRefNode into SageIRInterface
+	  as a protected method.  Thus, made the following friends
+	  so they could access it:
+	  friend class SgParamBindPtrAssignIterator;
+	  friend class ExprTreeTraversal;
+	- Modified SageIRInterface::getCallsiteParams to return
+	  the lhs of an arrow/dot expression as the first actual
+	  parameter of a method invocation.  Previously, the
+	  arrow/dot expression was being returned.  Notice that 
+	  if the expression is a dot expression whose lhs is
+	  a SgPointerDerefExp, then it is actually a normalized
+	  arrow exp.  These get treated differently with respect
+	  to MemRefHandles and MemRefExprs.  In this case, we
+	  really want the operand of the SgPointerDerefExp.
+	- Added utility method getEnclosingMethod(SgNode *node)
+	  to return the method in which node occurs (else NULL)
+	- isRefParam now only returns true if the parameter is
+	  a reference paramter.  Added isPointerVar to
+	  return true if the variable is a pointer.
+	- Added isReferenceExpr to return true if expr represents
+	  a reference variable.  Note it is _not sufficient to
+	  extract the symbol from the expr and invoke isReferenceVar
+	  since we do not represent everything will full accuracy.
+	  In particular isReferenceExpr(a->b) is a question of a->b
+	  not a.  However, currently we only have info about a in
+	  the MemRefExpr, not b.
+	- Fixed SageIRInterface::getAliasStmtType(OA::StmtHandle h)
+	  to properly handle SgVariableDeclarations.
+	- Modified getStmtIterator(procHandle) to return the 
+	  constructor initialization list if procHandle is a constructor.
+	- Changed SageIRInterface::getLoopIncrement so that it no longer
+	  creates a SgExprStatement for the loop increment (expression).
+	  Instead, it "coerces" the SgExpression that is the loop
+	  increment into the OA::StmtHandle return type.
+
+10/21/05 UseOA-ROSE-v0.6	Brian White
+	- Restructured directory.
+	- Added options to OATest.C:
+		--debug prints out debugging info
+		--printRose uses the output methods
+	          ROSE/test/roseTests/programAnalysisTests/MemRefExprTest.C
+                  which don't print handles, pointers, etc.
+	          The default uses the output method, which also
+	          avoids handles (Michelle's change).  The original
+	          code used dump.  Make printRose go away after I
+	          get it checked in once.
+	- Added MemRefExprTestInput.C to TestCases.  This reflects
+	  all examples from the Wiki and was taken from
+	  ROSE/test/roseTests/programAnalysisTests.
+	- Incorporated Michelle's changes to testAll, which is now OATest.
+        - Results of OATest --oa-MemRefExpr TestCases/MemRefExprTestInput.C
+	  are in TestResults/MemRefExprTestInput.C.out
+	- Problem:  the link line is very fragile since both OpenAnalysis
+	  and SageOA routines are included in Rose.  I was unsuccessful
+	  in making the OAWrap dir a library which OATest links against.
+	  For now, I'm brute forcing by including the .o's on the 
+	  link line.  Fix this.
+
+10/26/05 UseOA-ROSE-v0.6.0b	Brian White	
+	- Fixed some problems on the link line that we preventing
+	  us from resolving symbols from the OpenAnalysis and SageOA
+	  libraries.  Notice that your installation of ROSE may
+	  defined (weak) symbols that conflict with those in these
+	  two libraries.  By putting them first on the link line,
+	  those libraries should override the ROSE library.
+
+10/26/05 UseOA-ROSE-v0.6.0c	Brian White	
+	- Incorporated Michelle's changing of order of Sage2OA lib and
+	  OpenAnalysis in Makefile.
+	- Commented out dump in favor of output in OATest MemRefExpr
+	  test case, so that we don't get handles.
+	- Removed #ifdef BWHITE_VERSION
+	- More messing around with the makefile
+	- Fixed a.b to return only one MemRefExpr:
+	  NamedRef(USE, SymHandle(b), partial) i.e., corresponding
+	  to a.b.
+	  Notice that sta[a][b][c].d also only returns only one
+	  MemRefExpr (NamedRef(USE, SymHandle(sta), partial))

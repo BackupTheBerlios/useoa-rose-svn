@@ -1308,15 +1308,16 @@ enum SageRefExpInheritedFlagType {
                                        // computes an lvalue
   expectRhsDoesntComputeLValue = 2048, // the node is a lhs with a rhs that
                                        // does not compute an lvalue
+  expectDotLHS                 = 4096, // the node is the lhs of a dot expression
 }; 
 
 // SageRefExpSynthesizedFlagType are flags that are passed up from
 // a SgNode during a traversal.  So, 'the node' below means 'the
 // node originating this flag'.
 enum SageRefExpSynthesizedFlagType { 
-  synthesizedComputesLValue         = 4096, // the node computes something 
+  synthesizedComputesLValue         = 8192, // the node computes something 
                                             // whose address we could take
-  synthesizedDoesntComputeLValue    = 8192, 
+  synthesizedDoesntComputeLValue    = 16384, 
 };
 
 // addInheritedFlag appends flag to flags, which is intended to
@@ -1410,6 +1411,13 @@ static void addInheritedFlag(unsigned &flags, const SageRefExpInheritedFlagType 
   case expectArrowDotRHS:
     {
       flags |= expectArrowDotRHS;
+
+      break;
+    }
+
+  case expectDotLHS:
+    {
+      flags |= expectDotLHS;
 
       break;
     }
@@ -1547,6 +1555,13 @@ static void removeInheritedFlag(unsigned &flags, const SageRefExpInheritedFlagTy
   case expectArrowDotRHS:
     {
       flags &= ~expectArrowDotRHS;
+
+      break;
+    }
+
+  case expectDotLHS:
+    {
+      flags &= ~expectDotLHS;
 
       break;
     }
@@ -2056,6 +2071,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // account for them.
       removeInheritedFlag(rhsFlags, expectArrayBase);
       removeInheritedFlag(rhsFlags, expectArrowDotRHS);
+      removeInheritedFlag(rhsFlags, expectDotLHS);
 
       if ( rhsFlags & expectDef ) {
 
@@ -2102,6 +2118,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // account for them.
       removeInheritedFlag(lhsFlags, expectArrayBase);
       removeInheritedFlag(lhsFlags, expectArrowDotRHS);
+      removeInheritedFlag(lhsFlags, expectDotLHS);
       
       // Add DEF to the lhs child's flags.
       if ( lhsFlags & expectUse ) {
@@ -2162,6 +2179,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // Consume expectArrayBase and expectArrowDotRHS.  
       removeInheritedFlag(childFlags, expectArrayBase);
       removeInheritedFlag(childFlags, expectArrowDotRHS);
+      removeInheritedFlag(childFlags, expectDotLHS);
 
       if ( mode == SgUnaryOp::prefix ) {
 	// Memory reference is defined first and then used.
@@ -2199,9 +2217,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// lhs mem ref expression with the DEF flag set.
 	OA::OA_ptr<OA::MemRefExpr> memRefExpr = operandMemRefExp;
 	
-#ifdef BWHITE_VERSION
 	memRefExpr->setMemRefType(memRefType);
-#endif	
 	curMemRefExprs.push_back(memRefExpr);
 	
 	isMemRefExpr = true;
@@ -2242,6 +2258,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // Consume expectArrayBase and expectArrowDotRHS.  
       removeInheritedFlag(childFlags, expectArrayBase);
       removeInheritedFlag(childFlags, expectArrowDotRHS);
+      removeInheritedFlag(childFlags, expectDotLHS);
 
       // Consume flags.
       removeInheritedFlag(childFlags, expectRhsComputesLValue);
@@ -2305,6 +2322,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
       addInheritedFlag(rhsFlags, partial);
       addInheritedFlag(rhsFlags, expectArrowDotRHS);
+      addInheritedFlag(rhsFlags, expectDotLHS);
 
       // Recurse on rhs.
       list<OA::OA_ptr<OA::MemRefExpr> > rhsMemRefExprs;
@@ -2327,6 +2345,9 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       ROSE_ASSERT(lhs != NULL);
 
       unsigned lhsFlags = flags;
+
+      if ( isSgDotExp(astNode) )
+	addInheritedFlag(lhsFlags, expectDotLHS);
 
       // Consume expectArrayBase and expectArrowDotRHS.  
       removeInheritedFlag(lhsFlags, expectArrayBase);
@@ -2448,6 +2469,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	}
 	
 	ROSE_ASSERT(!arrowOrDotMemRefExpr.ptrEqual(0));
+
 	arrowOrDotMemRefExpr->setAccuracy(fullAccuracy);
 	arrowOrDotMemRefExpr->setAddressTaken(addressTaken);
 	arrowOrDotMemRefExpr->setMemRefType(memRefType);
@@ -2526,6 +2548,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  removeInheritedFlag(lhsFlags, expectRhsComputesLValue);
 	  removeInheritedFlag(lhsFlags, expectRhsDoesntComputeLValue);
 	  removeInheritedFlag(lhsFlags, expectRefRhs);
+	  removeInheritedFlag(lhsFlags, expectDotLHS);
 
 	  // Recurse on the lhs.
 	  list<OA::OA_ptr<OA::MemRefExpr> > lhsMemRefExprs;
@@ -2619,9 +2642,11 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	      copyBaseMemRefExpr(lhsMemRefExp);
 	    
 	    ROSE_ASSERT(!arrMemRefExpr.ptrEqual(0));
+
 	    arrMemRefExpr->setAccuracy(fullAccuracy);
 	    arrMemRefExpr->setAddressTaken(addressTaken);
 	    arrMemRefExpr->setMemRefType(memRefType);
+
 	    curMemRefExprs.push_back(arrMemRefExpr);
 	    
 	    isMemRefExpr = true;
@@ -2735,6 +2760,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       removeInheritedFlag(lhsFlags, expectRhsComputesLValue);
       removeInheritedFlag(lhsFlags, expectRhsDoesntComputeLValue);
       removeInheritedFlag(lhsFlags, expectRefRhs);
+      removeInheritedFlag(lhsFlags, expectDotLHS);
 
       // Recurse on the lhs.
       list<OA::OA_ptr<OA::MemRefExpr> > lhsMemRefExprs;
@@ -2828,9 +2854,11 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  copyBaseMemRefExpr(lhsMemRefExp);
 	
 	ROSE_ASSERT(!arrMemRefExpr.ptrEqual(0));
+
 	arrMemRefExpr->setAccuracy(fullAccuracy);
 	arrMemRefExpr->setAddressTaken(addressTaken);
 	arrMemRefExpr->setMemRefType(memRefType);
+
 	curMemRefExprs.push_back(arrMemRefExpr);
 	
 	isMemRefExpr = true;
@@ -3139,6 +3167,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       removeInheritedFlag(trueFlags, expectRhsComputesLValue);
       removeInheritedFlag(trueFlags, expectRhsDoesntComputeLValue);
       removeInheritedFlag(trueFlags, expectRefRhs);
+      removeInheritedFlag(trueFlags, expectDotLHS);
 
       // Do not consume expectArrayBase or expectArrowDotRHS
       // from either of the true or false expressions.
@@ -3166,6 +3195,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       removeInheritedFlag(falseFlags, expectRhsComputesLValue);
       removeInheritedFlag(falseFlags, expectRhsDoesntComputeLValue);
       removeInheritedFlag(falseFlags, expectRefRhs);
+      removeInheritedFlag(falseFlags, expectDotLHS);
 
       // Recurse on false expression.
       list<OA::OA_ptr<OA::MemRefExpr> > falseMemRefExprs;
@@ -3204,6 +3234,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// account for them.
 	removeInheritedFlag(rhsFlags, expectArrayBase);
 	removeInheritedFlag(rhsFlags, expectArrowDotRHS);
+	removeInheritedFlag(rhsFlags, expectDotLHS);
 	
 	// Consume flags.
 	removeInheritedFlag(rhsFlags, expectRhsComputesLValue);
@@ -3572,6 +3603,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // there).
       removeInheritedFlag(childFlags, expectArrayBase);
       removeInheritedFlag(childFlags, expectArrowDotRHS);
+      removeInheritedFlag(childFlags, expectDotLHS);
 
       // Consume expectDef so that the children don't become DEFs.
       // We will create a mem ref expression at this node to
@@ -3718,6 +3750,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
   if ( ( flags & expectArrayBase ) || 
        ( flags & expectArrowDotRHS ) ||
+       ( flags & expectDotLHS ) ||
        ( flags & expectAddrOf ) ||
        ( isLHS ) )
     isMemRefExpr = false;

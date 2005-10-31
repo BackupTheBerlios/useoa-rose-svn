@@ -8,6 +8,7 @@ int main()
      while(i)
     {
       i--;
+      ++i;
     }
   }
   return j-k;
