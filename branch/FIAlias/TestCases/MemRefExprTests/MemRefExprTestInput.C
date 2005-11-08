@@ -1,3 +1,14 @@
+/*
+  MemRefExprTestInput.C
+
+  Test command: 
+    OATest --oa-MemRefExpr TestCases/MemRefExprTests/MemRefExprTestInput.C
+
+  Goal: Testing all the memory reference expression examples that are 
+        provided on the wiki as of November 2005.
+
+  Output: see TestResults/MemRefExpr
+*/
 
 #include <stdlib.h> // for malloc
  

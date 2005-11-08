@@ -1,6 +1,6 @@
-./testAll.exe --oa-MemRefExpr TestProgs/t1.c > TestResults/MemRefExpr/t1.c.out
-./testAll.exe --oa-MemRefExpr TestProgs/t2.c > TestResults/MemRefExpr/t2.c.out
-./testAll.exe --oa-MemRefExpr TestProgs/t3.c > TestResults/MemRefExpr/t3.c.out
-./testAll.exe --oa-MemRefExpr TestProgs/t4.c > TestResults/MemRefExpr/t4.c.out
-./testAll.exe --oa-MemRefExpr TestProgs/t5.c > TestResults/MemRefExpr/t5.c.out
-./testAll.exe --oa-MemRefExpr TestProgs/MemRefExprTestInput.C > TestResults/MemRefExpr/MemRefExprTestInput.C.out
+./OATest --oa-MemRefExpr TestCases/MemRefExprTests/t1.c > TestResults/MemRefExpr/t1.c.out
+./OATest --oa-MemRefExpr TestCases/MemRefExprTests/t2.c > TestResults/MemRefExpr/t2.c.out
+./OATest --oa-MemRefExpr TestCases/MemRefExprTests/t3.c > TestResults/MemRefExpr/t3.c.out
+./OATest --oa-MemRefExpr TestCases/MemRefExprTests/t4.c > TestResults/MemRefExpr/t4.c.out
+./OATest --oa-MemRefExpr TestCases/MemRefExprTests/t5.c > TestResults/MemRefExpr/t5.c.out
+./OATest --oa-MemRefExpr TestCases/MemRefExprTests/MemRefExprTestInput.C > TestResults/MemRefExpr/MemRefExprTestInput.C.out

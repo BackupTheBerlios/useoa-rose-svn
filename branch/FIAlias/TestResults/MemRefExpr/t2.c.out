@@ -11,13 +11,6 @@ OA::StmtHandle: s.a = x;
 	mre = 
 NamedRef(
 	mAddressOf: 0
-	mFullAccuracy: 1
-	mMemRefType: USE
-	mSymHandle: SymHandle(s))
-
-	mre = 
-NamedRef(
-	mAddressOf: 0
 	mFullAccuracy: 0
 	mMemRefType: DEF
 	mSymHandle: SymHandle(s))
@@ -31,13 +24,6 @@ NamedRef(
 
 ============================================
 OA::StmtHandle: s.b =(x + y);
-	mre = 
-NamedRef(
-	mAddressOf: 0
-	mFullAccuracy: 1
-	mMemRefType: USE
-	mSymHandle: SymHandle(s))
-
 	mre = 
 NamedRef(
 	mAddressOf: 0
@@ -64,21 +50,7 @@ OA::StmtHandle: return(s.a) +(s.b);
 	mre = 
 NamedRef(
 	mAddressOf: 0
-	mFullAccuracy: 1
-	mMemRefType: USE
-	mSymHandle: SymHandle(s))
-
-	mre = 
-NamedRef(
-	mAddressOf: 0
 	mFullAccuracy: 0
-	mMemRefType: USE
-	mSymHandle: SymHandle(s))
-
-	mre = 
-NamedRef(
-	mAddressOf: 0
-	mFullAccuracy: 1
 	mMemRefType: USE
 	mSymHandle: SymHandle(s))
 

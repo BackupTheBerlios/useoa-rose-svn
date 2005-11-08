@@ -9,7 +9,7 @@
 #endif
 #include "rose.h"
 
-#include <OAConfig.h>
+//#include <OAConfig.h> // MMS, 11/8/05, this file just defines OA_IRHANDLETYPE_UL and we can do that with a -D flag in Makefile
 
 #include <OpenAnalysis/IRInterface/CFGIRInterfaceDefault.hpp>
 #include <OpenAnalysis/IRInterface/SSAIRInterface.hpp>

@@ -7,45 +7,6 @@ OA::StmtHandle: {( *(( *(p -> q)).r)).x = 9;return( *(p -> q)).x;}
 ============================================
 OA::StmtHandle: ( *(( *(p -> q)).r)).x = 9;
 	mre = 
-NamedRef(
-	mAddressOf: 0
-	mFullAccuracy: 1
-	mMemRefType: USE
-	mSymHandle: SymHandle(p))
-
-	mre = 
-Deref(
-	mAddressOf: 0
-	mFullAccuracy: 0
-	mMemRefType: USE
-	mMRE: 
-	NamedRef(
-		mAddressOf: 0
-		mFullAccuracy: 1
-		mMemRefType: USE
-		mSymHandle: SymHandle(p)	)
-	mNumDeref: 1)
-
-	mre = 
-Deref(
-	mAddressOf: 0
-	mFullAccuracy: 0
-	mMemRefType: USE
-	mMRE: 
-	Deref(
-		mAddressOf: 0
-		mFullAccuracy: 0
-		mMemRefType: USE
-		mMRE: 
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mSymHandle: SymHandle(p)		)
-		mNumDeref: 1	)
-	mNumDeref: 1)
-
-	mre = 
 Deref(
 	mAddressOf: 0
 	mFullAccuracy: 0
@@ -70,28 +31,6 @@ Deref(
 		mNumDeref: 1	)
 	mNumDeref: 1)
 
-============================================
-OA::StmtHandle: return( *(p -> q)).x;
-	mre = 
-NamedRef(
-	mAddressOf: 0
-	mFullAccuracy: 1
-	mMemRefType: USE
-	mSymHandle: SymHandle(p))
-
-	mre = 
-Deref(
-	mAddressOf: 0
-	mFullAccuracy: 0
-	mMemRefType: USE
-	mMRE: 
-	NamedRef(
-		mAddressOf: 0
-		mFullAccuracy: 1
-		mMemRefType: USE
-		mSymHandle: SymHandle(p)	)
-	mNumDeref: 1)
-
 	mre = 
 Deref(
 	mAddressOf: 0
@@ -110,4 +49,65 @@ Deref(
 			mSymHandle: SymHandle(p)		)
 		mNumDeref: 1	)
 	mNumDeref: 1)
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 0
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(p)	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(p))
+
+============================================
+OA::StmtHandle: return( *(p -> q)).x;
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 0
+	mMemRefType: USE
+	mMRE: 
+	Deref(
+		mAddressOf: 0
+		mFullAccuracy: 0
+		mMemRefType: USE
+		mMRE: 
+		NamedRef(
+			mAddressOf: 0
+			mFullAccuracy: 1
+			mMemRefType: USE
+			mSymHandle: SymHandle(p)		)
+		mNumDeref: 1	)
+	mNumDeref: 1)
+
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 0
+	mMemRefType: USE
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(p)	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(p))
 

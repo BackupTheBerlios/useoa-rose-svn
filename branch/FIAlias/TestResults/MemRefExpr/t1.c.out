@@ -1,9 +1,9 @@
 In build_EDG_CommandLine(): Option -c not found (compile AND link) set autoInstantiation = true ... 
 In build_EDG_CommandLine(): autoInstantiation = true adding --auto_instantiation -tused ... 
 ============================================
-OA::StmtHandle: int main(){int j = 3;int k = 2;int i = 5;for(j = 1;j < 10;j =(j + k)) {while(i){i--;}}return j - k;}
+OA::StmtHandle: int main(){int j = 3;int k = 2;int i = 5;for(j = 1;j < 10;j =(j + k)) {while(i){i--;k = --i;k = i++;++i;}}return j - k;}
 ============================================
-OA::StmtHandle: {int j = 3;int k = 2;int i = 5;for(j = 1;j < 10;j =(j + k)) {while(i){i--;}}return j - k;}
+OA::StmtHandle: {int j = 3;int k = 2;int i = 5;for(j = 1;j < 10;j =(j + k)) {while(i){i--;k = --i;k = i++;++i;}}return j - k;}
 ============================================
 OA::StmtHandle: int j = 3;
 	mre = 
@@ -32,7 +32,7 @@ NamedRef(
 	mSymHandle: SymHandle(i))
 
 ============================================
-OA::StmtHandle: for(j = 1;j < 10;j =(j + k)) {while(i){i--;}}
+OA::StmtHandle: for(j = 1;j < 10;j =(j + k)) {while(i){i--;k = --i;k = i++;++i;}}
 	mre = 
 NamedRef(
 	mAddressOf: 0
@@ -69,9 +69,9 @@ NamedRef(
 	mSymHandle: SymHandle(k))
 
 ============================================
-OA::StmtHandle: {while(i){i--;}}
+OA::StmtHandle: {while(i){i--;k = --i;k = i++;++i;}}
 ============================================
-OA::StmtHandle: while(i){i--;}
+OA::StmtHandle: while(i){i--;k = --i;k = i++;++i;}
 	mre = 
 NamedRef(
 	mAddressOf: 0
@@ -80,7 +80,7 @@ NamedRef(
 	mSymHandle: SymHandle(i))
 
 ============================================
-OA::StmtHandle: {i--;}
+OA::StmtHandle: {i--;k = --i;k = i++;++i;}
 ============================================
 OA::StmtHandle: i--;
 	mre = 
@@ -88,6 +88,47 @@ NamedRef(
 	mAddressOf: 0
 	mFullAccuracy: 1
 	mMemRefType: USEDEF
+	mSymHandle: SymHandle(i))
+
+============================================
+OA::StmtHandle: k = --i;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(k))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEFUSE
+	mSymHandle: SymHandle(i))
+
+============================================
+OA::StmtHandle: k = i++;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(k))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USEDEF
+	mSymHandle: SymHandle(i))
+
+============================================
+OA::StmtHandle: ++i;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEFUSE
 	mSymHandle: SymHandle(i))
 
 ============================================

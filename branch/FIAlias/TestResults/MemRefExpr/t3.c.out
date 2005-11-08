@@ -7,13 +7,6 @@ OA::StmtHandle: {*x = 4;return x;}
 ============================================
 OA::StmtHandle: *x = 4;
 	mre = 
-NamedRef(
-	mAddressOf: 0
-	mFullAccuracy: 1
-	mMemRefType: USE
-	mSymHandle: SymHandle(x))
-
-	mre = 
 Deref(
 	mAddressOf: 0
 	mFullAccuracy: 1
@@ -25,6 +18,13 @@ Deref(
 		mMemRefType: USE
 		mSymHandle: SymHandle(x)	)
 	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(x))
 
 ============================================
 OA::StmtHandle: return x;
