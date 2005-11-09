@@ -3,7 +3,8 @@
 
 //SageIRCallsiteIterator implementation
 
-SageIRCallsiteIterator::SageIRCallsiteIterator(SgStatement * sgstmt, SageIRInterface * in)
+SageIRCallsiteIterator::SageIRCallsiteIterator(SgStatement * sgstmt, 
+                                               OA::OA_ptr<SageIRInterface> in)
 {
  //given an sgstmt put all call expressions in calls_in_stmt
    FindCallsitesInSgStmt(sgstmt, calls_in_stmt);
@@ -92,7 +93,8 @@ void SageIRProcIterator::FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst
   FindProcsPass(lst).traverse(node, preorder);
 }
 
-SageIRProcIterator::SageIRProcIterator(SgNode *node, SageIRInterface * in)
+SageIRProcIterator::SageIRProcIterator(SgNode *node, 
+                                       OA::OA_ptr<SageIRInterface> in)
 {
  //given an sgstmt put all call expressions in calls_in_stmt
    FindProcsInSgTree(node, procs_in_proj);

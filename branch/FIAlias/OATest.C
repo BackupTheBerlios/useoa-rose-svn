@@ -271,7 +271,7 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
 	if ( debug )
 	  printf("*******start of DoOpenAnalysis\n");
 	OA::OA_ptr<SageIRInterface> irInterface; 
-    irInterface = new SageIRInterface(p, na, p_handle);
+        irInterface = new SageIRInterface(p, na, p_handle);
 	if(!f->get_body())
 	{
                 if ( debug ) 
@@ -371,23 +371,21 @@ int DoCallGraph(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 	int returnvalue=FALSE;
         if ( debug ) 
            printf("*******start of DoCallGraph\n");
-	SageIRInterface * irInterface; 
-  OA::OA_ptr<SageIRInterface> iroaptr;
-  irInterface = new SageIRInterface(sgproject, na, p_handle);
+        OA::OA_ptr<SageIRInterface> irInterface;
+        irInterface = new SageIRInterface(sgproject, na, p_handle);
   //irInterface->createNodeArray(sgproject); //what about global vars?
 
 	//try
 	//{
         // create CallGraph Manager and then Call Graph
         OA::OA_ptr<OA::CallGraph::ManagerStandard> callgraphmanstd;
-        iroaptr=irInterface;
-        callgraphmanstd= new OA::CallGraph::ManagerStandard(iroaptr);
+        callgraphmanstd= new OA::CallGraph::ManagerStandard(irInterface);
         OA::OA_ptr<SageIRProcIterator> procIter;
         procIter = new SageIRProcIterator(sgproject, irInterface);
 
         OA::OA_ptr<OA::CallGraph::CallGraphStandard> callgraph
           = callgraphmanstd->performAnalysis(procIter);
-        callgraph->dump(std::cout, iroaptr);
+        callgraph->dump(std::cout, irInterface);
 	//}
 	//catch(Exception &e)
 	//{
@@ -407,26 +405,24 @@ int DoAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, 
 	int returnvalue=FALSE;
         if ( debug )
 	   printf("*******start of DoCallGraph\n");
-	SageIRInterface * irInterface; 
-  OA::OA_ptr<SageIRInterface> iroaptr;
-  irInterface = new SageIRInterface(p, na, p_handle);
+        OA::OA_ptr<SageIRInterface> irInterface;
+        irInterface = new SageIRInterface(p, na, p_handle);
 
 	//try
 	//{
         // create CallGraph Manager and then Call Graph
         OA::OA_ptr<OA::Alias::ManagerAliasMapBasic> aliasmanstd;
-        iroaptr=irInterface;
-        aliasmanstd= new OA::Alias::ManagerAliasMapBasic(iroaptr);
+        aliasmanstd= new OA::Alias::ManagerAliasMapBasic(irInterface);
         //OA::OA_ptr<SageIRProcIterator> procIter;
         //procIter = new SageIRProcIterator(sgproject, irInterface);
 
         //OA::OA_ptr<OA::CallGraph::CallGraphStandard> callgraph
          // = callgraphmanstd->performAnalysis(procIter);
         
-        //callgraph->dump(std::cout, iroaptr);
+        //callgraph->dump(std::cout, irInterface);
         OA::OA_ptr<OA::Alias::AliasMap> alias = 
       aliasmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
-      alias->dump(std::cout, iroaptr);
+      alias->dump(std::cout, irInterface);
 
 	//}
 	//catch(Exception &e)
@@ -442,19 +438,33 @@ int DoAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, 
 
 }
 
+int DoFIAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+{
+  int returnvalue=FALSE;
+  if ( debug ) printf("*******start of FIAlias\n");
+  OA::OA_ptr<SageIRInterface> irInterface;
+  irInterface = new SageIRInterface(p, na, p_handle);
+  
+  //FIAlias
+  OA::OA_ptr<OA::Alias::ManagerFIAlias> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAlias(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  procIter = new SageIRProcIterator(p, irInterface);
+  OA::OA_ptr<OA::Alias::EquivSets> alias = 
+    fialiasman->performAnalysis(procIter);
+  //alias->output(irInterface);
+}
+ 
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
-	int returnvalue=FALSE;
-        if ( debug )
-	   printf("*******start of DoUDDUChains\n");
-	SageIRInterface * irInterface; 
-  OA::OA_ptr<SageIRInterface> iroaptr;
+  int returnvalue=FALSE;
+  if ( debug ) printf("*******start of DoUDDUChains\n");
+  OA::OA_ptr<SageIRInterface> irInterface;
   irInterface = new SageIRInterface(p, na, p_handle);
   //irInterface->createNodeArray(f); //what about global vars? //done in constr.
-  iroaptr=irInterface;
   // CFG
   OA::OA_ptr<OA::CFG::ManagerStandard> cfgmanstd;
-  cfgmanstd = new OA::CFG::ManagerStandard(iroaptr);
+  cfgmanstd = new OA::CFG::ManagerStandard(irInterface);
   OA::OA_ptr<OA::CFG::Interface> cfg=
      cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
   
@@ -468,8 +478,7 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
 #else
   //FIAlias
   OA::OA_ptr<OA::Alias::ManagerFIAlias> fialiasman;
-  iroaptr=irInterface;
-  fialiasman= new OA::Alias::ManagerFIAlias(iroaptr);
+  fialiasman= new OA::Alias::ManagerFIAlias(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
   procIter = new SageIRProcIterator(p, irInterface);
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
@@ -484,18 +493,18 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
 
   // then can do ReachDefs
   OA::OA_ptr<OA::ReachDefs::ManagerStandard> rdman;
-  rdman = new OA::ReachDefs::ManagerStandard(iroaptr);
+  rdman = new OA::ReachDefs::ManagerStandard(irInterface);
   OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds= 
       rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect);
 
 
   // then UDDUChains
   OA::OA_ptr<OA::UDDUChains::ManagerStandard> udman;
-  udman = new OA::UDDUChains::ManagerStandard(iroaptr);
+  udman = new OA::UDDUChains::ManagerStandard(irInterface);
   OA::OA_ptr<OA::UDDUChains::UDDUChainsStandard> udduchains= 
       udman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),alias,rds,interSideEffect);
 
-  udduchains->dump(std::cout, iroaptr);
+  udduchains->dump(std::cout, irInterface);
 
 
   

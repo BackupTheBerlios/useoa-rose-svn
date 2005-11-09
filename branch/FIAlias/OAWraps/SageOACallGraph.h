@@ -45,7 +45,9 @@ class SageIRProcIterator: public OA::IRProcIterator
   // This should take a SgNode *, not a SgProject *.  The former
   // is more general.  bwhite
   //  SageIRProcIterator (SgProject * sageproject, SageIRInterface * in); 
-  SageIRProcIterator (SgNode *node, SageIRInterface * in); 
+  SageIRProcIterator (SgNode *node, OA::OA_ptr<SageIRInterface> in); 
+  // MMS, must take OA_ptr to SageIRInterface because can't have raw ptrs
+  // and OA_ptrs to the same object
   //should really be a list of SgFunctionDefinition pointers? or maybe just SgProject ptr?
                                                  //maybe both and SgFile too?
   SageIRProcIterator () { valid=FALSE;}
@@ -56,7 +58,7 @@ class SageIRProcIterator: public OA::IRProcIterator
   void operator++ (); 
 
   void reset();
-  SageIRInterface *ir;
+  OA::OA_ptr<SageIRInterface> ir;
  private:
   SgStatementPtrList procs_in_proj; 
   SgStatementPtrList::iterator st_iter;
@@ -76,7 +78,7 @@ class SageIRProcIterator: public OA::IRProcIterator
 class SageIRCallsiteIterator: public OA::IRCallsiteIterator
 {
  public:
-  SageIRCallsiteIterator(SgStatement * sgstmt, SageIRInterface * in); 
+  SageIRCallsiteIterator(SgStatement * sgstmt, OA::OA_ptr<SageIRInterface> in); 
   SageIRCallsiteIterator() { valid=FALSE;}
   ~SageIRCallsiteIterator() { }
 
@@ -87,7 +89,7 @@ class SageIRCallsiteIterator: public OA::IRCallsiteIterator
   void operator++(int) { ++*this; } ;
 
   void reset();
-  SageIRInterface * ir;
+  OA::OA_ptr<SageIRInterface> ir;
  private:
   SgExpressionPtrList calls_in_stmt; 
   SgExpressionPtrList::iterator st_iter;
