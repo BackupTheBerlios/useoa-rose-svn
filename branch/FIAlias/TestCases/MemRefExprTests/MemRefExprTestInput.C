@@ -68,11 +68,13 @@ int bar()
   // < use, T, SymHandle(p), O, F, full >
 
   *(sta[3][4][2].bPtr) = ignoreInt;
+  // < use, T, SymHandle(ignoreInt), 0, F, full >, 
   // < use, T, SymHandle(sta), 0, F, partial >, 
-  // < def, T, SymHandle(sta), 1, F, full >  should this be partial?
+  // < def, T, SymHandle(sta), 1, F, partial >  
 
   ignoreIntPtr = &x;
   // < use, T, SymHandle(x), 0, T, full >
+  // < def, T, SymHandle(ingoreIntPtr), 0, F, full >
  
   ignoreStructPtr = (struct myStruct *)malloc(sizeof(struct myStruct));
   // < use, F, StmtHandle(thisStmt), O, T, partial >
@@ -132,7 +134,8 @@ int bar()
   // < use, T, SymHandle(r), 0, F, full >
   // < use, T, SymHandle(q), 0, F, full >
   // < use, T, SymHandle(q), 1, F, full >
-  // < def, F, UnknownRef, 0, F, full > // should this be partial?
+  // < use, F, UnknownRef, 0, T, part > 
+  // < def, F, UnknownRef, 1, F, part > 
 
   fp = bar;
   // < use, T, SymHandle(bar), 0, T, full >
