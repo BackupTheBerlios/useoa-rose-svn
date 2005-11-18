@@ -1002,7 +1002,8 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
 	SgExpression *lhs = addOp->get_lhs_operand();
 	ROSE_ASSERT(lhs != NULL);
 	
-	retVal = ( isSgPntrArrRefExp(lhs) );
+	if ( isSgPntrArrRefExp(lhs) )
+	  retVal = true;
 
       }
 	

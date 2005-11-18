@@ -330,5 +330,27 @@
                 - Added invocation of virtual method call:
 		  *hi -> goodbye() = ignoreInt;
 		  which results in a FieldAccess of Deref(hi).
-		
-	
+
+11/18/05 UseOA-ROSE-???		Brian White		
+	- Changed lookThroughCastExpAndAssignInitializer(node) so 
+	  that it does not "look past" a cast expression if it
+	  decorates a malloc.  Consider doing this for all mem
+	  expressions?  And including casts in those expresions
+	  as is now done for malloc?
+	- Added --oa-FIAlias option to OATest.
+	- Added regression tests for alias:
+		genAliasTestsOut.script 
+	        regressAliasTestsOut.script
+	  Notice that an exit in each of these scripts
+	  demarcate those tests that have passed.
+	  Current tests passed:  None!
+	  Current tests cause aborts/seg faults/etc:
+		HindEtAlIBM95Fig4.C
+		HindEtAlISSTA00Fig1.C
+		LattnerEtAl03Fig1.C
+		PandeEtAlRutgers05.C
+		refClass.C
+		RinardEtAlPLDI96Fig4.C
+		RyderEtAlFig14.c
+		RyderEtAlFig15.c
+		YongEtAlPLDI99.c

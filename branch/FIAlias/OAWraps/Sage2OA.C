@@ -5636,7 +5636,18 @@ SageIRInterface::lookThroughCastExpAndAssignInitializer(SgNode *node)
       SgCastExp *castExp = isSgCastExp(node);
       ROSE_ASSERT(castExp != NULL);
 
-      ret = lookThroughCastExpAndAssignInitializer(castExp->get_operand_i());
+      // Do not look past the cast if the operand is a malloc.
+      // In that case, we include the cast as part of the MemRefExpr.
+
+      SgNode *operand = castExp->get_operand();
+      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(operand);
+
+      // This cast is attached to a malloc.
+      if ( ( functionCallExp != NULL ) && ( isMalloc(functionCallExp) ) ) {
+	ret = node;
+      } else {
+	ret = lookThroughCastExpAndAssignInitializer(operand);
+      }
 
       break;
     }

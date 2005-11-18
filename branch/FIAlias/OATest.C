@@ -43,6 +43,7 @@
 
 int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 int DoAlias(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
+int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoCallGraph(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
@@ -62,7 +63,7 @@ void usage(char **argv)
   cerr << "     where opt is one of:" << endl;
   cerr << "          --oa-CFG" << endl;
   cerr << "          --oa-MemRefExpr" << endl;
-  cerr << "          --oa-Alias" << endl;
+  cerr << "          --oa-FIAlias" << endl;
   cerr << "          --oa-AliasMap" << endl;
   cerr << "          --oa-CallGraph" << endl;
   cerr << "          --oa-ReachDefs" << endl;
@@ -174,6 +175,11 @@ main ( unsigned argc,  char * argv[] )
       
       
       
+      return 0;
+    }
+    else if( cmds->HasOption("--oa-FIAlias") )
+    {
+      DoFIAlias(sageProject, &nodeArray, p_h);
       return 0;
     }
     else if( cmds->HasOption("--oa-AliasMap") )
@@ -439,7 +445,7 @@ int DoAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, 
 
 }
 
-int DoFIAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
   int returnvalue=FALSE;
   if ( debug ) printf("*******start of FIAlias\n");
@@ -453,7 +459,8 @@ int DoFIAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na
   procIter = new SageIRProcIterator(p, irInterface);
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter);
-  //alias->output(irInterface);
+  //  alias->dump(std::cout, irInterface);
+  alias->output(irInterface);
 }
  
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
