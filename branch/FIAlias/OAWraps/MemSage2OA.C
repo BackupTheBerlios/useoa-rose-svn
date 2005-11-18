@@ -479,8 +479,84 @@ bool usedInExpressionContext(SgNode *node)
 
 }
 
-static 
-bool isMalloc(SgFunctionCallExp *functionCallExp)
+// If node represents a malloc or a new, return true and the
+// type of the object allocated.  
+bool SageIRInterface::isAllocation(SgNode *astNode, SgType *&type)
+{
+
+  if ( astNode == NULL ) return false;
+
+  SgNode *node = astNode;
+
+  bool isAlloc = false;
+
+  switch(astNode->variantT()) {
+
+  case V_SgNewExp:
+    {
+      SgNewExp *newExp = isSgNewExp(node);
+      ROSE_ASSERT(newExp != NULL);
+      
+      type = newExp->get_type();
+      ROSE_ASSERT(type != NULL);
+
+      isAlloc = true;
+
+      break;
+    }
+
+  case V_SgCastExp:
+    {
+      SgCastExp *castExp = isSgCastExp(node);
+      ROSE_ASSERT(castExp != NULL);
+
+      SgNode *node = castExp->get_operand();
+      
+      // fall through!
+    }
+
+  case V_SgFunctionCallExp:
+    {
+      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+      if ( functionCallExp != NULL ) {
+
+	if ( isMalloc(functionCallExp) ) {
+	  
+	  // This is an allocation site.  malloc requires a cast.
+	  // Find the nearest enclosing cast to determine the type.
+	  
+	  SgNode *parent = functionCallExp->get_parent();
+	  while ( ( parent != NULL ) && ( !isSgCastExp(parent) ) )
+	    parent = parent->get_parent();
+	  
+	  ROSE_ASSERT(parent != NULL);
+	  
+	  SgCastExp *castExp = isSgCastExp(parent);
+	  ROSE_ASSERT(castExp != NULL);
+	  
+	  type = castExp->get_type();
+	  ROSE_ASSERT(type != NULL);
+	  
+	  
+	}
+
+      }
+      
+      break;
+      
+    }
+
+  default:
+    {
+      break;
+    }
+  }
+
+  return isAlloc;
+
+}
+
+bool SageIRInterface::isMalloc(SgFunctionCallExp *functionCallExp)
 {
   if( functionCallExp == NULL) return false;
 
@@ -762,9 +838,13 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
       retVal = true;
       break;
     }
+  case V_SgThisExp:
+    {
+      retVal = true;
+      break;
+    }
   case V_SgVarRefExp:
   case V_SgNewExp:
-  case V_SgThisExp:
   case V_SgPointerDerefExp:
   case V_SgMemberFunctionRefExp:  // i.e., the rhs of a->method();
     {
@@ -799,6 +879,19 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
       
       break;
     }
+  case V_SgCastExp:
+    {
+      SgCastExp *castExp = isSgCastExp(astNode);
+      ROSE_ASSERT(castExp != NULL);
+
+      // Return the unnamed memory reference from a malloc's cast.
+      SgNode *node = castExp->get_operand();
+      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+      retVal = ( ( functionCallExp != NULL ) && ( isMalloc(functionCallExp) ) );
+
+      break;
+    }
+
   case V_SgFunctionCallExp:
     {
       // A SgFunctionCallExp should be represented by a MemRefHandle
@@ -814,8 +907,12 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
 
       if ( isMalloc(functionCallExp) ) {
 
+#if 0
 	// Represent malloc'ed memory by an unnamed memory reference.
 	retVal = true;
+#endif
+	// No!  Return the unnamed memory reference from a malloc's cast.
+	retVal = false;
 
       } else {
 
@@ -912,6 +1009,19 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
       break;
 
     }
+#ifdef VTABLE_OPT
+  case V_SgClassDefinition:
+    {
+      // When using the vtable-optimization for virtual method
+      // resolution (via FIAlias), we return implicit assignments
+      // at a class definition.  For each method m of a class C, we get an 
+      // implicit assignment of the form < C.m, C::m >, i.e.,
+      // < FieldAccess(NamedRef(SymHandle(class C)),FieldHandle(m)), 
+      //   NamedRef(SymHandle(C::m)) >
+      retVal = true;
+      break;
+    }
+#endif
   default:
     {
       retVal = false;
@@ -932,6 +1042,8 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
 // of a node are independent of astNode's attribute values.
 // e.g., a SgFunctionCallExp's actual arguments are independent
 // of the SgFunctionCallExp, but *p is not independent of **p.
+// Also the constructor invoked during a new is independent of
+// the SgNewExp, which represents the unnamed memory returned.
 void
 SageIRInterface::getChildrenWithMemRefs(SgNode *astNode,
 					std::vector<SgNode *>& independentChildren,
@@ -1050,6 +1162,21 @@ SageIRInterface::getChildrenWithMemRefs(SgNode *astNode,
 	children.push_back(initializer);
 	//	independentChildren.push_back(initializer);
       }
+
+      break;
+    }
+
+  case V_SgNewExp:
+    {
+      SgNewExp *newExp = isSgNewExp(astNode);
+      ROSE_ASSERT(newExp != NULL);
+
+      SgConstructorInitializer *ctorInitializer =
+	newExp->get_constructor_args();
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      children.push_back(ctorInitializer);
+      independentChildren.push_back(ctorInitializer);
 
       break;
     }
@@ -1689,7 +1816,7 @@ SageIRMemRefIterator::handleDefaultCase(SgNode *astNode,
 // compensating actions.  Therefore, if mre has its address taken,
 // dereferencing it simply sets this flag to false.
 OA::OA_ptr<OA::MemRefExpr> 
-SageIRMemRefIterator::dereferenceMre(OA::OA_ptr<OA::MemRefExpr> mre)
+SageIRInterface::dereferenceMre(OA::OA_ptr<OA::MemRefExpr> mre)
 {
   OA::OA_ptr<OA::MemRefExpr> deref;
   
@@ -1697,7 +1824,7 @@ SageIRMemRefIterator::dereferenceMre(OA::OA_ptr<OA::MemRefExpr> mre)
   bool fullAccuracy                     = true;
   int  numDerefs                        = 1;
 
-  OA::MemRefExpr::MemRefType memRefType = mIR->getMemRefType(mre);
+  OA::MemRefExpr::MemRefType memRefType = getMemRefType(mre);
 
   if ( mre->hasAddressTaken() ) {
 
@@ -1874,7 +2001,7 @@ SageIRMemRefIterator::applyReferenceConversionRules(OA::OA_ptr<OA::MemRefExpr> m
     // - For every assignment to a referenece:  t_l& lhs = rhs
     //  3.  Whenever lhs is used on a right-hand side, replace lhs with *lhs.
     if ( isReference ) {
-      convertedMreUse = dereferenceMre(mre);
+      convertedMreUse = mIR->dereferenceMre(mre);
     } else {
       convertedMreUse = mre->clone();
     }
@@ -1921,7 +2048,7 @@ SageIRMemRefIterator::applyReferenceConversionRules(OA::OA_ptr<OA::MemRefExpr> m
     } else {
 
       if ( hasRhsThatDoesntComputeLValue ) {
-	derefedLhs = dereferenceMre(mre);
+	derefedLhs = mIR->dereferenceMre(mre);
 	// As we did above with USE, ensure this isn't a DEFUSE or USEDEF.
 	derefedLhs->setMemRefType(OA::MemRefExpr::DEF);
       }
@@ -1991,6 +2118,112 @@ SageIRMemRefIterator::applyReferenceConversionRules(OA::OA_ptr<OA::MemRefExpr> m
 
 }
 
+
+// Return a memory reference expression for varRefExp.
+// If varRefExp is an access to a class member m, then
+// this method will explicitly model the dereference of this
+// and create an MRE for this->m.
+OA::OA_ptr<OA::MemRefExpr> 
+SageIRInterface::createMRE(SgVarRefExp *varRefExp,
+			   bool addressTaken,
+			   bool fullAccuracy,
+			   OA::MemRefExpr::MemRefType memRefType,
+			   bool arrowOrDotModeledElsewhere)
+{
+  ROSE_ASSERT(varRefExp != NULL);
+
+  // Create a named memory reference for this access.
+  SgVariableSymbol *symbol = varRefExp->get_symbol(); 
+  ROSE_ASSERT(symbol != NULL); 
+  
+  SgInitializedName *initName = symbol->get_declaration(); 
+  ROSE_ASSERT(initName != NULL); 
+  
+  OA::OA_ptr<OA::MemRefExpr> memRefExp;
+  memRefExp = createMRE(initName, 
+			addressTaken, 
+			fullAccuracy, 
+			memRefType,
+			arrowOrDotModeledElsewhere);
+
+  return memRefExp;
+}
+
+// Return a memory reference expression for initName.
+// If initName is an access to a class member m, then
+// this method will explicitly model the dereference of this
+// and create an MRE for this->m.
+OA::OA_ptr<OA::MemRefExpr> 
+SageIRInterface::createMRE(SgInitializedName *initName,
+			   bool addressTaken,
+			   bool fullAccuracy,
+			   OA::MemRefExpr::MemRefType memRefType,
+			   bool arrowOrDotModeledElsewhere)
+{
+  ROSE_ASSERT(initName != NULL);
+
+  SgDeclarationStatement *declaration = initName->get_declaration();
+  ROSE_ASSERT(declaration != NULL);
+
+  SgClassDefinition *classDefinition =
+    getDefiningClass(declaration->get_scope());
+
+  bool memberVariable = ( classDefinition != NULL );
+  
+  OA::OA_ptr<OA::MemRefExpr> memRefExp;
+
+  if ( arrowOrDotModeledElsewhere || !memberVariable ) {
+
+    // Either we will ignore this MemRefExpr since we are being called 
+    // downstream of an arrow or dot expression which will 
+    // model this reference.  Therefore, just return something
+    // simple.
+    // Or, this is not a reference to a member variable, and
+    // so requires no special treatment.
+    
+    OA::SymHandle symHandle = getNodeNumber(initName);
+
+    memRefExp = new OA::NamedRef(addressTaken, fullAccuracy,
+				 memRefType, symHandle);
+
+  } else {
+
+    SgFunctionDefinition *functionDefinition = 
+      getEnclosingMethod(initName);
+    ROSE_ASSERT(functionDefinition != NULL);
+    
+    SgFunctionDeclaration *functionDeclaration =
+      functionDefinition->get_declaration();
+    ROSE_ASSERT(functionDeclaration != NULL);
+
+    SgMemberFunctionDeclaration *memberFunctionDeclaration =
+      isSgMemberFunctionDeclaration(functionDeclaration);
+    ROSE_ASSERT(memberFunctionDeclaration != NULL);
+
+    // This is a reference to a member variable v which is
+    // not part of an arrow or dot expression.  i.e., it
+    // is an implicit reference to this->v.  
+    // Because we do not accurately model field accesses,
+    // model it as a partially accurate Deref of this.
+    OA::SymHandle symHandle = getThisExpSymHandle(memberFunctionDeclaration);
+
+    OA::OA_ptr<OA::MemRefExpr> baseMre;
+    baseMre = new OA::NamedRef(false, true, OA::MemRefExpr::USE, symHandle);
+    ROSE_ASSERT(!baseMre.ptrEqual(0));
+
+    // Notice that baseMre may have addressTaken.  When we
+    // Deref it, we do not view addressTaken and dereference as
+    // inverse operations, since the Deref actually (inaccurately)
+    // models a field access.
+    memRefExp = new OA::Deref(addressTaken, false,
+			      memRefType, baseMre, 1);
+
+  }
+
+  return memRefExp;
+}
+
+
 // findAllMemRefsAndMemRefExprs (manually) traverses the AST rooted at
 // astNode.  Whenever it encounters a node that hase a memory reference
 // (and hence should have an associated MemRefHandle), it creates a 
@@ -2039,6 +2272,13 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
   ROSE_ASSERT(!isSgScopeStatement(astNode));
 
   //  cout << "Type: " << astNode->sage_class_name() << endl;
+
+#if 0
+  list<OA::OA_ptr<OA::MemRefExpr> > implicitMemRefExprs;
+  implicitMemRefExprs = 
+    handleImplicitPtrAssigns(astNode, memRefs, flags, synthesizedFlags);
+  curMemRefExprs.splice(curMemRefExprs.end(), implicitMemRefExprs);
+#endif
 
   switch(astNode->variantT()) {
 
@@ -2337,6 +2577,23 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // on the right-hand side.
       ROSE_ASSERT(rhsMemRefExprs.size() == 1);
 
+      bool rhsIsANamed = false;
+      SgFunctionDeclaration *functionDeclaration = NULL;
+      OA::OA_ptr<OA::MemRefExpr> rhsMre = *(rhsMemRefExprs.begin());
+      ROSE_ASSERT(!rhsMre.ptrEqual(0));
+
+      if ( rhsMre->isaNamed() ) {
+	rhsIsANamed = true;
+	OA::OA_ptr<OA::NamedRef> namedRef = rhsMre.convert<OA::NamedRef>();
+	ROSE_ASSERT(!namedRef.ptrEqual(0));
+	
+	OA::SymHandle symHandle = namedRef->getSymHandle();
+	SgNode *node = mIR->getNodePtr(symHandle);
+	ROSE_ASSERT(node != NULL);
+	
+	functionDeclaration = isSgFunctionDeclaration(node);
+      }
+
       // Represent the field access at this node, rather than
       // at the rhs.  We create a MemRefExpr representing
       // that field access for each potential lhs MemRefExpr,
@@ -2346,7 +2603,23 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
       unsigned lhsFlags = flags;
 
-      if ( isSgDotExp(astNode) )
+      // Generally, we do not create an MRE for a because of a.b.
+      // Instead, we create one for a.b, which we consider a 
+      // "long name" for the expression.  Further for both a.foo
+      // and a->foo, where foo is a method and I have intentionally
+      // not written a.foo() or a->foo() which would represent the
+      // return value from foo, we need not create an MRE for a or *a
+      // so long as the compiler can statically determine the method
+      // to be invoked.  In such cases (i.e., where foo is not virtual
+      // or a is not a pointer or reference), the method is a property
+      // of the class not directly of 'a'.  Nevertheless, we _do_
+      // need to return an access of a since:
+      // 1) it is an implicit parameter (as this) of a method and
+      // 2) analysis should see it as a USE such that it doesn't think
+      //    a is dead.
+      // Therefore, if this is a dot expression that does not reference
+      // a method, we do not create an MRE for the lhs.
+      if ( isSgDotExp(astNode) && ( functionDeclaration == NULL ) )
 	addInheritedFlag(lhsFlags, expectDotLHS);
 
       // Consume expectArrayBase and expectArrowDotRHS.  
@@ -2387,8 +2660,15 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
       bool isArrowExp = ( isSgArrowExp(binaryOp) != NULL );
 
+      bool isReferenceExp = false;
+
       if ( !isArrowExp ) {
 	
+	SgType *type = lhs->get_type();
+	ROSE_ASSERT(type != NULL);
+
+	isReferenceExp = ( isSgReferenceType(type) != NULL );
+
 	SgDotExp *dotExp = isSgDotExp(binaryOp);
 	ROSE_ASSERT(dotExp != NULL);
 
@@ -2429,50 +2709,136 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	OA::OA_ptr<OA::MemRefExpr> arrowOrDotMemRefExpr;
 	arrowOrDotMemRefExpr = NULL;
 	
-	if ( isArrowExp ) {
-	  
-	  // Given the memory reference expression lhsMemRefExp 
-	  // (e.g., representing mem ref expr a),
-	  // we need to create a new memory reference expression
-	  // (e.g., representing mem ref expr a->b).  We don't
-	  // even have to increment the number of derefs,
-	  // we simply create a new Deref mem ref expression 
-	  // whose base mem ref is the one at the lhs, with only
-	  // one dereference.  A chain of derefs is handled
-	  // by having the base mem ref by a Deref, _not_
-	  // by having numDerefs > 1.
-	  int numDerefs = 1;
-	  
-	  arrowOrDotMemRefExpr = new OA::Deref(addressTaken,
-					       fullAccuracy,
-					       memRefType,
-					       lhsMemRefExp,
-					       numDerefs);
-	} else {
-	  
-	  // This is a dot expression.  Given the memory
-	  // reference expression lhsMemRefExp (e.g., 
-	  // representing mem ref expr a), we need
-	  // to create a new memory reference expression
-	  // (e.g., representing mem ref expr a.b).  This
-	  // new mem ref expression is simply a copy of the
-	  // lhs mem ref expression with the flags set
-	  // appropriately.  Unless it's a Deref; we don't
-	  // want this mem ref to be a dereference (since
-	  // it isn't), so instead copy it's (first non-deref)
-	  // base mem ref.  This is really begging for FieldAccess
-	  // mem ref type to be implemented.
-	  
-	  arrowOrDotMemRefExpr = 
-	    copyBaseMemRefExpr(lhsMemRefExp);
-	  
-	}
-	
-	ROSE_ASSERT(!arrowOrDotMemRefExpr.ptrEqual(0));
+	// If RHS MRE is a NamedRef with a SgFunctionDeclaration SymHandle
+	//    If this is an arrow expression and the SgFunctionDeclaration
+	//                                      is virtual
+	//        Create a FieldAccess
+	//    Else
+	//        Create/copy the NamedRef here, it unambiguously
+	//               determines the method invoked
+	// Else
+	//    // Not a method call, but a member field access
+	//    Create a partially accurate Deref for arrow or
+	//           a partially accureate MRE for dot.
 
-	arrowOrDotMemRefExpr->setAccuracy(fullAccuracy);
-	arrowOrDotMemRefExpr->setAddressTaken(addressTaken);
-	arrowOrDotMemRefExpr->setMemRefType(memRefType);
+	if ( ( rhsIsANamed == true ) && ( functionDeclaration != NULL ) ) {
+
+	  if ( ( isArrowExp || isReferenceExp ) && 
+	       ( mIR->isVirtual(functionDeclaration ) ) ) {
+
+	    // Create a FieldAccess
+	    bool fieldAccessFullAccuracy = true;
+	    OA::MemRefExpr::MemRefType fieldAccessMemRefType = 
+	      memRefType;
+	    string mangledMethodName = 
+	      functionDeclaration->get_mangled_name().str();
+	  
+	    OA::OA_ptr<OA::MemRefExpr> baseMre = lhsMemRefExp;
+	    if ( isArrowExp ) {
+	      
+	      baseMre = new OA::Deref(false,
+				      true,
+				      OA::MemRefExpr::USE,
+				      lhsMemRefExp,
+				      1);
+
+	    }
+
+#ifdef VTABLE_OPT
+	    // If we are using the vtable optimization, we don't
+	    // return (*a).method for a method invocation, but
+	    // (*(*a).FieldHandle(OA_VTABLE_STR)).method.
+
+	    mangledMethodName = OA_VTABLE_STR;
+    
+	    OA::OA_ptr<OA::FieldAccess> fieldAccess;
+	    fieldAccess = new OA::FieldAccess(false, 
+					      true,
+					      OA::MemRefExpr::USE;
+					      baseMRE,
+					      mangledMethodName);
+
+	    baseMre = new OA::Deref(false,
+				    true,
+				    OA::MemRefExpr::USE;
+				    fieldAccess,
+				    1);
+#endif
+
+	    arrowOrDotMemRefExpr = 
+	      new OA::FieldAccess(addressTaken, 
+				  fieldAccessFullAccuracy,
+				  fieldAccessMemRefType,
+				  baseMre,
+				  mangledMethodName);
+
+	  } else {
+
+	    // Create/copy the NamedRef here, it unambiguously
+	    // determines the method invoked.
+
+	    arrowOrDotMemRefExpr = 
+	      copyBaseMemRefExpr(rhsMre);
+	    
+	    // Notice that we do not set/change the accuracy.
+	    // Since it unambiguously represents a (non-virtual) method
+	    // invocation, it should not have partial accuracy.
+	    // However, we assume it was set appropriately when
+	    // it was created.
+	    arrowOrDotMemRefExpr->setAddressTaken(addressTaken);
+	    arrowOrDotMemRefExpr->setMemRefType(memRefType);
+	    
+	  }
+
+	} else {
+
+	  if ( isArrowExp ) {
+	    
+	    // Given the memory reference expression lhsMemRefExp 
+	    // (e.g., representing mem ref expr a),
+	    // we need to create a new memory reference expression
+	    // (e.g., representing mem ref expr a->b).  We don't
+	    // even have to increment the number of derefs,
+	    // we simply create a new Deref mem ref expression 
+	    // whose base mem ref is the one at the lhs, with only
+	    // one dereference.  A chain of derefs is handled
+	    // by having the base mem ref by a Deref, _not_
+	    // by having numDerefs > 1.
+	    int numDerefs = 1;
+	    
+	    arrowOrDotMemRefExpr = new OA::Deref(addressTaken,
+						 fullAccuracy,
+						 memRefType,
+						 lhsMemRefExp,
+						 numDerefs);
+	    
+	  } else {
+	    
+	    // This is a dot expression.  Given the memory
+	    // reference expression lhsMemRefExp (e.g., 
+	    // representing mem ref expr a), we need
+	    // to create a new memory reference expression
+	    // (e.g., representing mem ref expr a.b).  This
+	    // new mem ref expression is simply a copy of the
+	    // lhs mem ref expression with the flags set
+	    // appropriately.  Unless it's a Deref; we don't
+	    // want this mem ref to be a dereference (since
+	    // it isn't), so instead copy it's (first non-deref)
+	    // base mem ref.  This is really begging for FieldAccess
+	    // mem ref type to be implemented.
+	    
+	    arrowOrDotMemRefExpr = 
+	      copyBaseMemRefExpr(lhsMemRefExp);
+	    
+	  }
+	  
+	  ROSE_ASSERT(!arrowOrDotMemRefExpr.ptrEqual(0));
+	  
+	  arrowOrDotMemRefExpr->setAccuracy(fullAccuracy);
+	  arrowOrDotMemRefExpr->setAddressTaken(addressTaken);
+	  arrowOrDotMemRefExpr->setMemRefType(memRefType);
+
+	} 
 
 	// Normalize the source program to convert references to pointers.  
 	std::list<OA::OA_ptr<OA::MemRefExpr> > convertedMemRefs;
@@ -2873,6 +3239,53 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
     }
 
+  case V_SgCastExp:
+    {
+      SgCastExp *castExp = isSgCastExp(astNode);
+      ROSE_ASSERT(castExp != NULL);
+
+      // Return the unnamed memory reference from a malloc's cast.
+      SgNode *node = castExp->get_operand();
+      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+
+      // This cast is attached to a malloc.
+      if ( ( functionCallExp != NULL ) && ( mIR->isMalloc(functionCallExp) ) ) {
+
+	// Represent malloc'ed memory by an unnamed memory reference.
+
+	memRefType = OA::MemRefExpr::USE;
+
+	// Create an OpenAnalysis handle for this node.
+	stmtHandle = mIR->getNodeNumber(castExp);
+
+	// malloc computes the address of a memory location,
+	// so consider it an addressOf operation.
+	addressTaken = true;
+
+	// The malloc call does _not_ accurately represent the memory 
+	// expression, as this would require the precise calling context.
+	fullAccuracy = false;
+
+	// Create an unnamed memory reference expression.
+	OA::OA_ptr<OA::MemRefExpr> memRefExp;
+	memRefExp = new OA::UnnamedRef(addressTaken, fullAccuracy,
+				       memRefType, stmtHandle);
+	ROSE_ASSERT(!memRefExp.ptrEqual(0));
+
+	isMemRefExpr = true;
+
+	curMemRefExprs.push_back(memRefExp);
+
+      } else {
+
+	// This isn't the cast to malloc case, so visit the children.
+	handleDefaultCase(astNode, memRefs, flags, synthesizedFlags);
+
+      }
+
+      break;
+    }
+
   case V_SgFunctionCallExp:
     {
 
@@ -2919,7 +3332,13 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       removeSynthesizedFlag(synthesizedFlags, synthesizedDoesntComputeLValue);
       
       // Create a MemRefExpr for this function call if required.
-      if ( isMalloc(functionCallExp) ) {
+      if ( mIR->isMalloc(functionCallExp) ) {
+
+#if 1	
+	// FIXME:  Eventually, consider making cast MRE, since we
+	//         care about the type for malloc.
+	// Done!  Moved this to SgCastExp case.
+#else
 
 	// Represent malloc'ed memory by an unnamed memory reference.
 
@@ -2945,7 +3364,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	isMemRefExpr = true;
 
 	curMemRefExprs.push_back(memRefExp);
-
+#endif
       } else {
 
 	// Create an unknown reference for this function if it
@@ -3248,6 +3667,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
 	if ( isSgReferenceType( mIR->getBaseType(lhsType) ) )
 	  addInheritedFlag(rhsFlags, expectRefRhs);
+	// HERE--with initname
 #if 1
 	// Recurse on rhs.
 	findAllMemRefsAndMemRefExprs(initializer, memRefs, rhsFlags,
@@ -3266,9 +3686,6 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// This is a definition, not just a declaration.
 	OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::DEF;
 
-	// Create an OpenAnalysis handle for this node.
-	symHandle = mIR->getNodeNumber(initName);
-
 	// The address of the memory location is not taken
 	// during a declaration.
 	addressTaken = false;
@@ -3276,13 +3693,15 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// The declaration accurately represents the memory expression.
 	fullAccuracy = true;
 
-	// Create a NamedRef to represent this memory reference.
-	isNamed = true;
-	
+	// Create a named memory reference expression.
 	OA::OA_ptr<OA::MemRefExpr> memRefExp;
-	memRefExp = new OA::NamedRef(addressTaken, fullAccuracy,
-				     memRefType, symHandle);
+	memRefExp = mIR->createMRE(initName, addressTaken,
+				   fullAccuracy, memRefType,
+				   ( flags & expectArrowDotRHS ) );
 	ROSE_ASSERT(!memRefExp.ptrEqual(0));
+
+	isNamed = memRefExp->isaNamed();
+
 
 	isMemRefExpr = true;
 
@@ -3334,20 +3753,11 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // at those nodes.
       fullAccuracy = true;
 	  
-      // Create a named memory reference for this access.
-      SgVariableSymbol *symbol = varRefExp->get_symbol(); 
-      ROSE_ASSERT(symbol != NULL); 
-
-      SgInitializedName *initName = symbol->get_declaration(); 
-      ROSE_ASSERT(initName != NULL); 
-
-      // Create an OpenAnalysis handle for this node.
-      symHandle = mIR->getNodeNumber(initName);
-
       // Create a named memory reference expression.
       OA::OA_ptr<OA::MemRefExpr> memRefExp;
-      memRefExp = new OA::NamedRef(addressTaken, fullAccuracy,
-				   memRefType, symHandle);
+      memRefExp = mIR->createMRE(varRefExp, addressTaken,
+				 fullAccuracy, memRefType,
+				 ( flags & expectArrowDotRHS ) );
       ROSE_ASSERT(!memRefExp.ptrEqual(0));
 
       isMemRefExpr = true;
@@ -3378,7 +3788,6 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
   case V_SgThisExp:
     {
-
       SgThisExp *thisExp = isSgThisExp(astNode);
       ROSE_ASSERT(thisExp != NULL);
 
@@ -3552,6 +3961,10 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // Invocations of new are represented by unnamed memory references,
       // just as calls to malloc (above).
 
+      // Notice that we also need to represent the access to the 
+      // invoked constructor/method.  Do this at the SgConstructorInitializer
+      // accessible from newExp as newExp->get_constructor_args();
+
       memRefType = OA::MemRefExpr::USE;
 
       // Create an OpenAnalysis handle for this node.
@@ -3571,6 +3984,59 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 				     memRefType, stmtHandle);
       ROSE_ASSERT(!memRefExp.ptrEqual(0));
       
+      isMemRefExpr = true;
+
+      curMemRefExprs.push_back(memRefExp);
+
+      // This does not compute an lvalue.
+      addSynthesizedFlag(synthesizedFlags, synthesizedDoesntComputeLValue);
+
+      break;
+    }
+
+  case V_SgConstructorInitializer:
+    {
+      // A SgConstructorInitializer appears as a child of a SgNewExp.
+      // We need to extract the constructor invoked and treat it
+      // analogously to a method invocation above.
+      // We consider this a USE.
+
+      SgConstructorInitializer *ctorInitializer =
+	isSgConstructorInitializer(astNode);
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      // This is a USE (of an entry in the virtual function table).
+      // We are not taking any addresses.
+      addressTaken = false;
+
+      // Access to a named function is a fully
+      // accurate representation of that access.
+      fullAccuracy = true;
+	  
+      // Get the memory reference type (DEF, USE, etc.) for 
+      // this node.  
+      memRefType = flagsToMemRefType(flags);
+
+      // This had better be a USE ...
+      ROSE_ASSERT(memRefType == OA::MemRefExpr::USE);
+      
+      // Get the declaration of the function.
+      SgFunctionDeclaration *functionDeclaration = 
+	ctorInitializer->get_declaration();
+      ROSE_ASSERT(functionDeclaration != NULL);
+
+      // Create an OpenAnalysis handle for this node.
+      symHandle = mIR->getNodeNumber(functionDeclaration);
+
+      // Create a named memory reference expression.
+      OA::OA_ptr<OA::MemRefExpr> memRefExp;
+      memRefExp = new OA::NamedRef(addressTaken, fullAccuracy,
+				   memRefType, symHandle);
+      ROSE_ASSERT(!memRefExp.ptrEqual(0));
+
+      // We do not have to apply the conversion rules: this
+      // is not a reference.
+
       isMemRefExpr = true;
 
       curMemRefExprs.push_back(memRefExp);

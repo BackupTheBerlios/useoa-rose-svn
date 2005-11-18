@@ -136,9 +136,19 @@ void SageIRProcIterator::reset()
 
 void FindCallsitesPass::visit(SgNode* node)
 {
-	if(!node) { printf("visited with 0-Node!\n"); return; }
-  if(isSgFunctionCallExp(node))
-    call_lst.push_back(isSgExpression(node));
+  if(!node) { printf("visited with 0-Node!\n"); return; }
+  
+  // We expect to have expressions in the call_lst.
+  SgExpression *exp = isSgExpression(node);
+  if ( exp == NULL )
+    return;
+
+  // Though a method is represented as a function call, an
+  // invocation of new is not.  Need to check for it 
+  // explicitly.
+  if( isSgFunctionCallExp(exp) || isSgNewExp(exp) )
+    call_lst.push_back(exp);
+
   return;
 }
 

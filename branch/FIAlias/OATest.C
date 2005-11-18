@@ -39,7 +39,7 @@
 
 #include <string>
 #include <iostream>
-
+#include <CommandOptions.h>
 
 int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 int DoAlias(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
@@ -84,7 +84,9 @@ main ( unsigned argc,  char * argv[] )
   
   std::vector<SgNode*> nodeArray;
 
-  //figure out which analysis to do based on the first command line arg
+  // Figure out which analysis to do based on command-line args.
+  // Now we use CmdOptions and don't require the analysis option
+  // to be the first specified.
   if(argc<3)
   {
     usage(argv);
@@ -93,20 +95,19 @@ main ( unsigned argc,  char * argv[] )
   {
     SgProject * sageProject =frontend( (int)(argc-1),&argv[1]);
     int filenum = sageProject->numberOfFiles();
-    int i = 1;
-    string oaopt=argv[i];
-    if (oaopt == "--debug" ) {
+
+    CmdOptions *cmds = CmdOptions::GetInstance();
+    cmds->SetOptions(argc, argv);
+
+    if ( cmds->HasOption("--debug") ) {
       debug = true;
-      ++i;
-      oaopt = argv[i];
     }
-    if (oaopt == "--outputRose" ) {
+
+    if ( cmds->HasOption("--outputRose") ) {
       outputRose = true;
-      ++i;
-      oaopt = argv[i];
     }
-      
-    if(oaopt=="--oa-CFG")
+    
+    if( cmds->HasOption("--oa-CFG") )
     {
         for (int i = 0; i < filenum; ++i) 
           {
@@ -128,7 +129,7 @@ main ( unsigned argc,  char * argv[] )
           }
           return 0;
     }
-    else if(oaopt=="--oa-MemRefExpr")
+    else if( cmds->HasOption("--oa-MemRefExpr") )
     {
       //printf("TO DO, implement mem ref expr analysis\n");
       OA::OA_ptr<SageIRInterface> ir; 
@@ -175,7 +176,7 @@ main ( unsigned argc,  char * argv[] )
       
       return 0;
     }
-    else if(oaopt=="--oa-AliasMap")
+    else if( cmds->HasOption("--oa-AliasMap") )
     {
       //printf("TO DO, implement alias analysis\n");
         for (int i = 0; i < filenum; ++i) 
@@ -198,22 +199,22 @@ main ( unsigned argc,  char * argv[] )
           }
           return 0;
     }
-    /*else if(oaopt=="--oa-AliasMap")
+    /*else if( cmds->HasOption("--oa-AliasMap") )
     {
       printf("TO DO, implement alias map analysis\n");
       return 1;
     }*/
-    else if(oaopt=="--oa-CallGraph")
+    else if( cmds->HasOption("--oa-CallGraph") )
     {
        DoCallGraph(sageProject, &nodeArray, p_h);
       return 1;
     }
-    else if(oaopt=="--oa-ReachDefs")
+    else if( cmds->HasOption("--oa-ReachDefs") )
     {
       printf("TO DO, implement reach. def. analysis\n");
       return 1;
     }
-    else if(oaopt=="--oa-UDDUChains")
+    else if( cmds->HasOption("--oa-UDDUChains") )
     {
       for (int i = 0; i < filenum; ++i) 
       {
@@ -235,22 +236,22 @@ main ( unsigned argc,  char * argv[] )
       }
       return 0;
     }
-    else if(oaopt=="--oa-UDDUChainsXAIF")
+    else if( cmds->HasOption("--oa-UDDUChainsXAIF") )
     {
       printf("TO DO, implement UDDUChainsXAIF analysis\n");
       return 1;
     }
-    else if(oaopt=="--oa-MPICFG")
+    else if( cmds->HasOption("--oa-MPICFG") )
     {
       printf("TO DO, implement MPICFG analysis\n");
       return 1;
     }
-    else if(oaopt=="--oa-ReachConsts")
+    else if( cmds->HasOption("--oa-ReachConsts") )
     {
       printf("TO DO, implement ReachConsts analysis\n");
       return 1;
     }
-    else if(oaopt=="--oa-AliasMapXAIF")
+    else if( cmds->HasOption("--oa-AliasMapXAIF") )
     {
       printf("TO DO, implement AliasMapXAIF analysis\n");
       return 1;

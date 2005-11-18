@@ -243,3 +243,92 @@
 	  to a.b.
 	  Notice that sta[a][b][c].d also only returns only one
 	  MemRefExpr (NamedRef(USE, SymHandle(sta), partial))
+
+11/11/05 UseOA-ROSE-???		Brian White
+	- Modified SageIRProcIterator so that it returns
+	  constructors.
+	- Changed representation of the formal corresponding to
+	  'this' from a SgFunctionDefinition (which may not
+	  be accessible) to a SgFunctionParameterList.  This
+	  is non-sensical, but should only be used to form
+	  alias sets.  Since we only care about the formal
+	  insofar as which actuals it is bound to, it shouldn't
+	  make a difference that we chose a silly representation.
+	- Added implicit 'this' actual arg as an argument to new
+          in SageIRInterface::getCallsiteParams.
+	- Added param binding for 'this' arg to new in 
+	  in SgParamBindPtrAssignIterator::create.
+	- Explicitly model references to this.  i.e., we ignore
+	  SgThisExp in SageIRMemRefIterator::findAllMemRefsAndMemRefExprs.
+	  If a SgVarRefExpr or SgInitializedName is a member m of a class,
+	  then SageIRMemRefIterator::findAllMemRefsAndMemRefExprs 
+	  explicitly creates an MRE for this->m, regardless of whether
+	  or not the frontend (i.e., ROSE) has explicitly mentioned the this.
+	- Updated getCallMemRefExpr to handle new expressions (as a
+	  call handle).
+	- Updated getCallMemRefExpr so that it returns NamedRefs
+	  for any method/function that can be resolved (including
+	  constructor invocations) and returns FieldAccess for
+	  virtual methods.  This is accomplished by explicitly
+	  creating NamedRefs for functions, since the general
+	  getMemRef routines do not consider function calls to 
+	  be uses of program state and hence worthy of an MRE; and
+	  by use of the general routines in all other cases. 
+	  See next comment.
+	- Changed getChildrenWithMemRefs and findAllMemRefsAndMemRefExprs 
+	  to recognize SgConstructorInitializers so that we handle
+	  invocations of new (i.e., of a constructor) as we handle
+	  method invocations.  i.e., we create an MRE for them.
+ 	- Implemented vtable opt:
+	       - Updated findAllMemRefsAndMemRefExprs to return
+	         (*(*a).FieldHandle(0)).method for a virtual
+	         call instead of (*a).method.
+	       - Returned implicit ptr assign pairs of form:
+		 < (*a).FieldHandle(0), &A > 
+                 from createImplicitPtrAssignForMethods
+	         where A is a's class.
+               - Returned implicit ptr assigns of from:
+		 < a.method, A::method >
+		 from createImplicitVTablePtrAssignFromDefinition,
+                 where A is a's class, a.method is a string-based
+	         FieldAccess and A::method is a NamedRef.
+	- Changed OATest to use CmdOptions, so we are less/not
+	  dependent on order of command line options.
+	- Added regressMemRefExpr.script, a knock-off of 
+	  genMemRefExprOut.script.  Simply run it without args.
+	  If everything goes well it should generate no output.
+	  If there are differences between current and expected
+	  results, they will be returned.
+	- Passed regressMemRefExpr.script.  The following changed
+	  from the last version and were deemed correct behavior.
+	  All changes occurred in /MemRefExprTestInput.C:
+	       - ignoreStructPtr =((struct myStruct *)(malloc(12))); 
+	         The StmtHandle for malloc now includes the cast
+	         expression.
+	       - *hi -> hello() = ignoreInt;
+                 Previously, hi->hello was represented as an inaccurate
+	         dereference of hi:
+		 Deref(
+        		mAddressOf: 0
+        		mFullAccuracy: 0
+		        mMemRefType: USE
+		        mMRE: 
+		        NamedRef(
+		                mAddressOf: 0
+		                mFullAccuracy: 1
+		                mMemRefType: USE
+		                mSymHandle: SymHandle(hi)       )
+		        mNumDeref: 1)
+		  However, we can actually say with full accuracy
+	          the method that is invoked.  So instead, we 
+	          return:
+		  NamedRef(
+		        mAddressOf: 0
+		        mFullAccuracy: 1
+		        mMemRefType: USE
+		        mSymHandle: SymHandle(hello))
+                - Added invocation of virtual method call:
+		  *hi -> goodbye() = ignoreInt;
+		  which results in a FieldAccess of Deref(hi).
+		
+	

@@ -369,6 +369,7 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
 
   //! Given a ProcHandle, return its SymHandle
   OA::SymHandle getProcSymHandle(OA::ProcHandle h);
+  OA::SymHandle getProcSymHandle(SgFunctionDeclaration *);
   OA::MemRefHandle SageIRInterface::getSymMemRefHandle(OA::SymHandle h);
   OA::SymHandle getSymHandle(OA::ProcHandle h) {return getProcSymHandle(h);} //ask Michelle
 
@@ -708,7 +709,43 @@ public:
 
   SgStatement *getEnclosingStatement(SgNode *node);
 
+  // Return the class in which node occurs.
+  SgClassDefinition *getDefiningClass(SgScopeStatement *scope);
+
+  // dereferenceMre creates a Deref MemRefExpr that models a
+  // dereference of mre.  
+  OA::OA_ptr<OA::MemRefExpr> dereferenceMre(OA::OA_ptr<OA::MemRefExpr> mre);
+
+  // Return the lhs of a new expression.
+  SgNode *getNewLhs(SgNewExp *newExp);
+
+  // Return a memory reference expression for varRefExp.
+  // If varRefExp is an access to a class member m, then
+  // this method will explicitly model the dereference of this
+  // and create an MRE for this->m.
+  OA::OA_ptr<OA::MemRefExpr> 
+    createMRE(SgVarRefExp *varRefExp,
+	      bool addressTaken,
+	      bool fullAccuracy,
+	      OA::MemRefExpr::MemRefType memRefType,
+	      bool arrowOrDotModeledElsewhere);
+
+  // Return a memory reference expression for initName.
+  // If initName is an access to a class member m, then
+  // this method will explicitly model the dereference of this
+  // and create an MRE for this->m.
+  OA::OA_ptr<OA::MemRefExpr> 
+    createMRE(SgInitializedName *initName,
+	      bool addressTaken,
+	      bool fullAccuracy,
+	      OA::MemRefExpr::MemRefType memRefType,
+	      bool arrowOrDotModeledElsewhere);
+
   bool isArrowExp(SgExpression *function);
+  bool isMalloc(SgFunctionCallExp *functionCallExp);
+  // If node represents a malloc or a new, return true and the
+  // type of the object allocated.  
+  bool isAllocation(SgNode *node, SgType *&type);
 
   string refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
 
@@ -767,13 +804,60 @@ public:
 				bool collectPtrAssigns,
 				std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
 
-    
+  // Create the implicit ptr assign pairs at each class definition
+  // necessary to support the "vtable" optimization.
+  bool 
+    createImplicitVTablePtrAssignFromDefinition(SgClassDefinition *classDefinition,
+						bool collectPtrAssigns,
+						std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+  
+  // Create the implicit ptr assign pairs for the methods of a class.
+  bool 
+    createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
+				      SgClassDefinition *classDefinition,
+				      bool collectPtrAssigns,
+				      std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+
+
+  // Create implicit ptr assign pairs given lhs = rhs.
+  void
+    createImplicitPtrAssigns(OA::OA_ptr<OA::MemRefExpr> lhs,
+			     SgNode *rhs,
+			     std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+
+  // Create any implicit ptr assign pairs resulting from an object allocation
+  // of class classDefinition, creating using the constructor represented
+  // by ctorInitializer.  
+  bool 
+    createImplicitPtrAssignFromObjectAllocation(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
+						SgClassDefinition *classDefinition,
+						SgConstructorInitializer *ctorInitializer,
+						bool collectPtrAssigns,
+						std::set<SgClassDefinition *> examinedClasses,
+						std::set<SgConstructorInitializer *> examinedCtors,
+						std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+
+  // If astNode is an allocation site (new or malloc) of
+  // a class instance, return the declaration of that class.
+  SgClassDeclaration *findAllocatedClass(SgNode *astNode);
+
+  // Returns true if the function is a virtual method.
+  bool isVirtual(SgFunctionDeclaration *functionDeclaration);
+
+  // Returns true if classDefinition defines a class with methods.
+  bool classHasMethods(SgClassDefinition *classDefinition);
+
+  // Return the class declaration corresponding to type, if
+  // type is indeed a class type.
+  SgClassDeclaration *getClassDeclaration(SgType *type);
 
   friend class SageIRMemRefIterator;
   friend class SgPtrAssignPairStmtIterator;
   friend class SgParamBindPtrAssignIterator;
   friend class ExprTreeTraversal;
 };
+
+#define OA_VTABLE_STR "__oa_vtable_ptr"
 
 #endif
 

@@ -25,6 +25,7 @@ struct myStruct {
 class hiClass {
  public:
   int *hello();
+  virtual int *goodbye();
   int bar();
 };
 
@@ -94,6 +95,8 @@ int bar()
   // < use, T, SymHandle(hi), 1, F, partial >   // hi->hello
   // < use, F, UnknownRef, 0, T, partial >      // hi->hello()
   // < def, F, UnknownRef, 1, F, partial >      // *(hi->hello())
+
+  *(hi->goodbye()) = ignoreInt;
 
   **q = ignoreInt;
   // < use, T, SymHandle(q), 0, F, full >

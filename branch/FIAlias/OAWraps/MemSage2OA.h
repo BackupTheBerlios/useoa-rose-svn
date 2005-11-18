@@ -177,10 +177,6 @@ class SageIRMemRefIterator : public OA::MemRefHandleIterator
 				   unsigned inheritedFlags,
 				   unsigned &synthesizedFlags);
     
-    // dereferenceMre creates a Deref MemRefExpr that models a
-    // dereference of mre.  
-    OA::OA_ptr<OA::MemRefExpr> dereferenceMre(OA::OA_ptr<OA::MemRefExpr> mre);
-
     // takeAddressOfMre creates a MemRefExpr that represents the
     // address of mre.  
     OA::OA_ptr<OA::MemRefExpr> takeAddressOfMre(OA::OA_ptr<OA::MemRefExpr> mre);
