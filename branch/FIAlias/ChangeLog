@@ -354,3 +354,19 @@
 		RyderEtAlFig14.c
 		RyderEtAlFig15.c
 		YongEtAlPLDI99.c
+
+11/21/05 UseOA-ROSE-???		Brian White
+	- All alias tests compile/run except:
+		LattnerEtAl03Fig1.C
+	  which uses a function pointer.  This causes
+	  an assertion to fail in SageOA because we can not
+	  retrieve the function declaration of the function call
+	  expression.  Suggested fix:  change FIAlias so that
+	  it first resolves function pointers and then invokes
+	  getParamBindPtrAssignIterator, which is where fault occurs.
+	- Changed creation of nodeArray for persistent handles
+	  so that it manually traverses the AST.  Some of the nodes
+	  are not visited by the ROSE traversal mechanisms and so
+	  were not getting numbered.  This fixed many of the 
+	  above problems.
+	- Still haven't tested the alias results for correctness.

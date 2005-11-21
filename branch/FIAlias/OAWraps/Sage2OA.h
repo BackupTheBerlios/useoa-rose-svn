@@ -412,6 +412,7 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   OA::OA_ptr<OA::IRRegionStmtIterator> getFirstInCompound (OA::StmtHandle h);
 
   void createNodeArray(SgNode * root);
+  void numberASTNodes(SgNode *astNode);
   SgNode * getNodePtr(OA::IRHandle h){if((int)h==0) return 0; else if(persistent_handles) return (*nodeArrayPtr)[h.hval()-1]; else return (SgNode*)h.hval();} //hvals start at 1
   int getNodeNumber(SgNode *);  //can be zero
   std::vector <SgNode *> * nodeArrayPtr;

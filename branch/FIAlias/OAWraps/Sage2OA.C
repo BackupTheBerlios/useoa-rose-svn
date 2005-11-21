@@ -1392,6 +1392,77 @@ NumberTraversal::visit ( SgNode* astNode )
   SgStatement * st=isSgStatement(astNode);
   SgInitializedName * in=isSgInitializedName(astNode);
   int currentNumber=ir->nodeArrayPtr->size();
+
+  switch (astNode->variantT() ) {
+
+  case V_SgNewExp:
+    {
+
+      SgNewExp *newExp = isSgNewExp(astNode);
+      ROSE_ASSERT(newExp != NULL);
+
+      SgConstructorInitializer *ctorInitializer =
+	newExp->get_constructor_args();
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      // This function declaration won't get visited by the 
+      // traversal.
+      SgMemberFunctionDeclaration *functionDeclaration = 
+	ctorInitializer->get_declaration();
+      ROSE_ASSERT(functionDeclaration != NULL);
+      
+      if ( !functionDeclaration->attribute.exists("OANumber") ) {
+	functionDeclaration->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
+	ir->nodeArrayPtr->push_back(functionDeclaration);
+	
+	currentNumber=ir->nodeArrayPtr->size();
+      }
+
+#if 1
+      SgFunctionParameterList *parameterList = 
+	functionDeclaration->get_parameterList(); 
+
+      if ( !parameterList->attribute.exists("OANumber") ) {
+	parameterList->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
+	ir->nodeArrayPtr->push_back(parameterList);
+	
+	currentNumber=ir->nodeArrayPtr->size();
+
+      }
+#endif
+
+      break;
+    }
+
+  case V_SgFunctionDeclaration:
+  case V_SgMemberFunctionDeclaration:
+    {
+      SgFunctionDeclaration *functionDeclaration =
+	isSgFunctionDeclaration(astNode);
+      ROSE_ASSERT(functionDeclaration != NULL);
+
+      SgFunctionParameterList *parameterList = 
+	functionDeclaration->get_parameterList(); 
+
+      if ( !parameterList->attribute.exists("OANumber") ) {
+	parameterList->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
+	ir->nodeArrayPtr->push_back(parameterList);
+	
+	currentNumber=ir->nodeArrayPtr->size();
+
+      }
+
+      break;
+    }
+
+  default:
+    {
+      break;
+    }
+
+  }
+  
+
   if(exp || st || in)
   {
     if(in)
@@ -1401,8 +1472,10 @@ NumberTraversal::visit ( SgNode* astNode )
       //printf("assigning node number %i to SgInitializedName %s\n", currentNumber+1,
       //                                          in->get_name().getString().c_str());
     }
-    astNode->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
-    ir->nodeArrayPtr->push_back(astNode);
+    if ( !astNode->attribute.exists("OANumber") ) {
+      astNode->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
+      ir->nodeArrayPtr->push_back(astNode);
+    }
   } 
   //TO DO
   //also need to visit SgInitializedName nodes under SgVariableDeclaration and SgFunctionParameterList
@@ -1442,12 +1515,316 @@ NumberTraversal::visit ( SgNode* astNode )
   }*/
 }
 
+void SageIRInterface::numberASTNodes(SgNode *astNode)
+{
+  // If we haven't already numbered this node, do it now.
+  int currentNumber = nodeArrayPtr->size();
+
+  if ( astNode == NULL )
+    return;
+
+  //  cout << "Visiting " << astNode->sage_class_name() << " " << astNode->unparseToCompleteString();
+
+  // We've already been here.  Return to avoid a loop.
+  if ( astNode->attribute.exists("OANumber") ) {
+    //    cout << " returning" << endl;
+    return;
+  }
+
+  //  cout << endl;
+
+  if ( !astNode->attribute.exists("OANumber") ) {
+    astNode->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
+    nodeArrayPtr->push_back(astNode);
+    currentNumber = nodeArrayPtr->size();
+  }
+
+  // Some nodes need special processing because the 
+  // traversalSuccessorContainer mechanism does not visit all of their
+  // children.
+  // Aggregate such nodes in a children vector and then visit them.
+  std::vector<SgNode *> children;
+
+  switch (astNode->variantT() ) {
+
+  case V_SgInitializedName:
+    {
+      // We need to explicitly handle cases like:
+      // struct S { int *s1; int *s2; } s;
+      // in which s1 and s2 aren't automatically visited.
+
+      SgInitializedName *initializedName = 
+	isSgInitializedName(astNode);
+      ROSE_ASSERT(initializedName);
+
+      SgType *type = initializedName->get_type();
+      ROSE_ASSERT(type != NULL);
+
+      SgNamedType *namedType = isSgNamedType(type);
+      if ( namedType != NULL ) {
+	children.push_back(namedType->get_declaration());
+	children.push_back(initializedName->get_declaration());
+	children.push_back(initializedName->get_definition());
+
+	SgInitializer *initializer = initializedName->get_initializer();
+	if ( initializer != NULL ) {
+	  
+	  SgConstructorInitializer *ctorInitializer =
+	    isSgConstructorInitializer(initializer);
+
+	  if ( ctorInitializer ) {
+
+	    // This function declaration won't get visited by the 
+	    // traversal.
+	    SgMemberFunctionDeclaration *functionDeclaration = 
+	      ctorInitializer->get_declaration();
+	    ROSE_ASSERT(functionDeclaration != NULL);
+	    
+	    children.push_back(functionDeclaration);
+	    
+	    SgFunctionParameterList *parameterList = 
+	      functionDeclaration->get_parameterList(); 
+	    
+	    if ( parameterList != NULL )
+	      children.push_back(parameterList);
+	    
+	    SgClassDeclaration *classDeclaration =
+	      ctorInitializer->get_class_decl();
+	    if ( classDeclaration != NULL)
+	      children.push_back(classDeclaration);
+	    
+	  }
+	  
+	}
+      }
+      break;
+    }
+
+  case V_SgNewExp:
+    {
+
+      SgNewExp *newExp = isSgNewExp(astNode);
+      ROSE_ASSERT(newExp != NULL);
+
+      SgConstructorInitializer *ctorInitializer =
+	newExp->get_constructor_args();
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      // This function declaration won't get visited by the 
+      // traversal.
+      SgMemberFunctionDeclaration *functionDeclaration = 
+	ctorInitializer->get_declaration();
+      ROSE_ASSERT(functionDeclaration != NULL);
+      
+      children.push_back(functionDeclaration);
+
+      SgFunctionParameterList *parameterList = 
+	functionDeclaration->get_parameterList(); 
+
+      if ( parameterList != NULL )
+	children.push_back(parameterList);
+
+      SgClassDeclaration *classDeclaration =
+	ctorInitializer->get_class_decl();
+      if ( classDeclaration != NULL)
+	children.push_back(classDeclaration);
+
+#if 0
+      if ( !functionDeclaration->attribute.exists("OANumber") ) {
+	functionDeclaration->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
+	nodeArrayPtr->push_back(functionDeclaration);
+	currentNumber = nodeArrayPtr->size();
+      }
+
+#if 1
+      SgFunctionParameterList *parameterList = 
+	functionDeclaration->get_parameterList(); 
+
+      if ( !parameterList->attribute.exists("OANumber") ) {
+	parameterList->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
+	nodeArrayPtr->push_back(parameterList);
+	
+	currentNumber = nodeArrayPtr->size();
+
+      }
+#endif
+#endif
+      break;
+    }
+
+  case V_SgClassDefinition:
+    {
+      // Number all methods since some of them might be compiler-generated
+      // constructors, and hence not show up elsewhere.
+
+      SgClassDefinition *classDefinition =
+	isSgClassDefinition(astNode);
+      ROSE_ASSERT(classDefinition != NULL);
+
+      SgDeclarationStatementPtrList &members = classDefinition->get_members(); 
+      for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
+	   it != members.end(); ++it) { 
+	
+	SgDeclarationStatement *declarationStatement = *it; 
+	ROSE_ASSERT(declarationStatement != NULL);
+	
+	switch(declarationStatement->variantT()) {
+	  
+	case V_SgMemberFunctionDeclaration:
+	  {
+	    SgMemberFunctionDeclaration *functionDeclaration =  
+	      isSgMemberFunctionDeclaration(declarationStatement); 
+	    
+	    if ( functionDeclaration != NULL ) { 
+	      
+	      children.push_back(functionDeclaration);
+
+	    }
+
+	    break;
+	  }
+
+	default:
+	  {
+	    break;
+	  }
+	}
+
+      }
+
+      break;
+    }
+
+  case V_SgConstructorInitializer:
+    {
+      SgConstructorInitializer *ctorInitializer =
+	isSgConstructorInitializer(astNode);
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      // Get the declaration of the function.
+      SgFunctionDeclaration *functionDeclaration = 
+	ctorInitializer->get_declaration();
+      ROSE_ASSERT(functionDeclaration != NULL);
+
+      children.push_back(functionDeclaration);
+
+      break;
+    }
+
+  case V_SgFunctionDeclaration:
+  case V_SgMemberFunctionDeclaration:
+    {
+      SgFunctionDeclaration *functionDeclaration =
+	isSgFunctionDeclaration(astNode);
+      ROSE_ASSERT(functionDeclaration != NULL);
+
+      SgFunctionParameterList *parameterList = 
+	functionDeclaration->get_parameterList(); 
+
+      children.push_back(parameterList);
+
+#if 0
+      if ( !parameterList->attribute.exists("OANumber") ) {
+	parameterList->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
+	nodeArrayPtr->push_back(parameterList);
+	currentNumber = nodeArrayPtr->size();
+
+      }
+#endif
+
+      break;
+    }
+
+  case V_SgTypedefDeclaration:
+    {
+      SgTypedefDeclaration *typedefDeclaration =
+	isSgTypedefDeclaration(astNode);
+      ROSE_ASSERT(typedefDeclaration != NULL);
+      
+      SgDeclarationStatement *definingDeclaration =
+	typedefDeclaration->get_definingDeclaration();
+
+      if ( definingDeclaration != NULL )
+	children.push_back(definingDeclaration);
+
+      SgType *baseType = typedefDeclaration->get_base_type();
+      ROSE_ASSERT(baseType != NULL);
+
+      SgNamedType *namedType = isSgNamedType(baseType);
+      if ( namedType != NULL ) {
+	children.push_back(namedType->get_declaration());
+      }
+
+      break;
+      
+    }
+
+  default:
+    {
+      break;
+    }
+
+  }
+
+  // Visit all children.
+  vector<SgNode *> containerList = 
+    astNode->get_traversalSuccessorContainer();
+  
+  // Iterate over all children.
+  for(vector<SgNode *>::iterator it = containerList.begin();
+      it != containerList.end(); ++it) {
+    
+    SgNode *node = *it;
+    if ( node != NULL ) {
+
+#if 0
+      if ( isSgGlobal(astNode) ) {
+	cout << "Visiting " << node->sage_class_name() << " from global" << endl;
+      }
+      if ( isSgClassDeclaration(astNode) ) {
+	cout << "Visiting " << node->sage_class_name() << " from SgClassDeclaration" << endl;
+	cout << isSgClassDeclaration(astNode)->unparseToCompleteString() << endl;
+      }
+      if ( isSgClassDefinition(astNode) ) {
+	cout << "Visiting " << node->sage_class_name() << " from SgClassDefinition" << endl;
+	cout << isSgClassDefinition(astNode)->unparseToCompleteString() << endl;
+      }
+      if ( isSgVariableDeclaration(astNode) ) {
+	cout << "Visiting " << node->sage_class_name() << " from SgVariableDeclaration" << endl;
+	cout << isSgVariableDeclaration(astNode)->unparseToCompleteString() << endl;
+      }
+#endif
+
+      numberASTNodes(node);
+    }
+    
+  }
+
+  for(vector<SgNode *>::iterator it = children.begin();
+      it != children.end(); ++it) {
+    
+    SgNode *node = *it;
+    if ( node != NULL ) {
+      numberASTNodes(node);
+    }
+    
+  }
+
+}
+
 void SageIRInterface::createNodeArray(SgNode * root)
 {
   if(nodeArrayPtr->size()==0)
   {
+#if 1
+    // The pre-defined Sage traversals skip over nodes that
+    // we need to be numbered.  Therefore, manually traverse the AST.
+    numberASTNodes(root);
+    //    NumberTraversal t(this);
+#else
     NumberTraversal t(this);
     t.traverse(root, preorder);
+#endif
     //    printf("created nodeArray of size %i\n", nodeArrayPtr->size());
   }
 }
@@ -1466,8 +1843,11 @@ int SageIRInterface::getNodeNumber(SgNode * n) //can be zero
       SageNodeNumAttr * attr=dynamic_cast<SageNodeNumAttr * >(n->attribute["OANumber"]);
       return (attr->number)+1;
     }
-    else
+    else {
+      cerr << "Could not find persistent handle for " << n->sage_class_name() << endl;
+      ROSE_ABORT();
       return 0;
+    }
   }
   else
     return (int)n;
@@ -2031,7 +2411,7 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
   OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIter = 
     mIR->getCallsiteParams(call);
 
-#if 1
+#if 0
   // getCallsiteParams already handles folding the object into the
   // param list.  We don't have to do that here.
 
@@ -4056,11 +4436,8 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
     // for each mem-ref-expr associated with this memref
     int numMres = 0;
     for (; mreIterPtr->isValid(); (*mreIterPtr)++) {
-      if ( mre->isaRefOp() ) {
-	mre = mreIterPtr->current();
-	numMres++;
-	
-      }
+      mre = mreIterPtr->current();
+      numMres++;
     }
   
     // We are only expecting one MemRefExpr ...
@@ -4413,6 +4790,16 @@ SageIRInterface::isPointerVar(OA::SymHandle h)
       ROSE_ASSERT(baseType != NULL);
 
       retVal = ( isSgPointerType(baseType) );
+
+      break;
+    }
+
+  case V_SgFunctionParameterList:
+    {
+      // We represent the formal parameter corresponding to the
+      // implicit 'this' pointer via a SgFunctionParameterList.
+
+      retVal = true;
 
       break;
     }
@@ -4914,9 +5301,9 @@ SageIRInterface::getCallsiteParams(OA::ExprHandle h)
       SgNode *lhs = getNewLhs(newExp);
       if ( lhs != NULL ) {
 	lhs = lookThroughCastExpAndAssignInitializer(lhs);
+	OA::ExprHandle exprHandle = getNodeNumber(lhs);
+	exprHandleList->push_back(exprHandle);
       }
-      OA::ExprHandle exprHandle = getNodeNumber(lhs);
-      exprHandleList->push_back(exprHandle);
 
       break;
     }
@@ -5369,6 +5756,7 @@ SgClassDefinition *SageIRInterface::getDefiningClass(SgScopeStatement *scope)
 {
   if ( scope == NULL ) return NULL;
 
+  // The node is not defined in a class.
   if ( isSgGlobal(scope) ) return NULL;
 
   SgClassDefinition *classDef = isSgClassDefinition(scope);

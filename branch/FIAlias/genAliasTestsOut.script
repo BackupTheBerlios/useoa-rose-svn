@@ -1,8 +1,6 @@
 # pass -edg:w to turn off front-end warnings
 # pass -c so ROSE doesn't give us spurious output
 
-exit
-
 echo "Testing alias1.c"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/alias1.c > TestResults/AliasTests/alias1.c.out
 echo "Testing alias2.c"

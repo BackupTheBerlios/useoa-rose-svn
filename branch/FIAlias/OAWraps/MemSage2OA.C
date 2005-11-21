@@ -2166,11 +2166,18 @@ SageIRInterface::createMRE(SgInitializedName *initName,
   SgDeclarationStatement *declaration = initName->get_declaration();
   ROSE_ASSERT(declaration != NULL);
 
-  SgClassDefinition *classDefinition =
-    getDefiningClass(declaration->get_scope());
+  bool memberVariable = false;
 
-  bool memberVariable = ( classDefinition != NULL );
-  
+  // If the variable is defined in the parameter list, it is not
+  // a member variable.
+  if ( !isSgFunctionParameterList(declaration) ) {
+
+    SgClassDefinition *classDefinition =
+      getDefiningClass(declaration->get_scope());
+    memberVariable = ( classDefinition != NULL );
+
+  }
+
   OA::OA_ptr<OA::MemRefExpr> memRefExp;
 
   if ( arrowOrDotModeledElsewhere || !memberVariable ) {
