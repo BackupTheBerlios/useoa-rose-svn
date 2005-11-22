@@ -370,3 +370,11 @@
 	  were not getting numbered.  This fixed many of the 
 	  above problems.
 	- Still haven't tested the alias results for correctness.
+
+11/21/05 UseOA-ROSE svn tag FIAlias r15		Michelle Strout
+	- Marked output files in regressMemRefExpr.script that have 
+	  been checked.  Only TestCases/MemRefExprTests/MemRefExprTestInput.C
+	  still has issues.
+	- Renamed target directory for FIAlias results to 
+	  TestsResults/FIAlias since other alias analysis algorithms
+	  will have different results.

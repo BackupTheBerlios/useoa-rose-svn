@@ -1,16 +1,22 @@
 # pass -edg:w to turn off front-end warnings
 # pass -c so ROSE doesn't give us spurious output
 
+echo "Testing TestCases/MemRefExprTests/t1.c, TestResults/MemRefExpr/t1.c.out checked by MMS and BW"
 ./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/t1.c > t
 diff t TestResults/MemRefExpr/t1.c.out
+echo "Testing TestCases/MemRefExprTests/t2.c, TestResults/MemRefExpr/t2.c.out checked by MMS and BW"
 ./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/t2.c > t
 diff t TestResults/MemRefExpr/t2.c.out
+echo "Testing TestCases/MemRefExprTests/t3.c, TestResults/MemRefExpr/t3.c.out checked by MMS and BW"
 ./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/t3.c > t
 diff t TestResults/MemRefExpr/t3.c.out
+echo "Testing TestCases/MemRefExprTests/t4.c, TestResults/MemRefExpr/t4.c.out checked by MMS and BW"
 ./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/t4.c > t
 diff t TestResults/MemRefExpr/t4.c.out
+echo "Testing TestCases/MemRefExprTests/t5.c, TestResults/MemRefExpr/t5.c.out checked by MMS and BW"
 ./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/t5.c > t
 diff t TestResults/MemRefExpr/t5.c.out
+echo "Testing TestCases/MemRefExprTests/MemRefExprTestInput.C, TestResults/MemRefExpr/MemRefExprTestInput.C.out checked by ???"
 ./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/MemRefExprTestInput.C > t
 diff t TestResults/MemRefExpr/MemRefExprTestInput.C.out
 rm t
