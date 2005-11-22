@@ -1848,6 +1848,8 @@ SageIRInterface::dereferenceMre(OA::OA_ptr<OA::MemRefExpr> mre)
 			  memRefType,
 			  baseMre,
 			  numDerefs);
+    if ( !baseMre->hasFullAccuracy() )
+      deref->setAccuracy(false);
   }
 
   return deref;
@@ -2749,6 +2751,8 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 				      OA::MemRefExpr::USE,
 				      lhsMemRefExp,
 				      1);
+	      if ( !lhsMemRefExp->hasFullAccuracy() )
+		baseMre->setAccuracy(false);
 
 	    }
 
@@ -2765,12 +2769,16 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 					      OA::MemRefExpr::USE;
 					      baseMRE,
 					      mangledMethodName);
+	    if ( !baseMre->hasFullAccuracy() )
+	      fieldAccess->setAccuracy(false);
 
 	    baseMre = new OA::Deref(false,
 				    true,
 				    OA::MemRefExpr::USE;
 				    fieldAccess,
 				    1);
+	    if ( !fieldAccess->hasFullAccuracy() )
+	      baseMre->setAccuracy(false);
 #endif
 
 	    arrowOrDotMemRefExpr = 
@@ -2779,6 +2787,9 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 				  fieldAccessMemRefType,
 				  baseMre,
 				  mangledMethodName);
+
+	    if ( !baseMre->hasFullAccuracy() )
+	      arrowOrDotMemRefExpr->setAccuracy(false);
 
 	  } else {
 
@@ -2819,7 +2830,9 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 						 memRefType,
 						 lhsMemRefExp,
 						 numDerefs);
-	    
+	    if ( !lhsMemRefExp->hasFullAccuracy() )
+	      arrowOrDotMemRefExpr->setAccuracy(false);	    
+
 	  } else {
 	    
 	    // This is a dot expression.  Given the memory
@@ -4148,7 +4161,6 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  ROSE_ASSERT(!memRefExp.ptrEqual(0));
 
 	  int numDerefs = 1;
-	  
 	  OA::OA_ptr<OA::Deref> deref;
 	  deref = new OA::Deref(addressTaken,
 				fullAccuracy,
@@ -4160,6 +4172,9 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  deref->setAccuracy(fullAccuracy);
 	  deref->setAddressTaken(addressTaken);
 	  deref->setMemRefType(memRefType);
+
+	  if ( !memRefExp->hasFullAccuracy() )
+	    deref->setAccuracy(false);
 
 	  // Normalize the source program to convert references to pointers.  
 	  // Though this is obviously not a reference (since we 

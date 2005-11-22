@@ -700,7 +700,18 @@ public:
 
  private:
 
-  // Return the MemRefType of a MemRefExpr.
+  // Returns true if the function call is a method invocation.
+  bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp);
+
+  // Returns a SgPointerDerefExp if the function call is made
+  // through a pointer and NULL otherwise.
+  SgPointerDerefExp *isFunctionPointer(SgFunctionCallExp *functionCall);
+
+  // If node represents a function/method/new call, return the
+  // types of the args.
+  SgTypePtrList &getFormalTypes(SgNode *node);
+
+   // Return the MemRefType of a MemRefExpr.
   OA::MemRefExpr::MemRefType getMemRefType(OA::OA_ptr<OA::MemRefExpr> mre);
 
   // Look through typedefs to return a type.

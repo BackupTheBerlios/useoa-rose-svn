@@ -281,6 +281,63 @@ OA::OA_ptr<OA::IRCallsiteIterator> SageIRInterface::getCallsites(OA::StmtHandle 
   return iter;
 }
 
+bool
+SageIRInterface::isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
+{
+  ROSE_ASSERT(functionCall != NULL);
+
+  SgExpression *expression = functionCall->get_function();
+  ROSE_ASSERT(expression != NULL);
+
+  bool isMethod = false;
+  isDotExp = false;
+
+  switch(expression->variantT()) {
+  case V_SgDotExp:
+    {
+      isMethod = true;
+
+      SgDotExp *dotExp = isSgDotExp(expression);
+      ROSE_ASSERT(dotExp != NULL);
+	  
+      SgExpression *lhs = dotExp->get_lhs_operand();
+      ROSE_ASSERT(lhs != NULL);
+	  
+      SgPointerDerefExp *pointerDerefExp =
+	isSgPointerDerefExp(lhs);
+	  
+      if ( pointerDerefExp != NULL ) {
+	;
+      } else {
+	isDotExp = true;
+      }
+
+      break;
+    }
+  case V_SgMemberFunctionRefExp:
+  case V_SgArrowExp:
+    {
+      isMethod = true;
+      break;
+    }
+  case V_SgFunctionRefExp:
+  case V_SgPointerDerefExp:
+    {
+      isMethod = false;
+      break;
+    }
+  default:
+    {
+      cerr << "Was not expecting an " << expression->sage_class_name() << endl;
+      cerr << "in a function call." << endl;
+      ROSE_ABORT();
+    }
+  }
+
+  return isMethod;
+
+}
+
 SgFunctionDeclaration * 
 getFunctionDeclaration(SgFunctionCallExp *functionCall) 
 { 
@@ -359,6 +416,32 @@ getFunctionDeclaration(SgFunctionCallExp *functionCall)
   }
 
   return funcDec; 
+} 
+
+
+SgPointerDerefExp *
+SageIRInterface::isFunctionPointer(SgFunctionCallExp *functionCall) 
+{ 
+  SgFunctionDeclaration *funcDec = NULL; 
+
+  SgExpression *expression = functionCall->get_function();
+  ROSE_ASSERT(expression != NULL);
+
+  SgPointerDerefExp *pointerDerefExp = NULL;
+
+  switch(expression->variantT()) {
+  case V_SgPointerDerefExp:
+    {
+      pointerDerefExp = isSgPointerDerefExp(expression);
+      break;
+    }
+  default:
+    {
+      break;
+    }
+  }
+
+  return pointerDerefExp;
 } 
 
 
@@ -2263,6 +2346,230 @@ SgParamBindPtrAssignIterator::reset()
   mBegin = mPairList.begin();
 }
 
+SgTypePtrList &
+SageIRInterface::getFormalTypes(SgNode *node)
+{
+  ROSE_ASSERT(node != NULL);
+
+  SgFunctionType *functionType = NULL;
+
+  switch(node->variantT()) {
+  case V_SgFunctionCallExp:
+    {
+      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+      ROSE_ASSERT(functionCallExp != NULL);
+
+      SgPointerDerefExp *pointerDerefExp =
+	isFunctionPointer(functionCallExp);
+
+      if ( pointerDerefExp ) {
+
+	SgType *type = pointerDerefExp->get_type();
+	ROSE_ASSERT(type != NULL);
+
+	functionType = isSgFunctionType(type);
+	ROSE_ASSERT(functionType != NULL);
+
+      } else {
+
+	SgFunctionDeclaration *functionDeclaration = 
+	  getFunctionDeclaration(functionCallExp); 
+	ROSE_ASSERT(functionDeclaration != NULL);
+
+	functionType = functionDeclaration->get_type();
+	ROSE_ASSERT(functionType != NULL);
+
+      }
+
+      break;
+    }
+  case V_SgNewExp:
+    {
+      SgNewExp *newExp = isSgNewExp(node);
+      ROSE_ASSERT(newExp != NULL);
+
+      SgConstructorInitializer *ctorInitializer =
+	newExp->get_constructor_args();
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      SgFunctionDeclaration *functionDeclaration = 
+	ctorInitializer->get_declaration();
+      ROSE_ASSERT(functionDeclaration != NULL);
+
+      functionType = functionDeclaration->get_type();
+      ROSE_ASSERT(functionType != NULL);
+
+      break;
+
+    }
+  default:
+    {
+      cerr << "Call must be a SgFunctionCallExp or a SgNewExp, got a" << endl;
+      cerr << node->sage_class_name() << endl;
+      ROSE_ABORT();
+      break;
+    }
+  }
+
+  ROSE_ASSERT(functionType != NULL);
+  return functionType->get_arguments();
+}
+
+#if 1
+// Create iterator consisting of pairs of procedure formal SymHandles
+// and procedure call actual MemRefHandles.  A pair is created
+// only for pointer or reference formals.
+void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
+{
+  SgNode *node = mIR->getNodePtr(call);
+  ROSE_ASSERT(node != NULL);
+  
+  SgFunctionDeclaration *functionDeclaration = NULL;
+  SgNode *lhs = NULL;
+
+  bool isDotExp     = false;
+  bool isMethod = false;
+
+  switch(node->variantT()) {
+
+  case V_SgFunctionCallExp:
+    {      
+      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+      ROSE_ASSERT(functionCallExp != NULL);
+      
+      isMethod = mIR->isMethodCall(functionCallExp, isDotExp);
+      break;
+    }
+  case V_SgNewExp:
+    {
+      isMethod = true;
+      break;
+    }
+  default:
+    {
+      cerr << "Call must be a SgFunctionCallExp or a SgNewExp, got a" << endl;
+      cerr << node->sage_class_name() << endl;
+      ROSE_ABORT();
+      break;
+    }
+  }
+
+  SgTypePtrList &typePtrList = mIR->getFormalTypes(node);
+
+  OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIter = 
+    mIR->getCallsiteParams(call);
+
+  int paramNum = 0;
+
+  // Simultaneously iterate over both formals and actuals.
+  // If the formal is a reference parameter (i.e., 
+  // a pointer or a reference) store it in the iterator's list.
+  SgTypePtrList::iterator formalIt = typePtrList.begin();
+  for ( ; actualsIter->isValid(); (*actualsIter)++ ) { 
+    
+    bool handleThisExp = false;
+    bool treatAsPointerParam = false;
+
+    SgType *type = NULL;
+    if ( formalIt != typePtrList.end() ) {
+      type = *formalIt;
+    }
+    
+    if ( isSgReferenceType(type) || isSgPointerType(type) ) {
+      treatAsPointerParam = true;
+    }
+    
+    if ( ( paramNum == 0 ) && ( isMethod ) ) {
+      treatAsPointerParam = true;
+      handleThisExp = true;
+    }
+    
+    if ( treatAsPointerParam ) {
+
+      OA::ExprHandle actualExpr = actualsIter->current(); 
+      SgNode *actualNode = mIR->getNodePtr(actualExpr);
+      ROSE_ASSERT(actualNode != NULL);
+
+      // We fold the object upon which a method is invoked into
+      // the argument list (as the first actual) of a method
+      // invocation.  If this is the first arg of a method
+      // invocation we need special processing for the 'this'
+      // expression.
+
+      OA::MemRefHandle actualMemRefHandle = (OA::MemRefHandle)0;
+
+      bool isArrowExp = false;
+      if ( handleThisExp == true ) {
+	
+	if ( lhs != NULL ) {
+	  if ( mIR->isMemRefNode(lhs) )
+	    actualMemRefHandle = mIR->getNodeNumber(lhs);
+	} 
+
+      } else { 
+
+	// Ensure that this expression is actually represented 
+	// by a MemRefHandle.  
+	actualNode = mIR->lookThroughCastExpAndAssignInitializer(actualNode);
+	//	ROSE_ASSERT(mIR->isMemRefNode(actualNode));
+
+	if ( mIR->isMemRefNode(actualNode) )
+	  actualMemRefHandle = mIR->getNodeNumber(actualNode);
+	
+      }
+
+      if ( actualMemRefHandle == (OA::MemRefHandle)0 ) {
+
+	// This isn't true.  Consider that printf's first formal is
+	// a const char *.  We may pass it an actual string, which
+	// is not a MemRefNode.
+
+      } else {
+
+	OA::OA_ptr<OA::MemRefExprIterator> actualMreIterPtr 
+	  = mIR->getMemRefExprIterator(actualMemRefHandle);
+	
+	// for each mem-ref-expr associated with this memref
+	for (; actualMreIterPtr->isValid(); (*actualMreIterPtr)++) {
+	  
+	  OA::OA_ptr<OA::MemRefExpr> actualMre;
+	  
+	  if ( ( handleThisExp == true ) && ( isDotExp == true ) ) {
+	    
+	    // We are returning a MemRefExpr representing the object b
+	    // upon which a method is invoked in the expression b.foo()
+	    // (i.e., a dot expression).  This pair is intended to
+	    // represent the implicit binding between the 'this' pointer
+	    // and this object.  Since 'this' is a pointer, we should
+	    // bind it to the address of b.
+	    
+	    OA::OA_ptr<OA::MemRefExpr> curr = actualMreIterPtr->current();
+	    actualMre = curr->clone();
+	    actualMre->setAddressTaken(true);
+	    
+	  } else { 
+	    
+	    actualMre = actualMreIterPtr->current();
+	    
+	  }
+	  
+	  
+	  mPairList.push_back(pair<int, OA::OA_ptr<OA::MemRefExpr> >(paramNum, actualMre));
+	  
+	}
+
+      }
+
+    }
+
+    if (formalIt != typePtrList.end())
+      ++formalIt;
+    paramNum++;
+
+  }
+
+}
+#else
 // Create iterator consisting of pairs of procedure formal SymHandles
 // and procedure call actual MemRefHandles.  A pair is created
 // only for pointer or reference formals.
@@ -2806,6 +3113,7 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
   }
 #endif
 }
+#endif
 
 
 // initializerHasPtrAssign returns true if the SgInitializedName

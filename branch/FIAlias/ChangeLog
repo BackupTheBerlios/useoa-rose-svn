@@ -378,3 +378,23 @@
 	- Renamed target directory for FIAlias results to 
 	  TestsResults/FIAlias since other alias analysis algorithms
 	  will have different results.
+
+11/22/05 UseOA-ROSE svn tag FIAlias r16		Brian White
+	- Fixed problem mentioned above in
+	     11/21/05 UseOA-ROSE-???		Brian White
+          with LattnerEtAl03Fig1.C
+	  getParamBindPtrAssignIterator no longer requires a 
+	  SgFunctionDeclaration, which may not exist in general and
+	  does not exist for a function pointer.  Instead, we
+	  query the type of the function pointer/function declaration
+	  to get the types of the formals.
+	- Now any RefOp of a partially accurate MRE is itself partially
+	  accurate.  This should be intuitive, but Michelle says:
+                I think that a Deref to a NamedRef that has partial 
+	        accuracy should also have partial accuracy.  Why?  
+	        Because the partial accuracy indicates that the 
+	        whole MemRefExpr (rooted at the Deref) has partial accuracy.
+        - Changed regressMemRefExpr.script to reflect my belief that
+	  all MemRefExpr tests pass.  Have _not_ updated regression
+	  results, but will wait for Michelle to sign off.  There are 5
+	  differences, all related to the second bullet above.
