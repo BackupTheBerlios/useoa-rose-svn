@@ -82,7 +82,7 @@ OA::StmtHandle: *(((sta[3])[4])[2].bPtr) = ignoreInt;
 	mre = 
 Deref(
 	mAddressOf: 0
-	mFullAccuracy: 1
+	mFullAccuracy: 0
 	mMemRefType: DEF
 	mMRE: 
 	NamedRef(
@@ -161,7 +161,7 @@ OA::StmtHandle: *hello() = ignoreInt;
 	mre = 
 Deref(
 	mAddressOf: 0
-	mFullAccuracy: 1
+	mFullAccuracy: 0
 	mMemRefType: DEF
 	mMRE: 
 	UnknownRef(
@@ -188,7 +188,7 @@ OA::StmtHandle: *hi -> hello() = ignoreInt;
 	mre = 
 Deref(
 	mAddressOf: 0
-	mFullAccuracy: 1
+	mFullAccuracy: 0
 	mMemRefType: DEF
 	mMRE: 
 	UnknownRef(
@@ -229,7 +229,7 @@ OA::StmtHandle: *hi -> goodbye() = ignoreInt;
 	mre = 
 Deref(
 	mAddressOf: 0
-	mFullAccuracy: 1
+	mFullAccuracy: 0
 	mMemRefType: DEF
 	mMRE: 
 	UnknownRef(
@@ -592,7 +592,7 @@ OA::StmtHandle: *(r +((int )( *q))) = ignoreInt;
 	mre = 
 Deref(
 	mAddressOf: 0
-	mFullAccuracy: 1
+	mFullAccuracy: 0
 	mMemRefType: DEF
 	mMRE: 
 	UnknownRef(

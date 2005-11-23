@@ -615,7 +615,7 @@ public:
   getPtrAssignStmtPairIterator(OA::StmtHandle stmt);
   
   OA::OA_ptr<OA::Alias::ParamBindPtrAssignIterator>
-  getParamBindPtrAssignIterator(OA::ExprHandle call);
+  getParamBindPtrAssignIterator(OA::CallHandle call);
 
   // returns true if given symbol is a reference variable.
   bool isRefParam(OA::SymHandle);

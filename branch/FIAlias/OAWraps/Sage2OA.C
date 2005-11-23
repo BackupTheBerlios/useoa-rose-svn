@@ -4934,7 +4934,7 @@ SageIRInterface::getPtrAssignStmtPairIterator(OA::StmtHandle stmt)
 }
 
 OA::OA_ptr<OA::Alias::ParamBindPtrAssignIterator>
-SageIRInterface::getParamBindPtrAssignIterator(OA::ExprHandle call)
+SageIRInterface::getParamBindPtrAssignIterator(OA::CallHandle call)
 {
   OA::OA_ptr<OA::Alias::ParamBindPtrAssignIterator> retval;
   retval = new SgParamBindPtrAssignIterator(call, this);
