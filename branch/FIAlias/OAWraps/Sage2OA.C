@@ -4647,6 +4647,14 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
 	memRefNode = function;
 	useGeneralMRERoutines = true;
 
+      } else if ( isSgPointerDerefExp(function) ) {
+
+	// This is an invocation through a function pointer.
+	// Again, we can rely on the general methods.
+
+	memRefNode = function;
+	useGeneralMRERoutines = true;
+
       } else {
 
 	// This is a function.  Create the MRE explicitly.
@@ -4658,7 +4666,7 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
 	// here:  creating a NamedRef based on the SgFunctionRefExp.
 
 	useGeneralMRERoutines = false;
-	
+
 	SgFunctionRefExp *functionRefExp = isSgFunctionRefExp(function);
 	ROSE_ASSERT(functionRefExp != NULL);
 

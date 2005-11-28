@@ -398,3 +398,21 @@
 	  all MemRefExpr tests pass.  Have _not_ updated regression
 	  results, but will wait for Michelle to sign off.  There are 5
 	  differences, all related to the second bullet above.
+
+11/18/05 UseOA-ROSE svn tag FIAlias r18 	Brian White
+	- Changed getCallMemRefExpr to recognize invocations thru
+	  function pointers.
+	- All FIAlias tests compile w/o seg fault, assertion failures, etc.
+	- May have undone Michelle's change (r17) of param type of 
+	  getParamBindPtrAssignIterator.  The latest version of OpenAnalysis
+	  does not seem to be compatible with an ExprHandle argument.
+	- The following (additional) FIAlias tests passed.  Their
+	  results were added to TestResults/FIAlias:
+	  - funCall.c
+	- Michelle has previously verified the following tests which 
+	  I've added to TestResults/FIAlias:
+	  - alias1.c
+	  - alias2.c
+	  - alias3.c
+	  - alias4.c
+

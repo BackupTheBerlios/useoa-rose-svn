@@ -1,0 +1,70 @@
+
+EquivSets(		MemRefExpr	 => int
+
+		NamedRef(
+			mAddressOf: 0
+			mFullAccuracy: 1
+			mMemRefType: USE
+			mSymHandle: SymHandle(loc)		)	 =>1
+
+		NamedRef(
+			mAddressOf: 0
+			mFullAccuracy: 1
+			mMemRefType: DEF
+			mSymHandle: SymHandle(a)		)	 =>2
+
+		NamedRef(
+			mAddressOf: 0
+			mFullAccuracy: 1
+			mMemRefType: DEF
+			mSymHandle: SymHandle(b)		)	 =>3
+
+		Deref(
+			mAddressOf: 0
+			mFullAccuracy: 1
+			mMemRefType: USE
+			mMRE: 
+			NamedRef(
+				mAddressOf: 0
+				mFullAccuracy: 1
+				mMemRefType: DEF
+				mSymHandle: SymHandle(a)			)
+			mNumDeref: 1		)	 =>1
+
+		Deref(
+			mAddressOf: 0
+			mFullAccuracy: 1
+			mMemRefType: USE
+			mMRE: 
+			NamedRef(
+				mAddressOf: 0
+				mFullAccuracy: 1
+				mMemRefType: DEF
+				mSymHandle: SymHandle(b)			)
+			mNumDeref: 1		)	 =>1
+
+		MemRefHandle	 => 
+MemRefHandle(a)	 =>[ 2 ] 
+MemRefHandle(b)	 =>[ 3 ] 
+
+		int	 => 
+1	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(loc)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+2	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(a)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+3	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(b)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+
+)
