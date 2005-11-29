@@ -433,3 +433,39 @@
 	  - comma.c	
 	  - constQualified.c
 
+11/29/05 UseOA-ROSE svn tag FIAlias r20 	Brian White
+	- Changed toString to output this::className::enclosingMethod
+	  for a SgFunctionParameterList, which we use to 
+	  represent the 'this' pointer.
+	- Changed toString to output 'method:' before a method symbol.
+	  I was getting confused when I saw 'B' as in 'class B'.
+	  It turns out this was not a symbol representing the class
+	  (which we shouldn't see), but a symbol representing a
+	  constructor (invocation).
+	- Changed handling of FieldAccess in findAllMemRefsAndMemRefExprs.
+	  In particular, we no longer demand that a method be virtual
+	  in order to create a FieldAccess:
+		// NB:  We no longer check that the function is virtual.  
+		//      Even if it is not virtual, there may be some ambiguity
+		//      in which (class') method is invoked.  For example:
+		//      B *b;
+		//      if ( cond )
+		//         b = new B;
+		//      else
+		//         b = new C;
+		//      b->foo();
+		//      where both B and C implement foo.
+	- NumberTraversal now nows SgCtorInitializerLists.
+	- Fixed a mem leak in SageIRMemRefIterator::create.
+	  At some point, do a more thorough job of checking other
+	  valgrind warnings.
+	- Fixed an obscure bug that was occurring when debug was
+	  enabled in ManagerFIAlias and we were using persistent handles.
+	  A SgMemberFunctionDeclaration's SgCtorIntializerList
+	  may be NULL.  However certain methods, such as get_ctors(),
+	  force it into existence.  Therefore, we must invoke get_ctors()
+	  during the numbering traversal to force it into existence
+	  so that when we later see it, it has been numbered.  Otherwise,
+	  we will get an assertion failure in getNodeNumber when
+	  using persistent handles because the (newly-created) SgNode
+	  was not numbered (since it did not exist at the time of numbering).

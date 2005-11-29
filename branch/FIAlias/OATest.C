@@ -181,6 +181,7 @@ main ( unsigned argc,  char * argv[] )
     else if( cmds->HasOption("--oa-FIAlias") )
     {
       DoFIAlias(sageProject, &nodeArray, p_h);
+      //      DoFIAlias(sageProject, &nodeArray, FALSE);
       return 0;
     }
     else if( cmds->HasOption("--oa-AliasMap") )
@@ -462,8 +463,13 @@ int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   // purposes only:  avoids unexpected/spurious results due to 
   // stdlib.h, etc.
   procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
+#ifdef BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
+  OA::OA_ptr<OA::Alias::EquivSets> alias = 
+    fialiasman->performAnalysis(procIter, debug);
+#else
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter);
+#endif
   //  alias->dump(std::cout, irInterface);
   alias->output(irInterface);
 }

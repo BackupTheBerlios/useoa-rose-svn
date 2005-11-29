@@ -79,12 +79,15 @@ SageIRStmtIterator::SageIRStmtIterator(SgFunctionDefinition* node,
   ROSE_ASSERT(parent != NULL);
 
   SgMemberFunctionDeclaration *memberFunctionDeclaration =
-    isSgMemberFunctionDeclaration(parent);
+    isSgMemberFunctionDeclaration(node->get_declaration());
   if ( memberFunctionDeclaration != NULL ) {
     SgCtorInitializerList *initializerList =
       memberFunctionDeclaration->get_CtorInitializerList();
-    if ( initializerList != NULL )
+    if ( initializerList != NULL ) {
+      //      ROSE_ASSERT(initializerList->get_parent() != NULL);
+      //      cout << "pushing for " << node->unparseToCompleteString() << endl;
       all_stmts.push_back(initializerList);
+    }
   }
 
   //given an sgstmt put all call expressions in calls_in_stmt
@@ -1535,6 +1538,29 @@ NumberTraversal::visit ( SgNode* astNode )
 
       }
 
+      SgMemberFunctionDeclaration *memberFunctionDeclaration =
+	isSgMemberFunctionDeclaration(astNode);
+      if ( memberFunctionDeclaration != NULL ) {
+	// Do _not_ remove this next call to get_ctors().
+	// It has side effects.  In particular, the initializerList
+	// may be NULL before the call, but is always non-NULL
+	// afterwards.  i.e., force it into existence now and number it.
+	// Bad things could result if it is later conjured up,
+	// since we won't have a number for it.
+	SgInitializedNamePtrList &list = 
+	  memberFunctionDeclaration->get_ctors(); 
+
+	SgCtorInitializerList *initializerList =
+	  memberFunctionDeclaration->get_CtorInitializerList();
+	if ( initializerList != NULL ) {
+	  if ( !initializerList->attribute.exists("OANumber") ) {
+	    initializerList->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
+	    ir->nodeArrayPtr->push_back(initializerList);
+	    currentNumber=ir->nodeArrayPtr->size();
+	  }
+	}
+      }
+
       break;
     }
 
@@ -1606,7 +1632,8 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
   if ( astNode == NULL )
     return;
 
-  //  cout << "Visiting " << astNode->sage_class_name() << " " << astNode->unparseToCompleteString();
+  //  cout << "Visiting " << astNode->sage_class_name() << " " << astNode->unparseToCompleteString() << endl;
+  //  cout << "Visiting " << astNode->sage_class_name() << " " << endl;
 
   // We've already been here.  Return to avoid a loop.
   if ( astNode->attribute.exists("OANumber") ) {
@@ -1701,6 +1728,21 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
       
       children.push_back(functionDeclaration);
 
+      // Do _not_ remove this next call to get_ctors().
+      // It has side effects.  In particular, the initializerList
+      // may be NULL before the call, but is always non-NULL
+      // afterwards.  i.e., force it into existence now and number it.
+      // Bad things could result if it is later conjured up,
+      // since we won't have a number for it.
+      SgInitializedNamePtrList &list = 
+	functionDeclaration->get_ctors(); 
+
+      SgCtorInitializerList *initializerList =
+	functionDeclaration->get_CtorInitializerList();
+      if ( initializerList != NULL ) {
+	children.push_back(initializerList);
+      }
+
       SgFunctionParameterList *parameterList = 
 	functionDeclaration->get_parameterList(); 
 
@@ -1712,26 +1754,6 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
       if ( classDeclaration != NULL)
 	children.push_back(classDeclaration);
 
-#if 0
-      if ( !functionDeclaration->attribute.exists("OANumber") ) {
-	functionDeclaration->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
-	nodeArrayPtr->push_back(functionDeclaration);
-	currentNumber = nodeArrayPtr->size();
-      }
-
-#if 1
-      SgFunctionParameterList *parameterList = 
-	functionDeclaration->get_parameterList(); 
-
-      if ( !parameterList->attribute.exists("OANumber") ) {
-	parameterList->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
-	nodeArrayPtr->push_back(parameterList);
-	
-	currentNumber = nodeArrayPtr->size();
-
-      }
-#endif
-#endif
       break;
     }
 
@@ -1759,9 +1781,22 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
 	      isSgMemberFunctionDeclaration(declarationStatement); 
 	    
 	    if ( functionDeclaration != NULL ) { 
-	      
 	      children.push_back(functionDeclaration);
+	      
+	      // Do _not_ remove this next call to get_ctors().
+	      // It has side effects.  In particular, the initializerList
+	      // may be NULL before the call, but is always non-NULL
+	      // afterwards.  i.e., force it into existence now and number it.
+	      // Bad things could result if it is later conjured up,
+	      // since we won't have a number for it.
+	      SgInitializedNamePtrList &list = 
+		functionDeclaration->get_ctors(); 
 
+	      SgCtorInitializerList *initializerList =
+		functionDeclaration->get_CtorInitializerList();
+	      if ( initializerList != NULL ) {
+		children.push_back(initializerList);
+	      }
 	    }
 
 	    break;
@@ -1791,9 +1826,63 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
 
       children.push_back(functionDeclaration);
 
+      SgMemberFunctionDeclaration *memberFunctionDeclaration =  
+	isSgMemberFunctionDeclaration(functionDeclaration); 
+      
+      // Do _not_ remove this next call to get_ctors().
+      // It has side effects.  In particular, the initializerList
+      // may be NULL before the call, but is always non-NULL
+      // afterwards.  i.e., force it into existence now and number it.
+      // Bad things could result if it is later conjured up,
+      // since we won't have a number for it.
+      SgInitializedNamePtrList &list = 
+	memberFunctionDeclaration->get_ctors(); 
+
+      if ( memberFunctionDeclaration != NULL ) { 
+	SgCtorInitializerList *initializerList =
+	  memberFunctionDeclaration->get_CtorInitializerList();
+	if ( initializerList != NULL ) {
+	  children.push_back(initializerList);
+	}
+      }
+
       break;
     }
 
+  case V_SgFunctionDefinition:
+    {
+      SgFunctionDefinition *functionDefinition =
+	isSgFunctionDefinition(astNode);
+      ROSE_ASSERT(functionDefinition != NULL);
+
+      //      cout << "Visiting at " << functionDefinition->unparseToCompleteString() << endl;
+
+      SgFunctionDeclaration *functionDeclaration =
+	functionDefinition->get_declaration();
+      ROSE_ASSERT(functionDeclaration != NULL);
+
+      SgMemberFunctionDeclaration *memberFunctionDeclaration =
+	isSgMemberFunctionDeclaration(functionDeclaration);
+      if ( memberFunctionDeclaration != NULL ) {
+	// Do _not_ remove this next call to get_ctors().
+	// It has side effects.  In particular, the initializerList
+	// may be NULL before the call, but is always non-NULL
+	// afterwards.  i.e., force it into existence now and number it.
+	// Bad things could result if it is later conjured up,
+	// since we won't have a number for it.
+	SgInitializedNamePtrList &list = 
+	  memberFunctionDeclaration->get_ctors(); 
+	SgCtorInitializerList *initializerList =
+	  memberFunctionDeclaration->get_CtorInitializerList();
+	if ( initializerList != NULL ) {
+	  //	  cout << "Visiting for " << functionDefinition->unparseToCompleteString() << endl;
+	  children.push_back(initializerList);
+	}
+
+      }
+
+      break;
+    }
   case V_SgFunctionDeclaration:
   case V_SgMemberFunctionDeclaration:
     {
@@ -1806,14 +1895,23 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
 
       children.push_back(parameterList);
 
-#if 0
-      if ( !parameterList->attribute.exists("OANumber") ) {
-	parameterList->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
-	nodeArrayPtr->push_back(parameterList);
-	currentNumber = nodeArrayPtr->size();
-
+      SgMemberFunctionDeclaration *memberFunctionDeclaration =
+	isSgMemberFunctionDeclaration(astNode);
+      if ( memberFunctionDeclaration != NULL ) {
+	// Do _not_ remove this next call to get_ctors().
+	// It has side effects.  In particular, the initializerList
+	// may be NULL before the call, but is always non-NULL
+	// afterwards.  i.e., force it into existence now and number it.
+	// Bad things could result if it is later conjured up,
+	// since we won't have a number for it.
+	SgInitializedNamePtrList &list = 
+	  memberFunctionDeclaration->get_ctors(); 
+	SgCtorInitializerList *initializerList =
+	  memberFunctionDeclaration->get_CtorInitializerList();
+	if ( initializerList != NULL ) {
+	  children.push_back(initializerList);
+	}
       }
-#endif
 
       break;
     }
@@ -1859,25 +1957,6 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
     
     SgNode *node = *it;
     if ( node != NULL ) {
-
-#if 0
-      if ( isSgGlobal(astNode) ) {
-	cout << "Visiting " << node->sage_class_name() << " from global" << endl;
-      }
-      if ( isSgClassDeclaration(astNode) ) {
-	cout << "Visiting " << node->sage_class_name() << " from SgClassDeclaration" << endl;
-	cout << isSgClassDeclaration(astNode)->unparseToCompleteString() << endl;
-      }
-      if ( isSgClassDefinition(astNode) ) {
-	cout << "Visiting " << node->sage_class_name() << " from SgClassDefinition" << endl;
-	cout << isSgClassDefinition(astNode)->unparseToCompleteString() << endl;
-      }
-      if ( isSgVariableDeclaration(astNode) ) {
-	cout << "Visiting " << node->sage_class_name() << " from SgVariableDeclaration" << endl;
-	cout << isSgVariableDeclaration(astNode)->unparseToCompleteString() << endl;
-      }
-#endif
-
       numberASTNodes(node);
     }
     
@@ -2061,9 +2140,9 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
       SgMemberFunctionDeclaration *fd = isSgMemberFunctionDeclaration(node);
       ROSE_ASSERT(fd != NULL);
 
-      nm = fd->get_name();
-      //      nm = fd->get_qualified_name();
-      ret = nm.str();
+      //      nm = fd->get_name();
+      nm = fd->get_qualified_name();
+      ret = string("method:") + nm.str();
 
       break;
     }
@@ -2128,7 +2207,7 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
 
       break;
     }
-
+#if 0
   case V_SgFunctionDefinition:
     {
       // If we see a SgFunctionDefinition where we expected a symbol,
@@ -2152,7 +2231,39 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
 
       break;
     }
+#endif
+  case V_SgFunctionParameterList:
+    {
+      // If we see a SgFunctionDefinition where we expected a symbol,
+      // it means that the symbol represents a 'this' pointer.
+      SgFunctionParameterList *parameterList = 
+	isSgFunctionParameterList(node);
+      ROSE_ASSERT(parameterList != NULL);
 
+      SgNode *parent = parameterList->get_parent();
+      ROSE_ASSERT(parent != NULL);
+
+      SgFunctionDeclaration *functionDeclaration = 
+	isSgFunctionDeclaration(parent);
+      ROSE_ASSERT(functionDeclaration != NULL);
+	  
+      SgName funcName;
+      funcName = functionDeclaration->get_name();
+      
+      SgMemberFunctionDeclaration *fd = 
+	isSgMemberFunctionDeclaration(functionDeclaration);
+      ROSE_ASSERT(fd != NULL);
+
+      SgClassDefinition *classDefinition = isSgClassDefinition(fd->get_scope());
+      ROSE_ASSERT(classDefinition != NULL);
+
+      SgName qualifiedName;
+      qualifiedName = classDefinition->get_qualified_name();
+
+      ret = string("this::") + qualifiedName.str() + "::" + funcName.str();
+      
+      break;
+    }
   default:
     {
       ret = node->sage_class_name();
@@ -3769,7 +3880,7 @@ createImplicitPtrAssignForCtor(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
 	SgCtorInitializerList *initializerList =
 	  isSgCtorInitializerList(declarationStatement);
 	ROSE_ASSERT(initializerList != NULL);
-	
+
 	SgInitializedNamePtrList &variables =
 	  initializerList->get_ctors();
 	SgInitializedNamePtrList::iterator varIter;
@@ -4100,7 +4211,7 @@ SageIRInterface::createImplicitPtrAssignFromInit(OA::OA_ptr<OA::MemRefExpr> lhsM
 	SgCtorInitializerList *initializerList =
 	  isSgCtorInitializerList(declarationStatement);
 	ROSE_ASSERT(initializerList != NULL);
-	
+
 	SgInitializedNamePtrList &variables =
 	  initializerList->get_ctors();
 	SgInitializedNamePtrList::iterator varIter;

@@ -352,7 +352,7 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
 {
   public:
   SageIRInterface (SgNode * root, std::vector<SgNode*> * na, bool use_persistent_handles=FALSE): nodeArrayPtr(na), wholeProject(root), persistent_handles(use_persistent_handles)
-    { if(persistent_handles){createNodeArray(root);} }
+  { if(persistent_handles){ ROSE_ASSERT(nodeArrayPtr != NULL); createNodeArray(root);} }
   ~SageIRInterface () {}
 
     

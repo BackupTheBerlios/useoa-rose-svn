@@ -765,6 +765,7 @@ SageIRMemRefIterator::create(OA::IRHandle h)
 	    SageIRInterface::sMemRef2StmtMap[*mrIter] = h;
 	  }
       }
+    delete topMemRefs;
   }
 
   // loop through MemRefHandle's for this statement and for now put them
@@ -2818,10 +2819,24 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	//    Create a partially accurate Deref for arrow or
 	//           a partially accureate MRE for dot.
 
+	// NB:  We no longer check that the function is virtual.  
+	//      Even if it is not virtual, there may be some ambiguity
+	//      in which (class') method is invoked.  For example:
+	//      B *b;
+	//      if ( cond )
+	//         b = new B;
+	//      else
+	//         b = new C;
+	//      b->foo();
+	//      where both B and C implement foo.
+
 	if ( ( rhsIsANamed == true ) && ( functionDeclaration != NULL ) ) {
 
-	  if ( ( isArrowExp || isReferenceExp ) && 
-	       ( mIR->isVirtual(functionDeclaration ) ) ) {
+	  if ( ( isArrowExp || isReferenceExp ) 
+#if 0
+	       && ( mIR->isVirtual(functionDeclaration ) ) 
+#endif
+	       ) {
 
 	    // Create a FieldAccess
 	    bool fieldAccessFullAccuracy = true;
