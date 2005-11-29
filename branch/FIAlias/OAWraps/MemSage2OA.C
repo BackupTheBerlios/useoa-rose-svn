@@ -959,6 +959,25 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
       break;
     }
 #endif
+#if 0
+  case V_SgCommaOpExp:
+    {
+      SgCommaOpExp *commaOp = isSgCommaOpExp(astNode);
+      ROSE_ASSERT(commaOp != NULL);
+
+      SgExpression *lhs = commaOp->get_lhs_operand();
+      ROSE_ASSERT(lhs != NULL);
+
+      SgExpression *rhs = commaOp->get_rhs_operand();
+      ROSE_ASSERT(rhs != NULL);
+
+      if ( isMemRefNode(lhs) || isMemRefNode(rhs) ) {
+	retVal = true;
+      }
+
+      break;
+    }
+#endif
   case V_SgAddOp:
   case V_SgSubtractOp:
     {
@@ -1076,6 +1095,26 @@ SageIRInterface::getChildrenWithMemRefs(SgNode *astNode,
 
       break;
     }
+#if 0
+  case V_SgCommaOpExp:
+    {
+      SgCommaOpExp *commaOp = isSgCommaOpExp(astNode);
+      ROSE_ASSERT(commaOp != NULL);
+
+      SgExpression *lhs = commaOp->get_lhs_operand();
+      ROSE_ASSERT(lhs != NULL);
+
+      SgExpression *rhs = commaOp->get_rhs_operand();
+      ROSE_ASSERT(rhs != NULL);
+
+      independentChildren.push_back(lhs);
+      // The rhs is not independent, since its value is held/returned
+      // by the CommaOpExp node.
+      //      independentChildren.push_back(rhs);
+
+      break;
+    }
+#endif
   case V_SgPntrArrRefExp:
     {
       SgPntrArrRefExp *arrRefExp = isSgPntrArrRefExp(astNode);
@@ -2541,6 +2580,54 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
     }
 
+  case V_SgCommaOpExp:
+    {
+      // The result of evaluating a comma expression is the right-hand side.
+      // So only return the rhs' MRE.
+      SgCommaOpExp *commaOp = isSgCommaOpExp(astNode);
+      ROSE_ASSERT(commaOp != NULL);
+
+      SgExpression *lhs = commaOp->get_lhs_operand();
+      ROSE_ASSERT(lhs != NULL);
+
+      SgExpression *rhs = commaOp->get_rhs_operand();
+      ROSE_ASSERT(rhs != NULL);
+
+      unsigned childFlags = flags;
+
+      // Consume expectArrayBase and expectArrowDotRHS.  
+      removeInheritedFlag(childFlags, expectArrayBase);
+      removeInheritedFlag(childFlags, expectArrowDotRHS);
+      removeInheritedFlag(childFlags, expectDotLHS);
+
+      // Consume flags.
+      removeInheritedFlag(childFlags, expectRhsComputesLValue);
+      removeInheritedFlag(childFlags, expectRhsDoesntComputeLValue);
+
+      // Recurse on both lhs and rhs, but don't store lhs MRE here.
+      list<OA::OA_ptr<OA::MemRefExpr> > operandMemRefExprs;
+      operandMemRefExprs = 
+	findAllMemRefsAndMemRefExprs(lhs, memRefs, childFlags,
+				     synthesizedFlags);
+
+      // Whether this expression computes an lvalue is determined
+      // by the rhs, so ignore the lhs results.
+      removeSynthesizedFlag(synthesizedFlags, synthesizedComputesLValue);
+      removeSynthesizedFlag(synthesizedFlags, synthesizedDoesntComputeLValue);
+
+      operandMemRefExprs = 
+	findAllMemRefsAndMemRefExprs(rhs, memRefs, childFlags,
+				     synthesizedFlags);
+
+      // Store here any memory reference expressions created at our rhs
+      // child.
+      curMemRefExprs.splice(curMemRefExprs.end(), operandMemRefExprs);
+
+      //      isMemRefExpr = true;
+
+      break;
+    }
+
   case V_SgArrowExp:
   case V_SgDotExp:
     {
@@ -2896,6 +2983,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
   case V_SgSubtractOp:
     {
       bool isArrayOperation = false;
+      bool takeAddress = ( flags & expectAddrOf );
 
       SgAddOp *addOp = isSgAddOp(astNode);
       if ( addOp != NULL ) {
@@ -2903,11 +2991,38 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// If the lhs is a SgPntrArrRefExp, then consider
 	// this an address of operation.  e.g., I have 
 	// seen &(sta[3][4]) translated to (SgPntrArrRefExp + 4).
-	
+
 	SgExpression *lhs = addOp->get_lhs_operand();
 	ROSE_ASSERT(lhs != NULL);
+
+	isArrayOperation = isSgPntrArrRefExp(lhs);
 	
-	if ( isSgPntrArrRefExp(lhs) ) {
+	if ( isArrayOperation ) {
+	
+	  takeAddress = true;
+
+	} else {
+
+	  // If the lhs is a SgVarRefExp with pointer type and
+	  // the rhs has integral type, treat this as an 
+	  // array access.  i.e., &sta[3] == (sta + 3).
+	
+	  SgVarRefExp *varRefExp = isSgVarRefExp(lhs);
+	  if ( varRefExp ) {
+	    if ( isSgPointerType(varRefExp->get_type()) ) {
+
+	      SgExpression *rhs = addOp->get_rhs_operand();
+	      if ( isSgTypeInt(rhs->get_type()) ) {
+		isArrayOperation = true;
+		takeAddress = true;
+	      }
+
+	    }
+	  }
+
+	}
+
+	if ( isArrayOperation ) {
 	  
 	  isArrayOperation = true;
 	  
@@ -2978,7 +3093,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  addSynthesizedFlag(synthesizedFlags, synthesizedDoesntComputeLValue);
 
 	  // Add the implicit addrOf operator to this node.
-	  addressTaken = true;
+	  addressTaken = takeAddress;
 	  
 	  // Because we do not model the indices of the array
 	  // dereference, this is not a fully accurate model

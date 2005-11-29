@@ -90,11 +90,24 @@ void SageIRCallsiteIterator::reset()
 
 void SageIRProcIterator::FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst)
 {
-  FindProcsPass(lst).traverse(node, preorder);
+  if ( mExcludeInputFiles ) {
+    // Only visit those AST nodes defined within the same file as node.
+    // i.e., ignore AST nodes pulled in from input files.
+    SgProject *project = isSgProject(node);
+    if ( project != NULL ) {
+      FindProcsPass(lst).traverseInputFiles(project, preorder);
+    } else {
+      FindProcsPass(lst).traverseWithinFile(node, preorder);
+    }
+  } else {
+    FindProcsPass(lst).traverse(node, preorder);
+  }
 }
 
 SageIRProcIterator::SageIRProcIterator(SgNode *node, 
-                                       OA::OA_ptr<SageIRInterface> in)
+                                       OA::OA_ptr<SageIRInterface> in,
+				       bool excludeInputFiles)
+  : mExcludeInputFiles(excludeInputFiles)
 {
  //given an sgstmt put all call expressions in calls_in_stmt
    FindProcsInSgTree(node, procs_in_proj);

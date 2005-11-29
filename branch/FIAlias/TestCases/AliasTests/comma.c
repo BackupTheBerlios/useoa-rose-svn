@@ -7,6 +7,5 @@ int main()
   int  s;
 
   p = (q = &s, r);
- 
   return 0;
 }

@@ -457,7 +457,11 @@ int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   OA::OA_ptr<OA::Alias::ManagerFIAlias> fialiasman;
   fialiasman= new OA::Alias::ManagerFIAlias(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
-  procIter = new SageIRProcIterator(p, irInterface);
+  bool excludeInputFiles = true;
+  // Don't pull in any procedures defined in input files.  For testing
+  // purposes only:  avoids unexpected/spurious results due to 
+  // stdlib.h, etc.
+  procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter);
   //  alias->dump(std::cout, irInterface);

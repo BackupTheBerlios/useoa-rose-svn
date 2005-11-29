@@ -2196,7 +2196,28 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
   SgExpression *lhs = NULL;
   SgExpression *rhs = NULL;
 
+  SgExpression *exprVal = NULL;
+
   switch(node->variantT()) {
+  case V_SgCommaOpExp:
+    {
+      // The result of evaluating a comma expression is the right-hand side.
+      // So only return the rhs' MRE.
+      SgCommaOpExp *commaOp = isSgCommaOpExp(node);
+      ROSE_ASSERT(commaOp != NULL);
+
+      lhs = commaOp->get_lhs_operand();
+      ROSE_ASSERT(lhs != NULL);
+
+      rhs = commaOp->get_rhs_operand();
+      ROSE_ASSERT(rhs != NULL);
+
+      createPtrAssignPairsFromAssignment(lhs);
+      
+      exprVal = createPtrAssignPairsFromAssignment(rhs);
+
+      break;
+    }
   case V_SgAssignOp:
 #if 0
     // hmm ... On second thought, I don't think these belong.  bwhite
@@ -2227,6 +2248,8 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
       if ( !isSgPointerType(baseType) && !isSgReferenceType(baseType) ) 
 	return lhs;
 
+      exprVal = lhs;
+
       switch(rhs->variantT()) {
       case V_SgAssignOp:
 #if 0
@@ -2241,6 +2264,25 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
 #endif
 	{
 	  rhs = createPtrAssignPairsFromAssignment(rhs);
+	  ROSE_ASSERT(rhs != NULL);
+
+	  break;
+	}
+      case V_SgCommaOpExp:
+	{
+	  rhs = createPtrAssignPairsFromAssignment(rhs);
+	  exprVal = rhs;
+	  ROSE_ASSERT(rhs != NULL);
+
+	  break;
+	}
+      case V_SgConditionalExp:
+	{
+	  SgConditionalExp *conditionalExp = isSgConditionalExp(rhs);
+	  ROSE_ASSERT(conditionalExp != NULL);
+
+	  createPtrAssignPairsFromAssignment(conditionalExp->get_conditional_exp());
+	  exprVal = rhs;
 	  ROSE_ASSERT(rhs != NULL);
 
 	  break;
@@ -2323,11 +2365,12 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
     }
   default:
     {
+      exprVal = isSgExpression(node);
       break;
     }
   }
 
-  return lhs;
+  return exprVal;
 }
 
 void

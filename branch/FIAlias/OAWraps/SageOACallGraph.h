@@ -45,7 +45,8 @@ class SageIRProcIterator: public OA::IRProcIterator
   // This should take a SgNode *, not a SgProject *.  The former
   // is more general.  bwhite
   //  SageIRProcIterator (SgProject * sageproject, SageIRInterface * in); 
-  SageIRProcIterator (SgNode *node, OA::OA_ptr<SageIRInterface> in); 
+  SageIRProcIterator (SgNode *node, OA::OA_ptr<SageIRInterface> in,
+		      bool excludeInputFiles = false); 
   // MMS, must take OA_ptr to SageIRInterface because can't have raw ptrs
   // and OA_ptrs to the same object
   //should really be a list of SgFunctionDefinition pointers? or maybe just SgProject ptr?
@@ -66,6 +67,7 @@ class SageIRProcIterator: public OA::IRProcIterator
   SgStatementPtrList::iterator end;
   bool valid;
   void FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst);
+  bool mExcludeInputFiles;
 
 };
 
