@@ -469,3 +469,27 @@
 	  we will get an assertion failure in getNodeNumber when
 	  using persistent handles because the (newly-created) SgNode
 	  was not numbered (since it did not exist at the time of numbering).
+
+11/30/05 UseOA-ROSE svn tag FIAlias r21 	Brian White
+	- Notes on ManagerFIAlias output:
+	  - If X is a subset of Y, X and Y are union'ed.
+	  - The default (i.e., unless VTABLE_OPT is defined)
+	    is to use the non-vtable optimization.  
+	  - It creates a DEF mre for each formal, regardless of
+	    its type.  DEF because it is bound to the actual.
+	  - AddressOf MREs do not show up in the list of MREs.
+	    These include (new D), etc.
+	- Added a method to create an UnnamedLoc from a StmtHandle:
+	  OA::OA_ptr<OA::Location::Location> 
+          SageIRInterface::getLocation(OA::ProcHandle p, OA::StmtHandle s);
+	  At the moment, it conservatively sets the isLocal flag of
+	  the location to true.   
+	  // But allocated memory is inherently non-local.  It seems that
+	  // it should be the job of alias analysis to determine this.
+	  // e.g.,
+	  // int *global;             
+	  // ...
+	  // void func() {
+	  //   int *local = new int;    // at this point, new int is local.
+	  //   global = local;          // it just became globally accessible.
+	  // }

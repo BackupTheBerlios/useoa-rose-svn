@@ -2211,7 +2211,10 @@ SageIRInterface::createMRE(SgInitializedName *initName,
   bool memberVariable = false;
 
   // If the variable is defined in the parameter list, it is not
-  // a member variable.
+  // a member variable.  This isn't accurate.  It still could be
+  // a member variable.  What I mean is that it is not have an
+  // implicit 'this', but rather is accessed through a fully-quantified
+  // name.
   if ( !isSgFunctionParameterList(declaration) ) {
 
     SgClassDefinition *classDefinition =
@@ -2660,7 +2663,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
       addInheritedFlag(rhsFlags, partial);
       addInheritedFlag(rhsFlags, expectArrowDotRHS);
-      addInheritedFlag(rhsFlags, expectDotLHS);
+      //      addInheritedFlag(rhsFlags, expectDotLHS);
 
       // Recurse on rhs.
       list<OA::OA_ptr<OA::MemRefExpr> > rhsMemRefExprs;

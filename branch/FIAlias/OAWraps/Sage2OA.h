@@ -511,6 +511,9 @@ public:
   OA::OA_ptr<OA::Location::Location> 
   getLocation(OA::ProcHandle p, OA::SymHandle s);
 
+  OA::OA_ptr<OA::Location::Location> 
+  getLocation(OA::ProcHandle p, OA::StmtHandle s);
+
   OA::SymHandle getFormalSym(OA::ProcHandle, int);
 
   OA::OA_ptr<OA::MemRefExpr> getCallMemRefExpr(OA::CallHandle h);
