@@ -1414,37 +1414,6 @@ void SageIRInterface::dump(OA::OA_ptr<OA::MemRefExprIterator> memRefIterator,
 //local here means visible only in that procedure.  
 //Member variables are not local to any one method in a class.
 
-// Create a named location based on StmtHandle.
-OA::OA_ptr<OA::Location::Location> 
-SageIRInterface::getLocation(OA::ProcHandle p, OA::StmtHandle s)
-{
-  OA::OA_ptr<OA::Location> loc;
-
-  SgNode *node = getNodePtr(s);
-
-  ROSE_ASSERT(node != NULL);
-
-  // Being conservative here.  We should look at the lhs of
-  // the statement to see if any (could be more than one l1 = l2 = ... )
-  // are global.  
-  // Note that "new(B)" might show up here, though it is an expression
-  // and not a statement.  Therefore, we have to look at the tree rooted
-  // at one of its ancestors to find the lhs.
-  // But allocated memory is inherently non-local.  It seems that
-  // it should be the job of alias analysis to determine this.
-  // e.g.,
-  // int *global;             
-  // ...
-  // void func() {
-  //   int *local = new int;    // at this point, new int is local.
-  //   global = local;          // it just became globally accessible.
-  // }
-  bool isLocal = false;
-
-  loc = new OA::UnnamedLoc(s, isLocal);
-  return loc;
-}
-
 // Create a named location based on SymHandle.
 OA::OA_ptr<OA::Location::Location> 
 SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)

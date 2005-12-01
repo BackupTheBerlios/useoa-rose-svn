@@ -493,3 +493,20 @@
 	  //   int *local = new int;    // at this point, new int is local.
 	  //   global = local;          // it just became globally accessible.
 	  // }
+
+11/30/05 UseOA-ROSE svn tag FIAlias r22 	Michelle Strout
+	- fixed ManagerFIAlias in OpenAnalysis so that it creates a fixed
+   	  location for UnnamedRefs.  Creates non local UnnamedLocs.
+	- deleted getLocation(ProcHandle,StmtHandle) from Sage2OA because
+  	  it won't be needed due to the above change
+	- diffArrays.c: there are some problems with the MemRefExprs that 
+  	  are created for this program
+    		- p = &a[i], even though a is accessed like an array, 
+		  it is still a pointer, the NamedRef access to a here 
+		  should be fully accurate
+    		- same goes for p=&b[j] and x=*(q+3) for b and q.
+    		- now for x=*(q+3), there should be a fully accurate named ref
+      		  for x and q.  There should also be a Deref partial to q.  If
+      	 	  we were using IdxAccess then it would be an 
+      		  IdxAccess(3, Deref(full, NamedRef(q) ) )
+

@@ -13,7 +13,7 @@ diff t TestResults/FIAlias/alias3.c.out
 echo "Testing TestCases/AliasTests/alias4.c\n\tTestResults/FIAlias/alias4.c checked by MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/alias4.c > t
 diff t TestResults/FIAlias/alias4.c.out
-echo "Testing TestCases/AliasTests/funCall.c\n\tTestResults/FIAlias/funCall.c checked by BW"
+echo "Testing TestCases/AliasTests/funCall.c\n\tTestResults/FIAlias/funCall.c checked by BW and MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/funCall.c > t
 diff t TestResults/FIAlias/funCall.c.out
 echo "Testing TestCases/AliasTests/utke.c\n\tTestResults/FIAlias/utke.c checked by BW"
