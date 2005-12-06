@@ -1477,6 +1477,7 @@ enum SageRefExpInheritedFlagType {
   expectRhsDoesntComputeLValue = 2048, // the node is a lhs with a rhs that
                                        // does not compute an lvalue
   expectDotLHS                 = 4096, // the node is the lhs of a dot expression
+  expectDontApplyConversion    = 8192, // don't apply reference conversion rules
 }; 
 
 // SageRefExpSynthesizedFlagType are flags that are passed up from
@@ -1608,6 +1609,13 @@ static void addInheritedFlag(unsigned &flags, const SageRefExpInheritedFlagType 
     {
       flags |= expectRefRhs;
       
+      break;
+    }
+
+  case expectDontApplyConversion:
+    {
+      flags |= expectDontApplyConversion;
+
       break;
     }
 
@@ -1752,6 +1760,13 @@ static void removeInheritedFlag(unsigned &flags, const SageRefExpInheritedFlagTy
     {
       flags &= ~expectRefRhs;
       
+      break;
+    }
+
+  case expectDontApplyConversion:
+    {
+      flags &= ~expectDontApplyConversion;
+
       break;
     }
 
@@ -2311,6 +2326,9 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
   bool hasRhsThatComputesLValue         = flags & expectRhsComputesLValue;
   bool hasRhsThatDoesntComputeLValue    = flags & expectRhsDoesntComputeLValue;
   bool appearsOnRhsOfRefAssignment      = flags & expectRefRhs;
+  bool dontApplyConversion              = flags & expectDontApplyConversion;
+
+  removeInheritedFlag(flags, expectDontApplyConversion);
 
   // A list of mem-ref infos, *some* of which correspond to
   // mem-ref-handles added to 'memRefs' for this SgNode.
@@ -2720,7 +2738,32 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       //    a is dead.
       // Therefore, if this is a dot expression that does not reference
       // a method, we do not create an MRE for the lhs.
-      if ( isSgDotExp(astNode) && ( functionDeclaration == NULL ) )
+      bool nodeIsArrowExp = mIR->isArrowExp(binaryOp);
+
+      if ( !nodeIsArrowExp && ( functionDeclaration == NULL ) )
+	addInheritedFlag(lhsFlags, expectDotLHS);
+      
+#if 0
+      // If the lhs is a reference expression, don't apply the reference
+      // conversion rules.  isArrowExp returns true if the lhs is
+      // a reference although it is a dot expression.
+      if ( isSgDotExp(binaryOp) && isSgReferenceType(lhs->get_type()) )
+	addInheritedFlag(lhsFlags, expectDontApplyConversion);
+#endif
+
+      // Even if we create an MRE for the lhs, let's associate with this
+      // node.  When we recurse set expectDotLHS to true so that
+      // we won't create an MRE at the child.  This is a bit of an
+      // abuse since it may be an arrow expression; I'm using this
+      // flag because I know it will prevent the storage of an MRE
+      // at the child.  It isn't a great idea to associate the
+      // MRE with the child:  if this a dot expression, we need to
+      // take the addressOf the lhs.  However, doing so forces
+      // isMemRefExpr to false and the MRE will not be associated with
+      // the lhs.  In general, we associate the MRE for an addressOf MRE
+      // with the node causing the addressOf (e.g., the addressOfOp).
+      // For consistency, we do the same here.
+      if ( functionDeclaration != NULL )
 	addInheritedFlag(lhsFlags, expectDotLHS);
 
       // Consume expectArrayBase and expectArrowDotRHS.  
@@ -2741,6 +2784,19 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // Therefore, remove from the lhs.  
       removeInheritedFlag(lhsFlags, expectAddrOf);
 
+      // However, if this is a dot expression representing a method
+      // invocation, we need to represent the implicit actual arg
+      // corresponding to the 'this' implicit formal.  This is 
+      // the lhs and is accomplished by visiting the lhs.  If this
+      // is a dot expression, the lhs is an object and we need to
+      // take its address (to bind it to the pointer this).  
+      // If the lhs is a reference, we will convert it to a pointer
+      // and the conversion will dereference it.  Therefore, we
+      // still need to take the address to get rid of the Deref.
+      // so we needn't take the address.
+      if ( !nodeIsArrowExp && ( functionDeclaration != NULL ) )
+	addInheritedFlag(lhsFlags, expectAddrOf);
+	
       // Don't propagate DEF down to the lhs child
       // If this arrow/dot expression is used on the lhs,
       // it is the memRefExpr created at the SgArrowExp/SgDotExp
@@ -2756,32 +2812,41 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       lhsMemRefExprs = findAllMemRefsAndMemRefExprs(lhs, memRefs, lhsFlags,
 						    tmpSynthesizedFlags);
 
-      // For each MemRefExpr on the lhs, create a new MemRefExpr
-      // to represent the field access.
-
-      bool isArrowExp = ( isSgArrowExp(binaryOp) != NULL );
-
-      bool isReferenceExp = false;
-
-      if ( !isArrowExp ) {
+      // If this a method invocation, the lhs MREs represent the
+      // implicit 'this' actual.  Store them at this node.
+      // A second option is to pass them up and store them at
+      // the SgFunctionCallExp along with the explicit actuals.
+      // Conceptually, this would be more clear, but would complicate
+      // this code.  We can't set isMemRefExpr to false which is
+      // what we generally do when we've created MRE that we wish
+      // to pass up to the parent without storing at the current node.
+      // This would fail because we _do_ create MREs that we wish to
+      // store here.  We would need to create another flag and array
+      // of MREs.  Not difficult, but cumbersome ...
+      if ( functionDeclaration != NULL ) {
 	
-	SgType *type = lhs->get_type();
-	ROSE_ASSERT(type != NULL);
+	for(list<OA::OA_ptr<OA::MemRefExpr> >::iterator it = lhsMemRefExprs.begin();
+	    it != lhsMemRefExprs.end(); ++it) {
+	  
+	  OA::OA_ptr<OA::MemRefExpr> lhsMemRefExp = *it;
 
-	isReferenceExp = ( isSgReferenceType(type) != NULL );
+	  curMemRefExprs.push_back(lhsMemRefExp);
 
-	SgDotExp *dotExp = isSgDotExp(binaryOp);
-	ROSE_ASSERT(dotExp != NULL);
-
-	if ( isSgPointerDerefExp(lhs) ) {
-
-	  // Treat (*a).b as a->b.  Note this requires
-	  // special treatement at a SgPointerDerefExp.
-	  isArrowExp = true;
+	  isMemRefExpr = true;
 
 	}
 
       }
+
+      // For each MemRefExpr on the lhs, create a new MemRefExpr
+      // to represent the field access.
+
+      // Returns true if this is an arrow exp or a dot expression
+      // of either a dereference or a reference (which will be
+      // converted to a pointer).
+      bool isArrowExp = mIR->isArrowExp(binaryOp);
+
+      bool isReferenceExp = isSgReferenceType(binaryOp->get_lhs_operand_i()->get_type());
 
       // Is the address taken in this memory reference?
       addressTaken = ( flags & expectAddrOf );
@@ -2850,12 +2915,8 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  
 	    OA::OA_ptr<OA::MemRefExpr> baseMre = lhsMemRefExp;
 	    if ( isArrowExp ) {
-	      
-	      baseMre = new OA::Deref(false,
-				      true,
-				      OA::MemRefExpr::USE,
-				      lhsMemRefExp,
-				      1);
+
+	      baseMre = mIR->dereferenceMre(lhsMemRefExp);
 	      if ( !lhsMemRefExp->hasFullAccuracy() )
 		baseMre->setAccuracy(false);
 
@@ -2968,12 +3029,16 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
 	// Normalize the source program to convert references to pointers.  
 	std::list<OA::OA_ptr<OA::MemRefExpr> > convertedMemRefs;
-	applyReferenceConversionRules(arrowOrDotMemRefExpr,
-				      astNode,
-				      appearsOnRhsOfRefAssignment,
-				      hasRhsThatComputesLValue,
-				      hasRhsThatDoesntComputeLValue,
-				      convertedMemRefs);
+	if ( dontApplyConversion ) {
+	  convertedMemRefs.push_back(arrowOrDotMemRefExpr);
+	} else {
+	  applyReferenceConversionRules(arrowOrDotMemRefExpr,
+					astNode,
+					appearsOnRhsOfRefAssignment,
+					hasRhsThatComputesLValue,
+					hasRhsThatDoesntComputeLValue,
+					convertedMemRefs);
+	}
 
 	for (std::list<OA::OA_ptr<OA::MemRefExpr> >::iterator memRefIt = 
 	       convertedMemRefs.begin();
@@ -3042,7 +3107,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
 	if ( isArrayOperation ) {
 	  
-	  isArrayOperation = true;
+
 	  
 	  // Treat this SgAddOp as we treat a SgPntrArrRefExp,
 	  // though with the address taken flag set.  
@@ -3269,7 +3334,24 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // Pass the expectArrayBase flag to the lhs to indicate
       // that we should not create a MemRefHandle/MemRefExpr
       // for the base of the array access.
-      addInheritedFlag(lhsFlags, expectArrayBase);
+      // This is true only if the lhs is actually an array type
+      // and not a pointer.  Consider:
+      // int a[20];
+      // int *b = a;
+      // Michelle says:
+      // a[2] just accesses the third location in the a location.  b[2]  
+      // accesses the b location and the dereferences it to find the a  
+      // location and then the third location in the a location.
+      // So, ignore the lhs if it is an array type, do not ignore it
+      // if it is a pointer.  Note, we will have to create a Deref
+      // below if it is a pointer.
+      bool pointerMasqueradingAsArray = false;
+
+      if ( isSgPointerType(lhs->get_type()) )
+	pointerMasqueradingAsArray = true;
+
+      if ( !pointerMasqueradingAsArray )
+	addInheritedFlag(lhsFlags, expectArrayBase);
 
       // Consume expectDef so that the children don't become DEFs.
       // We will create a mem ref expression at this node to
@@ -3327,7 +3409,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       
       // Because we do not model the indices of the array
       // dereference, this is not a fully accurate model
-      // of the access.
+      // of the access.  
       fullAccuracy = false;
 	  
       // Get the memory reference type (DEF, USE, etc.) for 
@@ -3370,9 +3452,20 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// it isn't), so instead copy it's (first non-deref)
 	// base mem ref.  
 	
-	arrMemRefExpr = 
-	  copyBaseMemRefExpr(lhsMemRefExp);
-	
+	OA::OA_ptr<OA::MemRefExpr> baseAccess = lhsMemRefExp;
+	if ( pointerMasqueradingAsArray ) {
+
+	  // As stated above, if this is a pointer being accessed like
+	  // an array, we need to dereference the pointer and then
+	  // perform the inaccurate "array access".
+	  arrMemRefExpr = mIR->dereferenceMre(baseAccess);
+
+	} else {
+	  
+	  arrMemRefExpr = 
+	    copyBaseMemRefExpr(baseAccess);
+	}
+
 	ROSE_ASSERT(!arrMemRefExpr.ptrEqual(0));
 
 	arrMemRefExpr->setAccuracy(fullAccuracy);
@@ -3861,12 +3954,16 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
 	// Normalize the source program to convert references to pointers.  
 	std::list<OA::OA_ptr<OA::MemRefExpr> > convertedMemRefs;
-	applyReferenceConversionRules(memRefExp,
-				      astNode,
-				      appearsOnRhsOfRefAssignment,
-				      hasRhsThatComputesLValue,
-				      hasRhsThatDoesntComputeLValue,
-				      convertedMemRefs);
+	if ( dontApplyConversion ) {
+	  convertedMemRefs.push_back(memRefExp);
+	} else {
+	  applyReferenceConversionRules(memRefExp,
+					astNode,
+					appearsOnRhsOfRefAssignment,
+					hasRhsThatComputesLValue,
+					hasRhsThatDoesntComputeLValue,
+					convertedMemRefs);
+	}
 
 	for (std::list<OA::OA_ptr<OA::MemRefExpr> >::iterator memRefIt = 
 	       convertedMemRefs.begin();
@@ -3918,12 +4015,16 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
       // Normalize the source program to convert references to pointers.  
       std::list<OA::OA_ptr<OA::MemRefExpr> > convertedMemRefs;
-      applyReferenceConversionRules(memRefExp,
-				    astNode,
-				    appearsOnRhsOfRefAssignment,
-				    hasRhsThatComputesLValue,
-				    hasRhsThatDoesntComputeLValue,
-				    convertedMemRefs);
+      if ( dontApplyConversion ) {
+	convertedMemRefs.push_back(memRefExp);
+      } else {
+	applyReferenceConversionRules(memRefExp,
+				      astNode,
+				      appearsOnRhsOfRefAssignment,
+				      hasRhsThatComputesLValue,
+				      hasRhsThatDoesntComputeLValue,
+				      convertedMemRefs);
+      }
 
       for (std::list<OA::OA_ptr<OA::MemRefExpr> >::iterator memRefIt = 
 	     convertedMemRefs.begin();
@@ -4235,6 +4336,13 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       removeInheritedFlag(childFlags, expectRhsDoesntComputeLValue);
       removeInheritedFlag(childFlags, expectRefRhs);
 
+      // If this dereference is on the rhs and we are going to 
+      // treat it like a reference, we will end up creating an MRE
+      // that takes the address of the Deref, i.e., it will
+      // be the same MRE created at the operand. So, ignore that.
+      if ( flags & expectRefRhs ) 
+	addInheritedFlag(childFlags, ignore);
+
       list<OA::OA_ptr<OA::MemRefExpr> > operandMemRefExprs;
       operandMemRefExprs = 
 	findAllMemRefsAndMemRefExprs(operand, memRefs, childFlags,
@@ -4314,12 +4422,16 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  // are dereferencing it), we may need to take its address
 	  // if it is on the rhs.
 	  std::list<OA::OA_ptr<OA::MemRefExpr> > convertedMemRefs;
-	  applyReferenceConversionRules(deref,
-					astNode,
-					appearsOnRhsOfRefAssignment,
-					hasRhsThatComputesLValue,
-					hasRhsThatDoesntComputeLValue,
-					convertedMemRefs);
+	  if ( dontApplyConversion ) {
+	    convertedMemRefs.push_back(deref);
+	  } else {
+	    applyReferenceConversionRules(deref,
+					  astNode,
+					  appearsOnRhsOfRefAssignment,
+					  hasRhsThatComputesLValue,
+					  hasRhsThatDoesntComputeLValue,
+					  convertedMemRefs);
+	  }
 
 	  for (std::list<OA::OA_ptr<OA::MemRefExpr> >::iterator memRefIt = 
 		 convertedMemRefs.begin();
@@ -4374,6 +4486,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
        ( flags & expectArrowDotRHS ) ||
        ( flags & expectDotLHS ) ||
        ( flags & expectAddrOf ) ||
+       ( flags & ignore ) ||
        ( isLHS ) )
     isMemRefExpr = false;
 

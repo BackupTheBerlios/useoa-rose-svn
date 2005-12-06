@@ -4,6 +4,8 @@ extern void g(int i, int j);
 
 int *a, *b;
 
+//int *b; int a[10];
+
 int main()
 {
   int i, j;

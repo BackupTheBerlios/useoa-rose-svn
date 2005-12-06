@@ -510,3 +510,32 @@
       	 	  we were using IdxAccess then it would be an 
       		  IdxAccess(3, Deref(full, NamedRef(q) ) )
 
+12/02/05 UseOA-ROSE svn tag FIAlias r23 	Brian White
+	- Updated MemRefExprTestInput.C to include Michelle's new
+	  example from the Wiki involving the pointer r accessed as
+	  an array.
+	- Also added:
+		hiClass &hiRef = *hi;	
+		*(hiRef.hello()) = ignoreInt;
+	- I believe MemRefExprTestInput.C.out.latest is correct.
+	  It contains the following diffs wrt MemRefExprTestInput.C.out
+	  1.  Michelle's r[x] = ignoreInt example.
+	  2.  The two above new statements.
+	  3.  SubsetRefs of inaccurate MREs are themselves inaccurate:
+		*(sta[3][4][2].bPtr) = ignoreInt;
+		*hello() = ignoreInt;
+		*hi->hello() = ignoreInt;
+		*hi->goodbye() = ignoreInt;
+	  4.  *hi->hello is represented by a FieldAccess, not a 
+	      NamedRef(SymHandle(hello))
+	  5.  Handling of *(r + (int)*q) = ignoreInt:
+		- (r + (int)*q) is an inaccurate NamedRef(r),
+	          not an UnknownRef
+	        - *(r + (int)*q) is a Deref of that inaccurate NamedRef(r),
+	          not a Deref(UnknownRef)
+	- Added flag passed to findAllMemRefsAndMemRefExprs to indicate
+	  that we should not apply the reference conversion rules.
+	  At a dot expression, we detect that the lhs is a reference
+	  and treat it as an arrow, i.e., deref the lhs.  Changed my
+	  mind, handle the reference at the conversion not at the dot.
+

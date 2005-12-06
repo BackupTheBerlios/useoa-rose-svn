@@ -463,7 +463,7 @@ int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   // purposes only:  avoids unexpected/spurious results due to 
   // stdlib.h, etc.
   procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
-//#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
+#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
 #ifdef BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter, debug);
@@ -502,7 +502,7 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   OA::OA_ptr<SageIRProcIterator> procIter;
   procIter = new SageIRProcIterator(p, irInterface);
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
-    fialiasman->performAnalysis(procIter);
+    fialiasman->performAnalysis(procIter, false);
 #endif
   //alias->dump(std::cout, iroaptr);
   

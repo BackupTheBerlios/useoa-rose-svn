@@ -59,6 +59,10 @@ int bar()
 
   // < MemRefType, Named?, SymHandle, NumDerefs, AddrOf?, Accuracy >
 
+  hiClass &hiRef = *hi;
+  // Deref(USE, NamedRef(USE, SymHandle(hi), F, full), 1, F, full)
+  // NamedRef(DEF, SymHandle(hiRef), F, full)
+  
   p = ignoreStructPtr;     
   // < def, T, SymHandle(p), O, F, full >
 
@@ -72,6 +76,11 @@ int bar()
   // < use, T, SymHandle(ignoreInt), 0, F, full >, 
   // < use, T, SymHandle(sta), 0, F, partial >, 
   // < def, T, SymHandle(sta), 1, F, partial >  
+
+  r[x] = ignoreInt;
+  // NamedRef(USE, SymHandle(r), F, full)
+  // Deref(DEF, NamedRef(USE, SymHandle(r), F, full), F, partial)
+  // NamedRef(USE, SymHandle(x), F, full)
 
   ignoreIntPtr = &x;
   // < use, T, SymHandle(x), 0, T, full >
@@ -91,10 +100,24 @@ int bar()
   // < def, F, UnknownRef, 1, F, partial >
 
   *(hi->hello()) = ignoreInt;
-  // < use, T, SymHandle(hi), 0, F, full >      // hi
+  // < use, T, SymHandle(hi), 0, F, full >      // hi implicit actual
   // < use, T, SymHandle(hi), 1, F, partial >   // hi->hello
   // < use, F, UnknownRef, 0, T, partial >      // hi->hello()
   // < def, F, UnknownRef, 1, F, partial >      // *(hi->hello())
+
+#if 0
+  *(hiObj.hello()) = ignoreInt;
+  // < use, T, SymHandle(hiObj), 0, T, full >      // hiObj implicit actual
+  // < use, T, SymHandle(hiObj), 1, F, partial >   // hiObj.hello
+  // < use, F, UnknownRef, 0, T, partial >         // hiObj.hello()
+  // < def, F, UnknownRef, 1, F, partial >         // *(hiObj.hello())
+#endif
+
+  *(hiRef.hello()) = ignoreInt;
+  // < use, T, SymHandle(hiRef), 0, F, full >      // hiRef implicit actual
+  // < use, T, SymHandle(hiRef), 1, F, partial >   // hiRef.hello
+  // < use, F, UnknownRef, 0, T, partial >         // hiRef.hello()
+  // < def, F, UnknownRef, 1, F, partial >         // *(hiRef.hello())
 
   *(hi->goodbye()) = ignoreInt;
 

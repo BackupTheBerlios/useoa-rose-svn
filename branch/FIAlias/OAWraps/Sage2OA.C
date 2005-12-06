@@ -4722,8 +4722,10 @@ OA::SymHandle SageIRInterface::getFormalSym(OA::ProcHandle procHandle,
 }
 
 //! Returns true if function is a SgArrowExp or a SgDotExp
-//! whose operand is a SgPointerDerefExp.  i.e., returns true
-//! if function represents a->method() or (*a).method().
+//! whose operand is a SgPointerDerefExp or a SgDotExp
+//! whose lhs is a reference.  In this latter case
+//! we will convert the lhs to appear as a pointer.  
+//! i.e., returns true if function represents a->method() or (*a).method().
 bool SageIRInterface::isArrowExp(SgExpression *function)
 {
   if ( isSgArrowExp(function) )
@@ -4734,7 +4736,7 @@ bool SageIRInterface::isArrowExp(SgExpression *function)
     SgBinaryOp *dotOrArrow = isSgBinaryOp(function);
     ROSE_ASSERT(dotOrArrow != NULL);
 
-    SgNode *lhs = dotOrArrow->get_lhs_operand();
+    SgExpression *lhs = dotOrArrow->get_lhs_operand();
     ROSE_ASSERT(lhs != NULL);
 
     SgDotExp *dotExp = isSgDotExp(function);
@@ -4746,7 +4748,11 @@ bool SageIRInterface::isArrowExp(SgExpression *function)
       if ( pointerDerefExp != NULL ) {
 	return true;
       }
-
+#if 0
+      if ( isSgReferenceType(lhs->get_type()) ) {
+	return true;
+      }
+#endif
     }
 
   }
