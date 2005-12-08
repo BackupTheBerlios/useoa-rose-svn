@@ -539,3 +539,8 @@
 	  and treat it as an arrow, i.e., deref the lhs.  Changed my
 	  mind, handle the reference at the conversion not at the dot.
 
+12/08/05 UseOA-ROSE svn tag FIAlias r24 	Brian White
+	- Reversed yet again the decision made in r20 about virtual
+	  methods and FieldAccess.  In particular, all virtual methods
+	  invoked from a pointer or a reference are represented by
+	  a FieldAccess.

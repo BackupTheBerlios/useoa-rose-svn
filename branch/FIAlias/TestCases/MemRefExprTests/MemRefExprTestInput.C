@@ -160,8 +160,12 @@ int bar()
   // < use, T, SymHandle(r), 0, F, full >
   // < use, T, SymHandle(q), 0, F, full >
   // < use, T, SymHandle(q), 1, F, full >
+  // No!  The following would be true if we didn't have the cast:
+  // *( r + *q ) = ignoreInt;
   // < use, F, UnknownRef, 0, T, part > 
   // < def, F, UnknownRef, 1, F, part > 
+  // Instead we have:
+  // 
 
   fp = bar;
   // < use, T, SymHandle(bar), 0, T, full >

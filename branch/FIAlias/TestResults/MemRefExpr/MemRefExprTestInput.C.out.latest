@@ -260,26 +260,14 @@ NamedRef(
 	mAddressOf: 0
 	mFullAccuracy: 1
 	mMemRefType: USE
-	mSymHandle: SymHandle(hi))
+	mSymHandle: SymHandle(method:hiClass::hello))
 
 	mre = 
-FieldAccess(
+NamedRef(
 	mAddressOf: 0
 	mFullAccuracy: 1
 	mMemRefType: USE
-	mMRE: 
-	Deref(
-		mAddressOf: 0
-		mFullAccuracy: 1
-		mMemRefType: USE
-		mMRE: 
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mSymHandle: SymHandle(hi)		)
-		mNumDeref: 1	)
-	mFieldName: hello__F_Pi)
+	mSymHandle: SymHandle(hi))
 
 	mre = 
 NamedRef(
@@ -313,20 +301,14 @@ NamedRef(
 	mAddressOf: 0
 	mFullAccuracy: 1
 	mMemRefType: USE
-	mSymHandle: SymHandle(hiRef))
+	mSymHandle: SymHandle(method:hiClass::hello))
 
 	mre = 
-FieldAccess(
+NamedRef(
 	mAddressOf: 0
 	mFullAccuracy: 1
 	mMemRefType: USE
-	mMRE: 
-	NamedRef(
-		mAddressOf: 0
-		mFullAccuracy: 1
-		mMemRefType: USE
-		mSymHandle: SymHandle(hiRef)	)
-	mFieldName: hello__F_Pi)
+	mSymHandle: SymHandle(hiRef))
 
 	mre = 
 NamedRef(

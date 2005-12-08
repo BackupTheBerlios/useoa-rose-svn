@@ -2898,10 +2898,12 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	//      b->foo();
 	//      where both B and C implement foo.
 
+	// One more time.  Yes we do.  What was I thinking!?
+
 	if ( ( rhsIsANamed == true ) && ( functionDeclaration != NULL ) ) {
 
 	  if ( ( isArrowExp || isReferenceExp ) 
-#if 0
+#if 1
 	       && ( mIR->isVirtual(functionDeclaration ) ) 
 #endif
 	       ) {
