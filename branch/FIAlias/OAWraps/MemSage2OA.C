@@ -1,385 +1,5 @@
 #include "MemSage2OA.h"
 
-#if 0
-
-//! memRefExpWrapper is used to pass MemRefExprs up the AST
-//! during a bottom-up traversal.  The node member variable
-//! indicates the SgNode at which the MemRefExpr originated.
-//! An alternative strategy places a list of MemRefExprs
-//! within a node attribute.  This isn't a good idea
-//! because we must clear these attribute lest they
-//! interfere with subsequent invocations of the traversal.
-class memRefExpWrapper
-{
- public:
-  
-  //! Constructor.
-  memRefExpWrapper(SgNode *node, OA::OA_ptr<OA::MemRefExpr> memRefExpr)
-    : mNode(node), mMemRefExpr(memRefExpr) { }
-
-  //! Copy constructor.
-  memRefExpWrapper(const memRefExpWrapper &wrapper)
-    : mNode(wrapper.mNode), mMemRefExpr(wrapper.mMemRefExpr) { }
-
-  //! Return the node at which the MemRefExpr occurs.
-  SgNode *getNode() const { return mNode; }
-
-  //! Return the memory reference expression.
-  OA::OA_ptr<OA::MemRefExpr> getMemRefExpr() const { return mMemRefExpr; }
-
- private:
-  //! The node at which the MemRefExpr occurs.
-  SgNode                     *mNode;
-
-  //! The memory reference expression.
-  OA::OA_ptr<OA::MemRefExpr>  mMemRefExpr;
-};
-
-class memRefExpWrapperList : public AstAttribute,
-                             public std::list<OA::OA_ptr<memRefExpWrapper > >
-{
- public:
-  memRefExpWrapperList() { }
-
-  memRefExpWrapperList(const memRefExpWrapperList &list) {
-    memRefExpWrapperList::const_iterator it = list.begin();
-    for (; it != list.end(); ++it)
-      push_back(*it);
-  }
-};
-
-class SageRefExpFlagsAttr : public AstAttribute {
- public:
-  
-  SageRefExpFlagsAttr() : 
-    mPartial(false),
-    mFlags(0) 
-  { }
-
-  SageRefExpFlagsAttr(const SageRefExpFlagsAttr &info) :
-    mPartial(info.mPartial),
-    mFlags(info.mFlags)
-  { }
-
-  void setPartial(bool partial) { mPartial = partial; }
-  bool getPartial() const { return mPartial; }
-
-  // See OpenAnalysis/MemRefExpr/MemRefExpr.hpp
-  enum SageRefExpFlagType { 
-    expectUse    = 1,
-    expectDef    = 2,
-    expectUseDef = 4,  // use and then define
-    expectDefUse = 8,  // define and then use
-    expectAddrOf = 16,
-    ignore       = 32  // do not treat node as def/use
-  };
-
-  void setFlags(int flags) { mFlags = flags; }
-
-  int  getFlags() const { return mFlags; }
-
-  void addFlag(const SageRefExpFlagType &flag) {
-
-    switch(flag) {
-
-    case expectUse:
-      {
-
-	if ( ( mFlags & expectDef ) != 0 ) {
-	  mFlags &= ~expectDef;
-	  mFlags |= expectDefUse;
-	} else if ( ( ( mFlags & expectDefUse ) != 0 ) ||
-		    ( ( mFlags & expectUseDef ) != 0 ) ) {
-	  ;
-	} else {
-	  mFlags |= expectUse;
-	}
-	
-	break;
-      }
-
-    case expectDef:
-      {
-	if ( ( mFlags & expectUse ) != 0 ) {
-	  mFlags &= ~expectUse;
-	  mFlags |= expectUseDef;
-	} else if ( ( ( mFlags & expectDefUse ) != 0 ) ||
-		    ( ( mFlags & expectUseDef ) != 0 ) ) {
-	  ;
-	} else {
-	  mFlags |= expectDef;
-	}
-
-	break;
-      }
-
-    case expectUseDef:
-      {
-	mFlags &= ~expectUse;
-	mFlags &= ~expectDef;
-
-	if ( ( mFlags & expectDefUse ) == 0 ) 
-	  mFlags |= expectUseDef;
-
-	break;
-      }
-      
-    case expectDefUse:
-      {
-	mFlags &= ~expectUse;
-	mFlags &= ~expectDef;
-
-	if ( ( mFlags & expectUseDef ) == 0 ) 
-	  mFlags |= expectDefUse;
-
-	break;
-      }
-
-    case expectAddrOf:
-      {
-	mFlags |= expectAddrOf;
-
-	break;
-      }
-
-    case ignore:
-      {
-	mFlags |= ignore;
-
-	break;
-      }
-
-    default:
-      {
-	break;
-      }
-
-    }
-
-  }
-
-  void removeFlag(const SageRefExpFlagType &flag) {
-
-    switch(flag) {
-
-    case expectUse:
-      {
-	mFlags &= ~expectUse;
-
-	if ( ( ( mFlags & expectDefUse ) != 0 ) ||
-	     ( ( mFlags & expectUseDef ) != 0 ) ) {
-	  mFlags |= expectDef;
-	}
-	
-	break;
-      }
-
-    case expectDef:
-      {
-	mFlags &= ~expectDef;
-
-	if ( ( ( mFlags & expectDefUse ) != 0 ) ||
-	     ( ( mFlags & expectUseDef ) != 0 ) ) {
-	  mFlags |= expectDef;
-	}
-
-	break;
-      }
-
-    case expectUseDef:
-    case expectDefUse:
-      {
-	mFlags &= ~expectUse;
-	mFlags &= ~expectDef;
-	mFlags &= ~expectUseDef;
-	mFlags &= ~expectDefUse;
-
-	break;
-      }
-
-    case expectAddrOf:
-      {
-	mFlags &= ~expectAddrOf;
-
-	break;
-      }
-
-    case ignore:
-      {
-	mFlags &= ~ignore;
-
-	break;
-      }
-
-    default:
-      {
-	break;
-      }
-
-    }
-
-  }
-
- private:
-  bool           mPartial;
-  int            mFlags;
-};
-
-//-----------------------------------------------------------------------------
-// Convenience functions to manipulate a node's SageRefExpFlagsAttr 
-// attribute.
-//-----------------------------------------------------------------------------
-
-static SageRefExpFlagsAttr *
-getOrCreateRefExpFlagsAttr(SgNode *astNode)
-{
-  SageRefExpFlagsAttr *ret = NULL;
- 
-  if (!astNode->attribute.exists("SageRefExpFlagsAttr")) {
-    ret = new SageRefExpFlagsAttr;
-    ROSE_ASSERT(ret != NULL);
-    astNode->attribute.set("SageRefExpFlagsAttr", ret);
-    return ret;
-  }
- 
-  AstAttribute* attr = astNode->attribute["SageRefExpFlagsAttr"];
-  ROSE_ASSERT(attr != NULL);
-   
-  ret = dynamic_cast<SageRefExpFlagsAttr *>(attr); 
-  return ret; 
-
-}
-
-static void
-removeRefExpFlagsAttr(SgNode *astNode)
-{
-  if (!astNode->attribute.exists("SageRefExpFlagsAttr")) return;
- 
-  astNode->attribute.remove("SageRefExpFlagsAttr");
-}
-
-static SageRefExpFlagsAttr *
-getRefExpFlagsAttr(SgNode *astNode)
-{
-  SageRefExpFlagsAttr *ret = NULL;
- 
-  if (!astNode->attribute.exists("SageRefExpFlagsAttr")) return ret; 
- 
-  AstAttribute* attr = astNode->attribute["SageRefExpFlagsAttr"];
-  if (attr == NULL) return ret; 
-   
-  ret = dynamic_cast<SageRefExpFlagsAttr *>(attr); 
-  return ret; 
-
-}
-
-static void setFlags(SgNode *astNode, int flags)
-{
-  // Retrieve the memory reference expression attribute
-  // from this node.
-  SageRefExpFlagsAttr *refExpFlagsAttr =
-    getOrCreateRefExpFlagsAttr(astNode);
-  ROSE_ASSERT(refExpFlagsAttr != NULL);
-
-  refExpFlagsAttr->setFlags(flags);
-}
-
-static int getFlags(SgNode *astNode)
-{
-  // Retrieve the memory reference expression attribute
-  // from this node.
-  SageRefExpFlagsAttr *refExpFlagsAttr =
-    getRefExpFlagsAttr(astNode);
-  ROSE_ASSERT(refExpFlagsAttr != NULL);
-
-  return refExpFlagsAttr->getFlags();
-}
-
-static int hasFlagsSet(SgNode *astNode)
-{
-  // Retrieve the memory reference expression attribute
-  // from this node.
-  SageRefExpFlagsAttr *refExpFlagsAttr =
-    getRefExpFlagsAttr(astNode);
-  return(refExpFlagsAttr != NULL);
-}
-
-static bool getAddressTaken(SgNode *astNode)
-{
-  int flags = getFlags(astNode);
-
-  return ( flags & SageRefExpFlagsAttr::expectAddrOf );
-}
-
-static bool getPartial(SgNode *astNode)
-{
-  // Retrieve the memory reference expression attribute
-  // from this node.
-  SageRefExpFlagsAttr *refExpFlagsAttr =
-    getRefExpFlagsAttr(astNode);
-  ROSE_ASSERT(refExpFlagsAttr != NULL);
-
-  return refExpFlagsAttr->getPartial();
-}
-
-static void addFlag(SgNode *astNode, 
-		    const SageRefExpFlagsAttr::SageRefExpFlagType &flag)
-{
-  // Retrieve the memory reference expression attribute
-  // from this node.
-  SageRefExpFlagsAttr *refExpFlagsAttr =
-    getOrCreateRefExpFlagsAttr(astNode);
-  ROSE_ASSERT(refExpFlagsAttr != NULL);
-
-  refExpFlagsAttr->addFlag(flag);
-}
-
-static void removeFlag(SgNode *astNode, 
-		       const SageRefExpFlagsAttr::SageRefExpFlagType &flag)
-{
-  // Retrieve the memory reference expression attribute
-  // from this node.
-  SageRefExpFlagsAttr *refExpFlagsAttr =
-    getRefExpFlagsAttr(astNode);
-  ROSE_ASSERT(refExpFlagsAttr != NULL);
-
-  refExpFlagsAttr->removeFlag(flag);
-}
-
-static void setPartial(SgNode *astNode, bool partial)
-{
-  // Retrieve the memory reference expression attribute
-  // from this node.
-  SageRefExpFlagsAttr *refExpFlagsAttr =
-    getRefExpFlagsAttr(astNode);
-  ROSE_ASSERT(refExpFlagsAttr != NULL);
-
-  return refExpFlagsAttr->setPartial(partial);
- }
-
-static OA::MemRefExpr::MemRefType flagsToMemRefType(SgNode *node)
-{
-  int flags = getFlags(node);
-
-  // By default, we assume that any node passed to this function
-  // represents a USE, unless it has flags that indicate otherwise.
-  // Therefore, we only invoke this function when we expect a
-  // DEF and/or USE.
-  OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::USE;
-  
-  if ( ( flags & SageRefExpFlagsAttr::expectDef ) != 0 )
-    memRefType = OA::MemRefExpr::DEF;
-  else if ( ( flags & SageRefExpFlagsAttr::expectDefUse ) != 0 )
-    memRefType = OA::MemRefExpr::DEFUSE;
-  else if ( ( flags & SageRefExpFlagsAttr::expectUseDef ) != 0 )
-    memRefType = OA::MemRefExpr::USEDEF;
- 
-  return memRefType;
-}
-
-#endif /* 0 */
-
-
 /*
  * usedInConditionalExp returns true if node's parent
  * is a SgConditionalExp and it is that parent's
@@ -1160,6 +780,7 @@ SageIRInterface::getChildrenWithMemRefs(SgNode *astNode,
 	// This looks like a method invocation (i.e., either
 	// a.method() or a->method().  Return the dot/arrow expression.
 	children.push_back(expression);
+	independentChildren.push_back(expression);
 	
       }
 
@@ -1309,8 +930,9 @@ SageIRInterface::findIndependentMemRefs(SgNode *astNode,
 
     // Recurse only on independent children.  Currently,
     // the only independent children are the actual arguments
-    // of a SgFunctionCallExp and the index expressions of
-    // a SgPntrArrRefExp.
+    // of a SgFunctionCallExp, the implicit actual arg of a
+    // method invocation (the lhs of a dot or arrow), 
+    // and the index expressions of a SgPntrArrRefExp.
     getChildrenWithMemRefs(astNode, independentChildren, children);
 
     for(vector<SgNode *>::iterator it = independentChildren.begin();
@@ -1478,6 +1100,7 @@ enum SageRefExpInheritedFlagType {
                                        // does not compute an lvalue
   expectDotLHS                 = 4096, // the node is the lhs of a dot expression
   expectDontApplyConversion    = 8192, // don't apply reference conversion rules
+  takeAddrOfAndStoreMRE        = 16384, // take the address of the expression, but still store the MRE at the node (unlike expectAddrOf which does not).
 }; 
 
 // SageRefExpSynthesizedFlagType are flags that are passed up from
@@ -1552,6 +1175,13 @@ static void addInheritedFlag(unsigned &flags, const SageRefExpInheritedFlagType 
   case expectAddrOf:
     {
       flags |= expectAddrOf;
+      
+      break;
+    }
+
+  case takeAddrOfAndStoreMRE:
+    {
+      flags |= takeAddrOfAndStoreMRE;
       
       break;
     }
@@ -1703,6 +1333,13 @@ static void removeInheritedFlag(unsigned &flags, const SageRefExpInheritedFlagTy
   case expectAddrOf:
     {
       flags &= ~expectAddrOf;
+      
+      break;
+    }
+
+  case takeAddrOfAndStoreMRE:
+    {
+      flags &= ~takeAddrOfAndStoreMRE;
       
       break;
     }
@@ -2328,7 +1965,11 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
   bool appearsOnRhsOfRefAssignment      = flags & expectRefRhs;
   bool dontApplyConversion              = flags & expectDontApplyConversion;
 
+  bool takeAddrAndStoreMRESet           = flags & takeAddrOfAndStoreMRE;
+  bool expectAddrOfSet                  = flags & expectAddrOf;
+
   removeInheritedFlag(flags, expectDontApplyConversion);
+  removeInheritedFlag(flags, takeAddrOfAndStoreMRE);
 
   // A list of mem-ref infos, *some* of which correspond to
   // mem-ref-handles added to 'memRefs' for this SgNode.
@@ -2751,6 +2392,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	addInheritedFlag(lhsFlags, expectDontApplyConversion);
 #endif
 
+#if 0
       // Even if we create an MRE for the lhs, let's associate with this
       // node.  When we recurse set expectDotLHS to true so that
       // we won't create an MRE at the child.  This is a bit of an
@@ -2765,6 +2407,12 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // For consistency, we do the same here.
       if ( functionDeclaration != NULL )
 	addInheritedFlag(lhsFlags, expectDotLHS);
+#else
+      // But the above doesn't work because then getCallMemRefExprs will 
+      // return not only the MRE for the call, but also the MRE for
+      // this implicit arg.  Just associate the implicit actual with its
+      // (child) node.  I will add a new flag, takeAddrOfAndStoreMRE.
+#endif
 
       // Consume expectArrayBase and expectArrowDotRHS.  
       removeInheritedFlag(lhsFlags, expectArrayBase);
@@ -2794,8 +2442,10 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // and the conversion will dereference it.  Therefore, we
       // still need to take the address to get rid of the Deref.
       // so we needn't take the address.
+      // Pass takeAddrOfAndStoreMRE so that we don't ignore the
+      // MRE as we usually do with expectAddrOf.
       if ( !nodeIsArrowExp && ( functionDeclaration != NULL ) )
-	addInheritedFlag(lhsFlags, expectAddrOf);
+	addInheritedFlag(lhsFlags, takeAddrOfAndStoreMRE);
 	
       // Don't propagate DEF down to the lhs child
       // If this arrow/dot expression is used on the lhs,
@@ -2812,6 +2462,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       lhsMemRefExprs = findAllMemRefsAndMemRefExprs(lhs, memRefs, lhsFlags,
 						    tmpSynthesizedFlags);
 
+#if 0
       // If this a method invocation, the lhs MREs represent the
       // implicit 'this' actual.  Store them at this node.
       // A second option is to pass them up and store them at
@@ -2837,6 +2488,9 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	}
 
       }
+#else
+      // See above comment.  I decided to store them at the child node.
+#endif
 
       // For each MemRefExpr on the lhs, create a new MemRefExpr
       // to represent the field access.
@@ -2849,7 +2503,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       bool isReferenceExp = isSgReferenceType(binaryOp->get_lhs_operand_i()->get_type());
 
       // Is the address taken in this memory reference?
-      addressTaken = ( flags & expectAddrOf );
+      addressTaken = ( expectAddrOfSet | takeAddrAndStoreMRESet );
       
       // This memory reference expression does _not_
       // accurately represent the memory expression since
@@ -3068,7 +2722,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
   case V_SgSubtractOp:
     {
       bool isArrayOperation = false;
-      bool takeAddress = ( flags & expectAddrOf );
+      bool takeAddress = ( expectAddrOfSet | takeAddrAndStoreMRESet );
 
       SgAddOp *addOp = isSgAddOp(astNode);
       if ( addOp != NULL ) {
@@ -3407,7 +3061,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       addSynthesizedFlag(synthesizedFlags, synthesizedComputesLValue);
 
       // Is the address taken in this memory reference?
-      addressTaken = ( flags & expectAddrOf );
+      addressTaken = ( expectAddrOfSet | takeAddrAndStoreMRESet );
       
       // Because we do not model the indices of the array
       // dereference, this is not a fully accurate model
@@ -3995,8 +3649,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       memRefType = flagsToMemRefType(flags);
       
       // Is the address taken in this memory reference?
-      addressTaken = 
-	( flags & expectAddrOf );
+      addressTaken = ( expectAddrOfSet | takeAddrAndStoreMRESet );
       
       // Access to a named variable is a fully accurate
       // representation of that access, unless it occurs
@@ -4053,8 +3706,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       memRefType = flagsToMemRefType(flags);
       
       // Is the address taken in this memory reference?
-      addressTaken = 
-	( flags & expectAddrOf );
+      addressTaken = ( expectAddrOfSet | takeAddrAndStoreMRESet );
       
       // Access to a named variable is a fully accurate
       // representation of that access, unless it occurs
@@ -4383,8 +4035,8 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// for arrow.
 
 	// Is the address taken in this memory reference?
-	addressTaken = ( flags & expectAddrOf );
-
+	addressTaken = ( expectAddrOfSet | takeAddrAndStoreMRESet );
+      
 	// A dereference fully represents a memory reference expression.
 	fullAccuracy = true;
       

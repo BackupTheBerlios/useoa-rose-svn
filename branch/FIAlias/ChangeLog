@@ -544,3 +544,16 @@
 	  methods and FieldAccess.  In particular, all virtual methods
 	  invoked from a pointer or a reference are represented by
 	  a FieldAccess.
+
+12/09/05 UseOA-ROSE svn tag FIAlias r26 	Brian White	
+	- Note this is revision 26.  I skipped one somewhere along the line.
+	- Fixed getLocation.  It had been ignoring the procHandle.
+          It now returns local = 1 only when the declaration of the
+          variable is within procHandle.
+        - Promoted MemRefExprTestInput.C.out.latest to .C.out
+        - Removed a bunch of dead code.
+        - Implicit actual for method invocation was being returned by
+	  getCallMemRefExpr.  This was a problem since we expect that
+          to return only MREs corresponding to methods/functions.  
+          This MRE is now returned at the lhs of the dot/arrow expression,
+          which _is_ the implicit actual.

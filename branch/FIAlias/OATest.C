@@ -82,7 +82,7 @@ main ( unsigned argc,  char * argv[] )
   
   bool p_h=FALSE; //for debugging only switch between persistent and "pointer" handles (pointers are faster, persistent are easier to debug
 
-  p_h = TRUE;
+  //  p_h = TRUE;
   
   std::vector<SgNode*> nodeArray;
 
@@ -463,7 +463,7 @@ int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   // purposes only:  avoids unexpected/spurious results due to 
   // stdlib.h, etc.
   procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
-  //#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
+#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
 #ifdef BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter, debug);

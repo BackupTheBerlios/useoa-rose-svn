@@ -1425,48 +1425,33 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
       loc=new OA::UnknownLoc();
       return loc;
   }
-  bool islocal=true;
-  //SgNode * n;
-  SgInitializedName * symb=isSgInitializedName((SgNode*)(getNodePtr(s)));
-  SgDeclarationStatement * decl=NULL;
-  SgNode * paren1=NULL;
 
-  if(symb)
-  {
-    decl=symb->get_declaration();
-    if(decl)
-    {
-      paren1=decl->get_parent();
-      if(isSgGlobal(paren1))
-      {
-        islocal=false;
-      }
-      /* this is all wrong wiil use attributes to store function declaration for each init name (unless it is global)
-      else if(isSgBasicBlock(paren1))
-      {
-        paren2=paren1->get_parent();
-        if(paren2!=funcdef)
-        {
-          printf("TO DO: paren1 is BasicBlock but paren2 is not the right function def\n");
-          islocal=false;
-        }
-      }
-      */
-      else {
-	//        printf("paren1 is %s\n", paren1->sage_class_name());
-      }
-    }
+  bool isLocal = false;
+
+  SgNode *node = getNodePtr(s);
+  ROSE_ASSERT(node != NULL);
+
+  SgInitializedName *initName = isSgInitializedName(node);
+  if ( initName ) {
+
+    SgDeclarationStatement *declarationStmt = initName->get_declaration();
+    ROSE_ASSERT(declarationStmt != NULL);
+
+    SgFunctionDefinition *enclosingProc = 
+      getEnclosingMethod(declarationStmt);
+
+    SgNode *procNode = getNodePtr(p);
+    ROSE_ASSERT(procNode != NULL);
+
+    SgFunctionDefinition *procDefn = 
+      isSgFunctionDefinition(procNode);
+    ROSE_ASSERT(procDefn != NULL);
+
+    isLocal = ( enclosingProc == procDefn );
   }
-  //if(symb->get_declaration() && (n=symb->get_declaration()->get_parent()) && isSgGlobal(n))
-  //{
-  //  islocal=false;
-  //}
-  //proc handle is SgFunctionDefinition
-  //are parameters local? I hope so
-  //local vars are definitely local
-  
+
   OA::OA_ptr<OA::Location> loc;
-  loc=new OA::NamedLoc(s, islocal);
+  loc = new OA::NamedLoc(s, isLocal);
   return loc;
 }
 
@@ -2161,8 +2146,13 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
 	ROSE_ASSERT(isSgFunctionParameterList(parent));
 	ret = "anonymousArg";
       } else {
+
+	SgDeclarationStatement *declarationStmt = 
+	  initName->get_declaration();
+	ROSE_ASSERT(declarationStmt != NULL);
+
 	SgFunctionDefinition *functionDefinition = 
-	  getEnclosingMethod(initName);
+	  getEnclosingMethod(declarationStmt);
 
 	if (functionDefinition == NULL) {
 

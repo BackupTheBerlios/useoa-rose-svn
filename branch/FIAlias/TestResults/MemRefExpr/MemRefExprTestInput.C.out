@@ -1,7 +1,7 @@
 ============================================
-OA::StmtHandle: int bar(){int x;int y;struct myStruct *p;int **q;int *r;struct myStruct sta[40][10][30];int a;int b;int c;class hiClass *hi;struct myStruct *ignoreStructPtr;struct anotherStruct *ignoreAnotherStructPtr;struct anotherStruct **ignoreAnotherStructPtrPtr;struct myStruct ignoreStruct;int ignoreInt;int *ignoreIntPtr;struct myStruct(*ignoreArrayPtr;p = ignoreStructPtr;p;ignoreStructPtr = p;*(((sta[3])[4])[2].bPtr) = ignoreInt;ignoreIntPtr = &x;ignoreStructPtr =((struct myStruct *)(malloc(12)));foobar(p);foo(&p);*hello() = ignoreInt;*hi -> hello() = ignoreInt;*hi -> goodbye() = ignoreInt;*( *q) = ignoreInt;( *(gp -> a)).d = ignoreInt;gy.b = ignoreInt;ignoreAnotherStructPtr =(p -> a);p -> a = ignoreAnotherStructPtr;ignoreAnotherStructPtrPtr = &p -> a;ignoreArrayPtr =((sta[3]) + 4);*(((r < *q)?r: *q)) = ignoreInt;*(r +((int )( *q))) = ignoreInt;fp = bar;( *fp)();a =(b = c);int i = 3;int j = 4;int d;int e;int f;int g;for(int d = 0;e < 3;++f) {g =(g + 1);}while(d < 3){g =(g + 1);}if(d < 3) {g =(g + 1);}else {f++;}int A;int *ptr = &A;int &B = A;int &C = B;int *&F = ptr;int *&G = F;int *const &D = &A;int *const &E = &B;int *const *ptr3 = &D;return x;}
+OA::StmtHandle: int bar(){int x;int y;struct myStruct *p;int **q;int *r;struct myStruct sta[40][10][30];int a;int b;int c;class hiClass *hi;struct myStruct *ignoreStructPtr;struct anotherStruct *ignoreAnotherStructPtr;struct anotherStruct **ignoreAnotherStructPtrPtr;struct myStruct ignoreStruct;int ignoreInt;int *ignoreIntPtr;struct myStruct(*ignoreArrayPtr;class hiClass &hiRef = *hi;p = ignoreStructPtr;p;ignoreStructPtr = p;*(((sta[3])[4])[2].bPtr) = ignoreInt;r[x] = ignoreInt;ignoreIntPtr = &x;ignoreStructPtr =((struct myStruct *)(malloc(12)));foobar(p);foo(&p);*hello() = ignoreInt;*hi -> hello() = ignoreInt;*hiRef.hello() = ignoreInt;*hi -> goodbye() = ignoreInt;*( *q) = ignoreInt;( *(gp -> a)).d = ignoreInt;gy.b = ignoreInt;ignoreAnotherStructPtr =(p -> a);p -> a = ignoreAnotherStructPtr;ignoreAnotherStructPtrPtr = &p -> a;ignoreArrayPtr =((sta[3]) + 4);*(((r < *q)?r: *q)) = ignoreInt;*(r +((int )( *q))) = ignoreInt;fp = bar;( *fp)();a =(b = c);int i = 3;int j = 4;int d;int e;int f;int g;for(int d = 0;e < 3;++f) {g =(g + 1);}while(d < 3){g =(g + 1);}if(d < 3) {g =(g + 1);}else {f++;}int A;int *ptr = &A;int &B = A;int &C = B;int *&F = ptr;int *&G = F;int *const &D = &A;int *const &E = &B;int *const *ptr3 = &D;return x;}
 ============================================
-OA::StmtHandle: {int x;int y;struct myStruct *p;int **q;int *r;struct myStruct sta[40][10][30];int a;int b;int c;class hiClass *hi;struct myStruct *ignoreStructPtr;struct anotherStruct *ignoreAnotherStructPtr;struct anotherStruct **ignoreAnotherStructPtrPtr;struct myStruct ignoreStruct;int ignoreInt;int *ignoreIntPtr;struct myStruct(*ignoreArrayPtr;p = ignoreStructPtr;p;ignoreStructPtr = p;*(((sta[3])[4])[2].bPtr) = ignoreInt;ignoreIntPtr = &x;ignoreStructPtr =((struct myStruct *)(malloc(12)));foobar(p);foo(&p);*hello() = ignoreInt;*hi -> hello() = ignoreInt;*hi -> goodbye() = ignoreInt;*( *q) = ignoreInt;( *(gp -> a)).d = ignoreInt;gy.b = ignoreInt;ignoreAnotherStructPtr =(p -> a);p -> a = ignoreAnotherStructPtr;ignoreAnotherStructPtrPtr = &p -> a;ignoreArrayPtr =((sta[3]) + 4);*(((r < *q)?r: *q)) = ignoreInt;*(r +((int )( *q))) = ignoreInt;fp = bar;( *fp)();a =(b = c);int i = 3;int j = 4;int d;int e;int f;int g;for(int d = 0;e < 3;++f) {g =(g + 1);}while(d < 3){g =(g + 1);}if(d < 3) {g =(g + 1);}else {f++;}int A;int *ptr = &A;int &B = A;int &C = B;int *&F = ptr;int *&G = F;int *const &D = &A;int *const &E = &B;int *const *ptr3 = &D;return x;}
+OA::StmtHandle: {int x;int y;struct myStruct *p;int **q;int *r;struct myStruct sta[40][10][30];int a;int b;int c;class hiClass *hi;struct myStruct *ignoreStructPtr;struct anotherStruct *ignoreAnotherStructPtr;struct anotherStruct **ignoreAnotherStructPtrPtr;struct myStruct ignoreStruct;int ignoreInt;int *ignoreIntPtr;struct myStruct(*ignoreArrayPtr;class hiClass &hiRef = *hi;p = ignoreStructPtr;p;ignoreStructPtr = p;*(((sta[3])[4])[2].bPtr) = ignoreInt;r[x] = ignoreInt;ignoreIntPtr = &x;ignoreStructPtr =((struct myStruct *)(malloc(12)));foobar(p);foo(&p);*hello() = ignoreInt;*hi -> hello() = ignoreInt;*hiRef.hello() = ignoreInt;*hi -> goodbye() = ignoreInt;*( *q) = ignoreInt;( *(gp -> a)).d = ignoreInt;gy.b = ignoreInt;ignoreAnotherStructPtr =(p -> a);p -> a = ignoreAnotherStructPtr;ignoreAnotherStructPtrPtr = &p -> a;ignoreArrayPtr =((sta[3]) + 4);*(((r < *q)?r: *q)) = ignoreInt;*(r +((int )( *q))) = ignoreInt;fp = bar;( *fp)();a =(b = c);int i = 3;int j = 4;int d;int e;int f;int g;for(int d = 0;e < 3;++f) {g =(g + 1);}while(d < 3){g =(g + 1);}if(d < 3) {g =(g + 1);}else {f++;}int A;int *ptr = &A;int &B = A;int &C = B;int *&F = ptr;int *&G = F;int *const &D = &A;int *const &E = &B;int *const *ptr3 = &D;return x;}
 ============================================
 OA::StmtHandle: int x;
 ============================================
@@ -36,6 +36,22 @@ OA::StmtHandle: int ignoreInt;
 OA::StmtHandle: int *ignoreIntPtr;
 ============================================
 OA::StmtHandle: struct myStruct(*ignoreArrayPtr;
+============================================
+OA::StmtHandle: class hiClass &hiRef = *hi;
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: DEF
+	mSymHandle: SymHandle(hiRef))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(hi))
+
 ============================================
 OA::StmtHandle: p = ignoreStructPtr;
 	mre = 
@@ -98,6 +114,42 @@ NamedRef(
 	mFullAccuracy: 0
 	mMemRefType: USE
 	mSymHandle: SymHandle(sta))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(ignoreInt))
+
+============================================
+OA::StmtHandle: r[x] = ignoreInt;
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 0
+	mMemRefType: DEF
+	mMRE: 
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(r)	)
+	mNumDeref: 1)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(r))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(x))
 
 	mre = 
 NamedRef(
@@ -208,7 +260,7 @@ NamedRef(
 	mAddressOf: 0
 	mFullAccuracy: 1
 	mMemRefType: USE
-	mSymHandle: SymHandle(hello))
+	mSymHandle: SymHandle(method:hiClass::hello))
 
 	mre = 
 NamedRef(
@@ -216,6 +268,47 @@ NamedRef(
 	mFullAccuracy: 1
 	mMemRefType: USE
 	mSymHandle: SymHandle(hi))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(ignoreInt))
+
+============================================
+OA::StmtHandle: *hiRef.hello() = ignoreInt;
+	mre = 
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 0
+	mMemRefType: DEF
+	mMRE: 
+	UnknownRef(
+		mAddressOf: 1
+		mFullAccuracy: 0
+		mMemRefType: USE	)
+	mNumDeref: 1)
+
+	mre = 
+UnknownRef(
+	mAddressOf: 1
+	mFullAccuracy: 0
+	mMemRefType: USE)
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(method:hiClass::hello))
+
+	mre = 
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(hiRef))
 
 	mre = 
 NamedRef(
@@ -595,22 +688,17 @@ Deref(
 	mFullAccuracy: 0
 	mMemRefType: DEF
 	mMRE: 
-	UnknownRef(
+	NamedRef(
 		mAddressOf: 1
 		mFullAccuracy: 0
-		mMemRefType: USE	)
+		mMemRefType: USE
+		mSymHandle: SymHandle(r)	)
 	mNumDeref: 1)
 
 	mre = 
-UnknownRef(
+NamedRef(
 	mAddressOf: 1
 	mFullAccuracy: 0
-	mMemRefType: USE)
-
-	mre = 
-NamedRef(
-	mAddressOf: 0
-	mFullAccuracy: 1
 	mMemRefType: USE
 	mSymHandle: SymHandle(r))
 
