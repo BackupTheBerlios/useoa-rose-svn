@@ -557,3 +557,10 @@
           to return only MREs corresponding to methods/functions.  
           This MRE is now returned at the lhs of the dot/arrow expression,
           which _is_ the implicit actual.
+
+12/12/05 UseOA-ROSE svn tag FIAlias r27 	Brian White	
+        - Changed getLocation so that it has the correct semantics.
+	  For C/C++ these read:
+          1.  If sym is local to proc, return a NamedLoc(sym, isLocal = true);
+          2.  If sym is global, return a NamedLoc(sym, isLocal = false);
+          3.  Otherwise, sym is not accessible in proc, return "null".

@@ -1418,12 +1418,12 @@ void SageIRInterface::dump(OA::OA_ptr<OA::MemRefExprIterator> memRefIterator,
 OA::OA_ptr<OA::Location::Location> 
 SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
 {
+  OA::OA_ptr<OA::Location> loc;
+  loc = NULL;
+
   if((((int)s)==0) || (s.hval()==0))
   {
-    //not sure what to do
-      OA::OA_ptr<OA::Location> loc;
-      loc=new OA::UnknownLoc();
-      return loc;
+    return loc;
   }
 
   bool isLocal = false;
@@ -1437,20 +1437,35 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
     SgDeclarationStatement *declarationStmt = initName->get_declaration();
     ROSE_ASSERT(declarationStmt != NULL);
 
-    SgFunctionDefinition *enclosingProc = 
-      getEnclosingMethod(declarationStmt);
+    SgNode *declarationParent = declarationStmt->get_parent();
+    ROSE_ASSERT(declarationParent != NULL);
 
-    SgNode *procNode = getNodePtr(p);
-    ROSE_ASSERT(procNode != NULL);
+    if ( isSgGlobal(declarationParent) ) {
+      // This symbol is global.
+      isLocal = false;
+    } else {
 
-    SgFunctionDefinition *procDefn = 
-      isSgFunctionDefinition(procNode);
-    ROSE_ASSERT(procDefn != NULL);
+      SgFunctionDefinition *enclosingProc = 
+	getEnclosingMethod(declarationStmt);
+      
+      SgNode *procNode = getNodePtr(p);
+      ROSE_ASSERT(procNode != NULL);
+      
+      SgFunctionDefinition *procDefn = 
+	isSgFunctionDefinition(procNode);
+      ROSE_ASSERT(procDefn != NULL);
 
-    isLocal = ( enclosingProc == procDefn );
+      if ( enclosingProc == procDefn ) {
+	// This symbol is local to this procedure.
+	isLocal = true;
+      } else {
+	// This symbol is not visible within this procedure, 
+	// so return a NULL location.
+	return loc;
+      }
+    }
   }
 
-  OA::OA_ptr<OA::Location> loc;
   loc = new OA::NamedLoc(s, isLocal);
   return loc;
 }
