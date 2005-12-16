@@ -1,0 +1,139 @@
+
+EquivSets(		MemRefHandle	 => int
+MemRefHandle(q)	 =>[ 5 ] 
+MemRefHandle(*q)	 =>[ 1 ] 
+MemRefHandle(q)	 =>[ 5 ] 
+MemRefHandle(*q)	 =>[ 1 ] 
+MemRefHandle(s)	 =>[ 6 ] 
+MemRefHandle(*s)	 =>[ 2 ] 
+MemRefHandle(j)	 =>[ 3 ] 
+MemRefHandle(sum)	 =>[ 3 ] 
+MemRefHandle(sum)	 =>[ 3 ] 
+MemRefHandle(j)	 =>[ 3 ] 
+MemRefHandle(p)	 =>[ 7 ] 
+MemRefHandle(i1)	 =>[ 4 ] 
+MemRefHandle(sum1)	 =>[ 8 ] 
+MemRefHandle(sum)	 =>[ 4 ] 
+MemRefHandle(i2)	 =>[ 4 ] 
+MemRefHandle(sum1)	 =>[ 8 ] 
+
+		int	 => std::set<OA_ptr<Location> >
+1	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(j)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		NamedLoc(
+			mSymHandle: SymHandle(sum)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		InvisibleLoc(
+			mMRE: 
+			Deref(
+				mAddressOf: 0
+				mFullAccuracy: 1
+				mMemRefType: DEF
+				mMRE: 
+				NamedRef(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: USE
+					mSymHandle: SymHandle(q)				)
+				mNumDeref: 1			)		) ] 
+2	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(j)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		NamedLoc(
+			mSymHandle: SymHandle(sum)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		InvisibleLoc(
+			mMRE: 
+			Deref(
+				mAddressOf: 0
+				mFullAccuracy: 1
+				mMemRefType: DEF
+				mMRE: 
+				NamedRef(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: USE
+					mSymHandle: SymHandle(s)				)
+				mNumDeref: 1			)		) ] 
+3	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(j)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		NamedLoc(
+			mSymHandle: SymHandle(sum)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		InvisibleLoc(
+			mMRE: 
+			Deref(
+				mAddressOf: 0
+				mFullAccuracy: 1
+				mMemRefType: USE
+				mMRE: 
+				NamedRef(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: USE
+					mSymHandle: SymHandle(p)				)
+				mNumDeref: 1			)		) ] 
+4	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(j)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		NamedLoc(
+			mSymHandle: SymHandle(sum)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		NamedLoc(
+			mSymHandle: SymHandle(i1)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		NamedLoc(
+			mSymHandle: SymHandle(i2)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+5	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(q)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+6	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(s)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+7	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(p)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+8	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(sum1)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+
+)

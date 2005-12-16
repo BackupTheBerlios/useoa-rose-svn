@@ -564,3 +564,10 @@
           1.  If sym is local to proc, return a NamedLoc(sym, isLocal = true);
           2.  If sym is global, return a NamedLoc(sym, isLocal = false);
           3.  Otherwise, sym is not accessible in proc, return "null".
+
+12/16/05 UseOA-ROSE svn tag FIAlias r28 	Michelle Strout
+	- After some fixes to FIAlias algorithm, started rechecking
+    	  the regression tests.  Each test marked as checked has a 
+ 	  test result generated for it.  Now the equivsets results
+	  only show how each MemRefHandle maps to locations.
+

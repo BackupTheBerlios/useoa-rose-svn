@@ -1,97 +1,18 @@
 
-EquivSets(		MemRefExpr	 => int
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mSymHandle: SymHandle(loc)		)	 =>1
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: DEF
-			mSymHandle: SymHandle(locPtr)		)	 =>2
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: DEF
-			mSymHandle: SymHandle(a)		)	 =>3
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: DEF
-			mSymHandle: SymHandle(b)		)	 =>4
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: DEF
-			mSymHandle: SymHandle(c)		)	 =>5
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mSymHandle: SymHandle(loc2)		)	 =>1
-
-		Deref(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mMRE: 
-			NamedRef(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: DEF
-				mSymHandle: SymHandle(locPtr)			)
-			mNumDeref: 1		)	 =>1
-
-		Deref(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mMRE: 
-			NamedRef(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: DEF
-				mSymHandle: SymHandle(a)			)
-			mNumDeref: 1		)	 =>1
-
-		Deref(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mMRE: 
-			NamedRef(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: DEF
-				mSymHandle: SymHandle(b)			)
-			mNumDeref: 1		)	 =>1
-
-		Deref(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mMRE: 
-			NamedRef(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: DEF
-				mSymHandle: SymHandle(c)			)
-			mNumDeref: 1		)	 =>1
-
-		MemRefHandle	 => 
+EquivSets(		MemRefHandle	 => int
+MemRefHandle(locPtr)	 =>[ 2 ] 
+MemRefHandle(a)	 =>[ 3 ] 
+MemRefHandle(locPtr)	 =>[ 2 ] 
+MemRefHandle(b)	 =>[ 4 ] 
+MemRefHandle(locPtr)	 =>[ 2 ] 
+MemRefHandle(c)	 =>[ 5 ] 
 MemRefHandle(locPtr)	 =>[ 2 ] 
 MemRefHandle(a)	 =>[ 3 ] 
 MemRefHandle(b)	 =>[ 4 ] 
 MemRefHandle(c)	 =>[ 5 ] 
+MemRefHandle(a)	 =>[ 3 ] 
 
-		int	 => 
+		int	 => std::set<OA_ptr<Location> >
 1	 =>[ 
 		NamedLoc(
 			mSymHandle: SymHandle(loc)

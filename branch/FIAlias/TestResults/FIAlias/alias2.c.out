@@ -1,74 +1,16 @@
 
-EquivSets(		MemRefExpr	 => int
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mSymHandle: SymHandle(loc)		)	 =>1
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: DEF
-			mSymHandle: SymHandle(locPtr)		)	 =>2
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: DEF
-			mSymHandle: SymHandle(a)		)	 =>3
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: DEF
-			mSymHandle: SymHandle(b)		)	 =>4
-
-		Deref(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mMRE: 
-			NamedRef(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: DEF
-				mSymHandle: SymHandle(locPtr)			)
-			mNumDeref: 1		)	 =>1
-
-		Deref(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mMRE: 
-			NamedRef(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: USE
-				mSymHandle: SymHandle(a)			)
-			mNumDeref: 1		)	 =>1
-
-		Deref(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mMRE: 
-			NamedRef(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: USE
-				mSymHandle: SymHandle(b)			)
-			mNumDeref: 1		)	 =>1
-
-		MemRefHandle	 => 
+EquivSets(		MemRefHandle	 => int
 MemRefHandle(locPtr)	 =>[ 2 ] 
 MemRefHandle(a)	 =>[ 3 ] 
+MemRefHandle(locPtr)	 =>[ 2 ] 
 MemRefHandle(b)	 =>[ 4 ] 
+MemRefHandle(locPtr)	 =>[ 2 ] 
+MemRefHandle(a)	 =>[ 3 ] 
 MemRefHandle(*a)	 =>[ 1 ] 
+MemRefHandle(b)	 =>[ 4 ] 
 MemRefHandle(*b)	 =>[ 1 ] 
 
-		int	 => 
+		int	 => std::set<OA_ptr<Location> >
 1	 =>[ 
 		NamedLoc(
 			mSymHandle: SymHandle(loc)

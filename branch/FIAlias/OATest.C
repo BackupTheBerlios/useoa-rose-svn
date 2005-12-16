@@ -502,7 +502,7 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   OA::OA_ptr<SageIRProcIterator> procIter;
   procIter = new SageIRProcIterator(p, irInterface);
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
-    fialiasman->performAnalysis(procIter, false);
+    fialiasman->performAnalysis(procIter);
 #endif
   //alias->dump(std::cout, iroaptr);
   

@@ -5,7 +5,7 @@
     OATest --oa-MemRefExpr TestCases/MemRefExprTests/MemRefExprTestInput.C
 
   Goal: Testing all the memory reference expression examples that are 
-        provided on the wiki as of November 2005.
+        provided on the wiki as of December 2005.
 
   Output: see TestResults/MemRefExpr
 */
@@ -60,7 +60,7 @@ int bar()
   // < MemRefType, Named?, SymHandle, NumDerefs, AddrOf?, Accuracy >
 
   hiClass &hiRef = *hi;
-  // Deref(USE, NamedRef(USE, SymHandle(hi), F, full), 1, F, full)
+  // NamedRef(USE, SymHandle(hi), F, full)
   // NamedRef(DEF, SymHandle(hiRef), F, full)
   
   p = ignoreStructPtr;     
