@@ -1,4 +1,7 @@
 /* constQualified.c */
+/*
+    *q should access a subset of const_array
+*/
 
 extern int g(int i, int j);
 

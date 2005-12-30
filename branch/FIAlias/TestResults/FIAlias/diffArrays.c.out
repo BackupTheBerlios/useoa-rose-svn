@@ -1,0 +1,74 @@
+
+EquivSets(		MemRefHandle	 => int
+MemRefHandle(p)	 =>[ 3 ] 
+MemRefHandle(i)	 =>[ 1 ] 
+MemRefHandle(q)	 =>[ 4 ] 
+MemRefHandle(j)	 =>[ 2 ] 
+MemRefHandle(x)	 =>[ 5 ] 
+MemRefHandle(q)	 =>[ 4 ] 
+MemRefHandle((q[3]))	 =>[ 8 ] 
+MemRefHandle(p)	 =>[ 3 ] 
+MemRefHandle(*p)	 =>[ 7 ] 
+MemRefHandle(y)	 =>[ 6 ] 
+MemRefHandle(q)	 =>[ 4 ] 
+MemRefHandle((q[3]))	 =>[ 8 ] 
+MemRefHandle(x)	 =>[ 5 ] 
+MemRefHandle(y)	 =>[ 6 ] 
+
+		int	 => std::set<OA_ptr<Location> >
+1	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(i)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+2	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(j)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+3	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(p)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+4	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(q)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+5	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(x)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+6	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(y)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+7	 =>[ 
+		LocSubSet(
+			mLoc: 
+			NamedLoc(
+				mSymHandle: SymHandle(a)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			)
+			mFull: 0		) ] 
+8	 =>[ 
+		LocSubSet(
+			mLoc: 
+			NamedLoc(
+				mSymHandle: SymHandle(b)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			)
+			mFull: 0		) ] 
+
+)

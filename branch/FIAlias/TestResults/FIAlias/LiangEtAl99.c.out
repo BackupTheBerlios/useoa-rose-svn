@@ -1,0 +1,98 @@
+
+EquivSets(		MemRefHandle	 => int
+MemRefHandle(q)	 =>[ 5 ] 
+MemRefHandle(*q)	 =>[ 1 ] 
+MemRefHandle(g)	 =>[ 1 ] 
+MemRefHandle(g1)	 =>[ 4 ] 
+MemRefHandle(p)	 =>[ 6 ] 
+MemRefHandle(*p)	 =>[ 2 ] 
+MemRefHandle(g)	 =>[ 2 ] 
+MemRefHandle(g)	 =>[ 2 ] 
+MemRefHandle(p)	 =>[ 6 ] 
+MemRefHandle(p)	 =>[ 6 ] 
+MemRefHandle(p)	 =>[ 6 ] 
+MemRefHandle(*(p++))	 =>[ 2 ] 
+MemRefHandle(x)	 =>[ 3 ] 
+MemRefHandle(y)	 =>[ 3 ] 
+MemRefHandle(z)	 =>[ 3 ] 
+
+		int	 => std::set<OA_ptr<Location> >
+1	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(g)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		InvisibleLoc(
+			mMRE: 
+			Deref(
+				mAddressOf: 0
+				mFullAccuracy: 1
+				mMemRefType: DEF
+				mMRE: 
+				NamedRef(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: USE
+					mSymHandle: SymHandle(q)				)
+				mNumDeref: 1			)		) ] 
+2	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(g)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		InvisibleLoc(
+			mMRE: 
+			Deref(
+				mAddressOf: 0
+				mFullAccuracy: 1
+				mMemRefType: DEF
+				mMRE: 
+				NamedRef(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: USE
+					mSymHandle: SymHandle(p)				)
+				mNumDeref: 1			)		) ] 
+3	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(g)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		NamedLoc(
+			mSymHandle: SymHandle(x)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		NamedLoc(
+			mSymHandle: SymHandle(y)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		)    
+		NamedLoc(
+			mSymHandle: SymHandle(z)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+4	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(g1)
+			mLocal: 0
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+5	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(q)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+6	 =>[ 
+		NamedLoc(
+			mSymHandle: SymHandle(p)
+			mLocal: 1
+			mFullOverlap: 
+			mPartOverlap: 		) ] 
+
+)

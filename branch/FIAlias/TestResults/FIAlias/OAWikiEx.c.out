@@ -1,68 +1,18 @@
 
-EquivSets(		MemRefExpr	 => int
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: DEF
-			mSymHandle: SymHandle(g)		)	 =>1
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mSymHandle: SymHandle(a)		)	 =>2
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: DEF
-			mSymHandle: SymHandle(y)		)	 =>3
-
-		NamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: DEF
-			mSymHandle: SymHandle(p)		)	 =>4
-
-		UnnamedRef(
-			mAddressOf: 0
-			mFullAccuracy: 0
-			mMemRefType: USE
-			mStmtHandle: StmtHandle(((int *)(malloc((4 *(y))))))		)	 =>5
-
-		Deref(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: DEF
-			mMRE: 
-			NamedRef(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: USE
-				mSymHandle: SymHandle(a)			)
-			mNumDeref: 1		)	 =>5
-
-		Deref(
-			mAddressOf: 0
-			mFullAccuracy: 1
-			mMemRefType: USE
-			mMRE: 
-			NamedRef(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: DEF
-				mSymHandle: SymHandle(p)			)
-			mNumDeref: 1		)	 =>5
-
-		MemRefHandle	 => 
+EquivSets(		MemRefHandle	 => int
 MemRefHandle(y)	 =>[ 3 ] 
 MemRefHandle(g)	 =>[ 1 ] 
 MemRefHandle(p)	 =>[ 4 ] 
 MemRefHandle(a)	 =>[ 2 ] 
+MemRefHandle(p)	 =>[ 4 ] 
+MemRefHandle(a)	 =>[ 2 ] 
+MemRefHandle(*a)	 =>[ 5 ] 
+MemRefHandle(a)	 =>[ 2 ] 
+MemRefHandle(p)	 =>[ 4 ] 
+MemRefHandle(a)	 =>[ 2 ] 
 MemRefHandle(*a)	 =>[ 5 ] 
 
-		int	 => 
+		int	 => std::set<OA_ptr<Location> >
 1	 =>[ 
 		NamedLoc(
 			mSymHandle: SymHandle(g)
@@ -88,6 +38,9 @@ MemRefHandle(*a)	 =>[ 5 ]
 			mFullOverlap: 
 			mPartOverlap: 		) ] 
 5	 =>[ 
+		UnnamedLoc(
+			mStmtHandle: StmtHandle(((int *)(malloc((4 *(y))))))
+			mLocal: 0		)    
 		InvisibleLoc(
 			mMRE: 
 			Deref(

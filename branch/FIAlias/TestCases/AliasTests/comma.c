@@ -1,11 +1,15 @@
+#include <stdio.h>
 
 int main()
 {
-  int *p;
-  int *q;
-  int *r;
-  int  s;
+    int x=1, y=2, z=3;
+    int *p;  
+    int *q;  
+    int *r = &y;  
 
-  p = (q = &s, r);
-  return 0;
+    p = (q = &x, r);
+
+    printf ("*p = %d\n", *p);
+    printf ("*q = %d\n", *q);
+    return 0;
 }

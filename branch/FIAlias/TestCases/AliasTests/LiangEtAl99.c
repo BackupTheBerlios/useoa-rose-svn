@@ -27,5 +27,9 @@ int main() {
   f1(&y);
   f2(&z);
 
+  x;
+  y;
+  z;
+
   return 0;
 }

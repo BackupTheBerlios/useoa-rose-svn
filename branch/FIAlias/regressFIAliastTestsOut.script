@@ -13,19 +13,19 @@ diff t TestResults/FIAlias/alias3.c.out
 echo "Testing TestCases/AliasTests/alias4.c\n\tTestResults/FIAlias/alias4.c checked by MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/alias4.c > t
 diff t TestResults/FIAlias/alias4.c.out
-echo "Testing TestCases/AliasTests/funCall.c\n\tTestResults/FIAlias/funCall.c checked by ??? and ???"
+echo "Testing TestCases/AliasTests/funCall.c\n\tTestResults/FIAlias/funCall.c checked by MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/funCall.c > t
 diff t TestResults/FIAlias/funCall.c.out
-echo "Testing TestCases/AliasTests/utke.c\n\tTestResults/FIAlias/utke.c checked by ???"
+echo "Testing TestCases/AliasTests/utke.c\n\tTestResults/FIAlias/utke.c checked by MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/utke.c > t
 diff t TestResults/FIAlias/utke.c.out
-echo "Testing TestCases/AliasTests/OAWikiEx.c\n\tTestResults/AliasTests/OAWikiEx.c checked by ???"
+echo "Testing TestCases/AliasTests/OAWikiEx.c\n\tTestResults/AliasTests/OAWikiEx.c checked by MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/OAWikiEx.c > t
 diff t TestResults/FIAlias/OAWikiEx.c.out
-echo "Testing TestCases/AliasTests/comma.c\n\tTestResults/AliasTests/comma.c checked by ???"
+echo "Testing TestCases/AliasTests/comma.c\n\tTestResults/AliasTests/comma.c checked by MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/comma.c > t
 diff t TestResults/FIAlias/comma.c.out
-echo "Testing TestCases/AliasTests/constQualified.c\n\tTestResults/AliasTests/constQualified.c checked by ???"
+echo "Testing TestCases/AliasTests/constQualified.c\n\tTestResults/AliasTests/constQualified.c checked by MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/constQualified.c > t
 diff t TestResults/FIAlias/constQualified.c.out
 
@@ -65,16 +65,16 @@ echo "Testing TestCases/AliasTests/RinardEtAlPLDI96Fig4.C\n\tTestResults/AliasTe
 diff t TestResults/FIAlias/RinardEtAlPLDI96Fig4.C.out
 
 // C tests
-echo "Testing TestCases/AliasTests/diffArrays.c\n\tTestResults/AliasTests/diffArrays.c checked by ???"
+echo "Testing TestCases/AliasTests/diffArrays.c\n\tTestResults/AliasTests/diffArrays.c checked by MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/diffArrays.c > t
 diff t TestResults/FIAlias/diffArrays.c.out
-echo "Testing TestCases/AliasTests/diffTypes.c\n\tTestResults/AliasTests/diffTypes.c checked by ???"
+echo "Testing TestCases/AliasTests/diffTypes.c\n\tTestResults/AliasTests/diffTypes.c checked by MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/diffTypes.c > t
 diff t TestResults/FIAlias/diffTypes.c.out
-echo "Testing TestCases/AliasTests/LiangEtAl00.c\n\tTestResults/AliasTests/LiangEtAl00.c checked by ???"
+echo "Testing TestCases/AliasTests/LiangEtAl00.c\n\tTestResults/AliasTests/LiangEtAl00.c checked by MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/LiangEtAl00.c > t
 diff t TestResults/FIAlias/LiangEtAl00.c.out
-echo "Testing TestCases/AliasTests/LiangEtAl99.c\n\tTestResults/AliasTests/LiangEtAl99.c checked by ???"
+echo "Testing TestCases/AliasTests/LiangEtAl99.c\n\tTestResults/AliasTests/LiangEtAl99.c checked by MMS"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/LiangEtAl99.c > t
 diff t TestResults/FIAlias/LiangEtAl99.c.out
 echo "Testing TestCases/AliasTests/LiangEtAlICSM99Fig2.c\n\tTestResults/AliasTests/LiangEtAlICSM99Fig2.c checked by MMS"
