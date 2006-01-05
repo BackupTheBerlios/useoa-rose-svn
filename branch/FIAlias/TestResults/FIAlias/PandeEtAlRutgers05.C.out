@@ -1,0 +1,157 @@
+
+EquivSets(		MemRefHandle	 => ProcHandle
+MemRefHandle(a)	 =>ProcHandle(Base::foo)
+MemRefHandle((new Base ))	 =>ProcHandle(Base::foo)
+MemRefHandle(a)	 =>ProcHandle(Derived::foo)
+MemRefHandle((new Derived ))	 =>ProcHandle(Derived::foo)
+MemRefHandle(b)	 =>ProcHandle(Derived::foo)
+MemRefHandle((new Derived ))	 =>ProcHandle(Derived::foo)
+MemRefHandle(argc)	 =>ProcHandle(main)
+MemRefHandle(p)	 =>ProcHandle(main)
+MemRefHandle((new Base ))	 =>ProcHandle(main)
+MemRefHandle(q)	 =>ProcHandle(main)
+MemRefHandle((new Derived ))	 =>ProcHandle(main)
+MemRefHandle(b)	 =>ProcHandle(main)
+MemRefHandle((new Base ))	 =>ProcHandle(main)
+MemRefHandle(p)	 =>ProcHandle(main)
+MemRefHandle((new Derived ))	 =>ProcHandle(main)
+MemRefHandle(q)	 =>ProcHandle(main)
+MemRefHandle((new Base ))	 =>ProcHandle(main)
+MemRefHandle(s)	 =>ProcHandle(main)
+MemRefHandle(&r)	 =>ProcHandle(main)
+MemRefHandle(argv)	 =>ProcHandle(main)
+MemRefHandle(s)	 =>ProcHandle(main)
+MemRefHandle(s -> Derived::bar)	 =>ProcHandle(main)
+MemRefHandle(p)	 =>ProcHandle(main)
+MemRefHandle(p -> foo)	 =>ProcHandle(main)
+MemRefHandle(q)	 =>ProcHandle(main)
+MemRefHandle(q -> foo)	 =>ProcHandle(main)
+MemRefHandle(q)	 =>ProcHandle(main)
+MemRefHandle((new Base ))	 =>ProcHandle(main)
+MemRefHandle(q)	 =>ProcHandle(main)
+MemRefHandle(q -> foo)	 =>ProcHandle(main)
+MemRefHandle(a)	 =>ProcHandle(main)
+MemRefHandle(a -> bar)	 =>ProcHandle(main)
+MemRefHandle(p)	 =>ProcHandle(main)
+MemRefHandle(p -> baz)	 =>ProcHandle(main)
+
+		MemRefHandle	 => int
+MemRefHandle(a)	 =>[ 1 ] 
+MemRefHandle(a)	 =>[ 1 ] 
+MemRefHandle(b)	 =>[ 13 ] 
+MemRefHandle(argc)	 =>[ 17 ] 
+MemRefHandle(p)	 =>[ 18 ] 
+MemRefHandle(q)	 =>[ 23 ] 
+MemRefHandle(b)	 =>[ 13 ] 
+MemRefHandle(p)	 =>[ 18 ] 
+MemRefHandle(q)	 =>[ 23 ] 
+MemRefHandle(s)	 =>[ 34 ] 
+MemRefHandle(argv)	 =>[ 36 ] 
+MemRefHandle(s)	 =>[ 34 ] 
+MemRefHandle(s -> Derived::bar)	 =>[ 37 ] 
+MemRefHandle(p)	 =>[ 18 ] 
+MemRefHandle(p -> foo)	 =>[ 38 ] 
+MemRefHandle(q)	 =>[ 23 ] 
+MemRefHandle(q -> foo)	 =>[ 38 ] 
+MemRefHandle(q)	 =>[ 23 ] 
+MemRefHandle(q)	 =>[ 23 ] 
+MemRefHandle(q -> foo)	 =>[ 38 ] 
+MemRefHandle(a)	 =>[ 1 ] 
+MemRefHandle(a -> bar)	 =>[ 40 ] 
+MemRefHandle(p)	 =>[ 18 ] 
+MemRefHandle(p -> baz)	 =>[ 41 ] 
+
+		ProcHandle	 => std::map<int,OA_ptr<Location> >
+ProcHandle(Base::foo)	 =>			int	 => std::map<int,OA_ptr<Location> >
+1	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(a)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+
+ProcHandle(Derived::foo)	 =>			int	 => std::map<int,OA_ptr<Location> >
+1	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(a)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+13	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(b)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+
+ProcHandle(main)	 =>			int	 => std::map<int,OA_ptr<Location> >
+1	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(a)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+13	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(b)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+17	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(argc)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+18	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(p)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+23	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(q)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+34	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(s)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+36	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(argv)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+37	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(method:Derived::bar)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+38	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(method:Base::foo)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+40	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(method:Base::bar)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+41	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(method:Base::baz)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+
+
+
+)

@@ -1,48 +1,46 @@
 
 EquivSets(		MemRefHandle	 => ProcHandle
+MemRefHandle(a)	 =>ProcHandle(main)
+MemRefHandle(b)	 =>ProcHandle(main)
 MemRefHandle(p)	 =>ProcHandle(main)
-MemRefHandle(&x)	 =>ProcHandle(main)
-MemRefHandle(z)	 =>ProcHandle(main)
+MemRefHandle(&a)	 =>ProcHandle(main)
 MemRefHandle(p)	 =>ProcHandle(main)
 MemRefHandle(*p)	 =>ProcHandle(main)
 MemRefHandle(p)	 =>ProcHandle(main)
-MemRefHandle(&z)	 =>ProcHandle(main)
-MemRefHandle(y)	 =>ProcHandle(main)
+MemRefHandle(&b)	 =>ProcHandle(main)
+MemRefHandle(b)	 =>ProcHandle(main)
+MemRefHandle(b)	 =>ProcHandle(main)
 MemRefHandle(p)	 =>ProcHandle(main)
 MemRefHandle(*p)	 =>ProcHandle(main)
 
 		MemRefHandle	 => int
-MemRefHandle(p)	 =>[ 1 ] 
-MemRefHandle(z)	 =>[ 3 ] 
-MemRefHandle(p)	 =>[ 1 ] 
-MemRefHandle(*p)	 =>[ 3 ] 
-MemRefHandle(p)	 =>[ 1 ] 
-MemRefHandle(y)	 =>[ 6 ] 
-MemRefHandle(p)	 =>[ 1 ] 
-MemRefHandle(*p)	 =>[ 3 ] 
+MemRefHandle(a)	 =>[ 2 ] 
+MemRefHandle(b)	 =>[ 2 ] 
+MemRefHandle(p)	 =>[ 3 ] 
+MemRefHandle(p)	 =>[ 3 ] 
+MemRefHandle(*p)	 =>[ 2 ] 
+MemRefHandle(p)	 =>[ 3 ] 
+MemRefHandle(b)	 =>[ 2 ] 
+MemRefHandle(b)	 =>[ 2 ] 
+MemRefHandle(p)	 =>[ 3 ] 
+MemRefHandle(*p)	 =>[ 2 ] 
 
 		ProcHandle	 => std::map<int,OA_ptr<Location> >
 ProcHandle(main)	 =>			int	 => std::map<int,OA_ptr<Location> >
-1	 =>[ 
+2	 =>[ 
 			NamedLoc(
-				mSymHandle: SymHandle(p)
+				mSymHandle: SymHandle(a)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			)    
+			NamedLoc(
+				mSymHandle: SymHandle(b)
 				mLocal: 1
 				mFullOverlap: 
 				mPartOverlap: 			) ] 
 3	 =>[ 
 			NamedLoc(
-				mSymHandle: SymHandle(x)
-				mLocal: 1
-				mFullOverlap: 
-				mPartOverlap: 			)    
-			NamedLoc(
-				mSymHandle: SymHandle(z)
-				mLocal: 1
-				mFullOverlap: 
-				mPartOverlap: 			) ] 
-6	 =>[ 
-			NamedLoc(
-				mSymHandle: SymHandle(y)
+				mSymHandle: SymHandle(p)
 				mLocal: 1
 				mFullOverlap: 
 				mPartOverlap: 			) ] 

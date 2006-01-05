@@ -1,23 +1,16 @@
 
 EquivSets(		MemRefHandle	 => ProcHandle
-MemRefHandle(a)	 =>ProcHandle(main)
-MemRefHandle(b)	 =>ProcHandle(main)
+MemRefHandle(ptr)	 =>ProcHandle(main)
+MemRefHandle(refPtr)	 =>ProcHandle(main)
 
 		MemRefHandle	 => int
-MemRefHandle(a)	 =>[ 1 ] 
-MemRefHandle(b)	 =>[ 2 ] 
+MemRefHandle(refPtr)	 =>[ 2 ] 
 
 		ProcHandle	 => std::map<int,OA_ptr<Location> >
 ProcHandle(main)	 =>			int	 => std::map<int,OA_ptr<Location> >
-1	 =>[ 
-			NamedLoc(
-				mSymHandle: SymHandle(a)
-				mLocal: 1
-				mFullOverlap: 
-				mPartOverlap: 			) ] 
 2	 =>[ 
 			NamedLoc(
-				mSymHandle: SymHandle(b)
+				mSymHandle: SymHandle(refPtr)
 				mLocal: 1
 				mFullOverlap: 
 				mPartOverlap: 			) ] 

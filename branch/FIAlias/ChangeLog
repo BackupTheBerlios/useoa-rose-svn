@@ -571,3 +571,9 @@
  	  test result generated for it.  Now the equivsets results
 	  only show how each MemRefHandle maps to locations.
 
+1/5/06   UseOA-ROSE svn tag FIAlias r29 	Michelle Strout
+	- After fixing semantics of EquivSets in OA,
+          redid a number of the regression tests.  
+          Those that still have issues are marked as checked by ???
+          in regressionFIAliasTestsOut.script.
+

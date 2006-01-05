@@ -1,0 +1,102 @@
+
+EquivSets(		MemRefHandle	 => ProcHandle
+MemRefHandle(s1)	 =>ProcHandle(p)
+MemRefHandle(s2)	 =>ProcHandle(p)
+MemRefHandle(s2.a)	 =>ProcHandle(q)
+MemRefHandle(s3)	 =>ProcHandle(q)
+MemRefHandle(s1)	 =>ProcHandle(q)
+MemRefHandle(s3)	 =>ProcHandle(r)
+MemRefHandle(s2)	 =>ProcHandle(r)
+MemRefHandle(s3.a)	 =>ProcHandle(r)
+MemRefHandle(s3.a)	 =>ProcHandle(main)
+MemRefHandle(s3.b)	 =>ProcHandle(main)
+MemRefHandle(s3.c)	 =>ProcHandle(main)
+
+		MemRefHandle	 => int
+MemRefHandle(s1)	 =>[ 1 ] 
+MemRefHandle(s2)	 =>[ 2 ] 
+MemRefHandle(s2.a)	 =>[ 3 ] 
+MemRefHandle(s3)	 =>[ 4 ] 
+MemRefHandle(s1)	 =>[ 1 ] 
+MemRefHandle(s3)	 =>[ 4 ] 
+MemRefHandle(s2)	 =>[ 2 ] 
+MemRefHandle(s3.a)	 =>[ 5 ] 
+MemRefHandle(s3.a)	 =>[ 5 ] 
+MemRefHandle(s3.b)	 =>[ 5 ] 
+MemRefHandle(s3.c)	 =>[ 5 ] 
+
+		ProcHandle	 => std::map<int,OA_ptr<Location> >
+ProcHandle(p)	 =>			int	 => std::map<int,OA_ptr<Location> >
+1	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(s1)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+2	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(s2)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+
+ProcHandle(q)	 =>			int	 => std::map<int,OA_ptr<Location> >
+1	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(s1)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+3	 =>[ 
+			LocSubSet(
+				mLoc: 
+				NamedLoc(
+					mSymHandle: SymHandle(s2)
+					mLocal: 0
+					mFullOverlap: 
+					mPartOverlap: 				)
+				mFull: 0			) ] 
+4	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(s3)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+
+ProcHandle(r)	 =>			int	 => std::map<int,OA_ptr<Location> >
+2	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(s2)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+4	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(s3)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+5	 =>[ 
+			LocSubSet(
+				mLoc: 
+				NamedLoc(
+					mSymHandle: SymHandle(s3)
+					mLocal: 0
+					mFullOverlap: 
+					mPartOverlap: 				)
+				mFull: 0			) ] 
+
+ProcHandle(main)	 =>			int	 => std::map<int,OA_ptr<Location> >
+5	 =>[ 
+			LocSubSet(
+				mLoc: 
+				NamedLoc(
+					mSymHandle: SymHandle(s3)
+					mLocal: 0
+					mFullOverlap: 
+					mPartOverlap: 				)
+				mFull: 0			) ] 
+
+
+
+)

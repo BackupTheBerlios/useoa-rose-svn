@@ -9,6 +9,8 @@ echo "Testing alias3.c"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/alias3.c > TestResults/FIAlias/alias3.c.out
 echo "Testing alias4.c"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/alias4.c > TestResults/FIAlias/alias4.c.out
+echo "Testing alias4b.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/alias4b.c > TestResults/FIAlias/alias4b.c.out
 echo "Testing funCall.c"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/funCall.c > TestResults/FIAlias/funCall.c.out
 echo "Testing utke.c"

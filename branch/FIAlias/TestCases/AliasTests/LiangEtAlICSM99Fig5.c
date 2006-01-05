@@ -21,6 +21,7 @@ void f(int a)
 
 int main()
 {
+  int a = 0;
   g1 = 0;
   g2 = 0;
   g = 0;

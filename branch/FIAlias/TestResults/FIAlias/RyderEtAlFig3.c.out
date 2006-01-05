@@ -1,0 +1,23 @@
+
+EquivSets(		MemRefHandle	 => ProcHandle
+MemRefHandle(p)	 =>ProcHandle(main)
+MemRefHandle(&q)	 =>ProcHandle(main)
+MemRefHandle(p)	 =>ProcHandle(main)
+MemRefHandle(&r)	 =>ProcHandle(main)
+
+		MemRefHandle	 => int
+MemRefHandle(p)	 =>[ 1 ] 
+MemRefHandle(p)	 =>[ 1 ] 
+
+		ProcHandle	 => std::map<int,OA_ptr<Location> >
+ProcHandle(main)	 =>			int	 => std::map<int,OA_ptr<Location> >
+1	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(p)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+
+
+
+)

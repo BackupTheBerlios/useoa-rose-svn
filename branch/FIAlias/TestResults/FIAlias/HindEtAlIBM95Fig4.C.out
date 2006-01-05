@@ -1,0 +1,171 @@
+
+EquivSets(		MemRefHandle	 => ProcHandle
+MemRefHandle(new B)	 =>ProcHandle(B::createObj)
+MemRefHandle(q.data)	 =>ProcHandle(B::changeData)
+MemRefHandle(q.data)	 =>ProcHandle(C::changeData)
+MemRefHandle((new D ))	 =>ProcHandle(D::createObj)
+MemRefHandle(q.data)	 =>ProcHandle(D::changeData)
+MemRefHandle((new E ))	 =>ProcHandle(E::createObj)
+MemRefHandle()	 =>ProcHandle(main)
+MemRefHandle(q)	 =>ProcHandle(main)
+MemRefHandle()	 =>ProcHandle(main)
+MemRefHandle(c)	 =>ProcHandle(main)
+MemRefHandle(r)	 =>ProcHandle(main)
+MemRefHandle(b)	 =>ProcHandle(main)
+MemRefHandle(cond)	 =>ProcHandle(main)
+MemRefHandle(p)	 =>ProcHandle(main)
+MemRefHandle(&r)	 =>ProcHandle(main)
+MemRefHandle(cond)	 =>ProcHandle(main)
+MemRefHandle(b)	 =>ProcHandle(main)
+MemRefHandle((new D ))	 =>ProcHandle(main)
+MemRefHandle(r)	 =>ProcHandle(main)
+MemRefHandle(b)	 =>ProcHandle(main)
+MemRefHandle(b -> createObj)	 =>ProcHandle(main)
+MemRefHandle(b -> createObj())	 =>ProcHandle(main)
+MemRefHandle(b)	 =>ProcHandle(main)
+MemRefHandle((new E ))	 =>ProcHandle(main)
+MemRefHandle(r)	 =>ProcHandle(main)
+MemRefHandle(b)	 =>ProcHandle(main)
+MemRefHandle(b -> createObj)	 =>ProcHandle(main)
+MemRefHandle(b -> createObj())	 =>ProcHandle(main)
+MemRefHandle(p)	 =>ProcHandle(main)
+MemRefHandle(( *p))	 =>ProcHandle(main)
+MemRefHandle(( *( *p)).changeData)	 =>ProcHandle(main)
+MemRefHandle(q)	 =>ProcHandle(main)
+MemRefHandle((q.data))	 =>ProcHandle(main)
+
+		MemRefHandle	 => int
+MemRefHandle(q.data)	 =>[ 3 ] 
+MemRefHandle(q.data)	 =>[ 6 ] 
+MemRefHandle(q.data)	 =>[ 11 ] 
+MemRefHandle()	 =>[ 16 ] 
+MemRefHandle(q)	 =>[ 17 ] 
+MemRefHandle()	 =>[ 18 ] 
+MemRefHandle(c)	 =>[ 19 ] 
+MemRefHandle(r)	 =>[ 20 ] 
+MemRefHandle(b)	 =>[ 21 ] 
+MemRefHandle(cond)	 =>[ 22 ] 
+MemRefHandle(p)	 =>[ 23 ] 
+MemRefHandle(cond)	 =>[ 22 ] 
+MemRefHandle(b)	 =>[ 21 ] 
+MemRefHandle(r)	 =>[ 20 ] 
+MemRefHandle(b)	 =>[ 21 ] 
+MemRefHandle(b -> createObj)	 =>[ 26 ] 
+MemRefHandle(b)	 =>[ 21 ] 
+MemRefHandle(r)	 =>[ 20 ] 
+MemRefHandle(b)	 =>[ 21 ] 
+MemRefHandle(b -> createObj)	 =>[ 26 ] 
+MemRefHandle(p)	 =>[ 23 ] 
+MemRefHandle(( *p))	 =>[ 20 ] 
+MemRefHandle(( *( *p)).changeData)	 =>[ 30 ] 
+MemRefHandle(q)	 =>[ 17 ] 
+MemRefHandle((q.data))	 =>[ 31 ] 
+
+		ProcHandle	 => std::map<int,OA_ptr<Location> >
+ProcHandle(B::changeData)	 =>			int	 => std::map<int,OA_ptr<Location> >
+3	 =>[ 
+			LocSubSet(
+				mLoc: 
+				NamedLoc(
+					mSymHandle: SymHandle(q)
+					mLocal: 1
+					mFullOverlap: 
+					mPartOverlap: 				)
+				mFull: 0			) ] 
+
+ProcHandle(C::changeData)	 =>			int	 => std::map<int,OA_ptr<Location> >
+6	 =>[ 
+			LocSubSet(
+				mLoc: 
+				NamedLoc(
+					mSymHandle: SymHandle(q)
+					mLocal: 1
+					mFullOverlap: 
+					mPartOverlap: 				)
+				mFull: 0			) ] 
+
+ProcHandle(D::changeData)	 =>			int	 => std::map<int,OA_ptr<Location> >
+11	 =>[ 
+			LocSubSet(
+				mLoc: 
+				NamedLoc(
+					mSymHandle: SymHandle(q)
+					mLocal: 1
+					mFullOverlap: 
+					mPartOverlap: 				)
+				mFull: 0			) ] 
+
+ProcHandle(main)	 =>			int	 => std::map<int,OA_ptr<Location> >
+16	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(method:B::B)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+17	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(q)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+18	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(method:C::C)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+19	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(c)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+20	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(r)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+21	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(b)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+22	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(cond)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+23	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(p)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+26	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(method:B::createObj)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+30	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(method:B::changeData)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+31	 =>[ 
+			LocSubSet(
+				mLoc: 
+				NamedLoc(
+					mSymHandle: SymHandle(q)
+					mLocal: 1
+					mFullOverlap: 
+					mPartOverlap: 				)
+				mFull: 0			) ] 
+
+
+
+)

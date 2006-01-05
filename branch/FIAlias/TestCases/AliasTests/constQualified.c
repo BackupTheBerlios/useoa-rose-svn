@@ -15,6 +15,7 @@ int main()
   int x, y;
   const int *q = &const_array[i];
   x = *q;
+  p = &i;
   *p = 5;
   y = *q;
   g (x, y);

@@ -11,5 +11,8 @@ int main()
   s.s1 = &x;
   s.s2 = &y;
   p = s.s1;
+  // MMS, added some more refs
+  *(s.s1);
+  *(s.s2);
   return 0;
 }

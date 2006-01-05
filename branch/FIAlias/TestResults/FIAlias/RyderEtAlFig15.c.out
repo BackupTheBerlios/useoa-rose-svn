@@ -1,0 +1,122 @@
+
+EquivSets(		MemRefHandle	 => ProcHandle
+MemRefHandle((char *)(malloc((size))))	 =>ProcHandle(my_malloc)
+MemRefHandle(p)	 =>ProcHandle(my_malloc)
+MemRefHandle(p)	 =>ProcHandle(my_malloc)
+MemRefHandle(s)	 =>ProcHandle(a)
+MemRefHandle((my_malloc(12)))	 =>ProcHandle(a)
+MemRefHandle(s)	 =>ProcHandle(a)
+MemRefHandle(*s)	 =>ProcHandle(a)
+MemRefHandle(x)	 =>ProcHandle(a)
+MemRefHandle(t)	 =>ProcHandle(b)
+MemRefHandle((my_malloc(8)))	 =>ProcHandle(b)
+MemRefHandle(t)	 =>ProcHandle(b)
+MemRefHandle(*t)	 =>ProcHandle(b)
+MemRefHandle(y)	 =>ProcHandle(b)
+
+		MemRefHandle	 => int
+MemRefHandle(p)	 =>[ 2 ] 
+MemRefHandle(p)	 =>[ 2 ] 
+MemRefHandle(s)	 =>[ 4 ] 
+MemRefHandle(s)	 =>[ 4 ] 
+MemRefHandle(*s)	 =>[ 5 ] 
+MemRefHandle(x)	 =>[ 7 ] 
+MemRefHandle(t)	 =>[ 8 ] 
+MemRefHandle(t)	 =>[ 8 ] 
+MemRefHandle(*t)	 =>[ 5 ] 
+MemRefHandle(y)	 =>[ 10 ] 
+
+		ProcHandle	 => std::map<int,OA_ptr<Location> >
+ProcHandle(my_malloc)	 =>			int	 => std::map<int,OA_ptr<Location> >
+2	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(p)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+
+ProcHandle(a)	 =>			int	 => std::map<int,OA_ptr<Location> >
+4	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(s)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+5	 =>[ 
+			InvisibleLoc(
+				mMRE: 
+				Deref(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: DEF
+					mMRE: 
+					NamedRef(
+						mAddressOf: 0
+						mFullAccuracy: 1
+						mMemRefType: USE
+						mSymHandle: SymHandle(s)					)
+					mNumDeref: 1				)			)    
+			InvisibleLoc(
+				mMRE: 
+				Deref(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: DEF
+					mMRE: 
+					NamedRef(
+						mAddressOf: 0
+						mFullAccuracy: 1
+						mMemRefType: USE
+						mSymHandle: SymHandle(t)					)
+					mNumDeref: 1				)			) ] 
+7	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(x)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+
+ProcHandle(b)	 =>			int	 => std::map<int,OA_ptr<Location> >
+5	 =>[ 
+			InvisibleLoc(
+				mMRE: 
+				Deref(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: DEF
+					mMRE: 
+					NamedRef(
+						mAddressOf: 0
+						mFullAccuracy: 1
+						mMemRefType: USE
+						mSymHandle: SymHandle(s)					)
+					mNumDeref: 1				)			)    
+			InvisibleLoc(
+				mMRE: 
+				Deref(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: DEF
+					mMRE: 
+					NamedRef(
+						mAddressOf: 0
+						mFullAccuracy: 1
+						mMemRefType: USE
+						mSymHandle: SymHandle(t)					)
+					mNumDeref: 1				)			) ] 
+8	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(t)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+10	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(y)
+				mLocal: 0
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+
+
+
+)

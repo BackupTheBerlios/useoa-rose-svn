@@ -1,54 +1,45 @@
 
-EquivSets(		MemRefHandle	 => int
-MemRefHandle(i)	 =>[ 1 ] 
-MemRefHandle(*i)	 =>[ 5 ] 
-MemRefHandle(j)	 =>[ 2 ] 
-MemRefHandle(*j)	 =>[ 7 ] 
-MemRefHandle(b)	 =>[ 8 ] 
-MemRefHandle(a)	 =>[ 6 ] 
-MemRefHandle(*a)	 =>[ 4 ] 
-MemRefHandle(b)	 =>[ 8 ] 
-MemRefHandle(*b)	 =>[ 4 ] 
+EquivSets(		MemRefHandle	 => ProcHandle
+MemRefHandle(i)	 =>ProcHandle(makeAlias)
+MemRefHandle(*i)	 =>ProcHandle(makeAlias)
+MemRefHandle(j)	 =>ProcHandle(makeAlias)
+MemRefHandle(*j)	 =>ProcHandle(makeAlias)
+MemRefHandle(b)	 =>ProcHandle(main)
+MemRefHandle(&loc)	 =>ProcHandle(main)
+MemRefHandle(&a)	 =>ProcHandle(main)
+MemRefHandle(&b)	 =>ProcHandle(main)
+MemRefHandle(a)	 =>ProcHandle(main)
+MemRefHandle(*a)	 =>ProcHandle(main)
+MemRefHandle(b)	 =>ProcHandle(main)
+MemRefHandle(*b)	 =>ProcHandle(main)
 
-		int	 => std::set<OA_ptr<Location> >
+		MemRefHandle	 => int
+MemRefHandle(i)	 =>[ 1 ] 
+MemRefHandle(*i)	 =>[ 9 ] 
+MemRefHandle(j)	 =>[ 3 ] 
+MemRefHandle(*j)	 =>[ 5 ] 
+MemRefHandle(b)	 =>[ 5 ] 
+MemRefHandle(a)	 =>[ 9 ] 
+MemRefHandle(*a)	 =>[ 14 ] 
+MemRefHandle(b)	 =>[ 5 ] 
+MemRefHandle(*b)	 =>[ 14 ] 
+
+		ProcHandle	 => std::map<int,OA_ptr<Location> >
+ProcHandle(makeAlias)	 =>			int	 => std::map<int,OA_ptr<Location> >
 1	 =>[ 
-		NamedLoc(
-			mSymHandle: SymHandle(i)
-			mLocal: 1
-			mFullOverlap: 
-			mPartOverlap: 		) ] 
-2	 =>[ 
-		NamedLoc(
-			mSymHandle: SymHandle(j)
-			mLocal: 1
-			mFullOverlap: 
-			mPartOverlap: 		) ] 
+			NamedLoc(
+				mSymHandle: SymHandle(i)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
 3	 =>[ 
-		InvisibleLoc(
-			mMRE: 
-			Deref(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: USE
-				mMRE: 
-				Deref(
-					mAddressOf: 0
-					mFullAccuracy: 1
-					mMemRefType: DEF
-					mMRE: 
-					NamedRef(
-						mAddressOf: 0
-						mFullAccuracy: 1
-						mMemRefType: USE
-						mSymHandle: SymHandle(i)					)
-					mNumDeref: 1				)
-				mNumDeref: 1			)		)    
-		InvisibleLoc(
-			mMRE: 
-			Deref(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: USE
+			NamedLoc(
+				mSymHandle: SymHandle(j)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+5	 =>[ 
+			InvisibleLoc(
 				mMRE: 
 				Deref(
 					mAddressOf: 0
@@ -60,53 +51,81 @@ MemRefHandle(*b)	 =>[ 4 ]
 						mFullAccuracy: 1
 						mMemRefType: USE
 						mSymHandle: SymHandle(j)					)
-					mNumDeref: 1				)
-				mNumDeref: 1			)		) ] 
-4	 =>[ 
-		NamedLoc(
-			mSymHandle: SymHandle(loc)
-			mLocal: 1
-			mFullOverlap: 
-			mPartOverlap: 		) ] 
+					mNumDeref: 1				)			) ] 
+9	 =>[ 
+			InvisibleLoc(
+				mMRE: 
+				Deref(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: DEF
+					mMRE: 
+					NamedRef(
+						mAddressOf: 0
+						mFullAccuracy: 1
+						mMemRefType: USE
+						mSymHandle: SymHandle(i)					)
+					mNumDeref: 1				)			) ] 
+14	 =>[ 
+			InvisibleLoc(
+				mMRE: 
+				Deref(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: USE
+					mMRE: 
+					Deref(
+						mAddressOf: 0
+						mFullAccuracy: 1
+						mMemRefType: DEF
+						mMRE: 
+						NamedRef(
+							mAddressOf: 0
+							mFullAccuracy: 1
+							mMemRefType: USE
+							mSymHandle: SymHandle(i)						)
+						mNumDeref: 1					)
+					mNumDeref: 1				)			)    
+			InvisibleLoc(
+				mMRE: 
+				Deref(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: USE
+					mMRE: 
+					Deref(
+						mAddressOf: 0
+						mFullAccuracy: 1
+						mMemRefType: USE
+						mMRE: 
+						NamedRef(
+							mAddressOf: 0
+							mFullAccuracy: 1
+							mMemRefType: USE
+							mSymHandle: SymHandle(j)						)
+						mNumDeref: 1					)
+					mNumDeref: 1				)			) ] 
+
+ProcHandle(main)	 =>			int	 => std::map<int,OA_ptr<Location> >
 5	 =>[ 
-		InvisibleLoc(
-			mMRE: 
-			Deref(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: DEF
-				mMRE: 
-				NamedRef(
-					mAddressOf: 0
-					mFullAccuracy: 1
-					mMemRefType: USE
-					mSymHandle: SymHandle(i)				)
-				mNumDeref: 1			)		) ] 
-6	 =>[ 
-		NamedLoc(
-			mSymHandle: SymHandle(a)
-			mLocal: 1
-			mFullOverlap: 
-			mPartOverlap: 		) ] 
-7	 =>[ 
-		InvisibleLoc(
-			mMRE: 
-			Deref(
-				mAddressOf: 0
-				mFullAccuracy: 1
-				mMemRefType: USE
-				mMRE: 
-				NamedRef(
-					mAddressOf: 0
-					mFullAccuracy: 1
-					mMemRefType: USE
-					mSymHandle: SymHandle(j)				)
-				mNumDeref: 1			)		) ] 
-8	 =>[ 
-		NamedLoc(
-			mSymHandle: SymHandle(b)
-			mLocal: 1
-			mFullOverlap: 
-			mPartOverlap: 		) ] 
+			NamedLoc(
+				mSymHandle: SymHandle(b)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+9	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(a)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+14	 =>[ 
+			NamedLoc(
+				mSymHandle: SymHandle(loc)
+				mLocal: 1
+				mFullOverlap: 
+				mPartOverlap: 			) ] 
+
+
 
 )
