@@ -1627,12 +1627,18 @@ SageIRMemRefIterator::mreComputesLValue(OA::OA_ptr<OA::MemRefExpr> mre)
 }
 
 // Apply the reference conversion rules:
-// - For every assignment to a referenece:  t_l& lhs = rhs
+// - For every initialization of a referenece:  t_l& lhs = rhs
+//   (including the implicit assigment during parameter binding
+//   and intialization in a constructor's initializer list)
 //  1.  Convert lhs from a reference to a pointer type, t_l *lhs = ...
 //  2.  If the rhs does not have an lvalue (e.g., 3+5, 5, &y, ...),
 //      then replace lhs with *lhs.
-//  3.  Whenever lhs is used on a right-hand side, replace lhs with *lhs.
-// - For every rhs corresponding to a reference assignment: t_l &lhs = rhs
+//  3.  Whenever lhs is used on a right-hand side or in an
+//      assignment (lhs = rhs), replace lhs with *lhs.  Since references
+//      are only assigned once (during initialization), a reference's
+//      appearance on the lhs of an assignment modifies the data to which
+//      it refers, not to the reference itself.
+// - For every rhs corresponding to the above initialization cases: t_l &lhs = rhs
 //  4.  If the rhs has an lvalue, then replace rhs with &rhs.
 // Returns converted and/or unconverted MemRefExprs in the out parameter
 // convertedMemRefs.
@@ -1642,6 +1648,8 @@ SageIRMemRefIterator::mreComputesLValue(OA::OA_ptr<OA::MemRefExpr> mre)
 // its rhs computes an lvalue.
 // hasRhsThatDoesntComputeLValue indicates that mre appears on a lhs and
 // its rhs does not compute an lvalue.
+// initializedRef indicates that the astNode is a reference which
+// is initialized within astNode's enclosing statement.
 // Note that one, both, or none of the hasRhs*LValue bools may be true.
 // Both may be true if mre is on a lhs and the assignment might
 // look like:
@@ -1651,9 +1659,10 @@ SageIRMemRefIterator::mreComputesLValue(OA::OA_ptr<OA::MemRefExpr> mre)
 void
 SageIRMemRefIterator::applyReferenceConversionRules(OA::OA_ptr<OA::MemRefExpr> mre,
 						    SgNode *astNode, 
-						    bool appearsOnRhsOfRefAssignment,
+						    bool appearsOnRhsOfRefInitialization,
 						    bool hasRhsThatComputesLValue,
 						    bool hasRhsThatDoesntComputeLValue,
+						    bool initializedRef,
 						    std::list<OA::OA_ptr<OA::MemRefExpr> > &convertedMemRefs)
 {
   std::list<OA::OA_ptr<OA::MemRefExpr> > tmpMemRefs;
@@ -1683,7 +1692,7 @@ SageIRMemRefIterator::applyReferenceConversionRules(OA::OA_ptr<OA::MemRefExpr> m
 
   // The rules do not apply to MemRefExprs which are neither references
   // nor on the rhs of a reference assignment.
-  if ( !isReference && !appearsOnRhsOfRefAssignment ) {
+  if ( !isReference && !appearsOnRhsOfRefInitialization ) {
     convertedMemRefs.push_back(mre);  
     return;
   }
@@ -1704,7 +1713,7 @@ SageIRMemRefIterator::applyReferenceConversionRules(OA::OA_ptr<OA::MemRefExpr> m
     // - For every rhs corresponding to a reference assignment: t_l &lhs = rhs
     //  4.  If the rhs has an lvalue, then replace rhs with &rhs.
     // Note that rhs does not itself have to be a reference.
-    if ( appearsOnRhsOfRefAssignment ) {
+    if ( appearsOnRhsOfRefInitialization ) {
 
       if ( mreComputesLValue(mre) ) {
 //	computesLValue = true;
@@ -1742,16 +1751,17 @@ SageIRMemRefIterator::applyReferenceConversionRules(OA::OA_ptr<OA::MemRefExpr> m
 
     } else {
 
-      if ( hasRhsThatDoesntComputeLValue ) {
+      // Implied corollary:  if the rhs does not compute an lvalue,
+      // keep lhs as is.  If we have multiple rhs, we may need both
+      // lhs and *lhs.
+      if ( hasRhsThatDoesntComputeLValue || !initializedRef ) {
 	derefedLhs = mIR->dereferenceMre(mre);
 	// As we did above with USE, ensure this isn't a DEFUSE or USEDEF.
 	derefedLhs->setMemRefType(OA::MemRefExpr::DEF);
       }
       
-      // Implied corollary:  if the rhs does not compute an lvalue,
-      // keep lhs as is.  If we have multiple rhs, we may need both
-      // lhs and *lhs.
-      if ( hasRhsThatComputesLValue || !hasRhsThatDoesntComputeLValue ) {
+      if ( ( hasRhsThatComputesLValue || !hasRhsThatDoesntComputeLValue ) &&
+	   initializedRef ) {
 	origLhs = mre->clone();
 	// As we did above with USE, ensure this isn't a DEFUSE or USEDEF.
 	origLhs->setMemRefType(OA::MemRefExpr::DEF);
@@ -1911,7 +1921,7 @@ SageIRInterface::createMRE(SgInitializedName *initName,
     // Because we do not accurately model field accesses,
     // model it as a partially accurate Deref of this.
     OA::SymHandle symHandle = getThisExpSymHandle(memberFunctionDeclaration);
-
+ 
     OA::OA_ptr<OA::MemRefExpr> baseMre;
     baseMre = new OA::NamedRef(false, true, OA::MemRefExpr::USE, symHandle);
     ROSE_ASSERT(!baseMre.ptrEqual(0));
@@ -1962,7 +1972,8 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
   
   bool hasRhsThatComputesLValue         = flags & expectRhsComputesLValue;
   bool hasRhsThatDoesntComputeLValue    = flags & expectRhsDoesntComputeLValue;
-  bool appearsOnRhsOfRefAssignment      = flags & expectRefRhs;
+  bool appearsOnRhsOfRefInitialization      = flags & expectRefRhs;
+  bool initializedRef                   = false;
   bool dontApplyConversion              = flags & expectDontApplyConversion;
 
   bool takeAddrAndStoreMRESet           = flags & takeAddrOfAndStoreMRE;
@@ -2039,8 +2050,11 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       SgType *lhsType = lhs->get_type();
       ROSE_ASSERT(lhsType != NULL);
 
+#if 0
+      // No!  Do not treat assignments as initializations.
       if ( isSgReferenceType( mIR->getBaseType(lhsType) ) )
 	addInheritedFlag(rhsFlags, expectRefRhs);
+#endif
 
       // Recurse on rhs.
       findAllMemRefsAndMemRefExprs(rhs, memRefs, rhsFlags,
@@ -2558,7 +2572,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
 	  if ( ( isArrowExp || isReferenceExp ) 
 #if 1
-	       && ( mIR->isVirtual(functionDeclaration ) ) 
+	       && ( mIR->isVirtual(functionDeclaration) ) 
 #endif
 	       ) {
 
@@ -2690,9 +2704,10 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	} else {
 	  applyReferenceConversionRules(arrowOrDotMemRefExpr,
 					astNode,
-					appearsOnRhsOfRefAssignment,
+					appearsOnRhsOfRefInitialization,
 					hasRhsThatComputesLValue,
 					hasRhsThatDoesntComputeLValue,
+					initializedRef,
 					convertedMemRefs);
 	}
 
@@ -3615,9 +3630,10 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	} else {
 	  applyReferenceConversionRules(memRefExp,
 					astNode,
-					appearsOnRhsOfRefAssignment,
+					appearsOnRhsOfRefInitialization,
 					hasRhsThatComputesLValue,
 					hasRhsThatDoesntComputeLValue,
+					initializedRef = true,
 					convertedMemRefs);
 	}
 
@@ -3675,9 +3691,10 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       } else {
 	applyReferenceConversionRules(memRefExp,
 				      astNode,
-				      appearsOnRhsOfRefAssignment,
+				      appearsOnRhsOfRefInitialization,
 				      hasRhsThatComputesLValue,
 				      hasRhsThatDoesntComputeLValue,
+				      initializedRef,
 				      convertedMemRefs);
       }
 
@@ -3900,6 +3917,21 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // This does not compute an lvalue.
       addSynthesizedFlag(synthesizedFlags, synthesizedDoesntComputeLValue);
 
+      // The constructor initializer is treated
+      // independently of whatever precedes it in the
+      // AST.  Therefore, do not propagate the parent
+      // node's flags to them, but rather zero out their flags.
+      SgConstructorInitializer *ctorInitializer =
+	newExp->get_constructor_args();
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      // Notice that we don't need to consume expectArrayBase, expectDef,
+      // and expectArrowDotRHS since we have zeroed out the flags.
+      
+      unsigned int dummySynthesizedFlags;
+      findAllMemRefsAndMemRefExprs(ctorInitializer, memRefs, 0,
+				   dummySynthesizedFlags);
+
       break;
     }
 
@@ -4081,9 +4113,10 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  } else {
 	    applyReferenceConversionRules(deref,
 					  astNode,
-					  appearsOnRhsOfRefAssignment,
+					  appearsOnRhsOfRefInitialization,
 					  hasRhsThatComputesLValue,
 					  hasRhsThatDoesntComputeLValue,
+					  initializedRef,
 					  convertedMemRefs);
 	  }
 

@@ -284,6 +284,67 @@ OA::OA_ptr<OA::IRCallsiteIterator> SageIRInterface::getCallsites(OA::StmtHandle 
   return iter;
 }
 
+SgNode *
+SageIRInterface::getMethodInvocationLhs(SgFunctionCallExp *functionCall)
+{
+  ROSE_ASSERT(functionCall != NULL);
+
+  SgNode *lhs = NULL;
+
+  SgExpression *expression = functionCall->get_function();
+  ROSE_ASSERT(expression != NULL);
+
+  bool isMethod = false;
+
+  switch(expression->variantT()) {
+  case V_SgDotExp:
+    {
+      SgDotExp *dotExp = isSgDotExp(expression);
+      ROSE_ASSERT(dotExp != NULL);
+	  
+      lhs = dotExp->get_lhs_operand();
+      ROSE_ASSERT(lhs != NULL);
+	  
+      SgPointerDerefExp *pointerDerefExp =
+	isSgPointerDerefExp(lhs);
+	  
+      if ( pointerDerefExp != NULL ) {
+	
+	// This is (*b).foo() == b->foo();
+	lhs = pointerDerefExp->get_operand_i();
+	
+      } 
+
+      break;
+    }
+  case V_SgArrowExp:
+    {
+      SgArrowExp *arrowExp = isSgArrowExp(expression);
+      ROSE_ASSERT(arrowExp != NULL);
+
+      lhs = arrowExp->get_lhs_operand();
+      ROSE_ASSERT(lhs != NULL);
+
+      break;
+    }
+  case V_SgMemberFunctionRefExp:
+  case V_SgFunctionRefExp:
+  case V_SgPointerDerefExp:
+    {
+      break;
+    }
+  default:
+    {
+      cerr << "Was not expecting an " << expression->sage_class_name() << endl;
+      cerr << "in a function call." << endl;
+      ROSE_ABORT();
+    }
+  }
+
+  return lhs;
+
+}
+
 bool
 SageIRInterface::isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
 {
@@ -2585,7 +2646,7 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
   ROSE_ASSERT(node != NULL);
   
   SgFunctionDeclaration *functionDeclaration = NULL;
-  SgNode *lhs = NULL;
+  //  SgNode *lhs = NULL;
 
   bool isDotExp     = false;
   bool isMethod = false;
@@ -2598,11 +2659,27 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
       ROSE_ASSERT(functionCallExp != NULL);
       
       isMethod = mIR->isMethodCall(functionCallExp, isDotExp);
+#if 0
+      if ( isMethod ) {
+	lhs = mIR->getMethodInvocationLhs(functionCallExp);
+	ROSE_ASSERT(lhs != NULL);
+	lhs = mIR->lookThroughCastExpAndAssignInitializer(lhs);
+      }
+#endif
       break;
     }
   case V_SgNewExp:
     {
       isMethod = true;
+#if 0
+      SgNewExp *newExp = isSgNewExp(node);
+      ROSE_ASSERT(newExp != NULL);
+
+      lhs = mIR->getNewLhs(newExp);
+      if ( lhs != NULL ) {
+	lhs = mIR->lookThroughCastExpAndAssignInitializer(lhs);
+      }
+#endif
       break;
     }
   default:
@@ -2620,6 +2697,84 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
     mIR->getCallsiteParams(call);
 
   int paramNum = 0;
+
+  if ( ( paramNum == 0 ) && ( isMethod ) ) {
+
+    bool handleThisExp = true;
+
+    ROSE_ASSERT(actualsIter->isValid());
+
+    OA::ExprHandle actualExpr = actualsIter->current(); 
+    SgNode *actualNode = mIR->getNodePtr(actualExpr);
+    // actualExpr could be NULL if expression was 'return (new B)'--
+    // i.e., no lhs.
+    //    ROSE_ASSERT(actualNode != NULL);
+    
+    // We fold the object upon which a method is invoked into
+    // the argument list (as the first actual) of a method
+    // invocation.  If this is the first arg of a method
+    // invocation we need special processing for the 'this'
+    // expression.
+    
+    OA::MemRefHandle actualMemRefHandle = (OA::MemRefHandle)0;
+    
+    bool isArrowExp = false;
+    if ( actualNode != NULL ) {
+      actualNode = mIR->lookThroughCastExpAndAssignInitializer(actualNode);
+      if ( mIR->isMemRefNode(actualNode) )
+	actualMemRefHandle = mIR->getNodeNumber(actualNode);
+    }
+
+    if ( actualMemRefHandle == (OA::MemRefHandle)0 ) {
+      
+      // This isn't true.  Consider that printf's first formal is
+      // a const char *.  We may pass it an actual string, which
+      // is not a MemRefNode.
+      
+    } else {
+      
+      OA::OA_ptr<OA::MemRefExprIterator> actualMreIterPtr 
+	= mIR->getMemRefExprIterator(actualMemRefHandle);
+      
+      // for each mem-ref-expr associated with this memref
+      for (; actualMreIterPtr->isValid(); (*actualMreIterPtr)++) {
+	
+	OA::OA_ptr<OA::MemRefExpr> actualMre;
+	
+	if ( ( handleThisExp == true ) && ( isDotExp == true ) ) {
+	  
+	  // We are returning a MemRefExpr representing the object b
+	  // upon which a method is invoked in the expression b.foo()
+	  // (i.e., a dot expression).  This pair is intended to
+	  // represent the implicit binding between the 'this' pointer
+	  // and this object.  Since 'this' is a pointer, we should
+	  // bind it to the address of b.
+	  
+	  OA::OA_ptr<OA::MemRefExpr> curr = actualMreIterPtr->current();
+	  actualMre = curr->clone();
+	  actualMre->setAddressTaken(true);
+	  
+	} else { 
+	  
+	  actualMre = actualMreIterPtr->current();
+	  
+	}
+	
+	
+	mPairList.push_back(pair<int, OA::OA_ptr<OA::MemRefExpr> >(paramNum, actualMre));
+	
+      }
+      
+    }
+    
+    (*actualsIter)++; 
+    paramNum++;
+
+  }
+    
+  // Handle the implicit this parameter outside of the loop.
+  // Note that the implicit actual is included in actualsIter,
+  // though the formal is not represented in typePtrList.
 
   // Simultaneously iterate over both formals and actuals.
   // If the formal is a reference parameter (i.e., 
@@ -2639,11 +2794,6 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
       treatAsPointerParam = true;
     }
     
-    if ( ( paramNum == 0 ) && ( isMethod ) ) {
-      treatAsPointerParam = true;
-      handleThisExp = true;
-    }
-    
     if ( treatAsPointerParam ) {
 
       OA::ExprHandle actualExpr = actualsIter->current(); 
@@ -2659,25 +2809,15 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
       OA::MemRefHandle actualMemRefHandle = (OA::MemRefHandle)0;
 
       bool isArrowExp = false;
-      if ( handleThisExp == true ) {
-	
-	if ( lhs != NULL ) {
-	  if ( mIR->isMemRefNode(lhs) )
-	    actualMemRefHandle = mIR->getNodeNumber(lhs);
-	} 
 
-      } else { 
-
-	// Ensure that this expression is actually represented 
-	// by a MemRefHandle.  
-	actualNode = mIR->lookThroughCastExpAndAssignInitializer(actualNode);
-	//	ROSE_ASSERT(mIR->isMemRefNode(actualNode));
-
-	if ( mIR->isMemRefNode(actualNode) )
-	  actualMemRefHandle = mIR->getNodeNumber(actualNode);
-	
-      }
-
+      // Ensure that this expression is actually represented 
+      // by a MemRefHandle.  
+      actualNode = mIR->lookThroughCastExpAndAssignInitializer(actualNode);
+      //	ROSE_ASSERT(mIR->isMemRefNode(actualNode));
+      
+      if ( mIR->isMemRefNode(actualNode) )
+	actualMemRefHandle = mIR->getNodeNumber(actualNode);
+      
       if ( actualMemRefHandle == (OA::MemRefHandle)0 ) {
 
 	// This isn't true.  Consider that printf's first formal is
@@ -2694,25 +2834,7 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
 	  
 	  OA::OA_ptr<OA::MemRefExpr> actualMre;
 	  
-	  if ( ( handleThisExp == true ) && ( isDotExp == true ) ) {
-	    
-	    // We are returning a MemRefExpr representing the object b
-	    // upon which a method is invoked in the expression b.foo()
-	    // (i.e., a dot expression).  This pair is intended to
-	    // represent the implicit binding between the 'this' pointer
-	    // and this object.  Since 'this' is a pointer, we should
-	    // bind it to the address of b.
-	    
-	    OA::OA_ptr<OA::MemRefExpr> curr = actualMreIterPtr->current();
-	    actualMre = curr->clone();
-	    actualMre->setAddressTaken(true);
-	    
-	  } else { 
-	    
-	    actualMre = actualMreIterPtr->current();
-	    
-	  }
-	  
+	  actualMre = actualMreIterPtr->current();
 	  
 	  mPairList.push_back(pair<int, OA::OA_ptr<OA::MemRefExpr> >(paramNum, actualMre));
 	  
@@ -5783,9 +5905,11 @@ SageIRInterface::getCallsiteParams(OA::ExprHandle h)
       SgNode *lhs = getNewLhs(newExp);
       if ( lhs != NULL ) {
 	lhs = lookThroughCastExpAndAssignInitializer(lhs);
-	OA::ExprHandle exprHandle = getNodeNumber(lhs);
-	exprHandleList->push_back(exprHandle);
       }
+
+      // NB:  lhs could be NULL here, e.g., 'return (new B)'
+      OA::ExprHandle exprHandle = getNodeNumber(lhs);
+      exprHandleList->push_back(exprHandle);
 
       break;
     }

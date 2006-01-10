@@ -54,7 +54,7 @@ diff t TestResults/FIAlias/PioliThesis99Fig3.C.out
 echo "Testing TestCases/AliasTests/ref.C\n\tTestResults/AliasTests/ref.C checked by ???"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/ref.C > t
 diff t TestResults/FIAlias/ref.C.out
-echo "Testing TestCases/AliasTests/refCall.C\n\tTestResults/AliasTests/refCall.C checked by ???"
+echo "Testing TestCases/AliasTests/refCall.C\n\tTestResults/AliasTests/refCall.C checked by BSW"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/refCall.C > t
 diff t TestResults/FIAlias/refCall.C.out
 echo "Testing TestCases/AliasTests/refClass.C\n\tTestResults/AliasTests/refClass.C checked by ???"

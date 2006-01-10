@@ -731,6 +731,9 @@ public:
   // Return the lhs of a new expression.
   SgNode *getNewLhs(SgNewExp *newExp);
 
+  // Return the lhs of a method invocation.
+  SgNode *getMethodInvocationLhs(SgFunctionCallExp *functionCall);
+
   // Return a memory reference expression for varRefExp.
   // If varRefExp is an access to a class member m, then
   // this method will explicitly model the dereference of this

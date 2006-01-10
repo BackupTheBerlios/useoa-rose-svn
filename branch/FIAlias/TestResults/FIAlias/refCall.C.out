@@ -1,3 +1,5 @@
+In build_EDG_CommandLine(): Option -c not found (compile AND link) set autoInstantiation = true ... 
+In build_EDG_CommandLine(): autoInstantiation = true adding --auto_instantiation -tused ... 
 
 EquivSets(		MemRefHandle	 => ProcHandle
 MemRefHandle(a)	 =>ProcHandle(foo)
@@ -6,18 +8,19 @@ MemRefHandle(x)	 =>ProcHandle(main)
 MemRefHandle(&x)	 =>ProcHandle(main)
 
 		MemRefHandle	 => int
-MemRefHandle(a)	 =>[ 1 ] 
-MemRefHandle(x)	 =>[ 4 ] 
+MemRefHandle(a)	 =>[ 9 ] 
+MemRefHandle(c)	 =>[ 2 ] 
+MemRefHandle(x)	 =>[ 5 ] 
 
 		ProcHandle	 => std::map<int,OA_ptr<Location> >
 ProcHandle(foo)	 =>			int	 => std::map<int,OA_ptr<Location> >
-1	 =>[ 
+2	 =>[ 
 			NamedLoc(
-				mSymHandle: SymHandle(a)
-				mLocal: 1
+				mSymHandle: SymHandle(c)
+				mLocal: 0
 				mFullOverlap: 
 				mPartOverlap: 			) ] 
-4	 =>[ 
+5	 =>[ 
 			InvisibleLoc(
 				mMRE: 
 				Deref(
@@ -31,9 +34,23 @@ ProcHandle(foo)	 =>			int	 => std::map<int,OA_ptr<Location> >
 						mMemRefType: DEF
 						mSymHandle: SymHandle(b)					)
 					mNumDeref: 1				)			) ] 
+9	 =>[ 
+			InvisibleLoc(
+				mMRE: 
+				Deref(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: DEF
+					mMRE: 
+					NamedRef(
+						mAddressOf: 0
+						mFullAccuracy: 1
+						mMemRefType: USE
+						mSymHandle: SymHandle(a)					)
+					mNumDeref: 1				)			) ] 
 
 ProcHandle(main)	 =>			int	 => std::map<int,OA_ptr<Location> >
-4	 =>[ 
+5	 =>[ 
 			NamedLoc(
 				mSymHandle: SymHandle(x)
 				mLocal: 1

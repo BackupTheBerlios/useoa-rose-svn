@@ -577,3 +577,33 @@
           Those that still have issues are marked as checked by ???
           in regressionFIAliasTestsOut.script.
 
+1/9/06   UseOA-ROSE svn tag FIAlias r30 	Brian White
+        - Wasn't visiting the SgConstructorInitializer of a SgNewExp
+          in SageIRMemRefIterator::findAllMemRefsAndMemRefExprs.
+          We treat invocations of a constructor as we treat invocations
+          of methods:  as uses of a virtual table entry.
+        - Wasn't properly synchronizing actual and formal lists in
+          SgParamBindPtrAssignIterator::create due to implicit this.
+          The actual list (created by SageIRInterface) includes this,
+          while the types of the formals (returned by Sage) does not.
+        - Changed the implementation of the reference conversion rules
+          to reflect the fact that assignments should be treated
+          differently than initializations.  According to Stroustrup:
+          "...the value of a reference cannont be changed after initialization;  
+           it always refers to the object it was initialized to denote."
+          The amended rules:
+          // - For every initialization of a referenece:  t_l& lhs = rhs
+          //   (including the implicit assigment during parameter binding
+          //   and intialization in a constructor's initializer list)
+          //  1.  Convert lhs from a reference to a pointer type, t_l *lhs = ...
+          //  2.  If the rhs does not have an lvalue (e.g., 3+5, 5, &y, ...),
+          //      then replace lhs with *lhs.
+          //  3.  Whenever lhs is used on a right-hand side or in an
+          //      assignment (lhs = rhs), replace lhs with *lhs.  Since references
+          //      are only assigned once (during initialization), a reference's
+          //      appearance on the lhs of an assignment modifies the data to which
+          //      it refers, not to the reference itself.
+          // - For every rhs corresponding to the above initialization cases: t_l &lhs = rhs
+          //  4.  If the rhs has an lvalue, then replace rhs with &rhs.
+        - Updated TestCases/AliasTests/refCall.C.out and marked as
+	  checked in regressFIAliastTestsOut.script.

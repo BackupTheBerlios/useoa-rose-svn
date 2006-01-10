@@ -191,6 +191,7 @@ class SageIRMemRefIterator : public OA::MemRefHandleIterator
 				       bool appearsOnRhsOfRefAssignment,
 				       bool hasRhsThatComputesLValue,
 				       bool hasRhsThatDoesntComputeLValue,
+				       bool initializedRef,
 				       std::list<OA::OA_ptr<OA::MemRefExpr> > &convertedMemRefs);
 
 
