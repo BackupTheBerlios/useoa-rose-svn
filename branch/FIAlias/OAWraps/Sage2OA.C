@@ -1329,6 +1329,26 @@ OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)
 
   switch(node->variantT()) {
  
+  case V_SgReturnStmt:
+    {
+      // A return statement will generate a pointer assign pair
+      // if it returns a pointer or a reference.
+      SgReturnStmt *returnStmt = isSgReturnStmt(node);
+      ROSE_ASSERT(returnStmt != NULL);
+
+      SgExpression *returnExpr = returnStmt->get_return_expr();
+      ROSE_ASSERT(returnExpr != NULL);
+
+      SgType *returnType = returnExpr->get_type();
+      ROSE_ASSERT(returnType != NULL);
+
+      SgType *baseType = getBaseType(returnType);
+      ROSE_ASSERT(baseType != NULL);
+      if ( isSgPointerType(baseType) || isSgReferenceType(baseType) ) 
+	stmtType = OA::Alias::PTR_ASSIGN_STMT;
+
+      break;
+    }
   case V_SgExprStatement:
     {
       SgExprStatement *exprStatement = isSgExprStatement(node);
@@ -1402,12 +1422,12 @@ OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)
       // < FieldAccess(NamedRef(SymHandle(class C)),FieldHandle(m)), 
       //   NamedRef(SymHandle(C::m)) >
       // Note, we should only do this if the class actually has
-      // methods.
+      // virtual methods.
       
       SgClassDefinition *classDefinition =
 	isSgClassDefinition(node);
 
-      if ( classHasMethods(classDefinition )
+      if ( classHasVirtualMethods(classDefinition )
 	   stmtType = OA::Alias::PTR_ASSIGN_STMT;
 
       break;
@@ -2363,6 +2383,86 @@ std::string SageIRInterface::toString(OA::Alias::IRStmtType x)
 //-------------------------------------------------------------------------
 // AliasIRInterfaceDefault
 //-------------------------------------------------------------------------
+
+// Create the lhs/rhs pairs corresponding to pointer assignments
+// for a return statement.
+void 
+SgPtrAssignPairStmtIterator::createPtrAssignPairsFromReturnStmt(SgReturnStmt *returnStmt)
+{
+  SgExpression *returnExpr = returnStmt->get_return_expr();
+  ROSE_ASSERT(returnExpr != NULL);
+
+  SgType *returnType = returnExpr->get_type();
+  ROSE_ASSERT(returnType != NULL);
+  
+  SgType *baseType = mIR->getBaseType(returnType);
+  ROSE_ASSERT(baseType != NULL);
+  if ( !isSgPointerType(baseType) && !isSgReferenceType(baseType) ) 
+    return;
+
+  SgFunctionDefinition *enclosingFunction =
+    mIR->getEnclosingMethod(returnStmt);
+  ROSE_ASSERT(enclosingFunction != NULL);
+
+  SgFunctionDeclaration *functionDeclaration =
+    enclosingFunction->get_declaration();
+  ROSE_ASSERT(functionDeclaration != NULL);
+
+  // Create the lhs to represent the method declaration.
+  bool addressTaken = false;
+  bool fullAccuracy = true;
+  OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::DEF;
+  OA::SymHandle symHandle;
+
+  symHandle = mIR->getNodeNumber(functionDeclaration);
+
+  OA::OA_ptr<OA::NamedRef> function;
+  function = new OA::NamedRef(addressTaken, 
+			    fullAccuracy,
+			    memRefType,
+			    symHandle);
+
+  // Create the rhs from the return expression.
+  memRefType = OA::MemRefExpr::USE;
+
+  // Find the top (i.e., first) MemRefNode on the LHS.
+  list<SgNode *>* topMemRefs;
+  
+  topMemRefs = mIR->findTopMemRefs(returnExpr);
+  ROSE_ASSERT(topMemRefs != NULL);
+      
+  // On the RHS we may have multiple top MemRefHandles.
+  // e.g., int *b; int *c; ret ( cond ? b : c );
+  // has MemRefHandles for b and c on the RHS.  Create
+  // a pairing for each.
+  ROSE_ASSERT(topMemRefs->size() >= 1);
+  
+  for (list<SgNode *>::iterator it = topMemRefs->begin();
+       it != topMemRefs->end(); ++it) {
+	
+    SgNode *rhsMemRefNode = *it;
+    ROSE_ASSERT(rhsMemRefNode != NULL);
+
+    rhsMemRefNode = mIR->lookThroughCastExpAndAssignInitializer(rhsMemRefNode);
+    ROSE_ASSERT(mIR->isMemRefNode(rhsMemRefNode));
+      
+    // Create the lhs/rhs MemRefHandles.
+    OA::MemRefHandle rhsHandle = mIR->getNodeNumber(rhsMemRefNode);
+
+    OA::OA_ptr<OA::MemRefExprIterator> rhsMreIterPtr 
+      = mIR->getMemRefExprIterator(rhsHandle);
+	    
+    for (; rhsMreIterPtr->isValid(); (*rhsMreIterPtr)++) {
+      
+      OA::OA_ptr<OA::MemRefExpr> rhsMre = rhsMreIterPtr->current();
+	      
+      mMemRefList.push_back(pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> >(function, rhsMre));
+	
+    }
+      
+  }
+
+}
 
 // Create lhs/rhs pairs corresponding to pointer assignments
 // within the tree rooted at an assign.
@@ -3532,7 +3632,20 @@ SageIRInterface::isVirtual(SgFunctionDeclaration *functionDeclaration)
 {
   if ( functionDeclaration == NULL ) return false;
 
-  return functionDeclaration->get_functionModifier().isVirtual();
+  if ( functionDeclaration->get_functionModifier().isVirtual() ) 
+    return true;
+
+  SgDeclarationStatement *firstNondefiningDeclaration =
+    functionDeclaration->get_firstNondefiningDeclaration();
+
+  if ( firstNondefiningDeclaration == NULL )
+    return false;
+
+  SgFunctionDeclaration *firstNondefiningFuncDeclaration =
+    isSgFunctionDeclaration(firstNondefiningDeclaration);
+  ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
+
+  return firstNondefiningFuncDeclaration->get_functionModifier().isVirtual();
 }
 
 // If astNode is an allocation site (new or malloc) of
@@ -3559,17 +3672,22 @@ SageIRInterface::findAllocatedClass(SgNode *astNode)
 // Use the vtable optimization.  Rather than
 // create implicit ptr assigns for each method of an object a 
 // of class A, we create a single implicit assignment:
-// < (*a).FieldHandle(0), &A >
+// < (*a).FieldHandle(OA_VTABLE_STR), &A >
 // This is effectively a pointer to a (virtual) table,
 // though we create it whenever there are methods, virtual
 // or otherwise.
 // At each declaration of class A we create implicit pairs
 // for each method of the form:
-// < A.method, A::method >
+// < A.method, &A::method >
 // where the first MRE is a FieldAccess and the second is a NamedRef.
-// Thus (*a).FieldHandle(0).method -> A.method -> A::method
-// via FIAlias, which resolves the string-based FieldAccess to
-// the symbol-based NamedRef which unambiguously specifies the method.
+// Thus because of the implicit pair 
+// ((*a).FieldHandle(OA_VTABLE_STR), &A) FIAlias unions
+// (*(*a).FieldHandle(OA_VTABLE_STR) and A.  Because of the
+// pair (A.method, &A::method) returned here, FIAlias unions
+// *A.method and A::method.  Finally, when getCallMemRefExpr
+// returns *(*(*a).FieldHandle(OA_VTABLE_STR).method), FIAlias
+// sees that *(*(*a).FieldHandle(OA_VTABLE_STR).method) is aliased
+// to *A.method is aliased to A::method.
 bool 
 SageIRInterface::
 createImplicitVTablePtrAssignFromDefinition(SgClassDefinition *classDefinition,
@@ -3606,7 +3724,8 @@ createImplicitVTablePtrAssignFromDefinition(SgClassDefinition *classDefinition,
 	// Base case: 
 	// Create implicit pointer assignment pairs for any methods
 	// declared in this class.
-	if ( functionDeclaration != NULL ) { 
+	if ( ( functionDeclaration != NULL ) && 
+	     ( isVirtual(functionDeclaration) ) ) { 
 
 	  hasImplicitPtrAssign = true;
 
@@ -3628,6 +3747,7 @@ createImplicitVTablePtrAssignFromDefinition(SgClassDefinition *classDefinition,
 	    functionDeclaration->get_mangled_name().str();
 	  memRefType = OA::MemRefExpr::DEF;
 
+	  addressTaken = false;
 	  OA::OA_ptr<OA::FieldAccess> fieldAccess;
 	  fieldAccess = new OA::FieldAccess(addressTaken, 
 					    fullAccuracy,
@@ -3640,6 +3760,7 @@ createImplicitVTablePtrAssignFromDefinition(SgClassDefinition *classDefinition,
 
 	  symHandle = getNodeNumber(functionDeclaration);
 
+	  addressTaken = true;
 	  OA::OA_ptr<OA::NamedRef> method;
 	  method = new OA::NamedRef(addressTaken, 
 				    fullAccuracy,
@@ -3666,7 +3787,7 @@ createImplicitVTablePtrAssignFromDefinition(SgClassDefinition *classDefinition,
 
 bool
 SageIRInterface::
-classHasMethods(SgClassDefinition *classDefinition)
+classHasVirtualMethods(SgClassDefinition *classDefinition)
 {
   bool hasMethods = false;
 
@@ -3686,7 +3807,8 @@ classHasMethods(SgClassDefinition *classDefinition)
 	SgMemberFunctionDeclaration *functionDeclaration =  
 	  isSgMemberFunctionDeclaration(declarationStatement); 
 	
-	if ( functionDeclaration != NULL ) { 
+	if ( ( functionDeclaration != NULL ) &&
+	     ( isVirtual(functionDeclaration) ) ) { 
 	  return true;
 	}
 
@@ -3705,12 +3827,15 @@ classHasMethods(SgClassDefinition *classDefinition)
 
 // Create an implicit ptr assign pair for each method declared in 
 // classDefinition.  These pairs are of the form:
-// < (*lhsMre).m, C::m >
+// < (*lhsMre).m, &C::m >
 // where method m is defined in class C and where the first
 // element of the pair is a FieldAccess, while the second is a NamedRef.
 // Returns true if any pairs are/would be created.  Only creates
 // pairs if collectPtrAssigns is true, in which case they are 
 // stored in memRefList.
+// When getCallMemRefExpr() returns *((*lhsMre).m), FIAlias uses
+// this implicit pair to bind it to C::m (after dereferencing)
+// to perform virtual method resolution.
 bool 
 SageIRInterface::
 createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
@@ -3760,7 +3885,8 @@ createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
 	// Base case: 
 	// Create implicit pointer assignment pairs for any methods
 	// declared in this class.
-	if ( functionDeclaration != NULL ) { 
+	if ( ( functionDeclaration != NULL ) &&
+	     ( isVirtual(functionDeclaration) ) ) { 
 
 	  hasImplicitPtrAssign = true;
 
@@ -3768,22 +3894,30 @@ createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
 
 	  // Create an implicit pointer assignment pair for this
 	  // method m of class C of the form:
-	  // < (*lhs).m, C::m >
+	  // < (*lhs).m, &C::m >
 	  // Since we do not accurately model structures, we
 	  // collapse the lhs 'a.b.c' to 'a' and flag it is an
 	  // inaccurate.
+	  // 1/15/06:  If lhsMRE is inaccurate, it will already
+	  // have been marked as such.
 
 	  // Create the lhs of the pair, ensuring that it is marked
 	  // inaccurate.
 	  OA::OA_ptr<OA::MemRefExpr> baseLHS;
 	  baseLHS = lhsMRE->clone();
 
+#if 0
 	  if ( baseLHS->hasFullAccuracy() ) {
 	    baseLHS->setAccuracy(false);
 	  }
+#endif
 
 	  bool addressTaken = false;
 	  bool fullAccuracy = true;
+	  if ( !baseLHS->hasFullAccuracy() ) {
+	    fullAccuracy = false;
+	  }
+
 	  OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::DEF;
 	  string mangledMethodName = functionDeclaration->get_mangled_name().str();
 
@@ -3799,6 +3933,7 @@ createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
 	  OA::SymHandle symHandle;
 	  symHandle = getNodeNumber(functionDeclaration);
 
+	  addressTaken = true;
 	  OA::OA_ptr<OA::NamedRef> method;
 	  method = new OA::NamedRef(addressTaken, 
 				    fullAccuracy,
@@ -3823,7 +3958,7 @@ createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
 #endif /* VTABLE_OPT */
 
 #ifdef VTABLE_OPT
-  bool hasMethods = classHasMethods(classDefinition);
+  bool hasMethods = classHasVirtualMethods(classDefinition);
 
   if ( hasMethods == true ) {
     
@@ -3831,16 +3966,21 @@ createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
     // created any implicit ptr assigns above.  Rather than
     // create implicit ptr assigns for each method of an object a 
     // of class A, we create a single implicit assignment:
-    // < (*a).FieldHandle(0), &A >
+    // < (*a).FieldHandle(OA_VTABLE_STR), &A >
     // This is effectively a pointer to a (virtual) table,
     // though we create it whenever there are methods, virtual
     // or otherwise.
+    // 1/15/06:  No longer true, now we just create it if there
+    // are virtual methods.  Why were we every creating for
+    // non-virtual methods.
 
     // At each declaration of class A we create implicit pairs
     // for each method of the form:
-    // < A.method, A::method >
+    // < A.method, &A::method >
     // where the first MRE is a FieldAccess and the second is a NamedRef.
-    // Thus (*a).FieldHandle(0).method -> A.method -> A::method
+    // Thus *((*(*a).FieldHandle(OA_VTABLE_STR)).method), as
+    // returned by getCallMemRefExpr(), is aliased to *A.method 
+    // is aliased to A::method
     // via FIAlias, which resolves the string-based FieldAccess to
     // the symbol-based NamedRef which unambiguously specifies the method.
 
@@ -3911,213 +4051,6 @@ createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
 
   return hasImplicitPtrAssign;
 }
-
-#if 0
-bool SageIRInterface::
-createImplicitPtrAssignForCtor(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
-					    SgClassDefinition *classDefinition,
-					    SgConstructorInitializer *ctorInitializer,
-					    bool collectPtrAssigns,
-					    std::set<SgClassDefinition *> examinedClasses,
-					    std::set<SgConstructorInitializer *> examinedCtors,
-					    std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList)
-{
-
-  // If the method is a constructor, visit its definition and create
-  // implicit ptr assignment pairs for each allocation site.
-  // Do _not_ recurse.  We expect OpenAnalysis to handle this.
-  SgMemberFunctionDeclaration *functionDeclaration = 
-    ctorInitializer->get_declaration();
-  ROSE_ASSERT(functionDeclaration != NULL);
-
-  SgDefinition *definition = functionDeclaration->get_definition();
-  if ( definition == NULL )
-    return false;
-
-  SgDeclarationStatementPtrList &members = classDefinition->get_members(); 
-  for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
-       it != members.end(); ++it) { 
-    
-    SgDeclarationStatement *declarationStatement = *it; 
-    ROSE_ASSERT(declarationStatement != NULL);
-    
-    switch(declarationStatement->variantT()) {
-      
-    case V_SgMemberFunctionDeclaration:
-      {
-	SgMemberFunctionDeclaration *functionDeclaration =  
-	  isSgMemberFunctionDeclaration(declarationStatement); 
-	
-	// Base case: 
-	// Create implicit pointer assignment pairs for any methods
-	// declared in this class.
-	if ( functionDeclaration != NULL ) { 
-
-	  hasImplicitPtrAssign = true;
-	  if ( !collectPtrAssigns ) break;
-
-	  // Create an implicit pointer assignment pair for this
-	  // method m of class C of the form:
-	  // < (*lhs).m, C::m >
-	  // Since we do not accurately model structures, we
-	  // collapse the lhs 'a.b.c' to 'a' and flag it is an
-	  // inaccurate.
-
-	  // Create the lhs of the pair, ensuring that it is marked
-	  // inaccurate.
-	  OA::OA_ptr<OA::MemRefExpr> baseLHS;
-	  baseLHS = lhsMRE->clone();
-
-	  if ( baseLHS->hasFullAccuracy() ) {
-	    baseLHS->setAccuracy(false);
-	  }
-
-	  bool addressTaken = false;
-	  bool fullAccuracy = true;
-	  OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::DEF;
-	  string mangledMethodName = functionDeclaration->get_mangled_name().str();
-
-	  OA::OA_ptr<OA::FieldAccess> fieldAccess;
-	  fieldAccess = new OA::FieldAccess(addressTaken, 
-					    fullAccuracy,
-					    memRefType,
-					    baseLHS,
-					    mangledMethodName);
-
-	  // Create the rhs to represent the method declaration.
-	  memRefType = OA::MemRefExpr::USE;
-	  OA::SymHandle symHandle;
-	  symHandle = getNodeNumber(functionDeclaration);
-
-	  OA::OA_ptr<OA::NamedRef> method;
-	  method = new OA::NamedRef(addressTaken, 
-				    fullAccuracy,
-				    memRefType,
-				    symHandle);
-
-	  // Create the pair.
-	  memRefList->push_back(pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> >(fieldAccess, method));
-	
-	}
-	break;
-      }
-    case V_SgCtorInitializerList:
-      {
-	// Recursively invoke this method on the class of an 
-	// member instance variable declared in this class.
-	SgCtorInitializerList *initializerList =
-	  isSgCtorInitializerList(declarationStatement);
-	ROSE_ASSERT(initializerList != NULL);
-
-	SgInitializedNamePtrList &variables =
-	  initializerList->get_ctors();
-	SgInitializedNamePtrList::iterator varIter;
-	for (varIter = variables.begin(); varIter != variables.end(); 
-	     ++varIter) {
-	  SgNode *lhs = *varIter;
-	  ROSE_ASSERT(lhs != NULL);
-	  
-	  SgInitializedName *initName = isSgInitializedName(lhs);
-	  ROSE_ASSERT(initName != NULL);
-	  
-	  SgType *type = initName->get_type();
-	  ROSE_ASSERT(type != NULL);
-	  
-	  SgClassDeclaration *classDeclaration = 
-	    getClassDeclaration(type);
-	  if ( classDeclaration != NULL ) {
-	    
-	    SgClassDefinition *classDefinition = 
-	      classDeclaration->get_definition();
-	    if ( classDefinition != NULL ) {
-
-	      bool hasPtrAssign = false;
-	      // Notice that since we do not model a structure/class
-	      // with full accuracy, that we simply pass the lhs MemRefExpr
-	      // through without updating it to account for the field
-	      // access to this class.  Were we to accurately model
-	      // field accesses, this MemRefExpr should be updated.
-	      hasPtrAssign = createImplicitPtrAssignFromInit(lhsMRE,
-							     classDefinition,
-							     collectPtrAssigns,
-							     examinedClasses,
-							     memRefList);
-	      if ( hasPtrAssign )
-		hasImplicitPtrAssign = true;
-
-	    }
-
-	  }
-	  
-	  if ( hasImplicitPtrAssign && !collectPtrAssigns ) break;
-	      
-	}
-	
-	break;
-      }
-    case V_SgVariableDeclaration:
-      {
-	// Recursively invoke this method on the class of an 
-	// member instance variable declared in this class.
-	SgVariableDeclaration *varDeclaration = 
-	  isSgVariableDeclaration(declarationStatement);
-	ROSE_ASSERT(varDeclaration != NULL);
-	
-	SgInitializedNamePtrList &names = varDeclaration->get_variables(); 
-	
-	list<SgInitializedName*>::iterator nameIt; 
-	for (nameIt = names.begin(); nameIt != names.end(); ++nameIt) { 
-	  
-	  SgInitializedName *initName = *nameIt; 
-	  ROSE_ASSERT(initName != NULL); 
-	  
-	  SgType *type = initName->get_type();
-	  ROSE_ASSERT(type != NULL);
-	  
-	  SgClassDeclaration *classDeclaration = 
-	    getClassDeclaration(type);
-	  if ( classDeclaration != NULL ) {
-
-	    SgClassDefinition *classDefinition = 
-	      classDeclaration->get_definition();
-	    if ( classDefinition != NULL ) {
-
-	      bool hasPtrAssign = false;
-	      // Notice that since we do not model a structure/class
-	      // with full accuracy, that we simply pass the lhs MemRefExpr
-	      // through without updating it to account for the field
-	      // access to this class.  Were we to accurately model
-	      // field accesses, this MemRefExpr should be updated.
-	      hasPtrAssign = createImplicitPtrAssignFromInit(lhsMRE,
-							     classDefinition,
-							     collectPtrAssigns,
-							     examinedClasses,
-							     memRefList);
-	      if ( hasPtrAssign )
-		hasImplicitPtrAssign = true;
-
-	    }
-	    
-	  }
-	  
-	  if ( hasImplicitPtrAssign && !collectPtrAssigns ) break;
-
-	}
-	
-	break;
-      }
-    default:
-      {
-	break;
-      }
-    }
-    
-    if ( hasImplicitPtrAssign && !collectPtrAssigns ) break;
-  }
-
-
-}
-#endif
 
 // Creates implicit ptr assign pairs given a MemRefExpr representing the
 // lhs and a SgNode rhs.  Any such pairs are returned in memRefList.
@@ -4234,438 +4167,6 @@ createImplicitPtrAssignFromObjectAllocation(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
   return hasImplicitPtrAssign;
 
 }
-
-#if 0
-bool
-SageIRInterface::createImplicitPtrAssignFromInit(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
-						 SgClassDefinition *classDefinition,
-						 bool collectPtrAssigns,
-						 std::set<SgClassDefinition *> examinedClasses,
-						 std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList)
-{
-  bool hasImplicitPtrAssign = false;
-
-  if ( classDefinition == NULL ) return hasImplicitPtrAssign;
-
-  // We do not accurately model field accesses to structs/classes,
-  // but instead collapse the lhs of a pair to an inaccurate reference
-  // to the top mem reference (i.e., a.b.c -> a, with inaccurate flag set).
-  // Therefore, there is no need to distinguish between a.b.c and
-  // a.b.d if c and d have the same type.  i.e., if we have seen this
-  // class, don't do anything.  Were we to model field accesses with
-  // greater accuracy the lhs would distinguish such pairs and we
-  // would remove this conditional (and examinedClasses).
-  if ( examinedClasses.find(classDefinition) != examinedClasses.end() ) {
-    // We have already visited this class, don't do so again.
-    return hasImplicitPtrAssign;
-  }
-
-  examinedClasses.insert(classDefinition);
-
-  // Create an implicit ptr assignment pair for this method.
-  // If the method is a constructor, visit its definition and create
-  // implicit ptr assignment pairs for each allocation site.
-  SgDeclarationStatementPtrList &members = classDefinition->get_members(); 
-  for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
-       it != members.end(); ++it) { 
-    
-    SgDeclarationStatement *declarationStatement = *it; 
-    ROSE_ASSERT(declarationStatement != NULL);
-    
-    switch(declarationStatement->variantT()) {
-      
-    case V_SgMemberFunctionDeclaration:
-      {
-	SgMemberFunctionDeclaration *functionDeclaration =  
-	  isSgMemberFunctionDeclaration(declarationStatement); 
-	
-	// Base case: 
-	// Create implicit pointer assignment pairs for any methods
-	// declared in this class.
-	if ( functionDeclaration != NULL ) { 
-
-	  hasImplicitPtrAssign = true;
-	  if ( !collectPtrAssigns ) break;
-
-	  // Create an implicit pointer assignment pair for this
-	  // method m of class C of the form:
-	  // < (*lhs).m, C::m >
-	  // Since we do not accurately model structures, we
-	  // collapse the lhs 'a.b.c' to 'a' and flag it is an
-	  // inaccurate.
-
-	  // Create the lhs of the pair, ensuring that it is marked
-	  // inaccurate.
-	  OA::OA_ptr<OA::MemRefExpr> baseLHS;
-	  baseLHS = lhsMRE->clone();
-
-	  if ( baseLHS->hasFullAccuracy() ) {
-	    baseLHS->setAccuracy(false);
-	  }
-
-	  bool addressTaken = false;
-	  bool fullAccuracy = true;
-	  OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::DEF;
-	  string mangledMethodName = functionDeclaration->get_mangled_name().str();
-
-	  OA::OA_ptr<OA::FieldAccess> fieldAccess;
-	  fieldAccess = new OA::FieldAccess(addressTaken, 
-					    fullAccuracy,
-					    memRefType,
-					    baseLHS,
-					    mangledMethodName);
-
-	  // Create the rhs to represent the method declaration.
-	  memRefType = OA::MemRefExpr::USE;
-	  OA::SymHandle symHandle;
-	  symHandle = getNodeNumber(functionDeclaration);
-
-	  OA::OA_ptr<OA::NamedRef> method;
-	  method = new OA::NamedRef(addressTaken, 
-				    fullAccuracy,
-				    memRefType,
-				    symHandle);
-
-	  // Create the pair.
-	  memRefList->push_back(pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> >(fieldAccess, method));
-	
-	}
-	break;
-      }
-    case V_SgCtorInitializerList:
-      {
-	// Recursively invoke this method on the class of an 
-	// member instance variable declared in this class.
-	SgCtorInitializerList *initializerList =
-	  isSgCtorInitializerList(declarationStatement);
-	ROSE_ASSERT(initializerList != NULL);
-
-	SgInitializedNamePtrList &variables =
-	  initializerList->get_ctors();
-	SgInitializedNamePtrList::iterator varIter;
-	for (varIter = variables.begin(); varIter != variables.end(); 
-	     ++varIter) {
-	  SgNode *lhs = *varIter;
-	  ROSE_ASSERT(lhs != NULL);
-	  
-	  SgInitializedName *initName = isSgInitializedName(lhs);
-	  ROSE_ASSERT(initName != NULL);
-	  
-	  SgType *type = initName->get_type();
-	  ROSE_ASSERT(type != NULL);
-	  
-	  SgClassDeclaration *classDeclaration = 
-	    getClassDeclaration(type);
-	  if ( classDeclaration != NULL ) {
-	    
-	    SgClassDefinition *classDefinition = 
-	      classDeclaration->get_definition();
-	    if ( classDefinition != NULL ) {
-
-	      bool hasPtrAssign = false;
-	      // Notice that since we do not model a structure/class
-	      // with full accuracy, that we simply pass the lhs MemRefExpr
-	      // through without updating it to account for the field
-	      // access to this class.  Were we to accurately model
-	      // field accesses, this MemRefExpr should be updated.
-	      hasPtrAssign = createImplicitPtrAssignFromInit(lhsMRE,
-							     classDefinition,
-							     collectPtrAssigns,
-							     examinedClasses,
-							     memRefList);
-	      if ( hasPtrAssign )
-		hasImplicitPtrAssign = true;
-
-	    }
-
-	  }
-	  
-	  if ( hasImplicitPtrAssign && !collectPtrAssigns ) break;
-	      
-	}
-	
-	break;
-      }
-    case V_SgVariableDeclaration:
-      {
-	// Recursively invoke this method on the class of an 
-	// member instance variable declared in this class.
-	SgVariableDeclaration *varDeclaration = 
-	  isSgVariableDeclaration(declarationStatement);
-	ROSE_ASSERT(varDeclaration != NULL);
-	
-	SgInitializedNamePtrList &names = varDeclaration->get_variables(); 
-	
-	list<SgInitializedName*>::iterator nameIt; 
-	for (nameIt = names.begin(); nameIt != names.end(); ++nameIt) { 
-	  
-	  SgInitializedName *initName = *nameIt; 
-	  ROSE_ASSERT(initName != NULL); 
-	  
-	  SgType *type = initName->get_type();
-	  ROSE_ASSERT(type != NULL);
-	  
-	  SgClassDeclaration *classDeclaration = 
-	    getClassDeclaration(type);
-	  if ( classDeclaration != NULL ) {
-
-	    SgClassDefinition *classDefinition = 
-	      classDeclaration->get_definition();
-	    if ( classDefinition != NULL ) {
-
-	      bool hasPtrAssign = false;
-	      // Notice that since we do not model a structure/class
-	      // with full accuracy, that we simply pass the lhs MemRefExpr
-	      // through without updating it to account for the field
-	      // access to this class.  Were we to accurately model
-	      // field accesses, this MemRefExpr should be updated.
-	      hasPtrAssign = createImplicitPtrAssignFromInit(lhsMRE,
-							     classDefinition,
-							     collectPtrAssigns,
-							     examinedClasses,
-							     memRefList);
-	      if ( hasPtrAssign )
-		hasImplicitPtrAssign = true;
-
-	    }
-	    
-	  }
-	  
-	  if ( hasImplicitPtrAssign && !collectPtrAssigns ) break;
-
-	}
-	
-	break;
-      }
-    default:
-      {
-	break;
-      }
-    }
-    
-    if ( hasImplicitPtrAssign && !collectPtrAssigns ) break;
-  }
-
-  if ( !hasImplicitPtrAssign || collectPtrAssigns ) {
-
-    // Recursively call this method on each base class.
-    SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances(); 
-    for (SgBaseClassPtrList::iterator i = baseClassList.begin(); 
-	 i != baseClassList.end(); ++i) {
- 
-        SgBaseClass *baseClass = *i;
-	ROSE_ASSERT(baseClass != NULL);
-
-	SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
-	ROSE_ASSERT(classDeclaration != NULL);
-
-	SgClassDefinition  *classDefinition  = 
-	  classDeclaration->get_definition(); 
-
-	if ( classDefinition != NULL ) {
-
-	  bool hasPtrAssign;
-	  hasPtrAssign = createImplicitPtrAssignFromInit(lhsMRE,
-							 classDefinition,
-							 collectPtrAssigns,
-							 examinedClasses,
-							 memRefList);
-	  if ( hasPtrAssign )
-	    hasImplicitPtrAssign = true;
-	  
-	}
-	    
-	if ( hasImplicitPtrAssign && !collectPtrAssigns ) break;
-
-    }
-
-  }
-
-
-  return hasImplicitPtrAssign;
-}
-
-
-// nodeHasImplicitPtrAssign returns true if the ast Node
-// creates any implicit pointer or reference assignments.
-// If collectPtrAssigns is true, it returns the corresponding 
-// MemRefHandle/MemRefExpr pairs in memRefList.
-bool
-SageIRInterface::createImplicitPtrAssignFromInit(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
-						 SgNode *rhsNode,
-						 bool collectPtrAssigns,
-						 std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList)
-{
-  bool hasImplicitPtrAssigns = false;
-
-  if ( rhsNode == NULL ) return false;
-
-  std::list<SgMemberFunctionDeclaration *> methods;
-  std::list<SgExpression *>                allocs;
-  std::set<SgClassDefinition *>            examinedClasses;
-
-  switch(rhsNode->variantT()) {
-
-  case V_SgNewExp:
-  case V_SgFunctionCallExp:
-    {
-      // This node is an allocation site.  Determine to which class,
-      // if any, the instance belongs.
-      SgClassDeclaration *classDeclaration = findAllocatedClass(rhsNode);
-
-      if ( classDeclaration == NULL )
-	break;
-
-      SgClassDefinition *classDefinition = classDeclaration->get_definition();
-      if ( classDefinition == NULL )
-	break;
-      
-      SgDeclarationStatementPtrList &members = classDefinition->get_members(); 
-      for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
-	   it != members.end(); ++it) { 
-	
-	SgDeclarationStatement *declarationStatement = *it; 
-	ROSE_ASSERT(declarationStatement != NULL);
-
-	switch(declarationStatement->variantT()) {
-	  
-	case V_SgMemberFunctionDeclaration:
-	  {
-	    SgMemberFunctionDeclaration *functionDeclaration =  
-	      isSgMemberFunctionDeclaration(declarationStatement); 
-	    
-	    // Create implicit pointer assignment pairs for any methods
-	    // declared in this class.
-	    if (functionDeclaration != NULL) { 
-	      if ( ) {
-		// create inaccurate from lhs if not inaccurate
-		// create Field Access from inaccurate and mangled name
-		// create NamedRef from function declaration
-		// create pair from FieldAccess and NamedRef
-	      }
-	    }
-	    break;
-	  }
-	case V_SgCtorInitializerList:
-	  {
-	    // Recursively invoke this method on the class of an 
-	    // member instance variable declared in this class.
-	    SgCtorInitializerList *initializerList =
-	      isSgCtorInitializerList(declarationStatement);
-	    ROSE_ASSERT(initializerList != NULL);
-
-	    SgInitializedNamePtrList &variables =
-	      initializerList->get_ctors();
-	    SgInitializedNamePtrList::iterator varIter;
-	    for (varIter = variables.begin(); varIter != variables.end(); 
-		 ++varIter) {
-	      SgNode *lhs = *varIter;
-	      ROSE_ASSERT(lhs != NULL);
-    
-	      SgInitializedName *initName = isSgInitializedName(lhs);
-	      ROSE_ASSERT(initName != NULL);
-
-	      SgType *type = initName->get_type();
-	      ROSE_ASSERT(type != NULL);
-
-	      SgClassDeclaration *classDeclaration = 
-		getClassDeclaration(type);
-	      if ( classDeclaration != NULL ) {
-
-	      }
-
-	    }
-
-	    break;
-	  }
-	case V_SgVariableDeclaration:
-	  {
-	    // Recursively invoke this method on the class of an 
-	    // member instance variable declared in this class.
-	    SgVariableDeclaration *varDeclaration = 
-	      isSgVariableDeclaration(declarationStatement);
-	    ROSE_ASSERT(varDeclaration != NULL);
-
-	    SgInitializedNamePtrList &names = varDeclaration->get_variables(); 
-     
-	    list<SgInitializedName*>::iterator nameIt; 
-	    for (nameIt = names.begin(); nameIt != names.end(); ++nameIt) { 
-       
-	      SgInitializedName *initName = *nameIt; 
-	      ROSE_ASSERT(initName != NULL); 
- 
-	      SgType *type = initName->get_type();
-	      ROSE_ASSERT(type != NULL);
-
-	      SgClassDeclaration *classDeclaration = 
-		getClassDeclaration(type);
-	      if ( classDeclaration != NULL ) {
-
-	      }
-
-	    }
-
-
-	    break;
-	  }
-	default:
-	  {
-	    break;
-	  }
-	}
-
-	
-
-      std::list<SgMemberFunctionDeclaration *> methods;
-      std::list<SgExpression *>                allocs;
-
-      
-
-      // Recursively invoke this method on each of this class'
-      // superclasses.
-
-      // (Recursively) collect all methods declared in this class,
-      // in its superclasses, or in any of member instances.  Also,
-      // return any allocation sites of class instances in any of its
-      // methods.
-      hasImplicitPtrAssigns = 
-	findMethodDeclarationsAndMemberAllocationSites(classDeclaration,
-						       collectPtrAssigns,
-						       examinedClasses,
-						       methods,
-						       allocs);
-      if ( collectPtrAssigns  ) {
-
-
-	for (std::list<SgMemberFunctionDeclaration *>::iterator it = 
-	       methods.begin(); it != methods.end(); ++it) {
-
-	  SgMemberFunctionDeclaration *memberFunction = *it;
-	  ROSE_ASSERT(memberFunction != NULL);
-	}
-
-	for (std::list<SgExpression *>::iterator it = allocs.begin();
-	     it != allocs.end(); ++it) {
-	  
-	  SgExpression *expression = *it;
-	  ROSE_ASSERT(expression != NULL);
-
-	}
-
-      }
-      break;
-    }
-  default: 
-    {
-      break;
-    }
-  }
-  
-  return hasImplicitPtrAssigns;
-}
-#endif
-
-
 
 // cotrInitListHasPtrAssign returns true if the constructor
 // initializer list initializes any pointers or references.
@@ -4794,6 +4295,15 @@ void SgPtrAssignPairStmtIterator::create(OA::StmtHandle stmt)
 
       mIR->varDeclHasPtrAssign(varDecl, collectPtrAssigns, &mMemRefList);
 
+      break;
+    }
+  case V_SgReturnStmt:
+    {
+      SgReturnStmt *returnStmt = isSgReturnStmt(node);
+      ROSE_ASSERT(returnStmt != NULL);
+
+      createPtrAssignPairsFromReturnStmt(returnStmt);
+      
       break;
     }
   case V_SgExprStatement:
@@ -5053,145 +4563,14 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
   // the MRE above.
   ROSE_ASSERT(!mre.ptrEqual(0));
 
-#if 0
-
-  SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
-  ROSE_ASSERT(functionCallExp != NULL);
-
-  SgExpression *function = functionCallExp->get_function();
-  ROSE_ASSERT(function != NULL);
-
-#if 1
-  // really:  if is arrow and is virtual method invocation
-  if ( isArrowExp(function) ) {
-
-    // This is a method invocation via an arrow exp.
-    // We should return a FieldAccess here.
-    // Call the general MemRefExpr routines to create it.
-
-    SgStatement *stmt = getEnclosingStatement(functionCallExp);
-    ROSE_ASSERT(stmt != NULL);
-    
-    OA::StmtHandle stmtHandle = getNodeNumber(stmt);
-    ROSE_ASSERT(stmtHandle != (OA::StmtHandle)0);
-    
-    // Call getMemRefIterator to initialize the sMemref2mreSetMap
-    // data structure-- i.e., to ensure that we have a mapping between
-    // the MemRefHandle corresponding to this method invocation
-    // and its MemRefExpr.
-    getMemRefIterator(stmtHandle);
-
-    // We expect the MemRefHandle to be associated with the
-    // arrow or dot expression.
-    ROSE_ASSERT( isMemRefNode(function) );
-    OA::MemRefHandle memRefHandle = getNodeNumber(function);
-
-    OA::OA_ptr<OA::MemRefExprIterator> mreIterPtr 
-      = getMemRefExprIterator(memRefHandle);
-
-    // for each mem-ref-expr associated with this memref
-    int numMres = 0;
-    for (; mreIterPtr->isValid(); (*mreIterPtr)++) {
-      if ( mre->isaRefOp() ) {
-	mre = mreIterPtr->current();
-	numMres++;
-
-      }
-    }
-
-    // We are only expecting one MemRefExpr ...
-    ROSE_ASSERT(numMres == 1);
-
-    // ... and it had better be a Derf.
-    ROSE_ASSERT(mre->isaRefOp());
-
-    OA::OA_ptr<OA::RefOp> refOp = mre.convert<OA::RefOp>();
-    ROSE_ASSERT(!refOp.ptrEqual(0));
-
-    ROSE_ASSERT(refOp->isaFieldAccess());
-#else
-  if ( isArrowExp(function) ) {
-
-    // This is a method invocation via an arrow exp.
-    // We should return a Deref here.  Call the general
-    // MemRefExpr routines to create it.
-
-    SgStatement *stmt = getEnclosingStatement(functionCallExp);
-    ROSE_ASSERT(stmt != NULL);
-    
-    OA::StmtHandle stmtHandle = getNodeNumber(stmt);
-    ROSE_ASSERT(stmtHandle != (OA::StmtHandle)0);
-    
-    // Call getMemRefIterator to initialize the sMemref2mreSetMap
-    // data structure-- i.e., to ensure that we have a mapping between
-    // the MemRefHandle corresponding to this method invocation
-    // and its MemRefExpr.
-    getMemRefIterator(stmtHandle);
-
-    // We expect the MemRefHandle to be associated with the
-    // arrow or dot expression.
-    ROSE_ASSERT( isMemRefNode(function) );
-    OA::MemRefHandle memRefHandle = getNodeNumber(function);
-
-    OA::OA_ptr<OA::MemRefExprIterator> mreIterPtr 
-      = getMemRefExprIterator(memRefHandle);
-
-    // for each mem-ref-expr associated with this memref
-    int numMres = 0;
-    for (; mreIterPtr->isValid(); (*mreIterPtr)++) {
-      mre = mreIterPtr->current();
-      numMres++;
-    }
-
-    // We are only expecting one MemRefExpr ...
-    ROSE_ASSERT(numMres == 1);
-
-    // ... and it had better be a Derf.
-    ROSE_ASSERT(mre->isaRefOp());
-
-    OA::OA_ptr<OA::RefOp> refOp = mre.convert<OA::RefOp>();
-    ROSE_ASSERT(!refOp.ptrEqual(0));
-
-    ROSE_ASSERT(refOp->isaDeref());
-#endif
-  } else {
-
-    // This is either a function call or a dot expression.
-    // In either case, we know exactly which function is envoked.
-    // There is no possibility of a virtual method invocation:
-    // we handle pointers above, reference (which would otherwise
-    // be manifest as dot expressions) are converted to pointers
-    // by SageIRInterface, and non-pointer, non-reference method
-    // invocations on objects do not involve virtual dispatch.
-
-    // Create a NamedRef mre.  We expect the symbol embedded
-    // in that mre will be a ProcHandle-- i.e., a
-    // SgFunctionDeclaration.
-
-    SgFunctionDeclaration *functionDeclaration = 
-      getFunctionDeclaration(functionCallExp); 
-    ROSE_ASSERT(functionDeclaration != NULL);
-
-    OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::DEF;
-
-#if 0
-    SgFunctionDefinition *functionDefinition =
-      functionDeclaration->get_definition();
-    ROSE_ASSERT(functionDefinition != NULL);
-    OA::SymHandle symHandle = getNodeNumber(functionDefinition);
-#else
-    OA::SymHandle symHandle = getNodeNumber(functionDeclaration);
-#endif
-
-    bool addressTaken = false;
-    bool fullAccuracy = true;
-
-    mre = new OA::NamedRef(addressTaken, fullAccuracy,
-			   memRefType, symHandle);
-    ROSE_ASSERT(!mre.ptrEqual(0));
-
+  // If we are returning a FieldAccess, it represents a virtual
+  // method call.  In this case, the method field acts as a function
+  // pointer.  Therefore, dereference the FieldAccess/function pointer:
+  // this pointer dereference represents the method invoked.
+  if ( isFieldAccess(mre) ) {
+    mre = dereferenceMre(mre);
   }
-#endif
+
   return mre;
 }
 
@@ -6683,3 +6062,29 @@ OA::ProcHandle SageIRInterface::getProcHandle(SgFunctionDeclaration *node)
   return procHandle;
 }
 #endif
+
+bool SageIRInterface::isFieldAccess(OA::OA_ptr<OA::MemRefExpr> mre)
+{
+  bool isFA = false;
+
+  if ( mre->isaRefOp() ) {
+		
+    OA::OA_ptr<OA::RefOp> refOp = mre.convert<OA::RefOp>();
+    ROSE_ASSERT(!refOp.ptrEqual(0));
+    
+    if ( refOp->isaSubSetRef() ) {
+      
+      OA::OA_ptr<OA::SubSetRef> subSetRef = 
+	refOp.convert<OA::SubSetRef>();
+      ROSE_ASSERT(!subSetRef.ptrEqual(0));
+      
+      if ( subSetRef->isaFieldAccess() ) {
+	isFA = true;
+      }
+      
+    }
+    
+  }
+
+  return isFA;
+}

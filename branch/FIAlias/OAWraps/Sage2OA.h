@@ -313,6 +313,9 @@ class SgPtrAssignPairStmtIterator
 
  private:
   void create(OA::StmtHandle h);
+
+  void createPtrAssignPairsFromReturnStmt(SgReturnStmt *returnStmt);
+
   SgExpression *createPtrAssignPairsFromAssignment(SgNode *assign);
 
   std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > mMemRefList;
@@ -715,7 +718,7 @@ public:
   OA::MemRefExpr::MemRefType getMemRefType(OA::OA_ptr<OA::MemRefExpr> mre);
 
   // Look through typedefs to return a type.
-  SgType *SageIRInterface::getBaseType(SgType *type); 
+  SgType *getBaseType(SgType *type); 
 
   SgFunctionDefinition *getEnclosingMethod(SgNode *node);
 
@@ -859,8 +862,11 @@ public:
   // Returns true if the function is a virtual method.
   bool isVirtual(SgFunctionDeclaration *functionDeclaration);
 
-  // Returns true if classDefinition defines a class with methods.
-  bool classHasMethods(SgClassDefinition *classDefinition);
+  // Returns true if classDefinition defines a class with virtual methods.
+  bool classHasVirtualMethods(SgClassDefinition *classDefinition);
+
+  // Returns true if the mre is a Field Access.
+  bool isFieldAccess(OA::OA_ptr<OA::MemRefExpr> mre);
 
   // Return the class declaration corresponding to type, if
   // type is indeed a class type.

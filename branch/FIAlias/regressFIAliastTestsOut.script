@@ -32,7 +32,7 @@ echo "Testing TestCases/AliasTests/constQualified.c\n\tTestResults/AliasTests/co
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/constQualified.c > t
 diff t TestResults/FIAlias/constQualified.c.out
 
-// C++ tests
+# C++ tests
 echo "Testing TestCases/AliasTests/HindEtAlIBM95Fig4.C\n\tTestResults/AliasTests/HindEtAlIBM95Fig4.C checked by ???"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/HindEtAlIBM95Fig4.C > t
 diff t TestResults/FIAlias/HindEtAlIBM95Fig4.C.out
@@ -67,7 +67,7 @@ echo "Testing TestCases/AliasTests/RinardEtAlPLDI96Fig4.C\n\tTestResults/AliasTe
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RinardEtAlPLDI96Fig4.C > t
 diff t TestResults/FIAlias/RinardEtAlPLDI96Fig4.C.out
 
-// C tests
+# C tests
 echo "Testing TestCases/AliasTests/diffArrays.c\n\tTestResults/AliasTests/diffArrays.c checked by ???"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/diffArrays.c > t
 diff t TestResults/FIAlias/diffArrays.c.out

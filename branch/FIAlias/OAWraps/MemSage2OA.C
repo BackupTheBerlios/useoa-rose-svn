@@ -1101,6 +1101,7 @@ enum SageRefExpInheritedFlagType {
   expectDotLHS                 = 4096, // the node is the lhs of a dot expression
   expectDontApplyConversion    = 8192, // don't apply reference conversion rules
   takeAddrOfAndStoreMRE        = 16384, // take the address of the expression, but still store the MRE at the node (unlike expectAddrOf which does not).
+  expectAddrReturningFunc      = 32768, // the node is a function which returns an address (pointer or reference)
 }; 
 
 // SageRefExpSynthesizedFlagType are flags that are passed up from
@@ -1186,6 +1187,13 @@ static void addInheritedFlag(unsigned &flags, const SageRefExpInheritedFlagType 
       break;
     }
     
+  case expectAddrReturningFunc:
+    {
+      flags |= expectAddrReturningFunc;
+
+      break;
+    }
+
   case ignore:
     {
       flags |= ignore;
@@ -1341,6 +1349,13 @@ static void removeInheritedFlag(unsigned &flags, const SageRefExpInheritedFlagTy
     {
       flags &= ~takeAddrOfAndStoreMRE;
       
+      break;
+    }
+
+  case expectAddrReturningFunc:
+    {
+      flags &= ~expectAddrReturningFunc;
+
       break;
     }
     
@@ -1977,10 +1992,12 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
   bool dontApplyConversion              = flags & expectDontApplyConversion;
 
   bool takeAddrAndStoreMRESet           = flags & takeAddrOfAndStoreMRE;
+  bool addrReturningFunc                = flags & expectAddrReturningFunc;
   bool expectAddrOfSet                  = flags & expectAddrOf;
 
   removeInheritedFlag(flags, expectDontApplyConversion);
   removeInheritedFlag(flags, takeAddrOfAndStoreMRE);
+  removeInheritedFlag(flags, expectAddrReturningFunc);
 
   // A list of mem-ref infos, *some* of which correspond to
   // mem-ref-handles added to 'memRefs' for this SgNode.
@@ -2597,14 +2614,12 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	    // return (*a).method for a method invocation, but
 	    // (*(*a).FieldHandle(OA_VTABLE_STR)).method.
 
-	    mangledMethodName = OA_VTABLE_STR;
-    
 	    OA::OA_ptr<OA::FieldAccess> fieldAccess;
 	    fieldAccess = new OA::FieldAccess(false, 
 					      true,
 					      OA::MemRefExpr::USE;
 					      baseMRE,
-					      mangledMethodName);
+					      OA_VTABLE_STR);
 	    if ( !baseMre->hasFullAccuracy() )
 	      fieldAccess->setAccuracy(false);
 
@@ -2617,6 +2632,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	      baseMre->setAccuracy(false);
 #endif
 
+	    // HERE
 	    arrowOrDotMemRefExpr = 
 	      new OA::FieldAccess(addressTaken, 
 				  fieldAccessFullAccuracy,
@@ -3285,14 +3301,55 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 #endif
       } else {
 
+	SgType *type = functionCallExp->get_type();
+	ROSE_ASSERT(type != NULL);
+
+	bool returnsAddress = false;
+#if 1
+	/* 
+	 * We no longer return an unknown MRE from a function
+	 * which returns a pointer or a reference.  Instead
+	 * we return something that represents the function/method.
+	 * This allows us to create pointer assign pairs of
+	 * the form, lhs = func for a function func() returning
+	 * a pointer or reference.  For any return statements
+	 * in func, we create a companion pointer assign pair
+	 * of the form func = ret, where ret is the return expression
+	 * of a return statement.  This allows FIAlias (or some
+	 * other alias analysis) to create the union *lhs,*ret,
+	 * via the intermediary *func.
+	 
+	 * The following table shows how we represent the function/method:
+	 
+	 proc type   ret type   lhs = proc
+	 ---------   --------   ----------
+	 func        address    lhs = func
+	 non-addr       --
+	 (*funcPtr)  address    lhs = *funcPtr
+	 non-addr       --
+	 method      address    lhs = method
+	 non-addr       --
+	 virtual     address    lhs = *(obj->"fooA")
+	 non-addr       --
+	 
+	 Notice that the proc MREs are the same as those
+	 returned by getCallMemRefExpr() and as created
+	 by recursively visiting the function (from get_function()),
+	 though in the latter case we need to dereference
+	 the obj->"fooA" case MRE.
+
+	*/
+
+	if ( isSgReferenceType(type) || isSgPointerType(type) ) {
+	  returnsAddress = true;
+	}
+	
+#else /* 1 */
 	// Create an unknown reference for this function if it
 	// has a pointer or reference return type.
 	// Also, if it is a method call, we need to visit the
 	// arrow or dot expression.  This will be held in the
 	// function child.
-
-	SgType *type = functionCallExp->get_type();
-	ROSE_ASSERT(type != NULL);
 
 	if ( isSgReferenceType(type) ) {
 
@@ -3315,25 +3372,26 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	    // this function call.
 	    memRefType = flagsToMemRefType(flags);
 
-	    // Create an OpenAnalysis handle for this node.
-	    stmtHandle = mIR->getNodeNumber(functionCallExp);
-	    
 	    // The address of the memory location is not taken
 	    // during a function call.
 	    addressTaken = false;
 	    
+	    // Create an unknown memory reference expression.
+	    OA::OA_ptr<OA::MemRefExpr> memRefExp;
+
 	    // The function call does _not_ accurately represent the memory 
 	    // expression, as this would require the precise calling context.
 	    fullAccuracy = false;
 	    
-	    // Create an unknown memory reference expression.
-	    OA::OA_ptr<OA::MemRefExpr> memRefExp;
+	    // Create an OpenAnalysis handle for this node.
+	    stmtHandle = mIR->getNodeNumber(functionCallExp);
 #if 0
 	    memRefExp = new OA::UnnamedRef(addressTaken, fullAccuracy,
 					   memRefType, stmtHandle);
 #else
 	    memRefExp = new OA::UnknownRef(memRefType);
 #endif
+
 	    ROSE_ASSERT(!memRefExp.ptrEqual(0));
 	    
 	    isMemRefExpr = true;
@@ -3377,23 +3435,61 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
 	}
 
-	// Now visit the arrow or dot expression if this is 
-	// a method call.
+#endif /* 1 */
+
 	SgExpression *expression = functionCallExp->get_function();
 	ROSE_ASSERT(expression != NULL);
 
-	if ( !isSgFunctionRefExp(expression) ) {
+	if ( returnsAddress || !isSgFunctionRefExp(expression) ) {
 	  // Zero out the rhs flags.
 	  unsigned childFlags = 0;
 	  
-	  findAllMemRefsAndMemRefExprs(expression, memRefs, childFlags,
-				       synthesizedFlags);
+	  // Generally we would not create an MRE for a function
+	  // since its execution (unlike that of a method) does
+	  // not represent use of program state.  However, if
+	  // it is a function which returns an address (pointer or
+	  // reference), we use the MRE generated from the SgFunctionRefExp
+	  // to represent the return value.
+	  if ( isSgFunctionRefExp(expression) )
+	    addInheritedFlag(childFlags, expectAddrReturningFunc);
 
-	  // We don't care if the children compute an lvalue, since the
-	  // result of this expression is generated by this node.
-	  removeSynthesizedFlag(synthesizedFlags, synthesizedComputesLValue);
-	  removeSynthesizedFlag(synthesizedFlags, synthesizedDoesntComputeLValue);
+	  list<OA::OA_ptr<OA::MemRefExpr> > funcMemRefExprs;
+	  funcMemRefExprs = findAllMemRefsAndMemRefExprs(expression, memRefs, 
+							 childFlags,
+							 synthesizedFlags);
+
+	  if ( returnsAddress ) {
+
+	    // If the MRE representing the function is a FieldAccess,
+	    // it represents a virtual method call.  In this case, the 
+	    // method field acts as a function pointer.  Therefore, 
+	    // dereference the FieldAccess/function pointer:
+	    // this pointer dereference represents the method invoked.
+
+	    for(list<OA::OA_ptr<OA::MemRefExpr> >::iterator it = funcMemRefExprs.begin();
+		it != funcMemRefExprs.end(); ++it) {
 	  
+	      OA::OA_ptr<OA::MemRefExpr> mre = *it;
+	      ROSE_ASSERT(!mre.ptrEqual(0));
+
+	      if ( mIR->isFieldAccess(mre) ) {
+		mre = mIR->dereferenceMre(mre);
+	      }
+	      
+	      isMemRefExpr = true;
+
+	      curMemRefExprs.push_back(mre);
+
+	    }
+
+	  }
+
+	  if ( !returnsAddress ) {
+	    // We don't care if the children compute an lvalue, since the
+	    // result of this expression is generated by this node.
+	    removeSynthesizedFlag(synthesizedFlags, synthesizedComputesLValue);
+	    removeSynthesizedFlag(synthesizedFlags, synthesizedDoesntComputeLValue);
+	  }
 #if 0
 	  // Create a pseudo-MemRefExpr for the dispatching object,
 	  // i.e., b in b->foo() or b.foo().  This is needed, for
@@ -3763,11 +3859,11 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
   case V_SgFunctionRefExp:
     {
       // A FunctionRefExp can appear on the right-hand side of
-      // an assignment to a function pointer.  We could check
-      // that it is the right-hand side of an assignment or that
-      // its parent is not a SgFunctionCallExp.  However,
-      // we instead assume that we have not recursed to this
-      // node unless it is used in the context of an access.
+      // an assignment to a function pointer.  We also need
+      // to associate an MRE with a SgFunctionRefExp if it is
+      // used to represent the return value of an address-returning
+      // function.
+
       SgFunctionRefExp *functionRefExp = isSgFunctionRefExp(astNode);
       ROSE_ASSERT(functionRefExp != NULL);
 
@@ -3780,6 +3876,12 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // rhs.  In those cases, we implicitly take the address
       // of the function.
       addressTaken = true;
+
+      // However, we might also use this SgFunctionRefExp to
+      // represent the return value from a SgFunctionCallExp.
+      // In that case, we do not take the address.
+      if ( addrReturningFunc )
+	addressTaken = false;
 
       // Access to a named function is a fully
       // accurate representation of that access.
@@ -3812,7 +3914,13 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // We do not have to apply the conversion rules since this
       // is a function pointer, not a reference.
 
-      isMemRefExpr = true;
+      // If we are creating this MRE to represent the return value
+      // from an addressing-return function, hold the MRE at its
+      // parent, not here.  We do this because some MRE representing
+      // addressing-returning functions, namely virtual methods,
+      // are derefer'ed at the parent and held there.
+      if ( !addrReturningFunc )
+	isMemRefExpr = true;
 
       curMemRefExprs.push_back(memRefExp);
 

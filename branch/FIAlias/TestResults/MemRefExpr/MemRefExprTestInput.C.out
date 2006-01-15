@@ -211,21 +211,23 @@ NamedRef(
 ============================================
 OA::StmtHandle: *hello() = ignoreInt;
 	mre = 
-UnknownRef(
-	mAddressOf: 1
-	mFullAccuracy: 0
-	mMemRefType: USE)
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(hello))
 
 	mre = 
 Deref(
 	mAddressOf: 0
-	mFullAccuracy: 0
+	mFullAccuracy: 1
 	mMemRefType: DEF
 	mMRE: 
-	UnknownRef(
-		mAddressOf: 1
-		mFullAccuracy: 0
-		mMemRefType: USE	)
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(hello)	)
 	mNumDeref: 1)
 
 	mre = 
@@ -252,21 +254,23 @@ NamedRef(
 	mSymHandle: SymHandle(method:hiClass::hello))
 
 	mre = 
-UnknownRef(
-	mAddressOf: 1
-	mFullAccuracy: 0
-	mMemRefType: USE)
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(method:hiClass::hello))
 
 	mre = 
 Deref(
 	mAddressOf: 0
-	mFullAccuracy: 0
+	mFullAccuracy: 1
 	mMemRefType: DEF
 	mMRE: 
-	UnknownRef(
-		mAddressOf: 1
-		mFullAccuracy: 0
-		mMemRefType: USE	)
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(method:hiClass::hello)	)
 	mNumDeref: 1)
 
 	mre = 
@@ -293,21 +297,23 @@ NamedRef(
 	mSymHandle: SymHandle(method:hiClass::hello))
 
 	mre = 
-UnknownRef(
-	mAddressOf: 1
-	mFullAccuracy: 0
-	mMemRefType: USE)
+NamedRef(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mSymHandle: SymHandle(method:hiClass::hello))
 
 	mre = 
 Deref(
 	mAddressOf: 0
-	mFullAccuracy: 0
+	mFullAccuracy: 1
 	mMemRefType: DEF
 	mMRE: 
-	UnknownRef(
-		mAddressOf: 1
-		mFullAccuracy: 0
-		mMemRefType: USE	)
+	NamedRef(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mSymHandle: SymHandle(method:hiClass::hello)	)
 	mNumDeref: 1)
 
 	mre = 
@@ -346,21 +352,59 @@ FieldAccess(
 	mFieldName: goodbye__F_Pi)
 
 	mre = 
-UnknownRef(
-	mAddressOf: 1
-	mFullAccuracy: 0
-	mMemRefType: USE)
+Deref(
+	mAddressOf: 0
+	mFullAccuracy: 1
+	mMemRefType: USE
+	mMRE: 
+	FieldAccess(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mMRE: 
+		Deref(
+			mAddressOf: 0
+			mFullAccuracy: 1
+			mMemRefType: USE
+			mMRE: 
+			NamedRef(
+				mAddressOf: 0
+				mFullAccuracy: 1
+				mMemRefType: USE
+				mSymHandle: SymHandle(hi)			)
+			mNumDeref: 1		)
+		mFieldName: goodbye__F_Pi	)
+	mNumDeref: 1)
 
 	mre = 
 Deref(
 	mAddressOf: 0
-	mFullAccuracy: 0
+	mFullAccuracy: 1
 	mMemRefType: DEF
 	mMRE: 
-	UnknownRef(
-		mAddressOf: 1
-		mFullAccuracy: 0
-		mMemRefType: USE	)
+	Deref(
+		mAddressOf: 0
+		mFullAccuracy: 1
+		mMemRefType: USE
+		mMRE: 
+		FieldAccess(
+			mAddressOf: 0
+			mFullAccuracy: 1
+			mMemRefType: USE
+			mMRE: 
+			Deref(
+				mAddressOf: 0
+				mFullAccuracy: 1
+				mMemRefType: USE
+				mMRE: 
+				NamedRef(
+					mAddressOf: 0
+					mFullAccuracy: 1
+					mMemRefType: USE
+					mSymHandle: SymHandle(hi)				)
+				mNumDeref: 1			)
+			mFieldName: goodbye__F_Pi		)
+		mNumDeref: 1	)
 	mNumDeref: 1)
 
 	mre = 
