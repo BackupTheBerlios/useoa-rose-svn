@@ -683,3 +683,50 @@
           statement pointer assign pair, either directly (in the case
           of func and method) or after unification via an alias analysis
           (in the case of funcPtr and virtual).
+
+1/17/06   UseOA-ROSE svn tag FIAlias r32 	Brian White        
+        - Bug fix:  had to strip SgCastExpr off of rhs in 
+	  createImplicitPtrAssigns in order to recognize it as a 
+          SgNewExp (and so to create implicit ptr assigns)
+        - TODO:  need to normalize return statements such that we
+          create an implicit ptr assign for each expression within
+          the return 
+	  (in SgPtrAssignPairStmtIterator::createPtrAssignPairsFromReturnStmt).
+          For example,
+              return ( a < b ? c : d );
+              return ( new D, new E);    // should just return later.
+          Solution here is to call general routines which generate
+          MRE.
+        - Was not generating implicit pointer assigns for 'return (new D)'.
+          - SageIRInterface::getAliasStmtType previously determined whether
+            a return stmt was a PTR_ASSIGN_STMT by checking if the
+            type of the return expression was a pointer/reference.
+            Evidently, 'new D' has type SgClassType (why not a pointer).
+            It now accounts for this.
+          - SgPtrAssignPairStmtIterator::createPtrAssignPairsFromReturnStmt 
+            was checking that the return stmt really has a pointer type.
+            I removed this check as it is redundant with getAliasStmtType.
+        - Modified getLocation to handle SgFunctionDeclarations, which
+          may be created to represent return values from the corresponding
+          function.  If the SgFunctionDeclaration was called from a procedure
+          p consider the symbol (assumed to represent the return expression)
+          to be local to p.  Otherwise, return the NULL location-- not
+          visible within p.  Also handles constructor invocations.
+        - Wasn't creating implicit ptr assign pairs for a return stmt
+          (which is implicitly an assignment of the form 'proc = ret',
+          for the statement 'return ret' in procedure proc).  Fixed this
+          by calling createImplicitPtrAssigns from
+          createPtrAssignPairsFromReturnStmt.
+        - Replaced calls of getNodeNumber(functionDeclaration) with calls
+          to getProcSymHandle; such interposition gives us more 
+          control over what we return.  e.g., I changed getProcSymHandle
+          to return a handle to a SgFunctionDeclaration with an associated
+          SgFunctionDefinition.  This requires searching through the
+          program for the proper SgFunctionDeclaration.  To do this
+          efficiently, we cache all SgFunctionDeclarations in
+          SageIRInterface::mFunctions.
+        - Output format in FIAlias seems to have changed with new
+          svn OpenAnalysis version, so I re-ran regressFIAliasTestsOut.script.
+        - Current status/milestone:  HindEtAlIBM95Fig4.C no longer
+          generates an UnknownLoc.  I have not, however, checked it for
+          correctness.

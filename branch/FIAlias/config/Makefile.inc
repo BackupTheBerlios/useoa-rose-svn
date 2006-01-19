@@ -14,7 +14,8 @@ ROSE_INST_ROOT=/usr/casc/overture/bwhite/rose-0.8.6a-latest/LINUX-3.3.2/
 #OPENANALYSIS_LIB =-L/usr/casc/overture/bwhite/rose-0.8.6a-latest/LINUX-3.3.2/src/midend/programAnalysis/OpenAnalysis -lOAul
 #OPENANALYSIS_INC =-I/usr/casc/overture/bwhite/rose-0.8.6a-latest/ROSE/src/midend/programAnalysis/ 
   
-OPENANALYSIS_DIR=/usr/casc/overture/bwhite/OpenAnalysis-FIAlias
+#OPENANALYSIS_DIR=/usr/casc/overture/bwhite/OpenAnalysis-FIAlias
+OPENANALYSIS_DIR=/usr/casc/overture/bwhite/OpenAnalysis-svn/openanalysis/OpenAnalysis/trunk/
 #OPENANALYSIS_DIR=/s/parsons/c/fac/mstrout/OA/OpenAnalysis
 OPENANALYSIS_ARCH=i686-Linux
 OPENANALYSIS_LIB =-L$(OPENANALYSIS_DIR)/$(OPENANALYSIS_ARCH)/lib -lOAul

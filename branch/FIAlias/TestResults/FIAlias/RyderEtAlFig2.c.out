@@ -1,5 +1,6 @@
 
-EquivSets(		MemRefHandle	 => ProcHandle
+EquivSets(
+		mMemRefToProc: MemRefHandle	 => ProcHandle
 MemRefHandle(p)	 =>ProcHandle(A)
 MemRefHandle(*p)	 =>ProcHandle(A)
 MemRefHandle(x)	 =>ProcHandle(A)
@@ -11,7 +12,8 @@ MemRefHandle(&q)	 =>ProcHandle(main)
 MemRefHandle(x)	 =>ProcHandle(main)
 MemRefHandle(&y)	 =>ProcHandle(main)
 
-		MemRefHandle	 => int
+
+		mMemRefToSets: MemRefHandle	 => int
 MemRefHandle(p)	 =>[ 1 ] 
 MemRefHandle(*p)	 =>[ 11 ] 
 MemRefHandle(x)	 =>[ 3 ] 
@@ -20,8 +22,10 @@ MemRefHandle(y)	 =>[ 5 ]
 MemRefHandle(p)	 =>[ 1 ] 
 MemRefHandle(x)	 =>[ 3 ] 
 
-		ProcHandle	 => std::map<int,OA_ptr<Location> >
-ProcHandle(A)	 =>			int	 => std::map<int,OA_ptr<Location> >
+
+		mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
+ProcHandle(A)	 =>
+			SetToLocs: int	 => std::map<int,OA_ptr<Location> >
 1	 =>[ 
 			NamedLoc(
 				mSymHandle: SymHandle(p)
@@ -97,7 +101,8 @@ ProcHandle(A)	 =>			int	 => std::map<int,OA_ptr<Location> >
 						mSymHandle: SymHandle(p)					)
 					mNumDeref: 1				)			) ] 
 
-ProcHandle(main)	 =>			int	 => std::map<int,OA_ptr<Location> >
+ProcHandle(main)	 =>
+			SetToLocs: int	 => std::map<int,OA_ptr<Location> >
 1	 =>[ 
 			NamedLoc(
 				mSymHandle: SymHandle(p)

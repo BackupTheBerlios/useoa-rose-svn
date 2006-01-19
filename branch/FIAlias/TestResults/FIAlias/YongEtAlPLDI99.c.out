@@ -1,5 +1,6 @@
 
-EquivSets(		MemRefHandle	 => ProcHandle
+EquivSets(
+		mMemRefToProc: MemRefHandle	 => ProcHandle
 MemRefHandle(s.s1)	 =>ProcHandle(main)
 MemRefHandle(&x)	 =>ProcHandle(main)
 MemRefHandle(s.s2)	 =>ProcHandle(main)
@@ -11,7 +12,8 @@ MemRefHandle(*(s.s1))	 =>ProcHandle(main)
 MemRefHandle((s.s2))	 =>ProcHandle(main)
 MemRefHandle(*(s.s2))	 =>ProcHandle(main)
 
-		MemRefHandle	 => int
+
+		mMemRefToSets: MemRefHandle	 => int
 MemRefHandle(s.s1)	 =>[ 1 ] 
 MemRefHandle(s.s2)	 =>[ 1 ] 
 MemRefHandle(p)	 =>[ 4 ] 
@@ -21,8 +23,10 @@ MemRefHandle(*(s.s1))	 =>[ 8 ]
 MemRefHandle((s.s2))	 =>[ 1 ] 
 MemRefHandle(*(s.s2))	 =>[ 8 ] 
 
-		ProcHandle	 => std::map<int,OA_ptr<Location> >
-ProcHandle(main)	 =>			int	 => std::map<int,OA_ptr<Location> >
+
+		mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
+ProcHandle(main)	 =>
+			SetToLocs: int	 => std::map<int,OA_ptr<Location> >
 1	 =>[ 
 			LocSubSet(
 				mLoc: 

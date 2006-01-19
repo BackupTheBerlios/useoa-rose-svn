@@ -354,8 +354,10 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
                         public virtual OA::SideEffect::SideEffectIRInterface
 {
   public:
-  SageIRInterface (SgNode * root, std::vector<SgNode*> * na, bool use_persistent_handles=FALSE): nodeArrayPtr(na), wholeProject(root), persistent_handles(use_persistent_handles)
-  { if(persistent_handles){ ROSE_ASSERT(nodeArrayPtr != NULL); createNodeArray(root);} }
+  //! Constructor.
+  SageIRInterface(SgNode *root, 
+		  std::vector<SgNode*> *na, 
+		  bool use_persistent_handles = FALSE);
   ~SageIRInterface () {}
 
     
@@ -765,6 +767,10 @@ public:
   // type of the object allocated.  
   bool isAllocation(SgNode *node, SgType *&type);
 
+  bool isAmbiguousCallThroughVirtualMethod(SgFunctionCallExp *functionCallExp);
+  
+  SgFunctionDeclaration *getFunctionDeclaration(SgFunctionCallExp *functionCall);
+
   string refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
 
   OA::OA_ptr<OA::MemRefHandleIterator> 
@@ -783,6 +789,11 @@ public:
 
   static std::map<OA::OA_ptr<OA::MemRefExpr>,OA::MemRefHandle >
     sMre2MemrefMap;
+
+  // List of all SgFunctionDeclarations in the program, stored as
+  // a map from the first non-defining declaration (if non-NULL)
+  // to the defining declaration.
+  std::map<SgFunctionDeclaration *, SgFunctionDeclaration *> mFunctions;
 
   // Given a SgNode return a symbol handle to represent the
   // corresponding SgThisExp.  This symbol handle references
@@ -859,8 +870,13 @@ public:
   // a class instance, return the declaration of that class.
   SgClassDeclaration *findAllocatedClass(SgNode *astNode);
 
-  // Returns true if the function is a virtual method.
+  // Returns true if the function is a virtual method (as declared
+  // in its defining method).
   bool isVirtual(SgFunctionDeclaration *functionDeclaration);
+
+  bool isDeclaredVirtualWithinAncestor(SgFunctionDeclaration *functionDeclaration);
+  
+  bool isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration, SgClassDefinition *classDefinition);
 
   // Returns true if classDefinition defines a class with virtual methods.
   bool classHasVirtualMethods(SgClassDefinition *classDefinition);

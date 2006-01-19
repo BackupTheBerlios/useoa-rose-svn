@@ -1,18 +1,22 @@
 
-EquivSets(		MemRefHandle	 => ProcHandle
+EquivSets(
+		mMemRefToProc: MemRefHandle	 => ProcHandle
 MemRefHandle(x)	 =>ProcHandle(foo::foo)
 MemRefHandle(someRef)	 =>ProcHandle(foo::foo)
 MemRefHandle((this))	 =>ProcHandle(foo::foo)
 MemRefHandle(((this) -> someRef))	 =>ProcHandle(foo::foo)
 MemRefHandle(someOtherRef)	 =>ProcHandle(foo::foo)
 
-		MemRefHandle	 => int
+
+		mMemRefToSets: MemRefHandle	 => int
 MemRefHandle(someRef)	 =>[ 2 ] 
 MemRefHandle((this))	 =>[ 3 ] 
 MemRefHandle(someOtherRef)	 =>[ 2 ] 
 
-		ProcHandle	 => std::map<int,OA_ptr<Location> >
-ProcHandle(foo::foo)	 =>			int	 => std::map<int,OA_ptr<Location> >
+
+		mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
+ProcHandle(foo::foo)	 =>
+			SetToLocs: int	 => std::map<int,OA_ptr<Location> >
 2	 =>[ 
 			InvisibleLoc(
 				mMRE: 

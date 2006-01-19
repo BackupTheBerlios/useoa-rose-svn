@@ -2355,6 +2355,10 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       addInheritedFlag(rhsFlags, expectArrowDotRHS);
       //      addInheritedFlag(rhsFlags, expectDotLHS);
 
+      // Add back the expect addressing-return function flag if it was set.
+      if ( addrReturningFunc )
+	addInheritedFlag(rhsFlags, expectAddrReturningFunc);
+
       // Recurse on rhs.
       list<OA::OA_ptr<OA::MemRefExpr> > rhsMemRefExprs;
       rhsMemRefExprs = findAllMemRefsAndMemRefExprs(rhs, memRefs, rhsFlags,
@@ -2632,7 +2636,6 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	      baseMre->setAccuracy(false);
 #endif
 
-	    // HERE
 	    arrowOrDotMemRefExpr = 
 	      new OA::FieldAccess(addressTaken, 
 				  fieldAccessFullAccuracy,
@@ -3440,17 +3443,20 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	SgExpression *expression = functionCallExp->get_function();
 	ROSE_ASSERT(expression != NULL);
 
-	if ( returnsAddress || !isSgFunctionRefExp(expression) ) {
+	//	if ( returnsAddress || !isSgFunctionRefExp(expression) ) {
+	if ( returnsAddress || 
+	     mIR->isAmbiguousCallThroughVirtualMethod(functionCallExp) ) {
 	  // Zero out the rhs flags.
 	  unsigned childFlags = 0;
 	  
 	  // Generally we would not create an MRE for a function
-	  // since its execution (unlike that of a method) does
+	  // or a non-virtual method since their execution 
+	  // (unlike that of a vritual method) does
 	  // not represent use of program state.  However, if
 	  // it is a function which returns an address (pointer or
 	  // reference), we use the MRE generated from the SgFunctionRefExp
 	  // to represent the return value.
-	  if ( isSgFunctionRefExp(expression) )
+	  if ( returnsAddress )
 	    addInheritedFlag(childFlags, expectAddrReturningFunc);
 
 	  list<OA::OA_ptr<OA::MemRefExpr> > funcMemRefExprs;
@@ -3903,7 +3909,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       ROSE_ASSERT(functionDeclaration != NULL);
 
       // Create an OpenAnalysis handle for this node.
-      symHandle = mIR->getNodeNumber(functionDeclaration);
+      symHandle = mIR->getProcSymHandle(functionDeclaration);
 
       // Create a named memory reference expression.
       OA::OA_ptr<OA::MemRefExpr> memRefExp;
@@ -3966,7 +3972,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       ROSE_ASSERT(functionDeclaration != NULL);
 
       // Create an OpenAnalysis handle for this node.
-      symHandle = mIR->getNodeNumber(functionDeclaration);
+      symHandle = mIR->getProcSymHandle(functionDeclaration);
 
       // Create a named memory reference expression.
       OA::OA_ptr<OA::MemRefExpr> memRefExp;
@@ -4075,7 +4081,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       ROSE_ASSERT(functionDeclaration != NULL);
 
       // Create an OpenAnalysis handle for this node.
-      symHandle = mIR->getNodeNumber(functionDeclaration);
+      symHandle = mIR->getProcSymHandle(functionDeclaration);
 
       // Create a named memory reference expression.
       OA::OA_ptr<OA::MemRefExpr> memRefExp;
@@ -4338,4 +4344,44 @@ SageIRInterface::getMemRefType(OA::OA_ptr<OA::MemRefExpr> mre)
 
   return memRefType;
 
+}
+
+// isAmbiguousCallThroughVirtualMethod returns true if functionCallExp
+// is a virtual method invocation made through a pointer or reference.
+// Virtual methods invoked through a (non-pointer, non-reference) 
+// object are not ambiguous/may be statically resolved.
+bool 
+SageIRInterface::isAmbiguousCallThroughVirtualMethod(SgFunctionCallExp *functionCallExp)
+{
+  SgExpression *expression = functionCallExp->get_function();
+  ROSE_ASSERT(expression != NULL);
+
+  if ( isSgPointerDerefExp(expression) )
+    return false;
+
+  SgFunctionDeclaration *functionDeclaration =
+    getFunctionDeclaration(functionCallExp);
+  ROSE_ASSERT(functionDeclaration != NULL);
+
+  if ( !isVirtual(functionDeclaration) )
+    return false;
+
+  if ( isArrowExp(expression) )
+    return true;
+
+  SgDotExp *dotExp = isSgDotExp(expression);
+
+  if ( dotExp == NULL )
+    return false;
+
+  SgExpression *lhs = dotExp->get_lhs_operand();
+  ROSE_ASSERT(lhs != NULL);
+
+  SgType *type = lhs->get_type();
+  ROSE_ASSERT(type != NULL);
+
+  if ( isSgReferenceType(getBaseType(type)) )
+    return true;
+
+  return false;
 }
