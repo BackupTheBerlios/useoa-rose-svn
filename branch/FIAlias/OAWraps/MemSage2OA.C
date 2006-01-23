@@ -1,4 +1,5 @@
 #include "MemSage2OA.h"
+using namespace std;
 
 /*
  * usedInConditionalExp returns true if node's parent

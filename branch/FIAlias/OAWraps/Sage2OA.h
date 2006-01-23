@@ -419,7 +419,7 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   void createNodeArray(SgNode * root);
   void numberASTNodes(SgNode *astNode);
   SgNode * getNodePtr(OA::IRHandle h){if((int)h==0) return 0; else if(persistent_handles) return (*nodeArrayPtr)[h.hval()-1]; else return (SgNode*)h.hval();} //hvals start at 1
-  int getNodeNumber(SgNode *);  //can be zero
+  long getNodeNumber(SgNode *);  //can be zero
   std::vector <SgNode *> * nodeArrayPtr;
 
   //------------------------------
@@ -771,7 +771,7 @@ public:
   
   SgFunctionDeclaration *getFunctionDeclaration(SgFunctionCallExp *functionCall);
 
-  string refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
+  std::string refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
 
   OA::OA_ptr<OA::MemRefHandleIterator> 
     getMemRefIterator(OA::IRHandle h);
@@ -784,7 +784,7 @@ public:
 
   static std::map<OA::MemRefHandle,OA::IRHandle> sMemRef2StmtMap;
 
-  static std::map<OA::MemRefHandle,set<OA::OA_ptr<OA::MemRefExpr> > >
+  static std::map<OA::MemRefHandle,std::set<OA::OA_ptr<OA::MemRefExpr> > >
     sMemref2mreSetMap;
 
   static std::map<OA::OA_ptr<OA::MemRefExpr>,OA::MemRefHandle >

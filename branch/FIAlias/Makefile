@@ -16,7 +16,7 @@ DEFINES = -DHAVE_CONFIG_H -DOA_IRHANDLETYPE_UL #-DOA_OPEN64
 INCLUDES = -I. -I.. -I./OAWraps/ $(ROSE_INCLUDES) $(OPENANALYSIS_INC)
 #LIBS= -L$(srcdir)/OAWraps/ -lSage2OA $(OPENANALYSIS_LIB) $(ROSE_LIBS) -lm -lfl -lrt -lpthread
 LIBS= -lSage2OA $(OPENANALYSIS_LIB)
-CXXFLAGS = -fPIC -ftemplate-depth-50 -g $(DEFINES) $(INCLUDES) $(DEBUGFLAGS)
+CXXFLAGS = -fPIC -ftemplate-depth-50 -g #$(DEFINES) $(INCLUDES) $(DEBUGFLAGS)
 LDFLAGS = -Wl,-rpath $(srcdir)/OAWraps/ -L$(srcdir)/OAWraps 
 
 CXXCOMPILE = $(CXX) $(DEFINES) $(INCLUDES) $(CXXFLAGS)
@@ -62,7 +62,7 @@ clean-recursive:
 	  $(MAKE) "$$target-am" || exit 1; \
 	fi; test -z "$$fail"
 
-LD_LIBRARY_PATH += /soft/apps/packages/gcc-3.1/lib
+#LD_LIBRARY_PATH += /soft/apps/packages/gcc-3.1/lib
 
 bin_PROGRAMS = OATest OACFGTest
 

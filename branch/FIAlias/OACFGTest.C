@@ -22,6 +22,7 @@
 #include <string>
 #include <iostream>
 
+using namespace std;
 
 int DoOpenAnalysis(SgFunctionDefinition* f);
 
@@ -31,7 +32,8 @@ main ( unsigned argc,  char * argv[] )
 {
 
   int frontEndErrorCode = 0;
-  SgProject sageProject ( (int)argc,argv,frontEndErrorCode);
+  //SgProject sageProject ( (int)argc,argv,frontEndErrorCode);
+  SgProject sageProject ( (int)argc,argv);
   assert(frontEndErrorCode <3);
 
   int filenum = sageProject.numberOfFiles();

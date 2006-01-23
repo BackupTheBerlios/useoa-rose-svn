@@ -164,16 +164,16 @@ class SageIRMemRefIterator : public OA::MemRefHandleIterator
     void create(OA::IRHandle h);
 
     void handleDefaultCase(SgNode *astNode,
-			   list<OA::MemRefHandle>& memRefs,
+			   std::list<OA::MemRefHandle>& memRefs,
 			   unsigned flags,
 			   unsigned &synthesizedFlags);
 
-    list<OA::MemRefHandle>*
+    std::list<OA::MemRefHandle>*
       findAllMemRefsAndMemRefExprs(SgNode *astNode);
 
-    list<OA::OA_ptr<OA::MemRefExpr> >
+    std::list<OA::OA_ptr<OA::MemRefExpr> >
       findAllMemRefsAndMemRefExprs(SgNode *astNode,
-				   list<OA::MemRefHandle>& memRefs,
+				   std::list<OA::MemRefHandle>& memRefs,
 				   unsigned inheritedFlags,
 				   unsigned &synthesizedFlags);
     
