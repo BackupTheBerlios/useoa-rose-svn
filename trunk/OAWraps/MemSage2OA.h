@@ -148,7 +148,7 @@ class MemSageIRTopMemRefIterator : public OA::IRTopMemRefIterator
 class SageIRMemRefIterator : public OA::MemRefHandleIterator 
 {
   public:
-    SageIRMemRefIterator(OA::StmtHandle h, SageIRInterface *ir);
+    SageIRMemRefIterator(OA::IRHandle h, SageIRInterface *ir);
     SageIRMemRefIterator() : mValid(false) { }
     virtual ~SageIRMemRefIterator() { };
   
@@ -161,25 +161,39 @@ class SageIRMemRefIterator : public OA::MemRefHandleIterator
     virtual void reset();
 
   private:
-    void create(OA::StmtHandle h);
-    std::list<SgNode *> *findTopMemRefs(SgNode *astNode);
-    void findTopMemRefs(SgNode *astNode, std::list<SgNode *>& topMemRefs);
+    void create(OA::IRHandle h);
 
     void handleDefaultCase(SgNode *astNode,
-			   list<OA::MemRefHandle>& memRefs,
-			   unsigned flags);
+			   std::list<OA::MemRefHandle>& memRefs,
+			   unsigned flags,
+			   unsigned &synthesizedFlags);
 
-    list<OA::MemRefHandle>*
+    std::list<OA::MemRefHandle>*
       findAllMemRefsAndMemRefExprs(SgNode *astNode);
 
-    list<OA::OA_ptr<OA::MemRefExpr> >
+    std::list<OA::OA_ptr<OA::MemRefExpr> >
       findAllMemRefsAndMemRefExprs(SgNode *astNode,
-				   list<OA::MemRefHandle>& memRefs,
-				   unsigned flags);
+				   std::list<OA::MemRefHandle>& memRefs,
+				   unsigned inheritedFlags,
+				   unsigned &synthesizedFlags);
     
-    void getChildrenWithMemRefs(SgNode *astNode,
-				std::vector<SgNode *>& independtChildren,
-				std::vector<SgNode *>& children);
+    // takeAddressOfMre creates a MemRefExpr that represents the
+    // address of mre.  
+    OA::OA_ptr<OA::MemRefExpr> takeAddressOfMre(OA::OA_ptr<OA::MemRefExpr> mre);
+
+    // Return true if mre computes an lvalue-- that is, we could take
+    // its address.
+    bool mreComputesLValue(OA::OA_ptr<OA::MemRefExpr> mre);
+
+    // Apply the reference conversion rules.
+    void applyReferenceConversionRules(OA::OA_ptr<OA::MemRefExpr> mre,
+				       SgNode *astNode, 
+				       bool appearsOnRhsOfRefAssignment,
+				       bool hasRhsThatComputesLValue,
+				       bool hasRhsThatDoesntComputeLValue,
+				       bool initializedRef,
+				       std::list<OA::OA_ptr<OA::MemRefExpr> > &convertedMemRefs);
+
 
     std::list<OA::MemRefHandle> mMemRefList;
     
@@ -232,8 +246,6 @@ class memRefExpList : public AstAttribute,
 
 OA::OA_ptr<memRefExpList> 
 getMemRefs(SgNode *node, SageIRInterface &irInterface);
-
-bool isMemRefNode(SgNode *astNode);
 
 #endif
 

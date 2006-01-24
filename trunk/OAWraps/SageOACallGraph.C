@@ -3,7 +3,8 @@
 
 //SageIRCallsiteIterator implementation
 
-SageIRCallsiteIterator::SageIRCallsiteIterator(SgStatement * sgstmt, SageIRInterface * in)
+SageIRCallsiteIterator::SageIRCallsiteIterator(SgStatement * sgstmt, 
+                                               OA::OA_ptr<SageIRInterface> in)
 {
  //given an sgstmt put all call expressions in calls_in_stmt
    FindCallsitesInSgStmt(sgstmt, calls_in_stmt);
@@ -58,10 +59,10 @@ void SageIRCallsiteIterator::FindCallsitesInSgStmt(SgStatement *sgstmt, SgExpres
 }
 
 // Returns the current item.
-OA::ExprHandle SageIRCallsiteIterator::current() const
+OA::CallHandle SageIRCallsiteIterator::current() const
 {
   SgExpression* cur = *st_iter;
-  OA::ExprHandle h = 0;
+  OA::CallHandle h = 0;
 
   if (isValid()) {
     //cerr << "cur expr: " << cur->unparseToString() << endl;
@@ -89,10 +90,24 @@ void SageIRCallsiteIterator::reset()
 
 void SageIRProcIterator::FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst)
 {
-  FindProcsPass(lst).traverse(node, preorder);
+  if ( mExcludeInputFiles ) {
+    // Only visit those AST nodes defined within the same file as node.
+    // i.e., ignore AST nodes pulled in from input files.
+    SgProject *project = isSgProject(node);
+    if ( project != NULL ) {
+      FindProcsPass(lst).traverseInputFiles(project, preorder);
+    } else {
+      FindProcsPass(lst).traverseWithinFile(node, preorder);
+    }
+  } else {
+    FindProcsPass(lst).traverse(node, preorder);
+  }
 }
 
-SageIRProcIterator::SageIRProcIterator(SgNode *node, SageIRInterface * in)
+SageIRProcIterator::SageIRProcIterator(SgNode *node, 
+                                       OA::OA_ptr<SageIRInterface> in,
+				       bool excludeInputFiles)
+  : mExcludeInputFiles(excludeInputFiles)
 {
  //given an sgstmt put all call expressions in calls_in_stmt
    FindProcsInSgTree(node, procs_in_proj);
@@ -134,9 +149,19 @@ void SageIRProcIterator::reset()
 
 void FindCallsitesPass::visit(SgNode* node)
 {
-	if(!node) { printf("visited with 0-Node!\n"); return; }
-  if(isSgFunctionCallExp(node))
-    call_lst.push_back(isSgExpression(node));
+  if(!node) { printf("visited with 0-Node!\n"); return; }
+  
+  // We expect to have expressions in the call_lst.
+  SgExpression *exp = isSgExpression(node);
+  if ( exp == NULL )
+    return;
+
+  // Though a method is represented as a function call, an
+  // invocation of new is not.  Need to check for it 
+  // explicitly.
+  if( isSgFunctionCallExp(exp) || isSgNewExp(exp) )
+    call_lst.push_back(exp);
+
   return;
 }
 
@@ -144,8 +169,13 @@ void FindCallsitesPass::visit(SgNode* node)
 
 void FindProcsPass::visit(SgNode* node)
 {
-	if(!node) { printf("visited with 0-Node!\n"); return; }
+  if(!node) { printf("visited with 0-Node!\n"); return; }
+	
+#if 1
   if(isSgFunctionDefinition(node))
+#else
+  if(isSgFunctionDeclaration(node))
+#endif
     proc_lst.push_back(isSgStatement(node));
   return;
 }

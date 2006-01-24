@@ -9,7 +9,7 @@
 #endif
 #include "rose.h"
 
-//#include <OAConfig.h>
+//#include <OAConfig.h> // MMS, 11/8/05, this file just defines OA_IRHANDLETYPE_UL and we can do that with a -D flag in Makefile
 
 #include <OpenAnalysis/IRInterface/CFGIRInterfaceDefault.hpp>
 #include <OpenAnalysis/IRInterface/SSAIRInterface.hpp>
@@ -25,6 +25,7 @@
 #include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
 #include <OpenAnalysis/Alias/Interface.hpp>
 #include <OpenAnalysis/Alias/ManagerInsNoPtrInterAliasMap.hpp>
+#include <OpenAnalysis/Alias/ManagerFIAlias.hpp>
 #include <OpenAnalysis/ExprTree/ExprTree.hpp>
 
 class SageIRInterface;
@@ -93,7 +94,7 @@ private:
 class SageIRStmtIterator: public OA::IRStmtIterator 
 {
  public:
-  SageIRStmtIterator (SgNode * node, SageIRInterface * ir); 
+  SageIRStmtIterator (SgFunctionDefinition * node, SageIRInterface * ir); 
   SageIRStmtIterator (SageIRInterface * in) {valid=FALSE; mLength=0; mIndex=0; ir=in;}
   ~SageIRStmtIterator () {}
 
@@ -178,7 +179,7 @@ class SageMemRefExprIterator : public OA::MemRefExprIterator {
       SageIRInterface * in)
       : mList(pList) { mIter = mList->begin(); ir=in;}
     ~SageMemRefExprIterator() {}
-
+                    
 #ifdef TOOMANYCOLONS
     OA::OA_ptr<OA::MemRefExpr::MemRefExpr> current() const
 #else
@@ -186,9 +187,9 @@ class SageMemRefExprIterator : public OA::MemRefExprIterator {
 #endif
       { return *mIter; }
 
-
+                        
     bool isValid() const { return mIter!=mList->end(); }
-
+                                             
     void operator++() { if (isValid()) mIter++; }
     void operator++(int) { ++*this; }
     void reset() { mIter = mList->begin(); }
@@ -238,10 +239,10 @@ class SageIRUseDefIterator : public OA::SSA::IRUseDefIterator
   public:
     SageIRUseDefIterator(something missing here) { mIter = mList.begin(); }
     ~SageIRUseDefIterator() { };
-
+  
     OA::LeafHandle current() const { return *mIter; }
     bool isValid() const { return ( mIter != mList.end() ); }
-
+          
     void operator++() { if ( isValid() ) ++mIter; }
 
     void reset() { mIter = mList.begin(); }
@@ -251,22 +252,79 @@ class SageIRUseDefIterator : public OA::SSA::IRUseDefIterator
 };
 #endif
 
-//! Not implemented yet
+class SgParamBindPtrAssignIterator 
+    : public OA::Alias::ParamBindPtrAssignIterator
+{ 
+ public:
+  SgParamBindPtrAssignIterator() : mValid(false), mIR(NULL) { }
+  SgParamBindPtrAssignIterator(OA::ExprHandle call, 
+			       SageIRInterface * ir)
+    : mIR(ir) 
+  { create(call); reset(); mValid = true; }
+  virtual ~SgParamBindPtrAssignIterator() { };
+  
+  //! left hand side (i.e., formal)
+  //  virtual OA::SymHandle currentTarget() const { return (*mIter).first; }
+  virtual int currentFormalId() const { return (*mIter).first; }
+  //! right hand side (i.e., actual)
+  //  virtual OA::OA_ptr<OA::MemRefExpr> currentSource() const { return (*mIter).second; }
+  virtual OA::OA_ptr<OA::MemRefExpr> currentActual() const { return (*mIter).second; }
+
+  virtual bool isValid() const { 
+    return ( mValid && ( mIter != mEnd ) ); 
+  }
+          
+  virtual void operator++() { if (isValid()) mIter++; }
+  virtual void reset();
+
+ private:
+  void create(OA::ExprHandle call);
+
+  std::list<std::pair<int, OA::OA_ptr<OA::MemRefExpr> > > mPairList;
+  
+  std::list<std::pair<int, OA::OA_ptr<OA::MemRefExpr> > >::iterator mEnd;
+  std::list<std::pair<int, OA::OA_ptr<OA::MemRefExpr> > >::iterator mBegin;
+  std::list<std::pair<int, OA::OA_ptr<OA::MemRefExpr> > >::iterator mIter;
+  bool mValid;
+  SageIRInterface *mIR;
+};
+
 class SgPtrAssignPairStmtIterator 
     : public OA::Alias::PtrAssignPairStmtIterator
 { 
-  public:
-    SgPtrAssignPairStmtIterator() {}
-   ~SgPtrAssignPairStmtIterator() {}
+ public:
+  SgPtrAssignPairStmtIterator() : mValid(false), mIR(NULL) { }
+  SgPtrAssignPairStmtIterator(OA::StmtHandle stmt, SageIRInterface * ir)
+    : mIR(ir) 
+  { create(stmt); reset(); mValid = true; }
+  virtual ~SgPtrAssignPairStmtIterator() { };
+  
+  //! left hand side
+  virtual OA::OA_ptr<OA::MemRefExpr> currentTarget() const { return (*mIter).first; }
+  //! right hand side
+  virtual OA::OA_ptr<OA::MemRefExpr> currentSource() const { return (*mIter).second; }
 
-    //! right hand side
-   OA::MemRefHandle currentSource() const { return OA::MemRefHandle(0); }
-    //! left hand side
-   OA::MemRefHandle currentTarget() const { return OA::MemRefHandle(0); }
+  virtual bool isValid() const { 
+    return ( mValid && ( mIter != mEnd ) ); 
+  }
+          
+  virtual void operator++() { if (isValid()) mIter++; }
+  virtual void reset();
 
-    bool isValid() const  { return false; }
+ private:
+  void create(OA::StmtHandle h);
 
-    void operator++() {}
+  void createPtrAssignPairsFromReturnStmt(SgReturnStmt *returnStmt);
+
+  SgExpression *createPtrAssignPairsFromAssignment(SgNode *assign);
+
+  std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > mMemRefList;
+  
+  std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > >::iterator mEnd;
+  std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > >::iterator mBegin;
+  std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > >::iterator mIter;
+  bool mValid;
+  SageIRInterface *mIR;
 };
 
 #if 0
@@ -296,16 +354,18 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
                         public virtual OA::SideEffect::SideEffectIRInterface
 {
   public:
-  SageIRInterface (SgProject * root, std::vector<SgNode*> * na, bool use_persistent_handles=FALSE): nodeArrayPtr(na), wholeProject(root), persistent_handles(use_persistent_handles)
-    { if(persistent_handles){createNodeArray(root);} }
+  //! Constructor.
+  SageIRInterface(SgNode *root, 
+		  std::vector<SgNode*> *na, 
+		  bool use_persistent_handles = FALSE);
   ~SageIRInterface () {}
 
-
+    
   //! Given a subprogram return an IRStmtIterator* for the entire
   //! subprogram
   //! The user must free the iterator's memory via delete.
   OA::OA_ptr<OA::IRStmtIterator> getStmtIterator(OA::ProcHandle h); 
-
+  
   //! Return an iterator over all of the callsites in a given stmt
   OA::OA_ptr<OA::IRCallsiteIterator> getCallsites(OA::StmtHandle h);
 
@@ -314,6 +374,8 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
 
   //! Given a ProcHandle, return its SymHandle
   OA::SymHandle getProcSymHandle(OA::ProcHandle h);
+  OA::SymHandle getProcSymHandle(SgFunctionDeclaration *);
+  OA::MemRefHandle SageIRInterface::getSymMemRefHandle(OA::SymHandle h);
   OA::SymHandle getSymHandle(OA::ProcHandle h) {return getProcSymHandle(h);} //ask Michelle
 
   OA::SymHandle getSymHandle(OA::ExprHandle expr);
@@ -355,15 +417,16 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   OA::OA_ptr<OA::IRRegionStmtIterator> getFirstInCompound (OA::StmtHandle h);
 
   void createNodeArray(SgNode * root);
+  void numberASTNodes(SgNode *astNode);
   SgNode * getNodePtr(OA::IRHandle h){if((int)h==0) return 0; else if(persistent_handles) return (*nodeArrayPtr)[h.hval()-1]; else return (SgNode*)h.hval();} //hvals start at 1
-  int getNodeNumber(SgNode *);  //can be zero
+  long getNodeNumber(SgNode *);  //can be zero
   std::vector <SgNode *> * nodeArrayPtr;
 
   //------------------------------
   // for procedure, loop
   //------------------------------
 private:
-  SgProject * wholeProject;
+  SgNode * wholeProject;
   OA::OA_ptr<OA::IRRegionStmtIterator> body (OA::StmtHandle h);
   bool persistent_handles;
   //------------------------------
@@ -440,6 +503,10 @@ public:
 
   //Alias stuff
   OA::OA_ptr<OA::MemRefHandleIterator> getAllMemRefs(OA::StmtHandle stmt);
+  // getAllMemRefs(OA::IRHandle h) is intended to be called by
+  // ROSE, which may neither have nor know how to create a StmtHandle.
+  // e.g., may_alias(AstNodePtr r1, AstNodePtr r2);
+  OA::OA_ptr<OA::MemRefHandleIterator> getAllMemRefs(OA::IRHandle h);
   OA::Alias::IRStmtType getAliasStmtType(OA::StmtHandle h);
   OA::OA_ptr<OA::IRSymIterator> getVisibleSymIterator(OA::ProcHandle h);
   OA::OA_ptr<OA::IRStmtIterator> getUnnamedDynAllocStmtIterator(OA::ProcHandle h); 
@@ -448,10 +515,17 @@ public:
 
   OA::OA_ptr<OA::Location::Location> 
   getLocation(OA::ProcHandle p, OA::SymHandle s);
+
+  OA::SymHandle getFormalSym(OA::ProcHandle, int);
+
+  OA::OA_ptr<OA::MemRefExpr> getCallMemRefExpr(OA::CallHandle h);
+
+  OA::ProcHandle getProcHandle(OA::SymHandle sym);
+
   //ReachDefs
   OA::OA_ptr<OA::MemRefHandleIterator> getDefMemRefs(OA::StmtHandle stmt);
   OA::OA_ptr<OA::MemRefHandleIterator> getUseMemRefs(OA::StmtHandle stmt);
-
+  
   //------------------------------
   //------------------------------
 
@@ -464,7 +538,7 @@ public:
     {
       SgName nm=fd->get_name();
       //      SgName nm=fd->get_mangled_name();
-
+      
       return nm.str(); 
     } 
   }
@@ -477,7 +551,7 @@ public:
   //-------------------------------------------------------------------------
   // IRHandlesIRInterface
   //-------------------------------------------------------------------------
-
+     
   //--------------------------------------------------------
   // create a string for the given handle, should be succinct
   // and there should be no newlines
@@ -497,31 +571,20 @@ public:
           SgExpression * ex=(SgExpression*)getNodePtr(h);
           return ex->unparseToString();
     }
-  std::string toString(const OA::OpHandle h) { return ""; }
-  std::string toString(const OA::MemRefHandle h)
+  std::string toString(const OA::CallHandle h) 
   {
-    std::string strdump;
-    char val[20];
-    if(h.hval()==0)
-      strdump="NULL mem ref ";
-    else
-    {
-      sprintf(val, " %i", (int)h.hval());
-      if(isSgExpression(getNodePtr(h)))
-        strdump=((SgExpression*)(getNodePtr(h)))->unparseToString();
-      else if(isSgInitializedName(getNodePtr(h)))
-        strdump=((((SgInitializedName*)getNodePtr(h)))->get_name()).getString();
-    }
-    // Let's not print the memory address.  This creates problems
-    // comparing results of regression tests.
-    //    strdump+=val;
-    return strdump;
+    SgNode *node = getNodePtr(h);
+    SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+    ROSE_ASSERT(functionCallExp != NULL);
+    return functionCallExp->unparseToString();
   }
+  std::string toString(const OA::OpHandle h) { return ""; }
+  std::string toString(const OA::MemRefHandle h);
   std::string toString(const OA::SymHandle h); 
   std::string toString(const OA::ConstSymHandle h) { return ""; }
   std::string toString(const OA::ConstValHandle h) { return ""; }
   std::string toString(OA::Alias::IRStmtType x);
-
+  
   void dump(OA::OA_ptr<OA::MemRefExprIterator> memRefIterator,
 	    std::ostream& os);
 
@@ -544,21 +607,30 @@ public:
   }
   void dump(OA::StmtHandle h, std::ostream& os) { os << toString(h); }
 
-
+  
   void currentProc(OA::ProcHandle p);
 
   //-------------------------------------------------------------------------
   // AliasIRInterfaceDefault
   //-------------------------------------------------------------------------
-
+    
   //! If this is a PTR_ASSIGN_STMT then return an iterator over MemRefHandle
   //! pairs where there is a source and target such that target
   OA::OA_ptr<OA::Alias::PtrAssignPairStmtIterator>
   getPtrAssignStmtPairIterator(OA::StmtHandle stmt);
+  
+  OA::OA_ptr<OA::Alias::ParamBindPtrAssignIterator>
+  getParamBindPtrAssignIterator(OA::CallHandle call);
 
-  // returns true if given symbol is a pass by reference parameter 
+  // returns true if given symbol is a reference variable.
   bool isRefParam(OA::SymHandle);
 
+  // returns true if given MemRefExpr is a reference variable.
+  bool isReferenceExpr(OA::OA_ptr<OA::MemRefExpr>);
+
+  // returns true if given symbol is a pointer variable.
+  bool isPointerVar(OA::SymHandle);
+  
   //-------------------------------------------------------------------------
   // SSAIRInterface
   //-------------------------------------------------------------------------
@@ -576,7 +648,7 @@ public:
   //-------------------------------------------------------------------------
   // ParamBindingsIRInterface
   //-------------------------------------------------------------------------
-
+  
   //! Given a subprogram return an IRSymIterator for all
   //! symbols that are referenced within the subprogram
   OA::OA_ptr<OA::IRSymIterator> getRefSymIterator(OA::ProcHandle h);
@@ -605,27 +677,224 @@ public:
   void dump(OA::OA_ptr<OA::Deref> memRefExp, std::ostream& os);
   void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, std::ostream &os);
 
+  //-------------------------------------------------------------------------
+  // Interface to ROSE
+  //-------------------------------------------------------------------------
+  OA::IRHandle getHandle(SgNode *astNode) { return getNodeNumber(astNode); }
+  OA::MemRefHandle getMemRefHandle(SgNode *astNode) { 
+    OA::MemRefHandle memRefHandle = (OA::MemRefHandle) 0;
+    if ( isMemRefNode(astNode) ) {
+      memRefHandle = getNodeNumber(astNode);
+    }
+    return memRefHandle;
+  }
+  OA::ProcHandle getProcHandle(SgFunctionDefinition *astNode);
+  //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
+  SgNode *getSgNode(OA::IRHandle h) { return getNodePtr(h); }
+  bool isMemRefNode(SgNode *astNode);
+
+ protected:
+
+  std::list<SgNode *> *findTopMemRefs(SgNode *astNode);
+  std::list<SgNode *> *findIndependentMemRefs(SgNode *astNode);
+  void findIndependentMemRefs(SgNode *astNode, std::list<SgNode *>& topMemRefs,
+			      bool collectOnlyTopMemRefs);
+  void getChildrenWithMemRefs(SgNode *astNode,
+			      std::vector<SgNode *>& independtChildren,
+			      std::vector<SgNode *>& children);
+
  private:
 
-  string refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
+  // Returns true if the function call is a method invocation.
+  bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp);
+
+  // Returns a SgPointerDerefExp if the function call is made
+  // through a pointer and NULL otherwise.
+  SgPointerDerefExp *isFunctionPointer(SgFunctionCallExp *functionCall);
+
+  // If node represents a function/method/new call, return the
+  // types of the args.
+  SgTypePtrList &getFormalTypes(SgNode *node);
+
+   // Return the MemRefType of a MemRefExpr.
+  OA::MemRefExpr::MemRefType getMemRefType(OA::OA_ptr<OA::MemRefExpr> mre);
+
+  // Look through typedefs to return a type.
+  SgType *getBaseType(SgType *type); 
+
+  SgFunctionDefinition *getEnclosingMethod(SgNode *node);
+
+  SgStatement *getEnclosingStatement(SgNode *node);
+
+  // Return the class in which node occurs.
+  SgClassDefinition *getDefiningClass(SgScopeStatement *scope);
+
+  // dereferenceMre creates a Deref MemRefExpr that models a
+  // dereference of mre.  
+  OA::OA_ptr<OA::MemRefExpr> dereferenceMre(OA::OA_ptr<OA::MemRefExpr> mre);
+
+  // Return the lhs of a new expression.
+  SgNode *getNewLhs(SgNewExp *newExp);
+
+  // Return the lhs of a method invocation.
+  SgNode *getMethodInvocationLhs(SgFunctionCallExp *functionCall);
+
+  // Return a memory reference expression for varRefExp.
+  // If varRefExp is an access to a class member m, then
+  // this method will explicitly model the dereference of this
+  // and create an MRE for this->m.
+  OA::OA_ptr<OA::MemRefExpr> 
+    createMRE(SgVarRefExp *varRefExp,
+	      bool addressTaken,
+	      bool fullAccuracy,
+	      OA::MemRefExpr::MemRefType memRefType,
+	      bool arrowOrDotModeledElsewhere);
+
+  // Return a memory reference expression for initName.
+  // If initName is an access to a class member m, then
+  // this method will explicitly model the dereference of this
+  // and create an MRE for this->m.
+  OA::OA_ptr<OA::MemRefExpr> 
+    createMRE(SgInitializedName *initName,
+	      bool addressTaken,
+	      bool fullAccuracy,
+	      OA::MemRefExpr::MemRefType memRefType,
+	      bool arrowOrDotModeledElsewhere);
+
+  bool isArrowExp(SgExpression *function);
+  bool isMalloc(SgFunctionCallExp *functionCallExp);
+  // If node represents a malloc or a new, return true and the
+  // type of the object allocated.  
+  bool isAllocation(SgNode *node, SgType *&type);
+
+  bool isAmbiguousCallThroughVirtualMethod(SgFunctionCallExp *functionCallExp);
+  
+  SgFunctionDeclaration *getFunctionDeclaration(SgFunctionCallExp *functionCall);
+
+  std::string refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
 
   OA::OA_ptr<OA::MemRefHandleIterator> 
-    getMemRefIterator(OA::StmtHandle h);
+    getMemRefIterator(OA::IRHandle h);
 
   // assumption is that StmtHandles and MemRefHandles are unique across
   // different program and procedure contexts for which analysis is being
   // currently performed
-  static std::map<OA::StmtHandle,std::set<OA::MemRefHandle> >
+  static std::map<OA::IRHandle,std::set<OA::MemRefHandle> >
     sStmt2allMemRefsMap;
 
-  static std::map<OA::MemRefHandle,OA::StmtHandle> sMemRef2StmtMap;
+  static std::map<OA::MemRefHandle,OA::IRHandle> sMemRef2StmtMap;
 
-  static std::map<OA::MemRefHandle,set<OA::OA_ptr<OA::MemRefExpr> > >
+  static std::map<OA::MemRefHandle,std::set<OA::OA_ptr<OA::MemRefExpr> > >
     sMemref2mreSetMap;
 
-  friend class SageIRMemRefIterator;
+  static std::map<OA::OA_ptr<OA::MemRefExpr>,OA::MemRefHandle >
+    sMre2MemrefMap;
 
+  // List of all SgFunctionDeclarations in the program, stored as
+  // a map from the first non-defining declaration (if non-NULL)
+  // to the defining declaration.
+  std::map<SgFunctionDeclaration *, SgFunctionDeclaration *> mFunctions;
+
+  // Given a SgNode return a symbol handle to represent the
+  // corresponding SgThisExp.  This symbol handle references
+  // a SgClassSymbol.
+  OA::SymHandle getThisExpSymHandle(SgNode *node);
+
+  // Given a SgFunctionCallExp representing a method invocation,
+  // return a MemRefHandle to the object upon which the method
+  // was invoked.
+  //  OA::MemRefHandle getDispatchingObjectMemRefHandle(SgFunctionCallExp *func);
+
+  // Strip off any leading SgCastExps/SgAssignInitializers in 
+  // the tree root at node.
+  SgNode *lookThroughCastExpAndAssignInitializer(SgNode *node);
+
+  // initializerHasPtrAssign returns true if the SgInitializedName
+  // is a pointer or reference and it has an initializer.
+  // If collectPtrAssigns is true, it returns the corresponding 
+  // MemRefHandle/MemRefExpr pairs in memRefList.
+  bool initializerHasPtrAssign(SgInitializedName *initName,
+			       bool collectPtrAssigns,
+			       std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+
+  // varDeclHasPtrAssign returns true if the variable declaration
+  // assigns values to a pointer.  If collectPtrAssigns is true,
+  // it returns the corresponding MemRefHandle/MemRefExpr pairs
+  // in memRefList.
+  bool varDeclHasPtrAssign(SgVariableDeclaration *varDeclaration,
+			   bool collectPtrAssigns,
+			   std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+
+  // cotrInitListHasPtrAssign returns true if the constructor
+  // initializer list initializes any pointers or references.
+  // If collectPtrAssigns is true, it returns the corresponding 
+  // MemRefHandle/MemRefExpr pairs in memRefList.
+  bool ctorInitListHasPtrAssign(SgCtorInitializerList *initializerList,
+				bool collectPtrAssigns,
+				std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+
+  // Create the implicit ptr assign pairs at each class definition
+  // necessary to support the "vtable" optimization.
+  bool 
+    createImplicitVTablePtrAssignFromDefinition(SgClassDefinition *classDefinition,
+						bool collectPtrAssigns,
+						std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+  
+  // Create the implicit ptr assign pairs for the methods of a class.
+  bool 
+    createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
+				      SgClassDefinition *classDefinition,
+				      bool collectPtrAssigns,
+				      std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+
+
+  // Create implicit ptr assign pairs given lhs = rhs.
+  void
+    createImplicitPtrAssigns(OA::OA_ptr<OA::MemRefExpr> lhs,
+			     SgNode *rhs,
+			     std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+
+  // Create any implicit ptr assign pairs resulting from an object allocation
+  // of class classDefinition, creating using the constructor represented
+  // by ctorInitializer.  
+  bool 
+    createImplicitPtrAssignFromObjectAllocation(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
+						SgClassDefinition *classDefinition,
+						SgConstructorInitializer *ctorInitializer,
+						bool collectPtrAssigns,
+						std::set<SgClassDefinition *> examinedClasses,
+						std::set<SgConstructorInitializer *> examinedCtors,
+						std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+
+  // If astNode is an allocation site (new or malloc) of
+  // a class instance, return the declaration of that class.
+  SgClassDeclaration *findAllocatedClass(SgNode *astNode);
+
+  // Returns true if the function is a virtual method (as declared
+  // in its defining method).
+  bool isVirtual(SgFunctionDeclaration *functionDeclaration);
+
+  bool isDeclaredVirtualWithinAncestor(SgFunctionDeclaration *functionDeclaration);
+  
+  bool isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration, SgClassDefinition *classDefinition);
+
+  // Returns true if classDefinition defines a class with virtual methods.
+  bool classHasVirtualMethods(SgClassDefinition *classDefinition);
+
+  // Returns true if the mre is a Field Access.
+  bool isFieldAccess(OA::OA_ptr<OA::MemRefExpr> mre);
+
+  // Return the class declaration corresponding to type, if
+  // type is indeed a class type.
+  SgClassDeclaration *getClassDeclaration(SgType *type);
+
+  friend class SageIRMemRefIterator;
+  friend class SgPtrAssignPairStmtIterator;
+  friend class SgParamBindPtrAssignIterator;
+  friend class ExprTreeTraversal;
 };
+
+#define OA_VTABLE_STR "__oa_vtable_ptr"
 
 #endif
 
