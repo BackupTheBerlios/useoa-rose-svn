@@ -730,3 +730,17 @@
         - Current status/milestone:  HindEtAlIBM95Fig4.C no longer
           generates an UnknownLoc.  I have not, however, checked it for
           correctness.
+
+1/24/06   UseOA-ROSE svn tag trunk r35 	Brian White        
+        - Fixed assertion failure caused by findAllocatedClass 
+          returning NULL.  This was caused by isAllocation a 
+          SgPointerType rather than a SgClassType (when
+          using a newer version of ROSE:  ROSE-January18a-2006,
+          unreleased).  
+          // Older versions of ROSE (0.8.6c and earlier) were
+          // returning SgClassType as the type of SgNewExp.
+          // We would like to return a SgClassType, so this is fine,
+          // though counter-intuitive.  Dan fixed this so that
+          // the type of a SgNewExp is a SgPointerType, which makes
+          // more sense.  To maintain backward compatibility,
+          // check to see which case we are in.

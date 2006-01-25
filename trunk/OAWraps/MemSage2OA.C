@@ -121,6 +121,16 @@ bool SageIRInterface::isAllocation(SgNode *astNode, SgType *&type)
       type = newExp->get_type();
       ROSE_ASSERT(type != NULL);
 
+      // Older versions of ROSE (0.8.6c and earlier) were
+      // returning SgClassType as the type of SgNewExp.
+      // We would like to return a SgClassType, so this is fine,
+      // though counter-intuitive.  Dan fixed this so that
+      // the type of a SgNewExp is a SgPointerType, which makes
+      // more sense.  To maintain backward compatibility,
+      // check to see which case we are in:
+      if ( isSgPointerType(type) ) {
+	type = isSgPointerType(type)->get_base_type();
+      }
       isAlloc = true;
 
       break;
