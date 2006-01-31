@@ -60,7 +60,7 @@ diff t TestResults/FIAlias/refCall.C.out
 echo "Testing TestCases/AliasTests/refClass.C\n\tTestResults/AliasTests/refClass.C checked by ???"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/refClass.C > t
 diff t TestResults/FIAlias/refClass.C.out
-echo "Testing TestCases/AliasTests/refParam.C\n\tTestResults/AliasTests/refParam.C checked by ???"
+echo "Testing TestCases/AliasTests/refParam.C\n\tTestResults/AliasTests/refParam.C checked by BSW"
 ./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/refParam.C > t
 diff t TestResults/FIAlias/refParam.C.out
 echo "Testing TestCases/AliasTests/RinardEtAlPLDI96Fig4.C\n\tTestResults/AliasTests/RinardEtAlPLDI96Fig4.C checked by ???"

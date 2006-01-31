@@ -1,0 +1,81 @@
+# pass -edg:w to turn off front-end warnings
+# pass -c so ROSE doesn't give us spurious output
+
+echo "Testing alias1.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/alias1.c > TestResults/UnreleasedFIAlias/alias1.c.out
+echo "Testing alias2.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/alias2.c > TestResults/UnreleasedFIAlias/alias2.c.out
+echo "Testing alias3.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/alias3.c > TestResults/UnreleasedFIAlias/alias3.c.out
+echo "Testing alias4.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/alias4.c > TestResults/UnreleasedFIAlias/alias4.c.out
+echo "Testing alias4b.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/alias4b.c > TestResults/UnreleasedFIAlias/alias4b.c.out
+echo "Testing funCall.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/funCall.c > TestResults/UnreleasedFIAlias/funCall.c.out
+echo "Testing utke.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/utke.c > TestResults/UnreleasedFIAlias/utke.c.out
+echo "Testing OAWikiEx.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/OAWikiEx.c > TestResults/UnreleasedFIAlias/OAWikiEx.c.out
+
+
+echo "Testing comma.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/comma.c > TestResults/UnreleasedFIAlias/comma.c.out
+echo "Testing constQualified.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/constQualified.c > TestResults/UnreleasedFIAlias/constQualified.c.out
+echo "Testing diffArrays.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/diffArrays.c > TestResults/UnreleasedFIAlias/diffArrays.c.out
+echo "Testing diffTypes.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/diffTypes.c > TestResults/UnreleasedFIAlias/diffTypes.c.out
+echo "Testing HindEtAlIBM95Fig4.C"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/HindEtAlIBM95Fig4.C > TestResults/UnreleasedFIAlias/HindEtAlIBM95Fig4.C.out
+echo "Testing HindEtAlISSTA00Fig1.C"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/HindEtAlISSTA00Fig1.C > TestResults/UnreleasedFIAlias/HindEtAlISSTA00Fig1.C.out
+echo "Testing LattnerEtAl03Fig1.C"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/LattnerEtAl03Fig1.C > TestResults/UnreleasedFIAlias/LattnerEtAl03Fig1.C.out
+echo "Testing LiangEtAl00.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/LiangEtAl00.c > TestResults/UnreleasedFIAlias/LiangEtAl00.c.out
+echo "Testing LiangEtAl99.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/LiangEtAl99.c > TestResults/UnreleasedFIAlias/LiangEtAl99.c.out
+echo "Testing LiangEtAlICSM99Fig2.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/LiangEtAlICSM99Fig2.c > TestResults/UnreleasedFIAlias/LiangEtAlICSM99Fig2.c.out
+echo "Testing LiangEtAlICSM99Fig5.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/LiangEtAlICSM99Fig5.c > TestResults/UnreleasedFIAlias/LiangEtAlICSM99Fig5.c.out
+echo "Testing PandeEtAlRutgers05.C"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/PandeEtAlRutgers05.C > TestResults/UnreleasedFIAlias/PandeEtAlRutgers05.C.out
+echo "Testing PioliThesis99Fig1.C"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/PioliThesis99Fig1.C > TestResults/UnreleasedFIAlias/PioliThesis99Fig1.C.out
+echo "Testing PioliThesis99Fig3.C"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/PioliThesis99Fig3.C > TestResults/UnreleasedFIAlias/PioliThesis99Fig3.C.out
+echo "Testing ref.C"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/ref.C > TestResults/UnreleasedFIAlias/ref.C.out
+echo "Testing refCall.C"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/refCall.C > TestResults/UnreleasedFIAlias/refCall.C.out
+echo "Testing refClass.C"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/refClass.C > TestResults/UnreleasedFIAlias/refClass.C.out
+echo "Testing refParam.C"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/refParam.C > TestResults/UnreleasedFIAlias/refParam.C.out
+echo "Testing RinardEtAlPLDI96Fig4.C"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RinardEtAlPLDI96Fig4.C > TestResults/UnreleasedFIAlias/RinardEtAlPLDI96Fig4.C.out
+echo "Testing RyderEtAlFig11.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig11.c > TestResults/UnreleasedFIAlias/RyderEtAlFig11.c.out
+echo "Testing RyderEtAlFig14.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig14.c > TestResults/UnreleasedFIAlias/RyderEtAlFig14.c.out
+echo "Testing RyderEtAlFig15.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig15.c > TestResults/UnreleasedFIAlias/RyderEtAlFig15.c.out
+echo "Testing RyderEtAlFig1a.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig1a.c > TestResults/UnreleasedFIAlias/RyderEtAlFig1a.c.out
+echo "Testing RyderEtAlFig1b.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig1b.c > TestResults/UnreleasedFIAlias/RyderEtAlFig1b.c.out
+echo "Testing RyderEtAlFig1c.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig1c.c > TestResults/UnreleasedFIAlias/RyderEtAlFig1c.c.out
+echo "Testing RyderEtAlFig2.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig2.c > TestResults/UnreleasedFIAlias/RyderEtAlFig2.c.out
+echo "Testing RyderEtAlFig3.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig3.c > TestResults/UnreleasedFIAlias/RyderEtAlFig3.c.out
+echo "Testing RyderEtAlFig7.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig7.c > TestResults/UnreleasedFIAlias/RyderEtAlFig7.c.out
+echo "Testing RyderEtAlFig9.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig9.c > TestResults/UnreleasedFIAlias/RyderEtAlFig9.c.out
+echo "Testing YongEtAlPLDI99.c"
+./OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/YongEtAlPLDI99.c > TestResults/UnreleasedFIAlias/YongEtAlPLDI99.c.out

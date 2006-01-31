@@ -695,6 +695,9 @@ public:
 
  protected:
 
+  //! Return the attribute associated with a Sage node.
+  AstAttributeMechanism &getAttribute(SgNode *n);
+
   std::list<SgNode *> *findTopMemRefs(SgNode *astNode);
   std::list<SgNode *> *findIndependentMemRefs(SgNode *astNode);
   void findIndependentMemRefs(SgNode *astNode, std::list<SgNode *>& topMemRefs,
@@ -892,6 +895,7 @@ public:
   friend class SgPtrAssignPairStmtIterator;
   friend class SgParamBindPtrAssignIterator;
   friend class ExprTreeTraversal;
+  friend class NumberTraversal;
 };
 
 #define OA_VTABLE_STR "__oa_vtable_ptr"

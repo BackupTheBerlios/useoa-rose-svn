@@ -12,7 +12,7 @@ include ./config/Makefile.inc
 
 srcdir = $(topsrcdir)
 
-DEFINES = -DHAVE_CONFIG_H -DOA_IRHANDLETYPE_UL #-DOA_OPEN64 
+DEFINES = -DHAVE_CONFIG_H -DOA_IRHANDLETYPE_UL $(GLOBAL_DEFINES) #-DOA_OPEN64 
 INCLUDES = -I. -I.. -I./OAWraps/ $(ROSE_INCLUDES) $(OPENANALYSIS_INC)
 #LIBS= -L$(srcdir)/OAWraps/ -lSage2OA $(OPENANALYSIS_LIB) $(ROSE_LIBS) -lm -lfl -lrt -lpthread
 LIBS= -lSage2OA $(OPENANALYSIS_LIB)

@@ -1,0 +1,905 @@
+
+EquivSets(
+    mMemRefToProc: MemRefHandle	 => ProcHandle
+        MemRefHandle(q)	 => ProcHandle(main)
+        MemRefHandle(c)	 => ProcHandle(main)
+        MemRefHandle(cond)	 => ProcHandle(main)
+        MemRefHandle()	 => ProcHandle(B::createObj)
+        MemRefHandle()	 => ProcHandle(D::createObj)
+        MemRefHandle()	 => ProcHandle(E::createObj)
+        MemRefHandle()	 => ProcHandle(main)
+        MemRefHandle()	 => ProcHandle(main)
+        MemRefHandle()	 => ProcHandle(main)
+        MemRefHandle()	 => ProcHandle(main)
+        MemRefHandle(new B)	 => ProcHandle(B::createObj)
+        MemRefHandle((new D ))	 => ProcHandle(D::createObj)
+        MemRefHandle((new E ))	 => ProcHandle(E::createObj)
+        MemRefHandle((new D ))	 => ProcHandle(main)
+        MemRefHandle((new E ))	 => ProcHandle(main)
+        MemRefHandle(r)	 => ProcHandle(main)
+        MemRefHandle(b)	 => ProcHandle(main)
+        MemRefHandle(p)	 => ProcHandle(main)
+        MemRefHandle(cond)	 => ProcHandle(main)
+        MemRefHandle(b)	 => ProcHandle(main)
+        MemRefHandle(r)	 => ProcHandle(main)
+        MemRefHandle(b)	 => ProcHandle(main)
+        MemRefHandle(b)	 => ProcHandle(main)
+        MemRefHandle(r)	 => ProcHandle(main)
+        MemRefHandle(b)	 => ProcHandle(main)
+        MemRefHandle(p)	 => ProcHandle(main)
+        MemRefHandle(q)	 => ProcHandle(main)
+        MemRefHandle(q.data)	 => ProcHandle(B::changeData)
+        MemRefHandle(q.data)	 => ProcHandle(C::changeData)
+        MemRefHandle(q.data)	 => ProcHandle(D::changeData)
+        MemRefHandle(( *( *p)).changeData)	 => ProcHandle(main)
+        MemRefHandle((q.data))	 => ProcHandle(main)
+        MemRefHandle(&r)	 => ProcHandle(main)
+        MemRefHandle(b -> createObj)	 => ProcHandle(main)
+        MemRefHandle(b -> createObj)	 => ProcHandle(main)
+        MemRefHandle(b -> createObj())	 => ProcHandle(main)
+        MemRefHandle(b -> createObj())	 => ProcHandle(main)
+        MemRefHandle(( *p))	 => ProcHandle(main)
+    mMemRefToSets: MemRefHandle	 => int
+        MemRefHandle(q)	 => [ 33 ] 
+        MemRefHandle(c)	 => [ 34 ] 
+        MemRefHandle(cond)	 => [ 36 ] 
+        MemRefHandle()	 => [ 1 ] 
+        MemRefHandle()	 => [ 15 ] 
+        MemRefHandle()	 => [ 26 ] 
+        MemRefHandle()	 => [ 1 ] 
+        MemRefHandle()	 => [ 35 ] 
+        MemRefHandle()	 => [ 15 ] 
+        MemRefHandle()	 => [ 26 ] 
+        MemRefHandle(r)	 => [ 37 ] 
+        MemRefHandle(b)	 => [ 38 ] 
+        MemRefHandle(p)	 => [ 39 ] 
+        MemRefHandle(cond)	 => [ 36 ] 
+        MemRefHandle(b)	 => [ 38 ] 
+        MemRefHandle(r)	 => [ 37 ] 
+        MemRefHandle(b)	 => [ 38 ] 
+        MemRefHandle(b)	 => [ 38 ] 
+        MemRefHandle(r)	 => [ 37 ] 
+        MemRefHandle(b)	 => [ 38 ] 
+        MemRefHandle(p)	 => [ 39 ] 
+        MemRefHandle(q)	 => [ 33 ] 
+        MemRefHandle(q.data)	 => [ 9 ] 
+        MemRefHandle(q.data)	 => [ 12 ] 
+        MemRefHandle(q.data)	 => [ 23 ] 
+        MemRefHandle(( *( *p)).changeData)	 => [ 43 ] 
+        MemRefHandle((q.data))	 => [ 48 ] 
+        MemRefHandle(b -> createObj)	 => [ 43 ] 
+        MemRefHandle(b -> createObj)	 => [ 43 ] 
+        MemRefHandle(b -> createObj())	 => [ 43 ] 
+        MemRefHandle(b -> createObj())	 => [ 43 ] 
+        MemRefHandle(( *p))	 => [ 37 ] 
+    mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
+        ProcHandle(B::createObj)	 => 
+        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+            1	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:B::B)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            43	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:B::createObj)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle(new B)
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::E::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+        ProcHandle(B::changeData)	 => 
+        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+            9	 => [ 
+                LocSubSet(
+                    mLoc: 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 1
+                        mFullOverlap: 
+                        mPartOverlap: 
+                    )
+                    mFull: 0
+                ) ] 
+            43	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:B::changeData)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle(new B)
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(q)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::E::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+        ProcHandle(C::changeData)	 => 
+        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+            12	 => [ 
+                LocSubSet(
+                    mLoc: 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 1
+                        mFullOverlap: 
+                        mPartOverlap: 
+                    )
+                    mFull: 0
+                ) ] 
+        ProcHandle(D::createObj)	 => 
+        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+            15	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:D::D)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            43	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:D::createObj)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle(new B)
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::E::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+        ProcHandle(D::changeData)	 => 
+        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+            23	 => [ 
+                LocSubSet(
+                    mLoc: 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 1
+                        mFullOverlap: 
+                        mPartOverlap: 
+                    )
+                    mFull: 0
+                ) ] 
+            43	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:D::changeData)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle(new B)
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(q)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::E::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+        ProcHandle(E::createObj)	 => 
+        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+            26	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:E::E)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            43	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:E::createObj)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle(new B)
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::E::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+        ProcHandle(main)	 => 
+        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+            1	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:B::B)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            15	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:D::D)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            26	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:E::E)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            33	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(q)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            34	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(c)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            35	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:C::C)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            36	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(cond)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            37	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(r)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            38	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(b)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            39	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(p)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            43	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:B::createObj)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:B::changeData)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle(new B)
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new D ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new E ))
+                    mLocal: 0
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::B::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::D::changeData)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::E::createObj)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+            48	 => [ 
+                LocSubSet(
+                    mLoc: 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 1
+                        mFullOverlap: 
+                        mPartOverlap: 
+                    )
+                    mFull: 0
+                ) ] 
+)

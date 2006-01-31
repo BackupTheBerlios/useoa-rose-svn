@@ -282,7 +282,13 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
   }
   else if( ( stmt=isSgStatement(node) ) != NULL )
   {
+#ifdef UNRELEASED_ROSE
+    if ( !isSgNullStatement(node) ) {
+      lst.push_back(stmt);
+    }
+#else
     lst.push_back(stmt);
+#endif
   }
 }
 
@@ -861,7 +867,7 @@ OA::StmtHandle SageIRInterface::getLoopIncrement(OA::StmtHandle h)
 		SgExpression * exp=forst->get_increment_expr();
 		st=new SgExprStatement(finfo, exp);
     int currentNumber=nodeArrayPtr->size();
-    st->attribute.add("OANumber", new SageNodeNumAttr(currentNumber));
+    getAttribute(st).add("OANumber", new SageNodeNumAttr(currentNumber));
     nodeArrayPtr->push_back(st);
 	}
 	
@@ -1810,8 +1816,8 @@ NumberTraversal::visit ( SgNode* astNode )
 	ctorInitializer->get_declaration();
       ROSE_ASSERT(functionDeclaration != NULL);
       
-      if ( !functionDeclaration->attribute().exists("OANumber") ) {
-	functionDeclaration->attribute().add("OANumber", new SageNodeNumAttr(currentNumber));
+      if ( !ir->getAttribute(functionDeclaration).exists("OANumber") ) {
+	ir->getAttribute(functionDeclaration).add("OANumber", new SageNodeNumAttr(currentNumber));
 	ir->nodeArrayPtr->push_back(functionDeclaration);
 	
 	currentNumber=ir->nodeArrayPtr->size();
@@ -1821,8 +1827,8 @@ NumberTraversal::visit ( SgNode* astNode )
       SgFunctionParameterList *parameterList = 
 	functionDeclaration->get_parameterList(); 
 
-      if ( !parameterList->attribute().exists("OANumber") ) {
-	parameterList->attribute().add("OANumber", new SageNodeNumAttr(currentNumber));
+      if ( !ir->getAttribute(parameterList).exists("OANumber") ) {
+	ir->getAttribute(parameterList).add("OANumber", new SageNodeNumAttr(currentNumber));
 	ir->nodeArrayPtr->push_back(parameterList);
 	
 	currentNumber=ir->nodeArrayPtr->size();
@@ -1843,8 +1849,8 @@ NumberTraversal::visit ( SgNode* astNode )
       SgFunctionParameterList *parameterList = 
 	functionDeclaration->get_parameterList(); 
 
-      if ( !parameterList->attribute().exists("OANumber") ) {
-	parameterList->attribute().add("OANumber", new SageNodeNumAttr(currentNumber));
+      if ( !ir->getAttribute(parameterList).exists("OANumber") ) {
+	ir->getAttribute(parameterList).add("OANumber", new SageNodeNumAttr(currentNumber));
 	ir->nodeArrayPtr->push_back(parameterList);
 	
 	currentNumber=ir->nodeArrayPtr->size();
@@ -1866,8 +1872,8 @@ NumberTraversal::visit ( SgNode* astNode )
 	SgCtorInitializerList *initializerList =
 	  memberFunctionDeclaration->get_CtorInitializerList();
 	if ( initializerList != NULL ) {
-	  if ( !initializerList->attribute().exists("OANumber") ) {
-	    initializerList->attribute().add("OANumber", new SageNodeNumAttr(currentNumber));
+	  if ( !ir->getAttribute(initializerList).exists("OANumber") ) {
+	    ir->getAttribute(initializerList).add("OANumber", new SageNodeNumAttr(currentNumber));
 	    ir->nodeArrayPtr->push_back(initializerList);
 	    currentNumber=ir->nodeArrayPtr->size();
 	  }
@@ -1894,8 +1900,8 @@ NumberTraversal::visit ( SgNode* astNode )
       //printf("assigning node number %i to SgInitializedName %s\n", currentNumber+1,
       //                                          in->get_name().getString().c_str());
     }
-    if ( !astNode->attribute().exists("OANumber") ) {
-      astNode->attribute().add("OANumber", new SageNodeNumAttr(currentNumber));
+    if ( !ir->getAttribute(astNode).exists("OANumber") ) {
+      ir->getAttribute(astNode).add("OANumber", new SageNodeNumAttr(currentNumber));
       ir->nodeArrayPtr->push_back(astNode);
     }
   } 
@@ -1949,15 +1955,15 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
   //  cout << "Visiting " << astNode->sage_class_name() << " " << endl;
 
   // We've already been here.  Return to avoid a loop.
-  if ( astNode->attribute().exists("OANumber") ) {
+  if ( getAttribute(astNode).exists("OANumber") ) {
     //    cout << " returning" << endl;
     return;
   }
 
   //  cout << endl;
 
-  if ( !astNode->attribute().exists("OANumber") ) {
-    astNode->attribute().add("OANumber", new SageNodeNumAttr(currentNumber));
+  if ( !getAttribute(astNode).exists("OANumber") ) {
+    getAttribute(astNode).add("OANumber", new SageNodeNumAttr(currentNumber));
     nodeArrayPtr->push_back(astNode);
     currentNumber = nodeArrayPtr->size();
   }
@@ -2313,9 +2319,9 @@ long SageIRInterface::getNodeNumber(SgNode * n) //can be zero
   }
   else if(persistent_handles)
   {
-    if(n->attribute().exists("OANumber"))
+    if(getAttribute(n).exists("OANumber"))
     {
-      SageNodeNumAttr * attr=dynamic_cast<SageNodeNumAttr * >(n->attribute()["OANumber"]);
+      SageNodeNumAttr * attr=dynamic_cast<SageNodeNumAttr * >(getAttribute(n)["OANumber"]);
       return (attr->number)+1;
     }
     else {
@@ -6411,4 +6417,24 @@ bool SageIRInterface::isFieldAccess(OA::OA_ptr<OA::MemRefExpr> mre)
   }
 
   return isFA;
+}
+
+// getAttribute is a wrapper around the ROSE attribute mechanism
+// which returns a node's attribute.  This was defined for 
+// compatibility between older versions of ROSE in which
+// attributes were an instance variable of a SgNode, and
+// newer versions in which attributes are accessible via a method call.
+AstAttributeMechanism &SageIRInterface::getAttribute(SgNode *n)
+{
+  ROSE_ASSERT(n);
+#ifdef UNRELEASED_ROSE
+  if ( n->get_attribute() == NULL ) {
+    AstAttributeMechanism *attr = new AstAttributeMechanism();
+    ROSE_ASSERT(attr != NULL);
+    n->set_attribute(attr);
+  }
+  return n->attribute();
+#else
+  return n->attribute;
+#endif
 }
