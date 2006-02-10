@@ -194,6 +194,8 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
   SgFunctionDefinition * fdef=NULL;
   SgGlobal *sggl=NULL;
   SgNamespaceDefinitionStatement *nmdef=NULL;
+  SgSwitchStatement *switchStmt = NULL;
+  SgCaseOptionStmt *caseOptionStmt = NULL;
 
   
   if(isSgScopeStatement(node))
@@ -211,6 +213,11 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
         SgStatement *st=*iter;
         FindAllStmts(st, lst);
       }
+    }
+    else if( ( switchStmt = isSgSwitchStatement(node) ) != NULL ) 
+    {
+      FindAllStmts(switchStmt->get_item_selector(), lst);
+      FindAllStmts(switchStmt->get_body(), lst);
     }
     else if( ( co=isSgCatchOptionStmt(node) ) != NULL )
     {
@@ -282,13 +289,19 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
   }
   else if( ( stmt=isSgStatement(node) ) != NULL )
   {
+    if( ( caseOptionStmt = isSgCaseOptionStmt(node) ) != NULL ) 
+    {
+      FindAllStmts(caseOptionStmt->get_key(), lst);
+      FindAllStmts(caseOptionStmt->get_body(), lst);
+    } else {
 #ifdef UNRELEASED_ROSE
-    if ( !isSgNullStatement(node) ) {
-      lst.push_back(stmt);
-    }
+      if ( !isSgNullStatement(node) ) {
+	lst.push_back(stmt);
+      }
 #else
-    lst.push_back(stmt);
+      lst.push_back(stmt);
 #endif
+    }
   }
 }
 
@@ -530,6 +543,60 @@ SageIRInterface::getFunctionDeclaration(SgFunctionCallExp *functionCall)
   }
 
   return funcDec; 
+} 
+
+
+SgExpression * 
+SageIRInterface::getFunction(SgFunctionCallExp *functionCall) 
+{ 
+  SgExpression *function = NULL;
+
+  SgExpression *expression = functionCall->get_function();
+  ROSE_ASSERT(expression != NULL);
+
+  switch(expression->variantT()) {
+  case V_SgMemberFunctionRefExp:
+    {
+      function = isSgMemberFunctionRefExp(expression);
+
+      break;
+    }
+  case V_SgDotExp:
+    {
+      SgDotExp *dotExp = isSgDotExp(expression);
+      ROSE_ASSERT(dotExp != NULL);
+
+      function = isSgMemberFunctionRefExp(dotExp->get_rhs_operand());
+
+      break;
+    }
+  case V_SgArrowExp:
+    {
+      SgArrowExp *arrowExp = isSgArrowExp(expression);
+      ROSE_ASSERT(arrowExp != NULL);
+
+      function = isSgMemberFunctionRefExp(arrowExp->get_rhs_operand());
+
+      break;
+    }
+  case V_SgFunctionRefExp:
+    {
+      function = isSgFunctionRefExp(expression);
+
+      break;
+    }
+  case V_SgPointerDerefExp:
+    {
+      ROSE_ABORT();
+      break;
+    }
+  default:
+    {
+      ROSE_ABORT();
+    }
+  }
+
+  return function; 
 } 
 
 
@@ -1810,31 +1877,34 @@ NumberTraversal::visit ( SgNode* astNode )
 	newExp->get_constructor_args();
       ROSE_ASSERT(ctorInitializer != NULL);
 
-      // This function declaration won't get visited by the 
-      // traversal.
-      SgMemberFunctionDeclaration *functionDeclaration = 
-	ctorInitializer->get_declaration();
-      ROSE_ASSERT(functionDeclaration != NULL);
-      
-      if ( !ir->getAttribute(functionDeclaration).exists("OANumber") ) {
-	ir->getAttribute(functionDeclaration).add("OANumber", new SageNodeNumAttr(currentNumber));
-	ir->nodeArrayPtr->push_back(functionDeclaration);
-	
-	currentNumber=ir->nodeArrayPtr->size();
-      }
+      if ( !ir->createsBaseType(ctorInitializer) ) {
 
+	// This function declaration won't get visited by the 
+	// traversal.
+	SgMemberFunctionDeclaration *functionDeclaration = 
+	  ctorInitializer->get_declaration();
+	ROSE_ASSERT(functionDeclaration != NULL);
+	
+	if ( !ir->getAttribute(functionDeclaration).exists("OANumber") ) {
+	  ir->getAttribute(functionDeclaration).add("OANumber", new SageNodeNumAttr(currentNumber));
+	  ir->nodeArrayPtr->push_back(functionDeclaration);
+	  
+	  currentNumber=ir->nodeArrayPtr->size();
+	}
+	
 #if 1
-      SgFunctionParameterList *parameterList = 
-	functionDeclaration->get_parameterList(); 
-
-      if ( !ir->getAttribute(parameterList).exists("OANumber") ) {
-	ir->getAttribute(parameterList).add("OANumber", new SageNodeNumAttr(currentNumber));
-	ir->nodeArrayPtr->push_back(parameterList);
+	SgFunctionParameterList *parameterList = 
+	  functionDeclaration->get_parameterList(); 
 	
-	currentNumber=ir->nodeArrayPtr->size();
-
-      }
+	if ( !ir->getAttribute(parameterList).exists("OANumber") ) {
+	  ir->getAttribute(parameterList).add("OANumber", new SageNodeNumAttr(currentNumber));
+	  ir->nodeArrayPtr->push_back(parameterList);
+	  
+	  currentNumber=ir->nodeArrayPtr->size();
+	  
+	}
 #endif
+      }
 
       break;
     }
@@ -2003,25 +2073,28 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
 
 	  if ( ctorInitializer ) {
 
-	    // This function declaration won't get visited by the 
-	    // traversal.
-	    SgMemberFunctionDeclaration *functionDeclaration = 
-	      ctorInitializer->get_declaration();
-	    ROSE_ASSERT(functionDeclaration != NULL);
-	    
-	    children.push_back(functionDeclaration);
-	    
-	    SgFunctionParameterList *parameterList = 
-	      functionDeclaration->get_parameterList(); 
-	    
-	    if ( parameterList != NULL )
-	      children.push_back(parameterList);
-	    
-	    SgClassDeclaration *classDeclaration =
-	      ctorInitializer->get_class_decl();
-	    if ( classDeclaration != NULL)
-	      children.push_back(classDeclaration);
-	    
+	    if ( !createsBaseType(ctorInitializer) ) {
+
+	      // This function declaration won't get visited by the 
+	      // traversal.
+	      SgMemberFunctionDeclaration *functionDeclaration = 
+		ctorInitializer->get_declaration();
+	      ROSE_ASSERT(functionDeclaration != NULL);
+	      
+	      children.push_back(functionDeclaration);
+	      
+	      SgFunctionParameterList *parameterList = 
+		functionDeclaration->get_parameterList(); 
+	      
+	      if ( parameterList != NULL )
+		children.push_back(parameterList);
+	      
+	      SgClassDeclaration *classDeclaration =
+		ctorInitializer->get_class_decl();
+	      if ( classDeclaration != NULL)
+		children.push_back(classDeclaration);
+	    }	    
+
 	  }
 	  
 	}
@@ -2039,34 +2112,38 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
 	newExp->get_constructor_args();
       ROSE_ASSERT(ctorInitializer != NULL);
 
-      // This function declaration won't get visited by the 
-      // traversal.
-      SgMemberFunctionDeclaration *functionDeclaration = 
-	ctorInitializer->get_declaration();
-      ROSE_ASSERT(functionDeclaration != NULL);
-      
-      children.push_back(functionDeclaration);
+      if ( !createsBaseType(ctorInitializer) ) {
 
-      // Do _not_ remove this next call to get_ctors().
-      // It has side effects.  In particular, the initializerList
-      // may be NULL before the call, but is always non-NULL
-      // afterwards.  i.e., force it into existence now and number it.
-      // Bad things could result if it is later conjured up,
-      // since we won't have a number for it.
-      SgInitializedNamePtrList &list = 
-	functionDeclaration->get_ctors(); 
+	// This function declaration won't get visited by the 
+	// traversal.
+	SgMemberFunctionDeclaration *functionDeclaration = 
+	  ctorInitializer->get_declaration();
+	ROSE_ASSERT(functionDeclaration != NULL);
+	
+	children.push_back(functionDeclaration);
+	
+	// Do _not_ remove this next call to get_ctors().
+	// It has side effects.  In particular, the initializerList
+	// may be NULL before the call, but is always non-NULL
+	// afterwards.  i.e., force it into existence now and number it.
+	// Bad things could result if it is later conjured up,
+	// since we won't have a number for it.
+	SgInitializedNamePtrList &list = 
+	  functionDeclaration->get_ctors(); 
+	
+	SgCtorInitializerList *initializerList =
+	  functionDeclaration->get_CtorInitializerList();
+	if ( initializerList != NULL ) {
+	  children.push_back(initializerList);
+	}
+	
+	SgFunctionParameterList *parameterList = 
+	  functionDeclaration->get_parameterList(); 
 
-      SgCtorInitializerList *initializerList =
-	functionDeclaration->get_CtorInitializerList();
-      if ( initializerList != NULL ) {
-	children.push_back(initializerList);
+	if ( parameterList != NULL )
+	  children.push_back(parameterList);
+
       }
-
-      SgFunctionParameterList *parameterList = 
-	functionDeclaration->get_parameterList(); 
-
-      if ( parameterList != NULL )
-	children.push_back(parameterList);
 
       SgClassDeclaration *classDeclaration =
 	ctorInitializer->get_class_decl();
@@ -2138,31 +2215,35 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
 	isSgConstructorInitializer(astNode);
       ROSE_ASSERT(ctorInitializer != NULL);
 
-      // Get the declaration of the function.
-      SgFunctionDeclaration *functionDeclaration = 
-	ctorInitializer->get_declaration();
-      ROSE_ASSERT(functionDeclaration != NULL);
+      if ( !createsBaseType(ctorInitializer) ) {
 
-      children.push_back(functionDeclaration);
-
-      SgMemberFunctionDeclaration *memberFunctionDeclaration =  
-	isSgMemberFunctionDeclaration(functionDeclaration); 
-      
-      // Do _not_ remove this next call to get_ctors().
-      // It has side effects.  In particular, the initializerList
-      // may be NULL before the call, but is always non-NULL
-      // afterwards.  i.e., force it into existence now and number it.
-      // Bad things could result if it is later conjured up,
-      // since we won't have a number for it.
-      SgInitializedNamePtrList &list = 
-	memberFunctionDeclaration->get_ctors(); 
-
-      if ( memberFunctionDeclaration != NULL ) { 
-	SgCtorInitializerList *initializerList =
-	  memberFunctionDeclaration->get_CtorInitializerList();
-	if ( initializerList != NULL ) {
-	  children.push_back(initializerList);
+	// Get the declaration of the function.
+	SgFunctionDeclaration *functionDeclaration = 
+	  ctorInitializer->get_declaration();
+	ROSE_ASSERT(functionDeclaration != NULL);
+	
+	children.push_back(functionDeclaration);
+	
+	SgMemberFunctionDeclaration *memberFunctionDeclaration =  
+	  isSgMemberFunctionDeclaration(functionDeclaration); 
+	
+	// Do _not_ remove this next call to get_ctors().
+	// It has side effects.  In particular, the initializerList
+	// may be NULL before the call, but is always non-NULL
+	// afterwards.  i.e., force it into existence now and number it.
+	// Bad things could result if it is later conjured up,
+	// since we won't have a number for it.
+	SgInitializedNamePtrList &list = 
+	  memberFunctionDeclaration->get_ctors(); 
+	
+	if ( memberFunctionDeclaration != NULL ) { 
+	  SgCtorInitializerList *initializerList =
+	    memberFunctionDeclaration->get_CtorInitializerList();
+	  if ( initializerList != NULL ) {
+	    children.push_back(initializerList);
+	  }
 	}
+
       }
 
       break;
@@ -2410,19 +2491,60 @@ std::string SageIRInterface::toString(const OA::ProcHandle h)
 std::string SageIRInterface::toString(const OA::MemRefHandle h)
 {
   std::string strdump;
-  char val[20];
-  if(h.hval()==0)
+  //  char val[20];
+  if(h.hval()==0) {
     strdump="NULL mem ref ";
-  else
-    {
-      sprintf(val, " %i", (int)h.hval());
-      SgNode *node = getNodePtr(h);
-      ROSE_ASSERT(node != NULL);
-      if(isSgExpression(node))
-        strdump=isSgExpression(node)->unparseToString();
-      else if(isSgInitializedName(node))
-        strdump=isSgInitializedName(node)->get_name().getString();
+    return strdump;
+  }
+
+  SgNode *node = getNodePtr(h);
+  ROSE_ASSERT(node != NULL);
+  
+  SgExpression *expression = isSgExpression(node);
+  SgInitializedName *initializedName = isSgInitializedName(node);
+
+  if ( expression != NULL ) {
+    SgConstructorInitializer *ctorInitializer =
+      isSgConstructorInitializer(expression);
+    if ( ctorInitializer ) {
+      SgMemberFunctionDeclaration *constructor =
+	ctorInitializer->get_declaration();
+      ROSE_ASSERT(constructor != NULL);
+      SgNode *scope = constructor->get_scope();
+      ROSE_ASSERT(scope != NULL);
+      SgClassDefinition *classDefinition = isSgClassDefinition(scope);
+      ROSE_ASSERT(classDefinition != NULL);
+
+      strdump = classDefinition->get_qualified_name().str() + 
+	expression->unparseToString();
+    } else {
+      strdump = expression->unparseToString();
     }
+  } else if ( initializedName != NULL ) {
+    
+    SgType *type = initializedName->get_type();
+    ROSE_ASSERT(type != NULL);
+    
+    // If an initialized name is a reference, then we model
+    // it is a pointer.
+    // e.g., int &lhs = ... -> int *lhs = ...
+    // However, subsequent assignments (different from initializations)
+    // of lhs change the value at the location not of the location:
+    // e.g. lhs = 5 -> *lhs = 5
+    // In OpenAnalysis, *lhs will result in two mem ref expressions:
+    // *lhs and the sub mem ref expr lhs.  We wish to differentiate
+    // between this "sub" lhs and the above lhs in the initialization.
+    // Therefore, we will annotate the lhs initialization here with
+    // an "&":
+    if ( isSgReferenceType(type) ) {
+      strdump = initializedName->get_name().getString() + "&";
+    } else {
+      strdump = initializedName->get_name().getString();
+    }
+  } else {
+    ROSE_ABORT();
+  }
+
   // Let's not print the memory address.  This creates problems
   // comparing results of regression tests.
   //    strdump+=val;
@@ -2472,6 +2594,7 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
       ROSE_ASSERT(initName != NULL);
 
       nm = initName->get_name();
+
       if (nm.str() == NULL) {
 	// This occurs when using varags or in a function
 	// prototype which does not name its args.
@@ -2934,6 +3057,7 @@ SageIRInterface::getFormalTypes(SgNode *node)
 
       break;
     }
+#if 0
   case V_SgNewExp:
     {
       SgNewExp *newExp = isSgNewExp(node);
@@ -2953,9 +3077,27 @@ SageIRInterface::getFormalTypes(SgNode *node)
       break;
 
     }
+#endif
+  case V_SgConstructorInitializer:
+    {
+      SgConstructorInitializer *ctorInitializer =
+	isSgConstructorInitializer(node);
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      SgFunctionDeclaration *functionDeclaration = 
+	ctorInitializer->get_declaration();
+      ROSE_ASSERT(functionDeclaration != NULL);
+
+      functionType = functionDeclaration->get_type();
+      ROSE_ASSERT(functionType != NULL);
+
+      break;
+
+    }
   default:
     {
-      cerr << "Call must be a SgFunctionCallExp or a SgNewExp, got a" << endl;
+      //      cerr << "Call must be a SgFunctionCallExp or a SgNewExp, got a" << endl;
+      cerr << "Call must be a SgFunctionCallExp or a SgConsructorInitializer, got a" << endl;
       cerr << node->sage_class_name() << endl;
       ROSE_ABORT();
       break;
@@ -2998,6 +3140,7 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
 #endif
       break;
     }
+#if 0
   case V_SgNewExp:
     {
       isMethod = true;
@@ -3012,9 +3155,16 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
 #endif
       break;
     }
+#endif
+  case V_SgConstructorInitializer:
+    {
+      isMethod = true;
+      break;
+    }
   default:
     {
-      cerr << "Call must be a SgFunctionCallExp or a SgNewExp, got a" << endl;
+      //      cerr << "Call must be a SgFunctionCallExp or a SgNewExp, got a" << endl;
+      cerr << "Call must be a SgFunctionCallExp or a SgConstructorInitializer, got a" << endl;
       cerr << node->sage_class_name() << endl;
       ROSE_ABORT();
       break;
@@ -3262,6 +3412,7 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
 
       break;
     }
+#if 0
   case V_SgNewExp:
     {
       SgNewExp *newExp = isSgNewExp(node);
@@ -3288,9 +3439,34 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
       break;
 
     }
+#endif
+  case V_SgConstructorInitializer:
+    {
+      SgConstructorInitializer *ctorInitializer =
+	isSgConstructorInitializer(node);
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      functionDeclaration = ctorInitializer->get_declaration();
+
+      isMethodCall = true;
+
+#if 0
+      lhs = mIR->getNewLhs(newExp);
+
+      if ( lhs != NULL ) {
+
+	lhs = mIR->lookThroughCastExpAndAssignInitializer(lhs);
+
+      }
+#endif
+
+      break;
+
+    }
   default:
     {
-      cerr << "Call must be a SgFunctionCallExp or a SgNewExp, got a" << endl;
+      //      cerr << "Call must be a SgFunctionCallExp or a SgNewExp, got a" << endl;
+      cerr << "Call must be a SgFunctionCallExp or a SgConstructorInitializer, got a" << endl;
       cerr << node->sage_class_name() << endl;
       ROSE_ABORT();
       break;
@@ -4396,43 +4572,55 @@ createImplicitPtrAssigns(OA::OA_ptr<OA::MemRefExpr> lhs,
   // implicit assignments for the methods.
   if ( newExp ) {
     
-    // createImplicitPtrAssignFromObjectAllocation creates
-    // implicit assignments of the form
-    // < FieldAccess(.. "mangledMethodName" ..), NamedRef(method) >
-    // Because the FieldAccess describes access to an object,
-    // not a pointer, we should defer the MRE that we pass to
-    // this method:
-    
-    OA::OA_ptr<OA::MemRefExpr> derefedLhs;
-    derefedLhs = dereferenceMre(lhs);
-    ROSE_ASSERT(!derefedLhs.ptrEqual(0));
-    
-    // Extract the class being allocated.
-    SgClassDeclaration *classDeclaration =
-      findAllocatedClass(castLessRhs);
-    ROSE_ASSERT(classDeclaration != NULL);
-    
-    SgClassDefinition *classDefinition = 
-      classDeclaration->get_definition();
-    
-    if ( classDefinition != NULL ) {
-      
-      SgConstructorInitializer *ctorInitializer =
-	newExp->get_constructor_args();
-      ROSE_ASSERT(ctorInitializer != NULL);
-      
-      std::set<SgClassDefinition *> examinedClasses;
-      std::set<SgConstructorInitializer *> examinedCtors;
-      
-      bool collectPtrAssigns = true;
+    // NB:  this only makes sense for a _named_ type, not a basic type.
+    SgType *type = newExp->get_type();
+    ROSE_ASSERT(type != NULL);
 
-      createImplicitPtrAssignFromObjectAllocation(derefedLhs,
-						  classDefinition,
-						  ctorInitializer,
-						  collectPtrAssigns,
-						  examinedClasses,
-						  examinedCtors,
-						  memRefList);
+    while ( isSgPointerType(type) ) {
+      type = isSgPointerType(type)->get_base_type();
+      ROSE_ASSERT(type != NULL);
+    }
+
+    if ( isSgNamedType(type) ) {
+
+      // createImplicitPtrAssignFromObjectAllocation creates
+      // implicit assignments of the form
+      // < FieldAccess(.. "mangledMethodName" ..), NamedRef(method) >
+      // Because the FieldAccess describes access to an object,
+      // not a pointer, we should defer the MRE that we pass to
+      // this method:
+      
+      OA::OA_ptr<OA::MemRefExpr> derefedLhs;
+      derefedLhs = dereferenceMre(lhs);
+      ROSE_ASSERT(!derefedLhs.ptrEqual(0));
+      
+      // Extract the class being allocated.
+      SgClassDeclaration *classDeclaration =
+	findAllocatedClass(castLessRhs);
+      ROSE_ASSERT(classDeclaration != NULL);
+      
+      SgClassDefinition *classDefinition = 
+	classDeclaration->get_definition();
+      
+      if ( classDefinition != NULL ) {
+	
+	SgConstructorInitializer *ctorInitializer =
+	  newExp->get_constructor_args();
+	ROSE_ASSERT(ctorInitializer != NULL);
+	
+	std::set<SgClassDefinition *> examinedClasses;
+	std::set<SgConstructorInitializer *> examinedCtors;
+	
+	bool collectPtrAssigns = true;
+	
+	createImplicitPtrAssignFromObjectAllocation(derefedLhs,
+						    classDefinition,
+						    ctorInitializer,
+						    collectPtrAssigns,
+						    examinedClasses,
+						    examinedCtors,
+						    memRefList);
+      }
     }
   }
 }
@@ -4742,7 +4930,8 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
 
   bool useGeneralMRERoutines = false;
 
-  // A call handle (i.e., a SgFunctionCallExp or a SgNewExp),
+  //  // A call handle (i.e., a SgFunctionCallExp or a SgNewExp),
+  // A call handle (i.e., a SgFunctionCallExp or a SgConstructorInitializer),
   // may have multiple MemRefExprs.  It certainly has one
   // representing the function/method called.  It may also have
   // one for the return type and args.  Below we judiciously
@@ -4761,6 +4950,87 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
       SgExpression *function = functionCallExp->get_function();
       ROSE_ASSERT(function != NULL);
 
+#if 1
+      // The general MRE methods will create an MRE if the 
+      // function returns an address; is a virtual method call;
+      // or is an invocation through a pointer.  In all other
+      // cases we should expicitly create the MRE here.
+      if ( returnsAddress(functionCallExp) || 
+	   isAmbiguousCallThroughVirtualMethod(functionCallExp) ||
+	   isSgPointerDerefExp(function) ) {
+
+	// Either this is a methd invocation or an invocation through
+	// a function pointer.  In either case the general routines
+	// will create an MRE given the SgExpression function:
+
+	// This is a method invocation.
+
+	// We know that the handle to the _method_ invoked represents the
+	// the SgDotExp/SgArrowExp of a SgFunctionCallExp.  In the
+	// case of a method invocation, we therefore rely on the general
+	// getMemRefExprIterator routines to create the MRE.  We pass
+	// it the MemRefHandle for the SgDotExpr/SgArrowExp to ensure
+	// we get back the MRE that represents the method handle.
+	
+	// -or-
+
+	// This is an invocation through a function pointer.
+	// Again, we can rely on the general methods.
+
+	memRefNode = function;
+	useGeneralMRERoutines = true;
+
+      } else {
+
+	// This is a function or a non-virtual method.
+	// Create the MRE explicitly.
+
+	// For function invocations, the general routines do not
+	// create an MRE (since a function invocation is not an access
+	// of program state, the defining criterion for an MRE).  
+	// Therefore, we explicitly create the MRE
+	// here:  creating a NamedRef based on the SgFunctionRefExp.
+	// We do the same for a method.  In this case, we actually
+	// have a SgMemberFunctionRefExp.
+
+	useGeneralMRERoutines = false;
+
+	SgExpression *function = getFunction(functionCallExp);
+	ROSE_ASSERT(function != NULL);
+	SgFunctionRefExp *functionRefExp = isSgFunctionRefExp(function);
+	SgMemberFunctionRefExp *memberFunctionRefExp = isSgMemberFunctionRefExp(function);
+	ROSE_ASSERT(functionRefExp || memberFunctionRefExp);
+
+	bool addressTaken = false;
+
+	// Access to a named function is a fully
+	// accurate representation of that access.
+	bool fullAccuracy = true;
+	  
+	// This is a USE ...
+	OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::USE;
+      
+	// Get the declaration of the function.
+	SgFunctionSymbol *functionSymbol = NULL;
+	if ( functionRefExp )
+	  functionSymbol = functionRefExp->get_symbol();
+	else 
+	  functionSymbol = memberFunctionRefExp->get_symbol();
+	ROSE_ASSERT(functionSymbol != NULL);
+      
+	SgFunctionDeclaration *functionDeclaration = 
+	  functionSymbol->get_declaration();
+	ROSE_ASSERT(functionDeclaration != NULL);
+
+	// Create an OpenAnalysis handle for this node.
+	OA::SymHandle symHandle = getProcSymHandle(functionDeclaration);
+
+	// Create a named memory reference expression.
+	mre = new OA::NamedRef(addressTaken, fullAccuracy,
+			       memRefType, symHandle);
+
+      }
+#else
       if ( isSgArrowExp(function) || isSgDotExp(function) ) {
 
 	// This is a method invocation.
@@ -4823,13 +5093,13 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
 			       memRefType, symHandle);
 
       }
-     
+#endif     
       break;
     }
 
+#if 0
   case V_SgNewExp:
     {
-
       // If the call handle is a SgNewExp, we need to represent
       // the constructor invoked.  The general routines create
       // a USE given the SgConstructorInitializer.
@@ -4847,11 +5117,30 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
       break;
 
     }
+#endif
+  case V_SgConstructorInitializer:
+    {
+
+      // If the call handle is a SgNewExp, we need to represent
+      // the constructor invoked.  The general routines create
+      // a USE given the SgConstructorInitializer.
+
+      SgConstructorInitializer *ctorInitializer =
+	isSgConstructorInitializer(node);
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      memRefNode = ctorInitializer;
+      useGeneralMRERoutines = true;
+
+      break;
+
+    }
 
   default: 
     {
       cerr << "Expected a call handle to be a SgFunctionCallExp or" << endl;
-      cerr << "a SgNewExp!" << endl;
+      //      cerr << "a SgNewExp!" << endl;
+      cerr << "a SgConstructorInitializer!" << endl;
       ROSE_ABORT();
       break;
     }
@@ -5528,7 +5817,8 @@ SageIRInterface::getCallsiteParams(OA::ExprHandle h)
   exprHandleList = new std::list<OA::ExprHandle>;
 
   // A callsite is represented in Sage as a SgFunctionCallExp or
-  // as a SgNewExp.
+  //  // as a SgNewExp.
+  // as a SgConstructorInitializer.
 
   switch(node->variantT()) {
     
@@ -5594,6 +5884,7 @@ SageIRInterface::getCallsiteParams(OA::ExprHandle h)
       break;
     }
 
+#if 0
   case V_SgNewExp:
     {
       SgNewExp *newExp = isSgNewExp(node);
@@ -5622,10 +5913,36 @@ SageIRInterface::getCallsiteParams(OA::ExprHandle h)
 
       break;
     }
+#endif
+  case V_SgConstructorInitializer:
+    {
+      SgConstructorInitializer *ctorInitializer =
+	isSgConstructorInitializer(node);
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      exprListExp = ctorInitializer->get_args();
+      ROSE_ASSERT (exprListExp != NULL);  
+   
+      // As above, this is a method, so fold the object upon which the
+      // method is invoked into the argument list as the first argument.
+      // This may seem a little strange since we may not consider
+      // a constructor to be invoked on an object.
+      SgNode *lhs = getConstructorInitializerLhs(ctorInitializer);
+      if ( lhs != NULL ) {
+	lhs = lookThroughCastExpAndAssignInitializer(lhs);
+      }
+
+      // NB:  lhs could be NULL here, e.g., 'return (new B)'
+      OA::ExprHandle exprHandle = getNodeNumber(lhs);
+      exprHandleList->push_back(exprHandle);
+
+      break;
+    }
   default:
     {
       cerr << "Expected a callHandle to be either a SgFunctionCallExp" << endl;
-      cerr << "or a SgNewExp, instead got a " << node->sage_class_name() << endl;
+      //      cerr << "or a SgNewExp, instead got a " << node->sage_class_name() << endl;
+      cerr << "or a SgConstructorInitializer, instead got a " << node->sage_class_name() << endl;
       ROSE_ABORT();
       break;
     }
@@ -5653,6 +5970,55 @@ SageIRInterface::getCallsiteParams(OA::ExprHandle h)
   OA::OA_ptr<OA::IRCallsiteParamIterator> retIter;
   retIter = new SageIRCallsiteParamIterator(exprHandleList);
   return retIter;
+
+}
+
+// Return the lhs of a constructor initializer.
+SgNode *SageIRInterface::getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer)
+{
+
+  if ( ctorInitializer == NULL ) return NULL;
+
+  SgNode *lhs = NULL;
+
+  // Recurse up the parents of ctorInitializer.  Return the lhs
+  // of an assignment or the SgInitializedName of a
+  // SgAssignInitializer.  These handle a new expression.
+  // If the parent of the constructor initializer is a 
+  // SgInitializedName, return that.  This handles a constructor
+  // invoked through a stack declaration.  Stop the recursion and return
+  // NULL if we reach a SgStatement without first finding
+  // any of these cases.
+
+  SgNode *parent = ctorInitializer->get_parent();
+
+  if ( isSgInitializedName(parent) )
+    return parent;
+
+  bool expectInit = false;
+
+  while ( parent != NULL ) {
+
+    if ( isSgStatement(parent) ) break;
+
+    if ( isSgAssignInitializer(parent) ) {
+      expectInit = true;
+    } else if ( ( expectInit ) && ( isSgInitializedName(parent) ) ) {
+      lhs = parent;
+      break;
+    } else {
+      SgAssignOp *assignOp = isSgAssignOp(parent);
+      if ( assignOp ) {
+	lhs = assignOp->get_lhs_operand();
+	break;
+      }
+    }
+
+    parent = parent->get_parent();
+
+  }
+
+  return lhs;
 
 }
 
@@ -6437,4 +6803,37 @@ AstAttributeMechanism &SageIRInterface::getAttribute(SgNode *n)
 #else
   return n->attribute;
 #endif
+}
+
+bool SageIRInterface::returnsAddress(SgFunctionCallExp *functionCallExp)
+{
+  ROSE_ASSERT(functionCallExp != NULL);
+
+  bool returnsAddr = false;
+
+  SgType *type = functionCallExp->get_type();
+  //  SgType *type = functionCallExp->get_return_type();
+  ROSE_ASSERT(type != NULL);
+  
+  if ( isSgReferenceType(type) || isSgPointerType(type) ) {
+    returnsAddr = true;
+  }
+  
+  return returnsAddr;
+	
+}
+
+bool 
+SageIRInterface::createsBaseType(SgConstructorInitializer *ctorInitializer) const
+{
+  bool ret = false;
+
+  SgMemberFunctionDeclaration *memberFunctionDeclaration =
+    ctorInitializer->get_declaration();
+
+  if ( memberFunctionDeclaration == NULL ) {
+    ret = true;
+  }
+
+  return ret;
 }

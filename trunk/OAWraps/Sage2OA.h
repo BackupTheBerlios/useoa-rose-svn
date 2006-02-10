@@ -706,6 +706,12 @@ public:
 			      std::vector<SgNode *>& independtChildren,
 			      std::vector<SgNode *>& children);
 
+  // Look through typedefs to return a type.
+  SgType *getBaseType(SgType *type); 
+
+  // Returns true if the contructor initializer creates a base type.
+  bool createsBaseType(SgConstructorInitializer *ctorInitializer) const;
+
  private:
 
   // Returns true if the function call is a method invocation.
@@ -722,9 +728,6 @@ public:
    // Return the MemRefType of a MemRefExpr.
   OA::MemRefExpr::MemRefType getMemRefType(OA::OA_ptr<OA::MemRefExpr> mre);
 
-  // Look through typedefs to return a type.
-  SgType *getBaseType(SgType *type); 
-
   SgFunctionDefinition *getEnclosingMethod(SgNode *node);
 
   SgStatement *getEnclosingStatement(SgNode *node);
@@ -738,6 +741,9 @@ public:
 
   // Return the lhs of a new expression.
   SgNode *getNewLhs(SgNewExp *newExp);
+
+  // Return the lhs of a constructor initializer.
+  SgNode *getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer);
 
   // Return the lhs of a method invocation.
   SgNode *getMethodInvocationLhs(SgFunctionCallExp *functionCall);
@@ -773,6 +779,8 @@ public:
   bool isAmbiguousCallThroughVirtualMethod(SgFunctionCallExp *functionCallExp);
   
   SgFunctionDeclaration *getFunctionDeclaration(SgFunctionCallExp *functionCall);
+
+  SgExpression *getFunction(SgFunctionCallExp *functionCall);
 
   std::string refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
 
@@ -884,6 +892,9 @@ public:
   // Returns true if classDefinition defines a class with virtual methods.
   bool classHasVirtualMethods(SgClassDefinition *classDefinition);
 
+  // Returns true if the function call returns a pointer or a reference.
+  bool returnsAddress(SgFunctionCallExp *functionCallExp);
+
   // Returns true if the mre is a Field Access.
   bool isFieldAccess(OA::OA_ptr<OA::MemRefExpr> mre);
 
@@ -892,6 +903,7 @@ public:
   SgClassDeclaration *getClassDeclaration(SgType *type);
 
   friend class SageIRMemRefIterator;
+  friend class FindCallsitesPass;
   friend class SgPtrAssignPairStmtIterator;
   friend class SgParamBindPtrAssignIterator;
   friend class ExprTreeTraversal;

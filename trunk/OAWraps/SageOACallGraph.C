@@ -7,19 +7,19 @@ SageIRCallsiteIterator::SageIRCallsiteIterator(SgStatement * sgstmt,
                                                OA::OA_ptr<SageIRInterface> in)
 {
  //given an sgstmt put all call expressions in calls_in_stmt
-   FindCallsitesInSgStmt(sgstmt, calls_in_stmt);
+  ir=in;
+  FindCallsitesInSgStmt(sgstmt, calls_in_stmt);
   begin = calls_in_stmt.begin();
   st_iter = calls_in_stmt.begin();
   end = calls_in_stmt.end();
   valid=TRUE;
-  ir=in;
 }
 
 void SageIRCallsiteIterator::FindCallsitesInSgStmt(SgStatement *sgstmt, SgExpressionPtrList& lst)
 {
   //we only want Callsites in non-scope stmts, for scopes only in non-body
   if(!isSgScopeStatement(sgstmt))
-    FindCallsitesPass(lst).traverse(sgstmt, preorder);
+    FindCallsitesPass(ir, lst).traverse(sgstmt, preorder);
   else
   {
     SgCatchOptionStmt * co=NULL;
@@ -30,28 +30,28 @@ void SageIRCallsiteIterator::FindCallsitesInSgStmt(SgStatement *sgstmt, SgExpres
    //SgBasicBlock ->no call sites
     //SgCatchOptionStmt go to condition 
      if(co=isSgCatchOptionStmt(sgstmt))
-       FindCallsitesPass(lst).traverse(co->get_condition(), preorder);
+       FindCallsitesPass(ir, lst).traverse(co->get_condition(), preorder);
      //SgClassDefinition ->no call sites
      else if(dw=isSgDoWhileStmt(sgstmt))
-       FindCallsitesPass(lst).traverse(dw->get_condition(), preorder);
+       FindCallsitesPass(ir, lst).traverse(dw->get_condition(), preorder);
      else if(forst=isSgForStatement(sgstmt))
      {
        
-      FindCallsitesPass(lst).traverse(forst->get_test_expr(), preorder);
-      FindCallsitesPass(lst).traverse(forst->get_increment_expr(), preorder);
-      FindCallsitesPass(lst).traverse(forst->get_for_init_stmt(), preorder);
+       FindCallsitesPass(ir, lst).traverse(forst->get_test_expr(), preorder);
+       FindCallsitesPass(ir, lst).traverse(forst->get_increment_expr(), preorder);
+       FindCallsitesPass(ir, lst).traverse(forst->get_for_init_stmt(), preorder);
      }
      //SgFunctionDefinition ->no call sites
      //SgGlobal ->no call sites
      else if(ifst=isSgIfStmt(sgstmt))
      {
-       FindCallsitesPass(lst).traverse(ifst->get_conditional(), preorder);
+       FindCallsitesPass(ir, lst).traverse(ifst->get_conditional(), preorder);
      }
      //SgNamespaceDefinition -> no call sites
      //SgSwitchStatement -> no call sites
      else if(whst=isSgWhileStmt(sgstmt))
      {
-      FindCallsitesPass(lst).traverse(whst->get_condition(), preorder);
+       FindCallsitesPass(ir, lst).traverse(whst->get_condition(), preorder);
      }
      
   }
@@ -159,8 +159,24 @@ void FindCallsitesPass::visit(SgNode* node)
   // Though a method is represented as a function call, an
   // invocation of new is not.  Need to check for it 
   // explicitly.
-  if( isSgFunctionCallExp(exp) || isSgNewExp(exp) )
+  // 2/1/06 BW:  Was only capturing constructor invocations thru
+  // new, also need to get those involved in a stack allocation.
+  // Both can be captured by looking at SgConstructorInitializers instead.
+  if( isSgFunctionCallExp(exp) ) {
     call_lst.push_back(exp);
+  } else if ( isSgConstructorInitializer(exp) ) {
+    // 2/1/06 BW:  Only consider this a function call if it creates
+    // a named type.  Otherwise we get problems (e.g., in getFormalTypes)
+    // when we expect that a basic type has a constructor with a 
+    // function declaration, formal parameters, etc.
+    SgConstructorInitializer *ctorInitializer =
+      isSgConstructorInitializer(exp);
+    ROSE_ASSERT(ctorInitializer != NULL);
+
+    if ( !mIR->createsBaseType(ctorInitializer) ) {
+      call_lst.push_back(exp);
+    } 
+  }
 
   return;
 }

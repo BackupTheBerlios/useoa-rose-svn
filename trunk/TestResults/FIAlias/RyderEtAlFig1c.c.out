@@ -15,6 +15,8 @@ EquivSets(
         MemRefHandle(q)	 => ProcHandle(main)
         MemRefHandle(( *q))	 => ProcHandle(main)
         MemRefHandle(*( *q))	 => ProcHandle(main)
+        MemRefHandle(r)	 => ProcHandle(main)
+        MemRefHandle(*r)	 => ProcHandle(main)
     mMemRefToSets: MemRefHandle	 => int
         MemRefHandle(s)	 => [ 1 ] 
         MemRefHandle(p)	 => [ 2 ] 
@@ -27,6 +29,8 @@ EquivSets(
         MemRefHandle(q)	 => [ 6 ] 
         MemRefHandle(( *q))	 => [ 4 ] 
         MemRefHandle(*( *q))	 => [ 1 ] 
+        MemRefHandle(r)	 => [ 4 ] 
+        MemRefHandle(*r)	 => [ 1 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(main)	 => 
         SetToLocs: int	 => std::map<int,OA_ptr<Location> >

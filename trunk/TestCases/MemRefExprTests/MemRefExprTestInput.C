@@ -263,6 +263,38 @@ int bar()
   //  NamedRef(USE, SymHandle(D))
   //  NamedRef(DEF, SymHandle(ptr3))
 
+  // Test array/pointer arithmetic expressions.
+  int staticArray[100];
+
+  // NamedRef(USE, SymHandle(staticArray), F, partial)
+  staticArray[2];
+
+  // NamedRef(USE, SymHandle(staticArray), F, partial)
+  *(staticArray + 2);  
+  
+  // NamedRef(USE, SymHandle(staticArray), T, partial)
+  &(staticArray[2]);
+
+  // NamedRef(USE, SymHandle(staticArray), T, partial)
+  (staticArray + 2);
+
+  // Deref(USE, NamedRef(USE, SymHandle(ptr), F, full), 1, F, partial)
+  // NamedRef(USE, SymHandle(ptr), F, full)
+  ptr[2];
+
+  // Deref(USE, NamedRef(USE, SymHandle(ptr), F, full), 1, F, partial)
+  // NamedRef(USE, SymHandle(ptr), F, full)
+  *(ptr + 2);
+
+  // Deref(USE, NamedRef(USE, SymHandle(ptr), F, full), 1, T, partial)
+  // NamedRef(USE, SymHandle(ptr), F, full)
+  &(ptr[2]);
+
+  // Deref(USE, NamedRef(USE, SymHandle(ptr), F, full), 1, T, partial)
+  // NamedRef(USE, SymHandle(ptr), F, full)
+  (ptr + 2);
+
+
   return x;
   // < use, T, SymHandle(x), O, F, full >
 

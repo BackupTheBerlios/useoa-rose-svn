@@ -15,10 +15,12 @@
 class FindCallsitesPass : public SgSimpleProcessing {
 private:
  SgExpressionPtrList & call_lst;
+ OA::OA_ptr<SageIRInterface> mIR;
 protected:
   void visit(SgNode* node);
 public:
-  FindCallsitesPass(SgExpressionPtrList& p) : call_lst(p) {}
+  FindCallsitesPass(OA::OA_ptr<SageIRInterface> ir, SgExpressionPtrList& p) 
+    : mIR(ir), call_lst(p) {}
 };
 
 class FindProcsPass : public SgSimpleProcessing {
@@ -27,7 +29,8 @@ private:
 protected:
   void visit(SgNode* node);
 public:
-  FindProcsPass(SgStatementPtrList& p) : proc_lst(p) {}
+  FindProcsPass(SgStatementPtrList& p)  
+    : proc_lst(p) {}
 };
 
 

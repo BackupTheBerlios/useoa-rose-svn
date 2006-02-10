@@ -145,15 +145,18 @@ main ( unsigned argc,  char * argv[] )
 	  char *fileName = sageFile.getFileName();
 	  ROSE_ASSERT(fileName != NULL);
           ir->createNodeArray(root);
-          SgDeclarationStatementPtrList& declList = root->get_declarations ();
-          for (SgDeclarationStatementPtrList::iterator p = declList.begin(); p != declList.end(); ++p) 
-          {
-              SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
-              if (func == 0)
-                continue;
-              SgFunctionDefinition *defn = func->get_definition();
-              if (defn == 0)
-                continue;
+
+	  list<SgNode *> nodes = NodeQuery::querySubTree(root,
+							 V_SgFunctionDefinition);
+	  for (list<SgNode *>::iterator it = nodes.begin();
+	       it != nodes.end(); ++it ) {
+	    
+	    SgNode *n = *it;
+	    ROSE_ASSERT(n != NULL);
+	    
+	    SgFunctionDefinition *defn = isSgFunctionDefinition(n);
+	    ROSE_ASSERT(defn != NULL);
+
 #if 1
 	      if (!defn->get_file_info())
 		continue;
@@ -465,7 +468,7 @@ int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   // purposes only:  avoids unexpected/spurious results due to 
   // stdlib.h, etc.
   procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
-  //#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
+#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
 #ifdef BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter, debug);

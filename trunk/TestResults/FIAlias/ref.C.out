@@ -4,14 +4,14 @@ EquivSets(
         MemRefHandle(&m)	 => ProcHandle(main)
         MemRefHandle(ptr)	 => ProcHandle(main)
         MemRefHandle(ptr)	 => ProcHandle(main)
-        MemRefHandle(refPtr)	 => ProcHandle(main)
+        MemRefHandle(refPtr&)	 => ProcHandle(main)
         MemRefHandle(ptr)	 => ProcHandle(main)
         MemRefHandle(*ptr)	 => ProcHandle(main)
         MemRefHandle(refPtr)	 => ProcHandle(main)
         MemRefHandle(*refPtr)	 => ProcHandle(main)
     mMemRefToSets: MemRefHandle	 => int
         MemRefHandle(ptr)	 => [ 2 ] 
-        MemRefHandle(refPtr)	 => [ 4 ] 
+        MemRefHandle(refPtr&)	 => [ 4 ] 
         MemRefHandle(ptr)	 => [ 2 ] 
         MemRefHandle(*ptr)	 => [ 8 ] 
         MemRefHandle(refPtr)	 => [ 2 ] 

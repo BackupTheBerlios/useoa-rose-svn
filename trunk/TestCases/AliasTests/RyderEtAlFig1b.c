@@ -4,6 +4,17 @@
    Figure 1b.
 */
 
+/*
+  RyderEtAlFig1b.c
+
+  Test command: 
+    OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig1b.c
+
+  Goal: 
+
+  Output: see TestResults/FIAlias
+*/
+
 int main()
 {
   int *q;
@@ -17,6 +28,9 @@ int main()
   else
     q = &y;
   **p = 5;
+
+  z;
+  *q;
 
   return 0;
 }

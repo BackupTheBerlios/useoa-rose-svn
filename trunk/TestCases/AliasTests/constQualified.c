@@ -19,6 +19,7 @@ int main()
   *p = 5;
   y = *q;
   g (x, y);
+  const_array[i];
 
   return 0;
 }

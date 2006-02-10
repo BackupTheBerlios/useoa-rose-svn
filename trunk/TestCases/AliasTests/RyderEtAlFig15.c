@@ -4,6 +4,17 @@
    Figure 15.
 */
 
+/*
+  RyderEtAlFig15.c
+
+  Test command: 
+    OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig15.c
+
+  Goal: 
+
+  Output: see TestResults/FIAlias
+*/
+
 #include <stdlib.h>
 
 struct S { int a, b, c; } x, *s;

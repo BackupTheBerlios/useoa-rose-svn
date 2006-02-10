@@ -825,3 +825,109 @@
           only assertion failures (for either version of ROSE),
 	  should be in RinardEtAlPLDI96Fig4.C:
                OATest: Sage2OA.C:4888: virtual OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle): Assertion `numMres == 1' failed.
+
+1/27/06   UseOA-ROSE svn tag trunk r37  Brian White
+        - Checked the following for both versions of ROSE, updated the
+          regress*.script to show they have been checked, and updated
+          the regression results:
+               RyderEtAlFig15.c
+               RyderEtAlFig9.c
+               RyderEtAlFig2.c
+               RyderEtAlFig1c.c
+               RyderEtAlFig1b.c
+               YongEtAlPLDI99.c
+               ref.C
+               refParam.C
+               refClass.C
+        - The following test cases still need to be checked nor have they
+          been checked for consistency between released and unreleased versions
+               PandeEtAlRutgers05.C
+               HindEtAlIBM95Fig4.C
+               HindEtAlISSTA00Fig1.C
+               LattnerEtAl03Fig1.C
+               RinardEtAlPLDI96Fig4.C
+        - Added collect[Unreleased]{MemRefExpr,FIAliasTests}Out.script
+          scripts to concatenate all results saved in TestResults/
+          to a single file.  I found it useful to create a single
+          file for each version of ROSE and then to do an mgdiff on 
+          those files.  
+        - Changed SageIRInterface::toString to annotate references
+          in "some" cases:
+          // If an initialized name is a reference, then we model
+          // it is a pointer.
+          // e.g., int &lhs = ... -> int *lhs = ...
+          // However, subsequent assignments (different from initializations)
+          // of lhs change the value at the location not of the location:
+          // e.g. lhs = 5 -> *lhs = 5
+          // In OpenAnalysis, *lhs will result in two mem ref expressions:
+          // *lhs and the sub mem ref expr lhs.  We wish to differentiate
+          // between this "sub" lhs and the above lhs in the initialization.
+          // Therefore, we will annotate the lhs initialization here with
+          // an "&":
+        - Previously, constructors invoked as:
+              foo f(arg);
+          were not registered as function calls, though those invoked
+          via new were:
+              foo *f = new foo(arg);
+          This happened because FindCallsitesPass::visit was only collecting 
+          SgFunctionCallExp and SgNewExp.  Instead, changed
+          FindCallsitesPass::visit to collect SgFunctionCallExps and
+          SgConstructorInitializers.  The latter are involved in both
+          of the above cases.  This effectively changes the mapping of
+          an OA::CallHandle from SgFunctionCallExp and SgNewExp to
+          SgFunctionCallExp and SgConstructorInitializer.  The following
+          methods which acted up OA::CallHandles thus were also changed:
+              SageIRInterface::getFormalTypes
+              SgParamBindPtrAssignIterator::create
+              SageIRInterface::getCallMemRefExpr
+              SageIRInterface::getCallsiteParams
+          Replaced getNewLhs with getConstructorInitializerLhs.
+        - We weren't visiting constructor args!  Added this to
+          SgConstructorInitializer clause of 
+          SageIRMemRefIterator::findAllMemRefsAndMemRefExprs.
+          Also added clause to handle SgConstructorInitializer in
+          SageIRInterface::getChildrenWithMemRefs.
+        - We have been treating constructor invocations as USEs,
+          using the method as the symbol.  This does not work for
+          built in types, nor would we consider it a use in such
+          case.  Therefore, modified
+          SageIRMemRefIterator::findAllMemRefsAndMemRefExprs s
+          that it does not treat constructors as uses if they
+          create a basic type (i.e., not a SgNamedType).
+        - Similarly, do not create implicit ptr assign pairs
+          for basic types.  Modified 
+          SageIRInterface::createImplicitPtrAssigns to check for this
+          condition.
+        - Only consider a constructor invocation to be a function
+          call (with an OA::CallHandle) if it creates a named type.
+          Change to  FindCallsitesPass::visit.  Otherwise, we have
+          problems when this call handle is later passed to routines
+          which expect it to be backed by a function/method with, say,
+          a declaration.
+        - Fixed assertion failure in 
+	  TestCases/AliasTests/RinardEtAlPLDI96Fig4.C:
+              OATest: Sage2OA.C:5037: virtual OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle): Assertion `numMres == 1' failed.
+              Abort
+          The problem was that 
+          SageIRMemRefIterator::findAllMemRefsAndMemRefExprs was not
+          creating an MRE for arrow/dot expressions representing
+          method calls which neither return an address nor are
+          virtual method calls (since there is no MRE for these cases).
+          However, getCallMemRefExpr expects these general routines
+          to create an MRE in such cases and so invokes 
+          getMemRefExprIterator which returns the cached (NULL)
+          set of MREs.  Modified getCallMemRefExpr to create
+          an MRE explicitly for this case.
+        - Modified the condition for SgAddOp/SgSubtrcatOp to have an
+          MRE, as returned by SageIRInterface::isMemRefNode.
+          If the type of either the lhs or the rhs is a SgArrayType
+          (or SgPointerType, as previously) return true.  
+        - We weren't handling switch statements.  Added clause
+          to visit the selector/condition of a SgSwitchStatement
+          in findIndependentMemRefs.  Also, added clauses for
+          SgSwitchStatement and SgCaseOptionStmt in 
+          SageIRStmtIterator::FindAllStmts so the statement iterator
+          visits switches and their bodies.
+        - Added array/pointer arithmetic examples to MemRefExprTest.C
+        - MemRefExpr case in OATest was not visiting all functions.
+          Fixed.

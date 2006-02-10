@@ -3,6 +3,17 @@
  * SIGPLAN Conference on Programming Language Design and Implementation 1999 
  */
 
+/*
+  YongEtAlPLDI99.c
+
+  Test command: 
+    OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/YongEtAlPLDI99.c
+
+  Goal: 
+
+  Output: see TestResults/FIAlias
+*/
+
 struct S { int *s1; int *s2; } s;
 
 int main()
@@ -14,5 +25,6 @@ int main()
   // MMS, added some more refs
   *(s.s1);
   *(s.s2);
+  *p;
   return 0;
 }

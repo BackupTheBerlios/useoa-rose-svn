@@ -4,6 +4,17 @@
    Figure 2.
 */
 
+/*
+  RyderEtAlFig2.c
+
+  Test command: 
+    OATest -edg:w --oa-FIAlias -c TestCases/AliasTests/RyderEtAlFig2.c
+
+  Goal: 
+
+  Output: see TestResults/FIAlias
+*/
+
 int **p, *q, *r;
 int *x, y;
 
