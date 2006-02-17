@@ -1,0 +1,20 @@
+In float_pt_init sizeof(an_fp_value_part) = 4 
+
+digraph DGraph {
+    node [shape=rectangle];
+    1 [ label="====== CFG node 1 ======\n" ];
+    2 [ label="====== CFG node 2 ======\nint i;\ndouble x;\ndouble y;\ndouble f;\nf = 0.00000000000000000000000;\ni = 0;\n" ];
+    3 [ label="====== CFG node 3 ======\nfor(i = 0;i < 20;i++) {x =((3 * i));y =(2.00000000000000000000000 * x);f +=(x + y);}\n" ];
+    4 [ label="====== CFG node 4 ======\nx =((3 * i));\ny =(2.00000000000000000000000 * x);\nf +=(x + y);\n\n" ];
+    5 [ label="====== CFG node 5 ======\ni++\n" ];
+    6 [ label="====== CFG node 6 ======\nreturn 0;\n" ];
+    7 [ label="====== CFG node 7 ======\n\n" ];
+    8 [ label="====== CFG node 8 ======\n" ];
+    1 -> 2
+    2 -> 3
+    3 -> 4
+    4 -> 5
+    5 -> 3
+    3 -> 6
+    7 -> 8
+    6 -> 8}
