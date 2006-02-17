@@ -35,6 +35,7 @@
 #include <OpenAnalysis/CallGraph/ManagerCallGraphStandard.hpp>
 #include <OpenAnalysis/MemRefExpr/MemRefExpr.hpp>
 #include <OpenAnalysis/SideEffect/InterSideEffectStandard.hpp>
+#include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
 
 #include <string>
@@ -300,14 +301,21 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
         cfgmanstd= new OA::CFG::ManagerStandard(irInterface);
         OA::OA_ptr<OA::CFG::CFGStandard> cfg
           = cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
-        cfg->dump(std::cout, irInterface);
+        //cfg->dump(std::cout, irInterface);
 	//}
 	//catch(Exception &e)
 	//{
 //		printf("error in try\n");
 		
 //	}
-        if ( debug )
+
+        // output CFG analysis using OutputBuilderDOT
+        OA::OA_ptr<OA::OutputBuilderDOT> dotBuilder;
+        dotBuilder = new OA::OutputBuilderDOT();
+        cfg->configOutput(dotBuilder);
+        cfg->output(irInterface);
+
+        if ( debug ) {
 	    printf("*********\n**********  printing CFG\n***********\n************\n"); //code mostly from wn2f.cxx
 	string cfgxaifout;
 	cfgxaifout+="<ControlFlowGraph subroutine_name=\"";
@@ -376,7 +384,7 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
 	
 	std::cout << "\n*******  end of DoOpenAnalysis *********\n\n";
 	return returnvalue;
-
+    }
 }
 
 
@@ -468,7 +476,7 @@ int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   // purposes only:  avoids unexpected/spurious results due to 
   // stdlib.h, etc.
   procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
-#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
+// #define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
 #ifdef BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter, debug);

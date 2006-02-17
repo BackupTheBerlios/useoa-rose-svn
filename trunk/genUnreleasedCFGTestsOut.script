@@ -1,8 +1,6 @@
 # pass -edg:w to turn off front-end warnings
 # pass -c so ROSE doesn't give us spurious output
 
-echo "Testing alias1.c"
-./OATest -edg:w --oa-CFG -c TestCases/AliasTests/alias1.c > TestResults/UnreleasedFIAlias/alias1.c.out
 echo "Testing Beata-040819.c"
 ./OATest -edg:w --oa-CFG -c TestCases/CFGtests/Beata-040819.c > TestResults/UnreleasedCFG/Beata-040819.c.out
 echo "Testing dowhile.c"

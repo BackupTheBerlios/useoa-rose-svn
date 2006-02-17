@@ -15,14 +15,15 @@ topsrcdir=/s/bach/l/under/stonea/berlios/UseOA-ROSE/trunk
 # Root of ROSE installation
 #ROSE_INST_ROOT=/s/parsons/c/fac/mstrout/rose-0.8.6a/LINUX-3.3.4/
 #ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-4.0.2-temp/LINUX-CORE4-gcc4.0.2
-ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-4.0.2-temp/armstrong
+#ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-4.0.2-temp/armstrong
+ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-64bit-temp/grace
 
 # OpenAnalysis variables
 #OPENANALYSIS_DIR=/s/parsons/c/fac/mstrout/OA/LINUX-x86-32bit-gcc4.0.2/OpenAnalysis
 OPENANALYSIS_DIR=/s/bach/l/under/stonea/berlios/openanalysis/OpenAnalysis/trunk
 #OPENANALYSIS_DIR=/s/bach/l/under/stonea/berlios/openanalysis/OpenAnalysis/branch/rmIters
-OPENANALYSIS_ARCH=i686-Linux
-#OPENANALYSIS_ARCH=opteron-Linux
+#OPENANALYSIS_ARCH=i686-Linux
+OPENANALYSIS_ARCH=opteron-Linux
 OPENANALYSIS_LIB =-L$(OPENANALYSIS_DIR)/$(OPENANALYSIS_ARCH)/lib -lOAul
 OPENANALYSIS_INC =-I$(OPENANALYSIS_DIR)/$(OPENANALYSIS_ARCH)/include 
 
