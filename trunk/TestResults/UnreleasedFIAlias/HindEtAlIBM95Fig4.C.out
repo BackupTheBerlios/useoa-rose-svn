@@ -74,7 +74,7 @@ EquivSets(
         MemRefHandle(( *p))	 => [ 37 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(B::createObj)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             1	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(method:B::B)
@@ -190,7 +190,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(B::changeData)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             9	 => [ 
                 LocSubSet(
                     mLoc: 
@@ -326,7 +326,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(C::changeData)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             12	 => [ 
                 LocSubSet(
                     mLoc: 
@@ -339,7 +339,7 @@ EquivSets(
                     mFull: 0
                 ) ] 
         ProcHandle(D::createObj)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             15	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(method:D::D)
@@ -455,7 +455,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(D::changeData)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             23	 => [ 
                 LocSubSet(
                     mLoc: 
@@ -591,7 +591,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(E::createObj)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             26	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(method:E::E)
@@ -707,7 +707,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(main)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             1	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(method:B::B)

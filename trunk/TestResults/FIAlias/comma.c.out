@@ -23,12 +23,12 @@ EquivSets(
         MemRefHandle(q)	 => [ 7 ] 
         MemRefHandle(r)	 => [ 5 ] 
         MemRefHandle(p)	 => [ 6 ] 
-        MemRefHandle(*p)	 => [ 2 ] 
+        MemRefHandle(*p)	 => [ 1 ] 
         MemRefHandle(q)	 => [ 7 ] 
         MemRefHandle(*q)	 => [ 1 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(main)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             1	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(x)

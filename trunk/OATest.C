@@ -476,7 +476,7 @@ int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   // purposes only:  avoids unexpected/spurious results due to 
   // stdlib.h, etc.
   procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
-// #define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
+  //#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
 #ifdef BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter, debug);
@@ -546,7 +546,7 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
 	return returnvalue;
 }
 
-
+ 
 void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt)
 {
   //adapted from Nathan's code --should be specific IR independent only OA interface used
@@ -594,7 +594,7 @@ void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt)
 // The following was taken from 
 // ROSE/test/roseTests/programAnalysisTests/MemRefExprTest.C.
 // It produces output without pointers.
-
+ 
 enum refType {
   USE,
   DEF,

@@ -58,7 +58,7 @@ int main(int argc, char **argv)
   q->foo();
   q = new Base;
   q->foo();
-  a->bar();
+  //  a->bar();
   p->baz();
   return 0;
 }

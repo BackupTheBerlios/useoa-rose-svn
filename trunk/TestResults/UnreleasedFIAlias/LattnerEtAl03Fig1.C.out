@@ -22,8 +22,12 @@ EquivSets(
         MemRefHandle(X)	 => ProcHandle(main)
         MemRefHandle(Global)	 => ProcHandle(main)
         MemRefHandle(Y)	 => ProcHandle(main)
+        MemRefHandle(X)	 => ProcHandle(main)
+        MemRefHandle(Y)	 => ProcHandle(main)
         MemRefHandle(( *FP))	 => ProcHandle(do_all)
         MemRefHandle(*X)	 => ProcHandle(addG)
+        MemRefHandle(*X)	 => ProcHandle(main)
+        MemRefHandle(*Y)	 => ProcHandle(main)
         MemRefHandle(makeList((Num - 1)))	 => ProcHandle(makeList)
         MemRefHandle(makeList(10))	 => ProcHandle(main)
         MemRefHandle(makeList(100))	 => ProcHandle(main)
@@ -53,17 +57,21 @@ EquivSets(
         MemRefHandle(X)	 => [ 16 ] 
         MemRefHandle(Global)	 => [ 7 ] 
         MemRefHandle(Y)	 => [ 17 ] 
-        MemRefHandle(( *FP))	 => [ 28 ] 
-        MemRefHandle(*X)	 => [ 21 ] 
+        MemRefHandle(X)	 => [ 16 ] 
+        MemRefHandle(Y)	 => [ 17 ] 
+        MemRefHandle(( *FP))	 => [ 27 ] 
+        MemRefHandle(*X)	 => [ 23 ] 
+        MemRefHandle(*X)	 => [ 23 ] 
+        MemRefHandle(*Y)	 => [ 23 ] 
         MemRefHandle(makeList((Num - 1)))	 => [ 14 ] 
         MemRefHandle(makeList(10))	 => [ 14 ] 
         MemRefHandle(makeList(100))	 => [ 14 ] 
-        MemRefHandle((L -> Next))	 => [ 21 ] 
-        MemRefHandle(New -> Next)	 => [ 21 ] 
-        MemRefHandle(New -> Data)	 => [ 21 ] 
+        MemRefHandle((L -> Next))	 => [ 23 ] 
+        MemRefHandle(New -> Next)	 => [ 23 ] 
+        MemRefHandle(New -> Data)	 => [ 23 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(do_all)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             1	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(L)
@@ -78,7 +86,7 @@ EquivSets(
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            21	 => [ 
+            23	 => [ 
                 UnnamedLoc(
                     mStmtHandle: StmtHandle((list *)(malloc(8)))
                     mLocal: 0
@@ -138,7 +146,7 @@ EquivSets(
                         mNumDeref: 1
                     )
                 ) ] 
-            28	 => [ 
+            27	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(addG)
                     mLocal: 1
@@ -162,7 +170,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(addG)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             6	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(X)
@@ -177,7 +185,7 @@ EquivSets(
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            21	 => [ 
+            23	 => [ 
                 UnnamedLoc(
                     mStmtHandle: StmtHandle((list *)(malloc(8)))
                     mLocal: 0
@@ -199,7 +207,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(addGToList)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             9	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(L)
@@ -207,7 +215,7 @@ EquivSets(
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            21	 => [ 
+            23	 => [ 
                 UnnamedLoc(
                     mStmtHandle: StmtHandle((list *)(malloc(8)))
                     mLocal: 0
@@ -228,7 +236,7 @@ EquivSets(
                         mNumDeref: 1
                     )
                 ) ] 
-            28	 => [ 
+            27	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(addG)
                     mLocal: 1
@@ -236,7 +244,7 @@ EquivSets(
                     mPartOverlap: 
                 ) ] 
         ProcHandle(makeList)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             11	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(New)
@@ -258,29 +266,13 @@ EquivSets(
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            21	 => [ 
+            23	 => [ 
                 UnnamedLoc(
                     mStmtHandle: StmtHandle((list *)(malloc(8)))
                     mLocal: 0
-                )    
-                InvisibleLoc(
-                    mMRE: 
-                    Deref(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mMRE: 
-                        NamedRef(
-                            mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
-                            mSymHandle: SymHandle(Num)
-                        )
-                        mNumDeref: 1
-                    )
                 ) ] 
         ProcHandle(main)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             7	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(Global)
@@ -309,7 +301,7 @@ EquivSets(
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            21	 => [ 
+            23	 => [ 
                 UnnamedLoc(
                     mStmtHandle: StmtHandle((list *)(malloc(8)))
                     mLocal: 0

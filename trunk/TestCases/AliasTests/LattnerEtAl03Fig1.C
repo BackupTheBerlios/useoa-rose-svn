@@ -41,5 +41,7 @@ int main()
   addGToList(X);
   Global = 20;
   addGToList(Y);
+  *X;
+  *Y;
   return 0;
 }

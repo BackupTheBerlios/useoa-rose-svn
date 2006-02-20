@@ -17,7 +17,6 @@ EquivSets(
         MemRefHandle(q)	 => ProcHandle(main)
         MemRefHandle(q)	 => ProcHandle(main)
         MemRefHandle(q)	 => ProcHandle(main)
-        MemRefHandle(a)	 => ProcHandle(main)
         MemRefHandle(p)	 => ProcHandle(main)
         MemRefHandle(Base)	 => ProcHandle(Base::foo)
         MemRefHandle(Derived)	 => ProcHandle(Derived::foo)
@@ -42,7 +41,6 @@ EquivSets(
         MemRefHandle(p -> foo)	 => ProcHandle(main)
         MemRefHandle(q -> foo)	 => ProcHandle(main)
         MemRefHandle(q -> foo)	 => ProcHandle(main)
-        MemRefHandle(a -> bar)	 => ProcHandle(main)
         MemRefHandle(p -> baz)	 => ProcHandle(main)
     mMemRefToSets: MemRefHandle	 => int
         MemRefHandle(a)	 => [ 0 ] 
@@ -61,7 +59,6 @@ EquivSets(
         MemRefHandle(q)	 => [ 0 ] 
         MemRefHandle(q)	 => [ 0 ] 
         MemRefHandle(q)	 => [ 0 ] 
-        MemRefHandle(a)	 => [ 0 ] 
         MemRefHandle(p)	 => [ 0 ] 
         MemRefHandle(Base)	 => [ 0 ] 
         MemRefHandle(Derived)	 => [ 0 ] 
@@ -76,11 +73,10 @@ EquivSets(
         MemRefHandle(p -> foo)	 => [ 0 ] 
         MemRefHandle(q -> foo)	 => [ 0 ] 
         MemRefHandle(q -> foo)	 => [ 0 ] 
-        MemRefHandle(a -> bar)	 => [ 0 ] 
         MemRefHandle(p -> baz)	 => [ 0 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(main)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             0	 => [ 
                 UnknownLoc(
                 ) ] 

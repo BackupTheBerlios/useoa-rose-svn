@@ -2810,7 +2810,7 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromReturnStmt(SgReturnStmt *re
 	      
       mMemRefList.push_back(pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> >(function, rhsMre));
 	
-      mIR->createImplicitPtrAssigns(function, returnExpr, &mMemRefList); 
+      mIR->createImplicitPtrAssigns(function, rhsMre, returnExpr, &mMemRefList); 
 
     }
       
@@ -2826,10 +2826,12 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
 
   SgExpression *lhs = NULL;
   SgExpression *rhs = NULL;
+  std::vector<SgExpression *> rhses;
 
   SgExpression *exprVal = NULL;
 
   switch(node->variantT()) {
+#if 0
   case V_SgCommaOpExp:
     {
       // The result of evaluating a comma expression is the right-hand side.
@@ -2843,12 +2845,15 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
       rhs = commaOp->get_rhs_operand();
       ROSE_ASSERT(rhs != NULL);
 
+      rhses.push_back(rhs);
+
       createPtrAssignPairsFromAssignment(lhs);
       
       exprVal = createPtrAssignPairsFromAssignment(rhs);
 
       break;
     }
+#endif
   case V_SgAssignOp:
 #if 0
     // hmm ... On second thought, I don't think these belong.  bwhite
@@ -2894,16 +2899,30 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
       case V_SgXorAssignOp:
 #endif
 	{
-	  rhs = createPtrAssignPairsFromAssignment(rhs);
+	  SgAssignOp *assignOp = isSgAssignOp(rhs);
+	  ROSE_ASSERT(assignOp != NULL);
+
+	  rhs = assignOp->get_lhs_operand();
 	  ROSE_ASSERT(rhs != NULL);
+
+	  createPtrAssignPairsFromAssignment(assignOp);
+
+	  rhses.push_back(rhs);
 
 	  break;
 	}
       case V_SgCommaOpExp:
 	{
-	  rhs = createPtrAssignPairsFromAssignment(rhs);
-	  exprVal = rhs;
+	  SgCommaOpExp *commaOpExp = isSgCommaOpExp(rhs);
+	  ROSE_ASSERT(commaOpExp != NULL);
+
+	  // Either the lhs or the rhs could be an assignment.
+	  rhs = createPtrAssignPairsFromAssignment(commaOpExp->get_lhs_operand());
+	  createPtrAssignPairsFromAssignment(commaOpExp->get_rhs_operand());
+
 	  ROSE_ASSERT(rhs != NULL);
+
+	  rhses.push_back(rhs);
 
 	  break;
 	}
@@ -2912,15 +2931,31 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
 	  SgConditionalExp *conditionalExp = isSgConditionalExp(rhs);
 	  ROSE_ASSERT(conditionalExp != NULL);
 
-	  createPtrAssignPairsFromAssignment(conditionalExp->get_conditional_exp());
-	  exprVal = rhs;
+	  rhs = isSgExpression(mIR->lookThroughCastExpAndAssignInitializer(conditionalExp->get_true_exp()));
 	  ROSE_ASSERT(rhs != NULL);
+	  SgType *type = rhs->get_type();
+	  SgType *baseType = mIR->getBaseType(type);
+	  ROSE_ASSERT(baseType != NULL);
+	  if ( isSgPointerType(baseType) || isSgReferenceType(baseType) )
+	    rhses.push_back(rhs);
+
+	  rhs = isSgExpression(mIR->lookThroughCastExpAndAssignInitializer(conditionalExp->get_false_exp()));
+	  ROSE_ASSERT(rhs != NULL);
+	  type = rhs->get_type();
+	  baseType = mIR->getBaseType(type);
+	  ROSE_ASSERT(baseType != NULL);
+	  if ( isSgPointerType(baseType) || isSgReferenceType(baseType) )
+	    rhses.push_back(rhs);
+
+	  exprVal = rhs;
 
 	  break;
 	}
       default:
 	{
 	  // The lhs is a pointer type and the rhs is not an assign.
+	  rhses.push_back(rhs);
+
 	  break;
 	}
       }
@@ -2943,31 +2978,36 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
       lhsMemRefNode = mIR->lookThroughCastExpAndAssignInitializer(lhsMemRefNode);
       ROSE_ASSERT(mIR->isMemRefNode(lhsMemRefNode));
       
-      // Find the top (i.e., first) MemRefNode on the RHS.
-      topMemRefs = mIR->findTopMemRefs(rhs);
-      ROSE_ASSERT(topMemRefs != NULL);
+      for (int i = 0; i < rhses.size(); ++i) {
+
+	rhs = rhses[i];
+	ROSE_ASSERT(rhs != NULL);
+
+	// Find the top (i.e., first) MemRefNode on the RHS.
+	topMemRefs = mIR->findTopMemRefs(rhs);
+	ROSE_ASSERT(topMemRefs != NULL);
       
-      // On the RHS we may have multiple top MemRefHandles.
-      // e.g., int *a; int *b; int *c; a = ( cond ? b : c );
-      // has MemRefHandles for b and c on the RHS.  Create
-      // a pairing for each.
-      // Could be none on the RHS (e.g., int *x; *x = 0; )
-      // ROSE_ASSERT(topMemRefs->size() >= 1);
-      for (list<SgNode *>::iterator it = topMemRefs->begin();
-	   it != topMemRefs->end(); ++it) {
+	// On the RHS we may have multiple top MemRefHandles.
+	// e.g., int *a; int *b; int *c; a = ( cond ? b : c );
+	// has MemRefHandles for b and c on the RHS.  Create
+	// a pairing for each.
+	// Could be none on the RHS (e.g., int *x; *x = 0; )
+	// ROSE_ASSERT(topMemRefs->size() >= 1);
+	for (list<SgNode *>::iterator it = topMemRefs->begin();
+	     it != topMemRefs->end(); ++it) {
 	  SgNode *rhsMemRefNode = *it;
 	  ROSE_ASSERT(rhsMemRefNode != NULL);
-
+	  
 	  rhsMemRefNode = mIR->lookThroughCastExpAndAssignInitializer(rhsMemRefNode);
 	  ROSE_ASSERT(mIR->isMemRefNode(rhsMemRefNode));
-      
+	  
 	  // Create the lhs/rhs MemRefHandles.
 	  OA::MemRefHandle lhsHandle = mIR->getNodeNumber(lhsMemRefNode);
 	  OA::MemRefHandle rhsHandle = mIR->getNodeNumber(rhsMemRefNode);
-
+	  
 	  // Save this lhs/rhs pair.
 	  //	  mMemRefList.push_back(pair<OA::MemRefHandle, OA::MemRefHandle>(lhsHandle, rhsHandle));
-
+	  
 	  OA::OA_ptr<OA::MemRefExprIterator> lhsMreIterPtr 
             = mIR->getMemRefExprIterator(lhsHandle);
 	  // for each mem-ref-expr associated with this memref
@@ -2983,12 +3023,14 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
 	      OA::OA_ptr<OA::MemRefExpr> rhsMre = rhsMreIterPtr->current();
 	      
 	      mMemRefList.push_back(pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> >(lhsMre, rhsMre));
-	
-	      mIR->createImplicitPtrAssigns(lhsMre, rhs, &mMemRefList); 
-
+	      
+	      mIR->createImplicitPtrAssigns(lhsMre, rhsMre, rhs, &mMemRefList); 
+	      
 	    }
 	    
 	  }
+	  
+	}
 
       }
       
@@ -3964,7 +4006,7 @@ SageIRInterface::initializerHasPtrAssign(SgInitializedName *initName,
       
       memRefList->push_back(pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> >(lhsMre, rhsMre));
       
-      createImplicitPtrAssigns(lhsMre, rhs, memRefList); 
+      createImplicitPtrAssigns(lhsMre, rhsMre, rhs, memRefList); 
 
     }
     
@@ -4249,6 +4291,11 @@ createImplicitVTablePtrAssignFromDefinition(SgClassDefinition *classDefinition,
 
 	  addressTaken = false;
 	  OA::OA_ptr<OA::FieldAccess> fieldAccess;
+#if 0
+	  ROSE_ASSERT(!classMRE->isDef());
+	  ROSE_ASSERT(!classMRE->isDefUse());
+	  ROSE_ASSERT(!classMRE->isUseDef());
+#endif
 	  fieldAccess = new OA::FieldAccess(addressTaken, 
 					    fullAccuracy,
 					    memRefType,
@@ -4340,6 +4387,7 @@ classHasVirtualMethods(SgClassDefinition *classDefinition)
 bool 
 SageIRInterface::
 createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
+				  OA::OA_ptr<OA::MemRefExpr> rhsMRE,
 				  SgClassDefinition *classDefinition,
 				  bool collectPtrAssigns,
 				  std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList)
@@ -4406,7 +4454,12 @@ createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
 	  // Create the lhs of the pair, ensuring that it is marked
 	  // inaccurate.
 	  OA::OA_ptr<OA::MemRefExpr> baseLHS;
+#define USELHS
+#ifdef USELHS
 	  baseLHS = lhsMRE->clone();
+#else
+	  baseLHS = rhsMRE->clone();
+#endif
 
 #if 0
 	  if ( baseLHS->hasFullAccuracy() ) {
@@ -4416,14 +4469,30 @@ createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
 
 	  bool addressTaken = false;
 	  bool fullAccuracy = true;
+
+#ifdef USELHS
 	  if ( !baseLHS->hasFullAccuracy() ) {
 	    fullAccuracy = false;
 	  }
+#else
+	  if ( baseLHS->isaUnnamed() ) {
+	    ROSE_ASSERT(baseLHS->hasAddressTaken());
+	    baseLHS->setAddressTaken(false);
+	  } 
+	  if ( !baseLHS->hasFullAccuracy() ) {
+	    fullAccuracy = false;
+	  }
+#endif
 
 	  OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::DEF;
 	  string mangledMethodName = functionDeclaration->get_mangled_name().str();
 
 	  OA::OA_ptr<OA::FieldAccess> fieldAccess;
+#if 0
+	  ROSE_ASSERT(!baseLHS->isDef());
+	  ROSE_ASSERT(!baseLHS->isDefUse());
+	  ROSE_ASSERT(!baseLHS->isUseDef());
+#endif
 	  fieldAccess = new OA::FieldAccess(addressTaken, 
 					    fullAccuracy,
 					    memRefType,
@@ -4494,6 +4563,11 @@ createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
     
     // Notice that lhsMRE is a deref.  We asserted that above.
     OA::OA_ptr<OA::FieldAccess> fieldAccess;
+#if 0
+    ROSE_ASSERT(!lhsMRE->isDef());
+    ROSE_ASSERT(!lhsMRE->isDefUse());
+    ROSE_ASSERT(!lhsMRE->isUseDef());
+#endif
     fieldAccess = new OA::FieldAccess(addressTaken, 
 				      fullAccuracy,
 				      memRefType,
@@ -4537,6 +4611,7 @@ createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
 
 	  bool hasPtrAssign;
 	  hasPtrAssign = createImplicitPtrAssignForMethods(lhsMRE,
+							   rhsMRE,
 							   parentClassDefinition,
 							   collectPtrAssigns,
 							   memRefList);
@@ -4559,6 +4634,7 @@ createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
 void
 SageIRInterface::
 createImplicitPtrAssigns(OA::OA_ptr<OA::MemRefExpr> lhs,
+			 OA::OA_ptr<OA::MemRefExpr> rhsMRE,
 			   SgNode *rhs,
 			   std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList)
 {
@@ -4614,6 +4690,7 @@ createImplicitPtrAssigns(OA::OA_ptr<OA::MemRefExpr> lhs,
 	bool collectPtrAssigns = true;
 	
 	createImplicitPtrAssignFromObjectAllocation(derefedLhs,
+						    rhsMRE,
 						    classDefinition,
 						    ctorInitializer,
 						    collectPtrAssigns,
@@ -4636,6 +4713,7 @@ createImplicitPtrAssigns(OA::OA_ptr<OA::MemRefExpr> lhs,
 bool 
 SageIRInterface::
 createImplicitPtrAssignFromObjectAllocation(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
+					    OA::OA_ptr<OA::MemRefExpr> rhsMRE,
 					    SgClassDefinition *classDefinition,
 					    SgConstructorInitializer *ctorInitializer,
 					    bool collectPtrAssigns,
@@ -4663,6 +4741,7 @@ createImplicitPtrAssignFromObjectAllocation(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
 
   if ( examinedClasses.find(classDefinition) == examinedClasses.end() ) {
     hasImplicitPtrAssign = createImplicitPtrAssignForMethods(lhsMRE,
+							     rhsMRE,
 							     classDefinition,
 							     collectPtrAssigns,
 							     memRefList);

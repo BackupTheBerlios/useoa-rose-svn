@@ -29,7 +29,7 @@ EquivSets(
         MemRefHandle(*p)	 => [ 7 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(f)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             1	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
@@ -68,7 +68,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(f1)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             6	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(q)
@@ -106,7 +106,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(main)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             2	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(x)

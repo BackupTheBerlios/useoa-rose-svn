@@ -3561,13 +3561,13 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	 proc type   ret type   lhs = proc
 	 ---------   --------   ----------
 	 func        address    lhs = func
-	 non-addr       --
+	             non-addr       --
 	 (*funcPtr)  address    lhs = *funcPtr
-	 non-addr       --
+	             non-addr       --
 	 method      address    lhs = method
-	 non-addr       --
+	             non-addr       --
 	 virtual     address    lhs = *(obj->"fooA")
-	 non-addr       --
+	             non-addr       --
 	 
 	 Notice that the proc MREs are the same as those
 	 returned by getCallMemRefExpr() and as created

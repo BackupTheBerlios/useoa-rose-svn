@@ -41,7 +41,7 @@ EquivSets(
         MemRefHandle(foo(ptr))	 => [ 12 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(foo::foo)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             1	 => [ 
                 InvisibleLoc(
                     mMRE: 
@@ -160,7 +160,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(main)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             1	 => [ 
                 InvisibleLoc(
                     mMRE: 

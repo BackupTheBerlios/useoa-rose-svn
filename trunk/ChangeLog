@@ -826,7 +826,7 @@
 	  should be in RinardEtAlPLDI96Fig4.C:
                OATest: Sage2OA.C:4888: virtual OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle): Assertion `numMres == 1' failed.
 
-1/27/06   UseOA-ROSE svn tag trunk r37  Brian White
+1/27/06   UseOA-ROSE svn tag trunk r39  Brian White
         - Checked the following for both versions of ROSE, updated the
           regress*.script to show they have been checked, and updated
           the regression results:
@@ -931,3 +931,26 @@
         - Added array/pointer arithmetic examples to MemRefExprTest.C
         - MemRefExpr case in OATest was not visiting all functions.
           Fixed.
+
+2/14/06   UseOA-ROSE svn tag trunk r42  Brian White	
+        - Checked the following for both versions of ROSE, updated the
+          regress*.script to show they have been checked, and updated
+          the regression results:
+               LattnerEtAl03Fig1.C
+        - All regression tests passed (for those which have been checked)
+          using OpenAnalysis revision 40 and both ROSE-0.8.6c and
+          ROSE-January27a-2006.
+        - Henceforth we will check regression tests against the ROSE
+          repository and ROSE-January27a-2006 rather than 
+          ROSE-January-18a-2006.
+        - The following test cases still need to be checked nor have they
+          been checked for consistency between released and unreleased versions
+               PandeEtAlRutgers05.C
+               HindEtAlIBM95Fig4.C
+               HindEtAlISSTA00Fig1.C
+               RinardEtAlPLDI96Fig4.C
+        - Fixed bug in SgConditionalExp of 
+          SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment
+          that was creating an implicit pointer assignment for the
+          conditional expression rather than the true and false
+          expressions.

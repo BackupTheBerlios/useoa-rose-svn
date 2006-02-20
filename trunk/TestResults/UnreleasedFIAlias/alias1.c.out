@@ -1,46 +1,28 @@
-In float_pt_init sizeof(an_fp_value_part) = 4 
-========== CFG dump ==========
-main
-------------------------------
-CFG Node: 1 (root) [ENTRY]
- --> (2 [{ 1 FALLTHROUGH_EDGE 0 }])
 
-CFG Node: 2
-    int loc;
-    int *a;
-    int *b;
-    a = &loc;
-    b = &loc;
-    return 0;
- <-- (1 [{ 1 FALLTHROUGH_EDGE 0 }])
- --> (4 [{ 3 RETURN_EDGE 0 }])
-
-CFG Node: 3 (root)
-    
- --> (4 [{ 2 FALLTHROUGH_EDGE 0 }])
-
-CFG Node: 4 [EXIT]
- <-- (3 [{ 2 FALLTHROUGH_EDGE 0 }], 2 [{ 3 RETURN_EDGE 0 }])
-
-==============================
-digraph OA_CFG_main {
-node [shape=rectangle];
-1 [ label="====== CFG node 1 ====== (entry)\n" ];
-2 [ label="====== CFG node 2 ======\n
-int loc;\n
-int *a;\n
-int *b;\n
-a = &loc;\n
-b = &loc;\n
-return 0;\n" ];
-3 [ label="====== CFG node 3 ======\n
-\n" ];
-4 [ label="====== CFG node 4 ====== (exit)\n" ];
-1 -> 2;
-3 -> 4;
-2 -> 4;
-}
-==============================
-
-*******  end of DoOpenAnalysis *********
-
+EquivSets(
+    mMemRefToProc: MemRefHandle	 => ProcHandle
+        MemRefHandle(a)	 => ProcHandle(main)
+        MemRefHandle(b)	 => ProcHandle(main)
+        MemRefHandle(&loc)	 => ProcHandle(main)
+        MemRefHandle(&loc)	 => ProcHandle(main)
+    mMemRefToSets: MemRefHandle	 => int
+        MemRefHandle(a)	 => [ 1 ] 
+        MemRefHandle(b)	 => [ 3 ] 
+    mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
+        ProcHandle(main)	 => 
+        SetToLocs: int	 => OA_ptr<Location>
+            1	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(a)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            3	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(b)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+)

@@ -34,7 +34,7 @@ EquivSets(
         MemRefHandle(g1)	 => [ 3 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(f)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             1	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(a)
@@ -71,7 +71,7 @@ EquivSets(
                     mPartOverlap: 
                 ) ] 
         ProcHandle(main)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             2	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(e)

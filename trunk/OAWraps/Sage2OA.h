@@ -854,6 +854,7 @@ public:
   // Create the implicit ptr assign pairs for the methods of a class.
   bool 
     createImplicitPtrAssignForMethods(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
+				      OA::OA_ptr<OA::MemRefExpr> rhsMRE,
 				      SgClassDefinition *classDefinition,
 				      bool collectPtrAssigns,
 				      std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
@@ -862,6 +863,7 @@ public:
   // Create implicit ptr assign pairs given lhs = rhs.
   void
     createImplicitPtrAssigns(OA::OA_ptr<OA::MemRefExpr> lhs,
+			     OA::OA_ptr<OA::MemRefExpr> rhs,
 			     SgNode *rhs,
 			     std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
 
@@ -870,6 +872,7 @@ public:
   // by ctorInitializer.  
   bool 
     createImplicitPtrAssignFromObjectAllocation(OA::OA_ptr<OA::MemRefExpr> lhsMRE,
+						OA::OA_ptr<OA::MemRefExpr> rhsMRE,
 						SgClassDefinition *classDefinition,
 						SgConstructorInitializer *ctorInitializer,
 						bool collectPtrAssigns,

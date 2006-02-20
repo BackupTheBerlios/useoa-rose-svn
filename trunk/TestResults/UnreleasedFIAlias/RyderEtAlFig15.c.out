@@ -29,7 +29,7 @@ EquivSets(
         MemRefHandle(*t)	 => [ 12 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(my_malloc)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             1	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
@@ -82,7 +82,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(a)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(my_malloc)
@@ -142,7 +142,7 @@ EquivSets(
                     )
                 ) ] 
         ProcHandle(b)	 => 
-        SetToLocs: int	 => std::map<int,OA_ptr<Location> >
+        SetToLocs: int	 => OA_ptr<Location>
             3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(my_malloc)
