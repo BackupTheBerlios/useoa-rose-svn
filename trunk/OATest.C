@@ -30,7 +30,8 @@
 #include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/ReachDefs/ManagerReachDefsStandard.hpp>
 #include <OpenAnalysis/Alias/ManagerAliasMapBasic.hpp>
-#include <OpenAnalysis/Alias/ManagerFIAlias.hpp>
+#include <OpenAnalysis/Alias/ManagerFIAliasEquivSets.hpp>
+#include <OpenAnalysis/Alias/ManagerFIAliasAliasMap.hpp>
 #include <OpenAnalysis/CFG/ManagerCFGStandard.hpp>
 #include <OpenAnalysis/CallGraph/ManagerCallGraphStandard.hpp>
 #include <OpenAnalysis/MemRefExpr/MemRefExpr.hpp>
@@ -45,9 +46,9 @@
 using namespace std;
 
 int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
-int DoFIAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoAlias(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
-int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoCallGraph(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
@@ -67,7 +68,8 @@ void usage(char **argv)
   cerr << "     where opt is one of:" << endl;
   cerr << "          --oa-CFG" << endl;
   cerr << "          --oa-MemRefExpr" << endl;
-  cerr << "          --oa-FIAlias" << endl;
+  cerr << "          --oa-FIAliasEquivSets" << endl;
+  cerr << "          --oa-FIAliasAliasMap" << endl;
   cerr << "          --oa-AliasMap" << endl;
   cerr << "          --oa-CallGraph" << endl;
   cerr << "          --oa-ReachDefs" << endl;
@@ -184,10 +186,17 @@ main ( unsigned argc,  char * argv[] )
       
       return 0;
     }
-    else if( cmds->HasOption("--oa-FIAlias") )
+    else if( ( cmds->HasOption("--oa-FIAliasEquivSets") ) ||
+	     ( cmds->HasOption("--oa-FIAlias") ) )
     {
-      DoFIAlias(sageProject, &nodeArray, p_h);
+      DoFIAliasEquivSets(sageProject, &nodeArray, p_h);
+      //      DoFIAliasAliasMap(sageProject, &nodeArray, p_h);
       //      DoFIAlias(sageProject, &nodeArray, FALSE);
+      return 0;
+    }
+    else if( cmds->HasOption("--oa-FIAliasAliasMap") )
+    {
+      DoFIAliasAliasMap(sageProject, &nodeArray, p_h);
       return 0;
     }
     else if( cmds->HasOption("--oa-AliasMap") )
@@ -460,7 +469,7 @@ int DoAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, 
 
 }
 
-int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
   int returnvalue=FALSE;
   if ( debug ) printf("*******start of FIAlias\n");
@@ -468,8 +477,8 @@ int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   irInterface = new SageIRInterface(p, na, p_handle);
   
   //FIAlias
-  OA::OA_ptr<OA::Alias::ManagerFIAlias> fialiasman;
-  fialiasman= new OA::Alias::ManagerFIAlias(irInterface);
+  OA::OA_ptr<OA::Alias::ManagerFIAliasEquivSets> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAliasEquivSets(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
   bool excludeInputFiles = true;
   // Don't pull in any procedures defined in input files.  For testing
@@ -487,7 +496,34 @@ int DoFIAlias(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   //  alias->dump(std::cout, irInterface);
   alias->output(irInterface);
 }
- 
+
+int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+{
+  int returnvalue=FALSE;
+  if ( debug ) printf("*******start of FIAlias\n");
+  OA::OA_ptr<SageIRInterface> irInterface;
+  irInterface = new SageIRInterface(p, na, p_handle);
+  
+  //FIAlias
+  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  bool excludeInputFiles = true;
+  // Don't pull in any procedures defined in input files.  For testing
+  // purposes only:  avoids unexpected/spurious results due to 
+  // stdlib.h, etc.
+  procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
+  //#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
+  fialiasman->performAnalysis(procIter);
+  procIter->reset();
+  for(; procIter->isValid(); ++(*procIter)) {
+    OA::ProcHandle procHandle = procIter->current();
+    OA::OA_ptr<OA::Alias::AliasMap> aliasMap = 
+      fialiasman->getAliasResults(procHandle);
+    aliasMap->output(irInterface);
+  }
+}
+
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
   int returnvalue=FALSE;
@@ -510,8 +546,8 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   aliasmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
 #else
   //FIAlias
-  OA::OA_ptr<OA::Alias::ManagerFIAlias> fialiasman;
-  fialiasman= new OA::Alias::ManagerFIAlias(irInterface);
+  OA::OA_ptr<OA::Alias::ManagerFIAliasEquivSets> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAliasEquivSets(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
   procIter = new SageIRProcIterator(p, irInterface);
   OA::OA_ptr<OA::Alias::EquivSets> alias = 

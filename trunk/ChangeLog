@@ -954,3 +954,44 @@
           that was creating an implicit pointer assignment for the
           conditional expression rather than the true and false
           expressions.
+
+3/9/06   UseOA-ROSE svn tag trunk r45  Brian White		
+        - **** This version of UseOA-ROSE is incompatible with
+          versions of OA prior to 86 because of the following change:
+        - Updated OATest to use ManagerFIAliasEquivSets and 
+	  ManagerFIAliasAliasMap instead of ManagerFIAlias.
+          --oa-FIAlias is replaced by --oa-FIAliasEquivSets and
+	  --oa-FIAliasAliasMap.  Actually --oa-FIAlias is equivalent
+	  to --oa-FIAliasEquivSets (but should be deprecated).
+        - **** UDDU Chains needs an alias manager.  This continues
+          to use the equiv sets FIAlias, rather than the new
+          ManagerFIAliasAliasMap.
+        - Added new results directories for FIAliasAliasMap results
+          and new scripts for FIAliasAliasMap manager.
+        - Moved scripts to scripts/ directory.
+        - I have checked the following FIAliasAliasMap using OA rev 76:
+  	       alias1.c
+               alias2.c
+               alias3.c
+               alias4.c
+               alias4b.c
+	  Note that alias4b.c maps *a to a new UnknownLoc location, 
+          rather than to the zero LocationSet with UnknownLoc, which
+          would have been more efficient spatially.  Doing this
+          right would require remapping an existing set to zero, a la
+              AliasMap::remapMemRefs(int oldSetId, int newSetId)
+          But invoking this method is extremely unsafe unless you 
+          know what it is doing.  In particular, it may change
+          the mapping of a set to its id for some set other than
+          oldSetId (in particular, the lastSet).  This will wreak
+          havoc with ManagerFIAlias which keeps a map from ufset ids
+          to AliasMap set ids.  The right way to do this is to
+          have AliasMap export one set of ids which may be arbitrary
+          but use a different set internally which are contigous.
+        - At this point we are switching development to use
+          FIAliasAliasMap rather than FIAliasEquivSets.
+        - Status of FIAliasEquivSets, all tests passed except the following:
+               PandeEtAlRutgers05.C
+               HindEtAlIBM95Fig4.C
+               HindEtAlISSTA00Fig1.C
+               RinardEtAlPLDI96Fig4.C	
