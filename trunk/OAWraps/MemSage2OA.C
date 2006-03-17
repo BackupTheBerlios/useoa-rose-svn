@@ -2780,6 +2780,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	      baseMre->setAccuracy(false);
 #endif
 
+	    ROSE_ASSERT(addressTaken == false);
 	    arrowOrDotMemRefExpr = 
 	      new OA::FieldAccess(addressTaken, 
 				  fieldAccessFullAccuracy,

@@ -1691,7 +1691,7 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
   ROSE_ASSERT(procNode != NULL);
 
   switch(node->variantT()) {
-
+ 
   case V_SgInitializedName:
     {
       SgInitializedName *initName = isSgInitializedName(node);
@@ -1723,12 +1723,33 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
 	  // so return a NULL location.
 	  return loc;
 	}
-      }
+      } 
     break;
     }
   case V_SgFunctionDeclaration:
   case V_SgMemberFunctionDeclaration:
     {
+#if 1
+      // We had problems in which a method didn't appear visible but
+      // should have been in PandeEtAlRutgers05.C.
+      // In main, p and q have static type Base, though they may
+      // dynamically be Derived.  Thus, ROSE can only report that
+      // the SgFunctionDeclaration for p->foo or q->foo is 
+      // Base::foo (as per the static type of p and q).  Thus, it
+      // does not see that Derived::foo is called (i.e., when 
+      // we ask for all function/method invocations via querySubTree
+      // below).  Hence, the logic dictates that since Derived::foo is
+      // not main and is not invoked from main, it is not visible in
+      // main.  Clearly, this isn't true.
+      //
+      // For now, the solution is simply to call all functions/methods
+      // visible.  This isn't true given static functions, private methods,
+      // etc.  There is probably some way to resolve this in ROSE using
+      // the context-specific symbol tables, but I have little 
+      // experience there and we have a deadline.
+      // MMS and BW 3/16/06
+      isLocal = true;
+#else
       SgFunctionDeclaration *functionDeclaration =
 	isSgFunctionDeclaration(node);
       ROSE_ASSERT(functionDeclaration != NULL);
@@ -1843,7 +1864,7 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
       if ( !isLocal ) {
 	return loc;
       }
-
+#endif
     }
   default:
     {
