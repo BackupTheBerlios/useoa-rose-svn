@@ -29,7 +29,7 @@ echo "Testing TestCases/AliasTests/HindEtAlISSTA00Fig1.C\n\tTestResults/AliasTes
 cat TestResults/FIAliasAliasMap/HindEtAlISSTA00Fig1.C.out
 echo "Testing TestCases/AliasTests/LattnerEtAl03Fig1.C\n\tTestResults/AliasTests/LattnerEtAl03Fig1.C checked by ???"
 cat TestResults/FIAliasAliasMap/LattnerEtAl03Fig1.C.out
-echo "Testing TestCases/AliasTests/PandeEtAlRutgers05.C\n\tTestResults/AliasTests/PandeEtAlRutgers05.C checked by ???"
+echo "Testing TestCases/AliasTests/PandeEtAlRutgers05.C\n\tTestResults/AliasTests/PandeEtAlRutgers05.C checked by BW"
 cat TestResults/FIAliasAliasMap/PandeEtAlRutgers05.C.out
 echo "Testing TestCases/AliasTests/PioliThesis99Fig1.C\n\tTestResults/AliasTests/PioliThesis99Fig1.C checked by ???"
 cat TestResults/FIAliasAliasMap/PioliThesis99Fig1.C.out

@@ -42,7 +42,7 @@ diff t TestResults/FIAliasAliasMap/HindEtAlISSTA00Fig1.C.out
 echo "Testing TestCases/AliasTests/LattnerEtAl03Fig1.C\n\tTestResults/AliasTests/LattnerEtAl03Fig1.C checked by ???"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/LattnerEtAl03Fig1.C > t
 diff t TestResults/FIAliasAliasMap/LattnerEtAl03Fig1.C.out
-echo "Testing TestCases/AliasTests/PandeEtAlRutgers05.C\n\tTestResults/AliasTests/PandeEtAlRutgers05.C checked by ???"
+echo "Testing TestCases/AliasTests/PandeEtAlRutgers05.C\n\tTestResults/AliasTests/PandeEtAlRutgers05.C checked by BW"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/PandeEtAlRutgers05.C > t
 diff t TestResults/FIAliasAliasMap/PandeEtAlRutgers05.C.out
 echo "Testing TestCases/AliasTests/PioliThesis99Fig1.C\n\tTestResults/AliasTests/PioliThesis99Fig1.C checked by ???"

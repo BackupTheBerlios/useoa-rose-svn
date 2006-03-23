@@ -1017,3 +1017,30 @@
       // the context-specific symbol tables, but I have little 
       // experience there and we have a deadline.
       // MMS and BW 3/16/06
+
+3/21/06   UseOA-ROSE svn tag trunk r47  Brian White			
+        - Changed createImplicitPtrAssignForMethods so that it does
+          not create an implicit ptr assign for a virtual method m
+          if it has already created one for a virtual method m'
+          which overrides m.  Without this, two methods
+          with the same mangled name would have overlapping locations.
+        - Modified classHasVirtualMethods so that it returns true
+          not only if a class defines a virtual method, but if
+          any of its base classes does.
+        - Added two isObjectDeclaration methods that create implicit
+          ptr assigns for an object declaration/instantation, such
+          as A a;  previously we only did this for A *a = new A;
+          Though virtual methods can be statically resolved for 'a',
+          I think we need to create implicit ptr assigns for cases
+          such as A *b = &a.
+        - Made a change to SageIRStmtIterator:
+  // If the functionDefinition is for main, include all of the 
+  // global _object_ declarations and class definitions.  Why?  
+  // Because alias analysis (and presumably others) will need to visit 
+  // these to create implicit ptr assign.  However, these analyses
+  // take an iterator over procs, which would exclude the global-level
+  // statements.  
+  // NB:  the intent is _not_ that these will be considered local to
+  //      main.
+        - PandeEtAlRutgers05.C.out passed for AliasMap released and
+          unreleased!

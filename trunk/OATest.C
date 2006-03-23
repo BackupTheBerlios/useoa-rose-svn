@@ -504,6 +504,22 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   OA::OA_ptr<SageIRInterface> irInterface;
   irInterface = new SageIRInterface(p, na, p_handle);
   
+#if 0
+  list<SgNode *> nodes = NodeQuery::querySubTree(p,
+						 V_SgVariableDeclaration);
+  for (list<SgNode *>::iterator it = nodes.begin();
+       it != nodes.end(); ++it ) {
+    
+    SgNode *n = *it;
+    ROSE_ASSERT(n != NULL);
+    
+    SgVariableDeclaration *var = isSgVariableDeclaration(n);
+    ROSE_ASSERT(var != NULL);
+
+    cout << var->unparseToCompleteString() << endl;
+  }
+#endif
+
   //FIAlias
   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);

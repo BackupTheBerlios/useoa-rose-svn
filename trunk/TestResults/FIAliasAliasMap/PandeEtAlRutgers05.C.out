@@ -1,0 +1,2141 @@
+In build_EDG_CommandLine(): Option -c not found (compile AND link) set autoInstantiation = true ... 
+In build_EDG_CommandLine(): autoInstantiation = true adding --auto_instantiation -tused ... 
+
+AliasMap(ProcHandle(Base::foo)
+    mNumSets: 11
+    mStartId: 0
+    mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+            0	 => [ 
+                UnknownLoc(
+                ) ] 
+            1	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(a)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            2	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::foo)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            3	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(this::Base::foo)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            4	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::Base)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            5	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::bar)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            6	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::baz)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            7	 => [ 
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Base ))
+                    mLocal: 0
+                ) ] 
+            8	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            9	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            10	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+    mIdToSetStatusMap: int	 => AliasResultType
+            0	 => 1
+            1	 => 2
+            2	 => 2
+            3	 => 2
+            4	 => 2
+            5	 => 2
+            6	 => 2
+            7	 => 1
+            8	 => 1
+            9	 => 1
+            10	 => 1
+    mIdToMemRefSetMap: int	 => MemRefSet
+            1	 => [ MemRefHandle(a) ] 
+            4	 => [ MemRefHandle(Base) ] 
+    mIdToMRESetMap: int	 => MemRefExprSet
+            1	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(a)
+                ) ] 
+            2	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Base::foo)
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(a)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: foo__F_v
+                    )
+                    mNumDeref: 1
+                ) ] 
+            3	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(this::Base::foo)
+                ) ] 
+            4	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Base::Base)
+                ) ] 
+            5	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Base::bar)
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(a)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: bar__F_v
+                    )
+                    mNumDeref: 1
+                ) ] 
+            6	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Base::baz)
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(a)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: baz__F_v
+                    )
+                    mNumDeref: 1
+                ) ] 
+            7	 => [ 
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(a)
+                    )
+                    mNumDeref: 1
+                ) ] 
+            8	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            9	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            10	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+)
+
+AliasMap(ProcHandle(Base::bar)
+    mNumSets: 2
+    mStartId: 0
+    mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+            0	 => [ 
+                UnknownLoc(
+                ) ] 
+            1	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(this::Base::bar)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+    mIdToSetStatusMap: int	 => AliasResultType
+            0	 => 1
+            1	 => 2
+    mIdToMemRefSetMap: int	 => MemRefSet
+    mIdToMRESetMap: int	 => MemRefExprSet
+            1	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(this::Base::bar)
+                ) ] 
+)
+
+AliasMap(ProcHandle(Base::baz)
+    mNumSets: 2
+    mStartId: 0
+    mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+            0	 => [ 
+                UnknownLoc(
+                ) ] 
+            1	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(this::Base::baz)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+    mIdToSetStatusMap: int	 => AliasResultType
+            0	 => 1
+            1	 => 2
+    mIdToMemRefSetMap: int	 => MemRefSet
+    mIdToMRESetMap: int	 => MemRefExprSet
+            1	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(this::Base::baz)
+                ) ] 
+)
+
+AliasMap(ProcHandle(Derived::foo)
+    mNumSets: 16
+    mStartId: 0
+    mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+            0	 => [ 
+                UnknownLoc(
+                ) ] 
+            1	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(a)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            2	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(b)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            3	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::baz)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            4	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::Derived)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            5	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::foo)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            6	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(this::Derived::foo)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            7	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::bar)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            8	 => [ 
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Derived ))
+                    mLocal: 0
+                ) ] 
+            9	 => [ 
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Derived ))
+                    mLocal: 0
+                ) ] 
+            10	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            11	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            12	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+            13	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            14	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            15	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+    mIdToSetStatusMap: int	 => AliasResultType
+            0	 => 1
+            1	 => 2
+            2	 => 2
+            3	 => 2
+            4	 => 2
+            5	 => 2
+            6	 => 2
+            7	 => 2
+            8	 => 1
+            9	 => 1
+            10	 => 1
+            11	 => 1
+            12	 => 1
+            13	 => 1
+            14	 => 1
+            15	 => 1
+    mIdToMemRefSetMap: int	 => MemRefSet
+            1	 => [ MemRefHandle(a) ] 
+            2	 => [ MemRefHandle(b) ] 
+            4	 => [ MemRefHandle(Derived)    MemRefHandle(Derived) ] 
+    mIdToMRESetMap: int	 => MemRefExprSet
+            1	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(a)
+                ) ] 
+            2	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(b)
+                ) ] 
+            3	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Base::baz)
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(a)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: baz__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(b)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: baz__F_v
+                    )
+                    mNumDeref: 1
+                ) ] 
+            4	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Derived::Derived)
+                ) ] 
+            5	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Derived::foo)
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(a)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: foo__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(b)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: foo__F_v
+                    )
+                    mNumDeref: 1
+                ) ] 
+            6	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(this::Derived::foo)
+                ) ] 
+            7	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Derived::bar)
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(a)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: bar__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(b)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: bar__F_v
+                    )
+                    mNumDeref: 1
+                ) ] 
+            8	 => [ 
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(a)
+                    )
+                    mNumDeref: 1
+                ) ] 
+            9	 => [ 
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(b)
+                    )
+                    mNumDeref: 1
+                ) ] 
+            10	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            11	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            12	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+            13	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(b)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            14	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(b)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            15	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(b)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+)
+
+AliasMap(ProcHandle(Derived::bar)
+    mNumSets: 2
+    mStartId: 0
+    mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+            0	 => [ 
+                UnknownLoc(
+                ) ] 
+            1	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(this::Derived::bar)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+    mIdToSetStatusMap: int	 => AliasResultType
+            0	 => 1
+            1	 => 2
+    mIdToMemRefSetMap: int	 => MemRefSet
+    mIdToMRESetMap: int	 => MemRefExprSet
+            1	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(this::Derived::bar)
+                ) ] 
+)
+
+AliasMap(ProcHandle(main)
+    mNumSets: 25
+    mStartId: 0
+    mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+            0	 => [ 
+                UnknownLoc(
+                ) ] 
+            1	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(a)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            2	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(b)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            3	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(p)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            4	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(q)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            5	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::foo)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::foo)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            6	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::Base)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            7	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::bar)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::bar)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            8	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::baz)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            9	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::Derived)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            10	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(r)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            11	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(s)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            12	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(argc)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            13	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(argv)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            14	 => [ 
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Base ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Derived ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Derived ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Base ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Base ))
+                    mLocal: 0
+                ) ] 
+            15	 => [ 
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Base ))
+                    mLocal: 0
+                ) ] 
+            16	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(r)
+                            mLocal: 0
+                            mFullOverlap: 
+                            mPartOverlap: 
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            17	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(r)
+                            mLocal: 0
+                            mFullOverlap: 
+                            mPartOverlap: 
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            18	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(r)
+                            mLocal: 0
+                            mFullOverlap: 
+                            mPartOverlap: 
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+            19	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            20	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            21	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+            22	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: bar__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: bar__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: bar__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: bar__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            23	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: baz__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: baz__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: baz__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: baz__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            24	 => [ 
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: foo__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: foo__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Derived ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: foo__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: foo__F_v
+                )    
+                LocFieldSubSet(
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((new Base ))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+    mIdToSetStatusMap: int	 => AliasResultType
+            0	 => 1
+            1	 => 2
+            2	 => 2
+            3	 => 2
+            4	 => 2
+            5	 => 1
+            6	 => 2
+            7	 => 1
+            8	 => 2
+            9	 => 2
+            10	 => 2
+            11	 => 2
+            12	 => 2
+            13	 => 2
+            14	 => 1
+            15	 => 1
+            16	 => 1
+            17	 => 1
+            18	 => 1
+            19	 => 1
+            20	 => 1
+            21	 => 1
+            22	 => 1
+            23	 => 1
+            24	 => 1
+    mIdToMemRefSetMap: int	 => MemRefSet
+            1	 => [ MemRefHandle(a) ] 
+            2	 => [ MemRefHandle(b) ] 
+            3	 => [ MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p) ] 
+            4	 => [ MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q) ] 
+            6	 => [ MemRefHandle(Base)    MemRefHandle(Base)    MemRefHandle(Base)    MemRefHandle(Base) ] 
+            9	 => [ MemRefHandle(Derived)    MemRefHandle(Derived)    MemRefHandle(Derived) ] 
+            10	 => [ MemRefHandle(r) ] 
+            11	 => [ MemRefHandle(s)    MemRefHandle(s) ] 
+            12	 => [ MemRefHandle(argc) ] 
+            13	 => [ MemRefHandle(argv) ] 
+            16	 => [ MemRefHandle(s -> Derived::bar)    MemRefHandle(a -> bar) ] 
+            23	 => [ MemRefHandle(p -> baz) ] 
+            24	 => [ MemRefHandle(p -> foo)    MemRefHandle(q -> foo)    MemRefHandle(q -> foo) ] 
+    mIdToMRESetMap: int	 => MemRefExprSet
+            1	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(a)
+                ) ] 
+            2	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(b)
+                ) ] 
+            3	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(p)
+                ) ] 
+            4	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(q)
+                ) ] 
+            5	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Base::foo)
+                )    
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Derived::foo)
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(r)
+                        )
+                        mFieldName: foo__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(b)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: foo__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(p)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: foo__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(q)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: foo__F_v
+                    )
+                    mNumDeref: 1
+                ) ] 
+            6	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Base::Base)
+                ) ] 
+            7	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Base::bar)
+                )    
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Derived::bar)
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(r)
+                        )
+                        mFieldName: bar__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(b)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: bar__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(p)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: bar__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(q)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: bar__F_v
+                    )
+                    mNumDeref: 1
+                ) ] 
+            8	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Base::baz)
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(r)
+                        )
+                        mFieldName: baz__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(b)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: baz__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(p)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: baz__F_v
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(q)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: baz__F_v
+                    )
+                    mNumDeref: 1
+                ) ] 
+            9	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(method:Derived::Derived)
+                ) ] 
+            10	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(r)
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(a)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                ) ] 
+            11	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s)
+                ) ] 
+            12	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(argc)
+                ) ] 
+            13	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(argv)
+                ) ] 
+            14	 => [ 
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    )
+                    mNumDeref: 1
+                ) ] 
+            15	 => [ 
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(b)
+                    )
+                    mNumDeref: 1
+                ) ] 
+            16	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
+                    )
+                    mFieldName: bar__F_v
+                )    
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: bar__F_v
+                )    
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            17	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            18	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+            19	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(b)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            20	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(b)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            21	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(b)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+            22	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(p)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: bar__F_v
+                )    
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(q)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: bar__F_v
+                ) ] 
+            23	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(p)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: baz__F_v
+                )    
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(q)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: baz__F_v
+                ) ] 
+            24	 => [ 
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(p)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: foo__F_v
+                )    
+                FieldAccess(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(q)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: foo__F_v
+                ) ] 
+)

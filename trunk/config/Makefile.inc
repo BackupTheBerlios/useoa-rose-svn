@@ -3,8 +3,8 @@
 SHELL=/bin/sh
 
 # Define UNRELEASED_ROSE if using ROSE-January18a-2006 or some derivative.
-#GLOBAL_DEFINES = 
-GLOBAL_DEFINES = -DUNRELEASED_ROSE
+GLOBAL_DEFINES = 
+#GLOBAL_DEFINES = -DUNRELEASED_ROSE
 
 # Top-level UseOA source directory
 topsrcdir=/usr/casc/overture/bwhite/UseOA-ROSE-trunk/
@@ -13,9 +13,8 @@ topsrcdir=/usr/casc/overture/bwhite/UseOA-ROSE-trunk/
 #topsrcdir=/s/bach/l/under/stonea/berlios/UseOA-ROSE/trunk
 
 # Root of ROSE installation
-#ROSE_INST_ROOT=/usr/casc/overture/bwhite/rose-0.8.6a-latest/LINUX-3.3.2/
-#ROSE_INST_ROOT=/usr/casc/overture/bwhite/ROSE-January-18a-2006/LINUX-3.3.3/
-ROSE_INST_ROOT=/usr/casc/overture/bwhite/ROSE-January-27a-2006/LINUX-3.3.3/
+ROSE_INST_ROOT=/usr/casc/overture/bwhite/rose-0.8.6a-latest/LINUX-3.3.2/
+#ROSE_INST_ROOT=/usr/casc/overture/bwhite/ROSE-January-27a-2006/LINUX-3.3.3/
 #ROSE_INST_ROOT=/s/parsons/c/fac/mstrout/rose-0.8.6a/LINUX-3.3.4/
 #ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-4.0.2-temp/LINUX-CORE4-gcc4.0.2
 #ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-4.0.2-temp/armstrong
