@@ -14,6 +14,7 @@ class Base {
 } *a, *b, *p, *q;
 
 void Base::foo() {
+  a->foo();
   a = new Base;
 }
 

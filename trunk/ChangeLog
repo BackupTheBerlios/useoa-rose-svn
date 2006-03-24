@@ -1044,3 +1044,33 @@
   //      main.
         - PandeEtAlRutgers05.C.out passed for AliasMap released and
           unreleased!
+
+3/23/06   UseOA-ROSE svn tag trunk r48  Brian White			
+        - Changed SgParamBindPtrAssignIterator::create because it
+          was not correctly handling the param bindings for
+          a constructor invoked as 'A a;' rather than 'A *a = new A;'
+          In the former case, we need to take the address of a
+          before binding to this.
+        - We were incorrectly treating variables declared within
+          inlined methods (i.e., methods declared within the scope
+          of a class) as if they were declared within the class
+          (which I took to be synonymous with members of that class).
+          This was an issue in createMRE which adds an implicit 'this->'
+          to member variables if they have not already been added by ROSE.
+          i.e., a form of normalization.  ROSE does this already
+          in most, but not all, cases.  The change is actually
+          in getDefiningClass:
+  // In the following example:
+  // class vector {
+  //  public:
+  //  void vecAdd(double v[NDIM]) {
+  //    for(int i = 0; i < NDIM; i++)
+  //      val[i] += v[i];
+  //  }
+  // };
+  // i is technically defined within the class, since it
+  // is defined within vecAdd which is defined within the
+  // class.  But this method, getDefiningClass, really
+  // wants to return the class of which a variable is a member.
+  // therefore, if we find a scope along the way that is
+  // a function/method, we should return false.

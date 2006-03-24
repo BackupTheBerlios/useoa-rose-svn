@@ -13,8 +13,9 @@ const int NDIM=3;
 class vector {
  public:
   double val[NDIM];
+  int i;
   void vecAdd(double v[NDIM]) {
-    for(int i = 0; i < NDIM; i++)
+    for(i = 0; i < NDIM; i++)
       val[i] += v[i];
   }
 };
@@ -110,7 +111,7 @@ void body::gravsub(node *n)
 
   d = this->computeInter(n, tmpv);
   phi -= d;
-  acc.vecAdd(tmpv);
+  //  acc.vecAdd(tmpv);
 }
 
 void body::openCell(cell *c, double dsq)

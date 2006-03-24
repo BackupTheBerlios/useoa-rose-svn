@@ -2708,9 +2708,30 @@ std::string SageIRInterface::toString(const OA::CallHandle h)
       SgConstructorInitializer *ctorInitializer = 
 	isSgConstructorInitializer(node);
       ROSE_ASSERT(ctorInitializer != NULL);
-      SgNewExp *newExp = isSgNewExp(ctorInitializer->get_parent());
-      ROSE_ASSERT(newExp != NULL);
-      retstr = newExp->unparseToString();
+      SgNode *parent = ctorInitializer->get_parent();
+      ROSE_ASSERT(parent != NULL);
+      switch(parent->variantT()) {
+      case V_SgNewExp:
+	{
+	  SgNewExp *newExp = isSgNewExp(parent);
+	  ROSE_ASSERT(newExp != NULL);
+	  retstr = newExp->unparseToString();
+	  break;
+	}
+      case V_SgInitializedName:
+	{
+	  SgInitializedName *initName = isSgInitializedName(parent);
+	  ROSE_ASSERT(initName != NULL);
+	  
+	  retstr = initName->get_name().str();
+	  break;
+	}
+      default:
+	{
+	  ROSE_ABORT();
+	  break;
+	}
+      }
       break;
     }
   default:
@@ -3370,6 +3391,19 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
   case V_SgConstructorInitializer:
     {
       isMethod = true;
+      SgNode *parent = node->get_parent();
+      ROSE_ASSERT(parent != NULL);
+      if ( isSgInitializedName(parent) ) {
+	// If the parent of the constructor initialize is a var, then
+	// we are in the case:
+	// A a;
+	// rather than:
+	// A a = new A;
+	// Therefore, in the implicit param binding with 'this', we
+	// need to treat this as if it were a dot expression, so
+	// that we take the address of a:  this = &a.
+	isDotExp = true;
+      }
       break;
     }
   default:
@@ -6959,6 +6993,25 @@ SgClassDefinition *SageIRInterface::getDefiningClass(SgScopeStatement *scope)
 
   // The node is not defined in a class.
   if ( isSgGlobal(scope) ) return NULL;
+
+  if ( isSgFunctionDeclaration(scope) ) return NULL;
+
+  if ( isSgFunctionDefinition(scope) ) return NULL;
+
+  // In the following example:
+  // class vector {
+  //  public:
+  //  void vecAdd(double v[NDIM]) {
+  //    for(int i = 0; i < NDIM; i++)
+  //      val[i] += v[i];
+  //  }
+  // };
+  // i is technically defined within the class, since it
+  // is defined within vecAdd which is defined within the
+  // class.  But this method, getDefiningClass, really
+  // wants to return the class of which a variable is a member.
+  // therefore, if we find a scope along the way that is
+  // a function/method, we should return false.
 
   SgClassDefinition *classDef = isSgClassDefinition(scope);
 

@@ -64,7 +64,7 @@ clean-recursive:
 
 #LD_LIBRARY_PATH += /soft/apps/packages/gcc-3.1/lib
 
-bin_PROGRAMS = OATest OACFGTest
+bin_PROGRAMS = OATest OACFGTest staticVirtualMethodResolver
 
 all:  recursive
 
@@ -86,6 +86,12 @@ am_OATest_OBJECTS = OATest.$(OBJEXT)
 OATest_OBJECTS = $(am_OATest_OBJECTS)
 OATest_LDFLAGS = 
 
+am_staticVirtualMethodResolver_OBJECTS = staticVirtualMethodResolver.$(OBJEXT)
+staticVirtualMethodResolver_OBJECTS = $(am_staticVirtualMethodResolver_OBJECTS)
+staticVirtualMethodResolver_LDFLAGS = 
+staticVirtualMethodResolver_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH)
+staticVirtualMethodResolver_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
+
 am_OACFGTest_OBJECTS = OACFGTest.$(OBJEXT)
 OACFGTest_OBJECTS = $(am_OACFGTest_OBJECTS)
 OACFGTest_LDFLAGS =
@@ -93,6 +99,10 @@ OACFGTest_LDFLAGS =
 OATest$(EXEEXT): $(OATest_OBJECTS) $(OATest_DEPENDENCIES) 
 	@rm -f OATest$(EXEEXT)
 	$(CXXLINK) $(OATest_LDFLAGS) $(OATest_OBJECTS) $(OATest_LDADD)
+
+staticVirtualMethodResolver$(EXEEXT): $(staticVirtualMethodResolver_OBJECTS) $(staticVirtualMethodResolver_DEPENDENCIES) 
+	@rm -f staticVirtualMethodResolver$(EXEEXT)
+	$(CXXLINK) $(staticVirtualMethodResolver_LDFLAGS) $(staticVirtualMethodResolver_OBJECTS) $(staticVirtualMethodResolver_LDADD)
 
 OACFGTest$(EXEEXT): $(OACFGTest_OBJECTS) $(OACFGTest_DEPENDENCIES) 
 	@rm -f OACFGTest$(EXEEXT)
