@@ -1074,3 +1074,19 @@
   // wants to return the class of which a variable is a member.
   // therefore, if we find a scope along the way that is
   // a function/method, we should return false.
+
+3/24/06   UseOA-ROSE svn tag trunk r49  Brian White			
+        - Fixed getLocation to properly handle 'this' pointers.
+          i.e., previously we were always identifying them
+          as local.
+	- I've added an indirect call site "analysis"
+          staticVirtualMethodResolver.C.  Should be close
+          to working.  Unfortunately, ROSE doesn't see the
+	  class definition in Pande:
+        // class Base {
+        // public:
+	//  virtual void foo();
+        //  virtual void bar();
+        //  virtual void baz();
+        // } *a, *b, *p, *q;
+

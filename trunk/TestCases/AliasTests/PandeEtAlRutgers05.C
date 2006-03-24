@@ -61,6 +61,5 @@ int main(int argc, char **argv)
   q->foo();
   a->bar();
   p->baz();
-
   return 0;
 }

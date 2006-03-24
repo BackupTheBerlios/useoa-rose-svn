@@ -1983,6 +1983,43 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
 	return loc;
       }
 #endif
+      break;
+    }
+  case V_SgFunctionParameterList:
+    {
+      // If we see a SgFunctionDefinition where we expected a symbol,
+      // it means that the symbol represents a 'this' pointer.
+      SgFunctionParameterList *parameterList = 
+	isSgFunctionParameterList(node);
+      ROSE_ASSERT(parameterList != NULL);
+
+      SgNode *parent = parameterList->get_parent();
+      ROSE_ASSERT(parent != NULL);
+
+      SgFunctionDeclaration *functionDeclaration = 
+	isSgFunctionDeclaration(parent);
+      ROSE_ASSERT(functionDeclaration != NULL);
+	
+      SgFunctionDefinition *procDefn = 
+	isSgFunctionDefinition(procNode);
+      ROSE_ASSERT(procDefn != NULL);
+
+      SgFunctionDeclaration *procDecl = procDefn->get_declaration();
+      ROSE_ASSERT(procDecl != NULL);
+
+      if ( ( functionDeclaration == procDecl ) ||
+	   ( functionDeclaration == procDecl->get_firstNondefiningDeclaration() ) ||
+	   ( functionDeclaration->get_firstNondefiningDeclaration() == procDecl ) ||
+	   ( functionDeclaration->get_firstNondefiningDeclaration() == procDecl->get_firstNondefiningDeclaration() ) ) {
+	isLocal = true;
+      }
+
+      if ( !isLocal ) {
+	// This symbol is not visible within this procedure, 
+	// so return a NULL location.
+	return loc;
+      }
+      break;
     }
   default:
     {
