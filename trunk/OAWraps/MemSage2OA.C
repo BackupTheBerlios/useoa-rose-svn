@@ -3577,7 +3577,6 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	 the obj->"fooA" case MRE.
 
 	*/
-
 	bool returnsAddr = mIR->returnsAddress(functionCallExp);
 
 #else /* 1 */
@@ -3716,7 +3715,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	      }
 	      
 	      isMemRefExpr = true;
-
+	      //HERE
 	      curMemRefExprs.push_back(mre);
 
 	    }
@@ -4161,6 +4160,10 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
       // Create an OpenAnalysis handle for this node.
       symHandle = mIR->getProcSymHandle(functionDeclaration);
+#if 0
+      if ( addrReturningFunc )
+	symHandle = mIR->getFunctionReturnSlotSymbol(functionDeclaration);
+#endif
 
       // Create a named memory reference expression.
       OA::OA_ptr<OA::MemRefExpr> memRefExp;

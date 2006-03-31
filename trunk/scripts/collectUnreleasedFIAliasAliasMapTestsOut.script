@@ -23,9 +23,9 @@ echo "Testing TestCases/AliasTests/constQualified.c\n\tTestResults/AliasTests/co
 cat TestResults/UnreleasedFIAliasAliasMap/constQualified.c.out
 
 # C++ tests
-echo "Testing TestCases/AliasTests/HindEtAlIBM95Fig4.C\n\tTestResults/AliasTests/HindEtAlIBM95Fig4.C checked by ???"
+echo "Testing TestCases/AliasTests/HindEtAlIBM95Fig4.C\n\tTestResults/AliasTests/HindEtAlIBM95Fig4.C checked by BW"
 cat TestResults/UnreleasedFIAliasAliasMap/HindEtAlIBM95Fig4.C.out
-echo "Testing TestCases/AliasTests/HindEtAlISSTA00Fig1.C\n\tTestResults/AliasTests/HindEtAlISSTA00Fig1.C checked by ???"
+echo "Testing TestCases/AliasTests/HindEtAlISSTA00Fig1.C\n\tTestResults/AliasTests/HindEtAlISSTA00Fig1.C checked by BW"
 cat TestResults/UnreleasedFIAliasAliasMap/HindEtAlISSTA00Fig1.C.out
 echo "Testing TestCases/AliasTests/LattnerEtAl03Fig1.C\n\tTestResults/AliasTests/LattnerEtAl03Fig1.C checked by ???"
 cat TestResults/UnreleasedFIAliasAliasMap/LattnerEtAl03Fig1.C.out

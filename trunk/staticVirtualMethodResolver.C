@@ -339,6 +339,75 @@ int main(int argc, char **argv)
   // Instantiate a class hierarchy wrapper.
   ClassHierarchyWrapper classHierarchy( project );
 
+  std::list<SgNode *> nodes2 = NodeQuery::querySubTree(project,
+						      V_SgVariableDefinition);
+
+  for (std::list<SgNode *>::iterator it = nodes2.begin();
+       it != nodes2.end(); ++it ) {
+
+    SgNode *n = *it;
+    ROSE_ASSERT(n != NULL);
+
+    SgVariableDefinition *varDefn =
+      isSgVariableDefinition(n);
+    ROSE_ASSERT(varDefn != NULL);
+
+    std::cout << "Var defn: " << varDefn->unparseToCompleteString() << std::endl;
+
+  }
+
+  std::list<SgNode *> nodes1 = NodeQuery::querySubTree(project,
+						      V_SgVariableDeclaration);
+
+  for (std::list<SgNode *>::iterator it = nodes1.begin();
+       it != nodes1.end(); ++it ) {
+
+    SgNode *n = *it;
+    ROSE_ASSERT(n != NULL);
+
+    SgVariableDeclaration *varDecl =
+      isSgVariableDeclaration(n);
+    ROSE_ASSERT(varDecl != NULL);
+
+    SgInitializedNamePtrList &variables =
+      varDecl->get_variables();
+    SgInitializedNamePtrList::iterator varIter;
+    for (varIter = variables.begin(); 
+	 varIter != variables.end(); ++varIter) {
+      
+      SgNode *var = *varIter;
+      ROSE_ASSERT(var != NULL);
+      
+      SgInitializedName *initName =
+	isSgInitializedName(var);
+      ROSE_ASSERT(initName != NULL);
+      
+      if ( isSgClassType(initName->get_type()) ) {
+
+	SgClassType *classType = isSgClassType(initName->get_type());
+	ROSE_ASSERT(classType != NULL);
+
+	SgDeclarationStatement *declStmt = classType->get_declaration();
+	ROSE_ASSERT(declStmt != NULL);
+	
+	SgClassDeclaration *classDeclaration = isSgClassDeclaration(declStmt);
+	ROSE_ASSERT(classDeclaration != NULL);
+      
+	//	std::cout << "From var decl got: " << classDeclaration->unparseToCompleteString() << std::endl;
+
+	SgClassDefinition *classDefinition =
+	  classDeclaration->get_definition();
+	if ( classDefinition != NULL ) {
+	  std::cout << "From var decl got: " << classDefinition->unparseToCompleteString() << std::endl;
+	}
+
+      }
+
+    }
+    
+
+  }
+
   std::list<SgNode *> nodes = NodeQuery::querySubTree(project,
 						      V_SgClassDeclaration);
 

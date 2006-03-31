@@ -808,6 +808,8 @@ public:
   // a SgClassSymbol.
   OA::SymHandle getThisExpSymHandle(SgNode *node);
 
+  OA::SymHandle getFunctionReturnSlotSymbol(SgFunctionDeclaration *functionDeclaration);
+
   // Given a SgFunctionCallExp representing a method invocation,
   // return a MemRefHandle to the object upon which the method
   // was invoked.

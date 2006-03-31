@@ -1090,3 +1090,16 @@
         //  virtual void baz();
         // } *a, *b, *p, *q;
 
+3/26/06   UseOA-ROSE svn tag trunk r52  Brian White
+        - Fixed bug in getLocation:  when comparing two 
+          get_firstNonDefiningDeclarations for equality, need to 
+          first ensure they aren't NULL.  This bug was manifest as
+          this::this::foo being visible in this::this::bar.
+        - Added mangled names to symhandle output for "this:" and "method:".
+          Output is now this::scope::method_name__mangled_method_name.
+          I output both the method_name and the manged_method_name,
+          as opposed to simply the mangled_method_name, because
+          constructor and destructor mangled method names aren't
+          really intelligible.
+        - Passed HindEtAlISSTA00Fig1.C!
+	- Passed HindEtAlIBMFig4.C!

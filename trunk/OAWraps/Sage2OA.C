@@ -1888,7 +1888,7 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
       if ( ( functionDeclaration == procDecl ) ||
 	   ( functionDeclaration == procDecl->get_firstNondefiningDeclaration() ) ||
 	   ( functionDeclaration->get_firstNondefiningDeclaration() == procDecl ) ||
-	   ( functionDeclaration->get_firstNondefiningDeclaration() == procDecl->get_firstNondefiningDeclaration() ) ) {
+	   ( ( functionDeclaration->get_firstNondefiningDeclaration() == procDecl->get_firstNondefiningDeclaration() ) && ( functionDeclaration->get_firstNondefiningDeclaration() != NULL ) ) )  {
 	isLocal = true;
       }
 
@@ -1987,7 +1987,7 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
     }
   case V_SgFunctionParameterList:
     {
-      // If we see a SgFunctionDefinition where we expected a symbol,
+      // If we see a SgFunctionParameterList where we expected a symbol,
       // it means that the symbol represents a 'this' pointer.
       SgFunctionParameterList *parameterList = 
 	isSgFunctionParameterList(node);
@@ -2010,7 +2010,7 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
       if ( ( functionDeclaration == procDecl ) ||
 	   ( functionDeclaration == procDecl->get_firstNondefiningDeclaration() ) ||
 	   ( functionDeclaration->get_firstNondefiningDeclaration() == procDecl ) ||
-	   ( functionDeclaration->get_firstNondefiningDeclaration() == procDecl->get_firstNondefiningDeclaration() ) ) {
+	   ( ( functionDeclaration->get_firstNondefiningDeclaration() == procDecl->get_firstNondefiningDeclaration() ) && ( functionDeclaration->get_firstNondefiningDeclaration() != NULL ) ) )  {
 	isLocal = true;
       }
 
@@ -2021,6 +2021,45 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
       }
       break;
     }
+#if 0
+  case V_SgCtorInitializerList:
+    {
+      // If we see a SgCtorIntializerList where we expected a symbol,
+      // it means that the symbol represents a 'this' pointer.
+
+      SgCtorInitializerList *ctorInitializer = 
+	isSgCtorInitializerList(node);
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      SgNode *parent = ctorInitializer->get_parent();
+      ROSE_ASSERT(parent != NULL);
+
+      SgFunctionDeclaration *functionDeclaration = 
+	isSgFunctionDeclaration(parent);
+      ROSE_ASSERT(functionDeclaration != NULL);
+	
+      SgFunctionDefinition *procDefn = 
+	isSgFunctionDefinition(procNode);
+      ROSE_ASSERT(procDefn != NULL);
+
+      SgFunctionDeclaration *procDecl = procDefn->get_declaration();
+      ROSE_ASSERT(procDecl != NULL);
+
+      if ( ( functionDeclaration == procDecl ) ||
+	   ( functionDeclaration == procDecl->get_firstNondefiningDeclaration() ) ||
+	   ( functionDeclaration->get_firstNondefiningDeclaration() == procDecl ) ||
+	   ( ( functionDeclaration->get_firstNondefiningDeclaration() == procDecl->get_firstNondefiningDeclaration() ) && ( functionDeclaration->get_firstNondefiningDeclaration() != NULL ) ) )  {
+	isLocal = true;
+      }
+
+      if ( !isLocal ) {
+	// This symbol is not visible within this procedure, 
+	// so return a NULL location.
+	return loc;
+      }
+      break;
+    }
+#endif
   default:
     {
       break;
@@ -2809,7 +2848,7 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
       ROSE_ASSERT(fd != NULL);
 
       //      nm = fd->get_name();
-      nm = fd->get_qualified_name();
+      nm = fd->get_qualified_name() + "__" + fd->get_mangled_name();
       ret = string("method:") + nm.str();
 
       break;
@@ -2893,12 +2932,12 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
 	functionDefinition->get_declaration();
       ROSE_ASSERT(functionDefinition != NULL);
 
-      nm = functionDeclaration->get_name();
-      
+      nm = functionDeclaration->get_name() + "__" + functionDeclaration->get_mangled_name();
+
       SgMemberFunctionDeclaration *fd = 
 	isSgMemberFunctionDeclaration(functionDeclaration);
       if (fd != NULL) {
-	nm = fd->get_qualified_name();
+	nm = fd->get_qualified_name() + "__" + fd->get_mangled_name();
       }
 
       ret = string("this: ") + nm.str();
@@ -2906,6 +2945,7 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
       break;
     }
 #endif
+#if 1
   case V_SgFunctionParameterList:
     {
       // If we see a SgFunctionDefinition where we expected a symbol,
@@ -2922,8 +2962,9 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
       ROSE_ASSERT(functionDeclaration != NULL);
 	  
       SgName funcName;
-      funcName = functionDeclaration->get_name();
-      
+      funcName = functionDeclaration->get_name() + "__" + 
+	functionDeclaration->get_mangled_name();
+
       SgMemberFunctionDeclaration *fd = 
 	isSgMemberFunctionDeclaration(functionDeclaration);
       ROSE_ASSERT(fd != NULL);
@@ -2936,6 +2977,89 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
 
       ret = string("this::") + qualifiedName.str() + "::" + funcName.str();
       
+      break;
+    }
+#else
+  case V_SgCtorInitializerList:
+    {
+      // If we see a SgCtorIntializerList where we expected a symbol,
+      // it means that the symbol represents a 'this' pointer.
+      SgCtorInitializerList *ctorInitializer = 
+	isSgCtorInitializerList(node);
+      ROSE_ASSERT(ctorInitializer != NULL);
+
+      SgNode *parent = ctorInitializer->get_parent();
+      ROSE_ASSERT(parent != NULL);
+
+      SgFunctionDeclaration *functionDeclaration = 
+	isSgFunctionDeclaration(parent);
+      ROSE_ASSERT(functionDeclaration != NULL);
+	  
+      SgName funcName;
+      funcName = functionDeclaration->get_name() + "__" + 
+	functionDeclaration->get_mangled_name();
+
+      SgMemberFunctionDeclaration *fd = 
+	isSgMemberFunctionDeclaration(functionDeclaration);
+      ROSE_ASSERT(fd != NULL);
+
+      SgClassDefinition *classDefinition = isSgClassDefinition(fd->get_scope());
+      ROSE_ASSERT(classDefinition != NULL);
+
+      SgName qualifiedName;
+      qualifiedName = classDefinition->get_qualified_name();
+
+      ret = string("this::") + qualifiedName.str() + "::" + funcName.str();
+      
+      break;
+    }
+#endif
+#if 0
+  case V_SgFunctionParameterList:
+    {
+      // If we see a SgFunctionParameterList where we expected a symbol,
+      // it means that the symbol represents the return slot of
+      // a function. 
+      SgFunctionParameterList *parameterList = 
+	isSgFunctionParameterList(node);
+      ROSE_ASSERT(parameterList != NULL);
+
+      SgNode *parent = parameterList->get_parent();
+      ROSE_ASSERT(parent != NULL);
+
+      SgFunctionDeclaration *functionDeclaration = 
+	isSgFunctionDeclaration(parent);
+      ROSE_ASSERT(functionDeclaration != NULL);
+	  
+      SgName funcName;
+      funcName = functionDeclaration->get_name() + "__" + 
+	functionDeclaration->get_mangled_name();
+
+      SgMemberFunctionDeclaration *fd = 
+	isSgMemberFunctionDeclaration(functionDeclaration);
+      ROSE_ASSERT(fd != NULL);
+
+      SgClassDefinition *classDefinition = isSgClassDefinition(fd->get_scope());
+      ROSE_ASSERT(classDefinition != NULL);
+
+      SgName qualifiedName;
+      qualifiedName = classDefinition->get_qualified_name();
+
+      ret = string("ret::") + qualifiedName.str() + "::" + funcName.str();
+      
+      break;
+    }
+#endif
+  case V_SgMemberFunctionType:
+  case V_SgFunctionType:
+    {
+      SgFunctionType *functionType = isSgFunctionType(node);
+      ROSE_ASSERT(functionType != NULL);
+
+      // We model a function's return slot with its 
+      // SgFunctionType.
+
+      ROSE_ABORT();
       break;
     }
   default:
@@ -2994,12 +3118,26 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromReturnStmt(SgReturnStmt *re
   OA::SymHandle symHandle;
 
   symHandle = mIR->getProcSymHandle(functionDeclaration);
+  //  symHandle = mIR->getFunctionReturnSlotSymbol(functionDeclaration);
 
-  OA::OA_ptr<OA::NamedRef> function;
+  OA::OA_ptr<OA::MemRefExpr> function;
   function = new OA::NamedRef(addressTaken, 
 			    fullAccuracy,
 			    memRefType,
 			    symHandle);
+
+#if 0
+  // We don't need to do this anymore-- I changed the symbol used
+  // in MREs to represent rets to use something that wouldn't
+  // conflict, a SgCtorInitializerList.
+
+  // NB: Dereference the (functionDeclaration) MRE.
+  //     Otherwise, were we to return a non-deref'ed
+  //     functionDeclaration, it would be aliased with 
+  //     the functionDeclaration MREs returned via the
+  //     implicit ptr assigns.
+  function = mIR->dereferenceMre(function);
+#endif
 
   // Create the rhs from the return expression.
   memRefType = OA::MemRefExpr::USE;
@@ -3036,7 +3174,16 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromReturnStmt(SgReturnStmt *re
       OA::OA_ptr<OA::MemRefExpr> rhsMre = rhsMreIterPtr->current();
 	      
       mMemRefList.push_back(pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> >(function, rhsMre));
-	
+
+#if 0
+      std::cout << "Creating return ptr assign for node types " << functionDeclaration->sage_class_name() << " and " << rhsMemRefNode->sage_class_name() << std::endl;
+      OA::OA_ptr<OA::IRHandlesIRInterface> interface;
+      SageIRInterface *ir = new SageIRInterface(mIR->getProject(), NULL, FALSE);
+      interface = ir;
+      std::cout << "lhs mre = " << std::endl;
+      function->output(interface);
+#endif     
+ 
       mIR->createImplicitPtrAssigns(function, rhsMre, returnExpr, &mMemRefList); 
 
     }
@@ -3227,7 +3374,7 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
 	  
 	  rhsMemRefNode = mIR->lookThroughCastExpAndAssignInitializer(rhsMemRefNode);
 	  ROSE_ASSERT(mIR->isMemRefNode(rhsMemRefNode));
-	  
+
 	  // Create the lhs/rhs MemRefHandles.
 	  OA::MemRefHandle lhsHandle = mIR->getNodeNumber(lhsMemRefNode);
 	  OA::MemRefHandle rhsHandle = mIR->getNodeNumber(rhsMemRefNode);
@@ -3248,7 +3395,45 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
 	    for (; rhsMreIterPtr->isValid(); (*rhsMreIterPtr)++) {
 	      
 	      OA::OA_ptr<OA::MemRefExpr> rhsMre = rhsMreIterPtr->current();
-	      
+
+#if 0
+	      // We don't need to do this anymore-- I changed the symbol used
+	      // in MREs to represent rets to use something that wouldn't
+	      // conflict, a SgCtorInitializerList.
+
+	      // If the rhs is a function call exp, it returns an
+	      // address, and we are modeling the assignment from its
+	      // return value to the lhs of an assign.  We need this
+	      // to be consistent with the MRE creating in
+	      // createPtrAssignPairsFromReturnStmt, which 
+	      // dereferences a symbol derived from a SgFunctionDeclaration
+	      // to represent the "return slot" the corresponding function.
+	      // The symbol in the MRE associated with a function call
+	      // expression will also be a SgFunctionDeclaration.
+	      // To make them consistent we need to dereference it.
+	      // NB:  we must dereference the SgFunctionDeclaration MRE
+	      //      else it will collide with the implict ptr assigns
+	      //      used to model virtual methods (also 
+	      //      SgFunctionDeclaration-based MREs).  This would
+	      //      result in unintended alias pairs.
+	      if ( isSgFunctionCallExp(rhsMemRefNode) ) {
+		rhsMre = mIR->dereferenceMre(rhsMre);
+	      }
+#endif
+
+#if 0
+	      std::cout << "Creating ptr assign for node types " << lhsMemRefNode->sage_class_name() << " and " << rhsMemRefNode->sage_class_name() << std::endl;
+	      std::cout << lhsMemRefNode->unparseToCompleteString() << std::endl;
+	      std::cout << rhsMemRefNode->unparseToCompleteString() << std::endl;
+	      OA::OA_ptr<OA::IRHandlesIRInterface> interface;
+	      SageIRInterface *ir = new SageIRInterface(mIR->getProject(), NULL, FALSE);
+	      interface = ir;
+	      std::cout << "lhs mre = " << std::endl;
+	      lhsMre->output(interface);
+	      std::cout << "rhs mre = " << std::endl;
+	      rhsMre->output(interface);
+#endif
+
 	      mMemRefList.push_back(pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> >(lhsMre, rhsMre));
 	      
 	      mIR->createImplicitPtrAssigns(lhsMre, rhsMre, rhs, &mMemRefList); 
@@ -7105,6 +7290,55 @@ OA::SymHandle SageIRInterface::getThisExpSymHandle(SgNode *node)
 {
 #if 1
 
+#if 0
+
+  SgMemberFunctionDeclaration *memberFunctionDeclaration = NULL;
+
+  switch(node->variantT()) {
+
+  case V_SgMemberFunctionDeclaration:
+    {
+      memberFunctionDeclaration = isSgMemberFunctionDeclaration(node);
+
+      break;
+    }
+
+  case V_SgThisExp:
+    {
+      SgThisExp *thisExp = isSgThisExp(node);
+      ROSE_ASSERT(thisExp != NULL);
+
+      SgFunctionDefinition *functionDefinition = 
+	getEnclosingMethod(thisExp);
+      ROSE_ASSERT(functionDefinition != NULL);
+
+      memberFunctionDeclaration = 
+	isSgMemberFunctionDeclaration(functionDefinition->get_declaration());
+
+      break;
+    }
+
+  default:
+    {
+      cerr << "Do not know how to extract a SgFunctionParameterList from" << endl;
+      cerr << "a " << node->sage_class_name();
+      ROSE_ABORT();
+      break;
+    }
+
+  }
+
+  ROSE_ASSERT(memberFunctionDeclaration != NULL);
+
+  SgCtorInitializerList *initializerList =
+    memberFunctionDeclaration->get_CtorInitializerList();
+  ROSE_ASSERT(initializerList != NULL);
+
+  OA::SymHandle symHandle = getNodeNumber(initializerList);      
+
+#else /* 1 */
+
+
   SgFunctionDeclaration *functionDeclaration = NULL;
 
   switch(node->variantT()) {
@@ -7147,6 +7381,9 @@ OA::SymHandle SageIRInterface::getThisExpSymHandle(SgNode *node)
   ROSE_ASSERT(paramList != NULL);
 
   OA::SymHandle symHandle = getNodeNumber(paramList);      
+
+#endif
+
 #else
 #if 0
   SgClassSymbol *classSymbol = NULL;
@@ -7261,6 +7498,36 @@ OA::SymHandle SageIRInterface::getThisExpSymHandle(SgNode *node)
 #endif
 #endif
 
+  return symHandle;
+}
+
+/** \brief Return a SymHandle representing the return slot of 
+ *         function.
+ *  \param functionDeclaration  A SgFunctionDeclaration representing
+ *                              a function declaration in the AST.
+ *  \return A SymHandle to be used to represent the return slot
+ *          of the function.
+ *
+ *  The SymHandle returned here should be used in the MRE on the
+ *  lhs of the pointer assignment for returns, as in:
+ *  int *returnPtr() { return somePtr; }
+ *  and on the rhs of a pointer assignment assigning an addr
+ *  returning by a function to a variable, as in:
+ *  int *a = returnPtr();
+ *
+ *  Use a pointer to the function's parameter list AST node to
+ *  represent the return slot.
+ */
+OA::SymHandle 
+SageIRInterface::getFunctionReturnSlotSymbol(SgFunctionDeclaration *functionDeclaration)
+{
+  ROSE_ASSERT(functionDeclaration != NULL);
+
+  SgFunctionParameterList *paramList = 
+    functionDeclaration->get_parameterList();
+  ROSE_ASSERT(paramList != NULL);
+
+  OA::SymHandle symHandle = getNodeNumber(paramList);      
   return symHandle;
 }
 
