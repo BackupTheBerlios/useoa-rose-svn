@@ -162,8 +162,23 @@ void FindCallsitesPass::visit(SgNode* node)
   // 2/1/06 BW:  Was only capturing constructor invocations thru
   // new, also need to get those involved in a stack allocation.
   // Both can be captured by looking at SgConstructorInitializers instead.
-  if( isSgFunctionCallExp(exp) ) {
-    call_lst.push_back(exp);
+
+  // For malloc, return the cast expression as the call site.
+  // BW 4/6/06.
+  if ( isSgCastExp(exp) ) {
+    SgCastExp *castExp = isSgCastExp(exp);
+    ROSE_ASSERT(castExp != NULL);
+    
+    SgNode *node = castExp->get_operand();
+    SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+    
+    if ( ( functionCallExp != NULL ) && ( mIR->isMalloc(functionCallExp) ) ) {
+      call_lst.push_back(exp);
+    }
+  } else if( isSgFunctionCallExp(exp) ) {
+    if ( !mIR->isMalloc(isSgFunctionCallExp(exp)) ) {
+      call_lst.push_back(exp);
+    }
   } else if ( isSgConstructorInitializer(exp) ) {
     // 2/1/06 BW:  Only consider this a function call if it creates
     // a named type.  Otherwise we get problems (e.g., in getFormalTypes)

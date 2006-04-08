@@ -1103,3 +1103,59 @@
           really intelligible.
         - Passed HindEtAlISSTA00Fig1.C!
 	- Passed HindEtAlIBMFig4.C!
+
+4/06/06   UseOA-ROSE svn tag trunk r53  Brian White
+        - Updated FindCallsitesPass::visit to return a SgCastExp
+          instead of a SgFunctionCallExp for a malloc.  This is
+          consistent with findAllMemRefsAndMemRefExprs which creates
+          an MRE for malloc for SgCastExp rather than a SgFunctionCallExp.
+        - Updated getCallMemRefExpr to expect SgCastExp representing
+          malloc.
+        - Updated getFormalTypes, SgParamBindPtrAssignIterator::create,
+          and getCallsiteParams to expect a SgCastExp for a malloc.
+        - Changed getCallMemRefExpr such that it never relies
+          on the general findAllMemRefsAndMemRefExprs routine to create
+          a call MRE for a non-pointer dereference function call (not
+          a method call).  i.e., previously it would use the general
+          routines if the function returned an address.  I have removed
+          this conditional.  It wasn't doing the right thing and
+          relies too much on internal knowledge of 
+          findAllMemRefsAndMemRefExprs.  In particular, 
+          findAllMemRefsAndMemRefExprs will create an MRE for 
+          an address-returning function  at a SgFunctionCallExp,
+          not using a SgFunctionRefExp as I had been attempting to do.
+        - Fixed Michelle's problem from 3/30:
+          Line numbers are for Rinard
+
+          #:      MemRef          ShouldBe                Is
+          19: val[i]                      *this                   this
+          84: n->pos.val[i]       *n                              n
+          84: pos.val[i]          *this                   this
+
+          I was discarding the Deref in the SgPntrArrRefExp case:
+          // Huh?  BW 4/6/06
+	  // I don't understand why I was taking the base MRE from an MRE
+	  // and discarding the Deref.
+	  //	  arrMemRefExpr = copyBaseMemRefExpr(baseAccess);
+	  arrMemRefExpr = baseAccess->clone();
+
+          I also made in the SgArrowExp/SgDotExp case around this 
+          rather confused comment:
+	  // Huh?  BW 4/6/06
+	  // I don't understand why I was taking the base MRE from an MRE.
+	  //	    arrowOrDotMemRefExpr = copyBaseMemRefExpr(rhsMre);
+	  // OK.  I think I understand:  I wanted to model (*a).foo and
+	  // a->foo the same way.  Since we model a->foo as a
+	  // NamedRef(a, accuracy = false), I wanted to do the same
+	  // for (*a).foo.  So, fine, just take the base MRE.
+	  // BW 4/7/06:  No!  This isn't true.  We model a->foo
+	  // as an inaccurate NamedRef in the previous conditional.
+	  //	    arrowOrDotMemRefExpr = copyBaseMemRefExpr(lhsMemRefExp);
+	  arrowOrDotMemRefExpr = lhsMemRefExp->clone();
+        - Neither HindEtAlIBM95Fig4.C nor PandeEtAlRutgers05.C match
+          their regression results.  For Hind, the difference is
+          in the q.data within the method ChangeData.  It is now
+          getting mapped to UnknownLoc since this reference q is now
+          properly being modeled as a pointer.  This still seems wrong;
+          it should be mapped to InvisibleLoc.
+	

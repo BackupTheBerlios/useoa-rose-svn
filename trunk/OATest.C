@@ -613,7 +613,6 @@ void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt)
     for ( ; mrIt->isValid(); (*mrIt)++) 
     {
       OA::MemRefHandle memref = mrIt->current();
-       
       if ( debug ) {
 	// print out the debugging information to give some context
 	std::cout << "  ***** OA::MemRefHandle: ";

@@ -3482,6 +3482,30 @@ SageIRInterface::getFormalTypes(SgNode *node)
   SgFunctionType *functionType = NULL;
 
   switch(node->variantT()) {
+  case V_SgCastExp:
+    {
+      // We expect to see a cast expression only if it
+      // precedes a malloc.
+      SgCastExp *castExp = isSgCastExp(node);
+      ROSE_ASSERT(castExp != NULL);
+
+      SgNode *node = castExp->get_operand();
+      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+
+      // This cast is attached to a malloc.
+      if ( ( functionCallExp != NULL ) && ( isMalloc(functionCallExp) ) ) {
+	SgFunctionDeclaration *functionDeclaration = 
+	  getFunctionDeclaration(functionCallExp); 
+	ROSE_ASSERT(functionDeclaration != NULL);
+	
+	functionType = functionDeclaration->get_type();
+	ROSE_ASSERT(functionType != NULL);
+      } else {
+	cerr << "If call is a SgCastExp it must represent a malloc" << endl;
+	ROSE_ABORT();
+      }
+      break;
+    }
   case V_SgFunctionCallExp:
     {
       SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
@@ -3551,7 +3575,7 @@ SageIRInterface::getFormalTypes(SgNode *node)
   default:
     {
       //      cerr << "Call must be a SgFunctionCallExp or a SgNewExp, got a" << endl;
-      cerr << "Call must be a SgFunctionCallExp or a SgConsructorInitializer, got a" << endl;
+      cerr << "Call must be a SgFunctionCallExp, a SgConsructorInitializer, or a SgCastExp (representing a malloc) got a" << endl;
       cerr << node->sage_class_name() << endl;
       ROSE_ABORT();
       break;
@@ -3579,6 +3603,25 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
 
   switch(node->variantT()) {
 
+  case V_SgCastExp:
+    {
+      // We expect to see a cast expression only if it
+      // precedes a malloc.
+      SgCastExp *castExp = isSgCastExp(node);
+      ROSE_ASSERT(castExp != NULL);
+
+      SgNode *node = castExp->get_operand();
+      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+
+      // This cast is attached to a malloc.
+      if ( ( functionCallExp != NULL ) && ( mIR->isMalloc(functionCallExp) ) ) {
+	isMethod = false;
+      } else {
+	cerr << "If call is a SgCastExp it must represent a malloc" << endl;
+	ROSE_ABORT();
+      }
+      break;
+    }
   case V_SgFunctionCallExp:
     {      
       SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
@@ -3631,7 +3674,7 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
   default:
     {
       //      cerr << "Call must be a SgFunctionCallExp or a SgNewExp, got a" << endl;
-      cerr << "Call must be a SgFunctionCallExp or a SgConstructorInitializer, got a" << endl;
+      cerr << "Call must be a SgFunctionCallExp, a SgConstructorInitializer, or a SgCastExp (representing a malloc) got a" << endl;
       cerr << node->sage_class_name() << endl;
       ROSE_ABORT();
       break;
@@ -3815,6 +3858,29 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
 
   switch(node->variantT()) {
 
+  case V_SgCastExp:
+    {
+      // We expect to see a cast expression only if it
+      // precedes a malloc.
+      SgCastExp *castExp = isSgCastExp(node);
+      ROSE_ASSERT(castExp != NULL);
+
+      SgNode *node = castExp->get_operand();
+      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+
+      // This cast is attached to a malloc.
+      if ( ( functionCallExp != NULL ) && ( mIR->isMalloc(functionCallExp) ) ) {
+
+	functionDeclaration = 
+	  getFunctionDeclaration(functionCallExp); 
+	isMethodCall = false;
+
+      } else {
+	cerr << "If call is a SgCastExp it must represent a malloc" << endl;
+	ROSE_ABORT();
+      }
+      break;
+    }
   case V_SgFunctionCallExp:
     {
       
@@ -3933,7 +3999,7 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
   default:
     {
       //      cerr << "Call must be a SgFunctionCallExp or a SgNewExp, got a" << endl;
-      cerr << "Call must be a SgFunctionCallExp or a SgConstructorInitializer, got a" << endl;
+      cerr << "Call must be a SgFunctionCallExp, a SgConstructorInitializer, a SgCastExp (representing a malloc) got a" << endl;
       cerr << node->sage_class_name() << endl;
       ROSE_ABORT();
       break;
@@ -5729,7 +5795,7 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
       // function returns an address; is a virtual method call;
       // or is an invocation through a pointer.  In all other
       // cases we should expicitly create the MRE here.
-      if ( returnsAddress(functionCallExp) || 
+      if ( // returnsAddress(functionCallExp) || 
 	   isAmbiguousCallThroughVirtualMethod(functionCallExp) ||
 	   isSgPointerDerefExp(function) ) {
 
@@ -5910,6 +5976,33 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
 
     }
 
+  case V_SgCastExp:
+    {
+      // We expect to see a cast expression only if it
+      // precedes a malloc.
+
+      SgCastExp *castExp = isSgCastExp(node);
+      ROSE_ASSERT(castExp != NULL);
+
+      SgNode *node = castExp->get_operand();
+      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+
+      // This cast is attached to a malloc.
+      if ( ( functionCallExp != NULL ) && ( isMalloc(functionCallExp) ) ) {
+
+	// If the call handle is a SgCastExp, we need to represent
+	// the malloc.  The general routines create
+	// a USE given the SgCastExp.
+	
+	memRefNode = castExp;
+	useGeneralMRERoutines = true;
+
+      }
+
+      break;
+
+    }
+
   default: 
     {
       cerr << "Expected a call handle to be a SgFunctionCallExp or" << endl;
@@ -5928,14 +6021,14 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
     OA::StmtHandle stmtHandle = getNodeNumber(stmt);
     ROSE_ASSERT(stmtHandle != (OA::StmtHandle)0);
     
+    ROSE_ASSERT(memRefNode != NULL);
+    OA::MemRefHandle memRefHandle = getNodeNumber(memRefNode);
+    
     // Call getMemRefIterator to initialize the sMemref2mreSetMap
     // data structure-- i.e., to ensure that we have a mapping between
     // the MemRefHandle corresponding to this method invocation
     // and its MemRefExpr.
     getMemRefIterator(stmtHandle);
-    
-    ROSE_ASSERT(memRefNode != NULL);
-    OA::MemRefHandle memRefHandle = getNodeNumber(memRefNode);
     
     OA::OA_ptr<OA::MemRefExprIterator> mreIterPtr 
       = getMemRefExprIterator(memRefHandle);
@@ -6596,6 +6689,30 @@ SageIRInterface::getCallsiteParams(OA::ExprHandle h)
 
   switch(node->variantT()) {
     
+  case V_SgCastExp:
+    {
+      // We expect to see a cast expression only if it
+      // precedes a malloc.
+      SgCastExp *castExp = isSgCastExp(node);
+      ROSE_ASSERT(castExp != NULL);
+
+      SgNode *node = castExp->get_operand();
+      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+
+      // This cast is attached to a malloc.
+      if ( ( functionCallExp != NULL ) && ( isMalloc(functionCallExp) ) ) {
+
+	// Get the list of actual arguments from the function call.
+	exprListExp = functionCallExp->get_args();  
+	ROSE_ASSERT (exprListExp != NULL);  
+
+      } else {
+	cerr << "If call is a SgCastExp it must represent a malloc" << endl;
+	ROSE_ABORT();
+      }
+      break;
+    }
+
   case V_SgFunctionCallExp:
     {
       SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
@@ -6714,9 +6831,9 @@ SageIRInterface::getCallsiteParams(OA::ExprHandle h)
     }
   default:
     {
-      cerr << "Expected a callHandle to be either a SgFunctionCallExp" << endl;
+      cerr << "Expected a callHandle to be a SgFunctionCallExp, " << endl;
       //      cerr << "or a SgNewExp, instead got a " << node->sage_class_name() << endl;
-      cerr << "or a SgConstructorInitializer, instead got a " << node->sage_class_name() << endl;
+      cerr << "a SgConstructorInitializer or a SgCastExp (representing a malloc), instead got a " << node->sage_class_name() << endl;
       ROSE_ABORT();
       break;
     }

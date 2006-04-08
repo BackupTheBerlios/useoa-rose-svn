@@ -508,7 +508,7 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
 
       if ( !isSgFunctionCallExp(astNode->get_parent()) ) 
 	retVal = true;
-      
+
       break;
     }
   case V_SgCastExp:
@@ -2164,6 +2164,68 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
   curMemRefExprs.splice(curMemRefExprs.end(), implicitMemRefExprs);
 #endif
 
+  // Explicitly account for the possibility that an expression 
+  // reaches here as actual from a parameter list.  We may need
+  // to apply reference conversion if the corresponding formal
+  // is a reference.
+
+  // Why wasn't this handled by the SgFunctionCallExp/SgConstructorInitializer
+  // cases which dutifully set appearsOnRhsOfRefInitialization
+  // if the corresponding formal is a reference?  Because we do
+  // not visit SgFunctionCallExp case if the corresponding function/method
+  // does not return an address (i.e., is not isMemRefNode).
+  // Ugh!  So, do it here.  We could therefore remove the cases
+  // from SgFunctionCallExp and SgConstructorInitliazer, but I
+  // leave them there for clarity (and in case we sometime visit all
+  // SgFunctionCallExps here).
+  if ( isSgExpression(astNode) ) {
+
+    SgExprListExp* exprListExp = isSgExprListExp(astNode->get_parent());
+    if ( exprListExp != NULL ) {
+
+      SgFunctionCallExp *functionCallExp = 
+	isSgFunctionCallExp(exprListExp->get_parent());
+      if ( functionCallExp != NULL ) {
+
+	// Looks like this expression is an actual argument.
+	// Unfortunately, we don't which.  Iterate through all
+	// of the actuals and formals until we find a match.
+	SgExpressionPtrList & actualArgs =  
+	  exprListExp->get_expressions();  
+
+	SgTypePtrList &typePtrList = mIR->getFormalTypes(functionCallExp);
+	SgTypePtrList::iterator formalIt = typePtrList.begin(); 
+
+	bool foundMatch = false;
+
+	for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
+	    actualIt != actualArgs.end(); ++actualIt) { 
+	  
+	  ROSE_ASSERT(formalIt != typePtrList.end());
+ 
+	  SgExpression *actualArg = *actualIt;
+	  ROSE_ASSERT(actualArg != NULL);
+
+	  if ( actualArg == astNode ) {
+
+	    foundMatch = true;
+
+	    SgType *type = *formalIt;
+	    if ( isSgReferenceType(type) ) {
+	      appearsOnRhsOfRefInitialization = true;
+	    }
+
+	  }
+
+	  ++formalIt;
+	}
+
+	ROSE_ASSERT(foundMatch);
+
+      }
+    }
+  }
+
   switch(astNode->variantT()) {
 
   case V_SgAndAssignOp:
@@ -2796,8 +2858,10 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	    // Create/copy the NamedRef here, it unambiguously
 	    // determines the method invoked.
 
-	    arrowOrDotMemRefExpr = 
-	      copyBaseMemRefExpr(rhsMre);
+	    // Huh?  BW 4/6/06
+	    // I don't understand why I was taking the base MRE from an MRE.
+	    //	    arrowOrDotMemRefExpr = copyBaseMemRefExpr(rhsMre);
+	    arrowOrDotMemRefExpr = rhsMre->clone();
 	    
 	    // Notice that we do not set/change the accuracy.
 	    // Since it unambiguously represents a (non-virtual) method
@@ -2830,6 +2894,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 						 memRefType,
 						 lhsMemRefExp,
 						 numDerefs);
+
 	    if ( !lhsMemRefExp->hasFullAccuracy() )
 	      arrowOrDotMemRefExpr->setAccuracy(false);	    
 
@@ -2848,8 +2913,17 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	    // base mem ref.  This is really begging for FieldAccess
 	    // mem ref type to be implemented.
 	    
-	    arrowOrDotMemRefExpr = 
-	      copyBaseMemRefExpr(lhsMemRefExp);
+	    // Huh?  BW 4/6/06
+	    // I don't understand why I was taking the base MRE from an MRE.
+	    //	    arrowOrDotMemRefExpr = copyBaseMemRefExpr(rhsMre);
+	    // OK.  I think I understand:  I wanted to model (*a).foo and
+	    // a->foo the same way.  Since we model a->foo as a
+	    // NamedRef(a, accuracy = false), I wanted to do the same
+	    // for (*a).foo.  So, fine, just take the base MRE.
+	    // BW 4/7/06:  No!  This isn't true.  We model a->foo
+	    // as an inaccurate NamedRef in the previous conditional.
+	    //	    arrowOrDotMemRefExpr = copyBaseMemRefExpr(lhsMemRefExp);
+	    arrowOrDotMemRefExpr = lhsMemRefExp->clone();
 	    
 	  }
 	  
@@ -2881,7 +2955,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
 	  OA::OA_ptr<OA::MemRefExpr> mre = *memRefIt;
 	  curMemRefExprs.push_back(mre);
-
+	  
 	}
 
 
@@ -3391,8 +3465,11 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
 	} else {
 	  
-	  arrMemRefExpr = 
-	    copyBaseMemRefExpr(baseAccess);
+	  // Huh?  BW 4/6/06
+	  // I don't understand why I was taking the base MRE from an MRE
+	  // and discarding the Deref.
+	  //	  arrMemRefExpr = copyBaseMemRefExpr(baseAccess);
+	  arrMemRefExpr = baseAccess->clone();
 	}
 
 	ROSE_ASSERT(!arrMemRefExpr.ptrEqual(0));
@@ -3484,8 +3561,14 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
       // Iterate over the actual arguments as represented by
       // SgExpressions and recurse.
+
+      SgTypePtrList &typePtrList = mIR->getFormalTypes(functionCallExp);
+      SgTypePtrList::iterator formalIt = typePtrList.begin(); 
+
       for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
 	  actualIt != actualArgs.end(); ++actualIt) { 
+
+	ROSE_ASSERT(formalIt != typePtrList.end());
  
 	SgExpression *actualArg = *actualIt;
 	ROSE_ASSERT(actualArg != NULL);
@@ -3498,8 +3581,19 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// Notice that we don't need to consume expectArrayBase, expectDef,
 	// and expectArrowDotRHS since we have zeroed out the flags.
 
-	findAllMemRefsAndMemRefExprs(actualArg, memRefs, 0,
+	unsigned argFlags = 0;
+
+	// If the formal parameter is a reference param, we need 
+	// to model the actual as a pointer (i.e., we may need to
+	// take its address via the reference conversion rules).
+	SgType *type = *formalIt;
+	if ( isSgReferenceType(type) ) {
+	  addInheritedFlag(argFlags, expectRefRhs);
+	}
+	findAllMemRefsAndMemRefExprs(actualArg, memRefs, argFlags,
 				     synthesizedFlags);
+
+	++formalIt;
       }
 
       // We don't care if the children compute an lvalue, since the
@@ -4368,9 +4462,14 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	
 	// Iterate over the actual arguments as represented by
 	// SgExpressions and recurse.
+	SgTypePtrList &typePtrList = mIR->getFormalTypes(ctorInitializer);
+	SgTypePtrList::iterator formalIt = typePtrList.begin(); 
+      
 	for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
 	    actualIt != actualArgs.end(); ++actualIt) { 
 	  
+	  ROSE_ASSERT(formalIt != typePtrList.end());
+
 	  SgExpression *actualArg = *actualIt;
 	  ROSE_ASSERT(actualArg != NULL);
 	  
@@ -4382,7 +4481,17 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  // Notice that we don't need to consume expectArrayBase, expectDef,
 	  // and expectArrowDotRHS since we have zeroed out the flags.
 	  
-	  findAllMemRefsAndMemRefExprs(actualArg, memRefs, 0,
+	  // If the formal parameter is a reference param, we need 
+	  // to model the actual as a pointer (i.e., we may need to
+	  // take its address via the reference conversion rules).
+	  unsigned argFlags = 0;
+
+	  SgType *type = *formalIt;
+	  if ( isSgReferenceType(type) ) {
+	    addInheritedFlag(argFlags, expectRefRhs);
+	  }
+	  
+	  findAllMemRefsAndMemRefExprs(actualArg, memRefs, argFlags,
 				       synthesizedFlags);
 	}
 
