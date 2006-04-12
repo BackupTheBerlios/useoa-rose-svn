@@ -3474,12 +3474,27 @@ SgParamBindPtrAssignIterator::reset()
   mBegin = mPairList.begin();
 }
 
+/**
+ *  \brief Return a list of the types of the formal parameters involved
+ *         in a function, method, or constructor invocation.
+ *  \param node  a SgNode representing a function/method (SgFunctionCallExp),
+ *               malloc (SgCastExp), or constructor
+ *               (SgNewExp, SgConstructorInitializer) invocation.
+ *  \returns  a list of the types of the formal parameters of the
+ *            invoked function/method/constructor.
+ *
+ *  NB:  This does not return the type of the implicit formal
+ *       parameter corresponding to the 'this' pointer.  Contrast this with 
+ *       getCallsiteParams which folds the actual 
+ *       corresponding to the 'this' pointer in as the first argument.
+ */
 SgTypePtrList &
 SageIRInterface::getFormalTypes(SgNode *node)
 {
   ROSE_ASSERT(node != NULL);
 
   SgFunctionType *functionType = NULL;
+
 
   switch(node->variantT()) {
   case V_SgCastExp:
@@ -3500,10 +3515,13 @@ SageIRInterface::getFormalTypes(SgNode *node)
 	
 	functionType = functionDeclaration->get_type();
 	ROSE_ASSERT(functionType != NULL);
+
+
       } else {
 	cerr << "If call is a SgCastExp it must represent a malloc" << endl;
 	ROSE_ABORT();
       }
+
       break;
     }
   case V_SgFunctionCallExp:
@@ -3583,6 +3601,7 @@ SageIRInterface::getFormalTypes(SgNode *node)
   }
 
   ROSE_ASSERT(functionType != NULL);
+
   return functionType->get_arguments();
 }
 
@@ -7750,6 +7769,17 @@ OA::ProcHandle SageIRInterface::getProcHandle(SgFunctionDeclaration *node)
   return procHandle;
 }
 #endif
+
+/** \brief Return the OA expression handle associated with a
+ *         function call expression.
+ *  \param astNode  A SgFunctionCallExp representing a function invocation.
+ *  \returns  an OA handle representing the function invocation.
+ */
+OA::ExprHandle SageIRInterface::getProcExprHandle(SgFunctionCallExp *astNode)
+{
+  OA::ExprHandle exprHandle = getNodeNumber(astNode);
+  return exprHandle;
+}
 
 bool SageIRInterface::isFieldAccess(OA::OA_ptr<OA::MemRefExpr> mre)
 {

@@ -686,6 +686,7 @@ public:
     return memRefHandle;
   }
   OA::ProcHandle getProcHandle(SgFunctionDefinition *astNode);
+  OA::ExprHandle getProcExprHandle(SgFunctionCallExp *astNode);
   //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
   SgNode *getSgNode(OA::IRHandle h) { return getNodePtr(h); }
   bool isMemRefNode(SgNode *astNode);

@@ -800,24 +800,23 @@ SageIRInterface::getChildrenWithMemRefs(SgNode *astNode,
       
 #if 1
       // Get the list of actual arguments from the function call.
-      SgExprListExp* exprListExp = functionCallExp->get_args();  
-      ROSE_ASSERT (exprListExp != NULL);  
-      
-      SgExpressionPtrList & actualArgs =  
-	exprListExp->get_expressions();  
-      
+      OA::ExprHandle exprHandle = getProcExprHandle(functionCallExp);
+      OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIter = 
+	getCallsiteParams(exprHandle);
+
       // Iterate over the actual arguments as represented by
       // SgExpressions and set the ignore flag on each.
-      for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
-	  actualIt != actualArgs.end(); ++actualIt) { 
-	
-	SgExpression *actualArg = *actualIt;
-	ROSE_ASSERT(actualArg != NULL);
-	
-	children.push_back(actualArg);
-	independentChildren.push_back(actualArg);
+      for ( ; actualsIter->isValid(); (*actualsIter)++ ) { 
+    
+	OA::ExprHandle actualExpr = actualsIter->current(); 
+	SgNode *actualNode = getNodePtr(actualExpr);
+	ROSE_ASSERT(actualNode != NULL);
+
+	children.push_back(actualNode);
+	independentChildren.push_back(actualNode);
 	
       }
+
 #endif      
       break;
     }
@@ -2185,39 +2184,63 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
       SgFunctionCallExp *functionCallExp = 
 	isSgFunctionCallExp(exprListExp->get_parent());
-      if ( functionCallExp != NULL ) {
+      SgNewExp *newExp =
+	isSgNewExp(exprListExp->get_parent());
+      SgConstructorInitializer *ctorInitializer =
+	isSgConstructorInitializer(exprListExp->get_parent());
+      
+      if ( ( functionCallExp != NULL ) ||
+	   ( newExp != NULL ) ||
+	   ( ctorInitializer != NULL ) ) {
+
+	bool isDotExp = false;
+	bool isMethod = false;
+
+	if ( functionCallExp != NULL ) {
+	  isMethod = mIR->isMethodCall(functionCallExp, isDotExp);
+	} else {
+	  isMethod = true;
+	}
 
 	// Looks like this expression is an actual argument.
 	// Unfortunately, we don't which.  Iterate through all
 	// of the actuals and formals until we find a match.
-	SgExpressionPtrList & actualArgs =  
-	  exprListExp->get_expressions();  
-
 	SgTypePtrList &typePtrList = mIR->getFormalTypes(functionCallExp);
-	SgTypePtrList::iterator formalIt = typePtrList.begin(); 
+	OA::ExprHandle exprHandle = mIR->getProcExprHandle(functionCallExp);
+	OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIter = 
+	  mIR->getCallsiteParams(exprHandle);
+
+	// Simultaneously iterate over both formals and actuals.
+	SgTypePtrList::iterator formalIt = typePtrList.begin();
 
 	bool foundMatch = false;
-
-	for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
-	    actualIt != actualArgs.end(); ++actualIt) { 
+	int actualPos = 0;
+	for ( ; actualsIter->isValid(); (*actualsIter)++ ) { 
 	  
-	  ROSE_ASSERT(formalIt != typePtrList.end());
- 
-	  SgExpression *actualArg = *actualIt;
-	  ROSE_ASSERT(actualArg != NULL);
+	  OA::ExprHandle actualExpr = actualsIter->current(); 
+	  SgNode *actualNode = mIR->getNodePtr(actualExpr);
+	  ROSE_ASSERT(actualNode != NULL);
 
-	  if ( actualArg == astNode ) {
+	  if ( actualNode == astNode ) {
 
 	    foundMatch = true;
 
-	    SgType *type = *formalIt;
-	    if ( isSgReferenceType(type) ) {
-	      appearsOnRhsOfRefInitialization = true;
+	    if ( ( actualPos != 0 ) || ( !isMethod ) ) {
+	      SgType *type = *formalIt;
+	      if ( isSgReferenceType(type) ) {
+		appearsOnRhsOfRefInitialization = true;
+	      }
 	    }
 
+	    break;
 	  }
-
-	  ++formalIt;
+	  
+	  // getFormalTypes does not return the implicit this parameter.
+	  if ( ( actualPos != 0 ) || ( !isMethod ) ) {
+	    ++formalIt;
+	  }
+	  ++actualPos;
+	  
 	}
 
 	ROSE_ASSERT(foundMatch);
@@ -3551,28 +3574,30 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       // of any flags previously encountered.
       
       // Get the list of actual arguments from the function call.
-      SgExprListExp* exprListExp = functionCallExp->get_args();  
-      ROSE_ASSERT (exprListExp != NULL);  
-      
-      SgExpressionPtrList & actualArgs =  
-	exprListExp->get_expressions();  
+      SgTypePtrList &typePtrList = mIR->getFormalTypes(functionCallExp);
+      OA::ExprHandle exprHandle = mIR->getProcExprHandle(functionCallExp);
+      OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIter = 
+	mIR->getCallsiteParams(exprHandle);
 
       bool returnsReference = false;
 
       // Iterate over the actual arguments as represented by
       // SgExpressions and recurse.
 
-      SgTypePtrList &typePtrList = mIR->getFormalTypes(functionCallExp);
       SgTypePtrList::iterator formalIt = typePtrList.begin(); 
 
-      for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
-	  actualIt != actualArgs.end(); ++actualIt) { 
+      bool isDotExp = false;
+      bool isMethod = mIR->isMethodCall(functionCallExp, isDotExp);
+
+      int actualPos = 0;
+      for ( ; actualsIter->isValid(); (*actualsIter)++ ) { 
+    
+	OA::ExprHandle actualExpr = actualsIter->current(); 
+	SgNode *actualNode = mIR->getNodePtr(actualExpr);
+	ROSE_ASSERT(actualNode != NULL);
 
 	ROSE_ASSERT(formalIt != typePtrList.end());
  
-	SgExpression *actualArg = *actualIt;
-	ROSE_ASSERT(actualArg != NULL);
-
 	// The actual arguments are treated
 	// independently of whatever precedes them in the
 	// AST.  Therefore, do not propagate the parent
@@ -3586,14 +3611,23 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// If the formal parameter is a reference param, we need 
 	// to model the actual as a pointer (i.e., we may need to
 	// take its address via the reference conversion rules).
-	SgType *type = *formalIt;
-	if ( isSgReferenceType(type) ) {
-	  addInheritedFlag(argFlags, expectRefRhs);
+
+	// If this is a method, the type of the formal is not
+	// included in the formal list.  However, we know it 
+	// is a pointer (i.e., this) and not a reference.
+	if ( ( actualPos != 0 ) || ( !isMethod ) ) {
+	  SgType *type = *formalIt;
+	  if ( isSgReferenceType(type) ) {
+	    addInheritedFlag(argFlags, expectRefRhs);
+	  }
 	}
-	findAllMemRefsAndMemRefExprs(actualArg, memRefs, argFlags,
+	findAllMemRefsAndMemRefExprs(actualNode, memRefs, argFlags,
 				     synthesizedFlags);
 
-	++formalIt;
+	if ( ( actualPos != 0 ) || ( !isMethod ) ) {
+	  ++formalIt;
+	}
+	++actualPos;
       }
 
       // We don't care if the children compute an lvalue, since the

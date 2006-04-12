@@ -1159,3 +1159,23 @@
           properly being modeled as a pointer.  This still seems wrong;
           it should be mapped to InvisibleLoc.
 	
+
+4/12/06   UseOA-ROSE svn tag trunk r55  Brian White	
+        - Fixed this bug from Michelle (Subject: Next snag for Rinard, 4/10/06)
+	  "Then I look at the output from running OATest 
+	   --oa-FIAliasAliasMap on  Rinard.  In Phase 3, I am not getting 
+	   the correct ParamBindPtrAssign  pairs for line 112
+               d = this->computeInter(n, tmpv);
+           but I am getting the correct pairs for line 114
+               acc.vecAdd(tmpv);
+           For line 112, the implicit assignment to this is missing."
+        
+           The problem was that some functions were iterating over
+           actuals by iterating over the SgExprListExp associated with
+           a function call's expression list.  This does not contain
+           the implicit actual corresponding to this.
+           Updated the following methods to instead invoke
+           SageIRInterface::getCallsiteParams which does return the
+           this actual folded into the parameter list:
+           getChildrenWithMemRefs
+           findAllMemRefsAndMemRefExprs
