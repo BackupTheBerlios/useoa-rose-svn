@@ -111,7 +111,7 @@ void body::gravsub(node *n)
 
   d = this->computeInter(n, tmpv);
   phi -= d;
-  //  acc.vecAdd(tmpv);
+  acc.vecAdd(tmpv);
 }
 
 void body::openCell(cell *c, double dsq)
@@ -160,4 +160,16 @@ void nbody::computeForces()
     b = bodies[i];
     b->walksub(BH_root, size*size);
   }
+}
+
+void main() 
+{
+    Nbody.numbodies = 2;
+    Nbody.bodies = (body**)malloc(sizeof(body*)*Nbody.numbodies);
+    for (int i=0; i<Nbody.numbodies; i++) {
+        Nbody.bodies[i] = new body;
+    }
+    Nbody.BH_root = Nbody.bodies[0];
+
+    Nbody.computeForces();
 }
