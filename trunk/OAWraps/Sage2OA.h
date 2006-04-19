@@ -686,7 +686,7 @@ public:
     return memRefHandle;
   }
   OA::ProcHandle getProcHandle(SgFunctionDefinition *astNode);
-  OA::ExprHandle getProcExprHandle(SgFunctionCallExp *astNode);
+  OA::ExprHandle getProcExprHandle(SgNode *astNode);
   //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
   SgNode *getSgNode(OA::IRHandle h) { return getNodePtr(h); }
   bool isMemRefNode(SgNode *astNode);
@@ -770,6 +770,9 @@ public:
 
   bool isArrowExp(SgExpression *function);
   bool isMalloc(SgFunctionCallExp *functionCallExp);
+  bool isFunc(SgFunctionCallExp *functionCallExp, char *funcName);
+  bool isVaArg(SgFunctionCallExp *functionCallExp);
+
   // If node represents a malloc or a new, return true and the
   // type of the object allocated.  
   bool isAllocation(SgNode *node, SgType *&type);

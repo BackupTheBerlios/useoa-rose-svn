@@ -187,7 +187,16 @@ bool SageIRInterface::isAllocation(SgNode *astNode, SgType *&type)
 
 }
 
-bool SageIRInterface::isMalloc(SgFunctionCallExp *functionCallExp)
+/** \brief Returns boolean indicating whether the invoked
+ *         function has name funcName.
+ *  \param  functionCallExp A SgFunctionCallExp representing
+ *          an invoked function.
+ *  \param  funcName  A string representing the name of a function.
+ *  \returns  Boolean indicating whether the name of the invoked
+ *            function is funcName.
+ */
+bool SageIRInterface::isFunc(SgFunctionCallExp *functionCallExp,
+			     char *funcName)
 {
   if( functionCallExp == NULL) return false;
 
@@ -205,9 +214,30 @@ bool SageIRInterface::isMalloc(SgFunctionCallExp *functionCallExp)
   ROSE_ASSERT(functionDeclaration != NULL);
   
   SgName name = functionDeclaration->get_name();
-  return ( !strcmp("malloc", name.str() ) );
+  return ( !strcmp(funcName, name.str() ) );
 }
 
+/** \brief Returns boolean indicating whether the invoked
+ *         function is va_arg.
+ *  \param  functionCallExp A SgFunctionCallExp representing
+ *          an invoked function.
+ *  \returns  Boolean indicating whether the invoked funciton is va_arg.
+ */
+bool SageIRInterface::isVaArg(SgFunctionCallExp *functionCallExp)
+{
+  return isFunc(functionCallExp, "va_arg");
+}
+
+/** \brief Returns boolean indicating whether the invoked
+ *         function is malloc.
+ *  \param  functionCallExp A SgFunctionCallExp representing
+ *          an invoked function.
+ *  \returns  Boolean indicating whether the invoked funciton is malloc.
+ */
+bool SageIRInterface::isMalloc(SgFunctionCallExp *functionCallExp)
+{
+  return isFunc(functionCallExp, "malloc");
+}
 
 OA::OA_ptr<OA::MemRefExpr> 
 copyBaseMemRefExpr(OA::OA_ptr<OA::MemRefExpr> memRefExp)
@@ -1628,14 +1658,21 @@ static OA::MemRefExpr::MemRefType flagsToMemRefType(unsigned flags)
     Based on Open64IRMemRefIterator::findAllMemRefsAndMapToMemRefExprs.
 */
 
-void
+list<OA::OA_ptr<OA::MemRefExpr> >
 SageIRMemRefIterator::handleDefaultCase(SgNode *astNode,
 					list<OA::MemRefHandle>& memRefs,
 					unsigned flags,
 					unsigned &synthesizedFlags)
 {
   // Pass flags down to children.
+  bool hasRhsThatComputesLValue         = flags & expectRhsComputesLValue;
+  bool hasRhsThatDoesntComputeLValue    = flags & expectRhsDoesntComputeLValue;
+  bool appearsOnRhsOfRefInitialization      = flags & expectRefRhs;
+  bool initializedRef                   = false;
+  bool dontApplyConversion              = flags & expectDontApplyConversion;
   
+  list<OA::OA_ptr<OA::MemRefExpr> > curMemRefs;
+
   vector<SgNode *> containerList = 
     astNode->get_traversalSuccessorContainer();
   
@@ -1646,12 +1683,39 @@ SageIRMemRefIterator::handleDefaultCase(SgNode *astNode,
     SgNode *node = *it;
     if ( node != NULL ) {
 
-      findAllMemRefsAndMemRefExprs(node, memRefs, flags, synthesizedFlags);
-      
+      list<OA::OA_ptr<OA::MemRefExpr> > memRefExprs;
+      memRefExprs = findAllMemRefsAndMemRefExprs(node, memRefs, flags, synthesizedFlags);
+
+      for (std::list<OA::OA_ptr<OA::MemRefExpr> >::iterator it = memRefExprs.begin();
+	   it != memRefExprs.end(); ++it) {
+
+	std::list<OA::OA_ptr<OA::MemRefExpr> > convertedMemRefs;
+	if ( dontApplyConversion ) {
+	  convertedMemRefs.push_back(*it);
+	} else {
+	  applyReferenceConversionRules(*it,
+					astNode,
+					appearsOnRhsOfRefInitialization,
+					hasRhsThatComputesLValue,
+					hasRhsThatDoesntComputeLValue,
+					initializedRef,
+					convertedMemRefs);
+	}
+
+	for (std::list<OA::OA_ptr<OA::MemRefExpr> >::iterator memRefIt = 
+	       convertedMemRefs.begin();
+	     memRefIt != convertedMemRefs.end(); ++memRefIt) {
+
+	  OA::OA_ptr<OA::MemRefExpr> mre = *memRefIt;
+	  curMemRefs.push_back(mre);
+	  
+	}
+      }
     }
  
   }
   
+  return curMemRefs;
 }
 
 // dereferenceMre creates a Deref MemRefExpr that models a
@@ -2120,6 +2184,8 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
   OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::USE;
   bool isNamed                          = false;
   
+  unsigned saveFlags                    = flags;
+
   bool hasRhsThatComputesLValue         = flags & expectRhsComputesLValue;
   bool hasRhsThatDoesntComputeLValue    = flags & expectRhsDoesntComputeLValue;
   bool appearsOnRhsOfRefInitialization      = flags & expectRefRhs;
@@ -2182,12 +2248,14 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
     SgExprListExp* exprListExp = isSgExprListExp(astNode->get_parent());
     if ( exprListExp != NULL ) {
 
+      SgNode *argListParent = exprListExp->get_parent();
+
       SgFunctionCallExp *functionCallExp = 
-	isSgFunctionCallExp(exprListExp->get_parent());
+	isSgFunctionCallExp(argListParent);
       SgNewExp *newExp =
-	isSgNewExp(exprListExp->get_parent());
+	isSgNewExp(argListParent);
       SgConstructorInitializer *ctorInitializer =
-	isSgConstructorInitializer(exprListExp->get_parent());
+	isSgConstructorInitializer(argListParent);
       
       if ( ( functionCallExp != NULL ) ||
 	   ( newExp != NULL ) ||
@@ -2205,8 +2273,8 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// Looks like this expression is an actual argument.
 	// Unfortunately, we don't which.  Iterate through all
 	// of the actuals and formals until we find a match.
-	SgTypePtrList &typePtrList = mIR->getFormalTypes(functionCallExp);
-	OA::ExprHandle exprHandle = mIR->getProcExprHandle(functionCallExp);
+	SgTypePtrList &typePtrList = mIR->getFormalTypes(argListParent);
+	OA::ExprHandle exprHandle = mIR->getProcExprHandle(argListParent);
 	OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIter = 
 	  mIR->getCallsiteParams(exprHandle);
 
@@ -2226,7 +2294,20 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	    foundMatch = true;
 
 	    if ( ( actualPos != 0 ) || ( !isMethod ) ) {
-	      SgType *type = *formalIt;
+	      SgType *type = NULL;
+	      // In the presence of varargs, we may have fewer
+	      // formals than actuals.
+	      if ( formalIt != typePtrList.end() ) {
+		   type = *formalIt;
+	      }
+	      // In the presence of varags, get the type from the
+	      // actual.
+	      if ( ( type == NULL ) || ( isSgTypeEllipse(type) ) ) {
+		SgExpression *actual = isSgExpression(actualNode);
+		ROSE_ASSERT(actual != NULL);
+		type = actual->get_type();
+	      }
+	      ROSE_ASSERT(type != NULL);
 	      if ( isSgReferenceType(type) ) {
 		appearsOnRhsOfRefInitialization = true;
 	      }
@@ -2237,7 +2318,9 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  
 	  // getFormalTypes does not return the implicit this parameter.
 	  if ( ( actualPos != 0 ) || ( !isMethod ) ) {
-	    ++formalIt;
+            if ( formalIt != typePtrList.end() ) {
+	      ++formalIt;
+	    }
 	  }
 	  ++actualPos;
 	  
@@ -3326,8 +3409,9 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// not reach here when treating a SgAddOp as an
 	// array access.  In that case, we explicitly visit the
 	// children.
-	handleDefaultCase(astNode, memRefs, flags, synthesizedFlags);
-
+	list<OA::OA_ptr<OA::MemRefExpr> > memRefExprs;
+	memRefExprs = handleDefaultCase(astNode, memRefs, saveFlags, synthesizedFlags);
+	curMemRefExprs.splice(curMemRefExprs.end(), memRefExprs);
       }
 
       if ( isArrayOperation || isPointerArithmetic ) {
@@ -3555,7 +3639,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       } else {
 
 	// This isn't the cast to malloc case, so visit the children.
-	handleDefaultCase(astNode, memRefs, flags, synthesizedFlags);
+	curMemRefExprs = handleDefaultCase(astNode, memRefs, saveFlags, synthesizedFlags);
 
       }
 
@@ -3567,7 +3651,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
       SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(astNode);
       ROSE_ASSERT(functionCallExp != NULL);
-      
+    
       // Notice that we do not propagate a function call's
       // flags to its true children or its logical children (arguments)
       // in the AST since they should be treated independently
@@ -3596,8 +3680,6 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	SgNode *actualNode = mIR->getNodePtr(actualExpr);
 	ROSE_ASSERT(actualNode != NULL);
 
-	ROSE_ASSERT(formalIt != typePtrList.end());
- 
 	// The actual arguments are treated
 	// independently of whatever precedes them in the
 	// AST.  Therefore, do not propagate the parent
@@ -3615,8 +3697,23 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// If this is a method, the type of the formal is not
 	// included in the formal list.  However, we know it 
 	// is a pointer (i.e., this) and not a reference.
+
 	if ( ( actualPos != 0 ) || ( !isMethod ) ) {
-	  SgType *type = *formalIt;
+	  SgType *type = NULL;
+	  // In the presence of varargs, we may have fewer
+	  // formals than actuals.
+	  if ( formalIt != typePtrList.end() ) {
+	    type = *formalIt;
+	  }
+	  // In the presence of varags, get the type from the
+	  // actual.
+	  if ( ( type == NULL ) || ( isSgTypeEllipse(type) ) ) {
+	    SgExpression *actual = isSgExpression(actualNode);
+	    ROSE_ASSERT(actual != NULL);
+	    type = actual->get_type();
+	  }
+	  ROSE_ASSERT(type != NULL);
+	  
 	  if ( isSgReferenceType(type) ) {
 	    addInheritedFlag(argFlags, expectRefRhs);
 	  }
@@ -3625,7 +3722,9 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 				     synthesizedFlags);
 
 	if ( ( actualPos != 0 ) || ( !isMethod ) ) {
-	  ++formalIt;
+	  if ( formalIt != typePtrList.end() ) {
+	    ++formalIt;
+	  }
 	}
 	++actualPos;
       }
@@ -3669,6 +3768,80 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
 	curMemRefExprs.push_back(memRefExp);
 #endif
+      } else if ( mIR->isVaArg(functionCallExp) ) {
+
+	// If this function call occurs in the context of a stmt:
+	//    lhs = va_arg(ap, type);
+	// Return as the value of va_arg the last formal argument
+	// to the enclosing function (i.e., the '...').  
+	
+	SgFunctionDefinition *functionDefinition =
+	  mIR->getEnclosingMethod(functionCallExp);
+	ROSE_ASSERT(functionDefinition != NULL);
+
+	// Get the ellipse formal.
+	OA::ProcHandle callee = mIR->getProcHandle(functionDefinition);
+	OA::SymHandle procSymHandle = mIR->getProcSymHandle(callee);
+	OA::OA_ptr<OA::IRFormalParamIterator> formalParamIter =
+	  mIR->getFormalParamIterator(procSymHandle);
+
+	OA::SymHandle lastFormal = 0;
+	for ( ; formalParamIter->isValid(); (*formalParamIter)++ ) { 
+	  lastFormal = formalParamIter->current(); 
+	}
+
+	ROSE_ASSERT((int)lastFormal != 0);
+	
+	SgNode *formalNode = mIR->getNodePtr(lastFormal);
+	ROSE_ASSERT(formalNode != NULL);
+
+	SgInitializedName *initName = isSgInitializedName(formalNode);
+	ROSE_ASSERT(initName != NULL);
+
+	SgType *type = initName->get_type();
+	ROSE_ASSERT(type != NULL);
+
+	SgType *baseType = mIR->getBaseType(type);
+	ROSE_ASSERT(baseType != NULL);
+
+	ROSE_ASSERT( isSgTypeEllipse(baseType) != NULL );
+
+	OA::OA_ptr<OA::MemRefExpr> memRefExp;
+
+	OA::SymHandle symHandle = mIR->getNodeNumber(initName);
+
+	addressTaken = false;
+	fullAccuracy = true;
+	OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::USE;
+
+	memRefExp = new OA::NamedRef(addressTaken, fullAccuracy,
+				     memRefType, symHandle);
+	ROSE_ASSERT(!memRefExp.ptrEqual(0));
+
+	isMemRefExpr = true;
+	
+	std::list<OA::OA_ptr<OA::MemRefExpr> > convertedMemRefs;
+	if ( dontApplyConversion ) {
+	  convertedMemRefs.push_back(memRefExp);
+	} else {
+	  applyReferenceConversionRules(memRefExp,
+					astNode,
+					appearsOnRhsOfRefInitialization,
+					hasRhsThatComputesLValue,
+					hasRhsThatDoesntComputeLValue,
+					initializedRef,
+					convertedMemRefs);
+	}
+	
+	for (std::list<OA::OA_ptr<OA::MemRefExpr> >::iterator memRefIt = 
+	       convertedMemRefs.begin();
+	     memRefIt != convertedMemRefs.end(); ++memRefIt) {
+	  
+	  OA::OA_ptr<OA::MemRefExpr> mre = *memRefIt;
+	  curMemRefExprs.push_back(mre);
+	  
+	}
+	
       } else {
 
 #if 1
@@ -3804,8 +3977,14 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	ROSE_ASSERT(expression != NULL);
 
 	//	if ( returnsAddr || !isSgFunctionRefExp(expression) ) {
+	// Create an MRE for the function expression if it returns an
+	// address, is a virtual method invocation, or is a function
+	// call through a pointer.  The first produces state (an address),
+	// the latter two are uses of program state (effective function
+	// pointers).
 	if ( returnsAddr || 
-	     mIR->isAmbiguousCallThroughVirtualMethod(functionCallExp) ) {
+	     mIR->isAmbiguousCallThroughVirtualMethod(functionCallExp) ||
+	     isSgPointerDerefExp(expression) ) {
 	  // Zero out the rhs flags.
 	  unsigned childFlags = 0;
 	  
@@ -4502,8 +4681,6 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
 	    actualIt != actualArgs.end(); ++actualIt) { 
 	  
-	  ROSE_ASSERT(formalIt != typePtrList.end());
-
 	  SgExpression *actualArg = *actualIt;
 	  ROSE_ASSERT(actualArg != NULL);
 	  
@@ -4520,13 +4697,33 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  // take its address via the reference conversion rules).
 	  unsigned argFlags = 0;
 
-	  SgType *type = *formalIt;
+          // We have to treat varargs differently.  In this case, 
+          // there is no formal from which we can gleen the type.
+          // Instead, use the type of the actual.
+
+	  SgType *type = NULL;
+	  // In the presence of varargs, we may have fewer
+	  // formals than actuals.
+	  if ( formalIt != typePtrList.end() ) {
+	    type = *formalIt;
+	  }
+	  // In the presence of varags, get the type from the
+	  // actual.
+	  if ( ( type == NULL ) || ( isSgTypeEllipse(type) ) ) {
+	    type = actualArg->get_type();
+	  }
+	  ROSE_ASSERT(type != NULL);
+
 	  if ( isSgReferenceType(type) ) {
 	    addInheritedFlag(argFlags, expectRefRhs);
 	  }
 	  
 	  findAllMemRefsAndMemRefExprs(actualArg, memRefs, argFlags,
 				       synthesizedFlags);
+
+	  if (formalIt != typePtrList.end()) {
+	    ++formalIt;
+	  }
 	}
 
 	// We don't care if the children compute an lvalue, since the
@@ -4756,7 +4953,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 
   default:
     {
-      handleDefaultCase(astNode, memRefs, flags, synthesizedFlags);
+      curMemRefExprs = handleDefaultCase(astNode, memRefs, saveFlags, synthesizedFlags);
 
       break;
     }

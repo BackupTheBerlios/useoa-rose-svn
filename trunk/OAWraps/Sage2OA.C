@@ -3794,7 +3794,25 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
     bool handleThisExp = false;
     bool treatAsPointerParam = false;
 
+    OA::ExprHandle actualExpr = actualsIter->current(); 
+    SgNode *actualNode = mIR->getNodePtr(actualExpr);
+    ROSE_ASSERT(actualNode != NULL);
+
     SgType *type = NULL;
+    // In the presence of varargs, we may have fewer
+    // formals than actuals.
+    if ( formalIt != typePtrList.end() ) {
+      type = *formalIt;
+    }
+    // In the presence of varags, get the type from the
+    // actual.
+    if ( ( type == NULL ) || ( isSgTypeEllipse(type) ) ) {
+      SgExpression *actual = isSgExpression(actualNode);
+      ROSE_ASSERT(actual != NULL);
+      type = actual->get_type();
+    }
+    ROSE_ASSERT(type != NULL);
+    
     if ( formalIt != typePtrList.end() ) {
       type = *formalIt;
     }
@@ -3804,10 +3822,6 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
     }
     
     if ( treatAsPointerParam ) {
-
-      OA::ExprHandle actualExpr = actualsIter->current(); 
-      SgNode *actualNode = mIR->getNodePtr(actualExpr);
-      ROSE_ASSERT(actualNode != NULL);
 
       // We fold the object upon which a method is invoked into
       // the argument list (as the first actual) of a method
@@ -4457,7 +4471,7 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
 
 
 // initializerHasPtrAssign returns true if the SgInitializedName
-// is a pointer or reference and it has an initializer.
+// is a pointer or reference and it has an non-NULL initializer.
 bool 
 SageIRInterface::initializerHasPtrAssign(SgInitializedName *initName,
 				     bool collectPtrAssigns,
@@ -4480,6 +4494,79 @@ SageIRInterface::initializerHasPtrAssign(SgInitializedName *initName,
   // There is no rhs.  Skip it.
   if ( rhs == NULL ) 
     return false;
+
+  // Return false if the rhs is NULL (or 0).
+  rhs = lookThroughCastExpAndAssignInitializer(rhs);
+  if ( isSgNullExpression(rhs) ) 
+    return false;
+
+  SgValueExp *rhsVal = isSgValueExp(rhs);
+  if ( rhsVal != NULL ) {
+    bool isZero = false;
+    switch(rhsVal->variantT()) {
+    case V_SgCharVal:
+      {
+	SgCharVal *charVal = isSgCharVal(rhsVal);
+	ROSE_ASSERT(charVal != NULL);
+
+	isZero = charVal->get_value() == 0;
+
+	break;
+      }
+    case V_SgIntVal:
+      {
+	SgIntVal *intVal = isSgIntVal(rhsVal);
+	ROSE_ASSERT(intVal != NULL);
+
+	isZero = intVal->get_value() == 0;
+
+	break;
+      }
+    case V_SgShortVal:
+      {
+	SgShortVal *shortVal = isSgShortVal(rhsVal);
+	ROSE_ASSERT(shortVal != NULL);
+
+	isZero = shortVal->get_value() == 0;
+
+	break;
+      }
+    case V_SgUnsignedCharVal:
+      {
+	SgUnsignedCharVal *charVal = isSgUnsignedCharVal(rhsVal);
+	ROSE_ASSERT(charVal != NULL);
+
+	isZero = charVal->get_value() == 0;
+
+	break;
+      }
+    case V_SgUnsignedIntVal:
+      {
+	SgUnsignedIntVal *intVal = isSgUnsignedIntVal(rhsVal);
+	ROSE_ASSERT(intVal != NULL);
+
+	isZero = intVal->get_value() == 0;
+
+	break;
+      }
+    case V_SgUnsignedShortVal:
+      {
+	SgUnsignedShortVal *shortVal = isSgUnsignedShortVal(rhsVal);
+	ROSE_ASSERT(shortVal != NULL);
+
+	isZero = shortVal->get_value() == 0;
+
+	break;
+      }
+    default:
+      {
+	break;
+      }
+    }
+    if ( isZero )
+      return false;
+  }
+
     
   // We have a lhs/rhs pair involved in a pointer assigment.
   // Ensure that these are the type of nodes to which we
@@ -4491,7 +4578,6 @@ SageIRInterface::initializerHasPtrAssign(SgInitializedName *initName,
   lhs = lookThroughCastExpAndAssignInitializer(lhs);
   ROSE_ASSERT(isMemRefNode(lhs));
   
-  rhs = lookThroughCastExpAndAssignInitializer(rhs);
   ROSE_ASSERT(isMemRefNode(rhs));
   
   // Create the lhs/rhs MemRefHandles.
@@ -4552,11 +4638,23 @@ SageIRInterface::getClassDeclaration(SgType *type)
       SgTypedefDeclaration *typedefDeclaration = isSgTypedefDeclaration(declStmt);
       ROSE_ASSERT(typedefDeclaration != NULL);
       
-      SgDeclarationStatement *innerDecl = 
-	typedefDeclaration->get_declaration();
-      ROSE_ASSERT(innerDecl != NULL);
-      
-      classDeclaration = isSgClassDeclaration(innerDecl);
+      SgType *baseType = typedefDeclaration->get_base_type();
+      ROSE_ASSERT(baseType != NULL);
+
+      if ( isSgTypedefType(baseType) ) {
+	// Recursive case:  base type of typedef is also a typedef type.
+	classDeclaration = getClassDeclaration(baseType);
+      } else if ( isSgNamedType(baseType) ) {
+
+	SgNamedType *namedType = isSgNamedType(type);
+
+	SgDeclarationStatement *innerDecl = 
+	  namedType->get_declaration();
+	ROSE_ASSERT(innerDecl != NULL);
+	
+	classDeclaration = isSgClassDeclaration(innerDecl);
+      }
+
       break;
       
     }
@@ -7772,11 +7870,14 @@ OA::ProcHandle SageIRInterface::getProcHandle(SgFunctionDeclaration *node)
 
 /** \brief Return the OA expression handle associated with a
  *         function call expression.
- *  \param astNode  A SgFunctionCallExp representing a function invocation.
+ *  \param astNode  A SgFunctionCallExp representing a function invocation
+ *                  or a SgConstructorInitializer representing a constructor
+ *                  invocation. 
  *  \returns  an OA handle representing the function invocation.
  */
-OA::ExprHandle SageIRInterface::getProcExprHandle(SgFunctionCallExp *astNode)
+OA::ExprHandle SageIRInterface::getProcExprHandle(SgNode *astNode)
 {
+  ROSE_ASSERT(isSgFunctionCallExp(astNode) || isSgConstructorInitializer(astNode));
   OA::ExprHandle exprHandle = getNodeNumber(astNode);
   return exprHandle;
 }

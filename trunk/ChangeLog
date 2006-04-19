@@ -1179,3 +1179,61 @@
            this actual folded into the parameter list:
            getChildrenWithMemRefs
            findAllMemRefsAndMemRefExprs
+
+4/13/06   UseOA-ROSE svn tag trunk r59  Brian White		
+        - Mostly minor bug fixes.
+        - Fixed 3 places in findAllMemRefsAndMemRefExprs which iterate
+          over formals/actuals to determine whether an actual is
+          treated as a reference (though it may not itself be 
+          a reference).  At issue was the handling of varargs.
+          In those cases, there are no formals from which we
+          can determine how the actual is handled.  Instead, we
+          just assume the type of the formal is the same as the actual.
+          NB:  we are only trying to determine if the actual is
+          a reference, so we don't care about getting subtype info 
+          correct.  It isn't clear that this assumption is valid.
+          e.g., if we have a function call:
+             int a;
+	     foo(a); 
+          And foo has varargs and treats its arg as a reference,
+          we could be in trouble.
+	- NOTE!  varargs generate ptr assign pairs between actuals
+          and lhses.  We don't currently handle this.
+        - Other notes on varargs:
+	  - getFormalForActual maps all actuals corresponding to
+            a "variable arg" to the last vararg formal.
+	    i.e., in 
+              foo(a, b, c);
+	    with
+              void foo(int x, ...);
+            b and c map to ... since we return the last ordinal
+            formalId for both b and c.  This is not a change
+            in the code, just a clarification.
+          - getCallsiteParams just does the right thing; it
+            returns a, b, and c, as you would expect.
+          - Modified findAllMemRefsAndMemRefExprs such that at an
+            assignment
+	         type lhs = va_arg(va_list, type);
+            we create the pointer pair:
+                 lhs = formal(...);
+            i.e., we map the lhs of any va_arg assignments to the
+            last formal.
+	  - UPSHOT:  Since we map all lhs of lhs = va_arg to the
+            vararg formal and since we map all "variable" actuals
+            to this same formal, we effectively map all of the lhs of
+            va_arg assignments:
+	    void foo(int x, ...):
+	         lhs1 = va_arg(ap, type1);
+	         lhs2 = va_arg(ap, type2);
+	         lhs3 = va_arg(ap, type3);
+            to all of the actuals, v1, v2, and v3:
+                 foo(x, v1, v2, v3);
+            Thus, lhs1 = v1, lhs1 = v2, lhs1 = v3, etc.
+            A conservative approximation to the truth.
+        - Bug fix in getClassDeclaration.  Wasn't accounting for the
+          possibility of recursive typedefs.
+        - Bug fix in findAllMemRefsAndMemRefExprs SgFunctionCallExp
+          case.  Was not visiting the pointer expression in the
+          case of a function call through a pointer.
+        - SageIRMemRefIterator::handleDefaultCase wasn't returning a list
+          of MREs created from the AST it was passed!

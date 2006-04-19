@@ -10,8 +10,8 @@
 */
 
 #include <stdarg.h>
-#include <stdio.h>
-#include <iostream>
+//#include <stdio.h>
+//#include <iostream>
 using namespace std;
 
 class Base {
@@ -111,18 +111,24 @@ void ellipsis_int(int i, ...)
 {
     int j;
     va_list ap;
-    va_start(ap,i);
+    va_start(ap,(const void *)i);
 
     // g++ only accepts basic types or ptr types for the second param
     j = va_arg(ap,int);
-    printf("j=%d\n",j);
+    //    printf("j=%d\n",j);
 
     va_end(ap);
 }
 
 // C, for function ptr example
-int DoIt  (float a, char b, char c){ printf("DoIt\n");   return (int)a+(int)b+(int)c; }
-int DoMore(float a, char b, char c){ printf("DoMore\n"); return (int)a-(int)b+(int)c; }
+int DoIt  (float a, char b, char c){
+  //  printf("DoIt\n");   
+  return (int)a+(int)b+(int)c; 
+}
+int DoMore(float a, char b, char c){ 
+  //  printf("DoMore\n"); 
+  return (int)a-(int)b+(int)c; 
+}
 
 char * bar_arrays( char c[][10])
 {
@@ -137,7 +143,7 @@ int * bar_arrays2( int a[5] )
 void PassPtr(int (*pt2Func)(float, char, char))
 {
    int result = (*pt2Func)(12, 'a', 'b');     // call using function pointer
-   cout << result << endl;
+   //   cout << result << endl;
 }
 
 
@@ -196,7 +202,7 @@ int main()
 
     // function ptrs
     // got examples from http://www.newty.de/fpt/fpt.html
-    int (*pt2Function)(float, char, char) = NULL;                        // C
+    int (*pt2Function)(float, char, char) = 0;                        // C
 
     PassPtr(&DoIt);
 
