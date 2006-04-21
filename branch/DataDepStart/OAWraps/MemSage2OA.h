@@ -8,6 +8,7 @@
 //#include <OpenAnalysis/MemRefExpr/MemRefExprAll.hpp>
 #include <config.h>
 #include "rose.h"
+#include "../ArrayReferenceVisitor.hpp"
 
 #include "Sage2OA.h"
 

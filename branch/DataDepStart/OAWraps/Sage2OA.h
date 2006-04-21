@@ -27,6 +27,7 @@
 #include <OpenAnalysis/Alias/ManagerInsNoPtrInterAliasMap.hpp>
 #include <OpenAnalysis/Alias/ManagerFIAlias.hpp>
 #include <OpenAnalysis/ExprTree/ExprTree.hpp>
+#include <OpenAnalysis/DataDep/Interface.hpp>
 
 class SageIRInterface;
 
@@ -177,7 +178,7 @@ class SageMemRefExprIterator : public OA::MemRefExprIterator {
     SageMemRefExprIterator(OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > pList,
 #endif
       SageIRInterface * in)
-      : mList(pList) { mIter = mList->begin(); ir=in;}
+      : mList(pList) { mList->size(); mIter = mList->begin(); ir=in;}
     ~SageMemRefExprIterator() {}
                     
 #ifdef TOOMANYCOLONS
@@ -351,7 +352,8 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
                         public virtual OA::XAIF::XAIFIRInterface,
                         public virtual OA::DataFlow::ParamBindingsIRInterface,
                         public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
-                        public virtual OA::SideEffect::SideEffectIRInterface
+                        public virtual OA::SideEffect::SideEffectIRInterface,
+                        public virtual OA::DataDep::DataDepIRInterface
 {
   public:
   //! Constructor.
@@ -630,6 +632,12 @@ public:
 
   // returns true if given symbol is a pointer variable.
   bool isPointerVar(OA::SymHandle);
+
+  //-------------------------------------------------------------------------
+  // DataDepInterface
+  //-------------------------------------------------------------------------
+  int constValIntVal(OA::ConstValHandle h);
+  OA::DataDep::OpType getOpType(OA::OpHandle h);
   
   //-------------------------------------------------------------------------
   // SSAIRInterface

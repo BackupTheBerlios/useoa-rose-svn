@@ -5500,7 +5500,51 @@ SageIRInterface::isPointerVar(OA::SymHandle h)
   return retVal;
 }
   
+//-------------------------------------------------------------------------
+// DataDepInterface
+//-------------------------------------------------------------------------
+// AIS
+int
+SageIRInterface::constValIntVal(OA::ConstValHandle h)
+{
+    SgNode *node = getNodePtr(h);
+    ROSE_ASSERT(node != NULL);
 
+    switch(node->variantT()) {
+
+    case V_SgIntVal:
+      {
+        SgIntVal *intVal = isSgIntVal(node); 
+        ROSE_ASSERT(intVal != NULL);
+
+        return intVal->get_value();
+        break;
+      }
+
+    default:
+      {
+        cerr << "SageIRInterface::constValIntVal(OA::ConstValHandle h) \n";
+        cerr << "was passed a handle to a non-int type.";
+        ROSE_ABORT();
+        break;
+      }
+    }
+}
+
+OA::DataDep::OpType
+SageIRInterface::getOpType(OA::OpHandle h)
+{
+    SgNode *node = getNodePtr(h);
+    ROSE_ASSERT(node != NULL);
+
+    if(isSgAddOp(node) != NULL)      { return OA::DataDep::OP_ADD; }
+    if(isSgSubtractOp(node) != NULL) { return OA::DataDep::OP_SUBTRACT; }
+    if(isSgMultiplyOp(node) != NULL) { return OA::DataDep::OP_MULTIPLY; }
+    if(isSgDivideOp(node) != NULL)   { return OA::DataDep::OP_DIVIDE; }
+    if(isSgModOp(node) != NULL)      { return OA::DataDep::OP_MODULO; }
+
+    ROSE_ASSERT(false);
+}
 
 //-------------------------------------------------------------------------
 // SSAIRInterfaceDefault

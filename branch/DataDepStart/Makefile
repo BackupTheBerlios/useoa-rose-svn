@@ -64,7 +64,7 @@ clean-recursive:
 
 #LD_LIBRARY_PATH += /soft/apps/packages/gcc-3.1/lib
 
-bin_PROGRAMS = OATest OACFGTest
+bin_PROGRAMS = OADataDepTest # OATest OACFGTest
 
 all:  recursive
 
@@ -82,6 +82,10 @@ OACFGTest_SOURCES = CFGTest.C
 OACFGTest_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH)
 OACFGTest_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
 
+OADataDepTest = DataDepTest.C
+OADataDepTest_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH)
+OADataDepTest_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
+
 am_OATest_OBJECTS = OATest.$(OBJEXT)
 OATest_OBJECTS = $(am_OATest_OBJECTS)
 OATest_LDFLAGS = 
@@ -89,6 +93,11 @@ OATest_LDFLAGS =
 am_OACFGTest_OBJECTS = OACFGTest.$(OBJEXT)
 OACFGTest_OBJECTS = $(am_OACFGTest_OBJECTS)
 OACFGTest_LDFLAGS =
+
+am_OADataDepTest_OBJECTS = DataDepTest.$(OBJEXT) \
+                           ArrayReferenceVisitor.$(OBJEXT)
+OADataDepTest_OBJECTS = $(am_OADataDepTest_OBJECTS)
+OADataDepTest_LDFLAGS =
 
 OATest$(EXEEXT): $(OATest_OBJECTS) $(OATest_DEPENDENCIES) 
 	@rm -f OATest$(EXEEXT)
@@ -98,8 +107,16 @@ OACFGTest$(EXEEXT): $(OACFGTest_OBJECTS) $(OACFGTest_DEPENDENCIES)
 	@rm -f OACFGTest$(EXEEXT)
 	$(CXXLINK) $(OACFGTest_LDFLAGS) $(OACFGTest_OBJECTS) $(OACFGTest_LDADD)
 
+OADataDepTest$(EXEEXT): $(OADataDepTest_OBJECTS) $(OADataDepTest_DEPENDENCIES) 
+	@rm -f OADataDepTest$(EXEEXT)
+	$(CXXLINK) $(OADataDepTest_LDFLAGS) $(OADataDepTest_OBJECTS) $(OADataDepTest_LDADD)
+
+
 
 .C.o:
+	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+
+.cpp.o:
 	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
 
 clean-am:

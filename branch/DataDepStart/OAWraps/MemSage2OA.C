@@ -2091,7 +2091,7 @@ SageIRInterface::createMRE(SgInitializedName *initName,
 
 
 // findAllMemRefsAndMemRefExprs (manually) traverses the AST rooted at
-// astNode.  Whenever it encounters a node that hase a memory reference
+// astNode.  Whenever it encounters a node that has a memory reference
 // (and hence should have an associated MemRefHandle), it creates a 
 // MemRefHandle and puts it in the list memRefs.  
 // findAllMemRefsAndMemRefExprs creates the one or more MemRefExprs
@@ -2113,6 +2113,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 						   unsigned flags,
 						   unsigned &synthesizedFlags)
 {
+
   bool isMemRefExpr                     = false;
   OA::SymHandle symHandle               = 0;
   OA::StmtHandle stmtHandle             = 0;
@@ -3387,11 +3388,43 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  // an array, we need to dereference the pointer and then
 	  // perform the inaccurate "array access".
 	  arrMemRefExpr = mIR->dereferenceMre(baseAccess);
-
 	} else {
-	  
-	  arrMemRefExpr = 
-	    copyBaseMemRefExpr(baseAccess);
+            // AIS START:
+            // What needs to be done:
+            // - Insure that I have a named memRefExpr
+            // - Grab the ExprTree for the array reference
+            // - Use the information contained in this ExprTree to construct
+            //   a new IdxExprAccess object
+
+	    arrMemRefExpr = copyBaseMemRefExpr(baseAccess);
+
+            if(arrMemRefExpr->isaNamed()) {
+                SgExpression *indexExpression = arrRefExp->get_rhs_operand();
+
+                // Grab the expression tree object
+                OA::OA_ptr<OA::ExprTree> etree;
+                etree = mIR->getExprTree((OA::irhandle_t)indexExpression);
+
+                // Run the ArrayReferenceVisitor through this expression
+                // tree.  ArrayReferenceVisitor will parse out all the
+                // needed information from the ExprTree and put it into an
+                // IdxExprAccess object.
+                OA::OA_ptr<OA::MemRefExpr> mre = arrMemRefExpr;
+                OA::OA_ptr<OA::IdxExprAccess> idxExprAccess;
+                idxExprAccess = new OA::IdxExprAccess(memRefType, mre);
+                OA::ArrayReferenceVisitor visitor(mIR, idxExprAccess);
+                etree->acceptVisitor(visitor);
+
+//              cout << "Pushing back an IdxExprAccess\n";
+	        curMemRefExprs.push_back(idxExprAccess);
+
+                isMemRefExpr = true;
+            }
+
+          // also SgExpression *indexExpression = arrRefExp->get_rhs_operand();
+          // call getExprTree((OA::irhandle_t)indexExpression)
+          // if it is create a new IdxExprAccess and have it point at
+          // arrMemRefExpr
 	}
 
 	ROSE_ASSERT(!arrMemRefExpr.ptrEqual(0));
@@ -4649,10 +4682,8 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
     // list of MemRefHandles we are building
     OA::MemRefHandle memRefHandle = mIR->getNodeNumber(astNode);
     memRefs.push_back(memRefHandle);
-
     for(list<OA::OA_ptr<OA::MemRefExpr> >::iterator it = curMemRefExprs.begin();
 	it != curMemRefExprs.end(); ++it) {
-
       OA::OA_ptr<OA::MemRefExpr> mre = *it;
 
       // mapping of MemRefHandle to MemRefExprs.
