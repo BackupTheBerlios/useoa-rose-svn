@@ -377,6 +377,7 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   //! Given a ProcHandle, return its SymHandle
   OA::SymHandle getProcSymHandle(OA::ProcHandle h);
   OA::SymHandle getProcSymHandle(SgFunctionDeclaration *);
+  OA::SymHandle getVarSymHandle(SgInitializedName *);
   OA::MemRefHandle SageIRInterface::getSymMemRefHandle(OA::SymHandle h);
   OA::SymHandle getSymHandle(OA::ProcHandle h) {return getProcSymHandle(h);} //ask Michelle
 
@@ -423,6 +424,8 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   SgNode * getNodePtr(OA::IRHandle h){if((int)h==0) return 0; else if(persistent_handles) return (*nodeArrayPtr)[h.hval()-1]; else return (SgNode*)h.hval();} //hvals start at 1
   long getNodeNumber(SgNode *);  //can be zero
   std::vector <SgNode *> * nodeArrayPtr;
+
+  SgNode *getProject() { return wholeProject; }
 
   //------------------------------
   // for procedure, loop
@@ -573,13 +576,7 @@ public:
           SgExpression * ex=(SgExpression*)getNodePtr(h);
           return ex->unparseToString();
     }
-  std::string toString(const OA::CallHandle h) 
-  {
-    SgNode *node = getNodePtr(h);
-    SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
-    ROSE_ASSERT(functionCallExp != NULL);
-    return functionCallExp->unparseToString();
-  }
+  std::string toString(const OA::CallHandle h);
   std::string toString(const OA::OpHandle h) { return ""; }
   std::string toString(const OA::MemRefHandle h);
   std::string toString(const OA::SymHandle h); 
@@ -697,6 +694,7 @@ public:
     return memRefHandle;
   }
   OA::ProcHandle getProcHandle(SgFunctionDefinition *astNode);
+  OA::ExprHandle getProcExprHandle(SgNode *astNode);
   //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
   SgNode *getSgNode(OA::IRHandle h) { return getNodePtr(h); }
   bool isMemRefNode(SgNode *astNode);
@@ -780,6 +778,9 @@ public:
 
   bool isArrowExp(SgExpression *function);
   bool isMalloc(SgFunctionCallExp *functionCallExp);
+  bool isFunc(SgFunctionCallExp *functionCallExp, char *funcName);
+  bool isVaArg(SgFunctionCallExp *functionCallExp);
+
   // If node represents a malloc or a new, return true and the
   // type of the object allocated.  
   bool isAllocation(SgNode *node, SgType *&type);
@@ -819,6 +820,8 @@ public:
   // a SgClassSymbol.
   OA::SymHandle getThisExpSymHandle(SgNode *node);
 
+  OA::SymHandle getFunctionReturnSlotSymbol(SgFunctionDeclaration *functionDeclaration);
+
   // Given a SgFunctionCallExp representing a method invocation,
   // return a MemRefHandle to the object upon which the method
   // was invoked.
@@ -827,6 +830,40 @@ public:
   // Strip off any leading SgCastExps/SgAssignInitializers in 
   // the tree root at node.
   SgNode *lookThroughCastExpAndAssignInitializer(SgNode *node);
+  
+  /** \brief Returns true and provides implicit pointer assign pairs
+   *         if the variable declaration declares (and instantiates) an object.  
+   *  \param varDeclaration  a SgNode representing a variable declaration.
+   *  \param collectPtrAssigns  boolean indicating whether we should
+   *                            collect implicit ptr assign pairs.
+   *  \param memRefList  if collectPtrAssigns is true, place any 
+   *                     implicit ptr assigns resulting from this
+   *                     declaration into the list.
+   *  \return boolean indicating whether the object declaration would
+   *                  give rise to implicit ptr assign pairs (whether
+   *                  or not they were actually stored in memRefList).
+   */
+  bool isObjectDeclaration(SgVariableDeclaration *varDeclaration,
+			   bool collectPtrAssigns,
+			   std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+
+  /** \brief Returns true and provides implicit pointer assign pairs
+   *         if the initialized name declares (and instantiates) an object.  
+   *  \param initName  a SgNode representing an initialized name from
+   *                   a declaration.
+   *  \param collectPtrAssigns  boolean indicating whether we should
+   *                            collect implicit ptr assign pairs.
+   *  \param memRefList  if collectPtrAssigns is true, place any 
+   *                     implicit ptr assigns resulting from this
+   *                     declaration into the list.
+   *  \return boolean indicating whether the object declaration would
+   *                  give rise to implicit ptr assign pairs (whether
+   *                  or not they were actually stored in memRefList).
+   */
+  bool isObjectDeclaration(SgInitializedName *initName,
+			   bool collectPtrAssigns,
+			   std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+    
 
   // initializerHasPtrAssign returns true if the SgInitializedName
   // is a pointer or reference and it has an initializer.
@@ -865,7 +902,8 @@ public:
 				      OA::OA_ptr<OA::MemRefExpr> rhsMRE,
 				      SgClassDefinition *classDefinition,
 				      bool collectPtrAssigns,
-				      std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList);
+				      std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *memRefList,
+				      std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods);
 
 
   // Create implicit ptr assign pairs given lhs = rhs.
@@ -895,6 +933,20 @@ public:
   // Returns true if the function is a virtual method (as declared
   // in its defining method).
   bool isVirtual(SgFunctionDeclaration *functionDeclaration);
+
+  /**
+   * \brief Return true if methodDecl overrides virtualMethodDecl.
+   * \param methodDecl  a method declaration.
+   * \param virtualMethodDecl a method declaration.
+   * \return Returns true if virtualMethodDecl is declared as a virtual
+   *         method and methodDecl has the same type signature and name
+   *         as virtualMethodDecl.  
+   * 
+   * NB:  It is assumed that the class defining virtualMethodDecl is a base
+   *      class of the class defining methodDecl.
+   */
+  bool methodOverridesVirtualMethod(SgMemberFunctionDeclaration *methodDecl, 
+				    SgMemberFunctionDeclaration *virtualMethodDecl);
 
   bool isDeclaredVirtualWithinAncestor(SgFunctionDeclaration *functionDeclaration);
   

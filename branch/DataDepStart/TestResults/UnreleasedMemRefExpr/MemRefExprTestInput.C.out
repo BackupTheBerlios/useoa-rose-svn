@@ -291,7 +291,7 @@ Deref(
         mAddressOf: 0
         mFullAccuracy: 1
         mMemRefType: USE
-        mSymHandle: SymHandle(method:hiClass::hello)
+        mSymHandle: SymHandle(method:hiClass::hello__hello__F_Pi)
     )
     mNumDeref: 1
 )
@@ -301,7 +301,7 @@ NamedRef(
     mAddressOf: 0
     mFullAccuracy: 1
     mMemRefType: USE
-    mSymHandle: SymHandle(method:hiClass::hello)
+    mSymHandle: SymHandle(method:hiClass::hello__hello__F_Pi)
 )
 
 	mre = 
@@ -309,7 +309,7 @@ NamedRef(
     mAddressOf: 0
     mFullAccuracy: 1
     mMemRefType: USE
-    mSymHandle: SymHandle(method:hiClass::hello)
+    mSymHandle: SymHandle(method:hiClass::hello__hello__F_Pi)
 )
 
 ============================================
@@ -340,7 +340,7 @@ Deref(
         mAddressOf: 0
         mFullAccuracy: 1
         mMemRefType: USE
-        mSymHandle: SymHandle(method:hiClass::hello)
+        mSymHandle: SymHandle(method:hiClass::hello__hello__F_Pi)
     )
     mNumDeref: 1
 )
@@ -350,7 +350,7 @@ NamedRef(
     mAddressOf: 0
     mFullAccuracy: 1
     mMemRefType: USE
-    mSymHandle: SymHandle(method:hiClass::hello)
+    mSymHandle: SymHandle(method:hiClass::hello__hello__F_Pi)
 )
 
 	mre = 
@@ -358,7 +358,7 @@ NamedRef(
     mAddressOf: 0
     mFullAccuracy: 1
     mMemRefType: USE
-    mSymHandle: SymHandle(method:hiClass::hello)
+    mSymHandle: SymHandle(method:hiClass::hello__hello__F_Pi)
 )
 
 ============================================

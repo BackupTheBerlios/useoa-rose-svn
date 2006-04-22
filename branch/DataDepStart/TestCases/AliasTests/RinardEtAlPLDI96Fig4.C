@@ -13,8 +13,9 @@ const int NDIM=3;
 class vector {
  public:
   double val[NDIM];
+  int i;
   void vecAdd(double v[NDIM]) {
-    for(int i = 0; i < NDIM; i++)
+    for(i = 0; i < NDIM; i++)
       val[i] += v[i];
   }
 };
@@ -159,4 +160,16 @@ void nbody::computeForces()
     b = bodies[i];
     b->walksub(BH_root, size*size);
   }
+}
+
+void main() 
+{
+    Nbody.numbodies = 2;
+    Nbody.bodies = (body**)malloc(sizeof(body*)*Nbody.numbodies);
+    for (int i=0; i<Nbody.numbodies; i++) {
+        Nbody.bodies[i] = new body;
+    }
+    Nbody.BH_root = Nbody.bodies[0];
+
+    Nbody.computeForces();
 }

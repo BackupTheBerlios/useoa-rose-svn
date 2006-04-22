@@ -954,3 +954,286 @@
           that was creating an implicit pointer assignment for the
           conditional expression rather than the true and false
           expressions.
+
+3/9/06   UseOA-ROSE svn tag trunk r45  Brian White		
+        - **** This version of UseOA-ROSE is incompatible with
+          versions of OA prior to 86 because of the following change:
+        - Updated OATest to use ManagerFIAliasEquivSets and 
+	  ManagerFIAliasAliasMap instead of ManagerFIAlias.
+          --oa-FIAlias is replaced by --oa-FIAliasEquivSets and
+	  --oa-FIAliasAliasMap.  Actually --oa-FIAlias is equivalent
+	  to --oa-FIAliasEquivSets (but should be deprecated).
+        - **** UDDU Chains needs an alias manager.  This continues
+          to use the equiv sets FIAlias, rather than the new
+          ManagerFIAliasAliasMap.
+        - Added new results directories for FIAliasAliasMap results
+          and new scripts for FIAliasAliasMap manager.
+        - Moved scripts to scripts/ directory.
+        - I have checked the following FIAliasAliasMap using OA rev 76:
+  	       alias1.c
+               alias2.c
+               alias3.c
+               alias4.c
+               alias4b.c
+	  Note that alias4b.c maps *a to a new UnknownLoc location, 
+          rather than to the zero LocationSet with UnknownLoc, which
+          would have been more efficient spatially.  Doing this
+          right would require remapping an existing set to zero, a la
+              AliasMap::remapMemRefs(int oldSetId, int newSetId)
+          But invoking this method is extremely unsafe unless you 
+          know what it is doing.  In particular, it may change
+          the mapping of a set to its id for some set other than
+          oldSetId (in particular, the lastSet).  This will wreak
+          havoc with ManagerFIAlias which keeps a map from ufset ids
+          to AliasMap set ids.  The right way to do this is to
+          have AliasMap export one set of ids which may be arbitrary
+          but use a different set internally which are contigous.
+        - At this point we are switching development to use
+          FIAliasAliasMap rather than FIAliasEquivSets.
+        - Status of FIAliasEquivSets, all tests passed except the following:
+               PandeEtAlRutgers05.C
+               HindEtAlIBM95Fig4.C
+               HindEtAlISSTA00Fig1.C
+               RinardEtAlPLDI96Fig4.C	
+
+3/17/06   UseOA-ROSE svn tag trunk r46  Brian White			
+        - Changed getLocation to always return a location for a
+	  function/method:
+      // We had problems in which a method didn't appear visible but
+      // should have been in PandeEtAlRutgers05.C.
+      // In main, p and q have static type Base, though they may
+      // dynamically be Derived.  Thus, ROSE can only report that
+      // the SgFunctionDeclaration for p->foo or q->foo is 
+      // Base::foo (as per the static type of p and q).  Thus, it
+      // does not see that Derived::foo is called (i.e., when 
+      // we ask for all function/method invocations via querySubTree
+      // below).  Hence, the logic dictates that since Derived::foo is
+      // not main and is not invoked from main, it is not visible in
+      // main.  Clearly, this isn't true.
+      //
+      // For now, the solution is simply to call all functions/methods
+      // visible.  This isn't true given static functions, private methods,
+      // etc.  There is probably some way to resolve this in ROSE using
+      // the context-specific symbol tables, but I have little 
+      // experience there and we have a deadline.
+      // MMS and BW 3/16/06
+
+3/21/06   UseOA-ROSE svn tag trunk r47  Brian White			
+        - Changed createImplicitPtrAssignForMethods so that it does
+          not create an implicit ptr assign for a virtual method m
+          if it has already created one for a virtual method m'
+          which overrides m.  Without this, two methods
+          with the same mangled name would have overlapping locations.
+        - Modified classHasVirtualMethods so that it returns true
+          not only if a class defines a virtual method, but if
+          any of its base classes does.
+        - Added two isObjectDeclaration methods that create implicit
+          ptr assigns for an object declaration/instantation, such
+          as A a;  previously we only did this for A *a = new A;
+          Though virtual methods can be statically resolved for 'a',
+          I think we need to create implicit ptr assigns for cases
+          such as A *b = &a.
+        - Made a change to SageIRStmtIterator:
+  // If the functionDefinition is for main, include all of the 
+  // global _object_ declarations and class definitions.  Why?  
+  // Because alias analysis (and presumably others) will need to visit 
+  // these to create implicit ptr assign.  However, these analyses
+  // take an iterator over procs, which would exclude the global-level
+  // statements.  
+  // NB:  the intent is _not_ that these will be considered local to
+  //      main.
+        - PandeEtAlRutgers05.C.out passed for AliasMap released and
+          unreleased!
+
+3/23/06   UseOA-ROSE svn tag trunk r48  Brian White			
+        - Changed SgParamBindPtrAssignIterator::create because it
+          was not correctly handling the param bindings for
+          a constructor invoked as 'A a;' rather than 'A *a = new A;'
+          In the former case, we need to take the address of a
+          before binding to this.
+        - We were incorrectly treating variables declared within
+          inlined methods (i.e., methods declared within the scope
+          of a class) as if they were declared within the class
+          (which I took to be synonymous with members of that class).
+          This was an issue in createMRE which adds an implicit 'this->'
+          to member variables if they have not already been added by ROSE.
+          i.e., a form of normalization.  ROSE does this already
+          in most, but not all, cases.  The change is actually
+          in getDefiningClass:
+  // In the following example:
+  // class vector {
+  //  public:
+  //  void vecAdd(double v[NDIM]) {
+  //    for(int i = 0; i < NDIM; i++)
+  //      val[i] += v[i];
+  //  }
+  // };
+  // i is technically defined within the class, since it
+  // is defined within vecAdd which is defined within the
+  // class.  But this method, getDefiningClass, really
+  // wants to return the class of which a variable is a member.
+  // therefore, if we find a scope along the way that is
+  // a function/method, we should return false.
+
+3/24/06   UseOA-ROSE svn tag trunk r49  Brian White			
+        - Fixed getLocation to properly handle 'this' pointers.
+          i.e., previously we were always identifying them
+          as local.
+	- I've added an indirect call site "analysis"
+          staticVirtualMethodResolver.C.  Should be close
+          to working.  Unfortunately, ROSE doesn't see the
+	  class definition in Pande:
+        // class Base {
+        // public:
+	//  virtual void foo();
+        //  virtual void bar();
+        //  virtual void baz();
+        // } *a, *b, *p, *q;
+
+3/26/06   UseOA-ROSE svn tag trunk r52  Brian White
+        - Fixed bug in getLocation:  when comparing two 
+          get_firstNonDefiningDeclarations for equality, need to 
+          first ensure they aren't NULL.  This bug was manifest as
+          this::this::foo being visible in this::this::bar.
+        - Added mangled names to symhandle output for "this:" and "method:".
+          Output is now this::scope::method_name__mangled_method_name.
+          I output both the method_name and the manged_method_name,
+          as opposed to simply the mangled_method_name, because
+          constructor and destructor mangled method names aren't
+          really intelligible.
+        - Passed HindEtAlISSTA00Fig1.C!
+	- Passed HindEtAlIBMFig4.C!
+
+4/06/06   UseOA-ROSE svn tag trunk r53  Brian White
+        - Updated FindCallsitesPass::visit to return a SgCastExp
+          instead of a SgFunctionCallExp for a malloc.  This is
+          consistent with findAllMemRefsAndMemRefExprs which creates
+          an MRE for malloc for SgCastExp rather than a SgFunctionCallExp.
+        - Updated getCallMemRefExpr to expect SgCastExp representing
+          malloc.
+        - Updated getFormalTypes, SgParamBindPtrAssignIterator::create,
+          and getCallsiteParams to expect a SgCastExp for a malloc.
+        - Changed getCallMemRefExpr such that it never relies
+          on the general findAllMemRefsAndMemRefExprs routine to create
+          a call MRE for a non-pointer dereference function call (not
+          a method call).  i.e., previously it would use the general
+          routines if the function returned an address.  I have removed
+          this conditional.  It wasn't doing the right thing and
+          relies too much on internal knowledge of 
+          findAllMemRefsAndMemRefExprs.  In particular, 
+          findAllMemRefsAndMemRefExprs will create an MRE for 
+          an address-returning function  at a SgFunctionCallExp,
+          not using a SgFunctionRefExp as I had been attempting to do.
+        - Fixed Michelle's problem from 3/30:
+          Line numbers are for Rinard
+
+          #:      MemRef          ShouldBe                Is
+          19: val[i]                      *this                   this
+          84: n->pos.val[i]       *n                              n
+          84: pos.val[i]          *this                   this
+
+          I was discarding the Deref in the SgPntrArrRefExp case:
+          // Huh?  BW 4/6/06
+	  // I don't understand why I was taking the base MRE from an MRE
+	  // and discarding the Deref.
+	  //	  arrMemRefExpr = copyBaseMemRefExpr(baseAccess);
+	  arrMemRefExpr = baseAccess->clone();
+
+          I also made in the SgArrowExp/SgDotExp case around this 
+          rather confused comment:
+	  // Huh?  BW 4/6/06
+	  // I don't understand why I was taking the base MRE from an MRE.
+	  //	    arrowOrDotMemRefExpr = copyBaseMemRefExpr(rhsMre);
+	  // OK.  I think I understand:  I wanted to model (*a).foo and
+	  // a->foo the same way.  Since we model a->foo as a
+	  // NamedRef(a, accuracy = false), I wanted to do the same
+	  // for (*a).foo.  So, fine, just take the base MRE.
+	  // BW 4/7/06:  No!  This isn't true.  We model a->foo
+	  // as an inaccurate NamedRef in the previous conditional.
+	  //	    arrowOrDotMemRefExpr = copyBaseMemRefExpr(lhsMemRefExp);
+	  arrowOrDotMemRefExpr = lhsMemRefExp->clone();
+        - Neither HindEtAlIBM95Fig4.C nor PandeEtAlRutgers05.C match
+          their regression results.  For Hind, the difference is
+          in the q.data within the method ChangeData.  It is now
+          getting mapped to UnknownLoc since this reference q is now
+          properly being modeled as a pointer.  This still seems wrong;
+          it should be mapped to InvisibleLoc.
+	
+
+4/12/06   UseOA-ROSE svn tag trunk r55  Brian White	
+        - Fixed this bug from Michelle (Subject: Next snag for Rinard, 4/10/06)
+	  "Then I look at the output from running OATest 
+	   --oa-FIAliasAliasMap on  Rinard.  In Phase 3, I am not getting 
+	   the correct ParamBindPtrAssign  pairs for line 112
+               d = this->computeInter(n, tmpv);
+           but I am getting the correct pairs for line 114
+               acc.vecAdd(tmpv);
+           For line 112, the implicit assignment to this is missing."
+        
+           The problem was that some functions were iterating over
+           actuals by iterating over the SgExprListExp associated with
+           a function call's expression list.  This does not contain
+           the implicit actual corresponding to this.
+           Updated the following methods to instead invoke
+           SageIRInterface::getCallsiteParams which does return the
+           this actual folded into the parameter list:
+           getChildrenWithMemRefs
+           findAllMemRefsAndMemRefExprs
+
+4/13/06   UseOA-ROSE svn tag trunk r59  Brian White		
+        - Mostly minor bug fixes.
+        - Fixed 3 places in findAllMemRefsAndMemRefExprs which iterate
+          over formals/actuals to determine whether an actual is
+          treated as a reference (though it may not itself be 
+          a reference).  At issue was the handling of varargs.
+          In those cases, there are no formals from which we
+          can determine how the actual is handled.  Instead, we
+          just assume the type of the formal is the same as the actual.
+          NB:  we are only trying to determine if the actual is
+          a reference, so we don't care about getting subtype info 
+          correct.  It isn't clear that this assumption is valid.
+          e.g., if we have a function call:
+             int a;
+	     foo(a); 
+          And foo has varargs and treats its arg as a reference,
+          we could be in trouble.
+	- NOTE!  varargs generate ptr assign pairs between actuals
+          and lhses.  We don't currently handle this.
+        - Other notes on varargs:
+	  - getFormalForActual maps all actuals corresponding to
+            a "variable arg" to the last vararg formal.
+	    i.e., in 
+              foo(a, b, c);
+	    with
+              void foo(int x, ...);
+            b and c map to ... since we return the last ordinal
+            formalId for both b and c.  This is not a change
+            in the code, just a clarification.
+          - getCallsiteParams just does the right thing; it
+            returns a, b, and c, as you would expect.
+          - Modified findAllMemRefsAndMemRefExprs such that at an
+            assignment
+	         type lhs = va_arg(va_list, type);
+            we create the pointer pair:
+                 lhs = formal(...);
+            i.e., we map the lhs of any va_arg assignments to the
+            last formal.
+	  - UPSHOT:  Since we map all lhs of lhs = va_arg to the
+            vararg formal and since we map all "variable" actuals
+            to this same formal, we effectively map all of the lhs of
+            va_arg assignments:
+	    void foo(int x, ...):
+	         lhs1 = va_arg(ap, type1);
+	         lhs2 = va_arg(ap, type2);
+	         lhs3 = va_arg(ap, type3);
+            to all of the actuals, v1, v2, and v3:
+                 foo(x, v1, v2, v3);
+            Thus, lhs1 = v1, lhs1 = v2, lhs1 = v3, etc.
+            A conservative approximation to the truth.
+        - Bug fix in getClassDeclaration.  Wasn't accounting for the
+          possibility of recursive typedefs.
+        - Bug fix in findAllMemRefsAndMemRefExprs SgFunctionCallExp
+          case.  Was not visiting the pointer expression in the
+          case of a function call through a pointer.
+        - SageIRMemRefIterator::handleDefaultCase wasn't returning a list
+          of MREs created from the AST it was passed!

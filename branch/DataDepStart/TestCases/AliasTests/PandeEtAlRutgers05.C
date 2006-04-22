@@ -14,6 +14,7 @@ class Base {
 } *a, *b, *p, *q;
 
 void Base::foo() {
+  a->foo();
   a = new Base;
 }
 
@@ -58,7 +59,7 @@ int main(int argc, char **argv)
   q->foo();
   q = new Base;
   q->foo();
-  //  a->bar();
+  a->bar();
   p->baz();
   return 0;
 }

@@ -36,10 +36,12 @@ int main(char argc, char *argv[])
     SgProject * sageProject = frontend( (int)(argc-1),&argv[1]);
     int filenum = sageProject->numberOfFiles();
 
+/*
     AstPDFGeneration pdftest;
     pdftest.generateInputFiles(sageProject);
     AstDOTGeneration dottest;
     dottest.generateInputFiles(sageProject);
+*/
 
     bool p_h=FALSE; // for debugging only switch between persistent and
                     // "pointer" handles (pointers are faster, persistent are

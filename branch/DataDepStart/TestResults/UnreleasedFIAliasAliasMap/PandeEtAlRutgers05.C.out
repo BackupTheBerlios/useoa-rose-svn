@@ -8,40 +8,75 @@ AliasMap(ProcHandle(Base::foo)
                 ) ] 
             1	 => [ 
                 NamedLoc(
-                    mSymHandle: SymHandle(printf)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            2	 => [ 
-                NamedLoc(
                     mSymHandle: SymHandle(a)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(b)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(q)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
+            5	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(r)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Base ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Derived ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Base ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Derived ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Derived ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Base ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new Base ))
+                    mLocal: 0
+                ) ] 
             6	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(s)
+                    mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            7	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(method:Base::foo__foo__F_v)
                     mLocal: 1
@@ -50,13 +85,6 @@ AliasMap(ProcHandle(Base::foo)
                 )    
                 NamedLoc(
                     mSymHandle: SymHandle(method:Derived::foo__foo__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            7	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(this::Base::foo__foo__F_v)
                     mLocal: 1
                     mFullOverlap: 
                     mPartOverlap: 
@@ -97,43 +125,15 @@ AliasMap(ProcHandle(Base::foo)
                 ) ] 
             12	 => [ 
                 NamedLoc(
-                    mSymHandle: SymHandle(r)
-                    mLocal: 0
+                    mSymHandle: SymHandle(this::Base::foo__foo__F_v)
+                    mLocal: 1
                     mFullOverlap: 
                     mPartOverlap: 
-                )    
-                UnnamedLoc(
-                    mStmtHandle: StmtHandle((new Base ))
-                    mLocal: 0
-                )    
-                UnnamedLoc(
-                    mStmtHandle: StmtHandle((new Derived ))
-                    mLocal: 0
-                )    
-                UnnamedLoc(
-                    mStmtHandle: StmtHandle((new Base ))
-                    mLocal: 0
-                )    
-                UnnamedLoc(
-                    mStmtHandle: StmtHandle((new Derived ))
-                    mLocal: 0
-                )    
-                UnnamedLoc(
-                    mStmtHandle: StmtHandle((new Derived ))
-                    mLocal: 0
-                )    
-                UnnamedLoc(
-                    mStmtHandle: StmtHandle((new Base ))
-                    mLocal: 0
-                )    
-                UnnamedLoc(
-                    mStmtHandle: StmtHandle((new Base ))
-                    mLocal: 0
                 ) ] 
             13	 => [ 
                 NamedLoc(
-                    mSymHandle: SymHandle(s)
-                    mLocal: 0
+                    mSymHandle: SymHandle(printf)
+                    mLocal: 1
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
@@ -494,14 +494,14 @@ AliasMap(ProcHandle(Base::foo)
             2	 => 2
             3	 => 2
             4	 => 2
-            5	 => 2
-            6	 => 1
-            7	 => 2
+            5	 => 1
+            6	 => 2
+            7	 => 1
             8	 => 2
             9	 => 1
             10	 => 2
             11	 => 2
-            12	 => 1
+            12	 => 2
             13	 => 2
             14	 => 1
             15	 => 1
@@ -511,7 +511,7 @@ AliasMap(ProcHandle(Base::foo)
             19	 => 1
             20	 => 1
     mIdToMemRefSetMap: int	 => MemRefSet
-            2	 => [ MemRefHandle(a)    MemRefHandle(a) ] 
+            1	 => [ MemRefHandle(a)    MemRefHandle(a) ] 
             8	 => [ MemRefHandle(Base) ] 
             17	 => [ MemRefHandle(a -> foo) ] 
     mIdToMRESetMap: int	 => MemRefExprSet
@@ -520,37 +520,151 @@ AliasMap(ProcHandle(Base::foo)
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
-                    mSymHandle: SymHandle(printf)
-                ) ] 
-            2	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
                     mSymHandle: SymHandle(a)
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(b)
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(p)
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(q)
                 ) ] 
+            5	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(r)
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(a)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(this::Base::foo__foo__F_v)
+                    )
+                    mNumDeref: 1
+                ) ] 
             6	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s)
+                ) ] 
+            7	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -690,13 +804,6 @@ AliasMap(ProcHandle(Base::foo)
                         mFieldName: foo__F_v
                     )
                     mNumDeref: 1
-                ) ] 
-            7	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(this::Base::foo__foo__F_v)
                 ) ] 
             8	 => [ 
                 NamedRef(
@@ -1020,121 +1127,14 @@ AliasMap(ProcHandle(Base::foo)
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
-                    mSymHandle: SymHandle(r)
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(a)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(p)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(q)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(this::Base::foo__foo__F_v)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(s)
-                    )
-                    mNumDeref: 1
+                    mSymHandle: SymHandle(this::Base::foo__foo__F_v)
                 ) ] 
             13	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(s)
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(printf)
                 ) ] 
             14	 => [ 
                 UnnamedRef(
@@ -1478,94 +1478,33 @@ AliasMap(ProcHandle(Base::bar)
                 ) ] 
             1	 => [ 
                 NamedLoc(
-                    mSymHandle: SymHandle(printf)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            2	 => [ 
-                NamedLoc(
                     mSymHandle: SymHandle(a)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(b)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(q)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            6	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::foo__foo__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                )    
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::foo__foo__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            7	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::Base____ct__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            8	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::bar__bar__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                )    
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::bar__bar__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            9	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(this::Base::bar__bar__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            10	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::baz__baz__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            11	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            12	 => [ 
+            5	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(r)
                     mLocal: 0
@@ -1600,10 +1539,71 @@ AliasMap(ProcHandle(Base::bar)
                     mStmtHandle: StmtHandle((new Base ))
                     mLocal: 0
                 ) ] 
-            13	 => [ 
+            6	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(s)
                     mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            7	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::foo__foo__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::foo__foo__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            8	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::Base____ct__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            9	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            10	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::baz__baz__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            11	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            12	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(this::Base::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            13	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(printf)
+                    mLocal: 1
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
@@ -1964,14 +1964,14 @@ AliasMap(ProcHandle(Base::bar)
             2	 => 2
             3	 => 2
             4	 => 2
-            5	 => 2
-            6	 => 1
-            7	 => 2
-            8	 => 1
-            9	 => 2
+            5	 => 1
+            6	 => 2
+            7	 => 1
+            8	 => 2
+            9	 => 1
             10	 => 2
             11	 => 2
-            12	 => 1
+            12	 => 2
             13	 => 2
             14	 => 1
             15	 => 1
@@ -1987,37 +1987,151 @@ AliasMap(ProcHandle(Base::bar)
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
-                    mSymHandle: SymHandle(printf)
-                ) ] 
-            2	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
                     mSymHandle: SymHandle(a)
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(b)
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(p)
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(q)
                 ) ] 
+            5	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(r)
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(a)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(this::Base::bar__bar__F_v)
+                    )
+                    mNumDeref: 1
+                ) ] 
             6	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s)
+                ) ] 
+            7	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -2158,14 +2272,14 @@ AliasMap(ProcHandle(Base::bar)
                     )
                     mNumDeref: 1
                 ) ] 
-            7	 => [ 
+            8	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
                     mSymHandle: SymHandle(method:Base::Base____ct__F_v)
                 ) ] 
-            8	 => [ 
+            9	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -2333,13 +2447,6 @@ AliasMap(ProcHandle(Base::bar)
                     )
                     mNumDeref: 1
                 ) ] 
-            9	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(this::Base::bar__bar__F_v)
-                ) ] 
             10	 => [ 
                 NamedRef(
                     mAddressOf: 0
@@ -2487,121 +2594,14 @@ AliasMap(ProcHandle(Base::bar)
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
-                    mSymHandle: SymHandle(r)
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(a)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(p)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(q)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(this::Base::bar__bar__F_v)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(s)
-                    )
-                    mNumDeref: 1
+                    mSymHandle: SymHandle(this::Base::bar__bar__F_v)
                 ) ] 
             13	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(s)
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(printf)
                 ) ] 
             14	 => [ 
                 UnnamedRef(
@@ -2945,94 +2945,33 @@ AliasMap(ProcHandle(Base::baz)
                 ) ] 
             1	 => [ 
                 NamedLoc(
-                    mSymHandle: SymHandle(printf)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            2	 => [ 
-                NamedLoc(
                     mSymHandle: SymHandle(a)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(b)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(q)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            6	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::foo__foo__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                )    
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::foo__foo__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            7	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::Base____ct__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            8	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::bar__bar__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                )    
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::bar__bar__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            9	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::baz__baz__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            10	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(this::Base::baz__baz__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            11	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            12	 => [ 
+            5	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(r)
                     mLocal: 0
@@ -3067,10 +3006,71 @@ AliasMap(ProcHandle(Base::baz)
                     mStmtHandle: StmtHandle((new Base ))
                     mLocal: 0
                 ) ] 
-            13	 => [ 
+            6	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(s)
                     mLocal: 0
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            7	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::foo__foo__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::foo__foo__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            8	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::Base____ct__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            9	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            10	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::baz__baz__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            11	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            12	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(this::Base::baz__baz__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            13	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(printf)
+                    mLocal: 1
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
@@ -3431,14 +3431,14 @@ AliasMap(ProcHandle(Base::baz)
             2	 => 2
             3	 => 2
             4	 => 2
-            5	 => 2
-            6	 => 1
-            7	 => 2
-            8	 => 1
-            9	 => 2
+            5	 => 1
+            6	 => 2
+            7	 => 1
+            8	 => 2
+            9	 => 1
             10	 => 2
             11	 => 2
-            12	 => 1
+            12	 => 2
             13	 => 2
             14	 => 1
             15	 => 1
@@ -3454,37 +3454,151 @@ AliasMap(ProcHandle(Base::baz)
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
-                    mSymHandle: SymHandle(printf)
-                ) ] 
-            2	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
                     mSymHandle: SymHandle(a)
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(b)
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(p)
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(q)
                 ) ] 
+            5	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(r)
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(a)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(this::Base::baz__baz__F_v)
+                    )
+                    mNumDeref: 1
+                ) ] 
             6	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s)
+                ) ] 
+            7	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -3625,14 +3739,14 @@ AliasMap(ProcHandle(Base::baz)
                     )
                     mNumDeref: 1
                 ) ] 
-            7	 => [ 
+            8	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
                     mSymHandle: SymHandle(method:Base::Base____ct__F_v)
                 ) ] 
-            8	 => [ 
+            9	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -3800,7 +3914,7 @@ AliasMap(ProcHandle(Base::baz)
                     )
                     mNumDeref: 1
                 ) ] 
-            9	 => [ 
+            10	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -3935,13 +4049,6 @@ AliasMap(ProcHandle(Base::baz)
                     )
                     mNumDeref: 1
                 ) ] 
-            10	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(this::Base::baz__baz__F_v)
-                ) ] 
             11	 => [ 
                 NamedRef(
                     mAddressOf: 0
@@ -3954,121 +4061,14 @@ AliasMap(ProcHandle(Base::baz)
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
-                    mSymHandle: SymHandle(r)
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(a)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(p)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(q)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(this::Base::baz__baz__F_v)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(s)
-                    )
-                    mNumDeref: 1
+                    mSymHandle: SymHandle(this::Base::baz__baz__F_v)
                 ) ] 
             13	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(s)
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(printf)
                 ) ] 
             14	 => [ 
                 UnnamedRef(
@@ -4412,87 +4412,33 @@ AliasMap(ProcHandle(Derived::foo)
                 ) ] 
             1	 => [ 
                 NamedLoc(
-                    mSymHandle: SymHandle(printf)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            2	 => [ 
-                NamedLoc(
                     mSymHandle: SymHandle(a)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(b)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(q)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            6	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::foo__foo__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                )    
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::foo__foo__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            7	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::Base____ct__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            8	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::bar__bar__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                )    
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::bar__bar__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            9	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::baz__baz__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            10	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            11	 => [ 
+            5	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(r)
                     mLocal: 0
@@ -4527,16 +4473,70 @@ AliasMap(ProcHandle(Derived::foo)
                     mStmtHandle: StmtHandle((new Base ))
                     mLocal: 0
                 ) ] 
-            12	 => [ 
+            6	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(s)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            13	 => [ 
+            7	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::foo__foo__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::foo__foo__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            8	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::Base____ct__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            9	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            10	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::baz__baz__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            11	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            12	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(this::Derived::foo__foo__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            13	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(printf)
                     mLocal: 1
                     mFullOverlap: 
                     mPartOverlap: 
@@ -4898,13 +4898,13 @@ AliasMap(ProcHandle(Derived::foo)
             2	 => 2
             3	 => 2
             4	 => 2
-            5	 => 2
-            6	 => 1
-            7	 => 2
-            8	 => 1
-            9	 => 2
+            5	 => 1
+            6	 => 2
+            7	 => 1
+            8	 => 2
+            9	 => 1
             10	 => 2
-            11	 => 1
+            11	 => 2
             12	 => 2
             13	 => 2
             14	 => 1
@@ -4915,46 +4915,160 @@ AliasMap(ProcHandle(Derived::foo)
             19	 => 1
             20	 => 1
     mIdToMemRefSetMap: int	 => MemRefSet
-            2	 => [ MemRefHandle(a) ] 
-            3	 => [ MemRefHandle(b) ] 
-            10	 => [ MemRefHandle(Derived)    MemRefHandle(Derived) ] 
+            1	 => [ MemRefHandle(a) ] 
+            2	 => [ MemRefHandle(b) ] 
+            11	 => [ MemRefHandle(Derived)    MemRefHandle(Derived) ] 
     mIdToMRESetMap: int	 => MemRefExprSet
             1	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
-                    mSymHandle: SymHandle(printf)
-                ) ] 
-            2	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
                     mSymHandle: SymHandle(a)
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(b)
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(p)
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(q)
                 ) ] 
+            5	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(r)
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(a)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(this::Derived::foo__foo__F_v)
+                    )
+                    mNumDeref: 1
+                ) ] 
             6	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s)
+                ) ] 
+            7	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -5095,14 +5209,14 @@ AliasMap(ProcHandle(Derived::foo)
                     )
                     mNumDeref: 1
                 ) ] 
-            7	 => [ 
+            8	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
                     mSymHandle: SymHandle(method:Base::Base____ct__F_v)
                 ) ] 
-            8	 => [ 
+            9	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -5270,7 +5384,7 @@ AliasMap(ProcHandle(Derived::foo)
                     )
                     mNumDeref: 1
                 ) ] 
-            9	 => [ 
+            10	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -5405,140 +5519,26 @@ AliasMap(ProcHandle(Derived::foo)
                     )
                     mNumDeref: 1
                 ) ] 
-            10	 => [ 
+            11	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
                     mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
                 ) ] 
-            11	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(r)
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(a)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(p)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(q)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(s)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(this::Derived::foo__foo__F_v)
-                    )
-                    mNumDeref: 1
-                ) ] 
             12	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
-                    mSymHandle: SymHandle(s)
+                    mSymHandle: SymHandle(this::Derived::foo__foo__F_v)
                 ) ] 
             13	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(this::Derived::foo__foo__F_v)
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(printf)
                 ) ] 
             14	 => [ 
                 UnnamedRef(
@@ -5882,87 +5882,33 @@ AliasMap(ProcHandle(Derived::bar)
                 ) ] 
             1	 => [ 
                 NamedLoc(
-                    mSymHandle: SymHandle(printf)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            2	 => [ 
-                NamedLoc(
                     mSymHandle: SymHandle(a)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(b)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(q)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            6	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::foo__foo__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                )    
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::foo__foo__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            7	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::Base____ct__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            8	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::bar__bar__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                )    
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::bar__bar__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            9	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::baz__baz__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            10	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            11	 => [ 
+            5	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(r)
                     mLocal: 0
@@ -5997,16 +5943,70 @@ AliasMap(ProcHandle(Derived::bar)
                     mStmtHandle: StmtHandle((new Base ))
                     mLocal: 0
                 ) ] 
-            12	 => [ 
+            6	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(s)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            13	 => [ 
+            7	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::foo__foo__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::foo__foo__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            8	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::Base____ct__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            9	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            10	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::baz__baz__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            11	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            12	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(this::Derived::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            13	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(printf)
                     mLocal: 1
                     mFullOverlap: 
                     mPartOverlap: 
@@ -6368,13 +6368,13 @@ AliasMap(ProcHandle(Derived::bar)
             2	 => 2
             3	 => 2
             4	 => 2
-            5	 => 2
-            6	 => 1
-            7	 => 2
-            8	 => 1
-            9	 => 2
+            5	 => 1
+            6	 => 2
+            7	 => 1
+            8	 => 2
+            9	 => 1
             10	 => 2
-            11	 => 1
+            11	 => 2
             12	 => 2
             13	 => 2
             14	 => 1
@@ -6391,37 +6391,151 @@ AliasMap(ProcHandle(Derived::bar)
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
-                    mSymHandle: SymHandle(printf)
-                ) ] 
-            2	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
                     mSymHandle: SymHandle(a)
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(b)
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(p)
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(q)
                 ) ] 
+            5	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(r)
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(a)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(this::Derived::bar__bar__F_v)
+                    )
+                    mNumDeref: 1
+                ) ] 
             6	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s)
+                ) ] 
+            7	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -6562,14 +6676,14 @@ AliasMap(ProcHandle(Derived::bar)
                     )
                     mNumDeref: 1
                 ) ] 
-            7	 => [ 
+            8	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
                     mSymHandle: SymHandle(method:Base::Base____ct__F_v)
                 ) ] 
-            8	 => [ 
+            9	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -6737,7 +6851,7 @@ AliasMap(ProcHandle(Derived::bar)
                     )
                     mNumDeref: 1
                 ) ] 
-            9	 => [ 
+            10	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -6872,140 +6986,26 @@ AliasMap(ProcHandle(Derived::bar)
                     )
                     mNumDeref: 1
                 ) ] 
-            10	 => [ 
+            11	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
                     mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
                 ) ] 
-            11	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(r)
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(a)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(p)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(q)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(s)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(this::Derived::bar__bar__F_v)
-                    )
-                    mNumDeref: 1
-                ) ] 
             12	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
-                    mSymHandle: SymHandle(s)
+                    mSymHandle: SymHandle(this::Derived::bar__bar__F_v)
                 ) ] 
             13	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(this::Derived::bar__bar__F_v)
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(printf)
                 ) ] 
             14	 => [ 
                 UnnamedRef(
@@ -7349,87 +7349,33 @@ AliasMap(ProcHandle(main)
                 ) ] 
             1	 => [ 
                 NamedLoc(
-                    mSymHandle: SymHandle(printf)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            2	 => [ 
-                NamedLoc(
                     mSymHandle: SymHandle(a)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(b)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(q)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            6	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::foo__foo__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                )    
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::foo__foo__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            7	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::Base____ct__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            8	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::bar__bar__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                )    
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::bar__bar__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            9	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Base::baz__baz__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            10	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            11	 => [ 
+            5	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(r)
                     mLocal: 0
@@ -7464,23 +7410,77 @@ AliasMap(ProcHandle(main)
                     mStmtHandle: StmtHandle((new Base ))
                     mLocal: 0
                 ) ] 
-            12	 => [ 
+            6	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(s)
                     mLocal: 0
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            13	 => [ 
+            7	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(argc)
                     mLocal: 1
                     mFullOverlap: 
                     mPartOverlap: 
                 ) ] 
-            14	 => [ 
+            8	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(argv)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            9	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::foo__foo__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::foo__foo__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            10	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::Base____ct__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            11	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                )    
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::bar__bar__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            12	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Base::baz__baz__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            13	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
+                    mLocal: 1
+                    mFullOverlap: 
+                    mPartOverlap: 
+                ) ] 
+            14	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(printf)
                     mLocal: 1
                     mFullOverlap: 
                     mPartOverlap: 
@@ -7842,11 +7842,11 @@ AliasMap(ProcHandle(main)
             2	 => 2
             3	 => 2
             4	 => 2
-            5	 => 2
-            6	 => 1
+            5	 => 1
+            6	 => 2
             7	 => 2
-            8	 => 1
-            9	 => 2
+            8	 => 2
+            9	 => 1
             10	 => 2
             11	 => 1
             12	 => 2
@@ -7860,16 +7860,16 @@ AliasMap(ProcHandle(main)
             20	 => 1
             21	 => 1
     mIdToMemRefSetMap: int	 => MemRefSet
-            2	 => [ MemRefHandle(a) ] 
-            3	 => [ MemRefHandle(b) ] 
-            4	 => [ MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p) ] 
-            5	 => [ MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q) ] 
-            7	 => [ MemRefHandle(Base)    MemRefHandle(Base)    MemRefHandle(Base)    MemRefHandle(Base) ] 
-            10	 => [ MemRefHandle(Derived)    MemRefHandle(Derived)    MemRefHandle(Derived) ] 
-            11	 => [ MemRefHandle(r) ] 
-            12	 => [ MemRefHandle(s)    MemRefHandle(s) ] 
-            13	 => [ MemRefHandle(argc) ] 
-            14	 => [ MemRefHandle(argv) ] 
+            1	 => [ MemRefHandle(a) ] 
+            2	 => [ MemRefHandle(b) ] 
+            3	 => [ MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p) ] 
+            4	 => [ MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q) ] 
+            5	 => [ MemRefHandle(r) ] 
+            6	 => [ MemRefHandle(s)    MemRefHandle(s) ] 
+            7	 => [ MemRefHandle(argc) ] 
+            8	 => [ MemRefHandle(argv) ] 
+            10	 => [ MemRefHandle(Base)    MemRefHandle(Base)    MemRefHandle(Base)    MemRefHandle(Base) ] 
+            13	 => [ MemRefHandle(Derived)    MemRefHandle(Derived)    MemRefHandle(Derived) ] 
             16	 => [ MemRefHandle(s -> Derived::bar)    MemRefHandle(a -> bar) ] 
             17	 => [ MemRefHandle(p -> baz) ] 
             18	 => [ MemRefHandle(p -> foo)    MemRefHandle(q -> foo)    MemRefHandle(q -> foo) ] 
@@ -7879,37 +7879,152 @@ AliasMap(ProcHandle(main)
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
-                    mSymHandle: SymHandle(printf)
-                ) ] 
-            2	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
                     mSymHandle: SymHandle(a)
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(b)
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(p)
                 ) ] 
-            5	 => [ 
+            4	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: DEF
                     mSymHandle: SymHandle(q)
                 ) ] 
+            5	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(r)
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Derived ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                UnnamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 0
+                    mMemRefType: USE
+                    mStmtHandle: StmtHandle((new Base ))
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(a)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                ) ] 
             6	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s)
+                ) ] 
+            7	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(argc)
+                ) ] 
+            8	 => [ 
+                NamedRef(
+                    mAddressOf: 0
+                    mFullAccuracy: 1
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(argv)
+                ) ] 
+            9	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -8050,14 +8165,14 @@ AliasMap(ProcHandle(main)
                     )
                     mNumDeref: 1
                 ) ] 
-            7	 => [ 
+            10	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
                     mSymHandle: SymHandle(method:Base::Base____ct__F_v)
                 ) ] 
-            8	 => [ 
+            11	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -8225,7 +8340,7 @@ AliasMap(ProcHandle(main)
                     )
                     mNumDeref: 1
                 ) ] 
-            9	 => [ 
+            12	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
@@ -8360,134 +8475,19 @@ AliasMap(ProcHandle(main)
                     )
                     mNumDeref: 1
                 ) ] 
-            10	 => [ 
+            13	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
                     mSymHandle: SymHandle(method:Derived::Derived____ct__F_v)
                 ) ] 
-            11	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(r)
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Derived ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                UnnamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mStmtHandle: StmtHandle((new Base ))
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(a)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(p)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(q)
-                    )
-                    mNumDeref: 1
-                )    
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(s)
-                    )
-                    mNumDeref: 1
-                ) ] 
-            12	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: DEF
-                    mSymHandle: SymHandle(s)
-                ) ] 
-            13	 => [ 
-                NamedRef(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mSymHandle: SymHandle(argc)
-                ) ] 
             14	 => [ 
                 NamedRef(
                     mAddressOf: 0
                     mFullAccuracy: 1
                     mMemRefType: USE
-                    mSymHandle: SymHandle(argv)
+                    mSymHandle: SymHandle(printf)
                 ) ] 
             15	 => [ 
                 UnnamedRef(
