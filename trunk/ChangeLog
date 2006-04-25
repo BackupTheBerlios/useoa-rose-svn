@@ -1237,3 +1237,11 @@
           case of a function call through a pointer.
         - SageIRMemRefIterator::handleDefaultCase wasn't returning a list
           of MREs created from the AST it was passed!
+
+4/24/06   UseOA-ROSE svn tag trunk r64  Michelle Strout
+	- Moved CtoOA driver into this directory.
+	- Moved NotationGenerator class that CtoOA uses into 
+	  OpenAnalysis/src/OpenAnalysis/Alias since it is generic
+	  to any implementation of AliasIRInterface
+	- Created scripts/AliasIRInterface.test to keep track of
+	  testing SageIRInterface as an AliasIRInterface.

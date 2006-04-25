@@ -64,7 +64,7 @@ clean-recursive:
 
 #LD_LIBRARY_PATH += /soft/apps/packages/gcc-3.1/lib
 
-bin_PROGRAMS = OATest OACFGTest staticVirtualMethodResolver
+bin_PROGRAMS = OATest CtoOA OACFGTest staticVirtualMethodResolver
 
 all:  recursive
 
@@ -74,9 +74,14 @@ OBJEXT = o
 EXEEXT = 
 
 OPENANALYSIS_LIB_WITH_PATH =$(OPENANALYSIS_DIR)/$(OPENANALYSIS_ARCH)/lib/libOAul.a
-OATest_SOURCES = testAll.C
+
+OATest_SOURCES = OATest.C
 OATest_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH)
 OATest_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
+
+CtoOA_SOURCES = CtoOA.cpp
+CtoOA_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH)
+CtoOA_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
 
 OACFGTest_SOURCES = CFGTest.C
 OACFGTest_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH)
@@ -85,6 +90,10 @@ OACFGTest_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
 am_OATest_OBJECTS = OATest.$(OBJEXT)
 OATest_OBJECTS = $(am_OATest_OBJECTS)
 OATest_LDFLAGS = 
+
+am_CtoOA_OBJECTS = CtoOA.$(OBJEXT)
+CtoOA_OBJECTS = $(am_CtoOA_OBJECTS)
+CtoOA_LDFLAGS = 
 
 am_staticVirtualMethodResolver_OBJECTS = staticVirtualMethodResolver.$(OBJEXT)
 staticVirtualMethodResolver_OBJECTS = $(am_staticVirtualMethodResolver_OBJECTS)
@@ -100,6 +109,11 @@ OATest$(EXEEXT): $(OATest_OBJECTS) $(OATest_DEPENDENCIES)
 	@rm -f OATest$(EXEEXT)
 	$(CXXLINK) $(OATest_LDFLAGS) $(OATest_OBJECTS) $(OATest_LDADD)
 
+CtoOA$(EXEEXT): $(CtoOA_OBJECTS) $(CtoOA_DEPENDENCIES) 
+	@rm -f CtoOA$(EXEEXT)
+	$(CXXLINK) $(CtoOA_LDFLAGS) $(CtoOA_OBJECTS) $(CtoOA_LDADD)
+
+
 staticVirtualMethodResolver$(EXEEXT): $(staticVirtualMethodResolver_OBJECTS) $(staticVirtualMethodResolver_DEPENDENCIES) 
 	@rm -f staticVirtualMethodResolver$(EXEEXT)
 	$(CXXLINK) $(staticVirtualMethodResolver_LDFLAGS) $(staticVirtualMethodResolver_OBJECTS) $(staticVirtualMethodResolver_LDADD)
@@ -110,6 +124,9 @@ OACFGTest$(EXEEXT): $(OACFGTest_OBJECTS) $(OACFGTest_DEPENDENCIES)
 
 
 .C.o:
+	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+
+.cpp.o:
 	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
 
 clean-am:
