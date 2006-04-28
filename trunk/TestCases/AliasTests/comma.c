@@ -7,6 +7,8 @@ int main()
     int *q;  
     int *r = &y;  
 
+    // comma operator: evaluated left-to-right and rightmost is result
+    // q = &x, p=r
     p = (q = &x, r);
 
     printf ("*p = %d\n", *p);

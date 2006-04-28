@@ -1,6 +1,6 @@
 # comment in file.test
 # Regression tests for FIAliasAliasMap generation
-testname::FIAliasAliasMap
+testname::UnreleasedFIAliasAliasMap
 inputdir::TestCases/AliasTests
 outputdir::TestResults/FIAliasAliasMap
 driverexec::./OATest -edg:w --oa-FIAliasAliasMap -c

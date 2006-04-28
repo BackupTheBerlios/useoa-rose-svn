@@ -328,7 +328,7 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
         OA::OA_ptr<OA::OutputBuilderDOT> dotBuilder;
         dotBuilder = new OA::OutputBuilderDOT();
         cfg->configOutput(dotBuilder);
-        cfg->output(irInterface);
+        cfg->output(*irInterface);
 
         if ( debug ) {
 	    printf("*********\n**********  printing CFG\n***********\n************\n"); //code mostly from wn2f.cxx
@@ -500,7 +500,7 @@ int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
     fialiasman->performAnalysis(procIter);
 #endif
   //  alias->dump(std::cout, irInterface);
-  alias->output(irInterface);
+  alias->output(*irInterface);
 }
 
 int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
@@ -542,7 +542,7 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
     OA::ProcHandle procHandle = procIter->current();
     OA::OA_ptr<OA::Alias::AliasMap> aliasMap = 
       fialiasman->getAliasResults(procHandle);
-    aliasMap->output(irInterface);
+    aliasMap->output(*irInterface);
   }
 }
 
@@ -639,7 +639,7 @@ void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt)
         //fflush(stdout);
         OA::OA_ptr<OA::MemRefExpr::MemRefExpr> mre = mreIterPtr->current();
         std::cout << "\tmre = ";
-	mre->output(ir);
+	mre->output(*ir);
 	//	mre->dump(std::cout, ir);
         std::cout << std::endl;
       }
