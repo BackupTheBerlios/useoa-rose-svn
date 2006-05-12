@@ -1245,3 +1245,8 @@
 	  to any implementation of AliasIRInterface
 	- Created scripts/AliasIRInterface.test to keep track of
 	  testing SageIRInterface as an AliasIRInterface.
+
+5/11/06   UseOA-ROSE svn tag trunk r66  Andy Stone
+        - Fixed bug #7317: Comma semantics not properly modeled.  The comma
+          operator was incorrectly returning the left hand value operand of the
+          right hand operand.

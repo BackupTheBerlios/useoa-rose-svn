@@ -1,4 +1,4 @@
-#include "Sage2OA.h"
+
 #include "SageOACallGraph.h"
 #include "MemSage2OA.h"
  
@@ -3287,18 +3287,22 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
 	}
       case V_SgCommaOpExp:
 	{
-	  SgCommaOpExp *commaOpExp = isSgCommaOpExp(rhs);
-	  ROSE_ASSERT(commaOpExp != NULL);
+          SgCommaOpExp *commaOpExp = isSgCommaOpExp(rhs);
+          ROSE_ASSERT(commaOpExp != NULL);
 
-	  // Either the lhs or the rhs could be an assignment.
-	  rhs = createPtrAssignPairsFromAssignment(commaOpExp->get_lhs_operand());
-	  createPtrAssignPairsFromAssignment(commaOpExp->get_rhs_operand());
+          // Either the lhs or the rhs could be an assignment
+          lhs =
+            createPtrAssignPairsFromAssignment(commaOpExp->get_lhs_operand());
+          ROSE_ASSERT(lhs != NULL);
 
-	  ROSE_ASSERT(rhs != NULL);
+          rhs =
+            createPtrAssignPairsFromAssignment(commaOpExp->get_rhs_operand());
+          ROSE_ASSERT(rhs != NULL);
 
-	  rhses.push_back(rhs);
+          // comma operator evaluates both sides and returns the rhs
+          rhses.push_back(rhs);
 
-	  break;
+          break;
 	}
       case V_SgConditionalExp:
 	{
