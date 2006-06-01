@@ -5,9 +5,6 @@
   \authors Andy Stone
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 #include <rose.h>
 #include "Sage2OA.h"
 #include "SageOACallGraph.h"

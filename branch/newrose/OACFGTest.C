@@ -8,9 +8,6 @@
                 also copied Beata's text output from DoOpenAnalysis.cpp
   9/2/04 MMS: copied from adic-2.0/xaif
 */
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 
 #include <rose.h>
 #include "Sage2OA.h"

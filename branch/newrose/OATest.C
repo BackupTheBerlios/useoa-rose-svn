@@ -19,10 +19,6 @@
   {  0 , "oa-AliasMapXAIF",       CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },  */
   
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <rose.h>
 #include "Sage2OA.h"
 #include "SageOACallGraph.h"

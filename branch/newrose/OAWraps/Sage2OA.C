@@ -7919,6 +7919,7 @@ bool SageIRInterface::isFieldAccess(OA::OA_ptr<OA::MemRefExpr> mre)
 // newer versions in which attributes are accessible via a method call.
 AstAttributeMechanism &SageIRInterface::getAttribute(SgNode *n)
 {
+/*
   ROSE_ASSERT(n);
 #ifdef UNRELEASED_ROSE
   if ( n->get_attribute() == NULL ) {
@@ -7930,6 +7931,7 @@ AstAttributeMechanism &SageIRInterface::getAttribute(SgNode *n)
 #else
   return n->attribute;
 #endif
+*/
 }
 
 bool SageIRInterface::returnsAddress(SgFunctionCallExp *functionCallExp)
