@@ -1,0 +1,8 @@
+Works with OpenAnalysis cvs tag date_2005_10_20 and rose-0.8.6a.
+
+Everything was compiled with g++3.3.4
+
+To build:
+-edit Makefile.inc to indicate where rose and OpenAnalysis are located
+-type make 
+
