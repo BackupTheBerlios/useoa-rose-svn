@@ -100,10 +100,10 @@ main ( unsigned argc,  char * argv[] )
     int filenum = sageProject->numberOfFiles();
 
     // debug info
-    AstPDFGeneration pdftest;
+    /*AstPDFGeneration pdftest;
     pdftest.generateInputFiles(sageProject);
     AstDOTGeneration dottest;
-    dottest.generateInputFiles(sageProject);
+    dottest.generateInputFiles(sageProject);*/
 
     CmdOptions *cmds = CmdOptions::GetInstance();
     cmds->SetOptions(argc, argv);

@@ -6,6 +6,12 @@ SHELL=/bin/sh
 #GLOBAL_DEFINES = 
 GLOBAL_DEFINES = -DUNRELEASED_ROSE
 
+# Compiler flags specifying options such as optimization level, whether or not
+# to include debugging information, and whether or not to include profiling
+# information.
+#PROFILE_FLAGS=-g -O0
+PROFILE_FLAGS=-g -pg -O0
+
 # Top-level UseOA source directory
 #topsrcdir=/usr/casc/overture/bwhite/UseOA-ROSE-trunk/
 #topsrcdir=/s/parsons/c/fac/mstrout/OA/UseOA-ROSE-FIAlias/
@@ -24,7 +30,9 @@ ROSE_INST_ROOT=/home/stone48/ROSE-CVS/gcc3.3.3
 #OPENANALYSIS_DIR=/s/parsons/c/fac/mstrout/OA/armstrong/OpenAnalysis
 #OPENANALYSIS_DIR=/s/bach/l/under/stonea/berlios/openanalysis/OpenAnalysis/trunk
 #OPENANALYSIS_DIR=/s/bach/l/under/stonea/berlios/openanalysis/OpenAnalysis/branch/rmIters
-OPENANALYSIS_DIR=/home/stone48/OACompile
+#OPENANALYSIS_DIR=/home/stone48/OACompile
+OPENANALYSIS_DIR=/home/stone48/berlios/openanalysis/OpenAnalysis/trunk2
+#OPENANALYSIS_DIR=/home/stone48/berlios/openanalysis/OpenAnalysis/trunk
 OPENANALYSIS_ARCH=i686-Linux
 #OPENANALYSIS_ARCH=opteron-Linux
 OPENANALYSIS_LIB =-L$(OPENANALYSIS_DIR)/$(OPENANALYSIS_ARCH)/lib -lOAul
