@@ -105,7 +105,7 @@ main ( unsigned argc,  char * argv[] )
 
     // debug info
     AstPDFGeneration pdftest;
-    pdftest.generateInputFiles(sageProject);
+    //pdftest.generateInputFiles(sageProject);
     AstDOTGeneration dottest;
     dottest.generateInputFiles(sageProject);
 
@@ -536,14 +536,9 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   // stdlib.h, etc.
   procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
   //#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
-  fialiasman->performAnalysis(procIter);
-  procIter->reset();
-  for(; procIter->isValid(); ++(*procIter)) {
-    OA::ProcHandle procHandle = procIter->current();
-    OA::OA_ptr<OA::Alias::AliasMap> aliasMap = 
-      fialiasman->getAliasResults(procHandle);
-    aliasMap->output(*irInterface);
-  }
+  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+  interAlias = fialiasman->performAnalysis(procIter);
+  interAlias->output(*irInterface);
 }
 
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)

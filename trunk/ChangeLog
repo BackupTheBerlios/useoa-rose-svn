@@ -1250,3 +1250,11 @@
         - Fixed bug #7317: Comma semantics not properly modeled.  The comma
           operator was incorrectly returning the left hand value operand of the
           right hand operand.
+
+6/9/06    UseOA-ROSE svn tag trunk r70 Michelle Strout
+      - changed how it is calling ManagerFIAliasAliasMap based on OA change
+        of interface
+      - added a test file in TestCases/AliasTests to look at some of the
+        CallGraph behavior and FIAliasAliasMap behavior with missing
+        functions.
+
