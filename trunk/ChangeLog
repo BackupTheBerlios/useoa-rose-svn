@@ -1258,3 +1258,8 @@
         CallGraph behavior and FIAliasAliasMap behavior with missing
         functions.
 
+6/9/06    UseOA-ROSE svn tag trunk r71 Andy Stone
+    - I've updated UseOA-ROSE so that it works with the latest version of ROSE,
+      version 0.8.7a. The necessary changes entailed:
+        - Commenting out all places where <config.h> was #included
+        - Changed the SageIRInterface::getAttribute() function in Sage2OA.C.

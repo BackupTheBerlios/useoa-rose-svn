@@ -6,7 +6,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+// #include <config.h>
 #endif
 #include <rose.h>
 #include "Sage2OA.h"

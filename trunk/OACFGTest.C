@@ -9,7 +9,7 @@
   9/2/04 MMS: copied from adic-2.0/xaif
 */
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+//#include <config.h>
 #endif
 
 #include <rose.h>

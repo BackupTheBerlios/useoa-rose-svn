@@ -9,19 +9,22 @@ GLOBAL_DEFINES = -DUNRELEASED_ROSE
 # Top-level UseOA source directory
 #topsrcdir=/usr/casc/overture/bwhite/UseOA-ROSE-trunk/
 #topsrcdir=/s/parsons/c/fac/mstrout/OA/UseOA-ROSE-FIAlias/
-topsrcdir=/s/parsons/c/fac/mstrout/OA/armstrong/UseOA-ROSE
+#topsrcdir=/s/parsons/c/fac/mstrout/OA/armstrong/UseOA-ROSE
 #topsrcdir=/s/bach/l/under/stonea/berlios/UseOA-ROSE/trunk
+topsrcdir=/home/stone48/cleanslate/useoa
 
 # Root of ROSE installation
 #ROSE_INST_ROOT=/s/parsons/c/fac/mstrout/rose-0.8.6a/LINUX-3.3.4/
 #ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-4.0.2-temp/LINUX-CORE4-gcc4.0.2
-ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-64bit-temp/armstrong
+#ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-64bit-temp/armstrong
+ROSE_INST_ROOT=/home/stone48/ROSE-CVS/gcc3.3.3
 #ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-4.0.2-temp/armstrong
 
 # OpenAnalysis variables
-OPENANALYSIS_DIR=/s/parsons/c/fac/mstrout/OA/armstrong/OpenAnalysis
+#OPENANALYSIS_DIR=/s/parsons/c/fac/mstrout/OA/armstrong/OpenAnalysis
 #OPENANALYSIS_DIR=/s/bach/l/under/stonea/berlios/openanalysis/OpenAnalysis/trunk
 #OPENANALYSIS_DIR=/s/bach/l/under/stonea/berlios/openanalysis/OpenAnalysis/branch/rmIters
+OPENANALYSIS_DIR=/home/stone48/cleanslate/oa
 OPENANALYSIS_ARCH=i686-Linux
 #OPENANALYSIS_ARCH=opteron-Linux
 OPENANALYSIS_LIB =-L$(OPENANALYSIS_DIR)/$(OPENANALYSIS_ARCH)/lib -lOAul

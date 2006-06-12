@@ -6,7 +6,7 @@
 #include <OpenAnalysis/MemRefExpr/MemRefExpr.hpp>
 //#include <OpenAnalysis/IRInterface/MemRefExprIRShortCircuit.hpp>
 //#include <OpenAnalysis/MemRefExpr/MemRefExprAll.hpp>
-#include <config.h>
+//#include <config.h>
 #include "rose.h"
 
 #include "Sage2OA.h"
