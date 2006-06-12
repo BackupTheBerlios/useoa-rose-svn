@@ -16,8 +16,8 @@ DEFINES = -DHAVE_CONFIG_H -DOA_IRHANDLETYPE_UL $(GLOBAL_DEFINES) #-DOA_OPEN64
 INCLUDES = -I. -I.. -I./OAWraps/ $(ROSE_INCLUDES) $(OPENANALYSIS_INC)
 #LIBS= -L$(srcdir)/OAWraps/ -lSage2OA $(OPENANALYSIS_LIB) $(ROSE_LIBS) -lm -lfl -lrt -lpthread
 LIBS= -lSage2OA $(OPENANALYSIS_LIB)
-CXXFLAGS = -fPIC -ftemplate-depth-50 -O0 -g #$(DEFINES) $(INCLUDES) $(DEBUGFLAGS)
-LDFLAGS = -Wl,-rpath $(srcdir)/OAWraps/ -L$(srcdir)/OAWraps 
+CXXFLAGS = -fPIC -ftemplate-depth-50 $(PROFILE_OPTIONS) #$(DEFINES) $(INCLUDES) $(DEBUGFLAGS)
+LDFLAGS = -Wl,-rpath $(srcdir)/OAWraps -L$(srcdir)/OAWraps $(PROFILE_OPTIONS) 
 
 CXXCOMPILE = $(CXX) $(DEFINES) $(INCLUDES) $(CXXFLAGS)
 CXXLINK = $(CXXLD) $(LDFLAGS) -o $@

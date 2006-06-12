@@ -6,12 +6,18 @@ SHELL=/bin/sh
 #GLOBAL_DEFINES = 
 GLOBAL_DEFINES = -DUNRELEASED_ROSE
 
+# Specifies what debugging & profile flags are sent to the compiler
+# and linker
+PROFILE_OPTIONS = -O0 -g -pg
+#PROFILE_OPTIONS = -O0 -g
+#PROFILE_OPTIONS =
+
 # Top-level UseOA source directory
 #topsrcdir=/usr/casc/overture/bwhite/UseOA-ROSE-trunk/
 #topsrcdir=/s/parsons/c/fac/mstrout/OA/UseOA-ROSE-FIAlias/
 #topsrcdir=/s/parsons/c/fac/mstrout/OA/armstrong/UseOA-ROSE
 #topsrcdir=/s/bach/l/under/stonea/berlios/UseOA-ROSE/trunk
-topsrcdir=/home/stone48/cleanslate/useoa
+topsrcdir=/home/stone48/cleanslate/useoa-rose
 
 # Root of ROSE installation
 #ROSE_INST_ROOT=/s/parsons/c/fac/mstrout/rose-0.8.6a/LINUX-3.3.4/

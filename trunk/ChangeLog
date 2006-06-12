@@ -1258,8 +1258,16 @@
         CallGraph behavior and FIAliasAliasMap behavior with missing
         functions.
 
-6/9/06    UseOA-ROSE svn tag trunk r71 Andy Stone
+6/12/06    UseOA-ROSE svn tag trunk r71 Andy Stone
     - I've updated UseOA-ROSE so that it works with the latest version of ROSE,
       version 0.8.7a. The necessary changes entailed:
         - Commenting out all places where <config.h> was #included
         - Changed the SageIRInterface::getAttribute() function in Sage2OA.C.
+
+6/12/06    UseOA-ROSE svn tag trunk r72 Andy Stone
+    - Added OABenchmark script.  View the script for information about its
+      purpose and usage.
+    - Added PROFILE_OPTIONS Makefile variables to Makefile.inc.  This variable
+      should be used to specify what debugging and profiling flags should be
+      passed to the compiler and linker (ex. -O0 -g -pg).  Also modified
+      Makefile and OAWraps/Makefile to take advantage of this new variable.
