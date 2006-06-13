@@ -1271,3 +1271,9 @@
       should be used to specify what debugging and profiling flags should be
       passed to the compiler and linker (ex. -O0 -g -pg).  Also modified
       Makefile and OAWraps/Makefile to take advantage of this new variable.
+
+6/13/06    UseOA-ROSE svn tag trunk r73 Andy Stone
+    - Fixed a very simple bug in createPtrAssignPairsFromAssignment.  The
+      left hand side of the pointer assignment pair was incorrectly being
+      set to the left hand side of the comma operator expression.
+      generated for a comma operator were incorrect.

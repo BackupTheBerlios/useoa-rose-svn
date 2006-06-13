@@ -3291,8 +3291,7 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
           ROSE_ASSERT(commaOpExp != NULL);
 
           // Either the lhs or the rhs could be an assignment
-          lhs =
-            createPtrAssignPairsFromAssignment(commaOpExp->get_lhs_operand());
+          createPtrAssignPairsFromAssignment(commaOpExp->get_lhs_operand());
           ROSE_ASSERT(lhs != NULL);
 
           rhs =
