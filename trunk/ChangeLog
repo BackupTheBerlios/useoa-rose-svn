@@ -1276,4 +1276,4 @@
     - Fixed a very simple bug in createPtrAssignPairsFromAssignment.  The
       left hand side of the pointer assignment pair was incorrectly being
       set to the left hand side of the comma operator expression.
-      generated for a comma operator were incorrect.
+
