@@ -23,7 +23,7 @@ topsrcdir=/home/stone48/berlios/useoa-rose/trunk
 #ROSE_INST_ROOT=/s/parsons/c/fac/mstrout/rose-0.8.6a/LINUX-3.3.4/
 #ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-4.0.2-temp/LINUX-CORE4-gcc4.0.2
 #ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-64bit-temp/armstrong
-ROSE_INST_ROOT=/home/stone48/ROSE-CVS/gcc3.3.3
+ROSE_INST_ROOT=/home/stone48/rose/gcc3.4.3
 #ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-4.0.2-temp/armstrong
 
 # OpenAnalysis variables

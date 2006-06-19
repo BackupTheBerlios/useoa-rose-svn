@@ -108,3 +108,5 @@ for line in filelines:
         regfile.write("diff t %s/%s\n\n" \
             % (outputdir,inputfile+".out"))
 
+# output
+print "generated scripts: " + genfilename + " and " + regfilename
