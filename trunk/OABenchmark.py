@@ -2,6 +2,7 @@
 #################################################################
 # OABenchmark.py
 # By: Andy Stone (aistone@gmail.com)
+# Version 0.2.0
 #
 # usage: OABenchmark.py files algorithm [repititions] [suffix]
 #
@@ -32,6 +33,12 @@
 #   This command will run the FIAliasAliasMap algorithm on all
 #   files listed in the 'sources' file, profile each, and produce
 #   the following files:
+#
+# History:
+#   0.1.0 = Initial version.
+#   0.2.0 = The files file will now be searched for to see if
+#           the CXXFlags variable is assigned.  The assigned
+#           value will be passed to the ROSE compiler.
 #     
 #################################################################
 import sys
@@ -72,16 +79,33 @@ if len(sys.argv) > 5:
     usage()
     sys.exit(0)
 
-#### read the files file and remove all comment and blank lines
+#### read the files file, read variables, and remove all comments and blank
+#### lines
 
 file = open(filesfile)
 filelines = file.readlines()
 
-def notcomment(line):
-    if (line[0] == '#') or (string.strip(line) == ''): return 0
-    else: return 1
-   
-filelines = filter(notcomment,filelines)
+def isAssignment(line):
+    if(line.find('=') != -1):
+        return 1
+    else:
+        return 0
+
+# read in assignment lines, look for 'CXXFLAGS'
+assignmentLines = filter(isAssignment, filelines)
+var_CXXFLAGS = ""
+for line in assignmentLines:
+    tokens = line.split('=')
+    if(tokens[0] == "CXXFLAGS"):
+        var_CXXFLAGS=tokens[1]
+
+def notCommentOrAssignment(line):
+    if (string.strip(line) == '') or (line.lstrip()[0] == '#') or (line.find('=') != -1):
+        return 0
+    else:
+        return 1
+
+filelines = filter(notCommentOrAssignment,filelines)
 
 ##### generate the files string
 files = ""
@@ -89,8 +113,12 @@ for line in filelines:
     files = files + " " + line.rstrip()
 
 ### 
+
+additionalParams = var_CXXFLAGS.rstrip()
+print "Addition params = " + var_CXXFLAGS
+
 for i in range(1, repititions+1):
-    strExec = "./OATest " + algorithm + files;
+    strExec = "./OATest " + algorithm + " " + additionalParams + " -c" + files;
     strProf = "gprof OATest > " + profileName(suffix, i, repititions)
     print 80 * "="
     print "Running: " + strExec
@@ -98,3 +126,4 @@ for i in range(1, repititions+1):
     print 33 * " " + "====="
     print "Running: " + strProf
     print commands.getoutput(strProf)
+

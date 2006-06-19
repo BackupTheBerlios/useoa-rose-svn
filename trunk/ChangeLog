@@ -1277,3 +1277,8 @@
       left hand side of the pointer assignment pair was incorrectly being
       set to the left hand side of the comma operator expression.
 
+6/19/06    UseOA-ROSE svn tag trunk r75 Andy Stone
+    - Added TestCases/AliasTests/smg2000-typedefStruct.C.  This case models an
+      error I found in the smg2000 program <http://tinyurl.com/lvtoo>.
+    - Updated the OABenchmark python script so that it can now read in a
+      CXXFlags variable from the files file.
