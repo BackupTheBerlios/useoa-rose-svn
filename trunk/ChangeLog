@@ -1282,3 +1282,8 @@
       error I found in the smg2000 program <http://tinyurl.com/lvtoo>.
     - Updated the OABenchmark python script so that it can now read in a
       CXXFlags variable from the files file.
+
+6/21/06    UseOA-ROSE svn tag trunk r77 Michelle Strout
+    Fixed OATest.C so that it works with OpenAnalysis rev 118 where
+    I fixed CallGraph construction so that it uses alias analysis results.
+    We still need to set up some regression tests for this.

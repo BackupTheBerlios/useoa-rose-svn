@@ -411,26 +411,34 @@ int DoCallGraph(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
         OA::OA_ptr<SageIRInterface> irInterface;
         irInterface = new SageIRInterface(sgproject, na, p_handle);
   //irInterface->createNodeArray(sgproject); //what about global vars?
+  
+    //FIAlias
+    OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+    fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+    OA::OA_ptr<SageIRProcIterator> procIter;
+    bool excludeInputFiles = true;
+    // Don't pull in any procedures defined in input files.  For testing
+    // purposes only:  avoids unexpected/spurious results due to 
+    // stdlib.h, etc.
+    procIter = new SageIRProcIterator(sgproject, 
+                                      irInterface, excludeInputFiles);
+    OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+    interAlias = fialiasman->performAnalysis(procIter);
 
-	//try
-	//{
-        // create CallGraph Manager and then Call Graph
-        OA::OA_ptr<OA::CallGraph::ManagerStandard> callgraphmanstd;
-        callgraphmanstd= new OA::CallGraph::ManagerStandard(irInterface);
-        OA::OA_ptr<SageIRProcIterator> procIter;
-        procIter = new SageIRProcIterator(sgproject, irInterface);
+    // create CallGraph Manager and then Call Graph
+    OA::OA_ptr<OA::CallGraph::ManagerStandard> callgraphmanstd;
+    callgraphmanstd= new OA::CallGraph::ManagerStandard(irInterface);
+//    OA::OA_ptr<SageIRProcIterator> procIter;
+//    procIter = new SageIRProcIterator(sgproject, irInterface);
 
-        OA::OA_ptr<OA::CallGraph::CallGraphStandard> callgraph
-          = callgraphmanstd->performAnalysis(procIter);
-        callgraph->dump(std::cout, irInterface);
-	//}
-	//catch(Exception &e)
-	//{
-//		printf("error in try\n");
-		
-//	}
-
-
+    OA::OA_ptr<OA::CallGraph::CallGraphStandard> callgraph
+      = callgraphmanstd->performAnalysis(procIter,interAlias);
+    callgraph->output(*irInterface);
+    // dot output
+    OA::OA_ptr<OA::OutputBuilder> outBuild;
+    outBuild = new OA::OutputBuilderDOT;
+    callgraph->configOutput(outBuild);
+    callgraph->output(*irInterface);
 	
 	std::cout << "\n*******  end of DoCallGraph *********\n\n";
 	return returnvalue;
