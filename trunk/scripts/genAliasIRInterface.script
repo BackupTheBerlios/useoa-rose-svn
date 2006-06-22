@@ -1,6 +1,2 @@
-echo "Generating TestResults/AliasIRInterface/parambinds-formals.C.out"
-./CtoOA TestCases/AliasTests/parambinds-formals.C > TestResults/AliasIRInterface/parambinds-formals.C.out
-echo "Generating TestResults/AliasIRInterface/func-ptrs.C.out"
-./CtoOA TestCases/AliasTests/func-ptrs.C > TestResults/AliasIRInterface/func-ptrs.C.out
-echo "Generating TestResults/AliasIRInterface/t1.c.out"
-./CtoOA TestCases/AliasTests/t1.c > TestResults/AliasIRInterface/t1.c.out
+echo "Generating TestResults/AliasIRInterface/comma.c.out"
+./CtoOA TestCases/AliasTests/comma.c > TestResults/AliasIRInterface/comma.c.out

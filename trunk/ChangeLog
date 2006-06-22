@@ -1287,3 +1287,8 @@
     Fixed OATest.C so that it works with OpenAnalysis rev 118 where
     I fixed CallGraph construction so that it uses alias analysis results.
     We still need to set up some regression tests for this.
+
+6/22/06    UseOA-ROSE svn tag trunk r78 Michelle Strout
+    Added a regression test for Andy's fix of the comma bug.  Original bug:
+    ./CtoOA TestCases/AliasTests/comma.c results in incorrect PTRASSIGNPAIRS
+    for StmtHandle("p =((q = &x) , r);"). p should get assigned to r not q.

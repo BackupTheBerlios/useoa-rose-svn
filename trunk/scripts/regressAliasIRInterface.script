@@ -1,12 +1,4 @@
-echo "Testing TestCases/AliasTests/parambinds-formals.C, TestResults/AliasIRInterface/parambinds-formals.C.out error email sent 4/19/06 MMS"
-./CtoOA TestCases/AliasTests/parambinds-formals.C > t
-diff t TestResults/AliasIRInterface/parambinds-formals.C.out
-
-echo "Testing TestCases/AliasTests/func-ptrs.C, TestResults/AliasIRInterface/func-ptrs.C.out no checked yet"
-./CtoOA TestCases/AliasTests/func-ptrs.C > t
-diff t TestResults/AliasIRInterface/func-ptrs.C.out
-
-echo "Testing TestCases/AliasTests/t1.c, TestResults/AliasIRInterface/t1.c.out error 4/24/06 MMS"
-./CtoOA TestCases/AliasTests/t1.c > t
-diff t TestResults/AliasIRInterface/t1.c.out
+echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c.out checked by MMS 6/22/06"
+./CtoOA TestCases/AliasTests/comma.c > t
+diff t TestResults/AliasIRInterface/comma.c.out
 
