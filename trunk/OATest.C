@@ -37,6 +37,7 @@
 #include <OpenAnalysis/MemRefExpr/MemRefExpr.hpp>
 #include <OpenAnalysis/SideEffect/InterSideEffectStandard.hpp>
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
+#include <OpenAnalysis/Utils/Util.hpp>
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
 
 #include <string>
@@ -84,7 +85,6 @@ void usage(char **argv)
 int
 main ( unsigned argc,  char * argv[] )
 {
-  
   bool p_h=FALSE; //for debugging only switch between persistent and "pointer" handles (pointers are faster, persistent are easier to debug
 
   //  p_h = TRUE;

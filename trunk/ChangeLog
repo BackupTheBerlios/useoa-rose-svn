@@ -1292,3 +1292,10 @@
     Added a regression test for Andy's fix of the comma bug.  Original bug:
     ./CtoOA TestCases/AliasTests/comma.c results in incorrect PTRASSIGNPAIRS
     for StmtHandle("p =((q = &x) , r);"). p should get assigned to r not q.
+
+6/23/06    UseOA-ROSE svn tag trunk r79 Andy Stone
+    - Added 10 regression tests for the FIAliasAliasMap.  These tests are
+      for alias1.c, alias2.c, alias3.c, alias4.c, alias4b.c, comma.c,
+      funCall.c utke.c, OAWikiEx.c, and constQualified.c.  Also added
+      template.test to the scripts directory.
+
