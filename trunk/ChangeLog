@@ -1302,3 +1302,7 @@
 6/26/06    UseOA-ROSE svn tag trunk r80 Andy Stone
     - Added regressFIAliasAliasMap.script and genFIAliasAliasMap.script which I
       forgot to add in r79.
+
+6/26/06    UseOA-ROSE svn tag trunk r81 Andy Stone
+    - Added regression tests for AliasIRInterface.  These tests are
+      for alias1.c, alias2.c, alias4.c, and alias4b.c.
