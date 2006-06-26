@@ -1299,3 +1299,6 @@
       funCall.c utke.c, OAWikiEx.c, and constQualified.c.  Also added
       template.test to the scripts directory.
 
+6/26/06    UseOA-ROSE svn tag trunk r80 Andy Stone
+    - Added regressFIAliasAliasMap.script and genFIAliasAliasMap.script which I
+      forgot to add in r79.
