@@ -1337,3 +1337,8 @@
     - Added and verified two scripts for function pointers.  functionPtr.c was
       taken from Luis's work in the CallGraph tests, functionPtr2.c is a
       version with more complicated aliasing issues.
+
+6/27/06    UseOA-Rose svn tag trunk r85 Barbara Kreaseck
+    - config/Makefile.inc has paths for me on armstrong
+
+

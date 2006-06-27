@@ -18,9 +18,10 @@ PROFILE_OPTIONS = -O0 -g
 #topsrcdir=/s/parsons/c/fac/mstrout/OA/armstrong/UseOA-ROSE
 #topsrcdir=/s/bach/l/under/stonea/berlios/UseOA-ROSE/trunk
 #topsrcdir=/home/stone48/berlios/useoa-rose/trunk
-topsrcdir=/s/parsons/b/others/lramos/OA/UseOA-ROSE
-
+#topsrcdir=/s/parsons/b/others/lramos/OA/UseOA-ROSE
 #topsrcdir=/s/bach/l/under/stonea/berlios/UseOA-ROSE/trunk
+topsrcdir=/s/parsons/b/others/kreaseck/ROSE/UseOA-ROSE
+
 # Root of ROSE installation
 #ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-for-4.0.2-temp/LINUX-CORE4-gcc4.0.2
 ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-0.8.7a/armstrong
@@ -31,7 +32,8 @@ ROSE_INST_ROOT=/s/bach/e/proj/oadev/ROSE/rose-0.8.7a/armstrong
 #OPENANALYSIS_DIR=/s/parsons/c/fac/mstrout/OA/armstrong/OpenAnalysis
 #OPENANALYSIS_DIR=/home/stone48/berlios/openanalysis/OpenAnalysis/branch/locationComparisonChanges
 #OPENANALYSIS_DIR=/home/stone48/berlios/openanalysis/OpenAnalysis/trunk
-OPENANALYSIS_DIR=/s/parsons/b/others/lramos/OA/OpenAnalysis
+#OPENANALYSIS_DIR=/s/parsons/b/others/lramos/OA/OpenAnalysis
+OPENANALYSIS_DIR=/s/parsons/b/others/kreaseck/ROSE/OpenAnalysis
 
 OPENANALYSIS_ARCH=i686-Linux
 #OPENANALYSIS_ARCH=opteron-Linux
