@@ -1,0 +1,11 @@
+# comment in file.test
+# Regression tests for CallGraph generation
+testname::CallGraph
+inputdir::TestCases/CallGraphTests
+outputdir::TestResults/CallGraph
+driverexec::./OATest -edg:w --oa-CallGraph -c
+
+# list of tests
+#       input file,    status
+test::  functionPtr.c, Checked By LMR 6-27-06
+

@@ -3,3 +3,6 @@ source scripts/regressFIAliasAliasMap.script
 
 echo "running regressFIAliasIRInterface.script"
 source scripts/regressAliasIRInterface.script
+
+echo "running regressCallGraph.script"
+source scripts/regressCallGraph.script
