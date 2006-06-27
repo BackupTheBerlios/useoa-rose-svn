@@ -1309,3 +1309,27 @@
 
 6/27/06    UseOA-ROSE svn tag trunk r82 Luis Ramos  
     - Added regression test for CallGraph. These test is for functionPtr.c 
+
+6/27/06    UseOA-ROSE svn tag trunk r83 Andy Stone
+    - Removed regression test "stuff" for the old unreleased version of ROSE.
+      This included removing:
+      - TestResults/UnreleasedFIAlias
+      - TestResults/UnreleasedMemRefExpr
+      - TestResults/UnreleasedCFG
+      - TestResults/UnreleasedFIAliasAliasMap
+      - scripts/genUnreleasedCFGTestsOut.script
+      - scripts/UnreleasedCFG.test
+      - scripts/genUnreleasedFIAliasTestsOut.script
+      - scripts/UnreleasedFIAlias.test
+      - scripts/genUnreleasedFIAliasAliasMapTestsOut.script
+      - scripts/collectUnreleasedFIAliasTestsOut.script
+      - scripts/UnreleasedFIAliasAliasMap.test
+      - scripts/genUnreleasedMemRefExprOut.script
+      - scripts/collectUnreleasedFIAliasAliasMapTestsOut.script
+      - scripts/regressUnreleasedFIAliastTestsOut.script
+      - scripts/regressUnreleasedMemRefExpr.script
+      - scripts/regressUnreleasedCFGTestsOut.script
+      - scripts/collectUnreleasedMemRefExprOut.script
+      - scripts/UnreleasedMemRefExpr.test
+      - scripts/regressUnreleasedFIAliasAliasMapTestsOut.script
+
