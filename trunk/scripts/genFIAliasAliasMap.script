@@ -16,5 +16,7 @@ echo "Generating TestResults/FIAliasAliasMap/utke.c.out"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/utke.c > TestResults/FIAliasAliasMap/utke.c.out
 echo "Generating TestResults/FIAliasAliasMap/OAWikiEx.c.out"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/OAWikiEx.c > TestResults/FIAliasAliasMap/OAWikiEx.c.out
-echo "Generating TestResults/FIAliasAliasMap/funCall.c.out"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/funCall.c > TestResults/FIAliasAliasMap/funCall.c.out
+echo "Generating TestResults/FIAliasAliasMap/functionPtr.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr.c > TestResults/FIAliasAliasMap/functionPtr.c.out
+echo "Generating TestResults/FIAliasAliasMap/functionPtr2.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr2.c > TestResults/FIAliasAliasMap/functionPtr2.c.out

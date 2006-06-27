@@ -16,7 +16,9 @@ test::  comma.c,                checked by AIS 6/23/06
 test::  constQualified.c,       checked by AIS 6/23/06
 test::  utke.c,                 checked by AIS 6/23/06
 test::  OAWikiEx.c,             checked by AIS 6/23/06
-test::  funCall.c,              checked by AIS 6/23/06
+#test::  funCall.c,              checked by ???
+test::  functionPtr.c,          checked by AIS 6/27/06
+test::  functionPtr2.c,         checked by AIS 6/27/06
 
 #test::  diffArrays.c,           checked by ???
 #test::  diffTypes.c,            checked by ???

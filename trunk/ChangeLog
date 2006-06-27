@@ -1333,3 +1333,7 @@
       - scripts/UnreleasedMemRefExpr.test
       - scripts/regressUnreleasedFIAliasAliasMapTestsOut.script
 
+6/27/06    UseOA-ROSE svn tag trunk r84 Andy Stone
+    - Added and verified two scripts for function pointers.  functionPtr.c was
+      taken from Luis's work in the CallGraph tests, functionPtr2.c is a
+      version with more complicated aliasing issues.
