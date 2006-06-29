@@ -1,5 +1,5 @@
 /*
-  testAll.cpp
+// testAll.cpp
 
   This is a test driver that calls various OA analyses  depending on the command line option
 
@@ -54,6 +54,8 @@ int DoCallGraph(SgProject * sgproject, std::vector<SgNode*> * na, bool persisten
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
 void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
+int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+int Foo(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 
 void prettyPrintMemRefExp(OA::OA_ptr<OA::MemRefExpr> memRefExp, 
 			  SageIRInterface *ir,
@@ -240,8 +242,38 @@ main ( unsigned argc,  char * argv[] )
     }
     else if( cmds->HasOption("--oa-ReachDefs") )
     {
-      printf("TO DO, implement reach. def. analysis\n");
-      return 1;
+       
+      /* *********** Reaching Definition Analysis Starts here ********************* */
+
+       for (int i = 0; i < filenum; ++i) 
+        {
+            SgFile &sageFile = sageProject->get_file(i);
+            SgGlobal *root = sageFile.get_root();
+            SgDeclarationStatementPtrList& declList = root->get_declarations ();
+            for (SgDeclarationStatementPtrList::iterator p = declList.begin(); p != declList.end(); ++p) 
+             {
+               SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
+               if (func == 0)
+               {
+                   continue;
+	       }
+
+               SgFunctionDefinition *defn = func->get_definition();
+
+               if (defn == 0)
+	       {     
+                 continue;
+	       }
+
+
+               DoReachDef(defn, sageProject, &nodeArray, p_h);
+	      
+             }     
+	    } 
+ 
+         /* ***************************************************************************** */
+  
+        return 1;
     }
     else if( cmds->HasOption("--oa-UDDUChains") )
     {
@@ -548,6 +580,59 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   interAlias = fialiasman->performAnalysis(procIter);
   interAlias->output(*irInterface);
 }
+
+int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+{
+  int returnvalue=FALSE;
+  if ( debug ) printf("*******start of DoUDDUChains\n");
+  OA::OA_ptr<SageIRInterface> irInterface;
+  irInterface = new SageIRInterface(p, na, p_handle);
+  //irInterface->createNodeArray(f); //what about global vars? //done in constr.
+  // CFG
+  OA::OA_ptr<OA::CFG::ManagerStandard> cfgmanstd;
+  cfgmanstd = new OA::CFG::ManagerStandard(irInterface);
+  OA::OA_ptr<OA::CFG::Interface> cfg=
+     cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+  
+#if 0
+  //AliasMap
+  OA::OA_ptr<OA::Alias::ManagerAliasMapBasic> aliasmanstd;
+  iroaptr=irInterface;
+  aliasmanstd= new OA::Alias::ManagerAliasMapBasic(iroaptr);
+  OA::OA_ptr<OA::Alias::AliasMap> alias = 
+  aliasmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+#else
+  //FIAlias
+  OA::OA_ptr<OA::Alias::ManagerFIAliasEquivSets> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAliasEquivSets(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  procIter = new SageIRProcIterator(p, irInterface);
+  OA::OA_ptr<OA::Alias::EquivSets> alias = 
+    fialiasman->performAnalysis(procIter);
+#endif
+  //alias->dump(std::cout, iroaptr);
+  
+  // Interprocedural Side-Effect Analysis
+  // for now generate default conservative interprocedural side-effect results
+  OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
+  interSideEffect = new OA::SideEffect::InterSideEffectStandard;
+
+  // then can do ReachDefs
+  OA::OA_ptr<OA::ReachDefs::ManagerStandard> rdman;
+  rdman = new OA::ReachDefs::ManagerStandard(irInterface);
+  OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds= 
+      rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect);
+
+
+  rds->output(*irInterface);
+
+ 
+	std::cout << "\n*******  end of DoReachDef *********\n\n";
+	return returnvalue;
+
+}
+
+
 
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
