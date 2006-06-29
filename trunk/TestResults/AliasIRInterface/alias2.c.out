@@ -56,23 +56,23 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("*a;") =>
         [
-            MemRefHandle("*a") => 
-                Deref( USE, NamedRef( USE, SymHandle("a"), F, full), 1, F, full)
             MemRefHandle("a") => 
                 NamedRef( USE, SymHandle("a"), F, full)
+            MemRefHandle("*a") => 
+                Deref( USE, NamedRef( USE, SymHandle("a"), F, full), 1, F, full)
         ] }
     MEMREFEXPRS = { StmtHandle("*b;") =>
         [
-            MemRefHandle("*b") => 
-                Deref( USE, NamedRef( USE, SymHandle("b"), F, full), 1, F, full)
             MemRefHandle("b") => 
                 NamedRef( USE, SymHandle("b"), F, full)
+            MemRefHandle("*b") => 
+                Deref( USE, NamedRef( USE, SymHandle("b"), F, full), 1, F, full)
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
-    LOCATION = { < SymHandle("main"), local > }
     LOCATION = { < SymHandle("loc"), local > }
     LOCATION = { < SymHandle("locPtr"), local > }
     LOCATION = { < SymHandle("a"), local > }
     LOCATION = { < SymHandle("b"), local > }
+    LOCATION = { < SymHandle("main"), not local > }

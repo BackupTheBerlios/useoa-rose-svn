@@ -35,7 +35,7 @@ int main ( unsigned argc,  char * argv[] )
     // for debugging only switch between persistentand "pointer" handles
     // (pointers are faster, persistent are easier to debug
     bool p_h=FALSE; 
-    p_h = TRUE;
+    //    p_h = TRUE;
 
     // read in command line arguments
     // usage: CtoOA inputFile
@@ -61,7 +61,9 @@ int main ( unsigned argc,  char * argv[] )
         OA::OA_ptr<SageIRInterface> irInterface; 
         irInterface = new SageIRInterface(sageProject, &nodeArray, p_h);
         OA::OA_ptr<SageIRProcIterator> procIter;
-        procIter = new SageIRProcIterator(sageProject, irInterface);
+	// Do not process include files, e.g., iostream.h.
+	bool excludeInputFiles = true;
+        procIter = new SageIRProcIterator(sageProject, irInterface, excludeInputFiles);
 
         for (; procIter->isValid(); ++(*procIter) ) 
 	{

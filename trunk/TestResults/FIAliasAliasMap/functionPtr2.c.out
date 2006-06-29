@@ -106,20 +106,20 @@ InterAliasMap(
                 6	 => [ 
                     NamedLoc(
                         mSymHandle: SymHandle(read)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 7	 => [ 
                     NamedLoc(
                         mSymHandle: SymHandle(foo)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
                     NamedLoc(
                         mSymHandle: SymHandle(bar)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
@@ -348,20 +348,20 @@ InterAliasMap(
                 6	 => [ 
                     NamedLoc(
                         mSymHandle: SymHandle(read)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 7	 => [ 
                     NamedLoc(
                         mSymHandle: SymHandle(foo)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
                     NamedLoc(
                         mSymHandle: SymHandle(bar)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
@@ -536,20 +536,20 @@ InterAliasMap(
                 6	 => [ 
                     NamedLoc(
                         mSymHandle: SymHandle(read)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 7	 => [ 
                     NamedLoc(
                         mSymHandle: SymHandle(foo)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
                     NamedLoc(
                         mSymHandle: SymHandle(bar)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 

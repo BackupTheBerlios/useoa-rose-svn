@@ -11,7 +11,7 @@
 
 #include <stdarg.h>
 //#include <stdio.h>
-//#include <iostream>
+#include <iostream>
 using namespace std;
 
 class Base {
@@ -143,7 +143,7 @@ int * bar_arrays2( int a[5] )
 void PassPtr(int (*pt2Func)(float, char, char))
 {
    int result = (*pt2Func)(12, 'a', 'b');     // call using function pointer
-   //   cout << result << endl;
+   cout << result << endl;
 }
 
 

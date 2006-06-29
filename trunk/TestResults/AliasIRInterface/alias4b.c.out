@@ -26,14 +26,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("*a;") =>
         [
-            MemRefHandle("*a") => 
-                Deref( USE, NamedRef( USE, SymHandle("a"), F, full), 1, F, full)
             MemRefHandle("a") => 
                 NamedRef( USE, SymHandle("a"), F, full)
+            MemRefHandle("*a") => 
+                Deref( USE, NamedRef( USE, SymHandle("a"), F, full), 1, F, full)
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
-    LOCATION = { < SymHandle("main"), local > }
     LOCATION = { < SymHandle("a"), local > }
     LOCATION = { < SymHandle("b"), local > }
+    LOCATION = { < SymHandle("main"), not local > }

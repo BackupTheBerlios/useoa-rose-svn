@@ -52,6 +52,23 @@ SageIRInterface::SageIRInterface(SgNode *root,
   }
 
 } 
+
+SageIRInterface::~SageIRInterface()
+{
+#if 0
+  // Delete any non-AST nodes that SageIRInterface has created.
+  for (int i = 0; i < SageIRInterface::sAllocatedNodes.size(); ++i) {
+    SgNode *node = SageIRInterface::sAllocatedNodes[i];
+    delete node;
+  }
+
+  for (int i = mNonAstNodes.size() - 1; i >= 0; --i) {
+    SgNode *node = mNonAstNodes[i];
+    mNonAstNodes.pop_back();
+    delete node;
+  } 
+#endif
+}
  
 //-----------------------------------------------------------------------------
 // Statement Iterator
@@ -278,6 +295,37 @@ void SageIRStmtIterator::reset()
   mIndex=0;
 }
 
+
+/** \brief Add any non-AST Sage nodes/statement that have been
+ *         appended after node.
+ *  \param  node  A Sage node representing a statement in the AST.
+ *  \param  lst   A list of pointers to Sage statemenets.  On output,
+ *                contains any non-AST nodes appended to node.
+ *  
+ *  Non-AST nodes are appened to AST nodes to model object-oriented
+ *  semantics in an imperative manner.  e.g., implicit invocations of
+ *  default constructors is made explicitly by creating non-AST nodes
+ *  to model the calls.
+ */
+static void appendNonASTStmts(SgNode *node, SgStatementPtrList &lst)
+{
+#if 0
+  if ( SageIRInterface::sNonASTStmts.find(node) != 
+       SageIRInterface::sNonASTStmts.end() ) {
+    std::vector<SgNode *> &appendedStmts =
+      SageIRInterface::sNonASTStmts[node];
+    for (int i = 0; i < appendedStmts.size(); ++i) {
+      SgNode *appendedStmt = appendedStmts[i];
+      ROSE_ASSERT(appendedStmt != NULL);
+
+      SgStatement *stmt = isSgStatement(appendedStmt);
+      ROSE_ASSERT(stmt != NULL);
+      lst.push_back(stmt);
+    }
+  }
+#endif
+}
+
 void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
 {
   //printf("in SageIRStmtIterator::FindAllStmts\n");
@@ -299,10 +347,10 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
   SgSwitchStatement *switchStmt = NULL;
   SgCaseOptionStmt *caseOptionStmt = NULL;
 
-  
   if(isSgScopeStatement(node))
   {
     lst.push_back(isSgStatement(node));
+    //    appendNonASTStmts(node, lst);
     SgBasicBlock * bb=isSgBasicBlock(node);
     
     if(bb)
@@ -403,6 +451,7 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
 #else
       lst.push_back(stmt);
 #endif
+      //      appendNonASTStmts(stmt, lst);
     }
   }
 }
@@ -449,6 +498,12 @@ OA::OA_ptr<OA::IRCallsiteIterator> SageIRInterface::getCallsites(OA::StmtHandle 
   return iter;
 }
 
+/** \brief Return the receiver (i.e., lhs) of a method invocation.
+ *         Else return NULL.
+ *  \param  functionCal  A function or method invocation.
+ *  \returns  A SgNode representing the lhs of the method invocation
+ *            or NULL if this is not a non-static method invocation.
+ */
 SgNode *
 SageIRInterface::getMethodInvocationLhs(SgFunctionCallExp *functionCall)
 {
@@ -510,8 +565,25 @@ SageIRInterface::getMethodInvocationLhs(SgFunctionCallExp *functionCall)
 
 }
 
+/** \brief isMethodCall returns true if the invoked procedure is
+ *         a method (i.e., a constructor, a destructor, or a non-static
+ *         method).
+ *  \param functionCall A Sage node representing a function call expression.
+ *  \param isDotExp  On output, a boolean indicating whether the
+ *                   receiver of a method invocation is an object 
+ *                   (isDotExp = true) or a pointer (isDotExp = false).
+ *  \returns  Boolean indicating whether the invoked procedure is a method.
+ *
+ *  Be Careful!  For the purposes of isMethodCall a method is anything
+ *  which has or creates a receiver/"this."  That is a constructor
+ *  (which creates a this and may modify/initialization it), a 
+ *  destructor, or a non-static method.  Each of these is passed
+ *  an implicit "this" parameter.  A static method may only
+ *  access static member variables, therefore we need not pass an 
+ *  implicit "this" (which is convenient, since we don't have one).
+ */
 bool
-SageIRInterface::isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
+isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
 {
   ROSE_ASSERT(functionCall != NULL);
 
@@ -544,6 +616,10 @@ SageIRInterface::isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
       break;
     }
   case V_SgMemberFunctionRefExp:
+    {
+      isMethod = false;
+      break;
+    }
   case V_SgArrowExp:
     {
       isMethod = true;
@@ -568,7 +644,7 @@ SageIRInterface::isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
 }
 
 SgFunctionDeclaration * 
-SageIRInterface::getFunctionDeclaration(SgFunctionCallExp *functionCall) 
+getFunctionDeclaration(SgFunctionCallExp *functionCall) 
 { 
   SgFunctionDeclaration *funcDec = NULL; 
 
@@ -703,7 +779,7 @@ SageIRInterface::getFunction(SgFunctionCallExp *functionCall)
 
 
 SgPointerDerefExp *
-SageIRInterface::isFunctionPointer(SgFunctionCallExp *functionCall) 
+isFunctionPointer(SgFunctionCallExp *functionCall) 
 { 
   SgFunctionDeclaration *funcDec = NULL; 
 
@@ -1649,6 +1725,7 @@ OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)
       switch(expression->variantT()) {
       case V_SgAssignOp:
 	{
+	  // A subset of this case is a new expression.
 	  SgBinaryOp *assignOp = isSgBinaryOp(expression);
 	  ROSE_ASSERT(assignOp != NULL);
 
@@ -1657,6 +1734,70 @@ OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)
 
 	  lhsType = lhs->get_type();
 	  ROSE_ASSERT(lhsType != NULL);
+
+	  if ( lhsType != NULL ) {
+	    SgType *baseType = getBaseType(lhsType);
+	    ROSE_ASSERT(baseType != NULL);
+	    if ( isSgPointerType(baseType) || isSgReferenceType(baseType) ) 
+	      stmtType = OA::Alias::PTR_ASSIGN_STMT;
+	  }
+
+	  break;
+	}
+      case V_SgFunctionCallExp:
+	{
+	  SgFunctionCallExp *functionCallExp =
+	    isSgFunctionCallExp(expression);
+	  ROSE_ASSERT(functionCallExp != NULL);
+
+	  SgPointerDerefExp *pointerDerefExp =
+	    isFunctionPointer(functionCallExp);
+
+	  if ( !pointerDerefExp ) {
+
+	    SgFunctionDeclaration *functionDeclaration = 
+	      getFunctionDeclaration(functionCallExp); 
+
+	    SgMemberFunctionDeclaration *memberFunctionDeclaration =
+	      isSgMemberFunctionDeclaration(functionDeclaration);
+
+#if 0
+  // Support for special methods, which is now handled in ROSE.
+	    if ( memberFunctionDeclaration ) {
+
+	      // If this callsite invokes an operator= or a
+	      // copy constructor which are compiler generated,
+	      // we may have to implicitly model ptr assignments
+	      // (which we know will be generated within those methods
+	      // by the compiler).
+
+	      SgClassDefinition *classDefinition =
+		isSgClassDefinition(memberFunctionDeclaration->get_scope());
+	      ROSE_ASSERT(classDefinition != NULL);
+	      bool collectPtrAssigns = false;
+	      std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *ptrAssigns = NULL;
+	      bool determineIfPtrAssignNecessary = true;
+	      bool collectImplicitCalls = false;
+	      std::list<OA::OA_ptr<OA::MemRefExpr> > *implicitCalls = NULL;
+	      bool foundPtrAssign = false;
+	      handleCallToSpecialMethod(functionCallExp,
+					memberFunctionDeclaration,
+					classDefinition,
+					memberFunctionDeclaration,
+					collectPtrAssigns,
+					ptrAssigns,
+					determineIfPtrAssignNecessary,
+					collectImplicitCalls,
+					implicitCalls,
+					foundPtrAssign);
+
+	      if ( foundPtrAssign )
+		stmtType = OA::Alias::PTR_ASSIGN_STMT;
+
+	    }
+#endif
+	  }
+
 	  break;
 	}
       default:
@@ -1665,12 +1806,6 @@ OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)
 	}
       }
       
-      if ( lhsType != NULL ) {
-	SgType *baseType = getBaseType(lhsType);
-	ROSE_ASSERT(baseType != NULL);
-	if ( isSgPointerType(baseType) || isSgReferenceType(baseType) ) 
-	  stmtType = OA::Alias::PTR_ASSIGN_STMT;
-      }
       break;
     }
 
@@ -1701,6 +1836,11 @@ OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)
 
       if ( ctorInitListHasPtrAssign(initializerList, collectPtrAssigns, NULL) )
 	stmtType = OA::Alias::PTR_ASSIGN_STMT;
+
+#if 0
+      if ( invokesCompilerGeneratedCopyCtor(initializerList) )
+	stmtType = OA::Alias::PTR_ASSIGN_STMT;
+#endif
 
       break;
     }
@@ -1795,6 +1935,8 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
   OA::OA_ptr<OA::Location> loc;
   loc = NULL;
 
+  //  cout << "getLocation symol: " << toString(s) << endl;
+
   if((((int)s)==0) || (s.hval()==0))
   {
     return loc;
@@ -1814,6 +1956,8 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
     {
       SgInitializedName *initName = isSgInitializedName(node);
       ROSE_ASSERT(initName != NULL);
+
+      //      cout << "getLocation initName: " << initName->get_name().str() << endl;
 
       SgDeclarationStatement *declarationStmt = initName->get_declaration();
       ROSE_ASSERT(declarationStmt != NULL);
@@ -1866,7 +2010,14 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
       // the context-specific symbol tables, but I have little 
       // experience there and we have a deadline.
       // MMS and BW 3/16/06
-      isLocal = true;
+      isLocal = false;
+
+      SgFunctionDeclaration *functionDeclaration =
+	isSgFunctionDeclaration(node);
+      ROSE_ASSERT(functionDeclaration != NULL);
+
+      //      cout << "getLocation func: " << functionDeclaration->get_name().str() << endl;
+
 #else
       SgFunctionDeclaration *functionDeclaration =
 	isSgFunctionDeclaration(node);
@@ -2802,6 +2953,17 @@ std::string SageIRInterface::toString(const OA::CallHandle h)
 	  retstr = initName->get_name().str();
 	  break;
 	}
+      case V_SgExpressionRoot:
+	{
+	  SgExpressionRoot *exprRoot = isSgExpressionRoot(parent);
+	  ROSE_ASSERT(exprRoot != NULL);
+	  
+	  SgNode *parent = exprRoot->get_parent();
+	  ROSE_ASSERT(isSgReturnStmt(parent));
+
+	  retstr = parent->unparseToString();
+	  break;
+	}
       default:
 	{
 	  ROSE_ABORT();
@@ -3415,7 +3577,7 @@ SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment(SgNode *node)
 	      // expression will also be a SgFunctionDeclaration.
 	      // To make them consistent we need to dereference it.
 	      // NB:  we must dereference the SgFunctionDeclaration MRE
-	      //      else it will collide with the implict ptr assigns
+	      //      else it will collide with the implicit ptr assigns
 	      //      used to model virtual methods (also 
 	      //      SgFunctionDeclaration-based MREs).  This would
 	      //      result in unintended alias pairs.
@@ -3649,7 +3811,7 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
       SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
       ROSE_ASSERT(functionCallExp != NULL);
       
-      isMethod = mIR->isMethodCall(functionCallExp, isDotExp);
+      isMethod = isMethodCall(functionCallExp, isDotExp);
 #if 0
       if ( isMethod ) {
 	lhs = mIR->getMethodInvocationLhs(functionCallExp);
@@ -4581,7 +4743,7 @@ SageIRInterface::initializerHasPtrAssign(SgInitializedName *initName,
   lhs = lookThroughCastExpAndAssignInitializer(lhs);
   ROSE_ASSERT(isMemRefNode(lhs));
   
-  ROSE_ASSERT(isMemRefNode(rhs));
+  //  ROSE_ASSERT(isMemRefNode(rhs));
   
   // Create the lhs/rhs MemRefHandles.
   OA::MemRefHandle lhsHandle = getNodeNumber(lhs);
@@ -4621,7 +4783,7 @@ SageIRInterface::initializerHasPtrAssign(SgInitializedName *initName,
  *          correspond to a class.
  */
 SgClassDeclaration *
-SageIRInterface::getClassDeclaration(SgType *type)
+getClassDeclaration(SgType *type)
 {
   SgClassDeclaration *classDeclaration = NULL;
 
@@ -5791,7 +5953,60 @@ void SgPtrAssignPairStmtIterator::create(OA::StmtHandle stmt)
       
       SgExpression *expression = exprStatement->get_the_expr();
 
-      createPtrAssignPairsFromAssignment(expression);
+      if ( !isSgFunctionCallExp(expression) ) {
+
+	createPtrAssignPairsFromAssignment(expression);
+
+#if 0
+      } else {
+
+  // Support for special methods, which is now handled in ROSE.
+	SgFunctionCallExp *functionCallExp =
+	  isSgFunctionCallExp(expression);
+	ROSE_ASSERT(functionCallExp != NULL);
+	
+	SgPointerDerefExp *pointerDerefExp =
+	  isFunctionPointer(functionCallExp);
+	
+	if ( !pointerDerefExp ) {
+	  
+	  SgFunctionDeclaration *functionDeclaration = 
+	    getFunctionDeclaration(functionCallExp); 
+	  
+	  SgMemberFunctionDeclaration *memberFunctionDeclaration =
+	    isSgMemberFunctionDeclaration(functionDeclaration);
+	  
+	  if ( memberFunctionDeclaration ) {
+	    
+	    // If this callsite invokes an operator= or a
+	    // copy constructor which are compiler generated,
+	    // we may have to implicitly model ptr assignments
+	    // (which we know will be generated within those methods
+	    // by the compiler).
+
+	    SgClassDefinition *classDefinition =
+	      isSgClassDefinition(memberFunctionDeclaration->get_scope());
+	    ROSE_ASSERT(classDefinition != NULL);
+	    bool collectPtrAssigns = true;
+	    bool determineIfPtrAssignNecessary = true;
+	    bool collectImplicitCalls = false;
+	    std::list<OA::OA_ptr<OA::MemRefExpr> > *implicitCalls = NULL;
+	    bool foundPtrAssign = false;
+	    mIR->handleCallToSpecialMethod(functionCallExp,
+					   memberFunctionDeclaration,
+					   classDefinition,
+					   memberFunctionDeclaration,
+					   collectPtrAssigns,
+					   &mMemRefList,
+					   determineIfPtrAssignNecessary,
+					   collectImplicitCalls,
+					   implicitCalls,
+					   foundPtrAssign);
+	    
+	  }
+	}
+#endif
+      }
 
       break;
     }
@@ -5899,6 +6114,8 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
   // the invocation itself.  This requires intimate knowledge
   // of that process.
 
+  // HERE:  lookup callmre
+
   switch(node->variantT()) {
     
   case V_SgFunctionCallExp:
@@ -5961,15 +6178,6 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
 	SgMemberFunctionRefExp *memberFunctionRefExp = isSgMemberFunctionRefExp(function);
 	ROSE_ASSERT(functionRefExp || memberFunctionRefExp);
 
-	bool addressTaken = false;
-
-	// Access to a named function is a fully
-	// accurate representation of that access.
-	bool fullAccuracy = true;
-	  
-	// This is a USE ...
-	OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::USE;
-      
 	// Get the declaration of the function.
 	SgFunctionSymbol *functionSymbol = NULL;
 	if ( functionRefExp )
@@ -5986,9 +6194,7 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
 	OA::SymHandle symHandle = getProcSymHandle(functionDeclaration);
 
 	// Create a named memory reference expression.
-	mre = new OA::NamedRef(addressTaken, fullAccuracy,
-			       memRefType, symHandle);
-
+	mre = createInvocationMRE(functionDeclaration);
       }
 #else
       if ( isSgArrowExp(function) || isSgDotExp(function) ) {
@@ -6143,6 +6349,8 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
     
     ROSE_ASSERT(memRefNode != NULL);
     OA::MemRefHandle memRefHandle = getNodeNumber(memRefNode);
+
+    ROSE_ASSERT(isMemRefNode(memRefNode));
     
     // Call getMemRefIterator to initialize the sMemref2mreSetMap
     // data structure-- i.e., to ensure that we have a mapping between
@@ -6832,7 +7040,7 @@ SageIRInterface::getCallsiteParams(OA::ExprHandle h)
       }
       break;
     }
-
+ 
   case V_SgFunctionCallExp:
     {
       SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
@@ -7635,7 +7843,7 @@ OA::SymHandle SageIRInterface::getThisExpSymHandle(SgNode *node)
 
 #if 0
       SgClassDefinition *classDefinition = 
-	memberFunctionDeclaration->get_scope();
+	isSgClassDefiniition(memberFunctionDeclaration->get_scope());
       ROSE_ASSERT(classDefinition != NULL);
 
       // Get the name of the class.
@@ -7646,7 +7854,7 @@ OA::SymHandle SageIRInterface::getThisExpSymHandle(SgNode *node)
       ROSE_ASSERT(symbolTable != NULL);
 #else
       SgClassDefinition *classDefinition = 
-	memberFunctionDeclaration->get_scope();
+	isSgClassDefinition(memberFunctionDeclaration->get_scope());
       ROSE_ASSERT(classDefinition != NULL);
 
       // Get the name of the class.
@@ -7805,6 +8013,12 @@ SageIRInterface::getDispatchingObjectMemRefHandle(SgFunctionCallExp *func)
 }
 #endif
 
+/** \brief Strip off any leading SgCastExps or SgAssignInitializers
+ *         in the tree rooted at node.
+ *  \param node  A Sage node.
+ *  \returns  node stripped of any leading SgCastExps or
+ *                 SgAssignInitializers.
+ */
 SgNode *
 SageIRInterface::lookThroughCastExpAndAssignInitializer(SgNode *node)
 {
@@ -7946,7 +8160,7 @@ AstAttributeMechanism &SageIRInterface::getAttribute(SgNode *n)
 bool SageIRInterface::returnsAddress(SgFunctionCallExp *functionCallExp)
 {
   ROSE_ASSERT(functionCallExp != NULL);
-
+ 
   bool returnsAddr = false;
 
   SgType *type = functionCallExp->get_type();
@@ -7955,6 +8169,20 @@ bool SageIRInterface::returnsAddress(SgFunctionCallExp *functionCallExp)
   
   if ( isSgReferenceType(type) || isSgPointerType(type) ) {
     returnsAddr = true;
+  }
+  
+  // I believe in earlier versions of ROSE, that the type
+  // of a function call expression was the type of the expression
+  // (i.e., the return type).  Evidently, this has changed.
+  // Leave the above code for backward compatibility?
+  SgFunctionType *funcType = isSgFunctionType(type);
+
+  // NB:  type could be SgTypeVoid and need not be a SgFunctionType.
+  if ( funcType != NULL ) {
+    SgType *retType = funcType->get_return_type();
+    if ( isSgReferenceType(retType) || isSgPointerType(retType) ) {
+      returnsAddr = true;
+    }  
   }
   
   return returnsAddr;
@@ -7972,6 +8200,1673 @@ SageIRInterface::createsBaseType(SgConstructorInitializer *ctorInitializer) cons
   if ( memberFunctionDeclaration == NULL ) {
     ret = true;
   }
+ 
+  return ret;
+}
+
+/** \brief  Create a callsite MRE for an invocation of a 
+ *          function/method.
+ *  \param  invocationHandle  A SgFunctionDeclaration representing
+ *                            the invoked function/method.
+ *  \returns  An MRE representing the function/method invoked.
+ */
+OA::OA_ptr<OA::MemRefExpr>
+SageIRInterface::createInvocationMRE(SgFunctionDeclaration *invocationHandle)
+{
+  ROSE_ASSERT(invocationHandle != NULL);
+
+  OA::OA_ptr<OA::MemRefExpr> mre;
+
+  bool addressTaken = false;
+  
+  // Access to a named function is a fully
+  // accurate representation of that access.
+  bool fullAccuracy = true;
+  
+  // This is a USE ...
+  OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::USE;
+
+  // Create an OpenAnalysis handle for this node.
+  OA::SymHandle symHandle = getProcSymHandle(invocationHandle);
+
+  // Create a named memory reference expression.
+  mre = new OA::NamedRef(addressTaken, fullAccuracy,
+			 memRefType, symHandle);
+
+  return mre;
+}
+
+#if 0
+// The following was introduced to handle special method calls.
+// Currently, we are instead doing this in ROSE.  I just
+// can't bear to throw away all of this code.
+
+/** \brief Returns true if the method is a constructor.
+ *  \param memberFunctionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether methodFunctionDeclaration is
+ *            a constructor.
+ */
+bool isConstructor(SgMemberFunctionDeclaration *memberFunctionDeclaration)
+{
+  ROSE_ASSERT(memberFunctionDeclaration != NULL);
+
+  SgSpecialFunctionModifier &specialFunctionModifier =
+    memberFunctionDeclaration->get_specialFunctionModifier();
+
+  // Determine whether method is a constructor.
+  return ( specialFunctionModifier.isConstructor() );
+}
+
+/** \brief Returns true if the method is a default constructor.
+ *  \param memberFunctionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether methodFunctionDeclaration is
+ *            a default constructor.
+ *
+ *  A default constructor is one which may be invoked without an argument,
+ *  i.e., one which has no formals or all of whose formals have default
+ *  values.
+ */
+bool isDefaultConstructor(SgMemberFunctionDeclaration *memberFunctionDeclaration)
+{
+  ROSE_ASSERT(memberFunctionDeclaration != NULL);
+
+  if ( !isConstructor(memberFunctionDeclaration) )
+    return false;
+
+  // Determine number of non-default formals. If none
+  // then this is the default constructor.
+  SgInitializedNamePtrList& params = memberFunctionDeclaration->get_args();
+  SgInitializedNamePtrList::iterator p = params.begin();
+
+  int numNonDefaultParams = 0;
+  for (; p != params.end(); ++p) {
+    if ((*p)->get_initializer() == 0) // non-default parameter
+      ++numNonDefaultParams;
+  }
+
+  return ( numNonDefaultParams == 0 );
+}
+
+/** \brief  Strip off all leading references, pointers, and modifiers
+ *          from a type.
+ *  \param  type  A Sage type.
+ *  \returns  type stripped of any leading references, pointers, or
+ *            modifiers.
+ */
+static SgType *getBaseType(SgType *type)
+{
+  if ( type == NULL )
+    return NULL;
+
+  SgType *ret = type;
+
+  switch(type->variantT()) {
+  case V_SgReferenceType:
+    {
+      SgReferenceType *referenceType =
+	isSgReferenceType(type);
+      ROSE_ASSERT(referenceType != NULL);
+      
+      ret = getBaseType(referenceType->get_base_type());
+      break;
+    }
+  case V_SgPointerType:
+    {
+      SgPointerType *pointerType =
+	isSgPointerType(type);
+      ROSE_ASSERT(pointerType != NULL);
+      
+      ret = getBaseType(pointerType->get_base_type());
+      break;
+    }
+  case V_SgModifierType:
+    {
+      SgModifierType *modifierType =
+	isSgModifierType(type);
+      ROSE_ASSERT(modifierType != NULL);
+      
+      ret = getBaseType(modifierType->get_base_type());
+      break;
+    }
+  default:
+    {
+      break;
+    }
+  }
 
   return ret;
 }
+
+/** \brief Returns true if the method is a copy constructor.
+ *  \param memberFunctionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether methodFunctionDeclaration is
+ *            a copy constructor.
+ *
+ *  A copy constructor is one which may be invoked without an argument,
+ *  i.e., one which has no formals or all of whose formals have default
+ *  values.
+ *
+ *  This was copied from 
+ *  .../UseOA-ROSE-trunk/OAWraps/Sage2OA.C
+ *  which isn't yet part of the ROSE distribution.
+ *
+ *  To do:  move this to a generally-accessible utilities file.
+ */
+static bool isCopyConstructor(SgMemberFunctionDeclaration *memberFunctionDeclaration)
+{
+  ROSE_ASSERT(memberFunctionDeclaration != NULL);
+
+  if ( !isConstructor(memberFunctionDeclaration) )
+    return false;
+
+  // Determine the number of non-default formals. If there is only
+  // one non-default formal and it is const or non-const reference
+  // to an object of the method's class, this is a copy constructor.
+  SgInitializedNamePtrList& params = memberFunctionDeclaration->get_args();
+  SgInitializedNamePtrList::iterator p = params.begin();
+
+  int numNonDefaultParams = 0;
+  bool firstParam = true;
+  for (; p != params.end(); ++p) {
+    // The first parameter must be a reference to an object.
+    if ( firstParam ) {
+      SgType *type = (*p)->get_type();
+      ROSE_ASSERT(type != NULL);
+
+      SgReferenceType *referenceType = 
+	isSgReferenceType(type);
+      // Make certain this is a reference.
+      if ( referenceType == NULL )
+	return false;
+
+      SgClassType *classType =
+	isSgClassType(getBaseType(referenceType));
+      if ( classType == NULL )
+	return false;
+
+      // Make certain the formal is an object of the
+      // method's class.
+      SgClassDeclaration *classDeclaration =
+	getClassDeclaration(classType);
+
+      if ( classDeclaration == NULL ) 
+	return false;
+
+      // Get the class declaration associated with this method.
+      SgClassDefinition *methodClassDefinition =
+	memberFunctionDeclaration->get_class_scope();
+      ROSE_ASSERT(methodClassDefinition != NULL);
+
+      SgClassDeclaration *methodClassDeclaration =
+	methodClassDefinition->get_declaration();
+
+      if ( classDeclaration->get_type()->get_name() != 
+	   methodClassDeclaration->get_type()->get_name() )
+	return false;
+
+      if ((*p)->get_initializer() != 0) // default parameter
+	return false;
+      else
+	++numNonDefaultParams;
+
+      firstParam = false;
+    }
+  }
+
+  return ( numNonDefaultParams == 1 );
+}
+
+/** \brief Returns true if the method is a destructor.
+ *  \param memberFunctionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether methodFunctionDeclaration is
+ *            a destructor.
+ */
+bool isDestructor(SgMemberFunctionDeclaration *memberFunctionDeclaration)
+{
+  ROSE_ASSERT(memberFunctionDeclaration != NULL);
+
+  SgSpecialFunctionModifier &specialFunctionModifier =
+    memberFunctionDeclaration->get_specialFunctionModifier();
+  
+  // Determine whether method is a destructor.
+  return specialFunctionModifier.isDestructor();
+}
+
+/** \brief Returns true if the method is operator=.
+ *  \param memberFunctionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether methodFunctionDeclaration is
+ *            operator=.
+ */
+static bool isOperatorEquals(SgMemberFunctionDeclaration *memberFunctionDeclaration)
+{
+  ROSE_ASSERT(memberFunctionDeclaration != NULL);
+
+  SgSpecialFunctionModifier &specialFunctionModifier =
+    memberFunctionDeclaration->get_specialFunctionModifier();
+
+  SgName functionName = memberFunctionDeclaration->get_name();
+
+  return ( specialFunctionModifier.isOperator() &&
+	   functionName == SgName("operator=") );
+}
+
+/** \brief Returns true if the method type could be generated by the
+ *         compiler (independently of whether or not it actually was).
+ *  \param memberFunctionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether a method of 
+ *            memberFunctionDeclaration's flavor can be compiler generated.
+ *            
+ *  Returns true if memberFunctionDeclaration is a default or copy 
+ *  constructor, a destructor, or a operator=.
+ */
+bool isCompilerGeneratable(SgMemberFunctionDeclaration *memberFunctionDeclaration)
+{
+  return ( isDefaultConstructor(memberFunctionDeclaration) ||
+	   isCopyConstructor(memberFunctionDeclaration) ||
+	   isDestructor(memberFunctionDeclaration) ||
+	   isOperatorEquals(memberFunctionDeclaration) );
+}
+
+/** \brief Returns true if the method was compiler generated.
+ *  \param memberFunctionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether 
+ *            memberFunctionDeclaration was compiler generated.
+ *            
+ *  Please contrast with isComplilerGeneratable which indicates the
+ *  potential of a method flavor to be compiler generated.
+ */
+bool isCompilerGenerated(SgMemberFunctionDeclaration *memberFunctionDeclaration)
+{
+  ROSE_ASSERT(memberFunctionDeclaration != NULL);
+  
+  Sg_File_Info *fileInfo = memberFunctionDeclaration->get_file_info(); 
+  ROSE_ASSERT(fileInfo != NULL); 
+ 
+  return ( fileInfo->isCompilerGenerated() );
+}
+
+/** \brief Mark the method as being compiler generated.
+ *  \param memberFunctionDeclaration  A method declaration.
+ */
+void markAsCompilerGenerated(SgMemberFunctionDeclaration *memberFunctionDeclaration)
+{
+  ROSE_ASSERT(memberFunctionDeclaration != NULL);
+  
+  Sg_File_Info *fileInfo = memberFunctionDeclaration->get_file_info(); 
+  ROSE_ASSERT(fileInfo != NULL); 
+
+  fileInfo->setCompilerGenerated();
+}
+
+/** \brief Returns a list of MRE representing a particular actual argument
+ *         to a method/function invocation.
+ *  \param functionCall A Sage node representing a function call expression.
+ *  \param actualNum  An integer specifying the actual of interest.
+ *                    Numbering begins at zero.
+ *  \returns  A list of MREs representing the actualNum'th actual parameter
+ *            passed to the method/function invoked in functionCallExp.
+ *
+ *  We may have multiple MREs for a single actual expression for cases
+ *  such as:
+ *     foo->( ( cond ? a : b ) );
+ *
+ *  Note that the 0th actual represents the object that is the 'this'
+ *  variable within the method body (assuming this is a method invocation).  
+ *  For constructor invocations, this is the object that is initialized. 
+ *  For example, 'a' in the following examples:
+ *     A *a = new A(); 
+ *     A a(*someOtherA);
+ */
+std::vector< OA::OA_ptr<OA::MemRefExpr> >
+SageIRInterface::getActualMres(SgFunctionCallExp *functionCallExp,
+			       int actualNum)
+{
+  ROSE_ASSERT(functionCallExp != NULL);
+
+  std::vector< OA::OA_ptr<OA::MemRefExpr> > mreList;
+
+  // Get an OA handle for the call site.
+  OA::ExprHandle exprHandle = getProcExprHandle(functionCallExp);
+
+  // Get the actuals for the call site.
+  OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIter = 
+   getCallsiteParams(exprHandle);
+
+  // Determine whether the call site invokes a method.
+  bool isMethod = false;
+  bool isDotExp = false;
+  isMethod = isMethodCall(functionCallExp, isDotExp);
+
+  // Iterate over the actuals to pick out the one requested.
+  int paramNum = 0;
+  for ( ; actualsIter->isValid(); (*actualsIter)++ ) { 
+
+    if ( actualNum == paramNum ) {
+
+      // If this is the 0th actual passed to a method then 
+      // it represents the actual mapped to 'this' within the
+      // method body.
+      bool handleThisExp = ( ( actualNum == 0 ) && ( isMethod ) );
+
+      OA::ExprHandle actualExpr = actualsIter->current(); 
+      SgNode *actualNode = getNodePtr(actualExpr);
+      // actualExpr could be NULL if expression was 'return (new B)'--
+      // i.e., no lhs.
+      //    ROSE_ASSERT(actualNode != NULL);
+
+      OA::MemRefHandle actualMemRefHandle = (OA::MemRefHandle)0;
+	
+      if ( actualNode != NULL ) {
+	actualNode = lookThroughCastExpAndAssignInitializer(actualNode);
+	if ( isMemRefNode(actualNode) )
+	  actualMemRefHandle = getNodeNumber(actualNode);
+      }
+      
+      if ( actualMemRefHandle == (OA::MemRefHandle)0 ) {
+	
+	// This isn't true.  Consider that printf's first formal is
+	// a const char *.  We may pass it an actual string, which
+	// is not a MemRefNode.
+	
+      } else {
+	
+	OA::OA_ptr<OA::MemRefExprIterator> actualMreIterPtr 
+	  = getMemRefExprIterator(actualMemRefHandle);
+	
+	// for each mem-ref-expr associated with this memref
+	for (; actualMreIterPtr->isValid(); (*actualMreIterPtr)++) {
+	  
+	  OA::OA_ptr<OA::MemRefExpr> actualMre;
+	
+	    if ( ( handleThisExp == true ) && ( isDotExp == true ) ) {
+	      
+	      // We are returning a MemRefExpr representing the object b
+	      // upon which a method is invoked in the expression b.foo()
+	      // (i.e., a dot expression).  This pair is intended to
+	      // represent the implicit binding between the 'this' pointer
+	      // and this object.  Since 'this' is a pointer, we should
+	      // bind it to the address of b.
+	      
+	      OA::OA_ptr<OA::MemRefExpr> curr = actualMreIterPtr->current();
+	      actualMre = curr->clone();
+	      actualMre->setAddressTaken(true);
+	      
+	    } else { 
+	      
+	      actualMre = actualMreIterPtr->current();
+	      
+	    }
+
+	    mreList.push_back(actualMre);
+
+	}
+
+      }
+
+      break;
+    }
+	
+    ++paramNum;
+  }
+
+  return mreList;
+}
+
+/** \brief   Return the initialized names of any 
+ *           member variables in a class.
+ *  \param   classDefinition  a SgNode representing a class definition.
+ *  \returns A vector holding the initialized names of any 
+ *           member variables in classDefinition.
+ *
+ *  Note:  we only return variables declared directly within classDefinition,
+ *         and not any declared within base classes.
+ */
+std::vector<SgInitializedName *> 
+getVariableMembers(SgClassDefinition *classDefinition) 
+{
+  ROSE_ASSERT(classDefinition != NULL);
+  std::vector<SgInitializedName *> initList;
+
+  // Get all of a class' members.
+  SgDeclarationStatementPtrList &members = classDefinition->get_members(); 
+  for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
+	   it != members.end(); ++it) { 
+	
+    SgDeclarationStatement *declarationStatement = *it; 
+    ROSE_ASSERT(declarationStatement != NULL);
+	
+    // We are only interested in variable declarations.
+    switch(declarationStatement->variantT()) {
+	  
+    case V_SgVariableDeclaration:
+      {
+	SgVariableDeclaration *variableDeclaration =
+	  isSgVariableDeclaration(declarationStatement);
+	ROSE_ASSERT(variableDeclaration != NULL);
+
+	// Get the list of initialized names from the 
+	// declaration.
+	SgInitializedNamePtrList &variables =
+	  variableDeclaration->get_variables();
+
+	// Iterate over each initialized name in the
+	// declaration.  
+	SgInitializedNamePtrList::iterator varIter;
+	for (varIter = variables.begin(); 
+	     varIter != variables.end(); ++varIter) {
+
+	  SgNode *var = *varIter;
+	  ROSE_ASSERT(var != NULL);
+	  
+	  SgInitializedName *initName =
+	    isSgInitializedName(var);
+	  ROSE_ASSERT(initName != NULL);
+
+	  initList.push_back(initName);
+
+	}
+
+	break;
+      }
+
+    default:
+      {
+	break;
+      }
+    
+    }
+
+  }
+
+  return initList;
+}
+
+/** \brief   Returns a method declaration within a class of the same
+ *           type as a specified method.
+ *  \param   memberFunctionDeclaration  A method declaration.
+ *  \param   classDefinition  a SgNode representing a class definition.
+ *  \returns A SgMemberFunctionDeclaration from classDefinition that
+ *           has the "same type" as method.
+ *
+ *  Note:  By "same type" we mean the following:
+ *  If method is a default constructor, return the default constructor defined
+ *  within classDefinition, else NULL.
+ *  If method is a copy constructor, return the copy constructor defined
+ *  within classDefinition, else NULL.
+ *  If method is a destructor, return the destructor defined
+ *  within classDefinition, else NULL.
+ *  If method is operator=, return the operator= defined
+ *  within classDefinition, else NULL.
+ *  Otherwise, if method has type signature s and name n, return the
+ *  method defined within classDefinition having type signature s and name n.
+ */
+SgMemberFunctionDeclaration *
+lookupMethodInClass(SgMemberFunctionDeclaration *method,
+		    SgClassDefinition *classDefinition)
+{
+  ROSE_ASSERT(method != NULL);
+  ROSE_ASSERT(classDefinition != NULL);
+
+  SgMemberFunctionDeclaration *matchingMethod = NULL;
+
+  bool lookingForDefaultConstructor = isDefaultConstructor(method);
+  bool lookingForCopyConstructor = isCopyConstructor(method);
+  bool lookingForDestructor = isDestructor(method);
+  bool lookingForOperatorEquals = isOperatorEquals(method);
+
+  SgDeclarationStatementPtrList &members = classDefinition->get_members(); 
+  for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
+       it != members.end(); ++it) { 
+	
+    SgDeclarationStatement *declarationStatement = *it; 
+    ROSE_ASSERT(declarationStatement != NULL);
+    
+    switch(declarationStatement->variantT()) {
+      
+    case V_SgMemberFunctionDeclaration:
+      {
+	SgMemberFunctionDeclaration *functionDeclaration =  
+	  isSgMemberFunctionDeclaration(declarationStatement); 
+	ROSE_ASSERT(functionDeclaration != NULL);
+	
+	if ( lookingForDefaultConstructor ) {
+	  if ( isDefaultConstructor(functionDeclaration) ) {
+	    return functionDeclaration;
+	  }
+	} else if ( lookingForCopyConstructor ) {
+	  if ( isCopyConstructor(functionDeclaration) ) {
+	    return functionDeclaration;
+	  }
+	} else if ( lookingForDestructor ) {
+	  if ( isDestructor(functionDeclaration) ) {
+	    return functionDeclaration;
+	  }
+	} else if ( lookingForOperatorEquals ) {
+	  if ( isOperatorEquals(functionDeclaration) ) {
+	    return functionDeclaration;
+	  }
+	} else {
+	  // This is not one of the special methods.  We need
+	  // to compare the types and names of the two methods.
+	  // We can do this easily be comparing mangled names.
+	  if ( method->get_mangled_name() == functionDeclaration->get_mangled_name() ) {
+	    return functionDeclaration;
+	  }
+	  
+	}
+
+	break;
+      }
+
+    default:
+      {
+	break;
+      }
+    }
+  }
+
+  return matchingMethod;
+}
+
+/** \brief   Returns a default constructor method declaration within a class 
+ *           if it exists.
+ *  \param   classDefinition  a SgNode representing a class definition.
+ *  \returns A SgMemberFunctionDeclaration from classDefinition that
+ *           representing a default constructor, or NULL if it is not
+ *           defined.
+ */
+SgMemberFunctionDeclaration *
+lookupDefaultConstructorInClass(SgClassDefinition *classDefinition)
+{
+  ROSE_ASSERT(classDefinition != NULL);
+
+  SgDeclarationStatementPtrList &members = classDefinition->get_members(); 
+  for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
+       it != members.end(); ++it) { 
+	
+    SgDeclarationStatement *declarationStatement = *it; 
+    ROSE_ASSERT(declarationStatement != NULL);
+    
+    switch(declarationStatement->variantT()) {
+      
+    case V_SgMemberFunctionDeclaration:
+      {
+	SgMemberFunctionDeclaration *functionDeclaration =  
+	  isSgMemberFunctionDeclaration(declarationStatement); 
+	ROSE_ASSERT(functionDeclaration != NULL);
+	
+	if ( isDefaultConstructor(functionDeclaration) ) {
+	  return functionDeclaration;
+	}
+
+	break;
+      }
+
+    default:
+      {
+	break;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+/** \brief   Associate a callsite and a class with an MRE representing
+ *           a method impicitly invoked on the class at the callsite.
+ *  \param   callsite  A Sage node representing a method invocation--
+ *                     either a SgFunctionCallExp for an explicitly
+ *                     invoked methor or possibly a SgCtorInitiliazerList
+ *                     for an implicitly invoked method.
+ *  \param   classDefinition  A SgNode representing a class definition.
+ *  \param   implicitCallMRE  A method implicitly invoked on class at
+ *           callsite.
+ *
+ *  Imagine a default or copy constructor, a destructor, or operator=
+ *  is invoked on a class A.  If B is a base class of A, a corresponding
+ *  method in B may be implicitly invoked.  This procedure is intended
+ *  to associate the callsite, at which the method is invoked on A,
+ *  and the class B, which an MRE representing the implicit method 
+ *  call on B.  
+ *
+ *  Note:  It may seem intuitive to simply associate an implicit call
+ *  with the callsite that generated it.  Indeed, they approach may 
+ *  work.  I have chosen to include the class in the association because
+ *  this will allow us to later order the implicit invocations
+ *  according to their execution order.  We can do this because we
+ *  know the order in which constructors/destuctors/operator= are
+ *  invoked within the class hierarchy.  Therefore, we can traverse
+ *  the class hierarchy in the proper direction (reverse for destructors)
+ *  and invoke lookupImplicitMethodInvocation on the current class.
+ */
+void SageIRInterface::registerImplicitMethodInvocation(SgLocatedNode *callsite,
+						       SgClassDefinition *classDefinition,
+						       OA::OA_ptr<OA::MemRefExpr> implicitCallMRE)
+{
+  ROSE_ASSERT(callsite != NULL);
+  ROSE_ASSERT(classDefinition != NULL);
+  ROSE_ASSERT(!implicitCallMRE.ptrEqual(0));
+
+  // Represent the callsite and class as a string comprised of
+  // the file location of the callsite and the mangled name of the class.
+  Sg_File_Info *fileInfo = callsite->get_file_info(); 
+  ROSE_ASSERT(fileInfo != NULL);  
+
+  std::string str = fileInfo->displayString();
+  int dummy;
+  str += classDefinition->get_mangled_qualified_name(dummy).getString();
+
+  // Make sure that we have not already mapped the callsite and class
+  // to an MRE.
+#if 0
+  if ( sCallsite2ImplicitCallMre.find(callsite) !=
+       sCallsite2ImplicitCallMre.end() ) {
+    std::cerr << "Callsite has already been registered!" << std::endl;
+    std::cerr << str << std::endl;
+    ROSE_ABORT();
+  }
+
+  // Map the callsite to the MRE.
+  sCallsite2ImplicitCallMre[callsite] = implicitCallMRE;
+#else
+  if ( sCallSiteAndClass2ImplicitCallMre.find(str) !=
+       sCallSiteAndClass2ImplicitCallMre.end() ) {
+    std::cerr << "Callsite and class have already been registered!" << std::endl;
+    std::cerr << str << std::endl;
+    ROSE_ABORT();
+  }
+
+  // Map the callsite and class to the MRE.
+  sCallSiteAndClass2ImplicitCallMre[str] = implicitCallMRE;
+#endif
+}
+
+/** \brief   Lookup the MRE representing a method implicitly invoked
+ *           on a particular class at a specified callsite.
+ *  \param   callsite  A Sage node representing a method invocation--
+ *                     either a SgFunctionCallExp for an explicitly
+ *                     invoked methor or possibly a SgCtorInitiliazerList
+ *                     for an implicitly invoked method.
+ *  \param   classDefinition  A SgNode representing a class definition.
+ *  \returns An MRE method implicitly invoked on class at
+ *           callsite.
+ *
+ *  Please see the comments for registerImplicitMethodInvocation above.
+ */
+OA::OA_ptr<OA::MemRefExpr>
+SageIRInterface::lookupImplicitMethodInvocation(SgLocatedNode *callsite,
+						SgClassDefinition *classDefinition)
+				    
+{
+  ROSE_ASSERT(callsite != NULL);
+  ROSE_ASSERT(classDefinition != NULL);
+
+  OA::OA_ptr<OA::MemRefExpr> implicitCallMRE;
+
+  // Represent the callsite and class as a string comprised of
+  // the file location of the callsite and the mangled name of the class.
+  Sg_File_Info *fileInfo = callsite->get_file_info(); 
+  ROSE_ASSERT(fileInfo != NULL);  
+
+  std::string str = fileInfo->displayString();
+  int dummy;
+  str += classDefinition->get_mangled_qualified_name(dummy).getString();
+
+#if 0
+  if ( sCallsite2ImplicitCallMre.find(callsite) !=
+       sCallsite2ImplicitCallMre.end() ) {
+    implicitCallMRE = sCallsite2ImplicitCallMre[callsite];
+  }
+#else
+  if ( sCallSiteAndClass2ImplicitCallMre.find(str) !=
+       sCallSiteAndClass2ImplicitCallMre.end() ) {
+    implicitCallMRE = sCallSiteAndClass2ImplicitCallMre[str];
+  }
+#endif
+
+  return implicitCallMRE;
+}
+
+/** \brief   Map an MRE representing a method impicitly invoked to the
+ *           callsite instigating the implicit invocation.
+ *  \param   implicitCallMRE  A method implicitly invoked at callsite.
+ *  \param   callsite  A Sage node representing a function call expression.
+ *
+ *  Note:  this is effectively a reverse amp as that provided by
+ *  registerImplicitMethodInvocation, excluding the class.
+ */
+void SageIRInterface::mapImplicitMethodInvocationToCallsite(OA::OA_ptr<OA::MemRefExpr> implicitCallMRE,
+							    SgFunctionCallExp *callsite)
+{
+  ROSE_ASSERT(!implicitCallMRE.ptrEqual(0));
+  ROSE_ASSERT(callsite != NULL);
+
+  if ( sImplicitCallMre2Callsite.find(implicitCallMRE) !=
+       sImplicitCallMre2Callsite.end() ) {
+    std::cerr << "Implicit callsite has already been registered!" << std::endl;
+    ROSE_ABORT();
+  }
+
+  sImplicitCallMre2Callsite[implicitCallMRE] = callsite;
+}
+
+/** \brief   Lookup the callsite from which an implicit method invocation
+ *           occurred.
+ *  \param   implicitCallMRE  A method implicitly invoked.
+ *  \returns A Sage node representing the function call expression/callsite
+ *           at which implicitCallMRE was implicitly invoked.
+ */
+SgFunctionCallExp *
+SageIRInterface::lookupCallsiteOfImplicitMethodInvocation(OA::OA_ptr<OA::MemRefExpr> implicitCallMRE)
+{
+  ROSE_ASSERT(!implicitCallMRE.ptrEqual(0));
+  
+  SgFunctionCallExp *callsite = NULL;
+
+  if ( sImplicitCallMre2Callsite.find(implicitCallMRE) !=
+       sImplicitCallMre2Callsite.end() ) {
+    callsite = sImplicitCallMre2Callsite[implicitCallMRE];
+  }
+
+  return callsite;
+}
+
+/** \brief   Allocates and instantiates a new SgMemberFunctionDeclaration
+ *           which is a clone of the specified special method
+ *           specialized for a given class.
+ *  \param   method  A SgNode representing a method declaration.
+ *  \param   classDefinition  A SgNode representing a class definition.
+ *  \returns A SgMemberFunctionDeclaration that is similar to the special
+ *           method but specialized for classDefinition.  Returns NULL
+ *           if the method is not special.
+ *
+ *  Special method refers to a default constructor, a copy constructor,
+ *  a destructor, or operator=.
+ *
+ *  The scope of SgMemberFunctionDeclaration is always set to classDefinition.
+ *  It's type signature is set as follows:
+ *  If method is a default constructor, the returned declaration has no
+ *  formals (note that method could technically have default arguments,
+ *  so long as it has no non-default arguments).
+ *  If method is a copy constructor or operator=, the returned declaration 
+ *  has a single formal which has the type of classDefinition.
+ *  If method is a destructor, it has no arguments.
+ * 
+ *  cloneSpecialMemberFunctionDeclarationForClass allocates new SgNodes:
+ *  the returned SgMemberFunctionDeclaration, a SgFunctionType, and
+ *  possibly a SgReferenceType (for the single formal argument to 
+ *  the copy constructor and operator=).  When a SgReferenceType is
+ *  needed, it wraps an existing SgType node, not a newly created one.
+ *  None of the allocated nodes should be deleted by the user; 
+ *  instead SageIRInterface tracks them and deletes them upon its
+ *  destruction.
+ */
+SgMemberFunctionDeclaration *
+SageIRInterface::cloneSpecialMemberFunctionDeclarationForClass(SgMemberFunctionDeclaration *method,
+							       SgClassDefinition *classDefinition)
+{
+  if ( !isCompilerGeneratable(method) )
+    return NULL;
+
+  // Record any Sage nodes we create here in nonAstNodes, for
+  // book-keeping purposes.
+
+  // Get the class declaration from the class definition.
+  SgClassDeclaration *classDeclaration =
+    classDefinition->get_declaration();
+  ROSE_ASSERT(classDeclaration != NULL);
+
+  // Get the type of the class.
+  SgClassType *classType = classDeclaration->get_type();
+  ROSE_ASSERT(classType != NULL);
+
+  // Create the function type.  Specify only the return type here
+  // (and that the method does not have optional arguments).  Below
+  // we will add the arguments, if any.
+  
+  SgType *returnType = NULL;
+  SgType *referenceType = NULL;
+  if ( isDefaultConstructor(method) ||
+       isCopyConstructor(method) ||
+       isDestructor(method) ) {
+    // If this is a constructor or destructor, there is no return.
+    // Follow sage_gen_be.C and create a dummy return to avoid
+    // passing the constructor for the SgMemberFunctionType a 
+    // NULL pointer.
+    returnType = new SgTypeVoid();
+    ROSE_ASSERT(returnType != NULL);
+    mNonAstNodes.push_back(returnType);
+  } else if ( isOperatorEquals(method) ) {
+    // Return type of operator= is a reference to an object
+    // of the class of which operator= is a member.  Since
+    // the method we are constructing is a method of 
+    // classDefinition, it should have that type.
+    returnType = new SgReferenceType(classType);
+    ROSE_ASSERT(returnType != NULL);
+    referenceType = returnType;
+    mNonAstNodes.push_back(returnType);
+  } else {
+    std::cerr << "Expecting constructor, destructor, or operator=" << std::endl;
+    std::cerr << "instead have: " << method->unparseToString() << std::endl;
+    ROSE_ABORT();
+  }
+
+  bool has_ellipses = false;
+  SgMemberFunctionType *ft = new SgMemberFunctionType(returnType, has_ellipses);
+
+  mNonAstNodes.push_back(ft);
+
+  // Give the newly allocated declaration the same name as method.
+  SgName name = method->get_name();
+  const char *start = name.str(); 
+
+  // Set the file_info of the new declaration to be that of the
+  // class.
+  Sg_File_Info *fileInfo = classDefinition->get_file_info();
+  ROSE_ASSERT(fileInfo != NULL);
+
+  SgMemberFunctionDeclaration *newMethod = 
+    new SgMemberFunctionDeclaration(fileInfo, start, ft, 0); 
+  mNonAstNodes.push_back(newMethod);
+
+  newMethod->set_scope(classDefinition);
+  newMethod->set_firstNondefiningDeclaration(newMethod);
+  if ( isDestructor(method) ) {
+    newMethod->get_specialFunctionModifier().setDestructor();
+  }
+  if ( isDefaultConstructor(method) ||
+       isCopyConstructor(method) ) {
+    newMethod->get_specialFunctionModifier().setConstructor();
+  }
+
+  // Set the formal arguments for the new declaration.  Only
+  // the copy constructor and operator= declarations get a formal.
+  // In both cases, it is a reference to an object of the class
+  // of which the declaration is a member.
+  if ( isCopyConstructor(method) ||
+       isOperatorEquals(method) ) {
+    if ( referenceType == NULL ) {
+      referenceType = new SgReferenceType(classType);
+      ROSE_ASSERT(referenceType != NULL);
+      mNonAstNodes.push_back(referenceType);
+    }
+    ft->append_argument(referenceType);
+  }
+
+  markAsCompilerGenerated(newMethod);
+
+  return newMethod;
+}
+
+
+/** \brief   Allocates and instantiates a new SgMemberFunctionDeclaration
+ *           for a default constructor on a given class.
+ *  \param   classDefinition  A SgNode representing a class definition.
+ *  \returns A SgMemberFunctionDeclaration representing a default
+ *           constructor for classDefinition.
+ */
+SgMemberFunctionDeclaration *
+SageIRInterface::createDefaultConstructorDeclarationForClass(SgClassDefinition *classDefinition)
+{
+  // Record any Sage nodes we create here in nonAstNodes, for
+  // book-keeping purposes.
+
+  // Get the class declaration from the class definition.
+  SgClassDeclaration *classDeclaration =
+    classDefinition->get_declaration();
+  ROSE_ASSERT(classDeclaration != NULL);
+
+  // Get the type of the class.
+  SgClassType *classType = classDeclaration->get_type();
+  ROSE_ASSERT(classType != NULL);
+
+  // Create the function type.  Specify only the return type here
+  // (and that the method does not have optional arguments).  Below
+  // we will add the arguments, if any.
+  
+  SgType *returnType = NULL;
+  SgType *referenceType = NULL;
+  // For a constructor, there is no return.
+  // Follow sage_gen_be.C and create a dummy return to avoid
+  // passing the constructor for the SgMemberFunctionType a 
+  // NULL pointer.
+  returnType = new SgTypeVoid();
+  ROSE_ASSERT(returnType != NULL);
+  mNonAstNodes.push_back(returnType);
+
+  bool has_ellipses = false;
+  SgMemberFunctionType *ft = new SgMemberFunctionType(returnType, has_ellipses);
+
+  mNonAstNodes.push_back(ft);
+
+  // Give the newly allocated declaration the same name as method.
+  SgName name = classType->get_name();
+  const char *start = name.str(); 
+
+  // Set the file_info of the new declaration to be that of the
+  // class.
+  Sg_File_Info *fileInfo = classDefinition->get_file_info();
+  ROSE_ASSERT(fileInfo != NULL);
+
+  SgMemberFunctionDeclaration *newMethod = 
+    new SgMemberFunctionDeclaration(fileInfo, start, ft, 0); 
+  mNonAstNodes.push_back(newMethod);
+
+  newMethod->set_scope(classDefinition);
+  newMethod->set_firstNondefiningDeclaration(newMethod);
+  newMethod->get_specialFunctionModifier().setConstructor();
+
+  markAsCompilerGenerated(newMethod);
+
+  return newMethod;
+}
+
+/** \brief  Create a pointer assignment pair 
+ *          lhsBase.field = rhsBase.field.
+ *  \param  lhsBase  An MRE representing the lhs of an assignment.
+ *  \param  rhsBase  An MRE representing the rhs of an assignment.
+ *  \param  field    A SgNode representing a field of lhsBase and
+ *                   rhsBase that is copied from rhsBase to lhsBase.
+ *  \returns  A pair of MREs, the first an MRE for lhsBase.field
+ *            and the second an MRE for rhsBase.field.
+ */
+pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> >
+createImplicitAssignments(OA::OA_ptr<OA::MemRefExpr> lhsBase,
+			  OA::OA_ptr<OA::MemRefExpr> rhsBase,
+			  SgNode *field)
+{
+  // Because we do not account for field names in memory
+  // reference expressions, field accesses (the right-hand
+  // side of arrow and dot expressions) are represented
+  // with partial (or incomplete) accuracy.
+
+  OA::OA_ptr<OA::MemRefExpr> lhsOfPair;
+  OA::OA_ptr<OA::MemRefExpr> rhsOfPair;
+
+  // This memory reference expression does _not_
+  // accurately represent the memory expression since
+  // we do not account for fields in the access.
+  bool fullAccuracy = false;
+
+  bool addressTaken = false;
+	
+  // The left is a DEF, the rhs is a USE.
+  OA::MemRefExpr::MemRefType lhsMemRefType = OA::MemRefExpr::DEF;
+  OA::MemRefExpr::MemRefType rhsMemRefType = OA::MemRefExpr::USE;
+  
+  // This is a dot expression.  Given the memory
+  // reference expression lhsMemRefExp (e.g., 
+  // representing mem ref expr a), we need
+  // to create a new memory reference expression
+  // (e.g., representing mem ref expr a.b).  This
+  // new mem ref expression is simply a copy of the
+  // lhs mem ref expression with the flags set
+  // appropriately.  
+  lhsOfPair = lhsBase->clone();
+  lhsOfPair->setAccuracy(fullAccuracy);
+  lhsOfPair->setAddressTaken(addressTaken);
+  lhsOfPair->setMemRefType(lhsMemRefType);
+
+  rhsOfPair = rhsBase->clone();
+  rhsOfPair->setAccuracy(fullAccuracy);
+  rhsOfPair->setAddressTaken(addressTaken);
+  rhsOfPair->setMemRefType(rhsMemRefType);
+  
+  return 
+    pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> >(lhsOfPair,
+								  rhsOfPair);
+}
+
+
+/** \brief Return boolean indicating whether fields are modeled
+ *         accurately.
+ *  \returns  Boolean indicating whether fields are modeled
+ *            accurately.
+ */
+bool modelingFieldsAccurately()
+{
+  return false;
+}
+
+SgFunctionCallExp *
+createInvocationOfDefaultConstructor(SgClassDefinition *specialMethodClass)
+{
+
+}
+
+SgFunctionCallExp *
+createInvocationOfDestructor(SgClassDefinition *specialMethodClass)
+{
+
+}
+
+/** \brief  Create implicit assignments and method invocations for
+ *          invocations of compiler-generated default and copy 
+ *          constructors, operator=, and destructor.
+ *  \param  callsite  The SgFunctionCallExp representing the callsite
+ *                    which invokes a default or copy constructor,
+ *                    operator=, or a destructor.  Callsite may
+ *                    be a SgCtorInitializerList if the callsite
+ *                    is implicit.
+ *  \param  explicitlyInvokedMethod  The SgMemberFunctionDeclaration
+ *                                   representing the method invoked
+ *                                   at the callsite.
+ *  \param  classDefn  The SgClassDefinition representing the receiver's
+ *                     class at the callsite or at some implicit callsite
+ *                     resulting from the sequence of calls initiated
+ *                     at the original callsite.
+ *  \param  methodInvokedOnClassDefn  The SgMemberFunctionDeclaration
+ *                                    representing the method invoked
+ *                                    on classDefn at the callsite or at
+ *                                    some impicit callsite resulting from
+ *                                    the sequence of calls initiated
+ *                                    at the original callsite.
+ *  \param  collectPtrAssigns  Boolean indicating whether this method
+ *                             should collect implicit ptr assignments
+ *                             and store them in ptrAssigns.
+ *  \param  ptrAssigns  A list of pointer assignment MRE pairs.  
+ *                      If collectrPtrAssigns == true, this method
+ *                      will collect implicit ptr assignments resulting
+ *                      from implicit method invocations and place them
+ *                      in ptrAssigns.
+ *  \param  determineIfPtrAssignNecessary  Boolean indicating whether
+ *                                         this method should determine
+ *                                         if implicit pointer assignment
+ *                                         pairs could result from this
+ *                                         callsite, even if we are not
+ *                                         collecting them 
+ *                                         (i.e., collectrPtrAssigns == false).
+ *  \param  collectImplicitCalls  Boolean indicating whether this method
+ *                                should create and collect implicit
+ *                                method invocations and store them in
+ *                                implicitCalls.
+ *  \param  implicitCalls  A list of callMREs.
+ *                         If collectrImplicitCalls == true, this method
+ *                         will collect implicit method invocations
+ *                         and place them in implicitCalls.
+ *  \param  foundPtrAssign  A boolean input/output parameter indicating
+ *                          whether any (recursive) invocation of 
+ *                          handleCallToSpecialMethod on the callsite has
+ *                          determine that it was necessary to generate
+ *                          implicit pointer assignments.  Should be
+ *                          initialized to false.
+ *
+ *  This is a helper function.  You should instead be calling
+ *  handleCallToSpecialMethod(callsite, flags, ...).
+ *
+ *  Consider the example:
+ *  
+ *  class B { };
+ *  class A : public B { };
+ *
+ *  and the callsite:
+ *  
+ *  A:A();
+ *
+ *  For this callsite we would invoke handleCallToSpecialMethod as:
+ * 
+ *  handleCallToSpecialMethod(A::A(), A::A, A, A::A)
+ *
+ *  i.e., classDefn is the receiver at the original callsite and
+ *  methodInvokedOnClassDefn is the explicitlyInvokedMethod.
+ *
+ *  A::A() implicitly invokes B::B().  Since there is no body for
+ *  A::A() we have to simulate this call to B::B().  This is done
+ *  by a recursive call:
+ *
+ *  handleCallToSpecialMethod(A::A(), A::A, B, B::B)
+ *
+ *  
+ */
+void SageIRInterface::handleCallToSpecialMethod(SgLocatedNode *explicitCallsite,
+						SgMemberFunctionDeclaration *explicitlyInvokedMethod,
+						SgClassDefinition *classDefn,
+						SgMemberFunctionDeclaration *methodInvokedOnClassDefn,
+						bool collectPtrAssigns,
+						std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *ptrAssigns,
+						bool determineIfPtrAssignNecessary,
+						bool collectImplicitCalls,
+						std::list<OA::OA_ptr<OA::MemRefExpr> > *implicitCalls,
+						bool &foundPtrAssign)
+{
+  // Do nothing if the method/function could not have been
+  // generated by the compiler-- i.e., is not a default or
+  // copy constructor, a destructor, or operator=.
+  if ( !isCompilerGeneratable(explicitlyInvokedMethod) ) {
+    foundPtrAssign = false;
+    return;
+  }
+
+  // methodInvokedOnClassDefn is the method invoked (implicitly or
+  // explicitly) on a receiver of classDefn at the current location 
+  // in the call stack.  The sequence of calls originated at
+  // callsite with an invocation of explicitlyInvokedMethod.
+  // i.e., if explicitlyInvokedMethod is A::A(), then 
+  // classDefn = B, where B is a baseclass of A and 
+  // methodInvokedOnClassDefn is B::B().  Similarly for
+  // A::A(A &a), A::operator=(A &a), and A::~A.  
+  // NB:  on the first invocation of handleCallToSpecialMethod
+  // we expect explicitlyInovkedMethod == methodInvokedOnClassDefn.
+
+  // If methodInvokedOnClassDefn is NULL or compiler generated
+  // then it does not have a body that we can analyze.  In
+  // those cases, create implicit assignments and method invocations
+  // that model the known semantics of the invoked method.
+  //
+  // Assignment semantics:
+  // Element-wise copy for copy constructor and operator=.
+  // Nothing for default constructor and destructor.
+  // 
+  // Implicit invocations:
+  // Compiler-generated operator= invokes base class operator=.
+  // User-defined operator= invokes base class default constructor if
+  // no other constructors are explicitly invoked on base class.
+  // Compiler-generated copy constructor invokes base class copy constructor.
+  // User-defined copy constructor invokes base class default constructor if
+  // no other constructors are explicitly invoked on base class.
+  // Compiler-generated default constructor invokes base class default
+  // constructor.
+  // User-defined default constructor invokes base class default constructor if
+  // no other constructors are explicitly invoked on base class.
+  // Compiler-generated and user-defined destructors invoke base class
+  // destructor.
+
+  // If the body exists, we are done.  There may be other undefined
+  // (to-be-compiler-generated) method bodies further up the call chain--
+  // these will be handled by visiting the last user-defined method
+  // before such an implicit invocation.
+  if ( ( methodInvokedOnClassDefn != NULL ) &&
+       ( !isCompilerGenerated(methodInvokedOnClassDefn) ) ) {
+    foundPtrAssign = false;
+    return;
+  }
+
+  // Are we modeling fields accurately?
+  bool accurateFieldModel = modelingFieldsAccurately();
+
+  // We only need to generate implicit assignments for copy constructors
+  // and operator=.
+  bool needImplicitPtrAssigns = isCopyConstructor(methodInvokedOnClassDefn) ||
+    isOperatorEquals(methodInvokedOnClassDefn); 
+
+  // If we do need to create implicit assignments and are called
+  // upon to do so (i.e., collectPtrAssigns == true), get the lhs
+  // and rhs involved in the assignment.  Note that since we fold
+  // the receiver into the arg list as the 1st parameter, the
+  // (base of the) lhs is the first arg and the (base of the)
+  // rhs is the second arg.
+  std::vector< OA::OA_ptr<OA::MemRefExpr> > lhses;
+  std::vector< OA::OA_ptr<OA::MemRefExpr> > rhses;
+  if ( needImplicitPtrAssigns && collectPtrAssigns ) {
+    // We only pass a SgCtorInitializerList as the callsite
+    // when the callsite is implicitly invoked.
+    // A copy constructor or operator= is never implicitly
+    // invoked by a user-defined method.
+    SgFunctionCallExp *functionCallExp = 
+      isSgFunctionCallExp(explicitCallsite);
+    ROSE_ASSERT(functionCallExp != NULL);
+    lhses = getActualMres(functionCallExp, 0);
+    rhses = getActualMres(functionCallExp, 1);
+  }
+
+  // Handle implicit pointer assignment pairs.
+  // Don't do anything unless this method is a copy constructor
+  // or operator= which actually performs assignment.
+  // Only create implicit ptr assign pairs if called upon
+  // to do so (i.e., collectPtrAssigns == true).  However,
+  // determine whether they would be generated if
+  // determineIfPtrAssignNecessary == true.
+  if ( needImplicitPtrAssigns && 
+       ( ( !foundPtrAssign && determineIfPtrAssignNecessary ) ||
+	 collectPtrAssigns ) ) {
+
+    // Find all of the pointer members of classDefn.
+    // For each of these we will generate an implicit assign of the form:
+    //    lhs->ptr = rhs->ptr;
+
+    std::vector<SgInitializedName *> memberVars =
+      getVariableMembers(classDefn);
+    for (int i = 0; i < memberVars.size(); ++i) {
+      
+      SgInitializedName *initName = memberVars[i];
+      ROSE_ASSERT(initName != NULL);
+
+      if ( !isSgPointerType(initName->get_type()) &&
+	   !isSgReferenceType(initName->get_type()) )
+	continue;
+
+      foundPtrAssign = true;
+      if ( collectPtrAssigns ) {
+	// Create the implicit assignments.
+
+	for (int l = 0; l < lhses.size(); ++l ) {
+
+	  OA::OA_ptr<OA::MemRefExpr> lhs = lhses[l];
+
+	  for (int r = 0; r < rhses.size(); ++r ) {
+	    
+	    OA::OA_ptr<OA::MemRefExpr> rhs = rhses[r];
+
+	    pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> >
+	      assignPair;
+	    assignPair = createImplicitAssignments(lhs, rhs, initName);
+	    ptrAssigns->push_back(assignPair);
+
+	    // If we are modeling fields accurately, we only need
+	    // to create one implicit assignment.
+	    if ( !accurateFieldModel ) 
+	      break;
+	  } // end for all rhs in rhses
+	  if ( !accurateFieldModel ) 
+	    break;
+	} // end for all lhs in lhses
+      } // end if ( collectPtrAssigns )
+      if ( !accurateFieldModel ) 
+	break;
+    } // end for all ptrFields
+  }
+
+  // If we found an implicit ptr assignment, are using an inaccurate
+  // field model or are not collecting ptr assigns, 
+  // and are not collecting/creating implicit invocations, we are done.
+  if ( foundPtrAssign && ( !accurateFieldModel || !collectPtrAssigns ) &&
+       !collectImplicitCalls ) {
+    return;
+  }
+
+  // Recurse up the class hierarchy, visiting the method within
+  // the base class corresponding to explicitlyInvokedMethod.
+  SgBaseClassPtrList & baseClassList = classDefn->get_inheritances(); 
+  for (SgBaseClassPtrList::iterator i = baseClassList.begin(); 
+       i != baseClassList.end(); ++i) {
+ 
+    SgBaseClass *baseClass = *i;
+    ROSE_ASSERT(baseClass != NULL);
+
+    SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
+    ROSE_ASSERT(classDeclaration != NULL);
+
+    SgClassDefinition *baseClassDefn  = 
+      classDeclaration->get_definition(); 
+
+    // Lookup the method in the base class.
+    SgMemberFunctionDeclaration *baseMethod =
+      lookupMethodInClass(explicitlyInvokedMethod, baseClassDefn);
+
+    // We know that this method is a default or copy constructor,
+    // a destructor, or operator=.  Therefore, if the user has not
+    // defined it in the base class, the compiler will.
+    if ( collectImplicitCalls ) {
+      // Have we already created a callMRE for thie implicit
+      // invocation of a method on baseClassDefn due to callsite?
+      OA::OA_ptr<OA::MemRefExpr> callMRE =
+	lookupImplicitMethodInvocation(explicitCallsite, baseClassDefn);
+      if ( callMRE.ptrEqual(0) ) {
+	// We have not previously created an MRE.  Do so now.
+	// Note that the normal MRE-generating traversal will
+	// not create this MRE since the invocation is
+	// implicit (and hence unavailable in the AST).
+	if ( baseMethod == NULL ) {
+	  // We use SgFunctionDeclarations as handles for
+	  // callMREs.  A SgFunctionDeclaration may not exist
+	  // for a method/function which is only implicitly
+	  // invoked, since Sage has no need to reference it.
+	  // Therefore, create one here.
+	  baseMethod = 
+	    cloneSpecialMemberFunctionDeclarationForClass(explicitlyInvokedMethod,
+							  baseClassDefn);
+	}
+	ROSE_ASSERT(baseMethod != NULL);
+	// At this point, we have a valid handle with which to
+	// create a callMRE.
+	callMRE = createInvocationMRE(baseMethod);
+	ROSE_ASSERT(!callMRE.ptrEqual(0));
+
+	// Associate the newly created callMRE with the callsite
+	// from the program which gave rise to this implicit
+	// method invocation on baseClassDefn.
+	registerImplicitMethodInvocation(explicitCallsite,
+					 baseClassDefn,
+					 callMRE);
+	// Return the newly created implicit callMRE.
+	implicitCalls->push_back(callMRE);
+      }
+    } // end if ( collectImplcitiCalls )
+
+    // Recurse on the method invoked on this base class.
+    bool tmpFoundPtrAssign = foundPtrAssign;
+#if 0
+    HERE
+    SgFunctionCallExp *newCallsite = cloneMethodCall(baseMethod,
+						     explicitCallsite);
+#endif
+    handleCallToSpecialMethod(explicitCallsite,
+			      explicitlyInvokedMethod,
+			      baseClassDefn,
+			      baseMethod,
+			      collectPtrAssigns,
+			      ptrAssigns,
+			      determineIfPtrAssignNecessary,
+			      collectImplicitCalls,
+			      implicitCalls,
+			      tmpFoundPtrAssign);
+    if ( tmpFoundPtrAssign == true ) {
+      foundPtrAssign = true;
+    }
+  } // end for all baseClassDefn
+
+}
+
+/** \brief  Store in invokedMethods any constructors invoked within subtree.
+ *  \param  subtree  A SgNode representing an AST subtree.
+ *  \param  invokedMethods  A set of SgMemberFunctionDeclarations 
+ *                          representing invoked methods.  On output,
+ *                          any constructors invoked within subtree are 
+ *                          union'ed with invokedMethods.
+ */
+void findInvokedConstructors(SgNode *subtree, std::set<SgMemberFunctionDeclaration *> &invokedMethods)
+{
+  // Find any function callsites within subtree.
+  list<SgNode *> nodes = NodeQuery::querySubTree(subtree,
+						 V_SgFunctionCallExp);
+
+  // Iterate over the callsites and append the method declarations
+  // for any invoked constructors to invokedMethods.
+  for (list<SgNode *>::iterator it = nodes.begin();
+       it != nodes.end(); ++it ) {
+
+    SgNode *n = *it;
+    ROSE_ASSERT(n != NULL);
+
+    SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(n);
+    ROSE_ASSERT(functionCallExp != NULL);
+    
+    SgFunctionDeclaration *invokedFuncDeclaration =
+      getFunctionDeclaration(functionCallExp);
+    if ( invokedFuncDeclaration == NULL )
+      continue;
+
+    SgMemberFunctionDeclaration *invokedMethodDeclaration =
+      isSgMemberFunctionDeclaration(invokedFuncDeclaration);
+    if ( invokedMethodDeclaration == NULL )
+      continue;
+
+    if ( isConstructor(invokedMethodDeclaration) )
+      invokedMethods.insert(invokedMethodDeclaration);
+  }
+  
+}
+
+/** \brief  Return a function declaration's definition.
+ *  \param  functionDeclaration  A SgFunctionDeclaration representing
+ *                               a function declaration.
+ *  \returns  A SgFunctionDefinition representing the definition
+ *            associated with the function declaration.
+ */
+SgFunctionDefinition *getDefinition(SgFunctionDeclaration *functionDeclaration)
+{
+  SgFunctionDefinition *functionDefinition = NULL;
+
+  if ( functionDeclaration == NULL )
+    return functionDefinition;
+
+  functionDefinition = functionDeclaration->get_definition();
+  if ( functionDefinition != NULL )
+    return functionDefinition;
+
+  SgDeclarationStatement *definingStmt =
+    functionDeclaration->get_definingDeclaration();
+  if ( definingStmt == NULL )
+    return functionDefinition;
+
+  SgFunctionDeclaration *definingDeclaration =
+    isSgFunctionDeclaration(definingStmt);
+  if ( definingDeclaration == NULL )
+    return functionDefinition;
+
+  functionDefinition = definingDeclaration->get_definition();
+
+  return functionDefinition;
+}
+
+void SageIRInterface::createCallMREsForImplicitlyInvokedMethods(SgMemberFunctionDeclaration *explicitlyInvokedMethod,
+								SgClassDefinition *classDefinition,
+								SgLocatedNode *callsite,
+								const std::set<SgClassDefinition *> &invokedBaseClasses,
+								std::list<OA::OA_ptr<OA::MemRefExpr> > *implicitCalls)
+{
+  // Determine the base classes of classDefinition.
+  // Iterate over each to determine if one of its methods was explicitly
+  // invoked (i.e., is in invokedBaseClasses).  If not, it was
+  // implicitly invoked.
+  SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances(); 
+  for (SgBaseClassPtrList::iterator i = baseClassList.begin(); 
+       i != baseClassList.end(); ++i) {
+ 
+    SgBaseClass *baseClass = *i;
+    ROSE_ASSERT(baseClass != NULL);
+
+    SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
+    ROSE_ASSERT(classDeclaration != NULL);
+
+    SgClassDefinition *baseClassDefn  = 
+      classDeclaration->get_definition(); 
+    
+    if ( invokedBaseClasses.find(baseClassDefn) ==
+	 invokedBaseClasses.end() ) {
+
+      // No method was explicitly invoked on the base class, 
+      // baseClassDefn.  We will need an implicit
+      // method call here.  Have we already created one?
+      OA::OA_ptr<OA::MemRefExpr> callMRE =
+	lookupImplicitMethodInvocation(callsite, baseClassDefn);
+
+      //HERE
+
+      bool invokedMethodHasDefinition = true;
+
+      // baseMethod is the method implicitly invoked in the
+      // base class.
+      SgMemberFunctionDeclaration *baseMethod = NULL;
+
+      if ( callMRE.ptrEqual(0) ) {
+	
+	// We have not previously created an implicit callMRE
+	// invoked baseClassDefn at this callsite.  Create one.
+
+	// We need to know which method to implicitly invoke.
+	// If the explicitly invoked method was a constructor,
+	// we implicitly invoke a _default_ constructor.  If the 
+	// explicitly invoked method was a destructor, we
+	// invoke a destructor.
+
+	if ( isConstructor(explicitlyInvokedMethod) ) {
+
+	  // Lookup the default constructor in the base class.
+	  baseMethod = lookupDefaultConstructorInClass(baseClassDefn);
+
+	  if ( baseMethod == NULL ) {
+	    // The default constructor was not defined in the
+	    // base class.  The compiler will create a default
+	    // constructor, so we will need to create a handle
+	    // to invoke it implicitly.
+	    baseMethod = 
+	      createDefaultConstructorDeclarationForClass(baseClassDefn);
+	  } else {
+	    if ( ( getDefinition(baseMethod) == NULL ) ||
+		 ( isCompilerGenerated(baseMethod) ) ) {
+	      invokedMethodHasDefinition = false;
+	    }
+	  }
+
+	} else if ( isDestructor(explicitlyInvokedMethod) ) {
+
+	  // Lookup the destructor in the base class.
+	  baseMethod = lookupMethodInClass(explicitlyInvokedMethod,
+					   baseClassDefn);
+
+	  if ( baseMethod == NULL ) {
+	    baseMethod = 
+	      cloneSpecialMemberFunctionDeclarationForClass(explicitlyInvokedMethod,
+							    baseClassDefn);
+	  } else {
+	    if ( ( getDefinition(baseMethod) == NULL ) ||
+		 ( isCompilerGenerated(baseMethod) ) ) {
+	      invokedMethodHasDefinition = false;
+	    }
+	  }
+
+	} else {
+	  std::cerr << "createCallMREsForImplicitlyInvokedMethods was only expecting" << std::endl;
+	  std::cerr << "that the explicitly invoked method would be a constructor" << std::endl;
+	  std::cerr << "or a destructor.  Instead it was a" << std::endl;
+	  std::cerr << explicitlyInvokedMethod->sage_class_name() << std::endl;
+	  ROSE_ABORT();
+	}
+
+	ROSE_ASSERT(baseMethod != NULL);
+	
+	// At this point, we have a valid handle with which to
+	// create a callMRE.
+	callMRE = createInvocationMRE(baseMethod);
+	ROSE_ASSERT(!callMRE.ptrEqual(0));
+
+	// Associate the newly created callMRE with the callsite
+	// from the program which gave rise to this implicit
+	// method invocation on baseClassDefn.
+	registerImplicitMethodInvocation(callsite,
+					 baseClassDefn,
+					 callMRE);
+	// Return the newly created implicit callMRE.
+	implicitCalls->push_back(callMRE);
+
+      } // end if (callMRE.ptrEqual(0))
+     
+      if ( !invokedMethodHasDefinition ) {
+
+	// The method implicitly invoked does not have
+	// a definition-- i.e., it will be automatically
+	// generated by the compiler.
+	
+#if 0
+	// Use the constructor initializer list as the callsite.
+	// Note that explicitly invoked constructors/destructors
+	// would be invoked by a SgFunctionCallExp held within
+	// the SgCtorInitializerList.  To avoid creating new Sage
+	// nodes that are present within the Sage AST, we cheat
+	// here and use the existing SgCtorInitializerList rather
+	// than creating a SgFunctionCallExp.
+	SgCtorInitializerList *newCallsite = 
+	  explicitlyInvokedMethod->get_CtorInitializerList();
+#else
+#if 1
+	SgFunctionCallExp *newCallsite = NULL;
+#else
+	//HERE
+	SgFunctionCallExp *newCallsite = 
+	  cloneMethodCall(baseMethod, callsite); 
+#endif
+#endif
+	ROSE_ASSERT(newCallsite != NULL);
+	
+	bool collectPtrAssigns = false;
+	std::list<std::pair<OA::OA_ptr<OA::MemRefExpr>, OA::OA_ptr<OA::MemRefExpr> > > *ptrAssigns = NULL;
+	bool determineIfPtrAssignNecessary = false;
+	bool collectImplicitCalls = true;
+	bool foundPtrAssign = false;
+
+	handleCallToSpecialMethod(newCallsite,
+				  explicitlyInvokedMethod,
+				  baseClassDefn,
+				  baseMethod,
+				  collectPtrAssigns,
+				  ptrAssigns,
+				  determineIfPtrAssignNecessary,
+				  collectImplicitCalls,
+				  implicitCalls,
+				  foundPtrAssign);
+      } else {
+	// The implicitly invoked method has a definition.
+
+	// Recurse on the method definition.
+	// handleDefinitionOfSpecialMethod(baseMethod, implicitCalls);
+
+	// No!  We don't need to recurse on this method.
+	// We have generated a callMRE to this method, so it
+	// will we linked in a callgraph and we can analyze the
+	// existing method definition directly.
+      }
+      
+    } // end iteration over invokedBaseClasses
+  }
+}
+
+void SageIRInterface::handleDefinitionOfSpecialMethod(SgMemberFunctionDeclaration *specialMethod,
+						      std::list<OA::OA_ptr<OA::MemRefExpr> > *implicitCalls)
+{
+  // Only default constructors and destructors are implicitly
+  // invoked by user-defined methods.  A default constructor
+  // may be invoked by any user-defined constructor, be it
+  // a default constructor, copy constructor, etc.
+  if ( !isConstructor(specialMethod) && !isDestructor(specialMethod) )
+    return;
+
+  SgClassDefinition *specialMethodClass = 
+    isSgClassDefinition(specialMethod->get_scope());
+  ROSE_ASSERT(specialMethodClass != NULL);
+
+  // Record the callsite with which we should associate 
+  // implicit method invocations.
+  SgLocatedNode *callsite = NULL;
+
+  // Determine which methods are explicitly invoked.
+  std::set<SgMemberFunctionDeclaration *> explicitlyInvokedMethods;
+  if ( isConstructor(specialMethod) ) {
+    // Base constructors are explicitly invoked from a constructor's
+    // initializer list.
+    SgCtorInitializerList *ctorInitList = 
+      specialMethod->get_CtorInitializerList();
+    findInvokedConstructors(ctorInitList, explicitlyInvokedMethods);
+    //    callsite = ctorInitList;
+    callsite = createInvocationOfDefaultConstructor(specialMethodClass);
+  } else {
+    // Destructors do not explicitly invoke base constructors.
+    callsite = createInvocationOfDestructor(specialMethodClass);
+  }
+
+  // From explicitlyInvokedMethods, determine the base classes
+  // whose methods are explicitly invoked.
+  std::set<SgClassDefinition *> invokedBaseClasses;
+  for(std::set<SgMemberFunctionDeclaration *>::iterator it = 
+	explicitlyInvokedMethods.begin();
+      it != explicitlyInvokedMethods.end(); ++it) {
+    SgMemberFunctionDeclaration *invokedMethod = *it;
+    ROSE_ASSERT(invokedMethod != NULL);
+
+    SgClassDefinition *classDefinition = 
+      isSgClassDefinition(invokedMethod->get_scope());
+    ROSE_ASSERT(classDefinition != NULL);
+    
+    if ( invokedBaseClasses.find(classDefinition) ==
+	 invokedBaseClasses.end() ) {
+      invokedBaseClasses.insert(classDefinition);
+    }
+  }
+  
+  // Note that we may only implicitly invoked default constructors
+  // and destructors (from a user-defined method), neither of
+  // which have implicit assignments.  Invoke a helper method
+  // to introduce the implicit callMREs.
+
+  // Get a handle on the class whose method was explicitly invoked.
+  SgClassDefinition *targetClassDefinition = 
+    isSgClassDefinition(specialMethod->get_scope());
+  ROSE_ASSERT(targetClassDefinition != NULL);
+
+  createCallMREsForImplicitlyInvokedMethods(specialMethod,
+					    targetClassDefinition,
+					    callsite,
+					    invokedBaseClasses,
+					    implicitCalls);
+}
+#endif

@@ -53,7 +53,7 @@ InterAliasMap(
                 7	 => [ 
                     NamedLoc(
                         mSymHandle: SymHandle(g)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 

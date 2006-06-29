@@ -1360,4 +1360,230 @@
 	
 6/27/06    UseOA-Rose svn tag trunk r91 Priyadarshini Malusare
      - I added regressReachDef.script
+
+6/28/06   UseOA-ROSE svn tag trunk r92  Brian White			
+        - Modified isMethodCall so that it returns false for 
+          static method calls.  isMethodCall is used to determine
+          whether we need to pass an implicit "this" to model a 
+          method.  We don't need to do this (and can't) for a static
+          method call.
+        - Modified SageIRInterface::toString(const OA::CallHandle h) 
+          to output a function call which is an invocation of a copy
+          constructor implicitly called by a return.
+        - I started working on handling of special methods (next
+	  entry).  However, Dan wanted this behavior in ROSE so that
+	  it could be "enjoyed" by any ROSE analysis.  Therefore, I
+	  have commented out my implementation of this behavior.
+	  Note that it was not finished.  See comments that look like:
+          // Support for special methods, which is now handled in ROSE.
+        [ Handling of compiler-generated default constructors, copy
+          constructors, destructors, and operator=.
 	
+	  - Modified getAliasStmtType to return PTR_ASSIGN_STMT when:
+            1.  stmt is operator= and one of the implicitly invoked
+                operator= along the call chain (if any) would 
+                implicitly copy a point.  
+                NB:  the default behavior of operator= is to do a
+                     memberwise copy.
+            2.  stmt invokes a copy constructor:
+	        NB:  the default behavior of a copy constructor is
+                     to perform memberwise copy.
+                a.  case Foo *f = new Foo(*someOtherFoo) is already
+                    handled by SgAssignOp case, which always returns
+                    PTR_ASSIGN_STMT.
+                b.  case Foo f(someOtherFoo) is handled by 
+                    SgVariableDeclaration case which returns true
+                    whenever an object is declared.
+                c.  case f(someOtherFoo) within a copy constructor.
+	            Return PTR_ASSIGN_STMT if some compiler-generated
+                    copy constructor invoked prior to a user-defined
+                    copy constructor would implicitly copy a ptr
+                    field (i.e., it's class has (non-method) pointer members).
+	    3.  destructors.  Since a default destructor would not
+                implicit perform pointer assignments, we don't need to
+                model anything here.
+            4.  default (i.e., zero-arg) constructor.  Same as destructor
+	        case.
+         ]
+	 - In CtoA set the excludeInputFiles to true for the 
+	   SageIRProcIterator.  This prevents us from generating output
+	   for include files, such as iostream.h
+	   bool excludeInputFiles = true;
+           procIter = new SageIRProcIterator(sageProject, irInterface, excludeInputFiles);
+         - Changes to staticVirtualMethodResolver
+	   - Needed to change ClassHierarchyWrapper::ClassHierarchyWrapper,
+	     which was not discovering all SgClassDefinitions, because
+	     it was querying only for SgClassDefinition and some of these
+             are not visited by default traversals/queries.  The example
+	     is from Pande.C.  Unfortunately, this is external to 
+	     UseOA and needs to be passed to Dan for checkin to ROSE.
+                // Unfortunately, SgClassDefinitions are not always visited by
+                // query and traversal mechanisms.  Consider this example:
+                //  class Base {
+                //  public:
+                //    virtual void foo() { }
+                //    virtual void bar() { }
+                //    virtual void baz() { }
+                //  } *a, *b, *p, *q;
+                // The SgClassDefinition for Base only shows up in the 
+                // SgVariableDeclarations of *a, *b, etc.  Therefore, we need
+                // to query the SgVariableDeclarations as well.
+           - Replaced methodOverridesVirtualMethod with 
+             matchingMemberFunctions, which properly compares two
+             method type signatures.
+	   - Allow dot expression involving a reference lhs to 
+             be examined as potential dynamic dispatch sites,
+             rather than just pointer receivers.
+	   - This should now be ready for the big time.
+         - Fixed the following bug reported by Andy on June 8th.
+	
+           From: "Andy Stone" <aistone@gmail.com>
+           Date: June 8, 2006 11:01:11 AM MDT
+           To: "Michelle Strout" <mstrout@CS.ColoState.EDU>
+           Subject: FIAliasAliasMap fails with 'variable << endl'
+           
+           Michelle,
+           
+           The FiAliasAliasMap algorithm doesn't seem able to handle any
+           situation where a variable is passed to an I/O object and endl is
+           passed immediatly after or immediatly before this variable.  For
+           instance:  cout << variable << endl.
+           
+           
+           
+           Error Message:
+           
+           $ ./OATest -edg:w --oa-FIAliasAliasMap -c breakuseoa.cpp
+           OATest: Sage2OA.C:6886: virtual
+           OA::OA_ptr<OA::IRCallsiteParamIterator>
+           SageIRInterface::getCallsiteParams(OA::ExprHandle): Assertion
+           `isMemRefNode(lhs)' failed.
+           Aborted
+           
+           
+           
+           I've tried a few other cases to see if I can't determine exactly
+           what
+           reproduces this problem.  For instance
+           
+           These work:
+           -  cout << variable;
+           -  cout << variable << " string constant " << endl;
+           -  cout << endl << " string constant " << variable
+           
+           These don't (they reproduce the error):
+           -  cout << variable << endl;
+           -  cout << endl << variable;
+           -  cerr << variable << endl;
+           
+           
+           I've been playing around with GDB trying to see if I can't figure
+           out
+           exactly what's causing this issue.  Let me know if you have any
+           ideas.
+           
+           Thanks,
+           -Andy
+	
+           Fix: isMemRefNode(functionCallExp) was aborting for 
+	   ostream &ostream::operator<< and friends, because
+	   SageIRInterface::returnsAddress was not doing the correct
+           thing.  isMemRefNode should return type for a function/method
+           that returns a pointer or reference.  However, returnsAddress
+           (called by isMemRefNode) was looking at functionCallExp->get_type().
+           I believe in a previous version of ROSE this return the
+           type of the function call expression.  Now it is 
+           return a SgFunctionType.  I corrected returnsAddress
+           to expect a SgFunctionType.
+        - Fixed [Bug #7963] Deref of "this" being passed as implicit param.
+	  Added a regression test invokeBaseCtor.C in TestCase/CtoOA
+          and corresponding {regress,gen}CtoOA.test files.
+          Bug log:
+Project: UseOA-ROSE
+Category: None
+Status: Closed
+Resolution: Fixed
+Bug Group: None
+Priority: 5
+Submitted by: mstrout
+Assigned to : bwhite
+Summary: Deref of "this" being passed as implicit param
+
+Details: ./CtoOA TestCases/AliasTests/parambinds-formals.C 
+
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("SubClass") =>
+        [ 
+            < 0, Deref( DEF, NamedRef( USE,
+SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MF
+b_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), F, full), 1,
+T, part) >
+            < 1, NamedRef( USE, SymHandle("par"), F, full) >
+        ] }
+
+The zeroth parameter should be a NamedRef to this, not a Deref.
+
+Follow-Ups:
+
+Date: 2006-Jun-26 18:10
+By: bwhite
+
+Comment:
+
+Fix is in SageIRMemRefIterator::findAllMemRefsAndMemRefExprs and will be
+committed in UseOA rev81 (or my next release thereafter if someone beats me to
+the punch).
+
+See case V_SgIniitliazedName.  Problem was that I assumed all SgInitializedName
+were initializations of an explicit lhs with a rhs.  e.g. 'mInt(0)' below.
+
+class Foo {
+  Foo() : mInt(0);
+  int mInt;
+}
+However, consider the case below where a SgInitializedName is initialized by a
+SgConstructorInitializer in a SgCtorInitializerLIst, as in SubClass below:
+	
+class SubSubClass : public SubClass {
+   public:
+      SubSubClass(Base &par, int &aint) : SubClass(par) { }
+};
+
+Here SubClass appears as a SgInitializedName within the AST.  However, it is
+not a variable, but rather represents the base class constructor.  So, in fact,
+the MRE that we create here will not be for a LHS, but for the implicit this
+actual argument that we pass as the first argument to SubClass constructor.
+        - Fixed [Bug #7962] Member fields, methods, and functions should be non-local.
+Details: ./CtoOA TestCases/AliasTests/parambinds-formals.C
+
+    LOCATION = { < SymHandle("method:SubClass::SubClass____ct__FR4Base_v"),
+local > }
+    LOCATION = { < SymHandle("this::SubClass::SubClass____ct__FR4Base_v"),
+local > }
+    LOCATION = { < SymHandle("par"), local > }
+    LOCATION = { < SymHandle("myParent"), local > }
+
+myParent and the method should not be local.
+
+    LOCATION = { < SymHandle("foo_ref1"), local > }
+
+neither should foo_ref1.  Pretty much all methods, member vars, and function
+symbols should not be local.
+
+
+Follow-Ups:
+
+Date: 2006-Jun-29 10:19
+By: bwhite
+
+Comment:
+We were setting isLocal = true for all methods and functions in getLocation. 
+The comment in those cases (V_SgFunctionDeclaration and
+V_SgMemberFunctionDeclaration) is correct, but the flag was set incorrectly, as
+Michelle points out.
+Fix:  simply set isLocal = false.
+Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
+        - Regenerated results for comma.c, constQualified.c, functionPtr.c,
+	  and functionPtr2.c (regressFIAliasAliasMap tests) and alias1.c,
+	  alias2.c, alias4.c alias4b.c, and comma.c (regressAliasIRInterface), all of which were affected by above isLocal bug.
+        - Moved invokeBaseCtor.C and localNonLocal tests to 
+	  AliasIRInterface.test and removed CtoOA.test

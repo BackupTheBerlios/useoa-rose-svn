@@ -353,6 +353,23 @@ SageIRInterface::sMemref2mreSetMap;
 std::map<OA::OA_ptr<OA::MemRefExpr>,OA::MemRefHandle >
 SageIRInterface::sMre2MemrefMap;
 
+#if 0
+  // Support for special methods, which is now handled in ROSE.
+std::map<OA::OA_ptr<OA::MemRefExpr>, SgFunctionCallExp *>
+SageIRInterface::sImplicitCallMre2Callsite;
+
+std::map<std::string, OA::OA_ptr<OA::MemRefExpr> >
+SageIRInterface::sCallSiteAndClass2ImplicitCallMre;
+
+std::map<SgFunctionCallExp *, OA::OA_ptr<OA::MemRefExpr> >
+  sCallsite2ImplicitCallMre;
+
+std::map<SgNode *, std::vector<SgNode *> >
+SageIRInterface::sNonASTStmts;
+
+std::vector<SgNode *> SageIRInterface::sAllocatedNodes;
+#endif
+
 SageIRMemRefIterator::SageIRMemRefIterator(OA::IRHandle h, 
 					   SageIRInterface *ir)
   : mValid(true), mIR(ir)
@@ -581,11 +598,9 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
 	// Create an unknown reference for this function if it
 	// has a pointer or reference return type and that
 	// return value is used in an expression.
+	bool returnsAddr = returnsAddress(functionCallExp);
 
-	SgType *type = functionCallExp->get_type();
-	ROSE_ASSERT(type != NULL);
-
-	if ( ( isSgReferenceType(type) || isSgPointerType(type) ) && 
+	if ( returnsAddr && 
 	     isSgExpression(functionCallExp->get_parent()) ) {
 
 	  retVal = true;
@@ -594,6 +609,16 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
 
       }
 
+      break;
+    }
+  case V_SgConstructorInitializer:
+    {
+      // A constructor initializer wasn't previously considered a
+      // mem ref node.  However, it must be because it is
+      // returned as a call handle from a call site when a
+      // copy constructor is invoked from a return statement.
+      // 4/20/06 BW  
+      retVal = true;
       break;
     }
 #if 0
@@ -1882,6 +1907,12 @@ SageIRMemRefIterator::applyReferenceConversionRules(OA::OA_ptr<OA::MemRefExpr> m
   std::list<OA::OA_ptr<OA::MemRefExpr> > tmpMemRefs;
   bool isReference = false;
 
+#if 0
+  std::cout << "MRE: " << std::endl;
+  mIR->dump(mre, std::cout);
+  std::cout << std::endl;
+#endif
+
   OA::MemRefExpr::MemRefType memRefType = mIR->getMemRefType(mre);
 
   // Does mre represent a reference?
@@ -2091,11 +2122,22 @@ SageIRInterface::createMRE(SgInitializedName *initName,
   // a member variable.  What I mean is that it is not have an
   // implicit 'this', but rather is accessed through a fully-quantified
   // name.
+  SgMemberFunctionDeclaration *memberFunctionDeclaration = NULL;
   if ( !isSgFunctionParameterList(declaration) ) {
 
-    SgClassDefinition *classDefinition =
-      getDefiningClass(declaration->get_scope());
-    memberVariable = ( classDefinition != NULL );
+    SgFunctionDefinition *functionDefinition = 
+      getEnclosingMethod(declaration);
+    if ( functionDefinition != NULL ) {
+    
+      SgFunctionDeclaration *functionDeclaration =
+	functionDefinition->get_declaration();
+      ROSE_ASSERT(functionDeclaration != NULL);
+
+      memberFunctionDeclaration =
+	isSgMemberFunctionDeclaration(functionDeclaration);
+      memberVariable = ( memberFunctionDeclaration != NULL );
+
+    }
 
   }
 
@@ -2116,18 +2158,6 @@ SageIRInterface::createMRE(SgInitializedName *initName,
 				 memRefType, symHandle);
 
   } else {
-
-    SgFunctionDefinition *functionDefinition = 
-      getEnclosingMethod(initName);
-    ROSE_ASSERT(functionDefinition != NULL);
-    
-    SgFunctionDeclaration *functionDeclaration =
-      functionDefinition->get_declaration();
-    ROSE_ASSERT(functionDeclaration != NULL);
-
-    SgMemberFunctionDeclaration *memberFunctionDeclaration =
-      isSgMemberFunctionDeclaration(functionDeclaration);
-    ROSE_ASSERT(memberFunctionDeclaration != NULL);
 
     // This is a reference to a member variable v which is
     // not part of an arrow or dot expression.  i.e., it
@@ -2265,7 +2295,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	bool isMethod = false;
 
 	if ( functionCallExp != NULL ) {
-	  isMethod = mIR->isMethodCall(functionCallExp, isDotExp);
+	  isMethod = isMethodCall(functionCallExp, isDotExp);
 	} else {
 	  isMethod = true;
 	}
@@ -2287,9 +2317,11 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	  
 	  OA::ExprHandle actualExpr = actualsIter->current(); 
 	  SgNode *actualNode = mIR->getNodePtr(actualExpr);
-	  ROSE_ASSERT(actualNode != NULL);
+	  // actualExpr could be NULL if expression was 'return (new B)'--
+	  // i.e., no lhs.
+	  //	  ROSE_ASSERT(actualNode != NULL);
 
-	  if ( actualNode == astNode ) {
+	  if ( ( actualNode != NULL) && ( actualNode == astNode ) ) {
 
 	    foundMatch = true;
 
@@ -3671,7 +3703,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       SgTypePtrList::iterator formalIt = typePtrList.begin(); 
 
       bool isDotExp = false;
-      bool isMethod = mIR->isMethodCall(functionCallExp, isDotExp);
+      bool isMethod = isMethodCall(functionCallExp, isDotExp);
 
       int actualPos = 0;
       for ( ; actualsIter->isValid(); (*actualsIter)++ ) { 
@@ -4200,9 +4232,32 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       SgInitializedName *initName = isSgInitializedName(astNode);
       ROSE_ASSERT(initName != NULL);
 
+#if 0
+      cout << "initName: " << initName->get_name().str() << endl;
+      cout << "type: " << initName->get_type()->unparseToString() << endl;
+      cout << "type: " << initName->get_type()->sage_class_name() << endl;
+#endif
+
       SgInitializer *initializer = initName->get_initializer();
       if ( initializer != NULL ) {
-	
+
+	// NB:  if this is a constructor initializer invoked within
+	//      a constructor initializer list, the case is
+	//      something like 'SubClass(par)' below.
+	// class SubSubClass : public SubClass {  
+	//  public:  
+	//    SubSubClass(Base &par, int & aint) : SubClass(par) {}  
+	// }; 
+	// In this case, SubClass (i.e., the initialized name) is 
+	// not a left-hand side.  We want to simulate a method call
+	// and, in particular, the access to the implicit this
+	// parameter.  Therefore, the memory reference expression
+	// should involve a representation of SubSubClass::this,
+	// which is the implicit this parameter pass to SubClass::SubClass.
+	bool isConstructorInvocationWithinInitList = 
+	  isSgConstructorInitializer(initializer) &&
+	  isSgCtorInitializerList(initName->get_parent());
+
 	// Add USE to the rhs child's flags.
 	unsigned rhsFlags = flags;
 	
@@ -4218,15 +4273,15 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	removeInheritedFlag(rhsFlags, expectRhsComputesLValue);
 	removeInheritedFlag(rhsFlags, expectRhsDoesntComputeLValue);
 	removeInheritedFlag(rhsFlags, expectRefRhs);
-
+	
 	addInheritedFlag(rhsFlags, expectUse);
 	
 	SgType *lhsType = initName->get_type();
 	ROSE_ASSERT(lhsType != NULL);
-
+	
 	if ( isSgReferenceType( mIR->getBaseType(lhsType) ) )
 	  addInheritedFlag(rhsFlags, expectRefRhs);
-	// HERE--with initname
+	    // HERE--with initname
 #if 1
 	// Recurse on rhs.
 	findAllMemRefsAndMemRefExprs(initializer, memRefs, rhsFlags,
@@ -4241,32 +4296,54 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// result of this expression is generated by the lhs.
 	removeSynthesizedFlag(synthesizedFlags, synthesizedComputesLValue);
 	removeSynthesizedFlag(synthesizedFlags, synthesizedDoesntComputeLValue);
-
-	// This is a definition, not just a declaration.
+	
+	// This is a definition, not just a declaration ...
 	OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::DEF;
-
+	
+	// ... unless the MRE created represents the implicit this.
+	if ( isConstructorInvocationWithinInitList )
+	  memRefType = OA::MemRefExpr::USE;
+    
 	// The address of the memory location is not taken
 	// during a declaration.
 	addressTaken = false;
-
+	
 	// The declaration accurately represents the memory expression.
 	fullAccuracy = true;
-
+	
 	// Create a named memory reference expression.
 	OA::OA_ptr<OA::MemRefExpr> memRefExp;
-	memRefExp = mIR->createMRE(initName, addressTaken,
-				   fullAccuracy, memRefType,
-				   ( flags & expectArrowDotRHS ) );
+	if ( !isConstructorInvocationWithinInitList ) {
+	  memRefExp = mIR->createMRE(initName, addressTaken,
+				     fullAccuracy, memRefType,
+				     ( flags & expectArrowDotRHS ) );
+	} else {
+
+	  SgFunctionDefinition *functionDefinition = 
+	    mIR->getEnclosingMethod(initName);
+	  ROSE_ASSERT(functionDefinition != NULL);
+
+	  SgMemberFunctionDeclaration *functionDeclaration = 
+	    isSgMemberFunctionDeclaration(functionDefinition->get_declaration());
+	  ROSE_ASSERT(functionDeclaration != NULL);
+
+	  // Create an MRE representing 'this' from the current
+	  // method.
+	  OA::SymHandle symHandle = 
+	    mIR->getThisExpSymHandle(functionDeclaration);
+
+	  memRefExp = new OA::NamedRef(addressTaken, fullAccuracy,
+				       memRefType, symHandle);
+	}
 	ROSE_ASSERT(!memRefExp.ptrEqual(0));
-
+	
 	isNamed = memRefExp->isaNamed();
-
-
+	
 	isMemRefExpr = true;
-
+	
 	// Normalize the source program to convert references to pointers.  
 	std::list<OA::OA_ptr<OA::MemRefExpr> > convertedMemRefs;
-	if ( dontApplyConversion ) {
+	if ( dontApplyConversion || isConstructorInvocationWithinInitList ) {
 	  convertedMemRefs.push_back(memRefExp);
 	} else {
 	  applyReferenceConversionRules(memRefExp,
@@ -4277,21 +4354,21 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 					initializedRef = true,
 					convertedMemRefs);
 	}
-
+	
 	for (std::list<OA::OA_ptr<OA::MemRefExpr> >::iterator memRefIt = 
 	       convertedMemRefs.begin();
 	     memRefIt != convertedMemRefs.end(); ++memRefIt) {
-
+	  
 	  OA::OA_ptr<OA::MemRefExpr> mre = *memRefIt;
 	  curMemRefExprs.push_back(mre);
-
+	  
 	}
 
-      }
+      }	
 
       // An initialized name is an lvalue
       addSynthesizedFlag(synthesizedFlags, synthesizedComputesLValue);
-
+	
       break;
     }
 

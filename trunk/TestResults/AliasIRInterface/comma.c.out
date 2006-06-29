@@ -54,10 +54,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("p"), F, full)
             MemRefHandle("q") => 
                 NamedRef( DEF, SymHandle("q"), F, full)
-            MemRefHandle("&x") => 
-                NamedRef( USE, SymHandle("x"), T, full)
             MemRefHandle("r") => 
                 NamedRef( USE, SymHandle("r"), F, full)
+            MemRefHandle("&x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("p =((q = &x) , r);") =>
         [
@@ -68,10 +68,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("printf("*p = %d\n", *p);") =>
         [
-            MemRefHandle("*p") => 
-                Deref( USE, NamedRef( USE, SymHandle("p"), F, full), 1, F, full)
             MemRefHandle("p") => 
                 NamedRef( USE, SymHandle("p"), F, full)
+            MemRefHandle("*p") => 
+                Deref( USE, NamedRef( USE, SymHandle("p"), F, full), 1, F, full)
         ] }
     CALLSITES = { StmtHandle("printf("*p = %d\n", *p);") =>
         [
@@ -80,10 +80,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("printf("*q = %d\n", *q);") =>
         [
-            MemRefHandle("*q") => 
-                Deref( USE, NamedRef( USE, SymHandle("q"), F, full), 1, F, full)
             MemRefHandle("q") => 
                 NamedRef( USE, SymHandle("q"), F, full)
+            MemRefHandle("*q") => 
+                Deref( USE, NamedRef( USE, SymHandle("q"), F, full), 1, F, full)
         ] }
     CALLSITES = { StmtHandle("printf("*q = %d\n", *q);") =>
         [
@@ -93,11 +93,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
-    LOCATION = { < SymHandle("printf"), local > }
-    LOCATION = { < SymHandle("main"), local > }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("y"), local > }
     LOCATION = { < SymHandle("z"), local > }
     LOCATION = { < SymHandle("p"), local > }
     LOCATION = { < SymHandle("q"), local > }
     LOCATION = { < SymHandle("r"), local > }
+    LOCATION = { < SymHandle("printf"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }

@@ -6,7 +6,111 @@
 #include <iostream>
 #include "CallGraph.h"
 
-bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
+/** \brief Strip the "const" keyword from a string.
+ *  \param name  A string (intending to represent a formal parameter
+ *               type).
+ *  \returns  A string holding name stripped of the "const" prefix.
+ *
+ *  This was copied from 
+ *  .../ROSE/src/midend/astUtil/astInterface/AstInterface.C
+ *
+ *  To do:  move this to a generally-accessible utilities file
+ *          or make it accessible from AstInterface (by adding
+ *          its declaration to AstInterface.h).
+ */
+static std::string StripParameterType( const std::string& name)
+{
+  char *const_start = strstr( name.c_str(), "const");
+  std::string r = (const_start == 0)? name : std::string(const_start + 5);
+  int end = r.size()-1;
+  if (r[end] == '&') {
+       r[end] = ' ';
+  }
+  std::string result = "";
+  for (unsigned int i = 0; i < r.size(); ++i) {
+    if (r[i] != ' ')
+      result.push_back(r[i]);
+  }
+  return result; 
+} 
+
+/** \brief Return a type's name and size.
+ *  \param t  A Sage type.
+ *  \param tname  On output, holds the string name of the type.
+ *  \param stripname  On output, holds the string name of the type,
+ *                    stripped of any "const" prefix.
+ *  \param size  On output, holds the size?  I don't know what
+ *               this size corresponds to.  Certainly not the size
+ *               of the type (which needn't be a word) or string.
+ *
+ *  This was copied from 
+ *  .../ROSE/src/midend/astUtil/astInterface/AstInterface.C
+ *
+ *  To do:  move this to a generally-accessible utilities file
+ *          or make it accessible from AstInterface (by adding
+ *          its declaration to AstInterface.h).
+ */
+static void GetTypeInfo(SgType *t, std::string *tname, 
+			std::string* stripname, int* size = 0)
+{
+  std::string r1 = get_type_name(t);
+  std::string result = "";
+  for (unsigned int i = 0; i < r1.size(); ++i) {
+    if (r1[i] != ' ')
+      result.push_back(r1[i]);
+  }
+  if (tname != 0)
+    *tname = result;
+  if (stripname != 0)
+    *stripname = StripParameterType(result);
+  if (size != 0)
+    *size = 4;
+}
+
+bool matchingMemberFunctions(SgMemberFunctionDeclaration *methodDecl1, 
+			     SgMemberFunctionDeclaration *methodDecl2)
+{
+  // Compare the names of the two methods.
+  SgName name1 = methodDecl1->get_name();
+  SgName name2 = methodDecl2->get_name();
+  if ( name1 != name2 )
+    return false;
+
+  // Compare the return types of the two methods.
+  SgType *method1Type = methodDecl1->get_orig_return_type();
+  SgType *method2Type = methodDecl2->get_orig_return_type();
+
+  std::string ret1Type, ret2Type;
+  GetTypeInfo(method1Type, 0, &ret1Type);
+  GetTypeInfo(method2Type, 0, &ret2Type);
+  if ( method1Type != method2Type )
+    return false;
+
+
+  // Compare the number and types of the formal arguments
+  SgInitializedNamePtrList &method1Params = methodDecl1->get_args();
+  SgInitializedNamePtrList &method2Params = methodDecl2->get_args();
+  if ( method1Params.size() != method2Params.size() )
+    return false;
+
+  SgInitializedNamePtrList::iterator p1 = method1Params.begin();
+  SgInitializedNamePtrList::iterator p2 = method2Params.begin();
+  for ( ; p1 != method1Params.end(); ++p1, ++p2) {
+    SgType* t1 = (*p1)->get_type();
+    SgType* t2 = (*p2)->get_type();
+    
+    std::string param1Type, param2Type;
+    GetTypeInfo(t1, 0, &param1Type);
+    GetTypeInfo(t2, 0, &param2Type);
+    if (param1Type != param2Type) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRefOrPtr)
 {
   ROSE_ASSERT(functionCall != NULL);
 
@@ -15,6 +119,7 @@ bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
 
   bool isMethod = false;
   isDotExp = false;
+  lhsIsRefOrPtr = false;
 
   switch(expression->variantT()) {
   case V_SgDotExp:
@@ -36,10 +141,17 @@ bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
 	isDotExp = true;
       }
 
+      lhsIsRefOrPtr = isSgReferenceType(lhs->get_type());
+
+      break;
+    }
+  case V_SgArrowExp:
+    {
+      isMethod = true;
+      lhsIsRefOrPtr = true;
       break;
     }
   case V_SgMemberFunctionRefExp:
-  case V_SgArrowExp:
     {
       isMethod = true;
       break;
@@ -269,8 +381,14 @@ methodOverridesVirtualMethod(SgMemberFunctionDeclaration *methodDecl,
   if ( !isVirtual(virtualMethodDecl) )
     return false;
 
-#if 1
+  std::cout << "looks virtual" << std::endl;
+
+#if 0
   // Hmmm ... couldn't we just compare mangled names?
+  // No, we can't because this includes the scope info, which will
+  // differ between classes.
+  std::cout << "methodDecl: " << methodDecl->get_mangled_name().str() << std::endl;
+  std::cout << "virtualMethodDecl: " << virtualMethodDecl->get_mangled_name().str() << std::endl;
   return ( methodDecl->get_mangled_name() == virtualMethodDecl->get_mangled_name() );
 
 #else
@@ -339,6 +457,7 @@ int main(int argc, char **argv)
   // Instantiate a class hierarchy wrapper.
   ClassHierarchyWrapper classHierarchy( project );
 
+#if 0
   std::list<SgNode *> nodes2 = NodeQuery::querySubTree(project,
 						      V_SgVariableDefinition);
 
@@ -452,7 +571,8 @@ int main(int argc, char **argv)
     }
 
   }
-#if 0
+#endif
+#if 1
 #if 0
   std::list<SgNode *> nodes = NodeQuery::querySubTree(project,
 						      V_SgClassDefinition);
@@ -506,16 +626,18 @@ int main(int argc, char **argv)
 
     // We are only interested in examining method invocations.
     bool isDotExp = false;
-    if ( !isMethodCall(functionCallExp, isDotExp) )
+    bool isLhsRefOrPtr = false;
+    if ( !isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr) )
       continue;
     
     numCallSites++;
     // Certainly can be resolved to the static method.
     numPossibleResolutions++;
 
-    if ( isDotExp ) {
+    if ( isDotExp && !isLhsRefOrPtr ) {
       // If this is a dot expression (i.e., a.foo()), we can
-      // statically determine its type.
+      // statically determine its type-- unless the left-hand
+      // side is a reference type.
       numMonomorphicCallSites++;
       continue;
     }
@@ -548,7 +670,7 @@ int main(int argc, char **argv)
 	SgClassDefinition *subclass = *subclassIt;
 	ROSE_ASSERT(subclass != NULL);
 
-	std::cout << "subclass" << std::endl;
+	//	std::cout << "subclass" << std::endl;
 
 	// Iterate over all of the methods defined in this subclass.
 	SgDeclarationStatementPtrList &decls =
@@ -565,13 +687,22 @@ int main(int argc, char **argv)
 	    continue;
 	  }
 
+	  //	  std::cout << "checking overrides" << std::endl;
 	  // Determine whether subclass of the class defining this
 	  // method overrides the method.
-	  if ( methodOverridesVirtualMethod(method, 
-					    memberFunctionDeclaration) ) {
+#if 1
+	  if ( matchingMemberFunctions(method,
+				       memberFunctionDeclaration) ) {
+	    //	    std::cout << "overries" << std::endl;
 	    numOverridesForMethod++;
 	  }
-
+#else
+	  if ( methodOverridesVirtualMethod(method, 
+					    memberFunctionDeclaration) ) {
+	    //	    std::cout << "overries" << std::endl;
+	    numOverridesForMethod++;
+	  }
+#endif
 	}
 
       }

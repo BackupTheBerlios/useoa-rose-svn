@@ -18,3 +18,11 @@ echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c
 ./CtoOA TestCases/AliasTests/comma.c > t
 diff t TestResults/AliasIRInterface/comma.c.out
 
+echo "Testing TestCases/AliasTests/invokeBaseCtor.C, TestResults/AliasIRInterface/invokeBaseCtor.C.out checked by BSW 6/26/06"
+./CtoOA TestCases/AliasTests/invokeBaseCtor.C > t
+diff t TestResults/AliasIRInterface/invokeBaseCtor.C.out
+
+echo "Testing TestCases/AliasTests/localNonLocal.c, TestResults/AliasIRInterface/localNonLocal.c.out checked by BSW 6/28/06"
+./CtoOA TestCases/AliasTests/localNonLocal.c > t
+diff t TestResults/AliasIRInterface/localNonLocal.c.out
+

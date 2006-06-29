@@ -25,20 +25,20 @@ InterAliasMap(
                 3	 => [ 
                     NamedLoc(
                         mSymHandle: SymHandle(read)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 4	 => [ 
                     NamedLoc(
                         mSymHandle: SymHandle(foo)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
                     NamedLoc(
                         mSymHandle: SymHandle(bar)
-                        mLocal: 1
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
