@@ -1588,5 +1588,5 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
         - Moved invokeBaseCtor.C and localNonLocal tests to 
 	  AliasIRInterface.test and removed CtoOA.test
 
-7/03/06   UseOA-ROSE svn tag trunk r93  Andy Stone
+7/03/06   UseOA-ROSE svn tag trunk r94  Andy Stone
     - Rechecked AliasIRInterface regression tests.
