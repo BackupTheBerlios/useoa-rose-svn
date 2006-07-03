@@ -84,6 +84,25 @@ Regression testing system:
     scripts/createRegScripts.py.
 
 
+How to run a benchmark:
+-----------------------
+    - If you want profile information from OpenAnalysis, which most likely
+      you do:
+        - change directories to your openanalysis directory
+        - export CXX_FLAGS="-O0 -g -pg"
+        - make -f Makefile.quick configure
+        - make -f Makefile.quick install
+    - Next recompile UseOA-ROSE for profiling
+        - Edit the config/Makefile.inc file so that PROFILE_OPTIONS is set to
+          "-pg -g -O0"
+        - make clean
+        - make
+    - Run your benchmarks
+        - ./OABenmark.py [filesFile] [algorithm]
+            - Ex. ./OABenchmark small.files --oa-FIAliasAliasMap
+        - Now wait for a looooong time
+        - Look at the produced .profile files.
+
 References:
 -----------
 
