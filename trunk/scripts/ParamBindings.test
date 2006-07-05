@@ -1,0 +1,14 @@
+# comment in file.test
+# Regression tests for FIAlias generation
+testname::ParamBindings
+inputdir::TestCases/ParamBindings 
+outputdir::TestResults/ParamBindings
+driverexec::./OATest -edg:w --oa-ParamBindings -c
+
+# list of tests
+#       input file,             status
+test::  test.c,              not checked 
+
+
+
+

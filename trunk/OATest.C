@@ -34,6 +34,7 @@
 #include <OpenAnalysis/Alias/ManagerFIAliasAliasMap.hpp>
 #include <OpenAnalysis/CFG/ManagerCFGStandard.hpp>
 #include <OpenAnalysis/CallGraph/ManagerCallGraphStandard.hpp>
+#include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
 #include <OpenAnalysis/MemRefExpr/MemRefExpr.hpp>
 #include <OpenAnalysis/SideEffect/InterSideEffectStandard.hpp>
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
@@ -51,6 +52,7 @@ int DoAlias(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, b
 int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoCallGraph(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
+int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle);
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
 void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
@@ -75,6 +77,7 @@ void usage(char **argv)
   cerr << "          --oa-FIAliasAliasMap" << endl;
   cerr << "          --oa-AliasMap" << endl;
   cerr << "          --oa-CallGraph" << endl;
+  cerr << "          --oa-ParamBindings" << endl;
   cerr << "          --oa-ReachDefs" << endl;
   cerr << "          --oa-UDDUChains" << endl;
   cerr << "          --oa-UDDUChainsXAIF" << endl;
@@ -240,11 +243,13 @@ main ( unsigned argc,  char * argv[] )
        DoCallGraph(sageProject, &nodeArray, p_h);
       return 1;
     }
+    else if( cmds->HasOption("--oa-ParamBindings") )
+    {
+      DoParamBinding(sageProject, &nodeArray, p_h);
+       return 1;
+    }
     else if( cmds->HasOption("--oa-ReachDefs") )
     {
-       
-      /* *********** Reaching Definition Analysis Starts here ********************* */
-
        for (int i = 0; i < filenum; ++i) 
         {
             SgFile &sageFile = sageProject->get_file(i);
@@ -253,27 +258,17 @@ main ( unsigned argc,  char * argv[] )
             for (SgDeclarationStatementPtrList::iterator p = declList.begin(); p != declList.end(); ++p) 
              {
                SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
-               if (func == 0)
-               {
+               if (func == 0){
                    continue;
 	       }
-
                SgFunctionDefinition *defn = func->get_definition();
-
-               if (defn == 0)
-	       {     
+               if (defn == 0){     
                  continue;
 	       }
-
-
                DoReachDef(defn, sageProject, &nodeArray, p_h);
-	      
              }     
-	    } 
- 
-         /* ***************************************************************************** */
-  
-        return 1;
+	 } 
+         return 0;
     }
     else if( cmds->HasOption("--oa-UDDUChains") )
     {
@@ -295,7 +290,7 @@ main ( unsigned argc,  char * argv[] )
           DoUDDUChains(defn, sageProject, &nodeArray, p_h);
         }     
       }
-      return 0;
+      return 0; 
     }
     else if( cmds->HasOption("--oa-UDDUChainsXAIF") )
     {
@@ -477,6 +472,58 @@ int DoCallGraph(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 
 }
 
+
+
+int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
+{
+
+  int returnvalue=FALSE;
+  if ( debug )
+    {
+      printf("*******start of ParamBinding \n");
+    }
+  OA::OA_ptr<SageIRInterface> irInterface;
+  irInterface = new SageIRInterface(sgproject, na, p_handle);
+  
+
+  //FIAlias
+  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  bool excludeInputFiles = true;
+  procIter = new SageIRProcIterator(sgproject,irInterface, excludeInputFiles);
+  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+  interAlias = fialiasman->performAnalysis(procIter);
+
+
+  OA::OA_ptr<OA::CallGraph::ManagerStandard> callgraphmanstd;
+  callgraphmanstd= new OA::CallGraph::ManagerStandard(irInterface);
+  OA::OA_ptr<OA::CallGraph::CallGraphStandard> callgraph
+    = callgraphmanstd->performAnalysis(procIter,interAlias);
+  callgraph->output(*irInterface);
+
+  // dot output
+  OA::OA_ptr<OA::OutputBuilder> outBuild;
+  outBuild = new OA::OutputBuilderDOT;
+  callgraph->configOutput(outBuild);
+  callgraph->output(*irInterface);
+
+  std::cout << "\n*******  end of DoCallGraph *********\n\n";
+
+  OA::OA_ptr<OA::DataFlow::ManagerParamBindings> pbman;
+  pbman = new OA::DataFlow::ManagerParamBindings(irInterface);
+  OA::OA_ptr<OA::DataFlow::ParamBindings> parambind;
+  parambind = pbman->performAnalysis(callgraph);
+  //  parambind->dump(std::cout, irInterface);
+  parambind->output(*irInterface);
+
+  std::cout << "\n*******  end of ParamBinding *********\n\n";
+  return returnvalue;
+
+}
+
+
+
 int DoAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
 	int returnvalue=FALSE;
@@ -504,7 +551,7 @@ int DoAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, 
 	//}
 	//catch(Exception &e)
 	//{
-//		printf("error in try\n");
+		printf("error in try\n");
 		
 //	}
 
@@ -589,11 +636,26 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   irInterface = new SageIRInterface(p, na, p_handle);
   //irInterface->createNodeArray(f); //what about global vars? //done in constr.
   // CFG
+
+  /*  OA::OA_ptr<OA::CFG::ManagerStandard> cfgmanstd;
+  cfgmanstd= new OA::CFG::ManagerStandard(irInterface);
+  OA::OA_ptr<OA::CFG::CFGStandard> cfg
+  = cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));*/
+
+
   OA::OA_ptr<OA::CFG::ManagerStandard> cfgmanstd;
   cfgmanstd = new OA::CFG::ManagerStandard(irInterface);
   OA::OA_ptr<OA::CFG::Interface> cfg=
-     cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
-  
+  cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f))); 
+
+  /*  OA::OA_ptr<OA::OutputBuilderDOT> dotBuilder;
+  dotBuilder = new OA::OutputBuilderDOT();
+  cfg->configOutput(dotBuilder);
+  cfg->output(*irInterface);*/
+
+
+
+  /*    
 #if 0
   //AliasMap
   OA::OA_ptr<OA::Alias::ManagerAliasMapBasic> aliasmanstd;
@@ -610,22 +672,38 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter);
 #endif
-  //alias->dump(std::cout, iroaptr);
+  alias->output(*irInterface); 
+  */
+
+  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  bool excludeInputFiles = true;
+  // Don't pull in any procedures defined in input files.  For testing
+  // purposes only:  avoids unexpected/spurious results due to
+  // stdlib.h, etc.
+  procIter = new SageIRProcIterator(p,irInterface, excludeInputFiles);
+  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+  interAlias = fialiasman->performAnalysis(procIter);
+  OA::ProcHandle proc((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+  OA::OA_ptr<OA::Alias::Interface> alias = interAlias->getAliasResults(proc);
+ 
   
   // Interprocedural Side-Effect Analysis
   // for now generate default conservative interprocedural side-effect results
   OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
   interSideEffect = new OA::SideEffect::InterSideEffectStandard;
 
+  
   // then can do ReachDefs
   OA::OA_ptr<OA::ReachDefs::ManagerStandard> rdman;
   rdman = new OA::ReachDefs::ManagerStandard(irInterface);
   OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds= 
-      rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect);
+     rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect); 
+  
+  rds->output(*irInterface);  
 
-
-  rds->output(*irInterface);
-
+  //rds->dump(std::cout, irInterface);
  
 	std::cout << "\n*******  end of DoReachDef *********\n\n";
 	return returnvalue;
