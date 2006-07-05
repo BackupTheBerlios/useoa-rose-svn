@@ -1590,3 +1590,7 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 
 7/03/06   UseOA-ROSE svn tag trunk r94  Andy Stone
     - Rechecked AliasIRInterface regression tests.
+
+7/05/06   UseOA-ROSE svn tag trunk r95  Brian White
+    - Added ./TestResults/CtoOA/localNonLocal.c.out, 
+      which I forgot to do previously.
