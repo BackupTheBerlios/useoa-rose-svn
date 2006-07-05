@@ -1,32 +1,32 @@
 
 EquivSets(
     mMemRefToProc: MemRefHandle	 => ProcHandle
-        MemRefHandle(p)	 => ProcHandle(f)
-        MemRefHandle(*p)	 => ProcHandle(f)
-        MemRefHandle(p)	 => ProcHandle(f)
-        MemRefHandle(*p)	 => ProcHandle(f)
-        MemRefHandle(x)	 => ProcHandle(f)
         MemRefHandle(n)	 => ProcHandle(f1)
-        MemRefHandle(&n)	 => ProcHandle(f1)
-        MemRefHandle(q)	 => ProcHandle(f1)
         MemRefHandle(w)	 => ProcHandle(main)
+        MemRefHandle(p)	 => ProcHandle(f)
+        MemRefHandle(p)	 => ProcHandle(f)
+        MemRefHandle(x)	 => ProcHandle(f)
+        MemRefHandle(q)	 => ProcHandle(f1)
         MemRefHandle(x)	 => ProcHandle(main)
         MemRefHandle(y)	 => ProcHandle(main)
+        MemRefHandle(w)	 => ProcHandle(main)
+        MemRefHandle(*p)	 => ProcHandle(f)
+        MemRefHandle(*p)	 => ProcHandle(f)
+        MemRefHandle(&n)	 => ProcHandle(f1)
         MemRefHandle(&y)	 => ProcHandle(main)
         MemRefHandle(&w)	 => ProcHandle(main)
-        MemRefHandle(w)	 => ProcHandle(main)
     mMemRefToSets: MemRefHandle	 => int
+        MemRefHandle(n)	 => [ 8 ] 
+        MemRefHandle(w)	 => [ 8 ] 
         MemRefHandle(p)	 => [ 1 ] 
-        MemRefHandle(*p)	 => [ 7 ] 
         MemRefHandle(p)	 => [ 1 ] 
-        MemRefHandle(*p)	 => [ 7 ] 
-        MemRefHandle(x)	 => [ 3 ] 
-        MemRefHandle(n)	 => [ 7 ] 
-        MemRefHandle(q)	 => [ 6 ] 
-        MemRefHandle(w)	 => [ 7 ] 
-        MemRefHandle(x)	 => [ 3 ] 
-        MemRefHandle(y)	 => [ 7 ] 
-        MemRefHandle(w)	 => [ 7 ] 
+        MemRefHandle(x)	 => [ 2 ] 
+        MemRefHandle(q)	 => [ 7 ] 
+        MemRefHandle(x)	 => [ 2 ] 
+        MemRefHandle(y)	 => [ 8 ] 
+        MemRefHandle(w)	 => [ 8 ] 
+        MemRefHandle(*p)	 => [ 8 ] 
+        MemRefHandle(*p)	 => [ 8 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(f)	 => 
         SetToLocs: int	 => OA_ptr<Location>
@@ -34,22 +34,22 @@ EquivSets(
                 NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            3	 => [ 
+            2	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(x)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            7	 => [ 
+            8	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(y)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 )    
                 InvisibleLoc(
                     mMRE: 
@@ -69,25 +69,25 @@ EquivSets(
                 ) ] 
         ProcHandle(f1)	 => 
         SetToLocs: int	 => OA_ptr<Location>
-            6	 => [ 
+            7	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(q)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            7	 => [ 
+            8	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(n)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 )    
                 NamedLoc(
                     mSymHandle: SymHandle(y)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 )    
                 InvisibleLoc(
                     mMRE: 
@@ -107,24 +107,24 @@ EquivSets(
                 ) ] 
         ProcHandle(main)	 => 
         SetToLocs: int	 => OA_ptr<Location>
-            3	 => [ 
+            2	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(x)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            7	 => [ 
+            8	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(y)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 )    
                 NamedLoc(
                     mSymHandle: SymHandle(w)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
 )

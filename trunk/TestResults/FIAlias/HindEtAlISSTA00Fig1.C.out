@@ -1,50 +1,48 @@
 
 EquivSets(
     mMemRefToProc: MemRefHandle	 => ProcHandle
-        MemRefHandle(T)	 => ProcHandle(g)
         MemRefHandle(local)	 => ProcHandle(g)
+        MemRefHandle(t)	 => ProcHandle(main)
+        MemRefHandle(T)	 => ProcHandle(g)
+        MemRefHandle(T)	 => ProcHandle(f)
+        MemRefHandle(T)	 => ProcHandle(f)
+        MemRefHandle(T)	 => ProcHandle(main)
+        MemRefHandle(T)	 => ProcHandle(main)
+        MemRefHandle(T( *p))	 => ProcHandle(main)
         MemRefHandle(cond)	 => ProcHandle(g)
         MemRefHandle(p)	 => ProcHandle(g)
-        MemRefHandle(&local)	 => ProcHandle(g)
         MemRefHandle(q)	 => ProcHandle(f)
-        MemRefHandle(T)	 => ProcHandle(f)
-        MemRefHandle((new T ))	 => ProcHandle(f)
-        MemRefHandle(&p)	 => ProcHandle(f)
         MemRefHandle(r)	 => ProcHandle(f)
-        MemRefHandle(T)	 => ProcHandle(f)
-        MemRefHandle((new T ))	 => ProcHandle(f)
         MemRefHandle(p)	 => ProcHandle(main)
-        MemRefHandle(T)	 => ProcHandle(main)
-        MemRefHandle((new T ))	 => ProcHandle(main)
+        MemRefHandle(p)	 => ProcHandle(main)
+        MemRefHandle(&local)	 => ProcHandle(g)
+        MemRefHandle(&p)	 => ProcHandle(f)
         MemRefHandle(&p)	 => ProcHandle(main)
-        MemRefHandle(p)	 => ProcHandle(main)
-        MemRefHandle(T)	 => ProcHandle(main)
+        MemRefHandle((new T ))	 => ProcHandle(f)
+        MemRefHandle((new T ))	 => ProcHandle(f)
         MemRefHandle((new T ))	 => ProcHandle(main)
-        MemRefHandle(p)	 => ProcHandle(main)
+        MemRefHandle((new T ))	 => ProcHandle(main)
         MemRefHandle(*p)	 => ProcHandle(main)
-        MemRefHandle(T( *p))	 => ProcHandle(main)
-        MemRefHandle(t)	 => ProcHandle(main)
     mMemRefToSets: MemRefHandle	 => int
-        MemRefHandle(T)	 => [ 4 ] 
-        MemRefHandle(local)	 => [ 25 ] 
-        MemRefHandle(cond)	 => [ 6 ] 
-        MemRefHandle(p)	 => [ 7 ] 
-        MemRefHandle(q)	 => [ 10 ] 
-        MemRefHandle(T)	 => [ 4 ] 
-        MemRefHandle(r)	 => [ 13 ] 
-        MemRefHandle(T)	 => [ 4 ] 
-        MemRefHandle(p)	 => [ 7 ] 
-        MemRefHandle(T)	 => [ 4 ] 
-        MemRefHandle(p)	 => [ 7 ] 
-        MemRefHandle(T)	 => [ 4 ] 
-        MemRefHandle(p)	 => [ 7 ] 
-        MemRefHandle(*p)	 => [ 25 ] 
-        MemRefHandle(T( *p))	 => [ 18 ] 
+        MemRefHandle(local)	 => [ 26 ] 
         MemRefHandle(t)	 => [ 19 ] 
+        MemRefHandle(T)	 => [ 5 ] 
+        MemRefHandle(T)	 => [ 5 ] 
+        MemRefHandle(T)	 => [ 5 ] 
+        MemRefHandle(T)	 => [ 5 ] 
+        MemRefHandle(T)	 => [ 5 ] 
+        MemRefHandle(T( *p))	 => [ 20 ] 
+        MemRefHandle(cond)	 => [ 7 ] 
+        MemRefHandle(p)	 => [ 8 ] 
+        MemRefHandle(q)	 => [ 10 ] 
+        MemRefHandle(r)	 => [ 14 ] 
+        MemRefHandle(p)	 => [ 8 ] 
+        MemRefHandle(p)	 => [ 8 ] 
+        MemRefHandle(*p)	 => [ 8 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(T::T)	 => 
         SetToLocs: int	 => OA_ptr<Location>
-            25	 => [ 
+            26	 => [ 
                 UnnamedLoc(
                     mStmtHandle: StmtHandle((new T ))
                     mLocal: 0
@@ -72,22 +70,6 @@ EquivSets(
                             mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: DEF
-                            mSymHandle: SymHandle(this::T::T)
-                        )
-                        mNumDeref: 1
-                    )
-                )    
-                InvisibleLoc(
-                    mMRE: 
-                    Deref(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mMRE: 
-                        NamedRef(
-                            mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
                             mSymHandle: SymHandle(p)
                         )
                         mNumDeref: 1
@@ -132,41 +114,18 @@ EquivSets(
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
-                        Deref(
+                        NamedRef(
                             mAddressOf: 0
                             mFullAccuracy: 1
-                            mMemRefType: USE
-                            mMRE: 
-                            NamedRef(
-                                mAddressOf: 0
-                                mFullAccuracy: 1
-                                mMemRefType: USE
-                                mSymHandle: SymHandle(p)
-                            )
-                            mNumDeref: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::T::T__T__scope__T____MFb_T__Fb_v_Gb__Fe_)
                         )
                         mNumDeref: 1
                     )
                 ) ] 
         ProcHandle(T::T)	 => 
         SetToLocs: int	 => OA_ptr<Location>
-            25	 => [ 
-                UnnamedLoc(
-                    mStmtHandle: StmtHandle((new T ))
-                    mLocal: 0
-                )    
-                UnnamedLoc(
-                    mStmtHandle: StmtHandle((new T ))
-                    mLocal: 0
-                )    
-                UnnamedLoc(
-                    mStmtHandle: StmtHandle((new T ))
-                    mLocal: 0
-                )    
-                UnnamedLoc(
-                    mStmtHandle: StmtHandle((new T ))
-                    mLocal: 0
-                )    
+            19	 => [ 
                 InvisibleLoc(
                     mMRE: 
                     Deref(
@@ -178,10 +137,27 @@ EquivSets(
                             mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: DEF
-                            mSymHandle: SymHandle(this::T::T)
+                            mSymHandle: SymHandle(this::T::T__T__scope__T____MFb_T__Fb_v_Gb___Rb__CT__Re___Fe_)
                         )
                         mNumDeref: 1
                     )
+                ) ] 
+            26	 => [ 
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new T ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new T ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new T ))
+                    mLocal: 0
+                )    
+                UnnamedLoc(
+                    mStmtHandle: StmtHandle((new T ))
+                    mLocal: 0
                 )    
                 InvisibleLoc(
                     mMRE: 
@@ -209,7 +185,7 @@ EquivSets(
                         NamedRef(
                             mAddressOf: 0
                             mFullAccuracy: 1
-                            mMemRefType: USE
+                            mMemRefType: DEF
                             mSymHandle: SymHandle(p)
                         )
                         mNumDeref: 1
@@ -246,52 +222,29 @@ EquivSets(
                         )
                         mNumDeref: 1
                     )
-                )    
-                InvisibleLoc(
-                    mMRE: 
-                    Deref(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mMRE: 
-                        Deref(
-                            mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
-                            mMRE: 
-                            NamedRef(
-                                mAddressOf: 0
-                                mFullAccuracy: 1
-                                mMemRefType: USE
-                                mSymHandle: SymHandle(p)
-                            )
-                            mNumDeref: 1
-                        )
-                        mNumDeref: 1
-                    )
                 ) ] 
         ProcHandle(g)	 => 
         SetToLocs: int	 => OA_ptr<Location>
-            4	 => [ 
+            5	 => [ 
                 NamedLoc(
-                    mSymHandle: SymHandle(method:T::T)
+                    mSymHandle: SymHandle(method:T::T__T__scope__T____MFb_T__Fb_v_Gb__Fe_)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            6	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(cond)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             7	 => [ 
                 NamedLoc(
+                    mSymHandle: SymHandle(cond)
+                    mLocal: 1
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
+                ) ] 
+            8	 => [ 
+                NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 )    
                 InvisibleLoc(
                     mMRE: 
@@ -309,12 +262,12 @@ EquivSets(
                         mNumDeref: 1
                     )
                 ) ] 
-            25	 => [ 
+            26	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(local)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 )    
                 UnnamedLoc(
                     mStmtHandle: StmtHandle((new T ))
@@ -343,22 +296,6 @@ EquivSets(
                             mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: DEF
-                            mSymHandle: SymHandle(this::T::T)
-                        )
-                        mNumDeref: 1
-                    )
-                )    
-                InvisibleLoc(
-                    mMRE: 
-                    Deref(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mMRE: 
-                        NamedRef(
-                            mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
                             mSymHandle: SymHandle(p)
                         )
                         mNumDeref: 1
@@ -392,64 +329,41 @@ EquivSets(
                             mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(r)
-                        )
-                        mNumDeref: 1
-                    )
-                )    
-                InvisibleLoc(
-                    mMRE: 
-                    Deref(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mMRE: 
-                        Deref(
-                            mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
-                            mMRE: 
-                            NamedRef(
-                                mAddressOf: 0
-                                mFullAccuracy: 1
-                                mMemRefType: USE
-                                mSymHandle: SymHandle(p)
-                            )
-                            mNumDeref: 1
                         )
                         mNumDeref: 1
                     )
                 ) ] 
         ProcHandle(f)	 => 
         SetToLocs: int	 => OA_ptr<Location>
-            4	 => [ 
+            5	 => [ 
                 NamedLoc(
-                    mSymHandle: SymHandle(method:T::T)
+                    mSymHandle: SymHandle(method:T::T__T__scope__T____MFb_T__Fb_v_Gb__Fe_)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            7	 => [ 
+            8	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             10	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(q)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            13	 => [ 
+            14	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(r)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            25	 => [ 
+            26	 => [ 
                 UnnamedLoc(
                     mStmtHandle: StmtHandle((new T ))
                     mLocal: 0
@@ -477,22 +391,6 @@ EquivSets(
                             mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: DEF
-                            mSymHandle: SymHandle(this::T::T)
-                        )
-                        mNumDeref: 1
-                    )
-                )    
-                InvisibleLoc(
-                    mMRE: 
-                    Deref(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mMRE: 
-                        NamedRef(
-                            mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
                             mSymHandle: SymHandle(p)
                         )
                         mNumDeref: 1
@@ -526,64 +424,41 @@ EquivSets(
                             mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(r)
-                        )
-                        mNumDeref: 1
-                    )
-                )    
-                InvisibleLoc(
-                    mMRE: 
-                    Deref(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mMRE: 
-                        Deref(
-                            mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
-                            mMRE: 
-                            NamedRef(
-                                mAddressOf: 0
-                                mFullAccuracy: 1
-                                mMemRefType: USE
-                                mSymHandle: SymHandle(p)
-                            )
-                            mNumDeref: 1
                         )
                         mNumDeref: 1
                     )
                 ) ] 
         ProcHandle(main)	 => 
         SetToLocs: int	 => OA_ptr<Location>
-            4	 => [ 
+            5	 => [ 
                 NamedLoc(
-                    mSymHandle: SymHandle(method:T::T)
+                    mSymHandle: SymHandle(method:T::T__T__scope__T____MFb_T__Fb_v_Gb__Fe_)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            7	 => [ 
+            8	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
-                ) ] 
-            18	 => [ 
-                NamedLoc(
-                    mSymHandle: SymHandle(method:T::T)
-                    mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             19	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(t)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            25	 => [ 
+            20	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(method:T::T__T__scope__T____MFb_T__Fb_v_Gb___Rb__CT__Re___Fe_)
+                    mLocal: 1
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
+                ) ] 
+            26	 => [ 
                 UnnamedLoc(
                     mStmtHandle: StmtHandle((new T ))
                     mLocal: 0
@@ -611,22 +486,6 @@ EquivSets(
                             mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: DEF
-                            mSymHandle: SymHandle(this::T::T)
-                        )
-                        mNumDeref: 1
-                    )
-                )    
-                InvisibleLoc(
-                    mMRE: 
-                    Deref(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mMRE: 
-                        NamedRef(
-                            mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
                             mSymHandle: SymHandle(p)
                         )
                         mNumDeref: 1
@@ -660,29 +519,6 @@ EquivSets(
                             mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(r)
-                        )
-                        mNumDeref: 1
-                    )
-                )    
-                InvisibleLoc(
-                    mMRE: 
-                    Deref(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mMRE: 
-                        Deref(
-                            mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
-                            mMRE: 
-                            NamedRef(
-                                mAddressOf: 0
-                                mFullAccuracy: 1
-                                mMemRefType: USE
-                                mSymHandle: SymHandle(p)
-                            )
-                            mNumDeref: 1
                         )
                         mNumDeref: 1
                     )

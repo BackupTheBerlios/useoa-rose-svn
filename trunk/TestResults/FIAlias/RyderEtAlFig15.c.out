@@ -1,48 +1,48 @@
 
 EquivSets(
     mMemRefToProc: MemRefHandle	 => ProcHandle
+        MemRefHandle(p)	 => ProcHandle(my_malloc)
         MemRefHandle((char *)(malloc((size))))	 => ProcHandle(my_malloc)
         MemRefHandle(p)	 => ProcHandle(my_malloc)
-        MemRefHandle(p)	 => ProcHandle(my_malloc)
         MemRefHandle(s)	 => ProcHandle(a)
-        MemRefHandle((my_malloc(12)))	 => ProcHandle(a)
         MemRefHandle(s)	 => ProcHandle(a)
-        MemRefHandle(*s)	 => ProcHandle(a)
         MemRefHandle(x)	 => ProcHandle(a)
         MemRefHandle(t)	 => ProcHandle(b)
-        MemRefHandle((my_malloc(8)))	 => ProcHandle(b)
         MemRefHandle(t)	 => ProcHandle(b)
-        MemRefHandle(*t)	 => ProcHandle(b)
         MemRefHandle(y)	 => ProcHandle(b)
+        MemRefHandle((my_malloc(((sizeof(S ))))))	 => ProcHandle(a)
+        MemRefHandle((my_malloc(((sizeof(T ))))))	 => ProcHandle(b)
+        MemRefHandle(*s)	 => ProcHandle(a)
+        MemRefHandle(*t)	 => ProcHandle(b)
     mMemRefToSets: MemRefHandle	 => int
-        MemRefHandle(p)	 => [ 2 ] 
-        MemRefHandle(p)	 => [ 2 ] 
+        MemRefHandle(p)	 => [ 1 ] 
+        MemRefHandle(p)	 => [ 1 ] 
         MemRefHandle(s)	 => [ 5 ] 
-        MemRefHandle((my_malloc(12)))	 => [ 3 ] 
         MemRefHandle(s)	 => [ 5 ] 
+        MemRefHandle(x)	 => [ 6 ] 
+        MemRefHandle(t)	 => [ 8 ] 
+        MemRefHandle(t)	 => [ 8 ] 
+        MemRefHandle(y)	 => [ 9 ] 
+        MemRefHandle((my_malloc(((sizeof(S ))))))	 => [ 3 ] 
+        MemRefHandle((my_malloc(((sizeof(T ))))))	 => [ 3 ] 
         MemRefHandle(*s)	 => [ 12 ] 
-        MemRefHandle(x)	 => [ 7 ] 
-        MemRefHandle(t)	 => [ 8 ] 
-        MemRefHandle((my_malloc(8)))	 => [ 3 ] 
-        MemRefHandle(t)	 => [ 8 ] 
         MemRefHandle(*t)	 => [ 12 ] 
-        MemRefHandle(y)	 => [ 10 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(my_malloc)	 => 
         SetToLocs: int	 => OA_ptr<Location>
-            2	 => [ 
+            1	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(my_malloc)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             12	 => [ 
                 UnnamedLoc(
@@ -87,22 +87,22 @@ EquivSets(
                 NamedLoc(
                     mSymHandle: SymHandle(my_malloc)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             5	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(s)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            7	 => [ 
+            6	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(x)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             12	 => [ 
                 UnnamedLoc(
@@ -147,22 +147,22 @@ EquivSets(
                 NamedLoc(
                     mSymHandle: SymHandle(my_malloc)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             8	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(t)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            10	 => [ 
+            9	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(y)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             12	 => [ 
                 UnnamedLoc(

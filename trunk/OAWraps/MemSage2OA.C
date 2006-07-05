@@ -855,9 +855,9 @@ SageIRInterface::getChildrenWithMemRefs(SgNode *astNode,
       
 #if 1
       // Get the list of actual arguments from the function call.
-      OA::ExprHandle exprHandle = getProcExprHandle(functionCallExp);
+      OA::CallHandle callHandle = getProcExprHandle(functionCallExp);
       OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIter = 
-	getCallsiteParams(exprHandle);
+	getCallsiteParams(callHandle);
 
       // Iterate over the actual arguments as represented by
       // SgExpressions and set the ignore flag on each.
@@ -2304,9 +2304,9 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 	// Unfortunately, we don't which.  Iterate through all
 	// of the actuals and formals until we find a match.
 	SgTypePtrList &typePtrList = mIR->getFormalTypes(argListParent);
-	OA::ExprHandle exprHandle = mIR->getProcExprHandle(argListParent);
+	OA::CallHandle callHandle = mIR->getProcExprHandle(argListParent);
 	OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIter = 
-	  mIR->getCallsiteParams(exprHandle);
+	  mIR->getCallsiteParams(callHandle);
 
 	// Simultaneously iterate over both formals and actuals.
 	SgTypePtrList::iterator formalIt = typePtrList.begin();
@@ -3691,9 +3691,10 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       
       // Get the list of actual arguments from the function call.
       SgTypePtrList &typePtrList = mIR->getFormalTypes(functionCallExp);
-      OA::ExprHandle exprHandle = mIR->getProcExprHandle(functionCallExp);
+      OA::CallHandle callHandle = mIR->getProcExprHandle(functionCallExp);
+      //OA::CallHandle exprHandle = mIR->getProcExprHandle(functionCallExp);
       OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIter = 
-	mIR->getCallsiteParams(exprHandle);
+	mIR->getCallsiteParams(callHandle);
 
       bool returnsReference = false;
 
@@ -5093,6 +5094,7 @@ OA::OA_ptr<OA::MemRefHandleIterator>
 SageIRInterface::getMemRefIterator(OA::IRHandle h)
 {
   OA::OA_ptr<OA::MemRefHandleIterator> retval;
+  
   retval = new SageIRMemRefIterator(h, this);
   return retval;
 }

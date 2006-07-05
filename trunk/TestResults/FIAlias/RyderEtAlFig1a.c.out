@@ -2,12 +2,12 @@
 EquivSets(
     mMemRefToProc: MemRefHandle	 => ProcHandle
         MemRefHandle(x)	 => ProcHandle(main)
-        MemRefHandle(&y)	 => ProcHandle(main)
         MemRefHandle(p)	 => ProcHandle(main)
-        MemRefHandle(&x)	 => ProcHandle(main)
         MemRefHandle(x)	 => ProcHandle(main)
-        MemRefHandle(&z)	 => ProcHandle(main)
         MemRefHandle(p)	 => ProcHandle(main)
+        MemRefHandle(&y)	 => ProcHandle(main)
+        MemRefHandle(&x)	 => ProcHandle(main)
+        MemRefHandle(&z)	 => ProcHandle(main)
         MemRefHandle(( *p))	 => ProcHandle(main)
         MemRefHandle(*( *p))	 => ProcHandle(main)
     mMemRefToSets: MemRefHandle	 => int
@@ -24,27 +24,27 @@ EquivSets(
                 NamedLoc(
                     mSymHandle: SymHandle(x)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(p)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             10	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(y)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 )    
                 NamedLoc(
                     mSymHandle: SymHandle(z)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
 )

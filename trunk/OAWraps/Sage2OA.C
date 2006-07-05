@@ -3774,7 +3774,7 @@ SageIRInterface::getFormalTypes(SgNode *node)
 // Create iterator consisting of pairs of procedure formal SymHandles
 // and procedure call actual MemRefHandles.  A pair is created
 // only for pointer or reference formals.
-void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
+void SgParamBindPtrAssignIterator::create(OA::CallHandle call)
 {
   SgNode *node = mIR->getNodePtr(call);
   ROSE_ASSERT(node != NULL);
@@ -4043,7 +4043,7 @@ void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
 // Create iterator consisting of pairs of procedure formal SymHandles
 // and procedure call actual MemRefHandles.  A pair is created
 // only for pointer or reference formals.
-void SgParamBindPtrAssignIterator::create(OA::ExprHandle call)
+void SgParamBindPtrAssignIterator::create(OA::CallHandle call)
 {
   SgNode *node = mIR->getNodePtr(call);
   ROSE_ASSERT(node != NULL);
@@ -6686,7 +6686,7 @@ OA::SymHandle SageIRInterface::getSymHandle(OA::LeafHandle h)
 
 // return the formal parameter that an actual parameter is associated with 
 OA::SymHandle SageIRInterface::getFormalForActual(OA::ProcHandle caller, 
-						  OA::ExprHandle call, 
+						  OA::CallHandle call, 
 						  OA::ProcHandle callee, 
 						  OA::ExprHandle param)
 {
@@ -7000,7 +7000,7 @@ OA::OA_ptr<OA::ExprTree> SageIRInterface::getExprTree(OA::ExprHandle h)
 // Get IRCallsiteParamIterator for a callsite. 
 // Iterator visits actual parameters in called order. 
 OA::OA_ptr<OA::IRCallsiteParamIterator> 
-SageIRInterface::getCallsiteParams(OA::ExprHandle h)
+SageIRInterface::getCallsiteParams(OA::CallHandle h)
 {
   SgNode *node = getNodePtr(h);
   ROSE_ASSERT(node != NULL);
@@ -8092,11 +8092,11 @@ OA::ProcHandle SageIRInterface::getProcHandle(SgFunctionDeclaration *node)
  *                  invocation. 
  *  \returns  an OA handle representing the function invocation.
  */
-OA::ExprHandle SageIRInterface::getProcExprHandle(SgNode *astNode)
+OA::CallHandle SageIRInterface::getProcExprHandle(SgNode *astNode)
 {
   ROSE_ASSERT(isSgFunctionCallExp(astNode) || isSgConstructorInitializer(astNode));
-  OA::ExprHandle exprHandle = getNodeNumber(astNode);
-  return exprHandle;
+  OA::CallHandle callHandle = getNodeNumber(astNode);
+  return callHandle;
 }
 
 bool SageIRInterface::isFieldAccess(OA::OA_ptr<OA::MemRefExpr> mre)

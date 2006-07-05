@@ -256,7 +256,7 @@ class SgParamBindPtrAssignIterator
 { 
  public:
   SgParamBindPtrAssignIterator() : mValid(false), mIR(NULL) { }
-  SgParamBindPtrAssignIterator(OA::ExprHandle call, 
+  SgParamBindPtrAssignIterator(OA::CallHandle call, 
 			       SageIRInterface * ir)
     : mIR(ir) 
   { create(call); reset(); mValid = true; }
@@ -277,7 +277,7 @@ class SgParamBindPtrAssignIterator
   virtual void reset();
 
  private:
-  void create(OA::ExprHandle call);
+  void create(OA::CallHandle call);
 
   std::list<std::pair<int, OA::OA_ptr<OA::MemRefExpr> > > mPairList;
   
@@ -393,7 +393,7 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
 
   // Get IRCallsiteParamIterator for a callsite.
   // Iterator visits actual parameters in called order.
-  OA::OA_ptr<OA::IRCallsiteParamIterator> getCallsiteParams(OA::ExprHandle h); 
+  OA::OA_ptr<OA::IRCallsiteParamIterator> getCallsiteParams(OA::CallHandle h); 
 
 /*  
   bool IsParamProcRef(ExprHandle h) ;
@@ -653,7 +653,7 @@ public:
   bool isParam(OA::SymHandle);
 
   // return the formal parameter that an actual parameter is associated with 
-  OA::SymHandle getFormalForActual(OA::ProcHandle caller, OA::ExprHandle call, 
+  OA::SymHandle getFormalForActual(OA::ProcHandle caller, OA::CallHandle call, 
 				   OA::ProcHandle callee, OA::ExprHandle param);
 
   // Given an ExprHandle, return an ExprTree 
@@ -685,7 +685,7 @@ public:
     return memRefHandle;
   }
   OA::ProcHandle getProcHandle(SgFunctionDefinition *astNode);
-  OA::ExprHandle getProcExprHandle(SgNode *astNode);
+  OA::CallHandle getProcExprHandle(SgNode *astNode);
   //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
   SgNode *getSgNode(OA::IRHandle h) { return getNodePtr(h); }
   bool isMemRefNode(SgNode *astNode);

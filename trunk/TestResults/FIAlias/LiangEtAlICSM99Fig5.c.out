@@ -1,6 +1,7 @@
 
 EquivSets(
     mMemRefToProc: MemRefHandle	 => ProcHandle
+        MemRefHandle(a)	 => ProcHandle(main)
         MemRefHandle(a)	 => ProcHandle(f)
         MemRefHandle(e)	 => ProcHandle(f)
         MemRefHandle(e)	 => ProcHandle(f)
@@ -10,13 +11,13 @@ EquivSets(
         MemRefHandle(g1)	 => ProcHandle(f)
         MemRefHandle(g)	 => ProcHandle(f)
         MemRefHandle(a)	 => ProcHandle(f)
-        MemRefHandle(a)	 => ProcHandle(main)
         MemRefHandle(g1)	 => ProcHandle(main)
         MemRefHandle(g2)	 => ProcHandle(main)
         MemRefHandle(g)	 => ProcHandle(main)
         MemRefHandle(e)	 => ProcHandle(main)
         MemRefHandle(g1)	 => ProcHandle(main)
     mMemRefToSets: MemRefHandle	 => int
+        MemRefHandle(a)	 => [ 7 ] 
         MemRefHandle(a)	 => [ 1 ] 
         MemRefHandle(e)	 => [ 2 ] 
         MemRefHandle(e)	 => [ 2 ] 
@@ -26,7 +27,6 @@ EquivSets(
         MemRefHandle(g1)	 => [ 3 ] 
         MemRefHandle(g)	 => [ 5 ] 
         MemRefHandle(a)	 => [ 1 ] 
-        MemRefHandle(a)	 => [ 6 ] 
         MemRefHandle(g1)	 => [ 3 ] 
         MemRefHandle(g2)	 => [ 4 ] 
         MemRefHandle(g)	 => [ 5 ] 
@@ -39,36 +39,36 @@ EquivSets(
                 NamedLoc(
                     mSymHandle: SymHandle(a)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             2	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(e)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(g1)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             4	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(g2)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             5	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(g)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
         ProcHandle(main)	 => 
         SetToLocs: int	 => OA_ptr<Location>
@@ -76,35 +76,35 @@ EquivSets(
                 NamedLoc(
                     mSymHandle: SymHandle(e)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(g1)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             4	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(g2)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             5	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(g)
                     mLocal: 0
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            6	 => [ 
+            7	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(a)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
 )

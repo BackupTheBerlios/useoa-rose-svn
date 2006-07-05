@@ -1,43 +1,43 @@
 
 EquivSets(
     mMemRefToProc: MemRefHandle	 => ProcHandle
-        MemRefHandle(&m)	 => ProcHandle(main)
-        MemRefHandle(ptr)	 => ProcHandle(main)
         MemRefHandle(ptr)	 => ProcHandle(main)
         MemRefHandle(refPtr&)	 => ProcHandle(main)
         MemRefHandle(ptr)	 => ProcHandle(main)
-        MemRefHandle(*ptr)	 => ProcHandle(main)
+        MemRefHandle(ptr)	 => ProcHandle(main)
         MemRefHandle(refPtr)	 => ProcHandle(main)
+        MemRefHandle(&m)	 => ProcHandle(main)
+        MemRefHandle(*ptr)	 => ProcHandle(main)
         MemRefHandle(*refPtr)	 => ProcHandle(main)
     mMemRefToSets: MemRefHandle	 => int
-        MemRefHandle(ptr)	 => [ 2 ] 
-        MemRefHandle(refPtr&)	 => [ 4 ] 
-        MemRefHandle(ptr)	 => [ 2 ] 
+        MemRefHandle(ptr)	 => [ 1 ] 
+        MemRefHandle(refPtr&)	 => [ 3 ] 
+        MemRefHandle(ptr)	 => [ 1 ] 
+        MemRefHandle(refPtr)	 => [ 1 ] 
         MemRefHandle(*ptr)	 => [ 8 ] 
-        MemRefHandle(refPtr)	 => [ 2 ] 
         MemRefHandle(*refPtr)	 => [ 8 ] 
     mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
         ProcHandle(main)	 => 
         SetToLocs: int	 => OA_ptr<Location>
-            2	 => [ 
+            1	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(ptr)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
-            4	 => [ 
+            3	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(refPtr)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
             8	 => [ 
                 NamedLoc(
                     mSymHandle: SymHandle(m)
                     mLocal: 1
-                    mFullOverlap: 
-                    mPartOverlap: 
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
                 ) ] 
 )
