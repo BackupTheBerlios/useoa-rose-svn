@@ -45,6 +45,24 @@
 #include <iostream>
 #include <CommandOptions.h>
 
+// put in to help with g++ compiler bug
+/*
+#include <new>
+#include <stdlib.h>
+void* operator new(size_t sz)
+{
+    void* res = malloc(sz);
+    printf("new(%d) - %p\n", sz, res);
+    return res;
+}
+
+void operator delete(void* ptr)
+{
+    printf("delete(%p)\n", ptr);
+    free(ptr);
+}
+*/
+
 using namespace std;
 
 int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
@@ -645,7 +663,29 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 
   OA::OA_ptr<OA::CFG::ManagerStandard> cfgmanstd;
   cfgmanstd = new OA::CFG::ManagerStandard(irInterface);
-  OA::OA_ptr<OA::CFG::Interface> cfg=
+
+  //********** this has the free error
+  //OA::OA_ptr<OA::CFG::Interface> cfg=
+  //   cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+  //OA::DGraph::Interface& pDGraph = *cfg;
+  //OA::OA_ptr<OA::DGraph::Interface::NodesIterator> nodeIter
+  //            = pDGraph.getNodesIterator();
+
+  //*********** this doesn't compile because have CFG::Interface
+  //OA::OA_ptr<OA::CFG::Interface> cfg=
+  //   cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+  //OA::OA_ptr<OA::DGraph::Interface::NodesIterator> nodeIter
+  //  = new OA::CFG::CFGStandard::NodesIterator(*cfg);
+
+  //*********** this gets the same free error
+  //OA::OA_ptr<OA::CFG::CFGStandard> cfg=
+  //   cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+  //OA::DGraph::Interface& pDGraph = *cfg;
+  //OA::OA_ptr<OA::DGraph::Interface::NodesIterator> nodeIter
+  //            = pDGraph.getNodesIterator();
+  
+  //*********** this gets the same free error
+  OA::OA_ptr<OA::CFG::CFGStandard> cfg=
   cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f))); 
 
   /*  OA::OA_ptr<OA::OutputBuilderDOT> dotBuilder;
@@ -655,7 +695,6 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 
 
 
-  /*    
 #if 0
   //AliasMap
   OA::OA_ptr<OA::Alias::ManagerAliasMapBasic> aliasmanstd;
@@ -664,6 +703,7 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   OA::OA_ptr<OA::Alias::AliasMap> alias = 
   aliasmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
 #else
+  /*
   //FIAlias
   OA::OA_ptr<OA::Alias::ManagerFIAliasEquivSets> fialiasman;
   fialiasman= new OA::Alias::ManagerFIAliasEquivSets(irInterface);
@@ -671,9 +711,9 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   procIter = new SageIRProcIterator(p, irInterface);
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter);
+    */
 #endif
-  alias->output(*irInterface); 
-  */
+//  alias->output(*irInterface); 
 
   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
@@ -689,6 +729,7 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   OA::OA_ptr<OA::Alias::Interface> alias = interAlias->getAliasResults(proc);
  
   
+  /*
   // Interprocedural Side-Effect Analysis
   // for now generate default conservative interprocedural side-effect results
   OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
@@ -706,6 +747,7 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   //rds->dump(std::cout, irInterface);
  
 	std::cout << "\n*******  end of DoReachDef *********\n\n";
+    */
 	return returnvalue;
 
 }

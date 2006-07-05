@@ -3,7 +3,7 @@
 testname::AliasIRInterface
 inputdir::TestCases/AliasTests
 outputdir::TestResults/AliasIRInterface
-driverexec::./CtoOA
+driverexec::./CtoOA 
 
 # list of tests
 #       input file,    			 status
@@ -23,3 +23,4 @@ test::  comma.c,                 checked by MMS 6/22/06
 #test::  funCall.c,              checked by ???
 test::  invokeBaseCtor.C,        checked by BSW 6/26/06
 test::  localNonLocal.c,         checked by BSW 6/28/06
+

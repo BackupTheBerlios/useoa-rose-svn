@@ -1,4 +1,4 @@
 echo "Testing TestCases/ParamBindings/test.c, TestResults/ParamBindings/test.c.out not checked"
-./OATest -edg:w --oa-ParamBindings -c TestCases/ParamBindings/test.c > t
+./OATest -edg:w --oa-ParamBindings -c TestCases/ParamBindings/test.c >& t
 diff t TestResults/ParamBindings/test.c.out
 

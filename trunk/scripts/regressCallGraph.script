@@ -1,8 +1,8 @@
 echo "Testing TestCases/CallGraphTests/functionPtr.c, TestResults/CallGraph/functionPtr.c.out Checked By LMR 6-27-06"
-./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr.c > t
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr.c >& t
 diff t TestResults/CallGraph/functionPtr.c.out
 
 echo "Testing TestCases/CallGraphTests/swap.c, TestResults/CallGraph/swap.c.out "
-./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/swap.c > t
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/swap.c >& t
 diff t TestResults/CallGraph/swap.c.out
 

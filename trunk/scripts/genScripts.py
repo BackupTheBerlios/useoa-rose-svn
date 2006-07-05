@@ -99,11 +99,11 @@ for line in filelines:
 
         genfile.write("echo \"Generating %s/%s\"\n" \
             % (outputdir,inputfile+".out"))
-        genfile.write("%s %s/%s > %s/%s\n" \
+        genfile.write("%s %s/%s >& %s/%s\n" \
             % (driverexec,inputdir,inputfile,outputdir,inputfile+".out"))
         regfile.write("echo \"Testing %s/%s, %s/%s %s\"\n" \
             % (inputdir,inputfile,outputdir,inputfile+".out", status))
-        regfile.write("%s %s/%s > t\n" \
+        regfile.write("%s %s/%s >& t\n" \
             % (driverexec,inputdir,inputfile))
         regfile.write("diff t %s/%s\n\n" \
             % (outputdir,inputfile+".out"))

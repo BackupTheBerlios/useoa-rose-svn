@@ -1,14 +1,14 @@
 echo "Generating TestResults/AliasIRInterface/alias1.c.out"
-./CtoOA TestCases/AliasTests/alias1.c > TestResults/AliasIRInterface/alias1.c.out
+./CtoOA TestCases/AliasTests/alias1.c >& TestResults/AliasIRInterface/alias1.c.out
 echo "Generating TestResults/AliasIRInterface/alias2.c.out"
-./CtoOA TestCases/AliasTests/alias2.c > TestResults/AliasIRInterface/alias2.c.out
+./CtoOA TestCases/AliasTests/alias2.c >& TestResults/AliasIRInterface/alias2.c.out
 echo "Generating TestResults/AliasIRInterface/alias4.c.out"
-./CtoOA TestCases/AliasTests/alias4.c > TestResults/AliasIRInterface/alias4.c.out
+./CtoOA TestCases/AliasTests/alias4.c >& TestResults/AliasIRInterface/alias4.c.out
 echo "Generating TestResults/AliasIRInterface/alias4b.c.out"
-./CtoOA TestCases/AliasTests/alias4b.c > TestResults/AliasIRInterface/alias4b.c.out
+./CtoOA TestCases/AliasTests/alias4b.c >& TestResults/AliasIRInterface/alias4b.c.out
 echo "Generating TestResults/AliasIRInterface/comma.c.out"
-./CtoOA TestCases/AliasTests/comma.c > TestResults/AliasIRInterface/comma.c.out
+./CtoOA TestCases/AliasTests/comma.c >& TestResults/AliasIRInterface/comma.c.out
 echo "Generating TestResults/AliasIRInterface/invokeBaseCtor.C.out"
-./CtoOA TestCases/AliasTests/invokeBaseCtor.C > TestResults/AliasIRInterface/invokeBaseCtor.C.out
+./CtoOA TestCases/AliasTests/invokeBaseCtor.C >& TestResults/AliasIRInterface/invokeBaseCtor.C.out
 echo "Generating TestResults/AliasIRInterface/localNonLocal.c.out"
-./CtoOA TestCases/AliasTests/localNonLocal.c > TestResults/AliasIRInterface/localNonLocal.c.out
+./CtoOA TestCases/AliasTests/localNonLocal.c >& TestResults/AliasIRInterface/localNonLocal.c.out
