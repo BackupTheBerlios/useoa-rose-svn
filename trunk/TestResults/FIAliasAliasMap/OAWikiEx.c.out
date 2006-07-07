@@ -41,6 +41,7 @@ InterAliasMap(
                         mStmtHandle: StmtHandle(((int *)(malloc(((sizeof(int )) *(y))))))
                         mLocal: 0
                     ) ] 
+
         mIdToSetStatusMap: int	 => AliasResultType
                 0	 => 1
                 1	 => 2
@@ -48,12 +49,14 @@ InterAliasMap(
                 3	 => 2
                 4	 => 2
                 5	 => 1
+
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(g) ] 
                 2	 => [ MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a) ] 
                 3	 => [ MemRefHandle(y) ] 
                 4	 => [ MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p) ] 
                 5	 => [ MemRefHandle(*a)    MemRefHandle(*a) ] 
+
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
@@ -116,5 +119,6 @@ InterAliasMap(
                         )
                         mNumDeref: 1
                     ) ] 
+
     )
 )

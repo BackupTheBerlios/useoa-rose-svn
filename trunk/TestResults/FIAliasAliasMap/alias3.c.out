@@ -49,6 +49,7 @@ InterAliasMap(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
+
         mIdToSetStatusMap: int	 => AliasResultType
                 0	 => 1
                 1	 => 1
@@ -56,12 +57,14 @@ InterAliasMap(
                 3	 => 2
                 4	 => 2
                 5	 => 2
+
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(*a)    MemRefHandle(*b)    MemRefHandle(*c)    MemRefHandle(*locPtr) ] 
                 2	 => [ MemRefHandle(locPtr)    MemRefHandle(locPtr)    MemRefHandle(locPtr)    MemRefHandle(locPtr)    MemRefHandle(locPtr) ] 
                 3	 => [ MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a) ] 
                 4	 => [ MemRefHandle(b)    MemRefHandle(b)    MemRefHandle(b) ] 
                 5	 => [ MemRefHandle(c)    MemRefHandle(c)    MemRefHandle(c) ] 
+
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
@@ -156,5 +159,6 @@ InterAliasMap(
                         mMemRefType: DEF
                         mSymHandle: SymHandle(c)
                     ) ] 
+
     )
 )
