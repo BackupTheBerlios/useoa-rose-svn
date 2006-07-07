@@ -518,15 +518,6 @@ int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handl
   callgraphmanstd= new OA::CallGraph::ManagerStandard(irInterface);
   OA::OA_ptr<OA::CallGraph::CallGraphStandard> callgraph
     = callgraphmanstd->performAnalysis(procIter,interAlias);
-  callgraph->output(*irInterface);
-
-  // dot output
-  OA::OA_ptr<OA::OutputBuilder> outBuild;
-  outBuild = new OA::OutputBuilderDOT;
-  callgraph->configOutput(outBuild);
-  callgraph->output(*irInterface);
-
-  std::cout << "\n*******  end of DoCallGraph *********\n\n";
 
   OA::OA_ptr<OA::DataFlow::ManagerParamBindings> pbman;
   pbman = new OA::DataFlow::ManagerParamBindings(irInterface);
@@ -535,7 +526,6 @@ int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handl
   //  parambind->dump(std::cout, irInterface);
   parambind->output(*irInterface);
 
-  std::cout << "\n*******  end of ParamBinding *********\n\n";
   return returnvalue;
 
 }

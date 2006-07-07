@@ -7598,9 +7598,11 @@ SageIRInterface::getRefSymIterator(OA::ProcHandle h)
 }
 
 //! returns true if given symbol is a parameter 
-bool SageIRInterface::isParam(OA::SymHandle)
+bool SageIRInterface::isParam(OA::SymHandle h)
 {
-  ROSE_ABORT();
+  SgNode *node = getNodePtr(h);
+  SgNode *parent = node->get_parent();
+  return isSgFunctionParameterList(parent);
 }
 
 //! Given a statement, return uses (variables referenced)

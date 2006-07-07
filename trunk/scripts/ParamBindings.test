@@ -7,8 +7,8 @@ driverexec::./OATest -edg:w --oa-ParamBindings -c
 
 # list of tests
 #       input file,             status
-test::  test.c,              not checked 
-
-
-
+test::  test.c,             checked by MMS 7/7/06
+test::  swap.c,             checked by MMS 7/7/06
+#test::  qsort1.c,            broken due to Bug 8092
+#test::  qsort2.c,            broken due to Bug 8092
 

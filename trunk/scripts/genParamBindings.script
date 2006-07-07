@@ -1,2 +1,4 @@
 echo "Generating TestResults/ParamBindings/test.c.out"
-./OATest -edg:w --oa-ParamBindings -c TestCases/ParamBindings/test.c > TestResults/ParamBindings/test.c.out
+./OATest -edg:w --oa-ParamBindings -c TestCases/ParamBindings/test.c >& TestResults/ParamBindings/test.c.out
+echo "Generating TestResults/ParamBindings/swap.c.out"
+./OATest -edg:w --oa-ParamBindings -c TestCases/ParamBindings/swap.c >& TestResults/ParamBindings/swap.c.out

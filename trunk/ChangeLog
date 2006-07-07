@@ -1620,4 +1620,8 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
      - commented out the TestCases/CallGraphTests/functionPtr.c test 
        in scripts/CallGraph.test as the CallGraph map is incorrect
 
+7/07/06 UseOA-Rose svn tag trunk r105 Michelle Strout
+	- Implemented isParam in Sage2OA.C as per Andy's suggested implementation.
+	- Set up some ParamBindings regression tests and put them in
+	  regressAll.
 
