@@ -1616,5 +1616,8 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
         ==> significant output changes in TestResults/CallGraph/*
         ==> spacing changes in outputs in TestResults/FIAliasAliasMap/*
 
+7/07/06 UseOA-Rose svn tag trunk r104 Barbara Kreaseck
+     - commented out the TestCases/CallGraphTests/functionPtr.c test 
+       in scripts/CallGraph.test as the CallGraph map is incorrect
 
 

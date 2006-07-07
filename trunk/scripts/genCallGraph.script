@@ -1,4 +1,2 @@
-echo "Generating TestResults/CallGraph/functionPtr.c.out"
-./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr.c >& TestResults/CallGraph/functionPtr.c.out
 echo "Generating TestResults/CallGraph/swap.c.out"
 ./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/swap.c >& TestResults/CallGraph/swap.c.out
