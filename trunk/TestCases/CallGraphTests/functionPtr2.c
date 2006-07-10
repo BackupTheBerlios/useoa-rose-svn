@@ -1,4 +1,4 @@
-/* functionPtr.c */
+/* functionPtr2.c */
 
   int read(); 
 
@@ -8,6 +8,7 @@
 
   void main() { 
     int x = read(); 
+    fp = zoo;
     if (x) { 
       fp = foo; 
     } else { 
@@ -16,5 +17,5 @@
     fp(); 
   } 
 
-//  int foo() {}
-//  int bar() {}
+  int foo() {}
+  int bar() {}

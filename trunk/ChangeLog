@@ -1625,3 +1625,6 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 	- Set up some ParamBindings regression tests and put them in
 	  regressAll.
 
+7/10/06 UseOA-Rose svn tag trunk r106 Barbara Kreaseck
+	- added some test cases for CallGraph
+

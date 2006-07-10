@@ -6,6 +6,9 @@ outputdir::TestResults/CallGraph
 driverexec::./OATest -edg:w --oa-CallGraph -c
 
 # list of tests
-#       input file,    status
-#test::  functionPtr.c, Checked By LMR 6/27/06 - Map Incorrect BK 7/7/06
-test::  swap.c,        Checked By PLM 07/05/06 - Map check BK 7/7/06
+#       input file,     status
+test::  swap.c,         Checked By PLM 07/05/06 - Map check BK 7/7/06
+#test::  functionPtr.c,  Checked By ??? 
+#test::  functionPtr2.c, Checked By ??? 
+#test::  functionPtr3.c, Checked By ??? 
+#test::  functionPtr4.c, Checked By ??? 
