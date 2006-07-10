@@ -1628,3 +1628,6 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 7/10/06 UseOA-Rose svn tag trunk r106 Barbara Kreaseck
 	- added some test cases for CallGraph
 
+7/10/06 UseOA-Rose svn tag trunk r107 Barbara Kreaseck
+	- added/editted some test cases for CallGraph
+
