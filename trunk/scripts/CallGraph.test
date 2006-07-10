@@ -7,8 +7,18 @@ driverexec::./OATest -edg:w --oa-CallGraph -c
 
 # list of tests
 #       input file,     status
-test::  swap.c,         Checked By PLM 07/05/06 - Map check BK 7/7/06
-#test::  functionPtr.c,  Checked By ??? 
-#test::  functionPtr2.c, Checked By ??? 
-#test::  functionPtr3.c, Checked By ??? 
-#test::  functionPtr4.c, Checked By ??? 
+test::  swap.c,         checked by BK 7/10/06
+test::  functionPtr.c,  checked by BK 7/10/06 
+test::  functionPtr1.c, checked by BK 7/10/06
+test::  functionPtr2.c, checked by BK 7/10/06
+test::  functionPtr3.c, checked by BK 7/10/06
+test::  functionPtr4.c, checked by BK 7/10/06
+test::  functions2.c,   checked by BK 7/10/06
+test::  functions3.c,   checked by BK 7/10/06
+test::  functions3.cpp, checked by BK 7/10/06
+test::  functions4.c,   checked by BK 7/10/06
+test::  functions5.c,   checked by BK 7/10/06
+test::  functions6.c,   checked by BK 7/10/06
+test::  activity_proc_call1.c,     checked by BK 7/10/06
+test::  interalias_proc_call1.c,   checked by BK 7/10/06
+test::  nested_calls_1.c,          checked by BK 7/10/06
