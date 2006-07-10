@@ -22,6 +22,14 @@ echo "Testing TestCases/CallGraphTests/functionPtr4.c, TestResults/CallGraph/fun
 ./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr4.c >& t
 diff t TestResults/CallGraph/functionPtr4.c.out
 
+echo "Testing TestCases/CallGraphTests/functionPtr5.c, TestResults/CallGraph/functionPtr5.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr5.c >& t
+diff t TestResults/CallGraph/functionPtr5.c.out
+
+echo "Testing TestCases/CallGraphTests/functionPtr6.c, TestResults/CallGraph/functionPtr6.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr6.c >& t
+diff t TestResults/CallGraph/functionPtr6.c.out
+
 echo "Testing TestCases/CallGraphTests/functions2.c, TestResults/CallGraph/functions2.c.out checked by BK 7/10/06"
 ./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions2.c >& t
 diff t TestResults/CallGraph/functions2.c.out
@@ -57,4 +65,12 @@ diff t TestResults/CallGraph/interalias_proc_call1.c.out
 echo "Testing TestCases/CallGraphTests/nested_calls_1.c, TestResults/CallGraph/nested_calls_1.c.out checked by BK 7/10/06"
 ./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/nested_calls_1.c >& t
 diff t TestResults/CallGraph/nested_calls_1.c.out
+
+echo "Testing TestCases/CallGraphTests/multi_func_calls.c, TestResults/CallGraph/multi_func_calls.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/multi_func_calls.c >& t
+diff t TestResults/CallGraph/multi_func_calls.c.out
+
+echo "Testing TestCases/CallGraphTests/multi_func_calls_2.c, TestResults/CallGraph/multi_func_calls_2.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/multi_func_calls_2.c >& t
+diff t TestResults/CallGraph/multi_func_calls_2.c.out
 
