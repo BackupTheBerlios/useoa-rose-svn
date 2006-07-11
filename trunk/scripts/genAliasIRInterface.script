@@ -12,3 +12,7 @@ echo "Generating TestResults/AliasIRInterface/invokeBaseCtor.C.out"
 ./CtoOA TestCases/AliasTests/invokeBaseCtor.C >& TestResults/AliasIRInterface/invokeBaseCtor.C.out
 echo "Generating TestResults/AliasIRInterface/localNonLocal.c.out"
 ./CtoOA TestCases/AliasTests/localNonLocal.c >& TestResults/AliasIRInterface/localNonLocal.c.out
+echo "Generating TestResults/AliasIRInterface/passArrayPtr.c.out"
+./CtoOA TestCases/AliasTests/passArrayPtr.c >& TestResults/AliasIRInterface/passArrayPtr.c.out
+echo "Generating TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out"
+./CtoOA TestCases/AliasTests/parambinds-formals-intPtrs.C >& TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out

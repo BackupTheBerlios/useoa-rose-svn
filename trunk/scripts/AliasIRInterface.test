@@ -23,4 +23,6 @@ test::  comma.c,                 checked by MMS 6/22/06
 #test::  funCall.c,              checked by ???
 test::  invokeBaseCtor.C,        checked by BSW 6/26/06
 test::  localNonLocal.c,         checked by BSW 6/28/06
+test::  passArrayPtr.c,          checked by BSW 7/11/06
+test::  parambinds-formals-intPtrs.C,   checked by BSW 7/11/06
 

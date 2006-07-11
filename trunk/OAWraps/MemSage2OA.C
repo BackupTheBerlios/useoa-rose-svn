@@ -2258,7 +2258,7 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
     handleImplicitPtrAssigns(astNode, memRefs, flags, synthesizedFlags);
   curMemRefExprs.splice(curMemRefExprs.end(), implicitMemRefExprs);
 #endif
-
+ 
   // Explicitly account for the possibility that an expression 
   // reaches here as actual from a parameter list.  We may need
   // to apply reference conversion if the corresponding formal
@@ -5025,6 +5025,58 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
       }
 
       ROSE_ASSERT(hasOneOrMoreChildMemRefExps == true);
+
+      break;
+    }
+
+  case V_SgStringVal:
+    {
+
+      // BW 7/7/06
+      // Added to handle bug reported by Michelle:
+      // the following statement:
+      //    char a[] = "testing";
+      // gets only one MEMREFEXPR:
+      //    MEMREFEXPRS = { StmtHandle("char a[] = "testing";") =>
+      //        [
+      //            MemRefHandle("a") =>
+      //                NamedRef( DEF, SymHandle("a"), F, full)
+      //        ] }
+      // There needs to be an UnnamedRef for the "testing" string and a PtrAssign
+      // otherwise the alias analysis will have *a and anything that aliases it access
+      // UnknownLoc.
+
+      SgStringVal *stringVal = isSgStringVal(astNode);
+      ROSE_ASSERT(stringVal != NULL);
+
+      // Get the memory reference type (DEF, USE, etc.) for 
+      // this node.
+      memRefType = flagsToMemRefType(flags);
+      
+      // Doesn't make sense for a string to be on the left-hand side.
+      ROSE_ASSERT(memRefType == OA::MemRefExpr::USE);      
+
+      // Set addressTaken and fullAccuracy like new/malloc.
+      // string value computes the address of a memory location,
+      // so consider it an addressOf operation.
+      addressTaken = true;
+
+      // This does _not_ accurately represent the memory 
+      // expression, as this would require the precise calling context.
+      fullAccuracy = false;
+
+      // Create an OpenAnalysis handle for this node.
+      stmtHandle = mIR->getNodeNumber(stringVal);
+
+      // Create an unnamed memory reference expression.
+      OA::OA_ptr<OA::MemRefExpr> memRefExp;
+      memRefExp = new OA::UnnamedRef(addressTaken, fullAccuracy,
+				     memRefType, stmtHandle);
+      ROSE_ASSERT(!memRefExp.ptrEqual(0));
+      
+      isMemRefExpr = true;
+      
+      curMemRefExprs.push_back(memRefExp);
 
       break;
     }

@@ -73,6 +73,7 @@ bool matchingMemberFunctions(SgMemberFunctionDeclaration *methodDecl1,
   // Compare the names of the two methods.
   SgName name1 = methodDecl1->get_name();
   SgName name2 = methodDecl2->get_name();
+  //  std::cout << name1 << " " << name2 << std::endl;
   if ( name1 != name2 )
     return false;
 
@@ -83,7 +84,7 @@ bool matchingMemberFunctions(SgMemberFunctionDeclaration *methodDecl1,
   std::string ret1Type, ret2Type;
   GetTypeInfo(method1Type, 0, &ret1Type);
   GetTypeInfo(method2Type, 0, &ret2Type);
-  if ( method1Type != method2Type )
+  if ( ret1Type != ret2Type )
     return false;
 
 
@@ -273,6 +274,31 @@ bool isVirtual(SgFunctionDeclaration *functionDeclaration)
   return firstNondefiningFuncDeclaration->get_functionModifier().isVirtual();
 }
 
+/** \brief  Returns true if method is a pure virtual method.
+ *  \param  functionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether method is a pure virtual
+ *            method.
+ */
+bool isPureVirtual(SgFunctionDeclaration *functionDeclaration)
+{
+  if ( functionDeclaration == NULL ) return false;
+
+  if ( functionDeclaration->get_functionModifier().isPureVirtual() ) 
+    return true;
+
+  SgDeclarationStatement *firstNondefiningDeclaration =
+    functionDeclaration->get_firstNondefiningDeclaration();
+
+  if ( firstNondefiningDeclaration == NULL )
+    return false;
+
+  SgFunctionDeclaration *firstNondefiningFuncDeclaration =
+    isSgFunctionDeclaration(firstNondefiningDeclaration);
+  ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
+
+  return firstNondefiningFuncDeclaration->get_functionModifier().isPureVirtual();
+}
+
 bool isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration, SgClassDefinition *classDefinition)
 {
   SgType *functionType =
@@ -290,8 +316,20 @@ bool isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclara
     SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
     ROSE_ASSERT(classDeclaration != NULL);
 
-    SgClassDefinition  *parentClassDefinition  = 
-      classDeclaration->get_definition(); 
+    SgDeclarationStatement *definingDecl =
+      classDeclaration->get_definingDeclaration();
+    if ( definingDecl == NULL )
+      continue;
+    
+    SgClassDeclaration *definingClassDeclaration =
+      isSgClassDeclaration(definingDecl);
+    ROSE_ASSERT(classDeclaration != NULL);
+
+    SgClassDefinition *parentClassDefinition =
+      definingClassDeclaration->get_definition();
+
+    if ( parentClassDefinition == NULL )
+      continue;
 
     // Visit all methods in the parent class.
     SgDeclarationStatementPtrList &members = 
@@ -381,7 +419,7 @@ methodOverridesVirtualMethod(SgMemberFunctionDeclaration *methodDecl,
   if ( !isVirtual(virtualMethodDecl) )
     return false;
 
-  std::cout << "looks virtual" << std::endl;
+  //  std::cout << "looks virtual" << std::endl;
 
 #if 0
   // Hmmm ... couldn't we just compare mangled names?
@@ -627,20 +665,27 @@ int main(int argc, char **argv)
     // We are only interested in examining method invocations.
     bool isDotExp = false;
     bool isLhsRefOrPtr = false;
+
+    //    std::cout << "method?: " << functionCallExp->unparseToCompleteString() << std::endl;
+
     if ( !isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr) )
       continue;
     
+    //    std::cout << "method: " << functionCallExp->unparseToCompleteString() << std::endl;
+
     numCallSites++;
-    // Certainly can be resolved to the static method.
-    numPossibleResolutions++;
 
     if ( isDotExp && !isLhsRefOrPtr ) {
       // If this is a dot expression (i.e., a.foo()), we can
       // statically determine its type-- unless the left-hand
       // side is a reference type.
       numMonomorphicCallSites++;
+      numPossibleResolutions++;
+      //      std::cout << "dot: " << functionCallExp->unparseToCompleteString() << std::endl;
       continue;
     }
+
+    //    std::cout << "methodPtr: " << functionCallExp->unparseToCompleteString() << std::endl;
 
     // Retrieve the static function declaration.
     SgFunctionDeclaration *functionDeclaration = 
@@ -651,11 +696,19 @@ int main(int argc, char **argv)
       isSgMemberFunctionDeclaration(functionDeclaration);
     ROSE_ASSERT(memberFunctionDeclaration != NULL);
 
-    unsigned int numOverridesForMethod = 0;
+    unsigned int numResolutionsForMethod = 0;
+
+    // Certainly can be resolved to the static method (unless it
+    // is pure virtual).
+    if ( !isPureVirtual(memberFunctionDeclaration) ) {
+      numResolutionsForMethod++;
+    }
 
     if ( ( isVirtual(functionDeclaration) ) ||
 	 ( isDeclaredVirtualWithinAncestor(functionDeclaration) ) ) {
       
+      //      std::cout << "tracking: " << functionDeclaration->unparseToString() << std::endl;
+
       SgClassDefinition *classDefinition = 
 	isSgClassDefinition(memberFunctionDeclaration->get_scope());
       ROSE_ASSERT(classDefinition != NULL);
@@ -694,26 +747,31 @@ int main(int argc, char **argv)
 	  if ( matchingMemberFunctions(method,
 				       memberFunctionDeclaration) ) {
 	    //	    std::cout << "overries" << std::endl;
-	    numOverridesForMethod++;
+	    // Do not consider a pure virtual method to be an 
+	    // overriding method (since it can not be invoked).
+	    if ( !isPureVirtual(method) ) {
+	      numResolutionsForMethod++;
+	    }
 	  }
 #else
 	  if ( methodOverridesVirtualMethod(method, 
 					    memberFunctionDeclaration) ) {
 	    //	    std::cout << "overries" << std::endl;
-	    numOverridesForMethod++;
+	    numResolutionsForMethod++;
 	  }
 #endif
 	}
 
       }
 
-      if ( numOverridesForMethod == 0 )
+      if ( numResolutionsForMethod <= 1 )
 	numMonomorphicCallSites++;
-      numPossibleResolutions += numOverridesForMethod;
+      numPossibleResolutions += numResolutionsForMethod;
 
-      std::cout << "Method invocation has " << numOverridesForMethod + 1 << " possible resolutions " << std::endl;
-      std::cout << functionCallExp->unparseToCompleteString() << std::endl;
-
+      if ( ( numResolutionsForMethod ) > 1 ) {
+	std::cout << "Method invocation has " << numResolutionsForMethod << " possible resolutions " << std::endl;
+	std::cout << functionCallExp->unparseToCompleteString() << std::endl;
+      }
     }
 
   }

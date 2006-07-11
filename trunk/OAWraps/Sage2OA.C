@@ -1679,35 +1679,37 @@ OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)
       ROSE_ASSERT(returnStmt != NULL);
 
       SgExpression *returnExpr = returnStmt->get_return_expr();
-      ROSE_ASSERT(returnExpr != NULL);
+      // Evidently, returnExpr is null for a void function.
+      if ( returnExpr != NULL ) {
+	
+	SgType *returnType = returnExpr->get_type();
+	ROSE_ASSERT(returnType != NULL);
 
-      SgType *returnType = returnExpr->get_type();
-      ROSE_ASSERT(returnType != NULL);
-
-      SgType *baseType = getBaseType(returnType);
-      ROSE_ASSERT(baseType != NULL);
-      if ( isSgPointerType(baseType) || isSgReferenceType(baseType) ) {
-	stmtType = OA::Alias::PTR_ASSIGN_STMT;
-      } else {
-	// For some reason the type of '(new B)' is SgClassType.
-	if ( isSgClassType(baseType) ) {
-	  SgFunctionDefinition *enclosingProc = 
-	    getEnclosingMethod(returnStmt);
-	  ROSE_ASSERT(enclosingProc != NULL);
-	  
-	  SgFunctionDeclaration *functionDeclaration =
-	    enclosingProc->get_declaration();
-	  ROSE_ASSERT(functionDeclaration != NULL);
-
-	  SgType *funcReturnType = functionDeclaration->get_orig_return_type();
-	  if ( funcReturnType != NULL ) {
-
-	    SgType *baseRetType = getBaseType(funcReturnType);
-	    ROSE_ASSERT(baseRetType != NULL);
-	    if ( isSgPointerType(baseRetType) || isSgReferenceType(baseRetType) ) {
-	      stmtType = OA::Alias::PTR_ASSIGN_STMT;
+	SgType *baseType = getBaseType(returnType);
+	ROSE_ASSERT(baseType != NULL);
+	if ( isSgPointerType(baseType) || isSgReferenceType(baseType) ) {
+	  stmtType = OA::Alias::PTR_ASSIGN_STMT;
+	} else {
+	  // For some reason the type of '(new B)' is SgClassType.
+	  if ( isSgClassType(baseType) ) {
+	    SgFunctionDefinition *enclosingProc = 
+	      getEnclosingMethod(returnStmt);
+	    ROSE_ASSERT(enclosingProc != NULL);
+	    
+	    SgFunctionDeclaration *functionDeclaration =
+	      enclosingProc->get_declaration();
+	    ROSE_ASSERT(functionDeclaration != NULL);
+	    
+	    SgType *funcReturnType = functionDeclaration->get_orig_return_type();
+	    if ( funcReturnType != NULL ) {
+	      
+	      SgType *baseRetType = getBaseType(funcReturnType);
+	      ROSE_ASSERT(baseRetType != NULL);
+	      if ( isSgPointerType(baseRetType) || isSgReferenceType(baseRetType) ) {
+		stmtType = OA::Alias::PTR_ASSIGN_STMT;
+	      }
+	      
 	    }
-
 	  }
 	}
       }
@@ -3870,6 +3872,7 @@ void SgParamBindPtrAssignIterator::create(OA::CallHandle call)
   OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIter = 
     mIR->getCallsiteParams(call);
 
+  actualsIter->reset();
   int paramNum = 0;
 
   if ( ( paramNum == 0 ) && ( isMethod ) ) {
@@ -3911,7 +3914,7 @@ void SgParamBindPtrAssignIterator::create(OA::CallHandle call)
 	= mIR->getMemRefExprIterator(actualMemRefHandle);
       
       // for each mem-ref-expr associated with this memref
-      for (; actualMreIterPtr->isValid(); (*actualMreIterPtr)++) {
+      for (actualMreIterPtr->reset(); actualMreIterPtr->isValid(); (*actualMreIterPtr)++) {
 	
 	OA::OA_ptr<OA::MemRefExpr> actualMre;
 	
@@ -3945,10 +3948,32 @@ void SgParamBindPtrAssignIterator::create(OA::CallHandle call)
     paramNum++;
 
   }
-    
+
   // Handle the implicit this parameter outside of the loop.
   // Note that the implicit actual is included in actualsIter,
   // though the formal is not represented in typePtrList.
+
+  // We model parameters passed to a vararg/... as a single formal
+  // parameter.  Thus:
+  // 
+  // void ellipsis_intptrs(int x, ...) 
+  // { 
+  // } 
+  //
+  // has only two formals:  x (0th formal) and ... (1st formal).
+  //
+  // Therefore, the param pairs for:
+  //
+  // ellipsis_intptrs(3, &x, &y, &z);
+  //
+  // are (just for the pointers):
+  // 
+  // < 1, NamedRef( USE, SymHandle("x"), T, full) >
+  // < 1, NamedRef( USE, SymHandle("y"), T, full) >
+  // < 1, NamedRef( USE, SymHandle("z"), T, full) >
+  //
+  // In particular, notice that the param num is 1 for each of these.
+  bool incrementParamNum = true;
 
   // Simultaneously iterate over both formals and actuals.
   // If the formal is a reference parameter (i.e., 
@@ -3975,12 +4000,21 @@ void SgParamBindPtrAssignIterator::create(OA::CallHandle call)
       SgExpression *actual = isSgExpression(actualNode);
       ROSE_ASSERT(actual != NULL);
       type = actual->get_type();
+      incrementParamNum = false;
     }
     ROSE_ASSERT(type != NULL);
     
-    if ( formalIt != typePtrList.end() ) {
-      type = *formalIt;
-    }
+    // BW 7/11/06  This should not be here!  We have already
+    // consulted the type of the formals above.  Including
+    // this conditional here would cause us to get the
+    // wrong type for the first vararg-- in that case, the
+    // formal is not NULL (it corresponds to ...), but
+    // its type is not a reference or a pointer.  We
+    // should have instead taken the type from the actual.
+    // This addresses part of bug #7964.
+    //    if ( formalIt != typePtrList.end() ) {
+    //      type = *formalIt;
+    //    }
     
     if ( isSgReferenceType(type) || isSgPointerType(type) ) {
       treatAsPointerParam = true;
@@ -4032,9 +4066,12 @@ void SgParamBindPtrAssignIterator::create(OA::CallHandle call)
 
     }
 
-    if (formalIt != typePtrList.end())
+    if (formalIt != typePtrList.end()) {
       ++formalIt;
-    paramNum++;
+    }
+    if ( incrementParamNum ) {
+      paramNum++;
+    }
 
   }
 
@@ -4650,7 +4687,8 @@ SageIRInterface::initializerHasPtrAssign(SgInitializedName *initName,
   // If the LHS is not a pointer or reference type, skip it.
   SgType *baseType = getBaseType(lhsType);
   ROSE_ASSERT(baseType != NULL);
-  if ( !isSgPointerType(baseType) && !isSgReferenceType(baseType) ) 
+  if ( !isSgPointerType(baseType) && !isSgReferenceType(baseType) &&
+       !isSgArrayType(baseType) ) 
     return false;
     
   SgNode *lhs = initName;

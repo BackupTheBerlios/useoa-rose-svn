@@ -1,0 +1,86 @@
+"TestCases/AliasTests/passArrayPtr.c", line 6: warning: missing return
+          statement at end of non-void function "strcmp"
+  }
+  ^
+
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
+
+PROCEDURE = { < ProcHandle("strcmp"), SymHandle("strcmp") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("s") >
+            < 1, SymHandle("t") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("int strcmp(char *s,char *t){if(((s[0])) ==((t[0]))) {}else {}}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{if(((s[0])) ==((t[0]))) {}else {}}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("if(((s[0])) ==((t[0]))) {}else {}") =>
+        [
+            MemRefHandle("s") => 
+                NamedRef( USE, SymHandle("s"), F, full)
+            MemRefHandle("t") => 
+                NamedRef( USE, SymHandle("t"), F, full)
+            MemRefHandle("(s[0])") => 
+                Deref( USE, NamedRef( USE, SymHandle("s"), F, full), 1, F, part)
+            MemRefHandle("(t[0])") => 
+                Deref( USE, NamedRef( USE, SymHandle("t"), F, full), 1, F, part)
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("s"), local > }
+    LOCATION = { < SymHandle("t"), local > }
+    LOCATION = { < SymHandle("strcmp"), not local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){char a[] = "testing";int x = strcmp(a,a);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{char a[] = "testing";int x = strcmp(a,a);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("char a[] = "testing";") =>
+        [
+            MemRefHandle("a") => 
+                NamedRef( DEF, SymHandle("a"), F, full)
+            MemRefHandle(""testing"") => 
+                UnnamedRef( USE, StmtHandle(""testing""), T, part)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("char a[] = "testing";") =>
+        [
+            < NamedRef( DEF, SymHandle("a"), F, full)
+            , UnnamedRef( USE, StmtHandle(""testing""), T, part) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("int x = strcmp(a,a);") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( DEF, SymHandle("x"), F, full)
+            MemRefHandle("a") => 
+                NamedRef( USE, SymHandle("a"), F, full)
+            MemRefHandle("a") => 
+                NamedRef( USE, SymHandle("a"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("int x = strcmp(a,a);") =>
+        [
+            CallHandle("strcmp(a,a)") => 
+                NamedRef( USE, SymHandle("strcmp"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("strcmp(a,a)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("a"), F, full) >
+            < 1, NamedRef( USE, SymHandle("a"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("strcmp"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }
