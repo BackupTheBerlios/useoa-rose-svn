@@ -1,0 +1,8 @@
+echo "Testing TestCases/ParamBindings/test.c, TestResults/ParamBindings/test.c.out checked by MMS 7/7/06"
+./OATest -edg:w --oa-ParamBindings -c TestCases/ParamBindings/test.c >& t
+diff t TestResults/ParamBindings/test.c.out
+
+echo "Testing TestCases/ParamBindings/swap.c, TestResults/ParamBindings/swap.c.out checked by MMS 7/7/06"
+./OATest -edg:w --oa-ParamBindings -c TestCases/ParamBindings/swap.c >& t
+diff t TestResults/ParamBindings/swap.c.out
+

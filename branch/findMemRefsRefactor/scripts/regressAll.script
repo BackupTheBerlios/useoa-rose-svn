@@ -1,0 +1,11 @@
+echo "########################### running regressFIAliasAliasMap.script"
+source scripts/regressFIAliasAliasMap.script
+
+echo "########################### running regressAliasIRInterface.script"
+source scripts/regressAliasIRInterface.script
+
+echo "########################### running regressCallGraph.script"
+source scripts/regressCallGraph.script
+
+echo "########################### running regressParamBindings.script"
+source scripts/regressParamBindings.script

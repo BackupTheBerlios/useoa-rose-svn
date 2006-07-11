@@ -1,0 +1,26 @@
+
+ParamBindings(
+    mCallerToCalleeMap: CallHandle	 => std::map<ProcHandle, std::map<MemRefHandle, SymHandle> > 
+            CallHandle(swap(a,i,(i + 1)))	 => 
+            second: ProcHandle	 => std::map<MemRefHandle, SymHandle> 
+                    ProcHandle(swap)	 => 
+                    second: MemRefHandle	 => SymHandle
+                            MemRefHandle(a)	 => SymHandle(v)
+                            MemRefHandle(i)	 => SymHandle(i)
+
+
+
+    mCalleeToCallerMap: CallHandle	 => std::map<SymHandle, MemRefHandle> 
+            CallHandle(swap(a,i,(i + 1)))	 => 
+            second: SymHandle	 => MemRefHandle
+                    SymHandle(v)	 => MemRefHandle(a)
+                    SymHandle(i)	 => MemRefHandle(i)
+
+
+    mProcToFormalSetMap: ProcHandle	 => OA_ptr<std::set<SymHandle> >
+            ProcHandle(swap)	 => [ SymHandle(v)    SymHandle(i)    SymHandle(j) ] 
+
+    mCallToActualSetMap: CallHandle	 => OA_ptr<std::set<MemRefHandle> >
+            CallHandle(swap(a,i,(i + 1)))	 => [ MemRefHandle(a)    MemRefHandle(i) ] 
+
+)

@@ -1,0 +1,28 @@
+echo "Testing TestCases/AliasTests/alias1.c, TestResults/AliasIRInterface/alias1.c.out checked by AIS 7/03/06 (rechecked for r93)"
+./CtoOA TestCases/AliasTests/alias1.c >& t
+diff t TestResults/AliasIRInterface/alias1.c.out
+
+echo "Testing TestCases/AliasTests/alias2.c, TestResults/AliasIRInterface/alias2.c.out checked by AIS 7/03/06 (rechecked for r93)"
+./CtoOA TestCases/AliasTests/alias2.c >& t
+diff t TestResults/AliasIRInterface/alias2.c.out
+
+echo "Testing TestCases/AliasTests/alias4.c, TestResults/AliasIRInterface/alias4.c.out checked by AIS 7/03/06 (rechecked for r93)"
+./CtoOA TestCases/AliasTests/alias4.c >& t
+diff t TestResults/AliasIRInterface/alias4.c.out
+
+echo "Testing TestCases/AliasTests/alias4b.c, TestResults/AliasIRInterface/alias4b.c.out checked by AIS 7/03/06 (rechecked for r93)"
+./CtoOA TestCases/AliasTests/alias4b.c >& t
+diff t TestResults/AliasIRInterface/alias4b.c.out
+
+echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c.out checked by MMS 6/22/06"
+./CtoOA TestCases/AliasTests/comma.c >& t
+diff t TestResults/AliasIRInterface/comma.c.out
+
+echo "Testing TestCases/AliasTests/invokeBaseCtor.C, TestResults/AliasIRInterface/invokeBaseCtor.C.out checked by BSW 6/26/06"
+./CtoOA TestCases/AliasTests/invokeBaseCtor.C >& t
+diff t TestResults/AliasIRInterface/invokeBaseCtor.C.out
+
+echo "Testing TestCases/AliasTests/localNonLocal.c, TestResults/AliasIRInterface/localNonLocal.c.out checked by BSW 6/28/06"
+./CtoOA TestCases/AliasTests/localNonLocal.c >& t
+diff t TestResults/AliasIRInterface/localNonLocal.c.out
+

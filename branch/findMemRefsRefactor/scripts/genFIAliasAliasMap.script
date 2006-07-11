@@ -1,0 +1,22 @@
+echo "Generating TestResults/FIAliasAliasMap/alias1.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias1.c >& TestResults/FIAliasAliasMap/alias1.c.out
+echo "Generating TestResults/FIAliasAliasMap/alias2.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias2.c >& TestResults/FIAliasAliasMap/alias2.c.out
+echo "Generating TestResults/FIAliasAliasMap/alias3.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias3.c >& TestResults/FIAliasAliasMap/alias3.c.out
+echo "Generating TestResults/FIAliasAliasMap/alias4.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias4.c >& TestResults/FIAliasAliasMap/alias4.c.out
+echo "Generating TestResults/FIAliasAliasMap/alias4b.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias4b.c >& TestResults/FIAliasAliasMap/alias4b.c.out
+echo "Generating TestResults/FIAliasAliasMap/comma.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/comma.c >& TestResults/FIAliasAliasMap/comma.c.out
+echo "Generating TestResults/FIAliasAliasMap/constQualified.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/constQualified.c >& TestResults/FIAliasAliasMap/constQualified.c.out
+echo "Generating TestResults/FIAliasAliasMap/utke.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/utke.c >& TestResults/FIAliasAliasMap/utke.c.out
+echo "Generating TestResults/FIAliasAliasMap/OAWikiEx.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/OAWikiEx.c >& TestResults/FIAliasAliasMap/OAWikiEx.c.out
+echo "Generating TestResults/FIAliasAliasMap/functionPtr.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr.c >& TestResults/FIAliasAliasMap/functionPtr.c.out
+echo "Generating TestResults/FIAliasAliasMap/functionPtr2.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr2.c >& TestResults/FIAliasAliasMap/functionPtr2.c.out

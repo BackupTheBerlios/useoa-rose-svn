@@ -1,0 +1,111 @@
+================================================================================
+UseOA-ROSE Readme:
+================================================================================
+
+Building UseOA-ROSE:
+--------------------
+
+    Works with OpenAnalysis trunk, svn revision 116, and rose-0.8.7a.
+
+    Everything was compiled with g++3.3.3
+
+    To build:
+    - edit Makefile.inc, set variables as needed
+    - type make 
+
+    Variables you'll likely have to edit in Makefile.inc
+    - GLOBAL_DEFINES
+    - PROFILE_OPTIONS 
+    - topsrcdir
+    - ROSE_INST_ROOT
+    - OPENANALYSIS_DIR
+    - OPENANALYSIS_ARCH
+
+
+Regression testing system:
+--------------------------
+
+    What is a regression test?  According to Wikipedia [1]:
+
+    "Regression testing is any type of software testing which seeks to uncover
+    regression bugs. Regression bugs occur whenever software functionality that
+    previously worked as desired stops working or no longer works in the same
+    way that was previously planned. Typically regression bugs occur as an
+    unintended consequence of program changes."
+
+    UseOA-ROSE includes scripts that run regression tests on OpenAnalysis to
+    verify its analysis managers, IR interfaces, and interface implementations
+    (specifically the implementation for ROSE).
+
+
+    To run all tests:
+        - source scripts/regressAll.script.
+
+    To run a specific regression test script:
+        - source scripts/regress<NameOrTest>.script
+
+    To add a new test case to an existing test script:
+        All regression tests have a .test file that specifies what files the
+        regression test works on.  This script is processed by a python script
+        (createRegScripts.py) that creates two addition scripts:  the
+        regress<NameOfTest> script and the gen<NameOfTest> script.  To add a
+        new test case one need only add the case to the .test file and
+        reprocess the file with createRegScripts.py:
+
+        - edit scripts/<NameOfTest>.test
+        - append to file "test:: <name of input file>, checked by ???
+            - the three question marks specify that the test hasn't been
+              verified yet.
+        - cd scripts
+        - ./genScripts.py <NameOfTest>.test
+            - regress<NameOfTest>.script and gen<NameOftest>.script should now
+              have been generated.
+        - generate the test output by running the gen script (cd..; source
+          scripts/gen<NameOfTest>.script)
+        - look at the output files generated in TestResults/ for the test case
+          added.  Manually verify that this is the correct output.  If you get
+          correct output:
+            - edit the .test file and replace '???' with your initials for the
+              correct test case.
+            - ./genScripts.py <NameOfTest>.test
+            - add the output for the newly verified test case to the subversion
+              repository
+
+    To create a completly new test script:
+        - cd scripts
+        - cp template.test <NameOfTest>.test
+        - edit <NameOfTest>.test and fill in blanks
+        - add test cases to the script as described by the above section "To
+          add a new test case to an existing test script".
+
+    
+    For additional information about the regression testing system consult the
+    documentation on the OpenAnalysis website and the comments in
+    scripts/createRegScripts.py.
+
+
+How to run a benchmark:
+-----------------------
+    - If you want profile information from OpenAnalysis, which most likely
+      you do:
+        - change directories to your openanalysis directory
+        - export CXX_FLAGS="-O0 -g -pg"
+        - make -f Makefile.quick configure
+        - make -f Makefile.quick install
+    - Next recompile UseOA-ROSE for profiling
+        - Edit the config/Makefile.inc file so that PROFILE_OPTIONS is set to
+          "-pg -g -O0"
+        - make clean
+        - make
+    - Run your benchmarks
+        - ./OABenmark.py [filesFile] [algorithm]
+            - Ex. ./OABenchmark small.files --oa-FIAliasAliasMap
+        - Now wait for a looooong time
+        - Look at the produced .profile files.
+
+References:
+-----------
+
+    [1] "Regression Testing." Wikipedia. 19 June 2006
+        <http://en.wikipedia.org/wiki/Regression_test>.
+
