@@ -1,0 +1,79 @@
+
+graph ICFG:
+
+subgraph cluster_main_0 {
+    label="main_0"
+    Node 1: 
+        ==  ICFG ENTRY_NODE 1 == (entry)
+
+
+    Node 2: 
+        ==  ICFG CFLOW_NODE 2 ==
+int x = read();
+if(x) {fp = foo;}else {fp = bar;}
+
+
+    Node 3: 
+        ==  ICFG CFLOW_NODE 3 ==
+fp = foo;
+
+
+
+    Node 4: 
+        ==  ICFG CFLOW_NODE 4 ==
+fp = bar;
+
+
+
+    Node 5: 
+        ==  ICFG CFLOW_NODE 5 ==
+( *fp)();
+
+
+
+    Node 6: 
+        ==  ICFG EXIT_NODE 6 == (exit)
+
+
+    Edge: 1 => 2
+        
+
+    Edge: 2 => 3
+        
+
+    Edge: 2 => 4
+        
+
+    Edge: 3 => 5
+        
+
+    Edge: 4 => 5
+        
+
+    Edge: 5 => 6
+        
+
+}
+
+
+digraph ICFG {
+    node [shape=rectangle];
+subgraph cluster_main_0 {
+    label="main_0"
+    1 [ label="==  ICFG ENTRY_NODE 1 == (entry)\n" ];
+    2 [ label="==  ICFG CFLOW_NODE 2 ==\nint x = read();\nif(x) {fp = foo;}else {fp = bar;}\n" ];
+    3 [ label="==  ICFG CFLOW_NODE 3 ==\nfp = foo;\n\n" ];
+    4 [ label="==  ICFG CFLOW_NODE 4 ==\nfp = bar;\n\n" ];
+    5 [ label="==  ICFG CFLOW_NODE 5 ==\n( *fp)();\n\n" ];
+    6 [ label="==  ICFG EXIT_NODE 6 == (exit)\n" ];
+    1 -> 2 [ label="" ];
+    2 -> 3 [ label="" ];
+    2 -> 4 [ label="" ];
+    3 -> 5 [ label="" ];
+    4 -> 5 [ label="" ];
+    5 -> 6 [ label="" ];
+}
+}
+
+*******  end of DoICFG *********
+

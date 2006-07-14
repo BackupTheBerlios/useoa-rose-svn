@@ -25,6 +25,10 @@
 # Any lines in file.test starting with a pound sign will be 
 # ignored as comments.
 #
+# There is one comma after the input file name which is used
+# to separate the file name from the status.  Avoid using
+# a comma within the status.
+#
 ##### Example file
 #
 #   # comment in file.test
@@ -36,8 +40,8 @@
 #   
 #   # list of tests
 #   #       input file    status
-#   test::  arrays1.B     error
-#   test::  arrays5.B     checked by MMS
+#   test::  arrays1.B,    error
+#   test::  arrays5.B,    checked by MMS
 #   
 #################################################################
 import sys

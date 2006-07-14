@@ -11,12 +11,13 @@
   {  0 , "oa-Alias",          CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-AliasMap",       CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-CallGraph",      CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
+  {  0 , "oa-ICFG",           CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-ReachDefs",      CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-UDDUChains",     CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-UDDUChainsXAIF", CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-MPICFG",         CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
-  {  0 , "oa-ReachConsts",      CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
-  {  0 , "oa-AliasMapXAIF",       CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },  */
+  {  0 , "oa-ReachConsts",    CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
+  {  0 , "oa-AliasMapXAIF",   CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },  */
   
 
 #ifdef HAVE_CONFIG_H
@@ -27,16 +28,18 @@
 #include "Sage2OA.h"
 #include "SageOACallGraph.h"
 #include "MemSage2OA.h"
-#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
-#include <OpenAnalysis/ReachDefs/ManagerReachDefsStandard.hpp>
 #include <OpenAnalysis/Alias/ManagerAliasMapBasic.hpp>
 #include <OpenAnalysis/Alias/ManagerFIAliasEquivSets.hpp>
 #include <OpenAnalysis/Alias/ManagerFIAliasAliasMap.hpp>
-#include <OpenAnalysis/CFG/ManagerCFGStandard.hpp>
 #include <OpenAnalysis/CallGraph/ManagerCallGraphStandard.hpp>
+#include <OpenAnalysis/CFG/ManagerCFGStandard.hpp>
+#include <OpenAnalysis/CFG/EachCFGStandard.hpp>
 #include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
+#include <OpenAnalysis/ICFG/ManagerICFGStandard.hpp>
 #include <OpenAnalysis/MemRefExpr/MemRefExpr.hpp>
+#include <OpenAnalysis/ReachDefs/ManagerReachDefsStandard.hpp>
 #include <OpenAnalysis/SideEffect/InterSideEffectStandard.hpp>
+#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
 #include <OpenAnalysis/Utils/Util.hpp>
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
@@ -70,6 +73,7 @@ int DoAlias(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, b
 int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoCallGraph(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
+int DoICFG(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle);
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
@@ -95,6 +99,7 @@ void usage(char **argv)
   cerr << "          --oa-FIAliasAliasMap" << endl;
   cerr << "          --oa-AliasMap" << endl;
   cerr << "          --oa-CallGraph" << endl;
+  cerr << "          --oa-ICFG" << endl;
   cerr << "          --oa-ParamBindings" << endl;
   cerr << "          --oa-ReachDefs" << endl;
   cerr << "          --oa-UDDUChains" << endl;
@@ -259,6 +264,11 @@ main ( unsigned argc,  char * argv[] )
     else if( cmds->HasOption("--oa-CallGraph") )
     {
        DoCallGraph(sageProject, &nodeArray, p_h);
+      return 1;
+    }
+    else if( cmds->HasOption("--oa-ICFG") )
+    {
+       DoICFG(sageProject, &nodeArray, p_h);
       return 1;
     }
     else if( cmds->HasOption("--oa-ParamBindings") )
@@ -490,6 +500,62 @@ int DoCallGraph(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 
 }
 
+int DoICFG(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
+{
+  int returnvalue=FALSE;
+  if ( debug ) 
+    printf("*******start of DoCallGraph\n");
+  OA::OA_ptr<SageIRInterface> irInterface;
+  irInterface = new SageIRInterface(sgproject, na, p_handle);
+  //irInterface->createNodeArray(sgproject); //what about global vars?
+  
+  // eachCFG 
+  OA::OA_ptr<OA::CFG::EachCFGInterface> eachCFG;
+  OA::OA_ptr<OA::CFG::ManagerStandard> cfgman;
+  cfgman = new OA::CFG::ManagerStandard(irInterface);
+  eachCFG = new OA::CFG::EachCFGStandard(cfgman);
+
+  //FIAlias
+  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  bool excludeInputFiles = true;
+  // Don't pull in any procedures defined in input files.  For testing
+  // purposes only:  avoids unexpected/spurious results due to 
+  // stdlib.h, etc.
+  procIter = new SageIRProcIterator(sgproject, 
+                                    irInterface, excludeInputFiles);
+  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+  interAlias = fialiasman->performAnalysis(procIter);
+  
+  // create CallGraph Manager and then Call Graph
+  OA::OA_ptr<OA::CallGraph::ManagerStandard> callgraphmanstd;
+  callgraphmanstd= new OA::CallGraph::ManagerStandard(irInterface);
+  //    OA::OA_ptr<SageIRProcIterator> procIter;
+  //    procIter = new SageIRProcIterator(sgproject, irInterface);
+  
+  OA::OA_ptr<OA::CallGraph::CallGraphStandard> callgraph;
+  callgraph = callgraphmanstd->performAnalysis(procIter,interAlias);
+  
+  // create ICFG Manager and then ICFG
+    OA::OA_ptr<OA::ICFG::ICFGStandard> icfg;
+    icfg = new OA::ICFG::ICFGStandard();
+    OA::OA_ptr<OA::ICFG::ManagerICFGStandard> icfgman;
+    icfgman = new OA::ICFG::ManagerICFGStandard(irInterface);
+    icfg = icfgman->performAnalysis(procIter,eachCFG,callgraph);
+  
+  // output ICFG 
+  icfg->output(*irInterface);
+  // dot output
+  OA::OA_ptr<OA::OutputBuilder> outBuild;
+  outBuild = new OA::OutputBuilderDOT;
+  icfg->configOutput(outBuild);
+  icfg->output(*irInterface);
+  
+	std::cout << "\n*******  end of DoICFG *********\n\n";
+	return returnvalue;
+
+}
 
 
 int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
@@ -503,7 +569,6 @@ int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handl
   OA::OA_ptr<SageIRInterface> irInterface;
   irInterface = new SageIRInterface(sgproject, na, p_handle);
   
-
   //FIAlias
   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);

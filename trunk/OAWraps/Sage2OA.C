@@ -1,7 +1,6 @@
-
 #include "SageOACallGraph.h"
 #include "MemSage2OA.h"
- 
+
 using namespace std;
 
 //########################################################
@@ -23,7 +22,7 @@ SageIRInterface::SageIRInterface(SgNode *root,
     ROSE_ASSERT(nodeArrayPtr != NULL); 
     createNodeArray(root);
   } 
-
+  
   // Initialize the list of function declarations in the program.
   // We want declarations with an associated SgFunctionDefinition,
   // therefore lookup the definitions and find its declaration.

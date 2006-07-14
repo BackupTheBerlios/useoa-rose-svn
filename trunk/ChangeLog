@@ -1795,3 +1795,9 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       which is a subset of parambinds-formals.C.
     - added parambinds-formals-intPtrs.C to test above bug fix.
     - Passes regressAll using ROSE-0.8.7a and OpenAnalysis revision 139.
+
+7/14/06     UseOA-Rose svn trunk r112    Barbara Kreaseck
+    - added regression tests for ICFG, added to regressAll
+    - added functionality for --oa-ICFG test in OATest.C and OAWraps/
+    - passes regressAll with rose-0.8.7a/compile-gcc-3.2 and OpenAnalysis r141 
+

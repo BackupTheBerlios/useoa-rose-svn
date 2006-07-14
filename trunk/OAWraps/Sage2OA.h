@@ -14,6 +14,7 @@
 #include <OpenAnalysis/IRInterface/CFGIRInterfaceDefault.hpp>
 #include <OpenAnalysis/IRInterface/SSAIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/CallGraphIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/ICFGIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/AliasIRInterfaceDefault.hpp>
 #include <OpenAnalysis/IRInterface/ReachDefsIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/UDDUChainsIRInterface.hpp>
@@ -330,6 +331,7 @@ class SgPtrAssignPairStmtIterator
 // this worked (as did alias commented out)
 class SageIRInterface : public OA::SSA::SSAIRInterface,
                         public OA::CFG::CFGIRInterfaceDefault,  
+			public virtual OA::ICFG::ICFGIRInterface,
 			public virtual OA::CallGraph::CallGraphIRInterface,
                         // public OA::CallGraph::CallGraphIRInterface,
                         public OA::Alias::AliasIRInterfaceDefault,
@@ -343,6 +345,7 @@ class SageIRInterface : public OA::SSA::SSAIRInterface,
 
 class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
                         public virtual OA::CFG::CFGIRInterfaceDefault,  
+			public virtual OA::ICFG::ICFGIRInterface,
 			public virtual OA::CallGraph::CallGraphIRInterface,
                         public virtual OA::Alias::AliasIRInterfaceDefault,
                         public virtual OA::ReachDefs::ReachDefsIRInterface,
