@@ -80,6 +80,7 @@ void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
 void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
 int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int Foo(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> *na, bool p_handle);
 
 void prettyPrintMemRefExp(OA::OA_ptr<OA::MemRefExpr> memRefExp, 
 			  SageIRInterface *ir,
@@ -107,6 +108,7 @@ void usage(char **argv)
   cerr << "          --oa-MPICFG" << endl;
   cerr << "          --oa-ReachConsts" << endl;
   cerr << "          --oa-AliasMapXAIF" << endl;
+  cerr << "          --oa-SideEffect" << endl;
   exit(-1);
 }
 
@@ -275,6 +277,12 @@ main ( unsigned argc,  char * argv[] )
     {
       DoParamBinding(sageProject, &nodeArray, p_h);
        return 1;
+    }
+    else if( cmds->HasOption("--oa-SideEffect") )
+    {
+      DoSideEffect(sageProject, &nodeArray, p_h);
+      return 1;
+		   
     }
     else if( cmds->HasOption("--oa-ReachDefs") )
     {
@@ -558,7 +566,7 @@ int DoICFG(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 }
 
 
-int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
+int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 {
 
   int returnvalue=FALSE;
@@ -589,11 +597,63 @@ int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handl
   OA::OA_ptr<OA::DataFlow::ParamBindings> parambind;
   parambind = pbman->performAnalysis(callgraph);
   //  parambind->dump(std::cout, irInterface);
-  parambind->output(*irInterface);
 
+
+  // Intra Side-Effect
+  OA::OA_ptr<OA::SideEffect::ManagerStandard> sideeffectman;
+  sideeffectman = new OA::SideEffect::ManagerStandard(irInterface);  
+
+  // InterSideEffect
+  OA::OA_ptr<OA::SideEffect::ManagerInterSideEffectStandard> interSEman;
+  interSEman = new OA::SideEffect::ManagerInterSideEffectStandard(irInterface);
+
+  OA::OA_ptr<OA::SideEffect::InterSideEffectStandard> interSE;
+  interSE = interSEman->performAnalysis(callgraph, parambind, interAlias, sideeffectman);  
+
+ // interSE->output(*irInterface); 
+  
   return returnvalue;
 
 }
+
+
+int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
+{
+
+	  int returnvalue=FALSE;
+	 if ( debug )
+        {
+	      printf("*******start of ParamBinding \n");
+         }
+      OA::OA_ptr<SageIRInterface> irInterface;
+      irInterface = new SageIRInterface(sgproject, na, p_handle);
+   
+      //FIAlias
+        OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+        fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+        OA::OA_ptr<SageIRProcIterator> procIter;
+        bool excludeInputFiles = true;
+        procIter = new SageIRProcIterator(sgproject,irInterface, excludeInputFiles);
+        OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+        interAlias = fialiasman->performAnalysis(procIter);
+		  
+		  
+        OA::OA_ptr<OA::CallGraph::ManagerStandard> callgraphmanstd;
+        callgraphmanstd= new OA::CallGraph::ManagerStandard(irInterface);
+        OA::OA_ptr<OA::CallGraph::CallGraphStandard> callgraph
+	                          = callgraphmanstd->performAnalysis(procIter,interAlias);
+		  
+        OA::OA_ptr<OA::DataFlow::ManagerParamBindings> pbman;
+        pbman = new OA::DataFlow::ManagerParamBindings(irInterface);
+        OA::OA_ptr<OA::DataFlow::ParamBindings> parambind;
+        parambind = pbman->performAnalysis(callgraph);
+        parambind->output(*irInterface);
+
+	
+        return returnvalue;
+ }
+		                                        
+
 
 
 

@@ -1,0 +1,4 @@
+echo "Testing TestCases/SideEffect/test.c, TestResults/SideEffect/test.c.out "
+./OATest -edg:w --oa-SideEffect -c TestCases/SideEffect/test.c >& t
+diff t TestResults/SideEffect/test.c.out
+
