@@ -17,7 +17,7 @@ test::  functionPtr5.c, checked by BK 7/10/06
 test::  functionPtr6.c, checked by BK 7/10/06
 test::  functions2.c,   checked by BK 7/10/06
 test::  functions3.c,   checked by BK 7/10/06
-test::  functions3.cpp, checked by BK 7/10/06
+#test::  functions3.cpp, checked by BK 7/10/06 on Okapi, Rose + GCC 3.2
 test::  functions4.c,   checked by BK 7/10/06
 test::  functions5.c,   checked by BK 7/10/06
 test::  functions6.c,   checked by BK 7/10/06

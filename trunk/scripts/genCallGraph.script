@@ -18,8 +18,6 @@ echo "Generating TestResults/CallGraph/functions2.c.out"
 ./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions2.c >& TestResults/CallGraph/functions2.c.out
 echo "Generating TestResults/CallGraph/functions3.c.out"
 ./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions3.c >& TestResults/CallGraph/functions3.c.out
-echo "Generating TestResults/CallGraph/functions3.cpp.out"
-./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions3.cpp >& TestResults/CallGraph/functions3.cpp.out
 echo "Generating TestResults/CallGraph/functions4.c.out"
 ./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions4.c >& TestResults/CallGraph/functions4.c.out
 echo "Generating TestResults/CallGraph/functions5.c.out"

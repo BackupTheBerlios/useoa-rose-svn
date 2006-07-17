@@ -9,3 +9,7 @@ source scripts/regressCallGraph.script
 
 echo "########################### running regressParamBindings.script"
 source scripts/regressParamBindings.script
+
+echo "########################### running regressICFG.script"
+source scripts/regressICFG.script
+

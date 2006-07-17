@@ -1805,5 +1805,14 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - added regression tests for SideEffect, not yet added in regressAll.
         - added functionality for --oa-SideEffect test in OATest.C and OAWraps/
 	    - passes regressAll with rose-0.8.7a/compile-gcc-3.2 and
-	    OpenAnalysis. 
-	    
+	    OpenAnalysis.
+
+7/17/06     UseOA-Rose svn trunk r116    Barbara Kreaseck
+    - re-gen'd ICFG regression output to work with OpenAnalysis trunk r147
+    - removed TestCases/CallGraph/functions3.cpp from regressCallGraph.script
+         because include files are handled differently depending upon which
+         ROSE compilation you are working on.
+    - added ICFGTest to regressAll
+    - passes regressAll with OpenAnalysis trunk r147 
+        compiled on Okapi with gcc-3.2 and rose-0.8.7a/compile-gcc-3.2
+

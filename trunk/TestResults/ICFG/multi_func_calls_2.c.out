@@ -1,335 +1,327 @@
 
 graph ICFG:
 
-subgraph cluster_main_0 {
-    label="main_0"
-    Node 1: 
-        ==  ICFG ENTRY_NODE 1 == (entry)
+    subgraph main_0:
+
+        Node 1: 
+            ==  ICFG ENTRY_NODE 1 == (entry)
 
 
-    Node 2: 
-        ==  ICFG CFLOW_NODE 2 ==
+        Node 2: 
+            ==  ICFG CFLOW_NODE 2 ==
 int x = read();
 
 
-    Node 3: 
-        ==  ICFG CALL_NODE 3 ==
+        Node 3: 
+            ==  ICFG CALL_NODE 3 ==
 x = foo(bar(x),zoo(x));
 
 
-    Node 4: 
-        ==  ICFG RETURN_NODE 4 ==
+        Node 4: 
+            ==  ICFG RETURN_NODE 4 ==
 
 
-    Node 11: 
-        ==  ICFG CFLOW_NODE 11 ==
+        Node 11: 
+            ==  ICFG CFLOW_NODE 11 ==
 return 0;
 
 
-    Node 12: 
-        ==  ICFG CFLOW_NODE 12 == (entry)
+        Node 12: 
+            ==  ICFG CFLOW_NODE 12 == (entry)
 
 
 
-    Node 13: 
-        ==  ICFG EXIT_NODE 13 == (exit)
+        Node 13: 
+            ==  ICFG EXIT_NODE 13 == (exit)
 
 
-    Edge: 2 => 3
-        
+        Edge: 2 => 3
+            
 
-    Edge: 3 => 4
-        
+        Edge: 3 => 4
+            
 
-    Edge: 4 => 11
-        
+        Edge: 4 => 11
+            
 
-    Edge: 1 => 2
-        
+        Edge: 1 => 2
+            
 
-    Edge: 11 => 13
-        
+        Edge: 11 => 13
+            
 
-    Edge: 12 => 13
-        
-
-}
-
-subgraph cluster_foo_1 {
-    label="foo_1"
-    Node 5: 
-        ==  ICFG ENTRY_NODE 5 ==
+        Edge: 12 => 13
+            
 
 
-    Node 6: 
-        ==  ICFG EXIT_NODE 6 ==
+    subgraph foo_1:
+
+        Node 5: 
+            ==  ICFG ENTRY_NODE 5 ==
 
 
-    Node 14: 
-        ==  ICFG CFLOW_NODE 14 ==
+        Node 6: 
+            ==  ICFG EXIT_NODE 6 ==
+
+
+        Node 14: 
+            ==  ICFG CFLOW_NODE 14 ==
 int res;
 if(a > 0) {res =(1 + d);}else {res =(5 + d);}
 
 
-    Node 15: 
-        ==  ICFG CFLOW_NODE 15 ==
+        Node 15: 
+            ==  ICFG CFLOW_NODE 15 ==
 res =(1 + d);
 
 
 
-    Node 16: 
-        ==  ICFG CFLOW_NODE 16 ==
+        Node 16: 
+            ==  ICFG CFLOW_NODE 16 ==
 res =(5 + d);
 
 
 
-    Node 17: 
-        ==  ICFG CFLOW_NODE 17 ==
+        Node 17: 
+            ==  ICFG CFLOW_NODE 17 ==
 return res;
 
 
-    Node 18: 
-        ==  ICFG CFLOW_NODE 18 == (entry)
+        Node 18: 
+            ==  ICFG CFLOW_NODE 18 == (entry)
 
 
 
-    Edge: 17 => 6
-        
+        Edge: 17 => 6
+            
 
-    Edge: 18 => 6
-        
+        Edge: 18 => 6
+            
 
-    Edge: 5 => 14
-        
+        Edge: 5 => 14
+            
 
-    Edge: 14 => 15
-        
+        Edge: 14 => 15
+            
 
-    Edge: 14 => 16
-        
+        Edge: 14 => 16
+            
 
-    Edge: 15 => 17
-        
+        Edge: 15 => 17
+            
 
-    Edge: 16 => 17
-        
-
-}
-
-subgraph cluster_bar_2 {
-    label="bar_2"
-    Node 7: 
-        ==  ICFG ENTRY_NODE 7 ==
+        Edge: 16 => 17
+            
 
 
-    Node 8: 
-        ==  ICFG EXIT_NODE 8 ==
+    subgraph bar_2:
+
+        Node 7: 
+            ==  ICFG ENTRY_NODE 7 ==
 
 
-    Node 19: 
-        ==  ICFG CFLOW_NODE 19 ==
+        Node 8: 
+            ==  ICFG EXIT_NODE 8 ==
+
+
+        Node 19: 
+            ==  ICFG CFLOW_NODE 19 ==
 int res;
 if(b > 180) {res =((int )((5) * cos((b))));}else {res = 0;}
 
 
-    Node 20: 
-        ==  ICFG CFLOW_NODE 20 ==
+        Node 20: 
+            ==  ICFG CFLOW_NODE 20 ==
 res =((int )((5) * cos((b))));
 
 
 
-    Node 21: 
-        ==  ICFG CFLOW_NODE 21 ==
+        Node 21: 
+            ==  ICFG CFLOW_NODE 21 ==
 res = 0;
 
 
 
-    Node 22: 
-        ==  ICFG CFLOW_NODE 22 ==
+        Node 22: 
+            ==  ICFG CFLOW_NODE 22 ==
 return res;
 
 
-    Node 23: 
-        ==  ICFG CFLOW_NODE 23 == (entry)
+        Node 23: 
+            ==  ICFG CFLOW_NODE 23 == (entry)
 
 
 
-    Edge: 22 => 8
-        
+        Edge: 22 => 8
+            
 
-    Edge: 23 => 8
-        
+        Edge: 23 => 8
+            
 
-    Edge: 7 => 19
-        
+        Edge: 7 => 19
+            
 
-    Edge: 19 => 20
-        
+        Edge: 19 => 20
+            
 
-    Edge: 19 => 21
-        
+        Edge: 19 => 21
+            
 
-    Edge: 20 => 22
-        
+        Edge: 20 => 22
+            
 
-    Edge: 21 => 22
-        
-
-}
-
-subgraph cluster_zoo_3 {
-    label="zoo_3"
-    Node 9: 
-        ==  ICFG ENTRY_NODE 9 ==
+        Edge: 21 => 22
+            
 
 
-    Node 10: 
-        ==  ICFG EXIT_NODE 10 ==
+    subgraph zoo_3:
+
+        Node 9: 
+            ==  ICFG ENTRY_NODE 9 ==
 
 
-    Node 24: 
-        ==  ICFG CFLOW_NODE 24 ==
+        Node 10: 
+            ==  ICFG EXIT_NODE 10 ==
+
+
+        Node 24: 
+            ==  ICFG CFLOW_NODE 24 ==
 int res;
 if(c < 10) {res = 3;}else {res = 5;}
 
 
-    Node 25: 
-        ==  ICFG CFLOW_NODE 25 ==
+        Node 25: 
+            ==  ICFG CFLOW_NODE 25 ==
 res = 3;
 
 
 
-    Node 26: 
-        ==  ICFG CFLOW_NODE 26 ==
+        Node 26: 
+            ==  ICFG CFLOW_NODE 26 ==
 res = 5;
 
 
 
-    Node 27: 
-        ==  ICFG CFLOW_NODE 27 ==
+        Node 27: 
+            ==  ICFG CFLOW_NODE 27 ==
 return res;
 
 
-    Node 28: 
-        ==  ICFG CFLOW_NODE 28 == (entry)
+        Node 28: 
+            ==  ICFG CFLOW_NODE 28 == (entry)
 
 
 
-    Edge: 27 => 10
-        
+        Edge: 27 => 10
+            
 
-    Edge: 28 => 10
-        
+        Edge: 28 => 10
+            
 
-    Edge: 9 => 24
-        
+        Edge: 9 => 24
+            
 
-    Edge: 24 => 25
-        
+        Edge: 24 => 25
+            
 
-    Edge: 24 => 26
-        
+        Edge: 24 => 26
+            
 
-    Edge: 25 => 27
-        
+        Edge: 25 => 27
+            
 
-    Edge: 26 => 27
-        
+        Edge: 26 => 27
+            
 
-}
 
     Edge: 3 => 5
-        CALL_(foo(bar(x),zoo(x)))
+        CALL_(foo(bar(x),zoo(x))),style=dashed,color=red
 
     Edge: 6 => 4
-        RETURN_(foo(bar(x),zoo(x)))
+        RETURN_(foo(bar(x),zoo(x))),style=dashed,color=blue
 
     Edge: 3 => 7
-        CALL_(bar(x))
+        CALL_(bar(x)),style=dashed,color=red
 
     Edge: 8 => 4
-        RETURN_(bar(x))
+        RETURN_(bar(x)),style=dashed,color=blue
 
     Edge: 3 => 9
-        CALL_(zoo(x))
+        CALL_(zoo(x)),style=dashed,color=red
 
     Edge: 10 => 4
-        RETURN_(zoo(x))
+        RETURN_(zoo(x)),style=dashed,color=blue
 
 
 digraph ICFG {
     node [shape=rectangle];
-subgraph cluster_main_0 {
-    label="main_0"
-    1 [ label="==  ICFG ENTRY_NODE 1 == (entry)\n" ];
-    2 [ label="==  ICFG CFLOW_NODE 2 ==\nint x = read();\n" ];
-    3 [ label="==  ICFG CALL_NODE 3 ==\nx = foo(bar(x),zoo(x));\n" ];
-    4 [ label="==  ICFG RETURN_NODE 4 ==\n" ];
-    11 [ label="==  ICFG CFLOW_NODE 11 ==\nreturn 0;\n" ];
-    12 [ label="==  ICFG CFLOW_NODE 12 == (entry)\n\n" ];
-    13 [ label="==  ICFG EXIT_NODE 13 == (exit)\n" ];
-    2 -> 3 [ label="" ];
-    3 -> 4 [ label="" ];
-    4 -> 11 [ label="" ];
-    1 -> 2 [ label="" ];
-    11 -> 13 [ label="" ];
-    12 -> 13 [ label="" ];
-}
-
-subgraph cluster_foo_1 {
-    label="foo_1"
-    5 [ label="==  ICFG ENTRY_NODE 5 ==\n" ];
-    6 [ label="==  ICFG EXIT_NODE 6 ==\n" ];
-    14 [ label="==  ICFG CFLOW_NODE 14 ==\nint res;\nif(a > 0) {res =(1 + d);}else {res =(5 + d);}\n" ];
-    15 [ label="==  ICFG CFLOW_NODE 15 ==\nres =(1 + d);\n\n" ];
-    16 [ label="==  ICFG CFLOW_NODE 16 ==\nres =(5 + d);\n\n" ];
-    17 [ label="==  ICFG CFLOW_NODE 17 ==\nreturn res;\n" ];
-    18 [ label="==  ICFG CFLOW_NODE 18 == (entry)\n\n" ];
-    17 -> 6 [ label="" ];
-    18 -> 6 [ label="" ];
-    5 -> 14 [ label="" ];
-    14 -> 15 [ label="" ];
-    14 -> 16 [ label="" ];
-    15 -> 17 [ label="" ];
-    16 -> 17 [ label="" ];
-}
-
-subgraph cluster_bar_2 {
-    label="bar_2"
-    7 [ label="==  ICFG ENTRY_NODE 7 ==\n" ];
-    8 [ label="==  ICFG EXIT_NODE 8 ==\n" ];
-    19 [ label="==  ICFG CFLOW_NODE 19 ==\nint res;\nif(b > 180) {res =((int )((5) * cos((b))));}else {res = 0;}\n" ];
-    20 [ label="==  ICFG CFLOW_NODE 20 ==\nres =((int )((5) * cos((b))));\n\n" ];
-    21 [ label="==  ICFG CFLOW_NODE 21 ==\nres = 0;\n\n" ];
-    22 [ label="==  ICFG CFLOW_NODE 22 ==\nreturn res;\n" ];
-    23 [ label="==  ICFG CFLOW_NODE 23 == (entry)\n\n" ];
-    22 -> 8 [ label="" ];
-    23 -> 8 [ label="" ];
-    7 -> 19 [ label="" ];
-    19 -> 20 [ label="" ];
-    19 -> 21 [ label="" ];
-    20 -> 22 [ label="" ];
-    21 -> 22 [ label="" ];
-}
-
-subgraph cluster_zoo_3 {
-    label="zoo_3"
-    9 [ label="==  ICFG ENTRY_NODE 9 ==\n" ];
-    10 [ label="==  ICFG EXIT_NODE 10 ==\n" ];
-    24 [ label="==  ICFG CFLOW_NODE 24 ==\nint res;\nif(c < 10) {res = 3;}else {res = 5;}\n" ];
-    25 [ label="==  ICFG CFLOW_NODE 25 ==\nres = 3;\n\n" ];
-    26 [ label="==  ICFG CFLOW_NODE 26 ==\nres = 5;\n\n" ];
-    27 [ label="==  ICFG CFLOW_NODE 27 ==\nreturn res;\n" ];
-    28 [ label="==  ICFG CFLOW_NODE 28 == (entry)\n\n" ];
-    27 -> 10 [ label="" ];
-    28 -> 10 [ label="" ];
-    9 -> 24 [ label="" ];
-    24 -> 25 [ label="" ];
-    24 -> 26 [ label="" ];
-    25 -> 27 [ label="" ];
-    26 -> 27 [ label="" ];
-}
-
+    subgraph cluster_main_0 {
+        label="main_0"
+        1 [ label="==  ICFG ENTRY_NODE 1 == (entry)\n" ];
+        2 [ label="==  ICFG CFLOW_NODE 2 ==\nint x = read();\n" ];
+        3 [ label="==  ICFG CALL_NODE 3 ==\nx = foo(bar(x),zoo(x));\n" ];
+        4 [ label="==  ICFG RETURN_NODE 4 ==\n" ];
+        11 [ label="==  ICFG CFLOW_NODE 11 ==\nreturn 0;\n" ];
+        12 [ label="==  ICFG CFLOW_NODE 12 == (entry)\n\n" ];
+        13 [ label="==  ICFG EXIT_NODE 13 == (exit)\n" ];
+        2 -> 3 [ label="" ];
+        3 -> 4 [ label="" ];
+        4 -> 11 [ label="" ];
+        1 -> 2 [ label="" ];
+        11 -> 13 [ label="" ];
+        12 -> 13 [ label="" ];
+    }
+    subgraph cluster_foo_1 {
+        label="foo_1"
+        5 [ label="==  ICFG ENTRY_NODE 5 ==\n" ];
+        6 [ label="==  ICFG EXIT_NODE 6 ==\n" ];
+        14 [ label="==  ICFG CFLOW_NODE 14 ==\nint res;\nif(a > 0) {res =(1 + d);}else {res =(5 + d);}\n" ];
+        15 [ label="==  ICFG CFLOW_NODE 15 ==\nres =(1 + d);\n\n" ];
+        16 [ label="==  ICFG CFLOW_NODE 16 ==\nres =(5 + d);\n\n" ];
+        17 [ label="==  ICFG CFLOW_NODE 17 ==\nreturn res;\n" ];
+        18 [ label="==  ICFG CFLOW_NODE 18 == (entry)\n\n" ];
+        17 -> 6 [ label="" ];
+        18 -> 6 [ label="" ];
+        5 -> 14 [ label="" ];
+        14 -> 15 [ label="" ];
+        14 -> 16 [ label="" ];
+        15 -> 17 [ label="" ];
+        16 -> 17 [ label="" ];
+    }
+    subgraph cluster_bar_2 {
+        label="bar_2"
+        7 [ label="==  ICFG ENTRY_NODE 7 ==\n" ];
+        8 [ label="==  ICFG EXIT_NODE 8 ==\n" ];
+        19 [ label="==  ICFG CFLOW_NODE 19 ==\nint res;\nif(b > 180) {res =((int )((5) * cos((b))));}else {res = 0;}\n" ];
+        20 [ label="==  ICFG CFLOW_NODE 20 ==\nres =((int )((5) * cos((b))));\n\n" ];
+        21 [ label="==  ICFG CFLOW_NODE 21 ==\nres = 0;\n\n" ];
+        22 [ label="==  ICFG CFLOW_NODE 22 ==\nreturn res;\n" ];
+        23 [ label="==  ICFG CFLOW_NODE 23 == (entry)\n\n" ];
+        22 -> 8 [ label="" ];
+        23 -> 8 [ label="" ];
+        7 -> 19 [ label="" ];
+        19 -> 20 [ label="" ];
+        19 -> 21 [ label="" ];
+        20 -> 22 [ label="" ];
+        21 -> 22 [ label="" ];
+    }
+    subgraph cluster_zoo_3 {
+        label="zoo_3"
+        9 [ label="==  ICFG ENTRY_NODE 9 ==\n" ];
+        10 [ label="==  ICFG EXIT_NODE 10 ==\n" ];
+        24 [ label="==  ICFG CFLOW_NODE 24 ==\nint res;\nif(c < 10) {res = 3;}else {res = 5;}\n" ];
+        25 [ label="==  ICFG CFLOW_NODE 25 ==\nres = 3;\n\n" ];
+        26 [ label="==  ICFG CFLOW_NODE 26 ==\nres = 5;\n\n" ];
+        27 [ label="==  ICFG CFLOW_NODE 27 ==\nreturn res;\n" ];
+        28 [ label="==  ICFG CFLOW_NODE 28 == (entry)\n\n" ];
+        27 -> 10 [ label="" ];
+        28 -> 10 [ label="" ];
+        9 -> 24 [ label="" ];
+        24 -> 25 [ label="" ];
+        24 -> 26 [ label="" ];
+        25 -> 27 [ label="" ];
+        26 -> 27 [ label="" ];
+    }
     3 -> 5 [ label="CALL_(foo(bar(x),zoo(x)))",style=dashed,color=red ];
     6 -> 4 [ label="RETURN_(foo(bar(x),zoo(x)))",style=dashed,color=blue ];
     3 -> 7 [ label="CALL_(bar(x))",style=dashed,color=red ];

@@ -1,14 +1,14 @@
 
 graph ICFG:
 
-subgraph cluster_swap_0 {
-    label="swap_0"
-    Node 1: 
-        ==  ICFG ENTRY_NODE 1 ==
+    subgraph swap_0:
+
+        Node 1: 
+            ==  ICFG ENTRY_NODE 1 ==
 
 
-    Node 2: 
-        ==  ICFG CFLOW_NODE 2 ==
+        Node 2: 
+            ==  ICFG CFLOW_NODE 2 ==
 int temp;
 temp =(v[i]);
 v[i] =(v[j]);
@@ -16,144 +16,140 @@ v[j] = temp;
 
 
 
-    Node 3: 
-        ==  ICFG EXIT_NODE 3 ==
+        Node 3: 
+            ==  ICFG EXIT_NODE 3 ==
 
 
-    Edge: 1 => 2
-        
+        Edge: 1 => 2
+            
 
-    Edge: 2 => 3
-        
-
-}
-
-subgraph cluster_main_1 {
-    label="main_1"
-    Node 4: 
-        ==  ICFG ENTRY_NODE 4 == (entry)
+        Edge: 2 => 3
+            
 
 
-    Node 5: 
-        ==  ICFG CFLOW_NODE 5 ==
+    subgraph main_1:
+
+        Node 4: 
+            ==  ICFG ENTRY_NODE 4 == (entry)
+
+
+        Node 5: 
+            ==  ICFG CFLOW_NODE 5 ==
 int a[5];
 int i;
 int j;
 i = 0;
 
 
-    Node 6: 
-        ==  ICFG CFLOW_NODE 6 ==
+        Node 6: 
+            ==  ICFG CFLOW_NODE 6 ==
 for(i = 0;i < 4;i++) {swap(a,i,(i + 1));}
 
 
-    Node 7: 
-        ==  ICFG CALL_NODE 7 ==
+        Node 7: 
+            ==  ICFG CALL_NODE 7 ==
 swap(a,i,(i + 1));
 
 
-    Node 8: 
-        ==  ICFG RETURN_NODE 8 ==
+        Node 8: 
+            ==  ICFG RETURN_NODE 8 ==
 
 
-    Node 9: 
-        ==  ICFG CFLOW_NODE 9 ==
+        Node 9: 
+            ==  ICFG CFLOW_NODE 9 ==
 
 
 
-    Node 10: 
-        ==  ICFG CFLOW_NODE 10 ==
+        Node 10: 
+            ==  ICFG CFLOW_NODE 10 ==
 i++
 
 
-    Node 11: 
-        ==  ICFG CFLOW_NODE 11 ==
+        Node 11: 
+            ==  ICFG CFLOW_NODE 11 ==
 return 0;
 
 
-    Node 12: 
-        ==  ICFG CFLOW_NODE 12 == (entry)
+        Node 12: 
+            ==  ICFG CFLOW_NODE 12 == (entry)
 
 
 
-    Node 13: 
-        ==  ICFG EXIT_NODE 13 == (exit)
+        Node 13: 
+            ==  ICFG EXIT_NODE 13 == (exit)
 
 
-    Edge: 7 => 8
-        
+        Edge: 7 => 8
+            
 
-    Edge: 8 => 9
-        
+        Edge: 8 => 9
+            
 
-    Edge: 4 => 5
-        
+        Edge: 4 => 5
+            
 
-    Edge: 5 => 6
-        
+        Edge: 5 => 6
+            
 
-    Edge: 10 => 6
-        
+        Edge: 10 => 6
+            
 
-    Edge: 6 => 7
-        
+        Edge: 6 => 7
+            
 
-    Edge: 9 => 10
-        
+        Edge: 9 => 10
+            
 
-    Edge: 6 => 11
-        
+        Edge: 6 => 11
+            
 
-    Edge: 11 => 13
-        
+        Edge: 11 => 13
+            
 
-    Edge: 12 => 13
-        
+        Edge: 12 => 13
+            
 
-}
 
     Edge: 7 => 1
-        CALL_(swap(a,i,(i + 1)))
+        CALL_(swap(a,i,(i + 1))),style=dashed,color=red
 
     Edge: 3 => 8
-        RETURN_(swap(a,i,(i + 1)))
+        RETURN_(swap(a,i,(i + 1))),style=dashed,color=blue
 
 
 digraph ICFG {
     node [shape=rectangle];
-subgraph cluster_swap_0 {
-    label="swap_0"
-    1 [ label="==  ICFG ENTRY_NODE 1 ==\n" ];
-    2 [ label="==  ICFG CFLOW_NODE 2 ==\nint temp;\ntemp =(v[i]);\nv[i] =(v[j]);\nv[j] = temp;\n\n" ];
-    3 [ label="==  ICFG EXIT_NODE 3 ==\n" ];
-    1 -> 2 [ label="" ];
-    2 -> 3 [ label="" ];
-}
-
-subgraph cluster_main_1 {
-    label="main_1"
-    4 [ label="==  ICFG ENTRY_NODE 4 == (entry)\n" ];
-    5 [ label="==  ICFG CFLOW_NODE 5 ==\nint a[5];\nint i;\nint j;\ni = 0;\n" ];
-    6 [ label="==  ICFG CFLOW_NODE 6 ==\nfor(i = 0;i < 4;i++) {swap(a,i,(i + 1));}\n" ];
-    7 [ label="==  ICFG CALL_NODE 7 ==\nswap(a,i,(i + 1));\n" ];
-    8 [ label="==  ICFG RETURN_NODE 8 ==\n" ];
-    9 [ label="==  ICFG CFLOW_NODE 9 ==\n\n" ];
-    10 [ label="==  ICFG CFLOW_NODE 10 ==\ni++\n" ];
-    11 [ label="==  ICFG CFLOW_NODE 11 ==\nreturn 0;\n" ];
-    12 [ label="==  ICFG CFLOW_NODE 12 == (entry)\n\n" ];
-    13 [ label="==  ICFG EXIT_NODE 13 == (exit)\n" ];
-    7 -> 8 [ label="" ];
-    8 -> 9 [ label="" ];
-    4 -> 5 [ label="" ];
-    5 -> 6 [ label="" ];
-    10 -> 6 [ label="" ];
-    6 -> 7 [ label="" ];
-    9 -> 10 [ label="" ];
-    6 -> 11 [ label="" ];
-    11 -> 13 [ label="" ];
-    12 -> 13 [ label="" ];
-}
-
+    subgraph cluster_swap_0 {
+        label="swap_0"
+        1 [ label="==  ICFG ENTRY_NODE 1 ==\n" ];
+        2 [ label="==  ICFG CFLOW_NODE 2 ==\nint temp;\ntemp =(v[i]);\nv[i] =(v[j]);\nv[j] = temp;\n\n" ];
+        3 [ label="==  ICFG EXIT_NODE 3 ==\n" ];
+        1 -> 2 [ label="" ];
+        2 -> 3 [ label="" ];
+    }
+    subgraph cluster_main_1 {
+        label="main_1"
+        4 [ label="==  ICFG ENTRY_NODE 4 == (entry)\n" ];
+        5 [ label="==  ICFG CFLOW_NODE 5 ==\nint a[5];\nint i;\nint j;\ni = 0;\n" ];
+        6 [ label="==  ICFG CFLOW_NODE 6 ==\nfor(i = 0;i < 4;i++) {swap(a,i,(i + 1));}\n" ];
+        7 [ label="==  ICFG CALL_NODE 7 ==\nswap(a,i,(i + 1));\n" ];
+        8 [ label="==  ICFG RETURN_NODE 8 ==\n" ];
+        9 [ label="==  ICFG CFLOW_NODE 9 ==\n\n" ];
+        10 [ label="==  ICFG CFLOW_NODE 10 ==\ni++\n" ];
+        11 [ label="==  ICFG CFLOW_NODE 11 ==\nreturn 0;\n" ];
+        12 [ label="==  ICFG CFLOW_NODE 12 == (entry)\n\n" ];
+        13 [ label="==  ICFG EXIT_NODE 13 == (exit)\n" ];
+        7 -> 8 [ label="" ];
+        8 -> 9 [ label="" ];
+        4 -> 5 [ label="" ];
+        5 -> 6 [ label="" ];
+        10 -> 6 [ label="" ];
+        6 -> 7 [ label="" ];
+        9 -> 10 [ label="" ];
+        6 -> 11 [ label="" ];
+        11 -> 13 [ label="" ];
+        12 -> 13 [ label="" ];
+    }
     7 -> 1 [ label="CALL_(swap(a,i,(i + 1)))",style=dashed,color=red ];
     3 -> 8 [ label="RETURN_(swap(a,i,(i + 1)))",style=dashed,color=blue ];}
 

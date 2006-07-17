@@ -38,10 +38,6 @@ echo "Testing TestCases/CallGraphTests/functions3.c, TestResults/CallGraph/funct
 ./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions3.c >& t
 diff t TestResults/CallGraph/functions3.c.out
 
-echo "Testing TestCases/CallGraphTests/functions3.cpp, TestResults/CallGraph/functions3.cpp.out checked by BK 7/10/06"
-./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions3.cpp >& t
-diff t TestResults/CallGraph/functions3.cpp.out
-
 echo "Testing TestCases/CallGraphTests/functions4.c, TestResults/CallGraph/functions4.c.out checked by BK 7/10/06"
 ./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions4.c >& t
 diff t TestResults/CallGraph/functions4.c.out
