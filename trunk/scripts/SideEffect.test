@@ -1,0 +1,10 @@
+# comment in file.test
+# Regression tests for SideEffect  generation
+testname::SideEffect
+inputdir::TestCases/SideEffect 
+outputdir::TestResults/SideEffect
+driverexec::./OATest -edg:w --oa-SideEffect -c
+
+# list of tests
+#       input file,             status
+test::  test.c,             
