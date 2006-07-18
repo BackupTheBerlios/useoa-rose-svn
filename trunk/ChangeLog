@@ -1816,3 +1816,7 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - passes regressAll with OpenAnalysis trunk r147 
         compiled on Okapi with gcc-3.2 and rose-0.8.7a/compile-gcc-3.2
 
+7/18/06     UseOA-Rose svn trunk r117    Michelle Strout
+    - added a SideEffect test
+    - regressAll mostly works with OpenAnalysis r150.  There are a couple
+      of small diffs that I sent email to folks about.
