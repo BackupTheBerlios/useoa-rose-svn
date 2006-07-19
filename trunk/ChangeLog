@@ -1820,3 +1820,11 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - added a SideEffect test
     - regressAll mostly works with OpenAnalysis r150.  There are a couple
       of small diffs that I sent email to folks about.
+
+7/18/06     UseOA-Rose svn trunk r118   Priyadarshini Malusare
+   - Added TestCase for SideEffect
+     simpleMix.cpp
+
+7/18/06     UseOA-Rose svn trunk r118   Priyadarshini Malusare
+   - Modified Sage2OA.h 
+	

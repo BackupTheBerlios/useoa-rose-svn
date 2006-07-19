@@ -7631,7 +7631,7 @@ void SageIRInterface::dump(OA::OA_ptr<OA::Location> loc, ostream& os)
 OA::OA_ptr<OA::IRSymIterator> 
 SageIRInterface::getRefSymIterator(OA::ProcHandle h)
 {
-  ROSE_ABORT();
+   ROSE_ABORT();
 }
 
 //! returns true if given symbol is a parameter 

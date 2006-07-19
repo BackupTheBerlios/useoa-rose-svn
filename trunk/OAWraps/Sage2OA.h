@@ -353,7 +353,8 @@ class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
                         public virtual OA::XAIF::XAIFIRInterface,
                         public virtual OA::DataFlow::ParamBindingsIRInterface,
                         public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
-                        public virtual OA::SideEffect::SideEffectIRInterface
+                        public virtual OA::SideEffect::SideEffectIRInterface,
+                        public virtual OA::SideEffect::InterSideEffectIRInterface 
 {
   public:
   //! Constructor.
