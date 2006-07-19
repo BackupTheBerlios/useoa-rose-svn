@@ -610,7 +610,7 @@ int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
   OA::OA_ptr<OA::SideEffect::InterSideEffectStandard> interSE;
   interSE = interSEman->performAnalysis(callgraph, parambind, interAlias, sideeffectman);  
 
- // interSE->output(*irInterface); 
+  interSE->output(*irInterface); 
   
   return returnvalue;
 
