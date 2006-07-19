@@ -4,7 +4,7 @@
 # By: Andy Stone (aistone@gmail.com)
 # Version 0.2.0
 #
-# usage: OABenchmark.py files algorithm [repititions] [suffix]
+# usage: OABenchmark.py files algorithm [repititions] [suffix] [logFile]
 #
 # This script reads in a file that contains a list of locations to
 # source files.  These files are then analyzed using the passed
@@ -26,7 +26,6 @@
 #   suffix      - Optional string specifying what the filename
 #                 of each resulting profile file should be
 #                 suffixed with.
-#
 # Example:
 #   source ./OABenchmark.py sources --oa-FIAliasAliasMap 3 suffix
 #
@@ -44,6 +43,11 @@
 import sys
 import string
 import commands
+
+
+for arg in sys.argv:
+    print arg;
+
 
 #### calculate the name of the file we'll want to send gprof's output to
 def profileName(suffix, iteration, repititions):
@@ -70,11 +74,14 @@ if len(sys.argv) >= 3:
     algorithm = sys.argv[2]
     repititions = 1
     suffix = ""
+    noProf = 0
 if len(sys.argv) >= 4:
     repititions = int(sys.argv[3])
 if len(sys.argv) >= 5:
     suffix = sys.argv[4]
-if len(sys.argv) > 5:
+if len(sys.argv) >= 6:
+    noProf = 1
+if len(sys.argv) > 6:
     print "Error: Too many arguments"
     usage()
     sys.exit(0)
@@ -121,9 +128,15 @@ for i in range(1, repititions+1):
     strExec = "./OATest " + algorithm + " " + additionalParams + " -c" + files;
     strProf = "gprof OATest > " + profileName(suffix, i, repititions)
     print 80 * "="
-    print "Running: " + strExec
-    print commands.getoutput(strExec)
-    print 33 * " " + "====="
-    print "Running: " + strProf
-    print commands.getoutput(strProf)
-
+    if noProf != 1 :
+        print "Running: " + strExec
+        print commands.getoutput(strExec)
+        print 33 * " " + "====="
+    else:
+        strExec = "time " + strExec + " --silent"
+        print "Running: " + strExec
+        print commands.getoutput(strExec)
+        print 33 * " " + "====="
+    if noProf != 1 :
+        print "Running: " + strProf
+        print commands.getoutput(strProf)

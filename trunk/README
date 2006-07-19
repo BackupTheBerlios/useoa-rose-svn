@@ -89,12 +89,11 @@ How to run a benchmark:
     - If you want profile information from OpenAnalysis, which most likely
       you do:
         - change directories to your openanalysis directory
-        - export CXX_FLAGS="-O0 -g -pg"
+        - export CXX_FLAGS="-O3 -g -pg"
         - make -f Makefile.quick configure
         - make -f Makefile.quick install
     - Next recompile UseOA-ROSE for profiling
-        - Edit the config/Makefile.inc file so that PROFILE_OPTIONS is set to
-          "-pg -g -O0"
+        - export PROFILE_OPTIONS "-pg -g -O3"
         - make clean
         - make
     - Run your benchmarks

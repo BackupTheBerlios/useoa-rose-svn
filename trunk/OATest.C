@@ -25,9 +25,11 @@
 #endif
 
 #include <rose.h>
+#include <unistd.h>
 #include "Sage2OA.h"
 #include "SageOACallGraph.h"
 #include "MemSage2OA.h"
+#include "debug.h"
 #include <OpenAnalysis/Alias/ManagerAliasMapBasic.hpp>
 #include <OpenAnalysis/Alias/ManagerFIAliasEquivSets.hpp>
 #include <OpenAnalysis/Alias/ManagerFIAliasAliasMap.hpp>
@@ -46,6 +48,8 @@
 
 #include <string>
 #include <iostream>
+#include <sstream>
+using namespace std;
 #include <CommandOptions.h>
 
 // put in to help with g++ compiler bug
@@ -86,13 +90,48 @@ void prettyPrintMemRefExp(OA::OA_ptr<OA::MemRefExpr> memRefExp,
 			  SageIRInterface *ir,
 			  std::ostream &os);
 
+/* Debug flags:
+
+    turn this on:      If you:
+    debug               Want debugging output.
+    outputRose          
+    exitWithTop         Want to run the unix 'top' program on this process
+                        immediatly before it exits. Q: Why would you want to do
+                        this? A: It shows how much memory the process used.
+    skipAnalysis        Have UseOA-ROSE construct the IR interface and do
+                        everything it normally does except actually perform
+                        the analysis.
+    silent              Don't output the normal output.  Notice: this doesn't
+                        silence debugging output, if you want that turn off
+                        all the debugging flags.  Nor does this silence error
+                        messages.
+*/
+
 bool debug = false;
 bool outputRose = false;
+bool exitWithTop = false;
+bool skipAnalysis = false;
+bool silent = false;
+
+void readDebuggingFlags() {
+    USEOA_DEBUG_CTRL_MACRO("DEBUG",         debug);
+    USEOA_DEBUG_CTRL_MACRO("OUTPUT_ROSE",   outputRose);
+    USEOA_DEBUG_CTRL_MACRO("EXIT_WITH_TOP", exitWithTop);
+    USEOA_DEBUG_CTRL_MACRO("SKIP_ANALYSIS", skipAnalysis);
+    USEOA_DEBUG_CTRL_MACRO("SILENT", silent);
+}
+
 
 
 void usage(char **argv)
 {
-  cerr << "usage: " << argv[0] << " [ --debug ] [ --outputRose ] opt filename" << endl;
+  cerr << "usage: " << argv[0] << " [ debugFlags ] opt filename" << endl;
+  cerr << "     where debugFlags is one or more of: " << endl;
+  cerr << "          --debug" << endl;
+  cerr << "          --outputRose" << endl;
+  cerr << "          --exitWithTop" << endl;
+  cerr << "          --skipAnalysis" << endl;
+  cerr << "          --silent" << endl;
   cerr << "     where opt is one of:" << endl;
   cerr << "          --oa-CFG" << endl;
   cerr << "          --oa-MemRefExpr" << endl;
@@ -115,6 +154,8 @@ void usage(char **argv)
 int
 main ( unsigned argc,  char * argv[] )
 {
+  readDebuggingFlags();
+
   bool p_h=FALSE; //for debugging only switch between persistent and "pointer" handles (pointers are faster, persistent are easier to debug
 
   //  p_h = TRUE;
@@ -134,21 +175,21 @@ main ( unsigned argc,  char * argv[] )
     int filenum = sageProject->numberOfFiles();
 
     // debug info
-    AstPDFGeneration pdftest;
+    //AstPDFGeneration pdftest;
     //pdftest.generateInputFiles(sageProject);
-    AstDOTGeneration dottest;
-    dottest.generateInputFiles(sageProject);
+    //AstDOTGeneration dottest;
+    //dottest.generateInputFiles(sageProject);
 
     CmdOptions *cmds = CmdOptions::GetInstance();
     cmds->SetOptions(argc, argv);
 
-    if ( cmds->HasOption("--debug") ) {
-      debug = true;
-    }
-
-    if ( cmds->HasOption("--outputRose") ) {
-      outputRose = true;
-    }
+    // debug flags, these can alternatively be set with the USEOA_DEBUG environmental
+    // variable.
+    if ( cmds->HasOption("--debug") )        { debug = true; }
+    if ( cmds->HasOption("--outputRose") )   { outputRose = true; }
+    if ( cmds->HasOption("--exitWithTop") )  { exitWithTop = true; }
+    if ( cmds->HasOption("--skipAnalysis") ) { skipAnalysis = true; }
+    if ( cmds->HasOption("--silent") )       { silent = true; }
     
     if( cmds->HasOption("--oa-CFG") )
     {
@@ -170,7 +211,6 @@ main ( unsigned argc,  char * argv[] )
                 DoOpenAnalysis(defn, sageProject, &nodeArray, p_h);
               }     
           }
-          return 0;
     }
     else if( cmds->HasOption("--oa-MemRefExpr") )
     {
@@ -220,7 +260,6 @@ main ( unsigned argc,  char * argv[] )
       
       
       
-      return 0;
     }
     else if( ( cmds->HasOption("--oa-FIAliasEquivSets") ) ||
 	     ( cmds->HasOption("--oa-FIAlias") ) )
@@ -228,12 +267,10 @@ main ( unsigned argc,  char * argv[] )
       DoFIAliasEquivSets(sageProject, &nodeArray, p_h);
       //      DoFIAliasAliasMap(sageProject, &nodeArray, p_h);
       //      DoFIAlias(sageProject, &nodeArray, FALSE);
-      return 0;
     }
     else if( cmds->HasOption("--oa-FIAliasAliasMap") )
     {
       DoFIAliasAliasMap(sageProject, &nodeArray, p_h);
-      return 0;
     }
     else if( cmds->HasOption("--oa-AliasMap") )
     {
@@ -256,7 +293,6 @@ main ( unsigned argc,  char * argv[] )
                 DoAlias(defn, sageProject, &nodeArray, p_h);
               }     
           }
-          return 0;
     }
     /*else if( cmds->HasOption("--oa-AliasMap") )
     {
@@ -304,7 +340,6 @@ main ( unsigned argc,  char * argv[] )
                DoReachDef(defn, sageProject, &nodeArray, p_h);
              }     
 	 } 
-         return 0;
     }
     else if( cmds->HasOption("--oa-UDDUChains") )
     {
@@ -326,7 +361,6 @@ main ( unsigned argc,  char * argv[] )
           DoUDDUChains(defn, sageProject, &nodeArray, p_h);
         }     
       }
-      return 0; 
     }
     else if( cmds->HasOption("--oa-UDDUChainsXAIF") )
     {
@@ -353,6 +387,14 @@ main ( unsigned argc,  char * argv[] )
       printf("did not find any valid oa option on the command line\n");
       return 1;
     }
+  }
+
+  // if the exitWithTop debug flag was set then use top to display the memory
+  // usage of this process immediatly prior to termination
+  if(exitWithTop) {
+    ostringstream sCmd;
+    sCmd << "top p " << getpid();
+    system(sCmd.str().c_str());
   }
 
    return 0;
@@ -760,8 +802,11 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
   //#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
-  interAlias = fialiasman->performAnalysis(procIter);
-  interAlias->output(*irInterface);
+
+  if(!skipAnalysis) {
+    interAlias = fialiasman->performAnalysis(procIter);
+    if(!silent) { interAlias->output(*irInterface); }
+  }
 }
 
 int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)

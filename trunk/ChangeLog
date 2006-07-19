@@ -1828,3 +1828,11 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 7/18/06     UseOA-Rose svn trunk r118   Priyadarshini Malusare
    - Modified Sage2OA.h 
 	
+7/19/06     UseOA-Rose svn trunk r121   Andy Stone
+    - Added support for a USEOA_DEBUG environmental variable (for more info
+      look at the new debug.h file).
+    - added the --skipAnalysis and --exitWithTop command line options.  If
+      --skipAnalysis is set then when running when --oa-FIAliasAliasMap the
+      analysis will be skipped (the other analyses should be configured to take
+      into account this flag as well).  --exitWithTop will cause OATest to
+      execute the unix 'top' command immediatley before termination.
