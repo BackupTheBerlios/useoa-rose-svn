@@ -13,3 +13,6 @@ source scripts/regressParamBindings.script
 echo "########################### running regressICFG.script"
 source scripts/regressICFG.script
 
+echo "########################### running regressSideEffect.script"
+source scripts/regressSideEffect.script
+

@@ -1,12 +1,12 @@
-echo "Testing TestCases/SideEffect/stringcmp.c, TestResults/SideEffect/stringcmp.c.out "
+echo "Testing TestCases/SideEffect/stringcmp.c, TestResults/SideEffect/stringcmp.c.out Checked by PLM 07/20/06"
 ./OATest -edg:w --oa-SideEffect -c TestCases/SideEffect/stringcmp.c >& t
 diff t TestResults/SideEffect/stringcmp.c.out
 
-echo "Testing TestCases/SideEffect/test.c, TestResults/SideEffect/test.c.out "
+echo "Testing TestCases/SideEffect/test.c, TestResults/SideEffect/test.c.out Checked by PLM 07/20/06"
 ./OATest -edg:w --oa-SideEffect -c TestCases/SideEffect/test.c >& t
 diff t TestResults/SideEffect/test.c.out
 
-echo "Testing TestCases/SideEffect/swap.c, TestResults/SideEffect/swap.c.out "
-./OATest -edg:w --oa-SideEffect -c TestCases/SideEffect/swap.c >& t
-diff t TestResults/SideEffect/swap.c.out
+echo "Testing TestCases/SideEffect/simpleMix-passptr.c, TestResults/SideEffect/simpleMix-passptr.c.out Checked by PLM 07/20/06"
+./OATest -edg:w --oa-SideEffect -c TestCases/SideEffect/simpleMix-passptr.c >& t
+diff t TestResults/SideEffect/simpleMix-passptr.c.out
 

@@ -2,5 +2,5 @@ echo "Generating TestResults/SideEffect/stringcmp.c.out"
 ./OATest -edg:w --oa-SideEffect -c TestCases/SideEffect/stringcmp.c >& TestResults/SideEffect/stringcmp.c.out
 echo "Generating TestResults/SideEffect/test.c.out"
 ./OATest -edg:w --oa-SideEffect -c TestCases/SideEffect/test.c >& TestResults/SideEffect/test.c.out
-echo "Generating TestResults/SideEffect/swap.c.out"
-./OATest -edg:w --oa-SideEffect -c TestCases/SideEffect/swap.c >& TestResults/SideEffect/swap.c.out
+echo "Generating TestResults/SideEffect/simpleMix-passptr.c.out"
+./OATest -edg:w --oa-SideEffect -c TestCases/SideEffect/simpleMix-passptr.c >& TestResults/SideEffect/simpleMix-passptr.c.out

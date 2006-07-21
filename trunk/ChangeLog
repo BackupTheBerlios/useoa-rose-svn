@@ -1836,3 +1836,12 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       analysis will be skipped (the other analyses should be configured to take
       into account this flag as well).  --exitWithTop will cause OATest to
       execute the unix 'top' command immediatley before termination.
+
+7/20/06     UseOA-Rose svn trunk r122   Priyadarshini Malusare
+    - Added TestCases for SideEffect Analysis.
+	  TestCases/SideEffect/simpleMix-passptr.c,
+	  TestCases/SideEffect/stringcmp.c,
+	  TestCases/SideEffect/test.c.
+	  Also added regressSideEffect.script and genSideEffect.script.
+    - SideEffect is not working for TestCases/SideEffect/swap.c
+	  

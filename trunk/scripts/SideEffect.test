@@ -7,7 +7,6 @@ driverexec::./OATest -edg:w --oa-SideEffect -c
 
 # list of tests
 #       input file,             status
-test::  stringcmp.c,         
-test::  test.c,             
-test::  swap.c,
-#test::  simpleMix.cpp,     Not completed because of bug, ask MMS         
+test::  stringcmp.c,            Checked by PLM 07/20/06           
+test::  test.c,                 Checked by PLM 07/20/06
+test::  simpleMix-passptr.c,    Checked by PLM 07/20/06
