@@ -1851,6 +1851,10 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 	    TestCases/ReachDefsTests/reachdef_if2.c,
 		TestCases/ReachDefsTests/reachdef_loopif1.c 
       - added ReachDefs to regressAll
-      - passes regressAll with OpenAnalysis trunk r161 compiled on Okapi with gcc-3.2 and
-		rose-0.8.7a/compile-gcc-3.2
+      - passes regressAll with OpenAnalysis trunk r161 compiled on Okapi with gcc-3.2 and rose-0.8.7a/compile-gcc-3.2
+    
+07/24/06   UseOA-Rose svn trunk r124  Priyadarshini Malusare
+      - Deleted retPtr.c test from AliasIRInterface.script and
+	  FIAliasAliasMap.script. (going to add those in future after checking
+	  output in TestResults). 
 											

@@ -16,7 +16,3 @@ echo "Generating TestResults/AliasIRInterface/passArrayPtr.c.out"
 ./CtoOA TestCases/AliasTests/passArrayPtr.c >& TestResults/AliasIRInterface/passArrayPtr.c.out
 echo "Generating TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out"
 ./CtoOA TestCases/AliasTests/parambinds-formals-intPtrs.C >& TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out
-echo "Generating TestResults/AliasIRInterface/retPtr.c.out"
-./CtoOA TestCases/AliasTests/retPtr.c >& TestResults/AliasIRInterface/retPtr.c.out
-echo "Generating TestResults/AliasIRInterface/allocMem.c.out"
-./CtoOA TestCases/AliasTests/allocMem.c >& TestResults/AliasIRInterface/allocMem.c.out
