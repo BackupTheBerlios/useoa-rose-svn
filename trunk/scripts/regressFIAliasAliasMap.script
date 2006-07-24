@@ -42,3 +42,7 @@ echo "Testing TestCases/AliasTests/functionPtr2.c, TestResults/FIAliasAliasMap/f
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr2.c >& t
 diff t TestResults/FIAliasAliasMap/functionPtr2.c.out
 
+echo "Testing TestCases/AliasTests/retPtr.c, TestResults/FIAliasAliasMap/retPtr.c.out "
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/retPtr.c >& t
+diff t TestResults/FIAliasAliasMap/retPtr.c.out
+

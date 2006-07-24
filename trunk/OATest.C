@@ -892,7 +892,7 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   OA::OA_ptr<OA::Alias::Interface> alias = interAlias->getAliasResults(proc);
  
   
-  /*
+ 
   // Interprocedural Side-Effect Analysis
   // for now generate default conservative interprocedural side-effect results
   OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
@@ -910,7 +910,7 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   //rds->dump(std::cout, irInterface);
  
 	std::cout << "\n*******  end of DoReachDef *********\n\n";
-    */
+
 	return returnvalue;
 
 }

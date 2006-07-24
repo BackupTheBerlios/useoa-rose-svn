@@ -16,3 +16,6 @@ source scripts/regressICFG.script
 echo "########################### running regressSideEffect.script"
 source scripts/regressSideEffect.script
 
+echo "########################### running regressReachDefs.script"
+source scripts/regressReachDefs.script
+

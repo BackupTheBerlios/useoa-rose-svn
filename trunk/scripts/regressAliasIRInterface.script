@@ -34,3 +34,11 @@ echo "Testing TestCases/AliasTests/parambinds-formals-intPtrs.C, TestResults/Ali
 ./CtoOA TestCases/AliasTests/parambinds-formals-intPtrs.C >& t
 diff t TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out
 
+echo "Testing TestCases/AliasTests/retPtr.c, TestResults/AliasIRInterface/retPtr.c.out "
+./CtoOA TestCases/AliasTests/retPtr.c >& t
+diff t TestResults/AliasIRInterface/retPtr.c.out
+
+echo "Testing TestCases/AliasTests/allocMem.c, TestResults/AliasIRInterface/allocMem.c.out "
+./CtoOA TestCases/AliasTests/allocMem.c >& t
+diff t TestResults/AliasIRInterface/allocMem.c.out
+

@@ -1844,4 +1844,13 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 	  TestCases/SideEffect/test.c.
 	  Also added regressSideEffect.script and genSideEffect.script.
     - SideEffect is not working for TestCases/SideEffect/swap.c
-	  
+	 
+7/23/06     UseOA-Rose svn trunk r123   Priyadarshini Malusare
+      - Added ReachDefs regression output to work with OpenAnalysis trunk r161
+      - Added TestCases/ReachDefsTests/reachdef_if1.c, reachdef_if1.c,
+	    TestCases/ReachDefsTests/reachdef_if2.c,
+		TestCases/ReachDefsTests/reachdef_loopif1.c 
+      - added ReachDefs to regressAll
+      - passes regressAll with OpenAnalysis trunk r161 compiled on Okapi with gcc-3.2 and
+		rose-0.8.7a/compile-gcc-3.2
+											

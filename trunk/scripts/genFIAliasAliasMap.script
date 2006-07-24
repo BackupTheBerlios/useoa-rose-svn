@@ -20,3 +20,5 @@ echo "Generating TestResults/FIAliasAliasMap/functionPtr.c.out"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr.c >& TestResults/FIAliasAliasMap/functionPtr.c.out
 echo "Generating TestResults/FIAliasAliasMap/functionPtr2.c.out"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr2.c >& TestResults/FIAliasAliasMap/functionPtr2.c.out
+echo "Generating TestResults/FIAliasAliasMap/retPtr.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/retPtr.c >& TestResults/FIAliasAliasMap/retPtr.c.out
