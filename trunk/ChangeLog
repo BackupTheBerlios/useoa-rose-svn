@@ -1856,5 +1856,8 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 07/24/06   UseOA-Rose svn trunk r124  Priyadarshini Malusare
       - Deleted retPtr.c test from AliasIRInterface.script and
 	  FIAliasAliasMap.script. (going to add those in future after checking
-	  output in TestResults). 
+	  output in TestResults).
+
+07/24/06   UseOA-Rose svn trunk r125  Priyadarshini Malusare
+      - Added TestResults for ReachDefs.
 											
