@@ -1860,4 +1860,17 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 
 07/24/06   UseOA-Rose svn trunk r125  Priyadarshini Malusare
       - Added TestResults for ReachDefs.
-											
+										
+07/26/06   UseOA-Rose svn trunk r126  Priyadarshini Malusare
+      - Deleted TestResults/SideEffect/*.c.out as they contain debug output.
+
+07/26/06   UseOA-Rose svn trunk r127  Priyadarshini Malusare
+      - Added TestResults for SideEffect/InterSideEffect.
+
+07/27/06   UseOA-Rose svn trunk r128  Priyadarshini Malusare
+      - Added TestResults for SideEffect/InterSideEffect without debug output
+	    Also Modified OATest.C, regressSideEffect.script and
+		genSideEffect.script.
+			
+
+			

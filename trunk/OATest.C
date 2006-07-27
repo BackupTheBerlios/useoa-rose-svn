@@ -627,13 +627,11 @@ int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
   procIter = new SageIRProcIterator(sgproject,irInterface, excludeInputFiles);
   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
   interAlias = fialiasman->performAnalysis(procIter);
-  interAlias->output(*irInterface);
 
   OA::OA_ptr<OA::CallGraph::ManagerStandard> callgraphmanstd;
   callgraphmanstd= new OA::CallGraph::ManagerStandard(irInterface);
   OA::OA_ptr<OA::CallGraph::CallGraphStandard> callgraph
     = callgraphmanstd->performAnalysis(procIter,interAlias);
-  callgraph->output(*irInterface);
    
 
   
