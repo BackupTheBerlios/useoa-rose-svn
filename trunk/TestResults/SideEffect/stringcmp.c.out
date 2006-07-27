@@ -1,0 +1,340 @@
+
+InterSideEffectStandard(
+    ProcToSideEffectMap: ProcHandle	 => OA_ptr<OA::SideEffect::SideEffectStandard>
+            ProcHandle(stringcmp)	 => 
+            SideEffectStandard(
+                mLMODSet: [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(i)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                mMODSet: [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(i)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                mLDEFSet: [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(i)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                mDEFSet: [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(i)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                mLUSESet: [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(t)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(i)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    UnnamedLoc(
+                        mStmtHandle: StmtHandle("source")
+                        mLocal: 0
+                    )    
+                    UnnamedLoc(
+                        mStmtHandle: StmtHandle("dest")
+                        mLocal: 0
+                    ) ] 
+                mUSESet: [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(t)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(i)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    UnnamedLoc(
+                        mStmtHandle: StmtHandle("source")
+                        mLocal: 0
+                    )    
+                    UnnamedLoc(
+                        mStmtHandle: StmtHandle("dest")
+                        mLocal: 0
+                    ) ] 
+                mLREFSet: [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(t)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(i)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    UnnamedLoc(
+                        mStmtHandle: StmtHandle("source")
+                        mLocal: 0
+                    )    
+                    UnnamedLoc(
+                        mStmtHandle: StmtHandle("dest")
+                        mLocal: 0
+                    ) ] 
+                mREFSet: [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(t)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(i)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    UnnamedLoc(
+                        mStmtHandle: StmtHandle("source")
+                        mLocal: 0
+                    )    
+                    UnnamedLoc(
+                        mStmtHandle: StmtHandle("dest")
+                        mLocal: 0
+                    ) ] 
+                mUnknownLocSet: [ 
+                    UnknownLoc(
+                    ) ] 
+                ProcHandle(main)	 => 
+                SideEffectStandard(
+                    mLMODSet: [ 
+                        NamedLoc(
+                            mSymHandle: SymHandle(a)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(b)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(retVal)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        ) ] 
+                    mMODSet: [ 
+                        NamedLoc(
+                            mSymHandle: SymHandle(a)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(b)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(retVal)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        ) ] 
+                    mLDEFSet: [ 
+                        NamedLoc(
+                            mSymHandle: SymHandle(a)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(b)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(retVal)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        ) ] 
+                    mDEFSet: [ 
+                        NamedLoc(
+                            mSymHandle: SymHandle(a)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(b)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(retVal)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        ) ] 
+                    mLUSESet: [ 
+                        NamedLoc(
+                            mSymHandle: SymHandle(a)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(b)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        ) ] 
+                    mUSESet: [ 
+                        NamedLoc(
+                            mSymHandle: SymHandle(a)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(b)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle("source")
+                            mLocal: 0
+                        )    
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle("dest")
+                            mLocal: 0
+                        ) ] 
+                    mLREFSet: [ 
+                        NamedLoc(
+                            mSymHandle: SymHandle(a)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(b)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        ) ] 
+                    mREFSet: [ 
+                        NamedLoc(
+                            mSymHandle: SymHandle(a)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(b)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle("source")
+                            mLocal: 0
+                        )    
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle("dest")
+                            mLocal: 0
+                        ) ] 
+                    mUnknownLocSet: [ 
+                        UnknownLoc(
+                        ) ] 
+
+            CallToSideEffectMap: CallHandle	 => OA_ptr<OA::SideEffect::SideEffectStandard>
+                    CallHandle(stringcmp(a,b))	 => 
+                    SideEffectStandard(
+                        mLMODSet: [  ] 
+                        mMODSet: [  ] 
+                        mLDEFSet: [  ] 
+                        mDEFSet: [  ] 
+                        mLUSESet: [ 
+                            UnnamedLoc(
+                                mStmtHandle: StmtHandle("source")
+                                mLocal: 0
+                            )    
+                            UnnamedLoc(
+                                mStmtHandle: StmtHandle("dest")
+                                mLocal: 0
+                            ) ] 
+                        mUSESet: [ 
+                            UnnamedLoc(
+                                mStmtHandle: StmtHandle("source")
+                                mLocal: 0
+                            )    
+                            UnnamedLoc(
+                                mStmtHandle: StmtHandle("dest")
+                                mLocal: 0
+                            ) ] 
+                        mLREFSet: [ 
+                            UnnamedLoc(
+                                mStmtHandle: StmtHandle("source")
+                                mLocal: 0
+                            )    
+                            UnnamedLoc(
+                                mStmtHandle: StmtHandle("dest")
+                                mLocal: 0
+                            ) ] 
+                        mREFSet: [ 
+                            UnnamedLoc(
+                                mStmtHandle: StmtHandle("source")
+                                mLocal: 0
+                            )    
+                            UnnamedLoc(
+                                mStmtHandle: StmtHandle("dest")
+                                mLocal: 0
+                            ) ] 
+                        mUnknownLocSet: [ 
+                            UnknownLoc(
+                            ) ] 
