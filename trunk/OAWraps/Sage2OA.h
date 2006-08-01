@@ -15,6 +15,7 @@
 #include <OpenAnalysis/IRInterface/SSAIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/CallGraphIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/ICFGIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/ActivityIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/AliasIRInterfaceDefault.hpp>
 #include <OpenAnalysis/IRInterface/ReachDefsIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/UDDUChainsIRInterface.hpp>
@@ -327,6 +328,35 @@ class SgPtrAssignPairStmtIterator
   SageIRInterface *mIR;
 };
 
+typedef std::pair<OA::MemRefHandle,OA::ExprHandle> ExprStmtPair;
+typedef std::list<ExprStmtPair> ExprStmtPairList;
+class SageIRExprStmtPairIterator 
+    : public OA::ExprStmtPairIterator {
+  public:
+    SageIRExprStmtPairIterator(OA::OA_ptr<ExprStmtPairList> pExprStmtList) 
+        : mExprStmtList(pExprStmtList) { reset(); }
+    virtual ~SageIRExprStmtPairIterator() {}
+
+    //! left hand side
+    OA::MemRefHandle currentTarget() const 
+      { if (isValid()) { return mIter->first; } 
+        else { return OA::MemRefHandle(0); } }
+    //! right hand side
+    OA::ExprHandle currentSource() const 
+      { if (isValid()) { return mIter->second; } 
+        else { return OA::ExprHandle(0); } }
+
+    bool isValid() const { return mIter!=mExprStmtList->end(); }
+                    
+    void operator++() { if (isValid()) mIter++; }
+    void operator++(int) { ++*this; }
+
+    void reset() { mIter = mExprStmtList->begin(); }
+  private:
+    OA::OA_ptr<ExprStmtPairList> mExprStmtList;
+    ExprStmtPairList::iterator mIter;
+};
+
 #if 0
 // this worked (as did alias commented out)
 class SageIRInterface : public OA::SSA::SSAIRInterface,
@@ -343,18 +373,20 @@ class SageIRInterface : public OA::SSA::SSAIRInterface,
                         // public OA::XAIF::XAIFIRInterface
 #endif
 
-class SageIRInterface : public virtual OA::SSA::SSAIRInterface,
-                        public virtual OA::CFG::CFGIRInterfaceDefault,  
-			public virtual OA::ICFG::ICFGIRInterface,
-			public virtual OA::CallGraph::CallGraphIRInterface,
-                        public virtual OA::Alias::AliasIRInterfaceDefault,
-                        public virtual OA::ReachDefs::ReachDefsIRInterface,
-			public virtual OA::UDDUChains::UDDUChainsIRInterface,
-                        public virtual OA::XAIF::XAIFIRInterface,
-                        public virtual OA::DataFlow::ParamBindingsIRInterface,
-                        public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
-                        public virtual OA::SideEffect::SideEffectIRInterface,
-                        public virtual OA::SideEffect::InterSideEffectIRInterface 
+class 
+SageIRInterface : public virtual OA::SSA::SSAIRInterface,
+  public virtual OA::CFG::CFGIRInterfaceDefault,  
+  public virtual OA::ICFG::ICFGIRInterface,
+  public virtual OA::CallGraph::CallGraphIRInterface,
+  public virtual OA::Activity::ActivityIRInterface,
+  public virtual OA::Alias::AliasIRInterfaceDefault,
+  public virtual OA::ReachDefs::ReachDefsIRInterface,
+  public virtual OA::UDDUChains::UDDUChainsIRInterface,
+  public virtual OA::XAIF::XAIFIRInterface,
+  public virtual OA::DataFlow::ParamBindingsIRInterface,
+  public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
+  public virtual OA::SideEffect::SideEffectIRInterface,
+  public virtual OA::SideEffect::InterSideEffectIRInterface 
 {
   public:
   //! Constructor.
@@ -581,7 +613,21 @@ public:
   std::string toString(const OA::OpHandle h) { return ""; }
   std::string toString(const OA::MemRefHandle h);
   std::string toString(const OA::SymHandle h); 
-  std::string toString(const OA::ConstSymHandle h) { return ""; }
+  std::string toString(const OA::ConstSymHandle h) {
+    //-----
+    // reasoning by BK:
+    // when constructing an ExprTree, and deteriming if an ExprHandle
+    // is a ConstSymHandle, at some point it determines whether the ExprHandle
+    // isConst.  If it is, then it makes a ConstSymNode.  If it isn't, then
+    // it makes a MemRefNode.  Therefore, we should be able to convert
+    // our ConstSymHandle to a MemRefHandle and use toString(MemRefHandle)
+    //-----
+    SgNode * astNode;
+    astNode = getNodePtr(h);
+    OA::MemRefHandle mrh = getNodeNumber(astNode);
+    return ( toString(mrh) );
+    //return ""; 
+  }
   std::string toString(const OA::ConstValHandle h) { return ""; }
   std::string toString(OA::Alias::IRStmtType x);
   
@@ -663,6 +709,28 @@ public:
   // Given an ExprHandle, return an ExprTree 
   OA::OA_ptr<OA::ExprTree> getExprTree(OA::ExprHandle h);
 
+  //-------------------------------------------------------------------------
+  // ActivityIRInterface
+  //-------------------------------------------------------------------------
+
+  //! Given a statement return a list to the pairs of 
+  //! target MemRefHandle, ExprHandle where
+  //! target = expr
+  OA::OA_ptr<OA::ExprStmtPairIterator> 
+    getExprStmtPairIterator(OA::StmtHandle h);
+  
+  //! Return an iterator over all independent locations for given proc
+  OA::OA_ptr<OA::LocIterator> getIndepLocIter(OA::ProcHandle h);
+  
+  //! Return an iterator over all dependent locations for given proc
+  OA::OA_ptr<OA::LocIterator> getDepLocIter(OA::ProcHandle h);
+ 
+  //! Given a statement, return its Activity::IRStmtType
+  OA::Activity::IRStmtType getActivityStmtType(OA::StmtHandle h);
+
+  //! given a symbol return the size in bytes of that symbol
+  int getSizeInBytes(OA::SymHandle h);
+  
   //-------------------------------------------------------------------------
   // output methods
   //-------------------------------------------------------------------------

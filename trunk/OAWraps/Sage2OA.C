@@ -6968,7 +6968,8 @@ class ExprTreeTraversal
 		isSgSizeOfOp(astNode) || isSgVarArgCopyOp(astNode) || 
 		isSgVarArgEndOp(astNode) || isSgVarArgOp(astNode) || 
 		isSgVarArgStartOneOperandOp(astNode) || 
-		isSgVarArgStartOp(astNode) ) {
+		isSgVarArgStartOp(astNode)) {
+
       // CallNode
       OA::ExprHandle h = mIR->getNodeNumber(astNode);
       OA::OA_ptr<OA::ExprTree::CallNode> node;
@@ -7033,6 +7034,231 @@ OA::OA_ptr<OA::ExprTree> SageIRInterface::getExprTree(OA::ExprHandle h)
 
   return exprTree;
 }
+ 
+//-------------------------------------------------------------------------
+// ActivityIRInterface
+//-------------------------------------------------------------------------
+ 
+//! Given a statement return a list to the pairs of 
+//! target MemRefHandle, ExprHandle where
+//! target = expr
+OA::OA_ptr<OA::ExprStmtPairIterator> 
+  SageIRInterface::getExprStmtPairIterator(OA::StmtHandle h)
+{
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // FIXME
+  // BK: this routine is incomplete.
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  OA::OA_ptr<ExprStmtPairList> exprStmtPairList;
+  exprStmtPairList = new ExprStmtPairList;
+  
+  if (getActivityStmtType(h)==OA::Activity::EXPR_STMT) {
+    SgNode *node = getNodePtr(h);
+    ROSE_ASSERT(node != NULL);
+    
+    SgExpression *rhs;
+    SgNode *lhs;
+    
+    bool collectPtrAssigns = false;
+    
+    switch(node->variantT()) {
+      
+    case V_SgExprStatement:
+      {
+        SgExprStatement *exprStatement = isSgExprStatement(node);
+        ROSE_ASSERT(exprStatement != NULL);
+        
+        SgExpression *expression = exprStatement->get_the_expr();
+        SgType *lhsType = NULL;
+        
+        switch(expression->variantT()) {
+        case V_SgAssignOp:
+          {
+            // A subset of this case is a new expression.
+            SgBinaryOp *assignOp = isSgBinaryOp(expression);
+            ROSE_ASSERT(assignOp != NULL);
+            
+            SgExpression *lhs = assignOp->get_lhs_operand();
+            ROSE_ASSERT(lhs != NULL);
+            
+            SgExpression *rhs = assignOp->get_rhs_operand();
+            ROSE_ASSERT(rhs != NULL);
+            
+            OA::ExprHandle rhsHandle = getNodeNumber(rhs);
+            OA::MemRefHandle lhsHandle = getNodeNumber(lhs);
+            exprStmtPairList->push_back(ExprStmtPair(lhsHandle, rhsHandle));
+            
+            
+            break;
+          } // end of case V_SgAssignOp:
+          
+          // BK:  I am sure that I am missing some stmts that should be
+          // flagged as an OA::Activity::EXPR_STMT, but this will get us
+          // started
+          
+        default: 
+          {
+            break;
+          }  
+        }
+        break;
+      } // end of case V_SgExprStatement:
+      
+    default:
+      {
+        break;
+      }
+    }
+  } // end of if (OA::Activity::EXPR_STMT)
+  OA::OA_ptr<OA::ExprStmtPairIterator> espIter;
+  espIter = new SageIRExprStmtPairIterator(exprStmtPairList);
+  return espIter;
+}
+ 
+//! Return an iterator over all independent locations for given proc
+OA::OA_ptr<OA::LocIterator> 
+SageIRInterface::getIndepLocIter(OA::ProcHandle h)
+{
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // FIXME
+  // BK: this routine is incomplete.
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  // Get independent variables
+  OA::OA_ptr<OA::LocSet> indepSet;
+  indepSet = new OA::LocSet;
+
+  assert(0);
+  // not implemented yet
+
+  OA::OA_ptr<OA::LocSetIterator> indepIter;
+  indepIter = new OA::LocSetIterator(indepSet);
+  return indepIter;
+}
+
+//! Return an iterator over all dependent locations for given proc
+OA::OA_ptr<OA::LocIterator> 
+SageIRInterface::getDepLocIter(OA::ProcHandle h)
+{
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // FIXME
+  // BK: this routine is incomplete.
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  // Get dependent variables
+  OA::OA_ptr<OA::LocSet> depSet;
+  depSet = new OA::LocSet;
+  
+  assert(0);
+  // not implemented yet
+
+  OA::OA_ptr<OA::LocSetIterator> depIter;
+  depIter = new OA::LocSetIterator(depSet);
+  return depIter;
+}
+
+//! Given a statement, return its Activity::IRStmtType
+OA::Activity::IRStmtType 
+SageIRInterface::getActivityStmtType(OA::StmtHandle h)
+{
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // FIXME
+  // BK: this routine is incomplete.
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  SgNode *node = getNodePtr(h);
+  ROSE_ASSERT(node != NULL);
+  
+  OA::Activity::IRStmtType stmtType = OA::Activity::ANY_STMT;
+  
+  bool collectPtrAssigns = false;
+  
+  switch(node->variantT()) {
+    
+  case V_SgExprStatement:
+    {
+      SgExprStatement *exprStatement = isSgExprStatement(node);
+      ROSE_ASSERT(exprStatement != NULL);
+      
+      SgExpression *expression = exprStatement->get_the_expr();
+      SgType *lhsType = NULL;
+      
+      switch(expression->variantT()) {
+      case V_SgAssignOp:
+	{
+	  // A subset of this case is a new expression.
+	  SgBinaryOp *assignOp = isSgBinaryOp(expression);
+	  ROSE_ASSERT(assignOp != NULL);
+          
+	  SgExpression *lhs = assignOp->get_lhs_operand();
+	  ROSE_ASSERT(lhs != NULL);
+          
+          SgExpression *rhs = assignOp->get_rhs_operand();
+          ROSE_ASSERT(rhs != NULL);
+
+	  lhsType = lhs->get_type();
+	  ROSE_ASSERT(lhsType != NULL);
+          
+          if (!isSgFunctionCallExp(rhs)) {
+            // somehow, cannot handle y = foo() as an EXPR_STMT
+            // FIXME ??
+            stmtType = OA::Activity::EXPR_STMT;
+          }
+          /* don't care about this for Activity::StmtType
+             if ( lhsType != NULL ) {
+             SgType *baseType = getBaseType(lhsType);
+             ROSE_ASSERT(baseType != NULL);
+             if ( isSgPointerType(baseType) || isSgReferenceType(baseType) ) 
+             {
+             stmtType = OA::Alias::PTR_ASSIGN_STMT;
+             }
+             }
+          */
+	  break;
+	} // end of case V_SgAssignOp:
+
+        // BK:  I am sure that I am missing some stmts that should be
+        // flagged as an OA::Activity::EXPR_STMT, but this will get us
+        // started
+
+      default: 
+        {
+          break;
+        }  
+      }
+      break;
+    } // end of case V_SgExprStatement:
+
+  default:
+    {
+      break;
+    }
+  }
+
+  return stmtType;
+}
+
+//! given a symbol return the size in bytes of that symbol
+int 
+SageIRInterface::getSizeInBytes(OA::SymHandle h)
+{
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // FIXME
+  // BK: this routine is incomplete.
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  int result = 0;
+
+  assert(0);
+  // not implemented yet
+
+  return result;
+}
+
+//-------------------------------------------------------------------------
+//
+//-------------------------------------------------------------------------  
 
 // Get IRCallsiteParamIterator for a callsite. 
 // Iterator visits actual parameters in called order. 

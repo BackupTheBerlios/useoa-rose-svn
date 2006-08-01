@@ -39,7 +39,7 @@ fp = foo;
 
 
         Edge: 4 => 5
-            
+            CALL_RETURN
 
         Edge: 5 => 10
             
@@ -150,7 +150,7 @@ digraph ICFG {
         5 [ label="==  ICFG RETURN_NODE 5 ==\n" ];
         10 [ label="==  ICFG CFLOW_NODE 10 ==\n\n" ];
         11 [ label="==  ICFG EXIT_NODE 11 == (exit)\n" ];
-        4 -> 5 [ label="" ];
+        4 -> 5 [ label="CALL_RETURN" ];
         5 -> 10 [ label="" ];
         1 -> 2 [ label="" ];
         2 -> 3 [ label="" ];

@@ -1,0 +1,8 @@
+echo "Testing TestCases/ICFGDep/activity_int6.c, TestResults/ICFGDep/activity_int6.c.out checked by BK 8/01/06 ERROR is not handling locSubSet correctly."
+./OATest -edg:w --oa-ICFGDep -c TestCases/ICFGDep/activity_int6.c >& t
+diff t TestResults/ICFGDep/activity_int6.c.out
+
+echo "Testing TestCases/ICFGDep/activity_int7.c, TestResults/ICFGDep/activity_int7.c.out checked by BK 8/01/06 ERROR is not handling locSubSet correctly."
+./OATest -edg:w --oa-ICFGDep -c TestCases/ICFGDep/activity_int7.c >& t
+diff t TestResults/ICFGDep/activity_int7.c.out
+

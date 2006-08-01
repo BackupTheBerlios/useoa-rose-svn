@@ -44,7 +44,7 @@ fp = bar;
 
 
         Edge: 5 => 6
-            
+            CALL_RETURN
 
         Edge: 6 => 11
             
@@ -159,7 +159,7 @@ digraph ICFG {
         6 [ label="==  ICFG RETURN_NODE 6 ==\n" ];
         11 [ label="==  ICFG CFLOW_NODE 11 ==\n\n" ];
         12 [ label="==  ICFG EXIT_NODE 12 == (exit)\n" ];
-        5 -> 6 [ label="" ];
+        5 -> 6 [ label="CALL_RETURN" ];
         6 -> 11 [ label="" ];
         1 -> 2 [ label="" ];
         2 -> 3 [ label="" ];
