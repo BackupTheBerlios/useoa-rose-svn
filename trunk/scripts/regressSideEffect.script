@@ -1,4 +1,4 @@
-echo "Testing TestCases/SideEffect/stringcmp.c, TestResults/SideEffect/stringcmp.c.out Checked by PLM 07/20/06"
+echo "Testing TestCases/SideEffect/stringcmp.c, TestResults/SideEffect/stringcmp.c.out Checked by MMS 07/27/06"
 ./OATest -edg:w --oa-SideEffect -c TestCases/SideEffect/stringcmp.c >& t
 diff t TestResults/SideEffect/stringcmp.c.out
 

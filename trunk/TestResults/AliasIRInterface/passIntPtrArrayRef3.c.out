@@ -1,27 +1,22 @@
-"TestCases/AliasTests/passArrayPtr.c", line 6: warning: missing return
-          statement at end of non-void function "strcmp"
-  }
-  ^
-
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
-PROCEDURE = { < ProcHandle("strcmp"), SymHandle("strcmp") > }
+PROCEDURE = { < ProcHandle("blah"), SymHandle("blah") > }
     FORMALS = {
         [
             < 0, SymHandle("s") >
             < 1, SymHandle("t") >
         ] }
-    MEMREFEXPRS = { StmtHandle("int strcmp(char *s,char *t){if(((s[0])) ==((t[0]))) {}else {}}") =>
+    MEMREFEXPRS = { StmtHandle("int blah(int *s,int *t){if((s[0]) ==(t[0])) {}else {}return 0;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{if(((s[0])) ==((t[0]))) {}else {}}") =>
+    MEMREFEXPRS = { StmtHandle("{if((s[0]) ==(t[0])) {}else {}return 0;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("if(((s[0])) ==((t[0]))) {}else {}") =>
+    MEMREFEXPRS = { StmtHandle("if((s[0]) ==(t[0])) {}else {}") =>
         [
             MemRefHandle("s") => 
                 NamedRef( USE, SymHandle("s"), F, full)
@@ -38,52 +33,50 @@ PROCEDURE = { < ProcHandle("strcmp"), SymHandle("strcmp") > }
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
     LOCATION = { < SymHandle("s"), local > }
     LOCATION = { < SymHandle("t"), local > }
-    LOCATION = { < SymHandle("strcmp"), not local > }
+    LOCATION = { < SymHandle("blah"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
-    MEMREFEXPRS = { StmtHandle("int main(){char a[] = "testing";int x = strcmp(a,a);}") =>
+    MEMREFEXPRS = { StmtHandle("int main(){int a[4];int b[4];int x = blah(a,b);}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{char a[] = "testing";int x = strcmp(a,a);}") =>
+    MEMREFEXPRS = { StmtHandle("{int a[4];int b[4];int x = blah(a,b);}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("char a[] = "testing";") =>
+    MEMREFEXPRS = { StmtHandle("int a[4];") =>
         [
-            MemRefHandle("a") => 
-                NamedRef( DEF, SymHandle("a"), F, full)
-            MemRefHandle(""testing"") => 
-                UnnamedRef( USE, StmtHandle(""testing""), T, part)
         ] }
-    PTRASSIGNPAIRS = { StmtHandle("char a[] = "testing";") =>
+    MEMREFEXPRS = { StmtHandle("int b[4];") =>
         [
-            < NamedRef( DEF, SymHandle("a"), F, full)
-            , UnnamedRef( USE, StmtHandle(""testing""), T, part) >
         ] }
-    MEMREFEXPRS = { StmtHandle("int x = strcmp(a,a);") =>
+    MEMREFEXPRS = { StmtHandle("int x = blah(a,b);") =>
         [
             MemRefHandle("x") => 
                 NamedRef( DEF, SymHandle("x"), F, full)
             MemRefHandle("a") => 
                 NamedRef( USE, SymHandle("a"), T, full)
-            MemRefHandle("a") => 
-                NamedRef( USE, SymHandle("a"), T, full)
+            MemRefHandle("b") => 
+                NamedRef( USE, SymHandle("b"), T, full)
         ] }
-    CALLSITES = { StmtHandle("int x = strcmp(a,a);") =>
+    CALLSITES = { StmtHandle("int x = blah(a,b);") =>
         [
-            CallHandle("strcmp(a,a)") => 
-                NamedRef( USE, SymHandle("strcmp"), F, full)
+            CallHandle("blah(a,b)") => 
+                NamedRef( USE, SymHandle("blah"), F, full)
         ] }
-    PARAMBINDPTRASSIGNPAIRS = { CallHandle("strcmp(a,a)") =>
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("blah(a,b)") =>
         [
             < 0, NamedRef( USE, SymHandle("a"), T, full) >
-            < 1, NamedRef( USE, SymHandle("a"), T, full) >
+            < 1, NamedRef( USE, SymHandle("b"), T, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
     LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("x"), local > }
-    LOCATION = { < SymHandle("strcmp"), not local > }
+    LOCATION = { < SymHandle("blah"), not local > }
     LOCATION = { < SymHandle("main"), not local > }

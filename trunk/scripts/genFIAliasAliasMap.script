@@ -20,3 +20,15 @@ echo "Generating TestResults/FIAliasAliasMap/functionPtr.c.out"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr.c >& TestResults/FIAliasAliasMap/functionPtr.c.out
 echo "Generating TestResults/FIAliasAliasMap/functionPtr2.c.out"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr2.c >& TestResults/FIAliasAliasMap/functionPtr2.c.out
+echo "Generating TestResults/FIAliasAliasMap/passIntPtrArrayRef.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtrArrayRef.c >& TestResults/FIAliasAliasMap/passIntPtrArrayRef.c.out
+echo "Generating TestResults/FIAliasAliasMap/passIntPtrArrayRef2.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtrArrayRef2.c >& TestResults/FIAliasAliasMap/passIntPtrArrayRef2.c.out
+echo "Generating TestResults/FIAliasAliasMap/passIntPtrArrayRef3.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtrArrayRef3.c >& TestResults/FIAliasAliasMap/passIntPtrArrayRef3.c.out
+echo "Generating TestResults/FIAliasAliasMap/passIntPtr.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtr.c >& TestResults/FIAliasAliasMap/passIntPtr.c.out
+echo "Generating TestResults/FIAliasAliasMap/swap.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/swap.c >& TestResults/FIAliasAliasMap/swap.c.out
+echo "Generating TestResults/FIAliasAliasMap/invLoc.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/invLoc.c >& TestResults/FIAliasAliasMap/invLoc.c.out

@@ -23,5 +23,11 @@ test::  comma.c,                 checked by MMS 6/22/06
 #test::  funCall.c,              checked by ???
 test::  invokeBaseCtor.C,        checked by BSW 6/26/06
 test::  localNonLocal.c,         checked by BSW 6/28/06
-test::  passArrayPtr.c,          checked by BSW 7/11/06
+test::  passArrayPtr.c,          checked by MMS 7/27/06
 test::  parambinds-formals-intPtrs.C,   checked by BSW 7/11/06
+test::  passIntPtrArrayRef.c,    checked by MMS 7/24/06
+test::  passIntPtrArrayRef2.c,   checked by MMS 7/24/06
+test::  passIntPtrArrayRef3.c,   checked by MMS 7/24/06
+test::  passIntPtr.c,            checked by MMS 7/24/06
+test::  swap.c,                  i++ should be USEDEF otherwise fine MMS 7/23/06
+

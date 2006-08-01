@@ -26,11 +26,31 @@ echo "Testing TestCases/AliasTests/localNonLocal.c, TestResults/AliasIRInterface
 ./CtoOA TestCases/AliasTests/localNonLocal.c >& t
 diff t TestResults/AliasIRInterface/localNonLocal.c.out
 
-echo "Testing TestCases/AliasTests/passArrayPtr.c, TestResults/AliasIRInterface/passArrayPtr.c.out checked by BSW 7/11/06"
+echo "Testing TestCases/AliasTests/passArrayPtr.c, TestResults/AliasIRInterface/passArrayPtr.c.out checked by MMS 7/27/06"
 ./CtoOA TestCases/AliasTests/passArrayPtr.c >& t
 diff t TestResults/AliasIRInterface/passArrayPtr.c.out
 
 echo "Testing TestCases/AliasTests/parambinds-formals-intPtrs.C, TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out checked by BSW 7/11/06"
 ./CtoOA TestCases/AliasTests/parambinds-formals-intPtrs.C >& t
 diff t TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out
+
+echo "Testing TestCases/AliasTests/passIntPtrArrayRef.c, TestResults/AliasIRInterface/passIntPtrArrayRef.c.out checked by MMS 7/24/06"
+./CtoOA TestCases/AliasTests/passIntPtrArrayRef.c >& t
+diff t TestResults/AliasIRInterface/passIntPtrArrayRef.c.out
+
+echo "Testing TestCases/AliasTests/passIntPtrArrayRef2.c, TestResults/AliasIRInterface/passIntPtrArrayRef2.c.out checked by MMS 7/24/06"
+./CtoOA TestCases/AliasTests/passIntPtrArrayRef2.c >& t
+diff t TestResults/AliasIRInterface/passIntPtrArrayRef2.c.out
+
+echo "Testing TestCases/AliasTests/passIntPtrArrayRef3.c, TestResults/AliasIRInterface/passIntPtrArrayRef3.c.out checked by MMS 7/24/06"
+./CtoOA TestCases/AliasTests/passIntPtrArrayRef3.c >& t
+diff t TestResults/AliasIRInterface/passIntPtrArrayRef3.c.out
+
+echo "Testing TestCases/AliasTests/passIntPtr.c, TestResults/AliasIRInterface/passIntPtr.c.out checked by MMS 7/24/06"
+./CtoOA TestCases/AliasTests/passIntPtr.c >& t
+diff t TestResults/AliasIRInterface/passIntPtr.c.out
+
+echo "Testing TestCases/AliasTests/swap.c, TestResults/AliasIRInterface/swap.c.out i++ should be USEDEF otherwise fine MMS 7/23/06"
+./CtoOA TestCases/AliasTests/swap.c >& t
+diff t TestResults/AliasIRInterface/swap.c.out
 

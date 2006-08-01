@@ -1890,4 +1890,8 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       - passes regressAll with OpenAnalysis trunk r166 compiled on Okapi with 
         gcc-3.2 and rose-0.8.7a/compile-gcc-3.2
 
+8/01/06     UseOA-Rose svn trunk r131    Michelle Strout
+    Reverified a lot of regression tests due to the change in ManagerFIAlias
+    in OpenAnalysis r167.  RegressAll works with OpenAnalysis r167
+    and everything compiled with gcc 4.0.2 on armstrong.
 

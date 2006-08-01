@@ -3236,6 +3236,16 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
   return ret; 
 }
 
+/*
+std::string SageIRInterface::toString(const OA::OpHandle h) 
+{
+
+    } else if ( isSgUnaryOp(astNode) || isSgBinaryOp(astNode) ) {
+      // OpNode
+      OA::OpHandle h = mIR->getNodeNumber(astNode);
+}
+*/
+
 std::string SageIRInterface::toString(OA::Alias::IRStmtType x)
 {
   //printf("implement SageIRInterface::toString(OA::Alias::IRStmtType x)\n");
@@ -4015,7 +4025,8 @@ void SgParamBindPtrAssignIterator::create(OA::CallHandle call)
     //      type = *formalIt;
     //    }
     
-    if ( isSgReferenceType(type) || isSgPointerType(type) ) {
+    if ( isSgReferenceType(type) || isSgPointerType(type) 
+         || isSgArrayType(type) ) {
       treatAsPointerParam = true;
     }
     

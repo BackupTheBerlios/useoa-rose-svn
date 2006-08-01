@@ -2340,14 +2340,24 @@ SageIRMemRefIterator::findAllMemRefsAndMemRefExprs(SgNode *astNode,
 		type = actual->get_type();
 	      }
 	      ROSE_ASSERT(type != NULL);
-	      if ( isSgReferenceType(type) ) {
+	      if ( isSgReferenceType(type) || isSgArrayType(type) ) {
 		appearsOnRhsOfRefInitialization = true;
 	      }
-	    }
-
-	    break;
-	  }
+             
+	    } 
+            
+            // bit of a hack, MMS
+            // make sure that array types getting their address taken
+            SgType *type; 
+            SgExpression *actual = isSgExpression(actualNode);
+            ROSE_ASSERT(actual != NULL);
+            type = actual->get_type();
+            if (isSgArrayType(type)) {
+                    appearsOnRhsOfRefInitialization = true;
+            }
 	  
+          }
+
 	  // getFormalTypes does not return the implicit this parameter.
 	  if ( ( actualPos != 0 ) || ( !isMethod ) ) {
             if ( formalIt != typePtrList.end() ) {

@@ -2,7 +2,7 @@
 InterAliasMap(
     AliasMap(
         mProcHandle: ProcHandle(main)
-        mNumSets: 8
+        mNumSets: 9
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -57,6 +57,23 @@ InterAliasMap(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
+                8	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mAddressOf: 0
+                            mFullAccuracy: 0
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mAddressOf: 0
+                                mFullAccuracy: 1
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(const_array)
+                            )
+                            mNumDeref: 1
+                        )
+                    ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
                 0	 => 1
@@ -67,15 +84,16 @@ InterAliasMap(
                 5	 => 2
                 6	 => 2
                 7	 => 2
+                8	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                0	 => [ MemRefHandle(*q)    MemRefHandle(*q)    MemRefHandle(const_array[i]) ] 
                 1	 => [ MemRefHandle(const_array)    MemRefHandle(const_array) ] 
                 2	 => [ MemRefHandle(p)    MemRefHandle(p) ] 
                 3	 => [ MemRefHandle(i)    MemRefHandle(i)    MemRefHandle(*p) ] 
                 4	 => [ MemRefHandle(x)    MemRefHandle(x) ] 
                 5	 => [ MemRefHandle(y)    MemRefHandle(y) ] 
                 6	 => [ MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q) ] 
+                8	 => [ MemRefHandle(*q)    MemRefHandle(*q)    MemRefHandle(const_array[i]) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
@@ -139,6 +157,33 @@ InterAliasMap(
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(g)
+                    ) ] 
+                8	 => [ 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(q)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 0
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(const_array)
+                        )
+                        mNumDeref: 1
                     ) ] 
 
     )

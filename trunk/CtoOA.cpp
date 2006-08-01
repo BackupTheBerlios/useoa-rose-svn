@@ -47,6 +47,12 @@ int main ( unsigned argc,  char * argv[] )
     // code generator (which outputs .oa notation to the file)
     SgProject * sageProject = frontend((int)argc, &argv[0]);
     //outputFile.open(sOutputFile.c_str());
+
+    // debug output
+    AstPDFGeneration pdftest;
+    pdftest.generateInputFiles(sageProject);
+    AstDOTGeneration dottest;
+    dottest.generateInputFiles(sageProject);
     
     // Loop over every file.   BW 4/13/06
     int filenum = sageProject->numberOfFiles();

@@ -7,6 +7,6 @@ driverexec::./OATest -edg:w --oa-SideEffect -c
 
 # list of tests
 #       input file,             status
-test::  stringcmp.c,            Checked by PLM 07/20/06           
+test::  stringcmp.c,            Checked by MMS 07/27/06           
 test::  test.c,                 Checked by PLM 07/20/06
 test::  simpleMix-passptr.c,    Checked by PLM 07/20/06
