@@ -1,5 +1,8 @@
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
 PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
     FORMALS = {
@@ -78,10 +81,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stderr_;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("int main(){char strA[] = "Laurel";char strB[] = "Hardy";my_strcpy(strB,strA);puts((strB));}") =>
+    MEMREFEXPRS = { StmtHandle("int main(){char strA[] = "Laurel";char strB[] = "Hardy";char *cptr = my_strcpy(strB,strA);puts((strB));}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{char strA[] = "Laurel";char strB[] = "Hardy";my_strcpy(strB,strA);puts((strB));}") =>
+    MEMREFEXPRS = { StmtHandle("{char strA[] = "Laurel";char strB[] = "Hardy";char *cptr = my_strcpy(strB,strA);puts((strB));}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("char strA[] = "Laurel";") =>
@@ -108,8 +111,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             < NamedRef( DEF, SymHandle("strB"), F, full)
             , UnnamedRef( USE, StmtHandle(""Hardy""), T, part) >
         ] }
-    MEMREFEXPRS = { StmtHandle("my_strcpy(strB,strA);") =>
+    MEMREFEXPRS = { StmtHandle("char *cptr = my_strcpy(strB,strA);") =>
         [
+            MemRefHandle("cptr") => 
+                NamedRef( DEF, SymHandle("cptr"), F, full)
             MemRefHandle("strB") => 
                 NamedRef( USE, SymHandle("strB"), T, full)
             MemRefHandle("strA") => 
@@ -117,7 +122,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("my_strcpy(strB,strA)") => 
                 NamedRef( USE, SymHandle("my_strcpy"), F, full)
         ] }
-    CALLSITES = { StmtHandle("my_strcpy(strB,strA);") =>
+    PTRASSIGNPAIRS = { StmtHandle("char *cptr = my_strcpy(strB,strA);") =>
+        [
+            < NamedRef( DEF, SymHandle("cptr"), F, full)
+            , NamedRef( USE, SymHandle("my_strcpy"), F, full) >
+        ] }
+    CALLSITES = { StmtHandle("char *cptr = my_strcpy(strB,strA);") =>
         [
             CallHandle("my_strcpy(strB,strA)") => 
                 NamedRef( USE, SymHandle("my_strcpy"), F, full)
@@ -146,6 +156,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     LOCATION = { < SymHandle("strA"), local > }
     LOCATION = { < SymHandle("strB"), local > }
+    LOCATION = { < SymHandle("cptr"), local > }
     LOCATION = { < SymHandle("puts"), not local > }
     LOCATION = { < SymHandle("my_strcpy"), not local > }
     LOCATION = { < SymHandle("main"), not local > }

@@ -24,6 +24,6 @@
     {
         char strA[] = "Laurel";
         char strB[] = "Hardy";
-        my_strcpy(strB, strA);
+        char* cptr = my_strcpy(strB, strA);
         puts(strB);
     }    

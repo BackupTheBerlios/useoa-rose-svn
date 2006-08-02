@@ -6,8 +6,12 @@ echo "Generating TestResults/AliasIRInterface/alias4.c.out"
 ./CtoOA TestCases/AliasTests/alias4.c >& TestResults/AliasIRInterface/alias4.c.out
 echo "Generating TestResults/AliasIRInterface/alias4b.c.out"
 ./CtoOA TestCases/AliasTests/alias4b.c >& TestResults/AliasIRInterface/alias4b.c.out
+echo "Generating TestResults/AliasIRInterface/assignReturn.c.out"
+./CtoOA TestCases/AliasTests/assignReturn.c >& TestResults/AliasIRInterface/assignReturn.c.out
 echo "Generating TestResults/AliasIRInterface/comma.c.out"
 ./CtoOA TestCases/AliasTests/comma.c >& TestResults/AliasIRInterface/comma.c.out
+echo "Generating TestResults/AliasIRInterface/fields.c.out"
+./CtoOA TestCases/AliasTests/fields.c >& TestResults/AliasIRInterface/fields.c.out
 echo "Generating TestResults/AliasIRInterface/func_call.c.out"
 ./CtoOA TestCases/AliasTests/func_call.c >& TestResults/AliasIRInterface/func_call.c.out
 echo "Generating TestResults/AliasIRInterface/functionPtr.c.out"
@@ -38,7 +42,9 @@ echo "Generating TestResults/AliasIRInterface/refClass.C.out"
 ./CtoOA TestCases/AliasTests/refClass.C >& TestResults/AliasIRInterface/refClass.C.out
 echo "Generating TestResults/AliasIRInterface/refClass2.C.out"
 ./CtoOA TestCases/AliasTests/refClass2.C >& TestResults/AliasIRInterface/refClass2.C.out
-echo "Generating TestResults/AliasIRInterface/swap.c.out"
-./CtoOA TestCases/AliasTests/swap.c >& TestResults/AliasIRInterface/swap.c.out
 echo "Generating TestResults/AliasIRInterface/retPtr1.c.out"
 ./CtoOA TestCases/AliasTests/retPtr1.c >& TestResults/AliasIRInterface/retPtr1.c.out
+echo "Generating TestResults/AliasIRInterface/swap.c.out"
+./CtoOA TestCases/AliasTests/swap.c >& TestResults/AliasIRInterface/swap.c.out
+echo "Generating TestResults/AliasIRInterface/ternop.c.out"
+./CtoOA TestCases/AliasTests/ternop.c >& TestResults/AliasIRInterface/ternop.c.out
