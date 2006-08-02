@@ -26,3 +26,7 @@ echo "Generating TestResults/AliasIRInterface/passIntPtr.c.out"
 ./CtoOA TestCases/AliasTests/passIntPtr.c >& TestResults/AliasIRInterface/passIntPtr.c.out
 echo "Generating TestResults/AliasIRInterface/swap.c.out"
 ./CtoOA TestCases/AliasTests/swap.c >& TestResults/AliasIRInterface/swap.c.out
+echo "Generating TestResults/AliasIRInterface/functionPtr.c.out"
+./CtoOA TestCases/AliasTests/functionPtr.c >& TestResults/AliasIRInterface/functionPtr.c.out
+echo "Generating TestResults/AliasIRInterface/functionPtr2.c.out"
+./CtoOA TestCases/AliasTests/functionPtr2.c >& TestResults/AliasIRInterface/functionPtr2.c.out

@@ -54,3 +54,11 @@ echo "Testing TestCases/AliasTests/swap.c, TestResults/AliasIRInterface/swap.c.o
 ./CtoOA TestCases/AliasTests/swap.c >& t
 diff t TestResults/AliasIRInterface/swap.c.out
 
+echo "Testing TestCases/AliasTests/functionPtr.c, TestResults/AliasIRInterface/functionPtr.c.out checked by MMS 8/1/06"
+./CtoOA TestCases/AliasTests/functionPtr.c >& t
+diff t TestResults/AliasIRInterface/functionPtr.c.out
+
+echo "Testing TestCases/AliasTests/functionPtr2.c, TestResults/AliasIRInterface/functionPtr2.c.out checked by MMS 8/1/06"
+./CtoOA TestCases/AliasTests/functionPtr2.c >& t
+diff t TestResults/AliasIRInterface/functionPtr2.c.out
+

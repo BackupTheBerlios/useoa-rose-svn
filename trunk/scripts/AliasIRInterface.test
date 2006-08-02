@@ -30,4 +30,5 @@ test::  passIntPtrArrayRef2.c,   checked by MMS 7/24/06
 test::  passIntPtrArrayRef3.c,   checked by MMS 7/24/06
 test::  passIntPtr.c,            checked by MMS 7/24/06
 test::  swap.c,                  i++ should be USEDEF otherwise fine MMS 7/23/06
-
+test::  functionPtr.c,           checked by MMS 8/1/06
+test::  functionPtr2.c,          checked by MMS 8/1/06
