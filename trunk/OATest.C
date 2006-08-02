@@ -46,6 +46,7 @@
 #include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
 #include <OpenAnalysis/Utils/Util.hpp>
+#include <OpenAnalysis/ReachConsts/ManagerReachConstsStandard.hpp>
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
 
 #include <string>
@@ -92,6 +93,9 @@ int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> *na, bool p_handle);
 void prettyPrintMemRefExp(OA::OA_ptr<OA::MemRefExpr> memRefExp, 
 			  SageIRInterface *ir,
 			  std::ostream &os);
+
+int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+    
 
 /* Debug flags:
 
@@ -383,8 +387,26 @@ main ( unsigned argc,  char * argv[] )
     }
     else if( cmds->HasOption("--oa-ReachConsts") )
     {
-      printf("TO DO, implement ReachConsts analysis\n");
-      return 1;
+        
+    //  printf("TO DO, implement ReachConsts analysis\n");
+     /* for (int i = 0; i < filenum; ++i)
+       {
+         SgFile &sageFile = sageProject->get_file(i);
+         SgGlobal *root = sageFile.get_root();
+         SgDeclarationStatementPtrList& declList = root->get_declarations ();
+         for (SgDeclarationStatementPtrList::iterator p = declList.begin(); p != declList.end(); ++p)
+         {
+             SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
+             if (func == 0)
+                    continue;
+                                                                                             SgFunctionDefinition *defn = func->get_definition();
+                                                                                             if (defn == 0)
+                    continue;
+                                                                                             DoReachConsts(defn, sageProject, &nodeArray, p_h);
+                                                                                           }
+                                                                                        }
+       */
+        return 1;
     }
     else if( cmds->HasOption("--oa-AliasMapXAIF") )
     {
@@ -1000,6 +1022,48 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 
 }
 
+int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+{
+  /* int returnvalue=FALSE;
+   if ( debug ) printf("*******start of DoUDDUChains\n");
+   OA::OA_ptr<SageIRInterface> irInterface;
+   irInterface = new SageIRInterface(p, na, p_handle);
+           
+    
+   //CFG
+   OA::OA_ptr<OA::CFG::ManagerStandard> cfgmanstd;
+   cfgmanstd = new OA::CFG::ManagerStandard(irInterface);
+   OA::OA_ptr<OA::CFG::CFGStandard> cfg=
+   cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+
+   //Alias
+   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+   OA::OA_ptr<SageIRProcIterator> procIter;
+   bool excludeInputFiles = true;
+          
+   procIter = new SageIRProcIterator(p,irInterface, excludeInputFiles);
+   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+   interAlias = fialiasman->performAnalysis(procIter);
+   OA::ProcHandle proc((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+   OA::OA_ptr<OA::Alias::Interface> alias = interAlias->getAliasResults(proc);
+
+   // Interprocedural Side-Effect Analysis
+   // for now generate default conservative interprocedural side-effect results
+   OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
+   interSideEffect = new OA::SideEffect::InterSideEffectStandard;
+        
+   
+   //ReachConsts        
+   OA::OA_ptr<OA::ReachConsts::ManagerStandard> rcman;
+   rcman = new OA::ReachConsts::ManagerStandard(irInterface);
+   OA::OA_ptr<OA::ReachConsts::ReachConstsStandard> reachConsts=
+          rcman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect); 
+   
+   std::cout << "\n*******  end of DoUDDUChains *********\n\n";
+   return returnvalue;
+    */  
+}
 
 
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)

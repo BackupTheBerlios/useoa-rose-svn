@@ -14,6 +14,4 @@ test::  test.c,             checked by BK 7/27/06
 # ConstValNode:
 test::  swap.c,             checked by BK 7/27/06
 #
-#test::  qsort1.c,            broken due to Bug 8092
-#test::  qsort2.c,            broken due to Bug 8092
 

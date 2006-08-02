@@ -82,3 +82,7 @@ echo "Testing TestCases/AliasTests/swap.c, TestResults/AliasIRInterface/swap.c.o
 ./CtoOA TestCases/AliasTests/swap.c >& t
 diff t TestResults/AliasIRInterface/swap.c.out
 
+echo "Testing TestCases/AliasTests/retPtr1.c, TestResults/AliasIRInterface/retPtr1.c.out Added by PLM 08/01/06"
+./CtoOA TestCases/AliasTests/retPtr1.c >& t
+diff t TestResults/AliasIRInterface/retPtr1.c.out
+

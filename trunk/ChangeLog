@@ -1895,3 +1895,5 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     in OpenAnalysis r167.  RegressAll works with OpenAnalysis r167
     and everything compiled with gcc 4.0.2 on armstrong.
 
+8/01/06     UseOA-Rose svn trunk r132    Priyadarshini Malusare
+   Added 5 TestCases for AliasIRInterface. 
