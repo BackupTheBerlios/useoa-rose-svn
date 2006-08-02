@@ -8,6 +8,12 @@ echo "Generating TestResults/AliasIRInterface/alias4b.c.out"
 ./CtoOA TestCases/AliasTests/alias4b.c >& TestResults/AliasIRInterface/alias4b.c.out
 echo "Generating TestResults/AliasIRInterface/comma.c.out"
 ./CtoOA TestCases/AliasTests/comma.c >& TestResults/AliasIRInterface/comma.c.out
+echo "Generating TestResults/AliasIRInterface/func_call.c.out"
+./CtoOA TestCases/AliasTests/func_call.c >& TestResults/AliasIRInterface/func_call.c.out
+echo "Generating TestResults/AliasIRInterface/functionPtr.c.out"
+./CtoOA TestCases/AliasTests/functionPtr.c >& TestResults/AliasIRInterface/functionPtr.c.out
+echo "Generating TestResults/AliasIRInterface/functionPtr2.c.out"
+./CtoOA TestCases/AliasTests/functionPtr2.c >& TestResults/AliasIRInterface/functionPtr2.c.out
 echo "Generating TestResults/AliasIRInterface/invokeBaseCtor.C.out"
 ./CtoOA TestCases/AliasTests/invokeBaseCtor.C >& TestResults/AliasIRInterface/invokeBaseCtor.C.out
 echo "Generating TestResults/AliasIRInterface/localNonLocal.c.out"
@@ -24,9 +30,13 @@ echo "Generating TestResults/AliasIRInterface/passIntPtrArrayRef3.c.out"
 ./CtoOA TestCases/AliasTests/passIntPtrArrayRef3.c >& TestResults/AliasIRInterface/passIntPtrArrayRef3.c.out
 echo "Generating TestResults/AliasIRInterface/passIntPtr.c.out"
 ./CtoOA TestCases/AliasTests/passIntPtr.c >& TestResults/AliasIRInterface/passIntPtr.c.out
+echo "Generating TestResults/AliasIRInterface/refParam.C.out"
+./CtoOA TestCases/AliasTests/refParam.C >& TestResults/AliasIRInterface/refParam.C.out
+echo "Generating TestResults/AliasIRInterface/ref.C.out"
+./CtoOA TestCases/AliasTests/ref.C >& TestResults/AliasIRInterface/ref.C.out
+echo "Generating TestResults/AliasIRInterface/refClass.C.out"
+./CtoOA TestCases/AliasTests/refClass.C >& TestResults/AliasIRInterface/refClass.C.out
+echo "Generating TestResults/AliasIRInterface/refClass2.C.out"
+./CtoOA TestCases/AliasTests/refClass2.C >& TestResults/AliasIRInterface/refClass2.C.out
 echo "Generating TestResults/AliasIRInterface/swap.c.out"
 ./CtoOA TestCases/AliasTests/swap.c >& TestResults/AliasIRInterface/swap.c.out
-echo "Generating TestResults/AliasIRInterface/functionPtr.c.out"
-./CtoOA TestCases/AliasTests/functionPtr.c >& TestResults/AliasIRInterface/functionPtr.c.out
-echo "Generating TestResults/AliasIRInterface/functionPtr2.c.out"
-./CtoOA TestCases/AliasTests/functionPtr2.c >& TestResults/AliasIRInterface/functionPtr2.c.out

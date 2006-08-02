@@ -21,6 +21,9 @@ test::  comma.c,                 checked by MMS 6/22/06
 #test::  utke.c,                 checked by ???
 #test::  OAWikiEx.c,             checked by ???
 #test::  funCall.c,              checked by ???
+test::  func_call.c,             p=fp2() has two MemRefHandles that are the same? aborting MMS 8/1/06
+test::  functionPtr.c,           checked by MMS 8/1/06
+test::  functionPtr2.c,          checked by MMS 8/1/06
 test::  invokeBaseCtor.C,        checked by BSW 6/26/06
 test::  localNonLocal.c,         checked by BSW 6/28/06
 test::  passArrayPtr.c,          checked by MMS 7/27/06
@@ -29,6 +32,8 @@ test::  passIntPtrArrayRef.c,    checked by MMS 7/24/06
 test::  passIntPtrArrayRef2.c,   checked by MMS 7/24/06
 test::  passIntPtrArrayRef3.c,   checked by MMS 7/24/06
 test::  passIntPtr.c,            checked by MMS 7/24/06
+test::  refParam.C,              checked by MMS 8/1/06
+test::  ref.C,                   MemRefHandle for refPtr itself? MMS 8/1/06
+test::  refClass.C,              ctor inits should be defining namedrefs not derefs MMS 8/1/06
+test::  refClass2.C,             ctor inits should be defining namedrefs not derefs MMS 8/1/06
 test::  swap.c,                  i++ should be USEDEF otherwise fine MMS 7/23/06
-test::  functionPtr.c,           checked by MMS 8/1/06
-test::  functionPtr2.c,          checked by MMS 8/1/06
