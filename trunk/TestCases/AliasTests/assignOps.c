@@ -9,6 +9,9 @@ int main() {
 
     a++;
 
+    b = ++a;
+    b = a++;
+
     a += 45;
 
     return a = b -= a;

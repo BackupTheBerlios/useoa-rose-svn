@@ -1,14 +1,9 @@
-"TestCases/AliasTests/assignOps.c", line 14: warning: variable "b" is used
-          before its value is set
-      return a = b -= a;
-                 ^
-
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
-    MEMREFEXPRS = { StmtHandle("int main(){int a;int b;a = 20;a++;a += 45;return a =(b -= a);}") =>
+    MEMREFEXPRS = { StmtHandle("int main(){int a;int b;a = 20;a++;b = ++a;b = a++;a += 45;return a =(b -= a);}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{int a;int b;a = 20;a++;a += 45;return a =(b -= a);}") =>
+    MEMREFEXPRS = { StmtHandle("{int a;int b;a = 20;a++;b = ++a;b = a++;a += 45;return a =(b -= a);}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int a;") =>
@@ -24,6 +19,20 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("a++;") =>
         [
+            MemRefHandle("a") => 
+                NamedRef( DEF, SymHandle("a"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("b = ++a;") =>
+        [
+            MemRefHandle("b") => 
+                NamedRef( DEF, SymHandle("b"), F, full)
+            MemRefHandle("a") => 
+                NamedRef( DEF, SymHandle("a"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("b = a++;") =>
+        [
+            MemRefHandle("b") => 
+                NamedRef( DEF, SymHandle("b"), F, full)
             MemRefHandle("a") => 
                 NamedRef( DEF, SymHandle("a"), F, full)
         ] }
