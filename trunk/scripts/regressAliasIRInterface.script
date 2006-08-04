@@ -18,6 +18,10 @@ echo "Testing TestCases/AliasTests/alias4b.c, TestResults/AliasIRInterface/alias
 ./CtoOA TestCases/AliasTests/alias4b.c >& t
 diff t TestResults/AliasIRInterface/alias4b.c.out
 
+echo "Testing TestCases/AliasTests/assignOps.c, TestResults/AliasIRInterface/assignOps.c.out has known USEDEF errors MMS 8/4/06"
+./CtoOA TestCases/AliasTests/assignOps.c >& t
+diff t TestResults/AliasIRInterface/assignOps.c.out
+
 echo "Testing TestCases/AliasTests/assignReturn.c, TestResults/AliasIRInterface/assignReturn.c.out missing use of a in *p=a=&g return ptrassigns broke MMS 8/2/06"
 ./CtoOA TestCases/AliasTests/assignReturn.c >& t
 diff t TestResults/AliasIRInterface/assignReturn.c.out

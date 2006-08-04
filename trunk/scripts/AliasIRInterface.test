@@ -17,6 +17,7 @@ test::  alias2.c,                checked by AIS 7/03/06 (rechecked for r93)
 #test::  alias3.c,                error 6/26/06 AIS
 test::  alias4.c,                checked by AIS 7/03/06 (rechecked for r93)
 test::  alias4b.c,               checked by AIS 7/03/06 (rechecked for r93)
+test::  assignOps.c,              has known USEDEF errors MMS 8/4/06
 test::  assignReturn.c,          missing use of a in *p=a=&g return ptrassigns broke MMS 8/2/06
 test::  comma.c,                 checked by MMS 6/22/06
 test::  fields.c,                (*z)->p is not correct MMS 8/2/06
