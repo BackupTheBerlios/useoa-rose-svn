@@ -1,3 +1,7 @@
+echo "Testing TestCases/AliasTests/adressOf.c, TestResults/AliasIRInterface/adressOf.c.out checked by MMS 8/4/06"
+./CtoOA TestCases/AliasTests/adressOf.c >& t
+diff t TestResults/AliasIRInterface/adressOf.c.out
+
 echo "Testing TestCases/AliasTests/alias1.c, TestResults/AliasIRInterface/alias1.c.out checked by AIS 7/03/06 (rechecked for r93)"
 ./CtoOA TestCases/AliasTests/alias1.c >& t
 diff t TestResults/AliasIRInterface/alias1.c.out

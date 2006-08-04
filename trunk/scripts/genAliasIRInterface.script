@@ -1,3 +1,5 @@
+echo "Generating TestResults/AliasIRInterface/adressOf.c.out"
+./CtoOA TestCases/AliasTests/adressOf.c >& TestResults/AliasIRInterface/adressOf.c.out
 echo "Generating TestResults/AliasIRInterface/alias1.c.out"
 ./CtoOA TestCases/AliasTests/alias1.c >& TestResults/AliasIRInterface/alias1.c.out
 echo "Generating TestResults/AliasIRInterface/alias2.c.out"
