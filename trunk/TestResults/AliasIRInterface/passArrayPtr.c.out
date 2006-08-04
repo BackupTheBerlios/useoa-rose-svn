@@ -3,6 +3,14 @@
   }
   ^
 
+"TestCases/AliasTests/passArrayPtr.c", line 13: warning: variable "v" was
+          declared but never referenced
+      char v = a[2];
+           ^
+
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
@@ -40,10 +48,10 @@ PROCEDURE = { < ProcHandle("strcmp"), SymHandle("strcmp") > }
     LOCATION = { < SymHandle("strcmp"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
-    MEMREFEXPRS = { StmtHandle("int main(){char a[] = "testing";int x = strcmp(a,a);}") =>
+    MEMREFEXPRS = { StmtHandle("int main(){char a[] = "testing";int x = strcmp(a,a);a[3] = 'b';char v =(a[2]);}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{char a[] = "testing";int x = strcmp(a,a);}") =>
+    MEMREFEXPRS = { StmtHandle("{char a[] = "testing";int x = strcmp(a,a);a[3] = 'b';char v =(a[2]);}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("char a[] = "testing";") =>
@@ -77,10 +85,23 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             < 0, NamedRef( USE, SymHandle("a"), T, full) >
             < 1, NamedRef( USE, SymHandle("a"), T, full) >
         ] }
+    MEMREFEXPRS = { StmtHandle("a[3] = 'b';") =>
+        [
+            MemRefHandle("a[3]") => 
+                NamedRef( DEF, SymHandle("a"), F, part)
+        ] }
+    MEMREFEXPRS = { StmtHandle("char v =(a[2]);") =>
+        [
+            MemRefHandle("v") => 
+                NamedRef( DEF, SymHandle("v"), F, full)
+            MemRefHandle("(a[2])") => 
+                NamedRef( USE, SymHandle("a"), F, part)
+        ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
     LOCATION = { < SymHandle("a"), local > }
     LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("v"), local > }
     LOCATION = { < SymHandle("strcmp"), not local > }
     LOCATION = { < SymHandle("main"), not local > }

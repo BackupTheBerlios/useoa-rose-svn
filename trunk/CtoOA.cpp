@@ -49,10 +49,10 @@ int main ( unsigned argc,  char * argv[] )
     //outputFile.open(sOutputFile.c_str());
 
     // debug output
-    AstPDFGeneration pdftest;
-    pdftest.generateInputFiles(sageProject);
-    AstDOTGeneration dottest;
-    dottest.generateInputFiles(sageProject);
+    //AstPDFGeneration pdftest;
+    //pdftest.generateInputFiles(sageProject);
+    //AstDOTGeneration dottest;
+    //dottest.generateInputFiles(sageProject);
     
     // Loop over every file.   BW 4/13/06
     int filenum = sageProject->numberOfFiles();
