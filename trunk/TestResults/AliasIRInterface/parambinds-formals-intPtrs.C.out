@@ -1,18 +1,70 @@
+"TestCases/AliasTests/parambinds-formals-intPtrs.C", line 30: warning: 
+          variable "ap" is used before its value is set
+      va_start(ap,(const void *)i);
+      ^
+
+"TestCases/AliasTests/parambinds-formals-intPtrs.C", line 28: warning: 
+          variable "j" was set but never used
+      int* j;
+           ^
+
 
 PROCEDURE = { < ProcHandle("ellipsis_intptrs"), SymHandle("ellipsis_intptrs") > }
     FORMALS = {
         [
-            < 0, SymHandle("x") >
+            < 0, SymHandle("i") >
             < 1, SymHandle("") >
         ] }
-    MEMREFEXPRS = { StmtHandle("void ellipsis_intptrs(int x,... ){}") =>
+    MEMREFEXPRS = { StmtHandle("void ellipsis_intptrs(int i,... ){int *j;va_list ap;va_start(ap,((const void *)i));j =(va_arg(ap,int *));va_end(ap);}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{}") =>
+    MEMREFEXPRS = { StmtHandle("{int *j;va_list ap;va_start(ap,((const void *)i));j =(va_arg(ap,int *));va_end(ap);}") =>
         [
         ] }
-    LOCATION = { < SymHandle("x"), local > }
+    MEMREFEXPRS = { StmtHandle("int *j;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("va_list ap;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("va_start(ap,((const void *)i));") =>
+        [
+            MemRefHandle("ap") => 
+                NamedRef( USE, SymHandle("ap"), F, full)
+            MemRefHandle("i") => 
+                NamedRef( USE, SymHandle("i"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("va_start(ap,((const void *)i));") =>
+        [
+            CallHandle("va_start(ap,((const void *)i))") => 
+                NamedRef( USE, SymHandle("va_start"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("va_start(ap,((const void *)i))") =>
+        [
+            < 1, NamedRef( USE, SymHandle("i"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("j =(va_arg(ap,int *));") =>
+        [
+            MemRefHandle("j") => 
+                NamedRef( DEF, SymHandle("j"), F, full)
+            MemRefHandle("ap") => 
+                NamedRef( USE, SymHandle("ap"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("j =(va_arg(ap,int *));") =>
+        [
+            < NamedRef( DEF, SymHandle("j"), F, full)
+            , NamedRef( USE, SymHandle("ap"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("va_end(ap);") =>
+        [
+            MemRefHandle("ap") => 
+                NamedRef( USE, SymHandle("ap"), F, full)
+        ] }
+    LOCATION = { < SymHandle("i"), local > }
     LOCATION = { < SymHandle(""), local > }
+    LOCATION = { < SymHandle("j"), local > }
+    LOCATION = { < SymHandle("ap"), local > }
+    LOCATION = { < SymHandle("va_start"), not local > }
     LOCATION = { < SymHandle("ellipsis_intptrs"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }

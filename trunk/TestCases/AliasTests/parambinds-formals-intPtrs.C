@@ -17,9 +17,23 @@
 //#include <iostream>
 using namespace std;
 
+//void ellipsis_intptrs(int x, ...)
+//{
+//}
+
 // going to pass in ptrs to ints
-void ellipsis_intptrs(int x, ...)
+// This gets me SgVarArgOp and SgVarArgEndOp, why not SgVarArgStartOp?
+void ellipsis_intptrs(int i, ...)
 {
+    int* j;
+    va_list ap;
+    va_start(ap,(const void *)i);
+
+    // g++ only accepts basic types or ptr types for the second param
+    j = va_arg(ap,int*);
+    //    printf("j=%d\n",j);
+
+    va_end(ap);
 }
 
 int main()

@@ -16,6 +16,9 @@ int main()
   int *ptr = &m;
 
   int *& refPtr = ptr;    // read as int **refPtr = &ptr;
+  //int& x = 4;           // does not compile  
+  //int& x;               // this doesn't compile either
+  //x = 4;
   *ptr;
   *refPtr;                // read as **refPtr;
 

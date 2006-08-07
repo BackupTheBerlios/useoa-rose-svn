@@ -1,5 +1,7 @@
 echo "Generating TestResults/AliasIRInterface/addressOf.c.out"
 ./CtoOA TestCases/AliasTests/addressOf.c >& TestResults/AliasIRInterface/addressOf.c.out
+echo "Generating TestResults/AliasIRInterface/aggregateInit.c.out"
+./CtoOA TestCases/AliasTests/aggregateInit.c >& TestResults/AliasIRInterface/aggregateInit.c.out
 echo "Generating TestResults/AliasIRInterface/alias1.c.out"
 ./CtoOA TestCases/AliasTests/alias1.c >& TestResults/AliasIRInterface/alias1.c.out
 echo "Generating TestResults/AliasIRInterface/alias2.c.out"
@@ -12,6 +14,8 @@ echo "Generating TestResults/AliasIRInterface/assignOps.c.out"
 ./CtoOA TestCases/AliasTests/assignOps.c >& TestResults/AliasIRInterface/assignOps.c.out
 echo "Generating TestResults/AliasIRInterface/assignReturn.c.out"
 ./CtoOA TestCases/AliasTests/assignReturn.c >& TestResults/AliasIRInterface/assignReturn.c.out
+echo "Generating TestResults/AliasIRInterface/class.C.out"
+./CtoOA TestCases/AliasTests/class.C >& TestResults/AliasIRInterface/class.C.out
 echo "Generating TestResults/AliasIRInterface/comma.c.out"
 ./CtoOA TestCases/AliasTests/comma.c >& TestResults/AliasIRInterface/comma.c.out
 echo "Generating TestResults/AliasIRInterface/fields.c.out"

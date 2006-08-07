@@ -22,6 +22,9 @@ int main()
   foo f(ptr);
   *ptr;
 
+  //foo& fooref(ptr);  // this does not compile
+  foo& fooref(foo);
+
   int z;
   foo* fooptr = new foo(&z);
 

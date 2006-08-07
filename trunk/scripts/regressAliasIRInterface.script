@@ -2,6 +2,10 @@ echo "Testing TestCases/AliasTests/addressOf.c, TestResults/AliasIRInterface/add
 ./CtoOA TestCases/AliasTests/addressOf.c >& t
 diff t TestResults/AliasIRInterface/addressOf.c.out
 
+echo "Testing TestCases/AliasTests/aggregateInit.c, TestResults/AliasIRInterface/aggregateInit.c.out missing UnnamedRef for init array MMS 8/7/06"
+./CtoOA TestCases/AliasTests/aggregateInit.c >& t
+diff t TestResults/AliasIRInterface/aggregateInit.c.out
+
 echo "Testing TestCases/AliasTests/alias1.c, TestResults/AliasIRInterface/alias1.c.out checked by AIS 7/03/06 (rechecked for r93)"
 ./CtoOA TestCases/AliasTests/alias1.c >& t
 diff t TestResults/AliasIRInterface/alias1.c.out
@@ -25,6 +29,10 @@ diff t TestResults/AliasIRInterface/assignOps.c.out
 echo "Testing TestCases/AliasTests/assignReturn.c, TestResults/AliasIRInterface/assignReturn.c.out missing use of a in *p=a=&g return ptrassigns broke MMS 8/2/06"
 ./CtoOA TestCases/AliasTests/assignReturn.c >& t
 diff t TestResults/AliasIRInterface/assignReturn.c.out
+
+echo "Testing TestCases/AliasTests/class.C, TestResults/AliasIRInterface/class.C.out missing LOC for sInt MMS 8/7/06"
+./CtoOA TestCases/AliasTests/class.C >& t
+diff t TestResults/AliasIRInterface/class.C.out
 
 echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c.out checked by MMS 6/22/06"
 ./CtoOA TestCases/AliasTests/comma.c >& t
@@ -58,7 +66,7 @@ echo "Testing TestCases/AliasTests/passArrayPtr.c, TestResults/AliasIRInterface/
 ./CtoOA TestCases/AliasTests/passArrayPtr.c >& t
 diff t TestResults/AliasIRInterface/passArrayPtr.c.out
 
-echo "Testing TestCases/AliasTests/parambinds-formals-intPtrs.C, TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out checked by BSW 7/11/06"
+echo "Testing TestCases/AliasTests/parambinds-formals-intPtrs.C, TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out should ap be formal param? MMS 8/7/06"
 ./CtoOA TestCases/AliasTests/parambinds-formals-intPtrs.C >& t
 diff t TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out
 
