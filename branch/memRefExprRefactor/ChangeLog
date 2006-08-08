@@ -1,0 +1,1903 @@
+8/2/05 	Version 0.1 	Brian White 
+	- Created ChangeLog to keep Beata and I from confusing
+	  versions as we share code.  This is not actually the
+	  first version of the code-- Beata is responsible for the
+	  vast majority of this implementation; I have only added
+	  a few methods.
+	- The SageIRInterface now partially implements the following
+	  interfaces:
+		OA::SSA::SSAIRInterface,
+		OA::CFG::CFGIRInterfaceDefault,  
+		OA::CallGraph::CallGraphIRInterface,
+		OA::Alias::AliasIRInterfaceDefault,
+		OA::ReachDefs::ReachDefsIRInterface,
+		OA::UDDUChains::UDDUChainsIRInterface,
+		OA::XAIF::XAIFIRInterface,
+		OA::DataFlow::ParamBindingsIRInterface,
+		OA::SideEffect::InterSideEffectIRInterfaceDefault,
+		OA::SideEffect::SideEffectIRInterface
+          Of the above, the following were added:
+		OA::SSA::SSAIRInterface,
+		OA::DataFlow::ParamBindingsIRInterface,
+		OA::SideEffect::InterSideEffectIRInterfaceDefault,
+		OA::SideEffect::SideEffectIRInterface
+	  Made all inheritance of these interfaces virtual
+	  (public OA::CFG::CFGIRInterfaceDefault and 
+	  public OA::Alias::AliasIRInterfaceDefault were not previously
+	  virtual).  
+	- The control flow graph, call graph, and param binding
+	  interfaces have been superficially tested within
+	  extensions to ROSE 0.8.4c.  This requires wrappers not
+	  present here.
+	- Renamed files (and changed Makefile accordingly) to be
+	  consistent with ROSE naming conventions (as these files
+	  will eventually reside in the ROSE tree):
+		MemSage2OA.cpp      -> MemSage2OA.C
+		MemSage2OA.hpp      -> MemSage2OA.h
+		NewSage2OA.cpp      -> Sage2OA.C
+		NewSage2OA.hpp      -> Sage2OA.h
+		SageOACallGraph.cpp -> SageOACallGraph.C
+		SageOACallGraph.hpp -> SageOACallGraph.h
+	- Attempted to convert any 'for now's or otherwise
+	  seemingly unimplemented methods to call abort().  This
+	  makes it clear when running a test what remains to
+	  be implemented.
+	- Retired MemSageIRTopMemRefIterator in MemSage2OA.h.
+	- Changed SageIRProcIterator in SageOACallGraph.h so that
+	  it operates on a SgNode rather than being restricted
+	  to a SgProject (which isa SgNode).
+	- Added the following typedefs/types:
+		SageMemRefHandleIterator    (MemSage2OA.h)
+		SageSymHandleIterator       (Sage2OA.h)
+		SageIRSymIterator	    (Sage2OA.h)
+		SageIRFormalParamIterator   (Sage2OA.h)
+		SageExprHandleIterator	    (Sage2OA.h)
+		SageIRCallsiteParamIterator (Sage2OA.h)
+	- Implemented the following methods:
+		OA::OA_ptr<OA::IRFormalParamIterator> getFormalParamIterator(OA::SymHandle h);
+		OA::OA_ptr<OA::IRCallsiteParamIterator> getCallsiteParams(OA::ExprHandle h);
+		bool isRefParam(OA::SymHandle);
+		OA::SymHandle getFormalForActual(OA::ProcHandle caller, OA::ExprHandle call,
+						 OA::ProcHandle callee, OA::ExprHandle param);
+		OA::OA_ptr<OA::ExprTree> getExprTree(OA::ExprHandle h);
+		OA::StmtLabel SageIRInterface::getTargetLabel(OA::StmtHandle h, int);
+		OA::StmtLabel SageIRInterface::getLabel(OA::StmtHandle h);
+		OA::SymHandle SageIRInterface::getSymHandle(OA::LeafHandle h);
+	- Changed getSymHandle to use the helper function
+	  getFunctionDeclaration which accounts for the fact that
+	  the SgFunctionCallExp (i.e., the ExprHandle argument) may
+	  be a C++ method.  Notice that getFunctionDeclaration
+	  still does not handle the case of a dereferenced function
+	  pointer (i.e., SgPointerDerefExp).  In this case, there is
+	  potentially more than one function declaration (since
+	  control flow may dictate that multiple definitions can
+	  reach the same function pointer variable).
+	- Changed return type of getDefMemRefs from IRTopMemRefIterator
+	  to MemRefHandleIterator.
+
+8/24/05 Version 0.2 	Brian White 
+	- Re-implemented getDefMemRefs, getUseMemRefs, getAllMemRefs;
+	  all of which use getMemRefIterator.  The real workhorse
+	  here is SageIRMemRefIterator.  Passes all examples
+	  on the OpenAnalysis Wiki.
+	- Allowed NULL ProcHandle to be passed to getProcSymHandle.
+	- Added a slew of output methods:
+	  void dump(OA::OA_ptr<OA::NamedLoc> loc, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::UnnamedLoc> loc, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::InvisibleLoc> loc, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::UnknownLoc> loc, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::Location> loc, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::NamedRef> memRefExp, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::UnnamedRef> memRefExp, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::UnknownRef> memRefExp, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::Deref> memRefExp, std::ostream& os);
+	  void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, std::ostream &os);
+
+8/29/05 Version 0.3 	Brian White
+ 	- Modified OA::OA_ptr<OA::ExprTree> SageIRInterface::getExprTree
+	  to invoke isMemRefNode (defined in MemSage2OA.C) to determine
+	  whether a node is a MemRefNode.  Moved isMemRefNode out of
+	  a class definition so that it may be used as a general utility
+	  function.  Note that isMemRefNode returns true for nodes that
+	  are also CallNodes and OpNodes.  i.e., these distinctions are
+	  not disjoint.  For now, if a node is a MemRefNode, we create
+	  a MemRefNode for it in the ExprTree.  In the future, we may
+	  want a node that captures more than one of these designations
+	  (e.g., CallMemRefNode and OpMemRefNode).
+	- Added ifdef guards (BWHITE_VERSION) that should only be
+	  defined by Brian when he's using a local version of OpenAnalysis
+	  which includes new MemRefExpr constructors and the following
+	  methods:
+		isDefUse()
+		isUseDef()
+		setMemRefType()
+	  These should be added to the OpenAnalysis distribution "soon".
+	- Added OAConfig.h to the distribution.  I had forgotten to 
+	  include this in earlier versions.
+
+8/29/05 Version 0.4 	Brian White	
+	- Added the following unimplemented methods to SageIRInterface
+	  that have been added to the OpenAnalysis interface:
+	OA::OA_ptr<OA::IRSymIterator> getRefSymIterator(OA::ProcHandle h);
+	bool isParam(OA::SymHandle);
+	OA::OA_ptr<OA::SSA::IRUseDefIterator> getUses(OA::StmtHandle h);
+	OA::OA_ptr<OA::SSA::IRUseDefIterator> getDefs(OA::StmtHandle h);
+	  They simply ROSE_ABORT();
+	- Defined SageIRUseDefIterator
+	- Compiled testAll
+
+8/31/05 Version 0.5 	Brian White		
+	- Modified OA::Alias::IRStmtType getAliasStmtType(OA::StmtHandle h)
+	  to generalize the notion of assignment from SgAssignOp to include
+	  SgAndAssignOp, SgDivAssignOp, etc.  These may or may not
+	  make sense here (in the context of pointer assignments), but
+	  it is safe to include them.  I think some of them will
+	  apply in the context of pointer arithmetic. 
+	  [Thought better of this and commented it out.]
+	  Also modified this method to handle typedefs, as per Beata's
+	  comment.
+	- Implemented 
+	  OA::OA_ptr<OA::Alias::PtrAssignPairStmtIterator>
+                getPtrAssignStmtPairIterator(OA::StmtHandle stmt)
+	  and
+	  class SgPtrAssignPairStmtIterator
+	  The latter is the workhorse here.
+	- Modified findAllMemRefsAndMemRefExprs to return a MemRefExp
+	  for SgThisExp.  Also modified toString(SymHandle) to expect
+	  a SgThisExp.
+	- Changed constructor of SageIRInterface to take a SgNode*
+	  rather than a SgProject*.  Note that a SgProject isa SgNode.
+	- Added new method needed for FIAlias:
+	  OA_ptr<ParamBindPtrAssignIterator>
+	  getParamBindPtrAssignIterator(ExprHandle callsite);	
+          and implemented the following class which does all of the work:
+	  SgParamBindPtrAssignIterator
+	- Implemented the following methods to support FIAlias:
+	  OA::SymHandle getFormalSym(OA::ProcHandle, int);
+	  OA::OA_ptr<OA::MemRefExpr> getCallMemRefExpr(OA::CallHandle h);
+	  OA::ProcHandle getProcHandle(OA::SymHandle sym);
+	- Changed SageIRCallsiteIterator::current() to return a CallHandle
+	  instead of an ExprHandle.
+	- Changed getFormalParamIterator, getFormalForActual,
+	  and findAllMemRefsAndMemRefExprs to
+	  return a symbol handle representing a SgClassSymbol whenever
+	  we encounter a SgThisExp.  This includes both this->blah
+	  expressions and the first (pseudo-)actual of a method 
+	  invocation.  This pseudo-actual reprsents the class object
+	  upon which the method is invoked.
+	- Moved utility function isMemRefNode into SageIRInterface
+	  as a protected method.  Thus, made the following friends
+	  so they could access it:
+	  friend class SgParamBindPtrAssignIterator;
+	  friend class ExprTreeTraversal;
+	- Modified SageIRInterface::getCallsiteParams to return
+	  the lhs of an arrow/dot expression as the first actual
+	  parameter of a method invocation.  Previously, the
+	  arrow/dot expression was being returned.  Notice that 
+	  if the expression is a dot expression whose lhs is
+	  a SgPointerDerefExp, then it is actually a normalized
+	  arrow exp.  These get treated differently with respect
+	  to MemRefHandles and MemRefExprs.  In this case, we
+	  really want the operand of the SgPointerDerefExp.
+	- Added utility method getEnclosingMethod(SgNode *node)
+	  to return the method in which node occurs (else NULL)
+	- isRefParam now only returns true if the parameter is
+	  a reference paramter.  Added isPointerVar to
+	  return true if the variable is a pointer.
+	- Added isReferenceExpr to return true if expr represents
+	  a reference variable.  Note it is _not sufficient to
+	  extract the symbol from the expr and invoke isReferenceVar
+	  since we do not represent everything will full accuracy.
+	  In particular isReferenceExpr(a->b) is a question of a->b
+	  not a.  However, currently we only have info about a in
+	  the MemRefExpr, not b.
+	- Fixed SageIRInterface::getAliasStmtType(OA::StmtHandle h)
+	  to properly handle SgVariableDeclarations.
+	- Modified getStmtIterator(procHandle) to return the 
+	  constructor initialization list if procHandle is a constructor.
+	- Changed SageIRInterface::getLoopIncrement so that it no longer
+	  creates a SgExprStatement for the loop increment (expression).
+	  Instead, it "coerces" the SgExpression that is the loop
+	  increment into the OA::StmtHandle return type.
+
+10/21/05 UseOA-ROSE-v0.6	Brian White
+	- Restructured directory.
+	- Added options to OATest.C:
+		--debug prints out debugging info
+		--printRose uses the output methods
+	          ROSE/test/roseTests/programAnalysisTests/MemRefExprTest.C
+                  which don't print handles, pointers, etc.
+	          The default uses the output method, which also
+	          avoids handles (Michelle's change).  The original
+	          code used dump.  Make printRose go away after I
+	          get it checked in once.
+	- Added MemRefExprTestInput.C to TestCases.  This reflects
+	  all examples from the Wiki and was taken from
+	  ROSE/test/roseTests/programAnalysisTests.
+	- Incorporated Michelle's changes to testAll, which is now OATest.
+        - Results of OATest --oa-MemRefExpr TestCases/MemRefExprTestInput.C
+	  are in TestResults/MemRefExprTestInput.C.out
+	- Problem:  the link line is very fragile since both OpenAnalysis
+	  and SageOA routines are included in Rose.  I was unsuccessful
+	  in making the OAWrap dir a library which OATest links against.
+	  For now, I'm brute forcing by including the .o's on the 
+	  link line.  Fix this.
+
+10/26/05 UseOA-ROSE-v0.6.0b	Brian White	
+	- Fixed some problems on the link line that we preventing
+	  us from resolving symbols from the OpenAnalysis and SageOA
+	  libraries.  Notice that your installation of ROSE may
+	  defined (weak) symbols that conflict with those in these
+	  two libraries.  By putting them first on the link line,
+	  those libraries should override the ROSE library.
+
+10/26/05 UseOA-ROSE-v0.6.0c	Brian White	
+	- Incorporated Michelle's changing of order of Sage2OA lib and
+	  OpenAnalysis in Makefile.
+	- Commented out dump in favor of output in OATest MemRefExpr
+	  test case, so that we don't get handles.
+	- Removed #ifdef BWHITE_VERSION
+	- More messing around with the makefile
+	- Fixed a.b to return only one MemRefExpr:
+	  NamedRef(USE, SymHandle(b), partial) i.e., corresponding
+	  to a.b.
+	  Notice that sta[a][b][c].d also only returns only one
+	  MemRefExpr (NamedRef(USE, SymHandle(sta), partial))
+
+11/11/05 UseOA-ROSE-???		Brian White
+	- Modified SageIRProcIterator so that it returns
+	  constructors.
+	- Changed representation of the formal corresponding to
+	  'this' from a SgFunctionDefinition (which may not
+	  be accessible) to a SgFunctionParameterList.  This
+	  is non-sensical, but should only be used to form
+	  alias sets.  Since we only care about the formal
+	  insofar as which actuals it is bound to, it shouldn't
+	  make a difference that we chose a silly representation.
+	- Added implicit 'this' actual arg as an argument to new
+          in SageIRInterface::getCallsiteParams.
+	- Added param binding for 'this' arg to new in 
+	  in SgParamBindPtrAssignIterator::create.
+	- Explicitly model references to this.  i.e., we ignore
+	  SgThisExp in SageIRMemRefIterator::findAllMemRefsAndMemRefExprs.
+	  If a SgVarRefExpr or SgInitializedName is a member m of a class,
+	  then SageIRMemRefIterator::findAllMemRefsAndMemRefExprs 
+	  explicitly creates an MRE for this->m, regardless of whether
+	  or not the frontend (i.e., ROSE) has explicitly mentioned the this.
+	- Updated getCallMemRefExpr to handle new expressions (as a
+	  call handle).
+	- Updated getCallMemRefExpr so that it returns NamedRefs
+	  for any method/function that can be resolved (including
+	  constructor invocations) and returns FieldAccess for
+	  virtual methods.  This is accomplished by explicitly
+	  creating NamedRefs for functions, since the general
+	  getMemRef routines do not consider function calls to 
+	  be uses of program state and hence worthy of an MRE; and
+	  by use of the general routines in all other cases. 
+	  See next comment.
+	- Changed getChildrenWithMemRefs and findAllMemRefsAndMemRefExprs 
+	  to recognize SgConstructorInitializers so that we handle
+	  invocations of new (i.e., of a constructor) as we handle
+	  method invocations.  i.e., we create an MRE for them.
+ 	- Implemented vtable opt:
+	       - Updated findAllMemRefsAndMemRefExprs to return
+	         (*(*a).FieldHandle(0)).method for a virtual
+	         call instead of (*a).method.
+	       - Returned implicit ptr assign pairs of form:
+		 < (*a).FieldHandle(0), &A > 
+                 from createImplicitPtrAssignForMethods
+	         where A is a's class.
+               - Returned implicit ptr assigns of from:
+		 < a.method, A::method >
+		 from createImplicitVTablePtrAssignFromDefinition,
+                 where A is a's class, a.method is a string-based
+	         FieldAccess and A::method is a NamedRef.
+	- Changed OATest to use CmdOptions, so we are less/not
+	  dependent on order of command line options.
+	- Added regressMemRefExpr.script, a knock-off of 
+	  genMemRefExprOut.script.  Simply run it without args.
+	  If everything goes well it should generate no output.
+	  If there are differences between current and expected
+	  results, they will be returned.
+	- Passed regressMemRefExpr.script.  The following changed
+	  from the last version and were deemed correct behavior.
+	  All changes occurred in /MemRefExprTestInput.C:
+	       - ignoreStructPtr =((struct myStruct *)(malloc(12))); 
+	         The StmtHandle for malloc now includes the cast
+	         expression.
+	       - *hi -> hello() = ignoreInt;
+                 Previously, hi->hello was represented as an inaccurate
+	         dereference of hi:
+		 Deref(
+        		mAddressOf: 0
+        		mFullAccuracy: 0
+		        mMemRefType: USE
+		        mMRE: 
+		        NamedRef(
+		                mAddressOf: 0
+		                mFullAccuracy: 1
+		                mMemRefType: USE
+		                mSymHandle: SymHandle(hi)       )
+		        mNumDeref: 1)
+		  However, we can actually say with full accuracy
+	          the method that is invoked.  So instead, we 
+	          return:
+		  NamedRef(
+		        mAddressOf: 0
+		        mFullAccuracy: 1
+		        mMemRefType: USE
+		        mSymHandle: SymHandle(hello))
+                - Added invocation of virtual method call:
+		  *hi -> goodbye() = ignoreInt;
+		  which results in a FieldAccess of Deref(hi).
+
+11/18/05 UseOA-ROSE-???		Brian White		
+	- Changed lookThroughCastExpAndAssignInitializer(node) so 
+	  that it does not "look past" a cast expression if it
+	  decorates a malloc.  Consider doing this for all mem
+	  expressions?  And including casts in those expresions
+	  as is now done for malloc?
+	- Added --oa-FIAlias option to OATest.
+	- Added regression tests for alias:
+		genAliasTestsOut.script 
+	        regressAliasTestsOut.script
+	  Notice that an exit in each of these scripts
+	  demarcate those tests that have passed.
+	  Current tests passed:  None!
+	  Current tests cause aborts/seg faults/etc:
+		HindEtAlIBM95Fig4.C
+		HindEtAlISSTA00Fig1.C
+		LattnerEtAl03Fig1.C
+		PandeEtAlRutgers05.C
+		refClass.C
+		RinardEtAlPLDI96Fig4.C
+		RyderEtAlFig14.c
+		RyderEtAlFig15.c
+		YongEtAlPLDI99.c
+
+11/21/05 UseOA-ROSE-???		Brian White
+	- All alias tests compile/run except:
+		LattnerEtAl03Fig1.C
+	  which uses a function pointer.  This causes
+	  an assertion to fail in SageOA because we can not
+	  retrieve the function declaration of the function call
+	  expression.  Suggested fix:  change FIAlias so that
+	  it first resolves function pointers and then invokes
+	  getParamBindPtrAssignIterator, which is where fault occurs.
+	- Changed creation of nodeArray for persistent handles
+	  so that it manually traverses the AST.  Some of the nodes
+	  are not visited by the ROSE traversal mechanisms and so
+	  were not getting numbered.  This fixed many of the 
+	  above problems.
+	- Still haven't tested the alias results for correctness.
+
+11/21/05 UseOA-ROSE svn tag FIAlias r15		Michelle Strout
+	- Marked output files in regressMemRefExpr.script that have 
+	  been checked.  Only TestCases/MemRefExprTests/MemRefExprTestInput.C
+	  still has issues.
+	- Renamed target directory for FIAlias results to 
+	  TestsResults/FIAlias since other alias analysis algorithms
+	  will have different results.
+
+11/22/05 UseOA-ROSE svn tag FIAlias r16		Brian White
+	- Fixed problem mentioned above in
+	     11/21/05 UseOA-ROSE-???		Brian White
+          with LattnerEtAl03Fig1.C
+	  getParamBindPtrAssignIterator no longer requires a 
+	  SgFunctionDeclaration, which may not exist in general and
+	  does not exist for a function pointer.  Instead, we
+	  query the type of the function pointer/function declaration
+	  to get the types of the formals.
+	- Now any RefOp of a partially accurate MRE is itself partially
+	  accurate.  This should be intuitive, but Michelle says:
+                I think that a Deref to a NamedRef that has partial 
+	        accuracy should also have partial accuracy.  Why?  
+	        Because the partial accuracy indicates that the 
+	        whole MemRefExpr (rooted at the Deref) has partial accuracy.
+        - Changed regressMemRefExpr.script to reflect my belief that
+	  all MemRefExpr tests pass.  Have _not_ updated regression
+	  results, but will wait for Michelle to sign off.  There are 5
+	  differences, all related to the second bullet above.
+
+11/28/05 UseOA-ROSE svn tag FIAlias r18 	Brian White
+	- Changed getCallMemRefExpr to recognize invocations thru
+	  function pointers.
+	- All FIAlias tests compile w/o seg fault, assertion failures, etc.
+	- May have undone Michelle's change (r17) of param type of 
+	  getParamBindPtrAssignIterator.  The latest version of OpenAnalysis
+	  does not seem to be compatible with an ExprHandle argument.
+	- The following (additional) FIAlias tests passed.  Their
+	  results were added to TestResults/FIAlias:
+	  - funCall.c
+	- Michelle has previously verified the following tests which 
+	  I've added to TestResults/FIAlias:
+	  - alias1.c
+	  - alias2.c
+	  - alias3.c
+	  - alias4.c
+
+11/28/05 UseOA-ROSE svn tag FIAlias r19 	Brian White
+	- Added an option to SageIRProcIterator to exclude input files.
+	  This should only be used for testing.  It allows us to ignore
+	  output generated by procedures defined in header files, 
+	  such as stdlib.h.
+	- Added handling of comma expression in findAllMemRefsAndMemRefExprs
+	  and createPtrAssignPairsFromAssignment.
+	- Changed handling of pointer arithmetic MRE such that
+	  (base + offset) is treated as an array operation if
+	  base is a pointer and offset is an integer.
+	- The following (additional) FIAlias tests passed.  Their
+	  results were added to TestResults/FIAlias:
+	  - utke.c
+	  - OAWikiEx.c
+	  - comma.c	
+	  - constQualified.c
+
+11/29/05 UseOA-ROSE svn tag FIAlias r20 	Brian White
+	- Changed toString to output this::className::enclosingMethod
+	  for a SgFunctionParameterList, which we use to 
+	  represent the 'this' pointer.
+	- Changed toString to output 'method:' before a method symbol.
+	  I was getting confused when I saw 'B' as in 'class B'.
+	  It turns out this was not a symbol representing the class
+	  (which we shouldn't see), but a symbol representing a
+	  constructor (invocation).
+	- Changed handling of FieldAccess in findAllMemRefsAndMemRefExprs.
+	  In particular, we no longer demand that a method be virtual
+	  in order to create a FieldAccess:
+		// NB:  We no longer check that the function is virtual.  
+		//      Even if it is not virtual, there may be some ambiguity
+		//      in which (class') method is invoked.  For example:
+		//      B *b;
+		//      if ( cond )
+		//         b = new B;
+		//      else
+		//         b = new C;
+		//      b->foo();
+		//      where both B and C implement foo.
+	- NumberTraversal now nows SgCtorInitializerLists.
+	- Fixed a mem leak in SageIRMemRefIterator::create.
+	  At some point, do a more thorough job of checking other
+	  valgrind warnings.
+	- Fixed an obscure bug that was occurring when debug was
+	  enabled in ManagerFIAlias and we were using persistent handles.
+	  A SgMemberFunctionDeclaration's SgCtorIntializerList
+	  may be NULL.  However certain methods, such as get_ctors(),
+	  force it into existence.  Therefore, we must invoke get_ctors()
+	  during the numbering traversal to force it into existence
+	  so that when we later see it, it has been numbered.  Otherwise,
+	  we will get an assertion failure in getNodeNumber when
+	  using persistent handles because the (newly-created) SgNode
+	  was not numbered (since it did not exist at the time of numbering).
+
+11/30/05 UseOA-ROSE svn tag FIAlias r21 	Brian White
+	- Notes on ManagerFIAlias output:
+	  - If X is a subset of Y, X and Y are union'ed.
+	  - The default (i.e., unless VTABLE_OPT is defined)
+	    is to use the non-vtable optimization.  
+	  - It creates a DEF mre for each formal, regardless of
+	    its type.  DEF because it is bound to the actual.
+	  - AddressOf MREs do not show up in the list of MREs.
+	    These include (new D), etc.
+	- Added a method to create an UnnamedLoc from a StmtHandle:
+	  OA::OA_ptr<OA::Location::Location> 
+          SageIRInterface::getLocation(OA::ProcHandle p, OA::StmtHandle s);
+	  At the moment, it conservatively sets the isLocal flag of
+	  the location to true.   
+	  // But allocated memory is inherently non-local.  It seems that
+	  // it should be the job of alias analysis to determine this.
+	  // e.g.,
+	  // int *global;             
+	  // ...
+	  // void func() {
+	  //   int *local = new int;    // at this point, new int is local.
+	  //   global = local;          // it just became globally accessible.
+	  // }
+
+11/30/05 UseOA-ROSE svn tag FIAlias r22 	Michelle Strout
+	- fixed ManagerFIAlias in OpenAnalysis so that it creates a fixed
+   	  location for UnnamedRefs.  Creates non local UnnamedLocs.
+	- deleted getLocation(ProcHandle,StmtHandle) from Sage2OA because
+  	  it won't be needed due to the above change
+	- diffArrays.c: there are some problems with the MemRefExprs that 
+  	  are created for this program
+    		- p = &a[i], even though a is accessed like an array, 
+		  it is still a pointer, the NamedRef access to a here 
+		  should be fully accurate
+    		- same goes for p=&b[j] and x=*(q+3) for b and q.
+    		- now for x=*(q+3), there should be a fully accurate named ref
+      		  for x and q.  There should also be a Deref partial to q.  If
+      	 	  we were using IdxAccess then it would be an 
+      		  IdxAccess(3, Deref(full, NamedRef(q) ) )
+
+12/02/05 UseOA-ROSE svn tag FIAlias r23 	Brian White
+	- Updated MemRefExprTestInput.C to include Michelle's new
+	  example from the Wiki involving the pointer r accessed as
+	  an array.
+	- Also added:
+		hiClass &hiRef = *hi;	
+		*(hiRef.hello()) = ignoreInt;
+	- I believe MemRefExprTestInput.C.out.latest is correct.
+	  It contains the following diffs wrt MemRefExprTestInput.C.out
+	  1.  Michelle's r[x] = ignoreInt example.
+	  2.  The two above new statements.
+	  3.  SubsetRefs of inaccurate MREs are themselves inaccurate:
+		*(sta[3][4][2].bPtr) = ignoreInt;
+		*hello() = ignoreInt;
+		*hi->hello() = ignoreInt;
+		*hi->goodbye() = ignoreInt;
+	  4.  *hi->hello is represented by a FieldAccess, not a 
+	      NamedRef(SymHandle(hello))
+	  5.  Handling of *(r + (int)*q) = ignoreInt:
+		- (r + (int)*q) is an inaccurate NamedRef(r),
+	          not an UnknownRef
+	        - *(r + (int)*q) is a Deref of that inaccurate NamedRef(r),
+	          not a Deref(UnknownRef)
+	- Added flag passed to findAllMemRefsAndMemRefExprs to indicate
+	  that we should not apply the reference conversion rules.
+	  At a dot expression, we detect that the lhs is a reference
+	  and treat it as an arrow, i.e., deref the lhs.  Changed my
+	  mind, handle the reference at the conversion not at the dot.
+
+12/08/05 UseOA-ROSE svn tag FIAlias r24 	Brian White
+	- Reversed yet again the decision made in r20 about virtual
+	  methods and FieldAccess.  In particular, all virtual methods
+	  invoked from a pointer or a reference are represented by
+	  a FieldAccess.
+
+12/09/05 UseOA-ROSE svn tag FIAlias r26 	Brian White	
+	- Note this is revision 26.  I skipped one somewhere along the line.
+	- Fixed getLocation.  It had been ignoring the procHandle.
+          It now returns local = 1 only when the declaration of the
+          variable is within procHandle.
+        - Promoted MemRefExprTestInput.C.out.latest to .C.out
+        - Removed a bunch of dead code.
+        - Implicit actual for method invocation was being returned by
+	  getCallMemRefExpr.  This was a problem since we expect that
+          to return only MREs corresponding to methods/functions.  
+          This MRE is now returned at the lhs of the dot/arrow expression,
+          which _is_ the implicit actual.
+
+12/12/05 UseOA-ROSE svn tag FIAlias r27 	Brian White	
+        - Changed getLocation so that it has the correct semantics.
+	  For C/C++ these read:
+          1.  If sym is local to proc, return a NamedLoc(sym, isLocal = true);
+          2.  If sym is global, return a NamedLoc(sym, isLocal = false);
+          3.  Otherwise, sym is not accessible in proc, return "null".
+
+12/16/05 UseOA-ROSE svn tag FIAlias r28 	Michelle Strout
+	- After some fixes to FIAlias algorithm, started rechecking
+    	  the regression tests.  Each test marked as checked has a 
+ 	  test result generated for it.  Now the equivsets results
+	  only show how each MemRefHandle maps to locations.
+
+1/5/06   UseOA-ROSE svn tag FIAlias r29 	Michelle Strout
+	- After fixing semantics of EquivSets in OA,
+          redid a number of the regression tests.  
+          Those that still have issues are marked as checked by ???
+          in regressionFIAliasTestsOut.script.
+
+1/9/06   UseOA-ROSE svn tag FIAlias r30 	Brian White
+        - Wasn't visiting the SgConstructorInitializer of a SgNewExp
+          in SageIRMemRefIterator::findAllMemRefsAndMemRefExprs.
+          We treat invocations of a constructor as we treat invocations
+          of methods:  as uses of a virtual table entry.
+        - Wasn't properly synchronizing actual and formal lists in
+          SgParamBindPtrAssignIterator::create due to implicit this.
+          The actual list (created by SageIRInterface) includes this,
+          while the types of the formals (returned by Sage) does not.
+        - Changed the implementation of the reference conversion rules
+          to reflect the fact that assignments should be treated
+          differently than initializations.  According to Stroustrup:
+          "...the value of a reference cannont be changed after initialization;  
+           it always refers to the object it was initialized to denote."
+          The amended rules:
+          // - For every initialization of a referenece:  t_l& lhs = rhs
+          //   (including the implicit assigment during parameter binding
+          //   and intialization in a constructor's initializer list)
+          //  1.  Convert lhs from a reference to a pointer type, t_l *lhs = ...
+          //  2.  If the rhs does not have an lvalue (e.g., 3+5, 5, &y, ...),
+          //      then replace lhs with *lhs.
+          //  3.  Whenever lhs is used on a right-hand side or in an
+          //      assignment (lhs = rhs), replace lhs with *lhs.  Since references
+          //      are only assigned once (during initialization), a reference's
+          //      appearance on the lhs of an assignment modifies the data to which
+          //      it refers, not to the reference itself.
+          // - For every rhs corresponding to the above initialization cases: t_l &lhs = rhs
+          //  4.  If the rhs has an lvalue, then replace rhs with &rhs.
+        - Updated TestCases/AliasTests/refCall.C.out and marked as
+	  checked in regressFIAliastTestsOut.script.
+
+1/15/06   UseOA-ROSE svn tag FIAlias r31 	Brian White        
+        - Fixed isVirtual to check the first non-defining declaration.
+          The defining declaration may not be marked as virtual, 
+          hence checking it will not suffice.
+	- Fixed bug: do not make the Deref of a FieldAccess inaccurate 
+          simply by virtue of its being part of a FieldAccess.  Do not 
+          change the accuracy of a Deref (from however it was generated).  
+          FieldAccess accuracy should be the same as its Deref.  
+          i.e., it can not be accurate if its underying MRE is inaccurate.
+        - Only generate implicit pointer assignments of the form
+          a->"bar" = bar if bar is virtual.
+        - Changed implicit ptr assign for vtable optimization from
+          < A.method, A::method > to < A.method, &A::method>
+          Thus because of the implicit pair 
+          ((*a).FieldHandle(OA_VTABLE_STR), &A) FIAlias unions
+          (*(*a).FieldHandle(OA_VTABLE_STR) and A.  Because of the
+          pair (A.method, &A::method) returned here, FIAlias unions
+          *A.method and A::method.  Finally, when getCallMemRefExpr
+          returns *(*(*a).FieldHandle(OA_VTABLE_STR).method), FIAlias
+          sees that *(*(*a).FieldHandle(OA_VTABLE_STR).method) is aliased
+          to *A.method is aliased to A::method.
+        - Changed implicit ptr assign generated by 
+          createImplicitPtrAssignForMethods from 
+          < (*lhsMre).m, C::m > to < (*lhsMre).m, &C::m >.
+          Thus, when getCallMemRefExpr() returns *((*lhsMre).m), FIAlias uses
+          this implicit pair to bind it to C::m (after dereferencing)
+          to perform virtual method resolution.
+        - Changed getCallMemRefExpr() to return a Deref for virtual
+          method invocations. This, and the above changes, are in line
+          with the following philosophy (from Michelle):
+	  "getCallMemRefExpr should put a deref around the call if the  
+           call is made with a function ptr or made to a virtual method (where
+           the field is acting like a function ptr)."
+        - Now generate a pointer assign pair if a return statement returns
+          a pointer (or reference) type.  The form of this pointer
+          assign pair is foo = ret for the case:
+
+             type *foo() {
+                 return ret;
+             }
+
+	  where foo in the pointer assign pair is a SgFunctionDeclaration.
+          FIAlias will union these to *foo = *ret.  This won't collide with
+          other uses of foo (e.g., to indicate a function/method) because 
+          we don't return foo from as ptr (implicit or otherwise) assigns.  
+          We do return &foo from an implicit ptr assign.  Therefore, we 
+          will never create *foo except when it indicates a return value.
+	     - Updated getAliasStmtType to set PTR_ASSIGN_STMT for
+               such a return statement.
+             - Modified SgPtrAssignPairStmtIterator::create to 
+               create the pointer assign pair for a SgReturnStmt.
+        - No longer generate unknown MREs for functions which return
+          addresses (i.e., pointers or references).  Instead, create an
+          MRE whose symbol is a reflection of the function invoked.
+          Note in two cases (virtual method and function pointer), we
+          we can do this, though the symbol can instead represent the
+          function call expression.  
+          The following table shows how we represent the function/method:
+	 
+                proc type   ret type   lhs = proc
+                ---------   --------   ----------
+                func        address    lhs = func
+                non-addr       --
+                (*funcPtr)  address    lhs = *funcPtr
+                non-addr       --
+                method      address    lhs = method
+                non-addr       --
+                virtual     address    lhs = *(obj->"fooA")
+                non-addr       --
+
+          This MRE is then used to create a pointer assign pair.
+          Further, this MRE will match the lhs MRE from a return
+          statement pointer assign pair, either directly (in the case
+          of func and method) or after unification via an alias analysis
+          (in the case of funcPtr and virtual).
+
+1/17/06   UseOA-ROSE svn tag FIAlias r32 	Brian White        
+        - Bug fix:  had to strip SgCastExpr off of rhs in 
+	  createImplicitPtrAssigns in order to recognize it as a 
+          SgNewExp (and so to create implicit ptr assigns)
+        - TODO:  need to normalize return statements such that we
+          create an implicit ptr assign for each expression within
+          the return 
+	  (in SgPtrAssignPairStmtIterator::createPtrAssignPairsFromReturnStmt).
+          For example,
+              return ( a < b ? c : d );
+              return ( new D, new E);    // should just return later.
+          Solution here is to call general routines which generate
+          MRE.
+        - Was not generating implicit pointer assigns for 'return (new D)'.
+          - SageIRInterface::getAliasStmtType previously determined whether
+            a return stmt was a PTR_ASSIGN_STMT by checking if the
+            type of the return expression was a pointer/reference.
+            Evidently, 'new D' has type SgClassType (why not a pointer).
+            It now accounts for this.
+          - SgPtrAssignPairStmtIterator::createPtrAssignPairsFromReturnStmt 
+            was checking that the return stmt really has a pointer type.
+            I removed this check as it is redundant with getAliasStmtType.
+        - Modified getLocation to handle SgFunctionDeclarations, which
+          may be created to represent return values from the corresponding
+          function.  If the SgFunctionDeclaration was called from a procedure
+          p consider the symbol (assumed to represent the return expression)
+          to be local to p.  Otherwise, return the NULL location-- not
+          visible within p.  Also handles constructor invocations.
+        - Wasn't creating implicit ptr assign pairs for a return stmt
+          (which is implicitly an assignment of the form 'proc = ret',
+          for the statement 'return ret' in procedure proc).  Fixed this
+          by calling createImplicitPtrAssigns from
+          createPtrAssignPairsFromReturnStmt.
+        - Replaced calls of getNodeNumber(functionDeclaration) with calls
+          to getProcSymHandle; such interposition gives us more 
+          control over what we return.  e.g., I changed getProcSymHandle
+          to return a handle to a SgFunctionDeclaration with an associated
+          SgFunctionDefinition.  This requires searching through the
+          program for the proper SgFunctionDeclaration.  To do this
+          efficiently, we cache all SgFunctionDeclarations in
+          SageIRInterface::mFunctions.
+        - Output format in FIAlias seems to have changed with new
+          svn OpenAnalysis version, so I re-ran regressFIAliasTestsOut.script.
+        - Current status/milestone:  HindEtAlIBM95Fig4.C no longer
+          generates an UnknownLoc.  I have not, however, checked it for
+          correctness.
+
+1/24/06   UseOA-ROSE svn tag trunk r35 	Brian White        
+        - Fixed assertion failure caused by findAllocatedClass 
+          returning NULL.  This was caused by isAllocation a 
+          SgPointerType rather than a SgClassType (when
+          using a newer version of ROSE:  ROSE-January18a-2006,
+          unreleased).  
+          // Older versions of ROSE (0.8.6c and earlier) were
+          // returning SgClassType as the type of SgNewExp.
+          // We would like to return a SgClassType, so this is fine,
+          // though counter-intuitive.  Dan fixed this so that
+          // the type of a SgNewExp is a SgPointerType, which makes
+          // more sense.  To maintain backward compatibility,
+          // check to see which case we are in.
+
+1/27/06   UseOA-ROSE svn tag trunk r36  Brian White        
+        - UseOA-ROSE now works with ROSE-January18a-2006 (unreleased)
+          and the current CVS version (0.8.6x).  To select 
+          ROSE-January18a-2006, set
+                 GLOBAL_DEFINES = -DUNRELEASED_ROSE
+          in config/Makefile.inc (and change your paths).
+	- NOTE!  There are superficial differences between the output
+          generated by ROSE-January18a-2006 and 0.8.6x.  e.g., memory
+          references are returned in a different order.  Rather than
+          compare these directly, we will maintain a results dir for
+          each version.  Regression tests should only compare against
+          the version of ROSE which was used to build the library.
+          I have added genUnreleased{FIAliasTests,MemRefExprOut}.script
+          and regress{FIAliasTests,MemRefExprOut}.script to handle the
+          new version.
+          Please check against both versions of ROSE!  Sorry.
+        - The results for the two versions of ROSE have been checked
+          and are consistent (modulo the superficial differences).
+          However, I have made local bug fixes which were not
+          distributed with ROSE-January18a-2006 to the following
+          files:
+               src/ROSETTA/Grammar/Node.code
+                    The problem is that get_attribute() as defined in 
+	            subclasses of SgNode do not seem to overload 
+	            SgNode::get_attribute().  The problem is that
+                    SgNode::get_attribute() is not declared const, 
+	            though it is virtual.  All other get_attribute() methods 
+	            are declared const.  Evidently, this difference suffices 
+	            to prevent get_attribute() (non-const) to be invoked
+                    as a virtual method (upon a SgNode, rather than say 
+	            a SgInitializedName).
+
+                    The fix is simple:  just add const to the declaration 
+	            and definition of SgNode::get_attribute().  
+	            In src/ROSETTA/Grammar/Node.code around lines
+                    278 and 647, just add "const" after "get_attribute()".
+               src/ROSETTA/Grammar/Expression.code
+                    Modified SgFunctionCallExp::get_type() so that
+                    it returns the return value of function calls
+                    for dot and arrow expressions.
+                    Around this comment:
+                    // This returns the type of the referenced data member, but if this is a
+	            // function call shouldn't it return teh return value of the function call? 
+                    // Yes, it should.  BW and DQ (1/27/06) 
+                src/backend/unparser/unparse_expr.C 
+	            Removed Dan's debugging statements.
+                    Converted #if 1 to #if 0 on lines 958, 962, 1004
+                    Commented out lines 576, 580, 1093, 1098, 1110, 1114, 1119, 1122
+                    Unparser::unparseBinaryExpr added the following #if 0s:
+                    // Special case: 
+                    #if 0 
+                    cur << "/* Special case of operator[] found */\n"; 
+                    printDebugInfo("we have special case: []", TRUE); 
+                    printDebugInfo("lhs: ", FALSE); 
+                    #endif 
+                    unparseExpression(binary_op->get_lhs_operand(), info); 
+                    cur <<  "[" ;  
+                    #if 0 
+                    printDebugInfo("rhs: ", FALSE); 
+                    #endif 
+                    unparseExpression(binary_op->get_rhs_operand(), info); 
+                    cur <<  "]";  
+          These have been reported to Dan (except the debugging stmts).
+        - Bug fixes for ROSE-January18a-2006:
+              - Newer versions of ROSE will support SgNullStatements
+                and SgNullExpressions.  To avoid confusing the output
+                and regression tests, we do not include SgNullStatements
+                in statement iterators (i.e., SageIRStmtIterator,
+                findAllStmts).
+              - Added wrapper around attribute mechanism,
+                SageIRInterface::getAttribute(SgNode*).  This masks
+                the fact that attributes are instance variables in
+                current versions of ROSE, but are methods in the 
+                unreleased and future versions.
+	- Changed refParam.C and ref.C slightly so that they would
+          output the alias sets I was interested in.
+        - After making the above changes to ROSE-January18a-2006, the
+          only assertion failures (for either version of ROSE),
+	  should be in RinardEtAlPLDI96Fig4.C:
+               OATest: Sage2OA.C:4888: virtual OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle): Assertion `numMres == 1' failed.
+
+1/27/06   UseOA-ROSE svn tag trunk r39  Brian White
+        - Checked the following for both versions of ROSE, updated the
+          regress*.script to show they have been checked, and updated
+          the regression results:
+               RyderEtAlFig15.c
+               RyderEtAlFig9.c
+               RyderEtAlFig2.c
+               RyderEtAlFig1c.c
+               RyderEtAlFig1b.c
+               YongEtAlPLDI99.c
+               ref.C
+               refParam.C
+               refClass.C
+        - The following test cases still need to be checked nor have they
+          been checked for consistency between released and unreleased versions
+               PandeEtAlRutgers05.C
+               HindEtAlIBM95Fig4.C
+               HindEtAlISSTA00Fig1.C
+               LattnerEtAl03Fig1.C
+               RinardEtAlPLDI96Fig4.C
+        - Added collect[Unreleased]{MemRefExpr,FIAliasTests}Out.script
+          scripts to concatenate all results saved in TestResults/
+          to a single file.  I found it useful to create a single
+          file for each version of ROSE and then to do an mgdiff on 
+          those files.  
+        - Changed SageIRInterface::toString to annotate references
+          in "some" cases:
+          // If an initialized name is a reference, then we model
+          // it is a pointer.
+          // e.g., int &lhs = ... -> int *lhs = ...
+          // However, subsequent assignments (different from initializations)
+          // of lhs change the value at the location not of the location:
+          // e.g. lhs = 5 -> *lhs = 5
+          // In OpenAnalysis, *lhs will result in two mem ref expressions:
+          // *lhs and the sub mem ref expr lhs.  We wish to differentiate
+          // between this "sub" lhs and the above lhs in the initialization.
+          // Therefore, we will annotate the lhs initialization here with
+          // an "&":
+        - Previously, constructors invoked as:
+              foo f(arg);
+          were not registered as function calls, though those invoked
+          via new were:
+              foo *f = new foo(arg);
+          This happened because FindCallsitesPass::visit was only collecting 
+          SgFunctionCallExp and SgNewExp.  Instead, changed
+          FindCallsitesPass::visit to collect SgFunctionCallExps and
+          SgConstructorInitializers.  The latter are involved in both
+          of the above cases.  This effectively changes the mapping of
+          an OA::CallHandle from SgFunctionCallExp and SgNewExp to
+          SgFunctionCallExp and SgConstructorInitializer.  The following
+          methods which acted up OA::CallHandles thus were also changed:
+              SageIRInterface::getFormalTypes
+              SgParamBindPtrAssignIterator::create
+              SageIRInterface::getCallMemRefExpr
+              SageIRInterface::getCallsiteParams
+          Replaced getNewLhs with getConstructorInitializerLhs.
+        - We weren't visiting constructor args!  Added this to
+          SgConstructorInitializer clause of 
+          SageIRMemRefIterator::findAllMemRefsAndMemRefExprs.
+          Also added clause to handle SgConstructorInitializer in
+          SageIRInterface::getChildrenWithMemRefs.
+        - We have been treating constructor invocations as USEs,
+          using the method as the symbol.  This does not work for
+          built in types, nor would we consider it a use in such
+          case.  Therefore, modified
+          SageIRMemRefIterator::findAllMemRefsAndMemRefExprs s
+          that it does not treat constructors as uses if they
+          create a basic type (i.e., not a SgNamedType).
+        - Similarly, do not create implicit ptr assign pairs
+          for basic types.  Modified 
+          SageIRInterface::createImplicitPtrAssigns to check for this
+          condition.
+        - Only consider a constructor invocation to be a function
+          call (with an OA::CallHandle) if it creates a named type.
+          Change to  FindCallsitesPass::visit.  Otherwise, we have
+          problems when this call handle is later passed to routines
+          which expect it to be backed by a function/method with, say,
+          a declaration.
+        - Fixed assertion failure in 
+	  TestCases/AliasTests/RinardEtAlPLDI96Fig4.C:
+              OATest: Sage2OA.C:5037: virtual OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle): Assertion `numMres == 1' failed.
+              Abort
+          The problem was that 
+          SageIRMemRefIterator::findAllMemRefsAndMemRefExprs was not
+          creating an MRE for arrow/dot expressions representing
+          method calls which neither return an address nor are
+          virtual method calls (since there is no MRE for these cases).
+          However, getCallMemRefExpr expects these general routines
+          to create an MRE in such cases and so invokes 
+          getMemRefExprIterator which returns the cached (NULL)
+          set of MREs.  Modified getCallMemRefExpr to create
+          an MRE explicitly for this case.
+        - Modified the condition for SgAddOp/SgSubtrcatOp to have an
+          MRE, as returned by SageIRInterface::isMemRefNode.
+          If the type of either the lhs or the rhs is a SgArrayType
+          (or SgPointerType, as previously) return true.  
+        - We weren't handling switch statements.  Added clause
+          to visit the selector/condition of a SgSwitchStatement
+          in findIndependentMemRefs.  Also, added clauses for
+          SgSwitchStatement and SgCaseOptionStmt in 
+          SageIRStmtIterator::FindAllStmts so the statement iterator
+          visits switches and their bodies.
+        - Added array/pointer arithmetic examples to MemRefExprTest.C
+        - MemRefExpr case in OATest was not visiting all functions.
+          Fixed.
+
+2/14/06   UseOA-ROSE svn tag trunk r42  Brian White	
+        - Checked the following for both versions of ROSE, updated the
+          regress*.script to show they have been checked, and updated
+          the regression results:
+               LattnerEtAl03Fig1.C
+        - All regression tests passed (for those which have been checked)
+          using OpenAnalysis revision 40 and both ROSE-0.8.6c and
+          ROSE-January27a-2006.
+        - Henceforth we will check regression tests against the ROSE
+          repository and ROSE-January27a-2006 rather than 
+          ROSE-January-18a-2006.
+        - The following test cases still need to be checked nor have they
+          been checked for consistency between released and unreleased versions
+               PandeEtAlRutgers05.C
+               HindEtAlIBM95Fig4.C
+               HindEtAlISSTA00Fig1.C
+               RinardEtAlPLDI96Fig4.C
+        - Fixed bug in SgConditionalExp of 
+          SgPtrAssignPairStmtIterator::createPtrAssignPairsFromAssignment
+          that was creating an implicit pointer assignment for the
+          conditional expression rather than the true and false
+          expressions.
+
+3/9/06   UseOA-ROSE svn tag trunk r45  Brian White		
+        - **** This version of UseOA-ROSE is incompatible with
+          versions of OA prior to 86 because of the following change:
+        - Updated OATest to use ManagerFIAliasEquivSets and 
+	  ManagerFIAliasAliasMap instead of ManagerFIAlias.
+          --oa-FIAlias is replaced by --oa-FIAliasEquivSets and
+	  --oa-FIAliasAliasMap.  Actually --oa-FIAlias is equivalent
+	  to --oa-FIAliasEquivSets (but should be deprecated).
+        - **** UDDU Chains needs an alias manager.  This continues
+          to use the equiv sets FIAlias, rather than the new
+          ManagerFIAliasAliasMap.
+        - Added new results directories for FIAliasAliasMap results
+          and new scripts for FIAliasAliasMap manager.
+        - Moved scripts to scripts/ directory.
+        - I have checked the following FIAliasAliasMap using OA rev 76:
+  	       alias1.c
+               alias2.c
+               alias3.c
+               alias4.c
+               alias4b.c
+	  Note that alias4b.c maps *a to a new UnknownLoc location, 
+          rather than to the zero LocationSet with UnknownLoc, which
+          would have been more efficient spatially.  Doing this
+          right would require remapping an existing set to zero, a la
+              AliasMap::remapMemRefs(int oldSetId, int newSetId)
+          But invoking this method is extremely unsafe unless you 
+          know what it is doing.  In particular, it may change
+          the mapping of a set to its id for some set other than
+          oldSetId (in particular, the lastSet).  This will wreak
+          havoc with ManagerFIAlias which keeps a map from ufset ids
+          to AliasMap set ids.  The right way to do this is to
+          have AliasMap export one set of ids which may be arbitrary
+          but use a different set internally which are contigous.
+        - At this point we are switching development to use
+          FIAliasAliasMap rather than FIAliasEquivSets.
+        - Status of FIAliasEquivSets, all tests passed except the following:
+               PandeEtAlRutgers05.C
+               HindEtAlIBM95Fig4.C
+               HindEtAlISSTA00Fig1.C
+               RinardEtAlPLDI96Fig4.C	
+
+3/17/06   UseOA-ROSE svn tag trunk r46  Brian White			
+        - Changed getLocation to always return a location for a
+	  function/method:
+      // We had problems in which a method didn't appear visible but
+      // should have been in PandeEtAlRutgers05.C.
+      // In main, p and q have static type Base, though they may
+      // dynamically be Derived.  Thus, ROSE can only report that
+      // the SgFunctionDeclaration for p->foo or q->foo is 
+      // Base::foo (as per the static type of p and q).  Thus, it
+      // does not see that Derived::foo is called (i.e., when 
+      // we ask for all function/method invocations via querySubTree
+      // below).  Hence, the logic dictates that since Derived::foo is
+      // not main and is not invoked from main, it is not visible in
+      // main.  Clearly, this isn't true.
+      //
+      // For now, the solution is simply to call all functions/methods
+      // visible.  This isn't true given static functions, private methods,
+      // etc.  There is probably some way to resolve this in ROSE using
+      // the context-specific symbol tables, but I have little 
+      // experience there and we have a deadline.
+      // MMS and BW 3/16/06
+
+3/21/06   UseOA-ROSE svn tag trunk r47  Brian White			
+        - Changed createImplicitPtrAssignForMethods so that it does
+          not create an implicit ptr assign for a virtual method m
+          if it has already created one for a virtual method m'
+          which overrides m.  Without this, two methods
+          with the same mangled name would have overlapping locations.
+        - Modified classHasVirtualMethods so that it returns true
+          not only if a class defines a virtual method, but if
+          any of its base classes does.
+        - Added two isObjectDeclaration methods that create implicit
+          ptr assigns for an object declaration/instantation, such
+          as A a;  previously we only did this for A *a = new A;
+          Though virtual methods can be statically resolved for 'a',
+          I think we need to create implicit ptr assigns for cases
+          such as A *b = &a.
+        - Made a change to SageIRStmtIterator:
+  // If the functionDefinition is for main, include all of the 
+  // global _object_ declarations and class definitions.  Why?  
+  // Because alias analysis (and presumably others) will need to visit 
+  // these to create implicit ptr assign.  However, these analyses
+  // take an iterator over procs, which would exclude the global-level
+  // statements.  
+  // NB:  the intent is _not_ that these will be considered local to
+  //      main.
+        - PandeEtAlRutgers05.C.out passed for AliasMap released and
+          unreleased!
+
+3/23/06   UseOA-ROSE svn tag trunk r48  Brian White			
+        - Changed SgParamBindPtrAssignIterator::create because it
+          was not correctly handling the param bindings for
+          a constructor invoked as 'A a;' rather than 'A *a = new A;'
+          In the former case, we need to take the address of a
+          before binding to this.
+        - We were incorrectly treating variables declared within
+          inlined methods (i.e., methods declared within the scope
+          of a class) as if they were declared within the class
+          (which I took to be synonymous with members of that class).
+          This was an issue in createMRE which adds an implicit 'this->'
+          to member variables if they have not already been added by ROSE.
+          i.e., a form of normalization.  ROSE does this already
+          in most, but not all, cases.  The change is actually
+          in getDefiningClass:
+  // In the following example:
+  // class vector {
+  //  public:
+  //  void vecAdd(double v[NDIM]) {
+  //    for(int i = 0; i < NDIM; i++)
+  //      val[i] += v[i];
+  //  }
+  // };
+  // i is technically defined within the class, since it
+  // is defined within vecAdd which is defined within the
+  // class.  But this method, getDefiningClass, really
+  // wants to return the class of which a variable is a member.
+  // therefore, if we find a scope along the way that is
+  // a function/method, we should return false.
+
+3/24/06   UseOA-ROSE svn tag trunk r49  Brian White			
+        - Fixed getLocation to properly handle 'this' pointers.
+          i.e., previously we were always identifying them
+          as local.
+	- I've added an indirect call site "analysis"
+          staticVirtualMethodResolver.C.  Should be close
+          to working.  Unfortunately, ROSE doesn't see the
+	  class definition in Pande:
+        // class Base {
+        // public:
+	//  virtual void foo();
+        //  virtual void bar();
+        //  virtual void baz();
+        // } *a, *b, *p, *q;
+
+3/26/06   UseOA-ROSE svn tag trunk r52  Brian White
+        - Fixed bug in getLocation:  when comparing two 
+          get_firstNonDefiningDeclarations for equality, need to 
+          first ensure they aren't NULL.  This bug was manifest as
+          this::this::foo being visible in this::this::bar.
+        - Added mangled names to symhandle output for "this:" and "method:".
+          Output is now this::scope::method_name__mangled_method_name.
+          I output both the method_name and the manged_method_name,
+          as opposed to simply the mangled_method_name, because
+          constructor and destructor mangled method names aren't
+          really intelligible.
+        - Passed HindEtAlISSTA00Fig1.C!
+	- Passed HindEtAlIBMFig4.C!
+
+4/06/06   UseOA-ROSE svn tag trunk r53  Brian White
+        - Updated FindCallsitesPass::visit to return a SgCastExp
+          instead of a SgFunctionCallExp for a malloc.  This is
+          consistent with findAllMemRefsAndMemRefExprs which creates
+          an MRE for malloc for SgCastExp rather than a SgFunctionCallExp.
+        - Updated getCallMemRefExpr to expect SgCastExp representing
+          malloc.
+        - Updated getFormalTypes, SgParamBindPtrAssignIterator::create,
+          and getCallsiteParams to expect a SgCastExp for a malloc.
+        - Changed getCallMemRefExpr such that it never relies
+          on the general findAllMemRefsAndMemRefExprs routine to create
+          a call MRE for a non-pointer dereference function call (not
+          a method call).  i.e., previously it would use the general
+          routines if the function returned an address.  I have removed
+          this conditional.  It wasn't doing the right thing and
+          relies too much on internal knowledge of 
+          findAllMemRefsAndMemRefExprs.  In particular, 
+          findAllMemRefsAndMemRefExprs will create an MRE for 
+          an address-returning function  at a SgFunctionCallExp,
+          not using a SgFunctionRefExp as I had been attempting to do.
+        - Fixed Michelle's problem from 3/30:
+          Line numbers are for Rinard
+
+          #:      MemRef          ShouldBe                Is
+          19: val[i]                      *this                   this
+          84: n->pos.val[i]       *n                              n
+          84: pos.val[i]          *this                   this
+
+          I was discarding the Deref in the SgPntrArrRefExp case:
+          // Huh?  BW 4/6/06
+	  // I don't understand why I was taking the base MRE from an MRE
+	  // and discarding the Deref.
+	  //	  arrMemRefExpr = copyBaseMemRefExpr(baseAccess);
+	  arrMemRefExpr = baseAccess->clone();
+
+          I also made in the SgArrowExp/SgDotExp case around this 
+          rather confused comment:
+	  // Huh?  BW 4/6/06
+	  // I don't understand why I was taking the base MRE from an MRE.
+	  //	    arrowOrDotMemRefExpr = copyBaseMemRefExpr(rhsMre);
+	  // OK.  I think I understand:  I wanted to model (*a).foo and
+	  // a->foo the same way.  Since we model a->foo as a
+	  // NamedRef(a, accuracy = false), I wanted to do the same
+	  // for (*a).foo.  So, fine, just take the base MRE.
+	  // BW 4/7/06:  No!  This isn't true.  We model a->foo
+	  // as an inaccurate NamedRef in the previous conditional.
+	  //	    arrowOrDotMemRefExpr = copyBaseMemRefExpr(lhsMemRefExp);
+	  arrowOrDotMemRefExpr = lhsMemRefExp->clone();
+        - Neither HindEtAlIBM95Fig4.C nor PandeEtAlRutgers05.C match
+          their regression results.  For Hind, the difference is
+          in the q.data within the method ChangeData.  It is now
+          getting mapped to UnknownLoc since this reference q is now
+          properly being modeled as a pointer.  This still seems wrong;
+          it should be mapped to InvisibleLoc.
+	
+
+4/12/06   UseOA-ROSE svn tag trunk r55  Brian White	
+        - Fixed this bug from Michelle (Subject: Next snag for Rinard, 4/10/06)
+	  "Then I look at the output from running OATest 
+	   --oa-FIAliasAliasMap on  Rinard.  In Phase 3, I am not getting 
+	   the correct ParamBindPtrAssign  pairs for line 112
+               d = this->computeInter(n, tmpv);
+           but I am getting the correct pairs for line 114
+               acc.vecAdd(tmpv);
+           For line 112, the implicit assignment to this is missing."
+        
+           The problem was that some functions were iterating over
+           actuals by iterating over the SgExprListExp associated with
+           a function call's expression list.  This does not contain
+           the implicit actual corresponding to this.
+           Updated the following methods to instead invoke
+           SageIRInterface::getCallsiteParams which does return the
+           this actual folded into the parameter list:
+           getChildrenWithMemRefs
+           findAllMemRefsAndMemRefExprs
+
+4/13/06   UseOA-ROSE svn tag trunk r59  Brian White		
+        - Mostly minor bug fixes.
+        - Fixed 3 places in findAllMemRefsAndMemRefExprs which iterate
+          over formals/actuals to determine whether an actual is
+          treated as a reference (though it may not itself be 
+          a reference).  At issue was the handling of varargs.
+          In those cases, there are no formals from which we
+          can determine how the actual is handled.  Instead, we
+          just assume the type of the formal is the same as the actual.
+          NB:  we are only trying to determine if the actual is
+          a reference, so we don't care about getting subtype info 
+          correct.  It isn't clear that this assumption is valid.
+          e.g., if we have a function call:
+             int a;
+	     foo(a); 
+          And foo has varargs and treats its arg as a reference,
+          we could be in trouble.
+	- NOTE!  varargs generate ptr assign pairs between actuals
+          and lhses.  We don't currently handle this.
+        - Other notes on varargs:
+	  - getFormalForActual maps all actuals corresponding to
+            a "variable arg" to the last vararg formal.
+	    i.e., in 
+              foo(a, b, c);
+	    with
+              void foo(int x, ...);
+            b and c map to ... since we return the last ordinal
+            formalId for both b and c.  This is not a change
+            in the code, just a clarification.
+          - getCallsiteParams just does the right thing; it
+            returns a, b, and c, as you would expect.
+          - Modified findAllMemRefsAndMemRefExprs such that at an
+            assignment
+	         type lhs = va_arg(va_list, type);
+            we create the pointer pair:
+                 lhs = formal(...);
+            i.e., we map the lhs of any va_arg assignments to the
+            last formal.
+	  - UPSHOT:  Since we map all lhs of lhs = va_arg to the
+            vararg formal and since we map all "variable" actuals
+            to this same formal, we effectively map all of the lhs of
+            va_arg assignments:
+	    void foo(int x, ...):
+	         lhs1 = va_arg(ap, type1);
+	         lhs2 = va_arg(ap, type2);
+	         lhs3 = va_arg(ap, type3);
+            to all of the actuals, v1, v2, and v3:
+                 foo(x, v1, v2, v3);
+            Thus, lhs1 = v1, lhs1 = v2, lhs1 = v3, etc.
+            A conservative approximation to the truth.
+        - Bug fix in getClassDeclaration.  Wasn't accounting for the
+          possibility of recursive typedefs.
+        - Bug fix in findAllMemRefsAndMemRefExprs SgFunctionCallExp
+          case.  Was not visiting the pointer expression in the
+          case of a function call through a pointer.
+        - SageIRMemRefIterator::handleDefaultCase wasn't returning a list
+          of MREs created from the AST it was passed!
+
+4/24/06   UseOA-ROSE svn tag trunk r64  Michelle Strout
+	- Moved CtoOA driver into this directory.
+	- Moved NotationGenerator class that CtoOA uses into 
+	  OpenAnalysis/src/OpenAnalysis/Alias since it is generic
+	  to any implementation of AliasIRInterface
+	- Created scripts/AliasIRInterface.test to keep track of
+	  testing SageIRInterface as an AliasIRInterface.
+
+5/11/06   UseOA-ROSE svn tag trunk r66  Andy Stone
+        - Fixed bug #7317: Comma semantics not properly modeled.  The comma
+          operator was incorrectly returning the left hand value operand of the
+          right hand operand.
+
+6/9/06    UseOA-ROSE svn tag trunk r70 Michelle Strout
+      - changed how it is calling ManagerFIAliasAliasMap based on OA change
+        of interface
+      - added a test file in TestCases/AliasTests to look at some of the
+        CallGraph behavior and FIAliasAliasMap behavior with missing
+        functions.
+
+6/12/06    UseOA-ROSE svn tag trunk r71 Andy Stone
+    - I've updated UseOA-ROSE so that it works with the latest version of ROSE,
+      version 0.8.7a. The necessary changes entailed:
+        - Commenting out all places where <config.h> was #included
+        - Changed the SageIRInterface::getAttribute() function in Sage2OA.C.
+
+6/12/06    UseOA-ROSE svn tag trunk r72 Andy Stone
+    - Added OABenchmark script.  View the script for information about its
+      purpose and usage.
+    - Added PROFILE_OPTIONS Makefile variables to Makefile.inc.  This variable
+      should be used to specify what debugging and profiling flags should be
+      passed to the compiler and linker (ex. -O0 -g -pg).  Also modified
+      Makefile and OAWraps/Makefile to take advantage of this new variable.
+
+6/13/06    UseOA-ROSE svn tag trunk r73 Andy Stone
+    - Fixed a very simple bug in createPtrAssignPairsFromAssignment.  The
+      left hand side of the pointer assignment pair was incorrectly being
+      set to the left hand side of the comma operator expression.
+
+6/19/06    UseOA-ROSE svn tag trunk r75 Andy Stone
+    - Added TestCases/AliasTests/smg2000-typedefStruct.C.  This case models an
+      error I found in the smg2000 program <http://tinyurl.com/lvtoo>.
+    - Updated the OABenchmark python script so that it can now read in a
+      CXXFlags variable from the files file.
+
+6/21/06    UseOA-ROSE svn tag trunk r77 Michelle Strout
+    Fixed OATest.C so that it works with OpenAnalysis rev 118 where
+    I fixed CallGraph construction so that it uses alias analysis results.
+    We still need to set up some regression tests for this.
+
+6/22/06    UseOA-ROSE svn tag trunk r78 Michelle Strout
+    Added a regression test for Andy's fix of the comma bug.  Original bug:
+    ./CtoOA TestCases/AliasTests/comma.c results in incorrect PTRASSIGNPAIRS
+    for StmtHandle("p =((q = &x) , r);"). p should get assigned to r not q.
+
+6/23/06    UseOA-ROSE svn tag trunk r79 Andy Stone
+    - Added 10 regression tests for the FIAliasAliasMap.  These tests are
+      for alias1.c, alias2.c, alias3.c, alias4.c, alias4b.c, comma.c,
+      funCall.c utke.c, OAWikiEx.c, and constQualified.c.  Also added
+      template.test to the scripts directory.
+
+6/26/06    UseOA-ROSE svn tag trunk r80 Andy Stone
+    - Added regressFIAliasAliasMap.script and genFIAliasAliasMap.script which I
+      forgot to add in r79.
+
+6/26/06    UseOA-ROSE svn tag trunk r81 Andy Stone
+    - Added regression tests for AliasIRInterface.  These tests are
+      for alias1.c, alias2.c, alias4.c, and alias4b.c.
+
+6/27/06    UseOA-ROSE svn tag trunk r82 Luis Ramos  
+    - Added regression test for CallGraph. These test is for functionPtr.c 
+
+6/27/06    UseOA-ROSE svn tag trunk r83 Andy Stone
+    - Removed regression test "stuff" for the old unreleased version of ROSE.
+      This included removing:
+      - TestResults/UnreleasedFIAlias
+      - TestResults/UnreleasedMemRefExpr
+      - TestResults/UnreleasedCFG
+      - TestResults/UnreleasedFIAliasAliasMap
+      - scripts/genUnreleasedCFGTestsOut.script
+      - scripts/UnreleasedCFG.test
+      - scripts/genUnreleasedFIAliasTestsOut.script
+      - scripts/UnreleasedFIAlias.test
+      - scripts/genUnreleasedFIAliasAliasMapTestsOut.script
+      - scripts/collectUnreleasedFIAliasTestsOut.script
+      - scripts/UnreleasedFIAliasAliasMap.test
+      - scripts/genUnreleasedMemRefExprOut.script
+      - scripts/collectUnreleasedFIAliasAliasMapTestsOut.script
+      - scripts/regressUnreleasedFIAliastTestsOut.script
+      - scripts/regressUnreleasedMemRefExpr.script
+      - scripts/regressUnreleasedCFGTestsOut.script
+      - scripts/collectUnreleasedMemRefExprOut.script
+      - scripts/UnreleasedMemRefExpr.test
+      - scripts/regressUnreleasedFIAliasAliasMapTestsOut.script
+
+6/27/06    UseOA-ROSE svn tag trunk r84 Andy Stone
+    - Added and verified two scripts for function pointers.  functionPtr.c was
+      taken from Luis's work in the CallGraph tests, functionPtr2.c is a
+      version with more complicated aliasing issues.
+
+6/27/06    UseOA-Rose svn tag trunk r85 Barbara Kreaseck
+    - config/Makefile.inc has paths for me on armstrong
+
+6/27/06    UseOA-Rose svn tag trunk r86 Andy Stone
+    - I previously forgot to add functionPtr.c and functionPtr2.c into the
+      TestCases/AliasTests directory, they are now added.
+
+6/27/06    UseOA-Rose svn tag trunk r87 Priyadarshini Malusare
+     - I added driver for ReachDef in OATest.C but its not working yet.
+       This is just for Michell  	  
+
+6/27/06    UseOA-Rose svn tag trunk r88 Priyadarshini Malusare
+     - I added TestCases for ReachDef Analysis
+
+6/27/06    UseOA-Rose svn tag trunk r89 Priyadarshini Malusare
+     - I added ReachDef Tests
+	
+6/27/06    UseOA-Rose svn tag trunk r90 Priyadarshini Malusare
+     - I added genReachDef.script
+	
+6/27/06    UseOA-Rose svn tag trunk r91 Priyadarshini Malusare
+     - I added regressReachDef.script
+
+6/28/06   UseOA-ROSE svn tag trunk r92  Brian White			
+        - Modified isMethodCall so that it returns false for 
+          static method calls.  isMethodCall is used to determine
+          whether we need to pass an implicit "this" to model a 
+          method.  We don't need to do this (and can't) for a static
+          method call.
+        - Modified SageIRInterface::toString(const OA::CallHandle h) 
+          to output a function call which is an invocation of a copy
+          constructor implicitly called by a return.
+        - I started working on handling of special methods (next
+	  entry).  However, Dan wanted this behavior in ROSE so that
+	  it could be "enjoyed" by any ROSE analysis.  Therefore, I
+	  have commented out my implementation of this behavior.
+	  Note that it was not finished.  See comments that look like:
+          // Support for special methods, which is now handled in ROSE.
+        [ Handling of compiler-generated default constructors, copy
+          constructors, destructors, and operator=.
+	
+	  - Modified getAliasStmtType to return PTR_ASSIGN_STMT when:
+            1.  stmt is operator= and one of the implicitly invoked
+                operator= along the call chain (if any) would 
+                implicitly copy a point.  
+                NB:  the default behavior of operator= is to do a
+                     memberwise copy.
+            2.  stmt invokes a copy constructor:
+	        NB:  the default behavior of a copy constructor is
+                     to perform memberwise copy.
+                a.  case Foo *f = new Foo(*someOtherFoo) is already
+                    handled by SgAssignOp case, which always returns
+                    PTR_ASSIGN_STMT.
+                b.  case Foo f(someOtherFoo) is handled by 
+                    SgVariableDeclaration case which returns true
+                    whenever an object is declared.
+                c.  case f(someOtherFoo) within a copy constructor.
+	            Return PTR_ASSIGN_STMT if some compiler-generated
+                    copy constructor invoked prior to a user-defined
+                    copy constructor would implicitly copy a ptr
+                    field (i.e., it's class has (non-method) pointer members).
+	    3.  destructors.  Since a default destructor would not
+                implicit perform pointer assignments, we don't need to
+                model anything here.
+            4.  default (i.e., zero-arg) constructor.  Same as destructor
+	        case.
+         ]
+	 - In CtoA set the excludeInputFiles to true for the 
+	   SageIRProcIterator.  This prevents us from generating output
+	   for include files, such as iostream.h
+	   bool excludeInputFiles = true;
+           procIter = new SageIRProcIterator(sageProject, irInterface, excludeInputFiles);
+         - Changes to staticVirtualMethodResolver
+	   - Needed to change ClassHierarchyWrapper::ClassHierarchyWrapper,
+	     which was not discovering all SgClassDefinitions, because
+	     it was querying only for SgClassDefinition and some of these
+             are not visited by default traversals/queries.  The example
+	     is from Pande.C.  Unfortunately, this is external to 
+	     UseOA and needs to be passed to Dan for checkin to ROSE.
+                // Unfortunately, SgClassDefinitions are not always visited by
+                // query and traversal mechanisms.  Consider this example:
+                //  class Base {
+                //  public:
+                //    virtual void foo() { }
+                //    virtual void bar() { }
+                //    virtual void baz() { }
+                //  } *a, *b, *p, *q;
+                // The SgClassDefinition for Base only shows up in the 
+                // SgVariableDeclarations of *a, *b, etc.  Therefore, we need
+                // to query the SgVariableDeclarations as well.
+           - Replaced methodOverridesVirtualMethod with 
+             matchingMemberFunctions, which properly compares two
+             method type signatures.
+	   - Allow dot expression involving a reference lhs to 
+             be examined as potential dynamic dispatch sites,
+             rather than just pointer receivers.
+	   - This should now be ready for the big time.
+         - Fixed the following bug reported by Andy on June 8th.
+	
+           From: "Andy Stone" <aistone@gmail.com>
+           Date: June 8, 2006 11:01:11 AM MDT
+           To: "Michelle Strout" <mstrout@CS.ColoState.EDU>
+           Subject: FIAliasAliasMap fails with 'variable << endl'
+           
+           Michelle,
+           
+           The FiAliasAliasMap algorithm doesn't seem able to handle any
+           situation where a variable is passed to an I/O object and endl is
+           passed immediatly after or immediatly before this variable.  For
+           instance:  cout << variable << endl.
+           
+           
+           
+           Error Message:
+           
+           $ ./OATest -edg:w --oa-FIAliasAliasMap -c breakuseoa.cpp
+           OATest: Sage2OA.C:6886: virtual
+           OA::OA_ptr<OA::IRCallsiteParamIterator>
+           SageIRInterface::getCallsiteParams(OA::ExprHandle): Assertion
+           `isMemRefNode(lhs)' failed.
+           Aborted
+           
+           
+           
+           I've tried a few other cases to see if I can't determine exactly
+           what
+           reproduces this problem.  For instance
+           
+           These work:
+           -  cout << variable;
+           -  cout << variable << " string constant " << endl;
+           -  cout << endl << " string constant " << variable
+           
+           These don't (they reproduce the error):
+           -  cout << variable << endl;
+           -  cout << endl << variable;
+           -  cerr << variable << endl;
+           
+           
+           I've been playing around with GDB trying to see if I can't figure
+           out
+           exactly what's causing this issue.  Let me know if you have any
+           ideas.
+           
+           Thanks,
+           -Andy
+	
+           Fix: isMemRefNode(functionCallExp) was aborting for 
+	   ostream &ostream::operator<< and friends, because
+	   SageIRInterface::returnsAddress was not doing the correct
+           thing.  isMemRefNode should return type for a function/method
+           that returns a pointer or reference.  However, returnsAddress
+           (called by isMemRefNode) was looking at functionCallExp->get_type().
+           I believe in a previous version of ROSE this return the
+           type of the function call expression.  Now it is 
+           return a SgFunctionType.  I corrected returnsAddress
+           to expect a SgFunctionType.
+        - Fixed [Bug #7963] Deref of "this" being passed as implicit param.
+	  Added a regression test invokeBaseCtor.C in TestCase/CtoOA
+          and corresponding {regress,gen}CtoOA.test files.
+          Bug log:
+Project: UseOA-ROSE
+Category: None
+Status: Closed
+Resolution: Fixed
+Bug Group: None
+Priority: 5
+Submitted by: mstrout
+Assigned to : bwhite
+Summary: Deref of "this" being passed as implicit param
+
+Details: ./CtoOA TestCases/AliasTests/parambinds-formals.C 
+
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("SubClass") =>
+        [ 
+            < 0, Deref( DEF, NamedRef( USE,
+SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MF
+b_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), F, full), 1,
+T, part) >
+            < 1, NamedRef( USE, SymHandle("par"), F, full) >
+        ] }
+
+The zeroth parameter should be a NamedRef to this, not a Deref.
+
+Follow-Ups:
+
+Date: 2006-Jun-26 18:10
+By: bwhite
+
+Comment:
+
+Fix is in SageIRMemRefIterator::findAllMemRefsAndMemRefExprs and will be
+committed in UseOA rev81 (or my next release thereafter if someone beats me to
+the punch).
+
+See case V_SgIniitliazedName.  Problem was that I assumed all SgInitializedName
+were initializations of an explicit lhs with a rhs.  e.g. 'mInt(0)' below.
+
+class Foo {
+  Foo() : mInt(0);
+  int mInt;
+}
+However, consider the case below where a SgInitializedName is initialized by a
+SgConstructorInitializer in a SgCtorInitializerLIst, as in SubClass below:
+	
+class SubSubClass : public SubClass {
+   public:
+      SubSubClass(Base &par, int &aint) : SubClass(par) { }
+};
+
+Here SubClass appears as a SgInitializedName within the AST.  However, it is
+not a variable, but rather represents the base class constructor.  So, in fact,
+the MRE that we create here will not be for a LHS, but for the implicit this
+actual argument that we pass as the first argument to SubClass constructor.
+        - Fixed [Bug #7962] Member fields, methods, and functions should be non-local.
+Details: ./CtoOA TestCases/AliasTests/parambinds-formals.C
+
+    LOCATION = { < SymHandle("method:SubClass::SubClass____ct__FR4Base_v"),
+local > }
+    LOCATION = { < SymHandle("this::SubClass::SubClass____ct__FR4Base_v"),
+local > }
+    LOCATION = { < SymHandle("par"), local > }
+    LOCATION = { < SymHandle("myParent"), local > }
+
+myParent and the method should not be local.
+
+    LOCATION = { < SymHandle("foo_ref1"), local > }
+
+neither should foo_ref1.  Pretty much all methods, member vars, and function
+symbols should not be local.
+
+
+Follow-Ups:
+
+Date: 2006-Jun-29 10:19
+By: bwhite
+
+Comment:
+We were setting isLocal = true for all methods and functions in getLocation. 
+The comment in those cases (V_SgFunctionDeclaration and
+V_SgMemberFunctionDeclaration) is correct, but the flag was set incorrectly, as
+Michelle points out.
+Fix:  simply set isLocal = false.
+Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
+        - Regenerated results for comma.c, constQualified.c, functionPtr.c,
+	  and functionPtr2.c (regressFIAliasAliasMap tests) and alias1.c,
+	  alias2.c, alias4.c alias4b.c, and comma.c (regressAliasIRInterface), all of which were affected by above isLocal bug.
+        - Moved invokeBaseCtor.C and localNonLocal tests to 
+	  AliasIRInterface.test and removed CtoOA.test
+
+7/03/06   UseOA-ROSE svn tag trunk r94  Andy Stone
+    - Rechecked AliasIRInterface regression tests.
+
+7/05/06   UseOA-ROSE svn tag trunk r95  Brian White
+    - Added ./TestResults/CtoOA/localNonLocal.c.out, 
+      which I forgot to do previously.
+	
+7/05/06  UseOA-Rose svn tag trunk r97 Priyadarshini Malusare
+	     - Added regression tests and driver for ParamBindings
+	       We did not add this to regressAll because, it is not working
+	        for UseOA-ROSE on current version of gcc compiler, gcc compiler has some bug,
+	       but it is working with UseOA-Open64 Revision 39
+	
+7/05/06  UseOA-Rose svn tag trunk r100 Priyadarshini Malusare
+    - Changed config/Makefile.inc so that people have to set the following
+      environment variables: topsrcdir, ROSE_INST_ROOT, OPENANALYSIS_DIR,
+      and OPENANALYSIS_ARCH.  See wiki for an example script.
+    - Made it so that all of the warnings generated by ROSE are captured
+      into the .out files.  Should see no warnings during regression testing.
+
+7/07/06  UseOA-Rose svn tag trunk r103 Barbara Kreaseck
+     - updated UseOA-Rose regression outputs to work with OpenAnalysis
+       trunk r136, which has changes to CallGraph, and output from CallGraph,
+       and some extra spaces in outputting a map in general.
+
+        ==> significant output changes in TestResults/CallGraph/*
+        ==> spacing changes in outputs in TestResults/FIAliasAliasMap/*
+
+7/07/06 UseOA-Rose svn tag trunk r104 Barbara Kreaseck
+     - commented out the TestCases/CallGraphTests/functionPtr.c test 
+       in scripts/CallGraph.test as the CallGraph map is incorrect
+
+7/07/06 UseOA-Rose svn tag trunk r105 Michelle Strout
+	- Implemented isParam in Sage2OA.C as per Andy's suggested implementation.
+	- Set up some ParamBindings regression tests and put them in
+	  regressAll.
+
+7/10/06 UseOA-Rose svn tag trunk r106 Barbara Kreaseck
+	- added some test cases for CallGraph
+
+7/10/06 UseOA-Rose svn tag trunk r107 Barbara Kreaseck
+	- added/editted some test cases for CallGraph
+
+7/10/06 UseOA-Rose svn tag trunk r108 Barbara Kreaseck
+	- finished adding/editing test cases for CallGraph
+
+7/10/06 UseOA-Rose svn tag trunk r109 Barbara Kreaseck
+	- really finished adding/editing test cases for CallGraph
+
+7/10/06  UseOA-Rose svn tag trunk r110 Brian White
+    - Changes to staticVirtualMethodResolver
+      - matchingMemberFunctions now compares a stringified version of
+        two methods' return types, rather than the SgNode return types.
+      - Changed "accounting" of number of possible virtual method resolutions
+	and a callsite-- a pure virtual method is no longer considered
+        a possible resolution (since it can not be invoked).  
+        Is this correct?  Notice that an alias analysis would count
+        this.  e.g., if Parent::foo() is pure virtual and Kid1::foo()
+        and Kid2::foo() implement it, then an invocation of foo through
+        a pointer has 2 possible resolutions, rather than 3.
+    - Fixed [Bug #8092] Return statements that don't return anything cause
+      assertion
+
+      Details: Here is an example of where this happens.
+      ./OATest -edg:w --oa-ParamBindings -c TestCases/ParamBindings/qsort1.c
+      Looks like the logic in SageIRInterface::getAliasStmtType needs modified.
+      
+      
+      Follow-Ups:
+      
+      Date: 2006-Jul-11 09:35
+      By: bwhite
+      
+      Comment:
+      
+      An assertion in the V_SgReturnStmt case in SageIRInterface::getAliasStmtType
+      was failing.  I was asserting that the return expression from a return
+      statement was non-NULL.  This is not true for a void function.  Changed
+      the assertion to an if.
+      
+      Passes qsort1.c
+    - Fixed [Bug #8082] UnnamedRefs and PtrAssigns needed at string inits
+      Details: When I run the following:
+      ./CtoOA TestCases/AliasTests/passArrayPtr.c
+
+      the following statement:
+          char a[] = "testing";
+      gets only one MEMREFEXPR:
+          MEMREFEXPRS = { StmtHandle("char a[] = "testing";") =>
+              [
+                  MemRefHandle("a") =>
+                      NamedRef( DEF, SymHandle("a"), F, full)
+              ] }
+      There needs to be an UnnamedRef for the "testing" string and a PtrAssign
+      otherwise the alias analysis will have *a and anything that aliases it
+      access UnknownLoc.
+      
+      
+      
+      Follow-Ups:
+      
+      Date: 2006-Jul-11 09:47
+      By: bwhite
+      
+      Comment:
+      
+      Added case in SageIRMemRefIterator::findAllMemRefsAndMemRefExprs to
+      create a MemRefExpr for strings (case V_SgStringVal).  The MemRefExpr so
+      create mirrors that created for new/malloc-- it is inaccurate (since we 
+      don't accurately model the statement context) and addressTaken = true 
+      since it generates an address.
+
+      To create the pointer assignment pair, changed conditional in
+      SageIRInterface::initializerHasPtrAssign which returned false if the 
+      type of the lhs was not a pointer or reference so that it doesn't return 
+      false if the lhs is an array (i.e., SgArrayType).
+      
+      ./CtoOA TestCases/AliasTests/passArrayPtr.c now gives the following for
+      the string case:
+      
+          MEMREFEXPRS = { StmtHandle("char a[] = "testing";") =>
+              [
+                  MemRefHandle("a") => 
+                      NamedRef( DEF, SymHandle("a"), F, full)
+                  MemRefHandle(""testing"") => 
+                      UnnamedRef( USE, StmtHandle(""testing""), T, part)
+              ] }
+          PTRASSIGNPAIRS = { StmtHandle("char a[] = "testing";") =>
+              [
+                  < NamedRef( DEF, SymHandle("a"), F, full)
+                  , UnnamedRef( USE, StmtHandle(""testing""), T, part) >
+              ] }
+    - passed passArrayPtr.c and added to regressAliasIRInterface 
+      to test above bug fix.
+    - Fixed [Bug #7964] Problems with var args
+      Details: ./CtoOA TestCases/AliasTests/parambinds-formals.C 
+      
+          PARAMBINDPTRASSIGNPAIRS = { CallHandle("ellipsis_intptrs(3,&x,&y,&z)") =>
+              [
+                  < 2, NamedRef( USE, SymHandle("y"), T, full) >
+                  < 3, NamedRef( USE, SymHandle("z"), T, full) >
+              ] }
+      
+      PROCEDURE = { < ProcHandle("ellipsis_intptrs"), SymHandle("ellipsis_intptrs") >
+      }
+          FORMALS = {
+              [
+                  < 0, SymHandle("x") >
+                  < 1, SymHandle("") >
+              ] }
+      
+      Two problems:
+              1) where is &x in the PARAMBINDPTRASSIGNPAIRS?
+              2) bigger problem: the number of formals don't match the number
+                 of actuals
+      
+      Possible solutions for (2)
+      Brian and Andy both suggested modeling this as passing in one structure
+      that contains everything.  This would merge everything being passed in
+      but I think that is ok.
+
+                < 1, NamedRef( USE, SymHandle("x"), T, full) >
+                < 1, NamedRef( USE, SymHandle("y"), T, full) >
+                < 1, NamedRef( USE, SymHandle("z"), T, full) >
+
+      
+      Follow-Ups:
+      
+      Date: 2006-Jul-11 12:59
+      By: bwhite
+      
+      Comment:
+      
+      The first vararg was not being considered for param-bind-ptr-assigns:  
+      We only create param bindings
+      for pointers/references.  However, for var args we can
+      not get the type from the formal, so we need to look at 
+      the actual.  SgParamBindPtrAssignIterator::create was
+      correctly looking at the actual type in the formal was
+      NULL or SgTypeEllipse.  Unfortunately, it would then
+      set the type we are considering to the formal type
+      anyway, if the we were not at the end of the formal
+      list.  This only affected the first vararg, since
+      at the second and subsequent varargs, we had
+      reached/exceeded the end of the formal list
+      and therefore could not get the type from it.
+      
+      Also assigned each actual corresponding 
+      to a vararg in the param-bind-ptr-assign-pairs
+      to the same formal parameter number--
+      namely the number corresponding to '...'.
+      
+      After this fix, we get 'x' listed in the
+      param-bind-ptr-assign-pairs and have 
+      all actuals bound to formal 1:
+      
+          PARAMBINDPTRASSIGNPAIRS = { CallHandle("ellipsis_intptrs(3,&x,&y,&z)") =>
+              [
+                  < 1, NamedRef( USE, SymHandle("x"), T, full) >
+                  < 1, NamedRef( USE, SymHandle("y"), T, full) >
+                  < 1, NamedRef( USE, SymHandle("z"), T, full) >
+              ] }
+      
+      This functionality is tested by parambinds-formals-intPtrs.C,
+      which is a subset of parambinds-formals.C.
+    - added parambinds-formals-intPtrs.C to test above bug fix.
+    - Passes regressAll using ROSE-0.8.7a and OpenAnalysis revision 139.
+
+7/14/06     UseOA-Rose svn trunk r112    Barbara Kreaseck
+    - added regression tests for ICFG, added to regressAll
+    - added functionality for --oa-ICFG test in OATest.C and OAWraps/
+    - passes regressAll with rose-0.8.7a/compile-gcc-3.2 and OpenAnalysis r141 
+
+7/17/06     UseOA-Rose svn trunk r115    Priyadarshini Malusare 
+    - added regression tests for SideEffect, not yet added in regressAll.
+        - added functionality for --oa-SideEffect test in OATest.C and OAWraps/
+	    - passes regressAll with rose-0.8.7a/compile-gcc-3.2 and
+	    OpenAnalysis.
+
+7/17/06     UseOA-Rose svn trunk r116    Barbara Kreaseck
+    - re-gen'd ICFG regression output to work with OpenAnalysis trunk r147
+    - removed TestCases/CallGraph/functions3.cpp from regressCallGraph.script
+         because include files are handled differently depending upon which
+         ROSE compilation you are working on.
+    - added ICFGTest to regressAll
+    - passes regressAll with OpenAnalysis trunk r147 
+        compiled on Okapi with gcc-3.2 and rose-0.8.7a/compile-gcc-3.2
+
+7/18/06     UseOA-Rose svn trunk r117    Michelle Strout
+    - added a SideEffect test
+    - regressAll mostly works with OpenAnalysis r150.  There are a couple
+      of small diffs that I sent email to folks about.
+
+7/18/06     UseOA-Rose svn trunk r118   Priyadarshini Malusare
+   - Added TestCase for SideEffect
+     simpleMix.cpp
+
+7/18/06     UseOA-Rose svn trunk r118   Priyadarshini Malusare
+   - Modified Sage2OA.h 
+	
+7/19/06     UseOA-Rose svn trunk r121   Andy Stone
+    - Added support for a USEOA_DEBUG environmental variable (for more info
+      look at the new debug.h file).
+    - added the --skipAnalysis and --exitWithTop command line options.  If
+      --skipAnalysis is set then when running when --oa-FIAliasAliasMap the
+      analysis will be skipped (the other analyses should be configured to take
+      into account this flag as well).  --exitWithTop will cause OATest to
+      execute the unix 'top' command immediatley before termination.
+
+7/20/06     UseOA-Rose svn trunk r122   Priyadarshini Malusare
+    - Added TestCases for SideEffect Analysis.
+	  TestCases/SideEffect/simpleMix-passptr.c,
+	  TestCases/SideEffect/stringcmp.c,
+	  TestCases/SideEffect/test.c.
+	  Also added regressSideEffect.script and genSideEffect.script.
+    - SideEffect is not working for TestCases/SideEffect/swap.c
+	 
+7/23/06     UseOA-Rose svn trunk r123   Priyadarshini Malusare
+      - Added ReachDefs regression output to work with OpenAnalysis trunk r161
+      - Added TestCases/ReachDefsTests/reachdef_if1.c, reachdef_if1.c,
+	    TestCases/ReachDefsTests/reachdef_if2.c,
+		TestCases/ReachDefsTests/reachdef_loopif1.c 
+      - added ReachDefs to regressAll
+      - passes regressAll with OpenAnalysis trunk r161 compiled on Okapi with gcc-3.2 and rose-0.8.7a/compile-gcc-3.2
+    
+07/24/06   UseOA-Rose svn trunk r124  Priyadarshini Malusare
+      - Deleted retPtr.c test from AliasIRInterface.script and
+	  FIAliasAliasMap.script. (going to add those in future after checking
+	  output in TestResults).
+
+07/24/06   UseOA-Rose svn trunk r125  Priyadarshini Malusare
+      - Added TestResults for ReachDefs.
+										
+07/26/06   UseOA-Rose svn trunk r126  Priyadarshini Malusare
+      - Deleted TestResults/SideEffect/*.c.out as they contain debug output.
+
+07/26/06   UseOA-Rose svn trunk r127  Priyadarshini Malusare
+      - Added TestResults for SideEffect/InterSideEffect.
+
+07/27/06   UseOA-Rose svn trunk r128  Priyadarshini Malusare
+      - Added TestResults for SideEffect/InterSideEffect without debug output
+	    Also Modified OATest.C, regressSideEffect.script and
+		genSideEffect.script.
+			
+8/01/06     UseOA-Rose svn trunk r130    Barbara Kreaseck
+      - updated OAWraps/Sage2OA.h toString(ConstSymHandle)
+        - Assumption is that a ConstSymHandle can be printed using the same
+          output routine as a MemRefHandle, just not recognized as suce
+        - Could not generate a ConstSymNode in test cases, unable to test
+      - updated ParamBindings regression tests to reflect updated/new output
+        associated with OpenAnalysis r166
+      - updated ICFG regression tests to reflect new output associated with
+        OpenAnalysis r166
+      - added initial --oa-ICFGDep testing to OATest.C, et.al.
+        - needed OpenAnalysis/IRInterface/ActivityIRInterface.hpp functions
+        - added marginal/incomplete_with_asserts functions to OAWraps/Sage2OA.*
+          - these functions will need more work at a later time
+        - ICFGDep results are fine with X = Y + Z, but not with X[i]=Y[i]+Z[i].
+        - DID NOT add ICFGDep regression testing to regressAll
+      - passes regressAll with OpenAnalysis trunk r166 compiled on Okapi with 
+        gcc-3.2 and rose-0.8.7a/compile-gcc-3.2
+
+8/01/06     UseOA-Rose svn trunk r131    Michelle Strout
+    Reverified a lot of regression tests due to the change in ManagerFIAlias
+    in OpenAnalysis r167.  RegressAll works with OpenAnalysis r167
+    and everything compiled with gcc 4.0.2 on armstrong.
+
+8/01/06     UseOA-Rose svn trunk r134    Priyadarshini Malusare
+   Added 5 TestCases for AliasIRInterface. 
+
+8/02/06     UseOA-Rose svn trunk r135    Michelle Strout
+   Added a number of test cases to AliasIRInterface.
+   regressAll works with OpenAnalysis r167

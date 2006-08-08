@@ -1,0 +1,14 @@
+# comment in file.test
+# Regression tests for Reaching Definitio 
+testname::ReachDef
+inputdir::TestCases/ReachDefTests
+outputdir::TestResults/ReachDef
+driverexec::./OATest -edg:w --oa-ReachDefs -c
+
+# list of tests
+#       input file,             status
+test::  reachdef_if2.c,         Not Checked Yet 
+
+
+
+

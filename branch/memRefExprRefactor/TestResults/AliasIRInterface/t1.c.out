@@ -1,0 +1,82 @@
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int j = 3;int k = 2;int i = 5;for(j = 1;j < 10;j =(j + k)) {while(i){i--;k = --i;k = i++;++i;}}return j - k;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int j = 3;int k = 2;int i = 5;for(j = 1;j < 10;j =(j + k)) {while(i){i--;k = --i;k = i++;++i;}}return j - k;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int j = 3;") =>
+        [
+            MemRefHandle("j") => 
+                NamedRef( DEF, SymHandle("j"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("int k = 2;") =>
+        [
+            MemRefHandle("k") => 
+                NamedRef( DEF, SymHandle("k"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("int i = 5;") =>
+        [
+            MemRefHandle("i") => 
+                NamedRef( DEF, SymHandle("i"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("for(j = 1;j < 10;j =(j + k)) {while(i){i--;k = --i;k = i++;++i;}}") =>
+        [
+            MemRefHandle("j") => 
+                NamedRef( DEF, SymHandle("j"), F, full)
+            MemRefHandle("j") => 
+                NamedRef( USE, SymHandle("j"), F, full)
+            MemRefHandle("j") => 
+                NamedRef( DEF, SymHandle("j"), F, full)
+            MemRefHandle("j") => 
+                NamedRef( USE, SymHandle("j"), F, full)
+            MemRefHandle("k") => 
+                NamedRef( USE, SymHandle("k"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("{while(i){i--;k = --i;k = i++;++i;}}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("while(i){i--;k = --i;k = i++;++i;}") =>
+        [
+            MemRefHandle("i") => 
+                NamedRef( USE, SymHandle("i"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("{i--;k = --i;k = i++;++i;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("i--;") =>
+        [
+            MemRefHandle("i") => 
+                NamedRef( DEF, SymHandle("i"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("k = --i;") =>
+        [
+            MemRefHandle("k") => 
+                NamedRef( DEF, SymHandle("k"), F, full)
+            MemRefHandle("i") => 
+                NamedRef( DEF, SymHandle("i"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("k = i++;") =>
+        [
+            MemRefHandle("k") => 
+                NamedRef( DEF, SymHandle("k"), F, full)
+            MemRefHandle("i") => 
+                NamedRef( DEF, SymHandle("i"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("++i;") =>
+        [
+            MemRefHandle("i") => 
+                NamedRef( DEF, SymHandle("i"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("return j - k;") =>
+        [
+            MemRefHandle("j") => 
+                NamedRef( USE, SymHandle("j"), F, full)
+            MemRefHandle("k") => 
+                NamedRef( USE, SymHandle("k"), F, full)
+        ] }
+    LOCATION = { < SymHandle("main"), local > }
+    LOCATION = { < SymHandle("j"), local > }
+    LOCATION = { < SymHandle("k"), local > }
+    LOCATION = { < SymHandle("i"), local > }

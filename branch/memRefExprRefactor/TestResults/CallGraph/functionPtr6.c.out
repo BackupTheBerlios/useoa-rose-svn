@@ -1,0 +1,75 @@
+
+graph DGraph:
+
+    Node 1: 
+        main [defined]
+
+    Node 2: 
+        read [referenced]
+
+    Node 3: 
+        car1 [defined]
+
+    Node 4: 
+        car2 [defined]
+
+    Node 5: 
+        foo [defined]
+
+    Node 6: 
+        bar [defined]
+
+    Node 7: 
+        zoo [defined]
+
+    Edge: 1 => 2
+        read()
+
+    Edge: 1 => 3
+        car1(fp1)
+
+    Edge: 1 => 4
+        car2(fp2)
+
+    Edge: 3 => 5
+        ( *funcPtr)()
+
+    Edge: 3 => 7
+        ( *funcPtr)()
+
+    Edge: 4 => 6
+        ( *funcPtr)()
+
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        read()	 => [ warning: ProcHandle is 0   ] 
+        car1(fp1)	 => [ car1 ] 
+        car2(fp2)	 => [ car2 ] 
+        ( *funcPtr)()	 => [ foo    zoo ] 
+        ( *funcPtr)()	 => [ bar ] 
+
+digraph DGraph {
+    node [shape=rectangle];
+    1 [ label="main [defined]" ];
+    2 [ label="read [referenced]" ];
+    3 [ label="car1 [defined]" ];
+    4 [ label="car2 [defined]" ];
+    5 [ label="foo [defined]" ];
+    6 [ label="bar [defined]" ];
+    7 [ label="zoo [defined]" ];
+    1 -> 2 [ label="read()" ];
+    1 -> 3 [ label="car1(fp1)" ];
+    1 -> 4 [ label="car2(fp2)" ];
+    3 -> 5 [ label="( *funcPtr)()" ];
+    3 -> 7 [ label="( *funcPtr)()" ];
+    4 -> 6 [ label="( *funcPtr)()" ];}
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        read()	 => [ warning: ProcHandle is 0   ] 
+        car1(fp1)	 => [ car1 ] 
+        car2(fp2)	 => [ car2 ] 
+        ( *funcPtr)()	 => [ foo    zoo ] 
+        ( *funcPtr)()	 => [ bar ] 
+
+*******  end of DoCallGraph *********
+

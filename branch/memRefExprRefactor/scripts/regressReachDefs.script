@@ -1,0 +1,12 @@
+echo "Testing TestCases/ReachDefsTests/reachdef_if1.c, TestResults/ReachDefsTests/reachdef_if1.c.out Checked by PLM 07/23/06"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/reachdef_if1.c >& t
+diff t TestResults/ReachDefsTests/reachdef_if1.c.out
+
+echo "Testing TestCases/ReachDefsTests/reachdef_if2.c, TestResults/ReachDefsTests/reachdef_if2.c.out Checked by PLM 07/23/06"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/reachdef_if2.c >& t
+diff t TestResults/ReachDefsTests/reachdef_if2.c.out
+
+echo "Testing TestCases/ReachDefsTests/reachdef_loopif1.c, TestResults/ReachDefsTests/reachdef_loopif1.c.out Checked by PLM 07/23/06"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/reachdef_loopif1.c >& t
+diff t TestResults/ReachDefsTests/reachdef_loopif1.c.out
+

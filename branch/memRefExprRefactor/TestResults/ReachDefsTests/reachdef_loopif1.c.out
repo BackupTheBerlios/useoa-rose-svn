@@ -1,0 +1,22 @@
+
+ReachDefsStandard(
+    mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
+            StmtHandle(x =(2);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(y =(5);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(x =(y + y);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(y =(x *(5));)	 => [ StmtHandle(i = 1;)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(y =(3);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(z = y;)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(i++;)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(while(i != 10){x =(2);if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}z = y;i++;})	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);})	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle()	 => [ StmtHandle(i = 1;)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle()	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle()	 => [ StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(return 0;)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+
+    mExitReachDefs: [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+)
+
+*******  end of DoReachDef *********
+

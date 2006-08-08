@@ -1,0 +1,115 @@
+"TestCases/AliasTests/func_call.c", line 23: warning: variable "p" was set but
+          never used
+    int *p;
+         ^
+
+
+PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
+    MEMREFEXPRS = { StmtHandle("int bar(){int x = 0;int *p;*hello() = x;fp = bar;( *fp)();bar();fp2 = hello;p =( *fp2)();p =((int *)(malloc(((sizeof(int ))))));return x;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int x = 0;int *p;*hello() = x;fp = bar;( *fp)();bar();fp2 = hello;p =( *fp2)();p =((int *)(malloc(((sizeof(int ))))));return x;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int x = 0;") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( DEF, SymHandle("x"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *p;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("*hello() = x;") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), F, full)
+            MemRefHandle("hello()") => 
+                NamedRef( USE, SymHandle("hello"), F, full)
+            MemRefHandle("*hello()") => 
+                Deref( DEF, NamedRef( USE, SymHandle("hello"), F, full), 1, F, full)
+        ] }
+    CALLSITES = { StmtHandle("*hello() = x;") =>
+        [
+            CallHandle("hello()") => 
+                NamedRef( USE, SymHandle("hello"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("fp = bar;") =>
+        [
+            MemRefHandle("fp") => 
+                NamedRef( DEF, SymHandle("fp"), F, full)
+            MemRefHandle("bar") => 
+                NamedRef( USE, SymHandle("bar"), T, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("fp = bar;") =>
+        [
+            < NamedRef( DEF, SymHandle("fp"), F, full)
+            , NamedRef( USE, SymHandle("bar"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("( *fp)();") =>
+        [
+            MemRefHandle("fp") => 
+                NamedRef( USE, SymHandle("fp"), F, full)
+            MemRefHandle("( *fp)") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp"), F, full), 1, F, full)
+        ] }
+    CALLSITES = { StmtHandle("( *fp)();") =>
+        [
+            CallHandle("( *fp)()") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp"), F, full), 1, F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("bar();") =>
+        [
+        ] }
+    CALLSITES = { StmtHandle("bar();") =>
+        [
+            CallHandle("bar()") => 
+                NamedRef( USE, SymHandle("bar"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("fp2 = hello;") =>
+        [
+            MemRefHandle("fp2") => 
+                NamedRef( DEF, SymHandle("fp2"), F, full)
+            MemRefHandle("hello") => 
+                NamedRef( USE, SymHandle("hello"), T, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("fp2 = hello;") =>
+        [
+            < NamedRef( DEF, SymHandle("fp2"), F, full)
+            , NamedRef( USE, SymHandle("hello"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("p =( *fp2)();") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"), F, full)
+            MemRefHandle("fp2") => 
+                NamedRef( USE, SymHandle("fp2"), F, full)
+            MemRefHandle("( *fp2)()") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp2"), F, full), 1, F, full)
+            MemRefHandle("( *fp2)") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp2"), F, full), 1, F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p =( *fp2)();") =>
+        [
+            < NamedRef( DEF, SymHandle("p"), F, full)
+            , Deref( USE, NamedRef( USE, SymHandle("fp2"), F, full), 1, F, full) >
+        ] }
+    CALLSITES = { StmtHandle("p =( *fp2)();") =>
+        [
+            CallHandle("( *fp2)()") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp2"), F, full), 1, F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("p =((int *)(malloc(((sizeof(int ))))));") =>
+        [
+            MemRefHandle("((int *)(malloc(((sizeof(int ))))))") => 
+                UnnamedRef( USE, StmtHandle("((int *)(malloc(((sizeof(int ))))))"), T, part)
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p =((int *)(malloc(((sizeof(int ))))));") =>
+        [
+            < NamedRef( DEF, SymHandle("p"), F, full)
+            , UnnamedRef( USE, StmtHandle("((int *)(malloc(((sizeof(int ))))))"), T, part) >
+        ] }
+    CALLSITES = { StmtHandle("p =((int *)(malloc(((sizeof(int ))))));") =>
+        [
+            CallHandle("

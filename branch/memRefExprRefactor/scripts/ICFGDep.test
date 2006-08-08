@@ -1,0 +1,17 @@
+# comment in file.test
+# Regression tests for ICFGDep generation
+testname::ICFGDep
+inputdir::TestCases/ICFGDep
+outputdir::TestResults/ICFGDep
+driverexec::./OATest -edg:w --oa-ICFGDep -c
+
+#############
+# OAWraps/Sage2OA.* has minimal/incomplete implementation of methods for
+# OpenAnalysis/IRInterface/ActivityIRInterface.hpp virtual methods./
+#   FIXME
+#############
+
+# list of tests
+#       input file,     status
+test::   activity_int6.c,         checked by BK 8/01/06 ERROR is not handling locSubSet correctly. 
+test::   activity_int7.c,         checked by BK 8/01/06 ERROR is not handling locSubSet correctly.

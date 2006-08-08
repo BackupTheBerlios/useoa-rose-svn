@@ -1,0 +1,63 @@
+
+EquivSets(
+    mMemRefToProc: MemRefHandle	 => ProcHandle
+        MemRefHandle(a)	 => ProcHandle(foo)
+        MemRefHandle(c)	 => ProcHandle(foo)
+        MemRefHandle(x)	 => ProcHandle(main)
+        MemRefHandle(&x)	 => ProcHandle(main)
+    mMemRefToSets: MemRefHandle	 => int
+        MemRefHandle(a)	 => [ 9 ] 
+        MemRefHandle(c)	 => [ 3 ] 
+    mProcNSetToLocs: ProcHandle	 => std::map<int,OA_ptr<Location> >
+        ProcHandle(foo)	 => 
+        SetToLocs: int	 => OA_ptr<Location>
+            3	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(c)
+                    mLocal: 0
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
+                ) ] 
+            9	 => [ 
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(b)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+        ProcHandle(main)	 => 
+        SetToLocs: int	 => OA_ptr<Location>
+            9	 => [ 
+                NamedLoc(
+                    mSymHandle: SymHandle(x)
+                    mLocal: 1
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
+                ) ] 
+)

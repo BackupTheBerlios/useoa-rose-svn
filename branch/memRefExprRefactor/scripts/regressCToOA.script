@@ -1,0 +1,8 @@
+echo "Testing TestCases/CtoOA/invokeBaseCtor.C, TestResults/CtoOA/invokeBaseCtor.C.out checked by BSW 6/26/06"
+./CtoOA -edg:w -c TestCases/CtoOA/invokeBaseCtor.C > t
+diff t TestResults/CtoOA/invokeBaseCtor.C.out
+
+echo "Testing TestCases/CtoOA/localNonLocal.c, TestResults/CtoOA/localNonLocal.c.out checked by BSW 6/28/06"
+./CtoOA -edg:w -c TestCases/CtoOA/localNonLocal.c > t
+diff t TestResults/CtoOA/localNonLocal.c.out
+

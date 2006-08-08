@@ -1,0 +1,44 @@
+echo "Testing TestCases/ICFG/swap.c, TestResults/ICFG/swap.c.out checked by BK 7/24/06"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/swap.c >& t
+diff t TestResults/ICFG/swap.c.out
+
+echo "Testing TestCases/ICFG/functionPtr.c, TestResults/ICFG/functionPtr.c.out checked by BK 7/24/06"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr.c >& t
+diff t TestResults/ICFG/functionPtr.c.out
+
+echo "Testing TestCases/ICFG/functionPtr1.c, TestResults/ICFG/functionPtr1.c.out checked by BK 7/24/06"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr1.c >& t
+diff t TestResults/ICFG/functionPtr1.c.out
+
+echo "Testing TestCases/ICFG/functionPtr2.c, TestResults/ICFG/functionPtr2.c.out checked by BK 7/24/06"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr2.c >& t
+diff t TestResults/ICFG/functionPtr2.c.out
+
+echo "Testing TestCases/ICFG/functionPtr3.c, TestResults/ICFG/functionPtr3.c.out checked by BK 7/24/06"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr3.c >& t
+diff t TestResults/ICFG/functionPtr3.c.out
+
+echo "Testing TestCases/ICFG/functionPtr4.c, TestResults/ICFG/functionPtr4.c.out checked by BK 7/24/06"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr4.c >& t
+diff t TestResults/ICFG/functionPtr4.c.out
+
+echo "Testing TestCases/ICFG/functionPtr5.c, TestResults/ICFG/functionPtr5.c.out checked by BK 7/24/06"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr5.c >& t
+diff t TestResults/ICFG/functionPtr5.c.out
+
+echo "Testing TestCases/ICFG/functionPtr6.c, TestResults/ICFG/functionPtr6.c.out checked by BK 7/24/06"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr6.c >& t
+diff t TestResults/ICFG/functionPtr6.c.out
+
+echo "Testing TestCases/ICFG/functions6.c, TestResults/ICFG/functions6.c.out checked by BK 7/24/06"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functions6.c >& t
+diff t TestResults/ICFG/functions6.c.out
+
+echo "Testing TestCases/ICFG/multi_func_calls.c, TestResults/ICFG/multi_func_calls.c.out checked by BK 7/24/06"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/multi_func_calls.c >& t
+diff t TestResults/ICFG/multi_func_calls.c.out
+
+echo "Testing TestCases/ICFG/multi_func_calls_2.c, TestResults/ICFG/multi_func_calls_2.c.out checked by BK 7/24/06"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/multi_func_calls_2.c >& t
+diff t TestResults/ICFG/multi_func_calls_2.c.out
+
