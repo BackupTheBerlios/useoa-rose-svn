@@ -719,11 +719,11 @@ public:
   OA::OA_ptr<OA::ExprStmtPairIterator> 
     getExprStmtPairIterator(OA::StmtHandle h);
   
-  //! Return an iterator over all independent locations for given proc
-  OA::OA_ptr<OA::LocIterator> getIndepLocIter(OA::ProcHandle h);
+  //! Return an iterator over all independent MemRefExpr for given proc
+  OA::OA_ptr<OA::MemRefExprIterator> getIndepMemRefExprIter(OA::ProcHandle h);
   
-  //! Return an iterator over all dependent locations for given proc
-  OA::OA_ptr<OA::LocIterator> getDepLocIter(OA::ProcHandle h);
+  //! Return an iterator over all dependent MemRefExpr for given proc
+  OA::OA_ptr<OA::MemRefExprIterator> getDepMemRefExprIter(OA::ProcHandle h);
  
   //! Given a statement, return its Activity::IRStmtType
   OA::Activity::IRStmtType getActivityStmtType(OA::StmtHandle h);

@@ -7127,9 +7127,9 @@ OA::OA_ptr<OA::ExprStmtPairIterator>
   return espIter;
 }
  
-//! Return an iterator over all independent locations for given proc
-OA::OA_ptr<OA::LocIterator> 
-SageIRInterface::getIndepLocIter(OA::ProcHandle h)
+//! Return an iterator over all independent MemRefExpr for given proc
+OA::OA_ptr<OA::MemRefExprIterator> 
+SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
 {
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // FIXME
@@ -7137,20 +7137,20 @@ SageIRInterface::getIndepLocIter(OA::ProcHandle h)
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   // Get independent variables
-  OA::OA_ptr<OA::LocSet> indepSet;
-  indepSet = new OA::LocSet;
+  OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > indepList;
+  indepList = new std::list<OA::OA_ptr<OA::MemRefExpr> >;
 
   assert(0);
   // not implemented yet
 
-  OA::OA_ptr<OA::LocSetIterator> indepIter;
-  indepIter = new OA::LocSetIterator(indepSet);
+  OA::OA_ptr<OA::MemRefExprIterator> indepIter;
+  indepIter = new SageMemRefExprIterator(indepList,this);
   return indepIter;
 }
 
-//! Return an iterator over all dependent locations for given proc
-OA::OA_ptr<OA::LocIterator> 
-SageIRInterface::getDepLocIter(OA::ProcHandle h)
+//! Return an iterator over all dependent MemRefExpr for given proc
+OA::OA_ptr<OA::MemRefExprIterator> 
+SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
 {
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // FIXME
@@ -7158,15 +7158,16 @@ SageIRInterface::getDepLocIter(OA::ProcHandle h)
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   // Get dependent variables
-  OA::OA_ptr<OA::LocSet> depSet;
-  depSet = new OA::LocSet;
-  
+  OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > depList;
+  depList = new std::list<OA::OA_ptr<OA::MemRefExpr> >;
+
   assert(0);
   // not implemented yet
 
-  OA::OA_ptr<OA::LocSetIterator> depIter;
-  depIter = new OA::LocSetIterator(depSet);
+  OA::OA_ptr<OA::MemRefExprIterator> depIter;
+  depIter = new SageMemRefExprIterator(depList,this);
   return depIter;
+  
 }
 
 //! Given a statement, return its Activity::IRStmtType
