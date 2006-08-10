@@ -53,12 +53,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("z"), F, full)
             MemRefHandle("&n") => 
                 NamedRef( USE, SymHandle("n"), T, full)
+            MemRefHandle("( *z)") => 
+                Deref( USE, NamedRef( USE, SymHandle("z"), F, full), 1, F, full)
             MemRefHandle("( *( *z)).p") => 
-                Deref( DEF, NamedRef( USE, SymHandle("z"), F, full), 1, F, part)
+                Deref( DEF, Deref( USE, NamedRef( USE, SymHandle("z"), F, full), 1, F, full), 1, F, part)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("( *( *z)).p = &n;") =>
         [
-            < Deref( DEF, NamedRef( USE, SymHandle("z"), F, full), 1, F, part)
+            < Deref( DEF, Deref( USE, NamedRef( USE, SymHandle("z"), F, full), 1, F, full), 1, F, part)
             , NamedRef( USE, SymHandle("n"), T, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("x -> p =(y.p);") =>

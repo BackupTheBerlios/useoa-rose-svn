@@ -23,7 +23,7 @@ test::  assignReturn.c,          missing use of a in *p=a=&g return ptrassigns b
 test::  class.C,                 missing LOC for sInt MMS 8/7/06
 test::  comma.c,                 checked by MMS 6/22/06
 #test::  dataMemberPtrs.C,        aborts MMS 8/7/06
-test::  fields.c,                (*z)->p is not correct MMS 8/2/06
+test::  fields.c,                (*z)->p is not correct MMS 8/2/06 incorrect output with gcc-4.0.2 BK 8/10/06
 #test::  constQualified.c,       checked by ???
 #test::  utke.c,                 checked by ???
 #test::  OAWikiEx.c,             checked by ???
@@ -34,7 +34,7 @@ test::  functionPtr2.c,          checked by MMS 8/1/06
 test::  invokeBaseCtor.C,        checked by BSW 6/26/06
 test::  localNonLocal.c,         checked by BSW 6/28/06
 test::  passArrayPtr.c,          checked by MMS 7/27/06
-test::  parambinds-formals-intPtrs.C,   should ap be formal param? MMS 8/7/06
+#test::  parambinds-formals-intPtrs.C,   should ap be formal param? MMS 8/7/06  aborts with Rose on gcc-3.2 BK 8/10/06
 test::  passIntPtrArrayRef.c,    checked by MMS 7/24/06
 test::  passIntPtrArrayRef2.c,   checked by MMS 7/24/06
 test::  passIntPtrArrayRef3.c,   checked by MMS 7/24/06

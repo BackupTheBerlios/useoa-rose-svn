@@ -21,8 +21,8 @@ PROCEDURE = { < ProcHandle("A::foo"), SymHandle("method:A::foo__A__scope__foo___
     MEMREFEXPRS = { StmtHandle("int x;") =>
         [
         ] }
-    LOCATION = { < SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), not local > }
     LOCATION = { < SymHandle("this::A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), local > }
+    LOCATION = { < SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){class A a;a.foo();return A::sInt;}") =>
@@ -59,5 +59,5 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("sInt"), F, full)
         ] }
     LOCATION = { < SymHandle("a"), local > }
-    LOCATION = { < SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), not local > }
     LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), not local > }

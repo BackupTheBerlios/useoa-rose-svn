@@ -1902,9 +1902,10 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
    Added a number of test cases to AliasIRInterface.
    regressAll works with OpenAnalysis r167
 
-8/09/06     UseOA-Rose svn trunk r145    Barbara Kreaseck
+8/10/06     UseOA-Rose svn trunk r147    Barbara Kreaseck
    - OAWraps/Sage2OA.*:
      + changed getIndepLocIter() into getIndepMemRefExprIter()
      + changed getDepLocIter()   into getDepMemRefExprIter()
-   - passes regressAll with OpenAnalysis trunk r178 compiled on Okapi with 
+   - adjusted regression test and output for AliasIRInterface for gcc-3.2
+   - passes regressAll with OpenAnalysis trunk r180 compiled on Okapi with 
         gcc-3.2 and rose-0.8.7a/compile-gcc-3.2

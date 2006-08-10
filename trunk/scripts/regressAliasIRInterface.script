@@ -38,7 +38,7 @@ echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c
 ./CtoOA TestCases/AliasTests/comma.c >& t
 diff t TestResults/AliasIRInterface/comma.c.out
 
-echo "Testing TestCases/AliasTests/fields.c, TestResults/AliasIRInterface/fields.c.out (*z)->p is not correct MMS 8/2/06"
+echo "Testing TestCases/AliasTests/fields.c, TestResults/AliasIRInterface/fields.c.out (*z)->p is not correct MMS 8/2/06 incorrect output with gcc-4.0.2 BK 8/10/06"
 ./CtoOA TestCases/AliasTests/fields.c >& t
 diff t TestResults/AliasIRInterface/fields.c.out
 
@@ -65,10 +65,6 @@ diff t TestResults/AliasIRInterface/localNonLocal.c.out
 echo "Testing TestCases/AliasTests/passArrayPtr.c, TestResults/AliasIRInterface/passArrayPtr.c.out checked by MMS 7/27/06"
 ./CtoOA TestCases/AliasTests/passArrayPtr.c >& t
 diff t TestResults/AliasIRInterface/passArrayPtr.c.out
-
-echo "Testing TestCases/AliasTests/parambinds-formals-intPtrs.C, TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out should ap be formal param? MMS 8/7/06"
-./CtoOA TestCases/AliasTests/parambinds-formals-intPtrs.C >& t
-diff t TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out
 
 echo "Testing TestCases/AliasTests/passIntPtrArrayRef.c, TestResults/AliasIRInterface/passIntPtrArrayRef.c.out checked by MMS 7/24/06"
 ./CtoOA TestCases/AliasTests/passIntPtrArrayRef.c >& t
