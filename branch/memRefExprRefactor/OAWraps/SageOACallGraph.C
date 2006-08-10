@@ -106,7 +106,7 @@ void SageIRProcIterator::FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst
 
 SageIRProcIterator::SageIRProcIterator(SgNode *node, 
                                        OA::OA_ptr<SageIRInterface> in,
-				       bool excludeInputFiles)
+                                       bool excludeInputFiles)
   : mExcludeInputFiles(excludeInputFiles)
 {
  //given an sgstmt put all call expressions in calls_in_stmt
@@ -163,23 +163,12 @@ void FindCallsitesPass::visit(SgNode* node)
   // new, also need to get those involved in a stack allocation.
   // Both can be captured by looking at SgConstructorInitializers instead.
 
-  // For malloc, return the cast expression as the call site.
-  // BW 4/6/06.
-  if ( isSgCastExp(exp) ) {
-    SgCastExp *castExp = isSgCastExp(exp);
-    ROSE_ASSERT(castExp != NULL);
-    
-    SgNode *node = castExp->get_operand();
-    SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
-    
-    if ( ( functionCallExp != NULL ) && ( mIR->isMalloc(functionCallExp) ) ) {
+  if( isSgFunctionCallExp(exp) ) {
       call_lst.push_back(exp);
-    }
-  } else if( isSgFunctionCallExp(exp) ) {
-    if ( !mIR->isMalloc(isSgFunctionCallExp(exp)) ) {
-      call_lst.push_back(exp);
-    }
+
   } else if ( isSgConstructorInitializer(exp) ) {
+    ROSE_ASSERT(0); // MMS, not sure how we handle these yet
+/*
     // 2/1/06 BW:  Only consider this a function call if it creates
     // a named type.  Otherwise we get problems (e.g., in getFormalTypes)
     // when we expect that a basic type has a constructor with a 
@@ -191,6 +180,7 @@ void FindCallsitesPass::visit(SgNode* node)
     if ( !mIR->createsBaseType(ctorInitializer) ) {
       call_lst.push_back(exp);
     } 
+*/
   }
 
   return;
@@ -201,7 +191,7 @@ void FindCallsitesPass::visit(SgNode* node)
 void FindProcsPass::visit(SgNode* node)
 {
   if(!node) { printf("visited with 0-Node!\n"); return; }
-	
+        
 #if 1
   if(isSgFunctionDefinition(node))
 #else

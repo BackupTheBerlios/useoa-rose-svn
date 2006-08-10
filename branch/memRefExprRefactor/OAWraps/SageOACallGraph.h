@@ -36,7 +36,7 @@ public:
 
 
 
-//	ProcHAndle corresponds to SgFunctionDefinition
+//      ProcHAndle corresponds to SgFunctionDefinition
 
 /*!
  * Enumerate over all procedures in the IR.
@@ -49,7 +49,7 @@ class SageIRProcIterator: public OA::IRProcIterator
   // is more general.  bwhite
   //  SageIRProcIterator (SgProject * sageproject, SageIRInterface * in); 
   SageIRProcIterator (SgNode *node, OA::OA_ptr<SageIRInterface> in,
-		      bool excludeInputFiles = false); 
+                      bool excludeInputFiles = false); 
   // MMS, must take OA_ptr to SageIRInterface because can't have raw ptrs
   // and OA_ptrs to the same object
   //should really be a list of SgFunctionDefinition pointers? or maybe just SgProject ptr?
