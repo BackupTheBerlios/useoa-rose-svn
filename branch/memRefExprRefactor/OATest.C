@@ -557,7 +557,7 @@ int DoCallGraph(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
     // purposes only:  avoids unexpected/spurious results due to 
     // stdlib.h, etc.
     procIter = new SageIRProcIterator(sgproject, 
-                                      irInterface, excludeInputFiles);
+                                      *irInterface, excludeInputFiles);
     OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
     interAlias = fialiasman->performAnalysis(procIter);
 
@@ -605,7 +605,7 @@ int DoICFG(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
   // purposes only:  avoids unexpected/spurious results due to 
   // stdlib.h, etc.
   procIter = new SageIRProcIterator(sgproject, 
-                                    irInterface, excludeInputFiles);
+                                    *irInterface, excludeInputFiles);
   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
   interAlias = fialiasman->performAnalysis(procIter);
   
@@ -662,7 +662,7 @@ int DoICFGDep(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
   // purposes only:  avoids unexpected/spurious results due to 
   // stdlib.h, etc.
   procIter = new SageIRProcIterator(sgproject, 
-                                    irInterface, excludeInputFiles);
+                                    *irInterface, excludeInputFiles);
   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
   interAlias = fialiasman->performAnalysis(procIter);
   
@@ -733,7 +733,7 @@ int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
   bool excludeInputFiles = true;
-  procIter = new SageIRProcIterator(sgproject,irInterface, excludeInputFiles);
+  procIter = new SageIRProcIterator(sgproject,*irInterface, excludeInputFiles);
   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
   interAlias = fialiasman->performAnalysis(procIter);
 
@@ -785,7 +785,7 @@ int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handl
         fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
         OA::OA_ptr<SageIRProcIterator> procIter;
         bool excludeInputFiles = true;
-        procIter = new SageIRProcIterator(sgproject,irInterface, excludeInputFiles);
+        procIter = new SageIRProcIterator(sgproject,*irInterface, excludeInputFiles);
         OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
         interAlias = fialiasman->performAnalysis(procIter);
 		  
@@ -862,7 +862,7 @@ int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   // Don't pull in any procedures defined in input files.  For testing
   // purposes only:  avoids unexpected/spurious results due to 
   // stdlib.h, etc.
-  procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
+  procIter = new SageIRProcIterator(p, *irInterface, excludeInputFiles);
   //#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
 #ifdef BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
@@ -906,7 +906,7 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   // Don't pull in any procedures defined in input files.  For testing
   // purposes only:  avoids unexpected/spurious results due to 
   // stdlib.h, etc.
-  procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
+  procIter = new SageIRProcIterator(p, *irInterface, excludeInputFiles);
   //#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
 
@@ -992,7 +992,7 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   // Don't pull in any procedures defined in input files.  For testing
   // purposes only:  avoids unexpected/spurious results due to
   // stdlib.h, etc.
-  procIter = new SageIRProcIterator(p,irInterface, excludeInputFiles);
+  procIter = new SageIRProcIterator(p,*irInterface, excludeInputFiles);
   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
   interAlias = fialiasman->performAnalysis(procIter);
   OA::ProcHandle proc((OA::irhandle_t)(irInterface->getNodeNumber(f)));
@@ -1091,7 +1091,7 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   OA::OA_ptr<OA::Alias::ManagerFIAliasEquivSets> fialiasman;
   fialiasman= new OA::Alias::ManagerFIAliasEquivSets(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
-  procIter = new SageIRProcIterator(p, irInterface);
+  procIter = new SageIRProcIterator(p, *irInterface);
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter);
 #endif

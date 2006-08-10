@@ -31,7 +31,7 @@ bin_PROGRAMS =
 OBJEXT = o
 EXEEXT = 
 
-libSage2OASources = Sage2OA.C SageOACallGraph.C MemSage2OA.C
+libSage2OASources = Sage2OA.C MemSage2OA.C SageOACallGraph.C 
 
 
 #lib_LIBRARIES = libSage2OA.a

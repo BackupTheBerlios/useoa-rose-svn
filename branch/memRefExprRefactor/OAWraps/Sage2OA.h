@@ -364,6 +364,13 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   public virtual OA::SideEffect::SideEffectIRInterface,
   public virtual OA::SideEffect::InterSideEffectIRInterface 
 {
+  friend class SageIRMemRefIterator;
+  friend class FindCallsitesPass;
+  friend class SgPtrAssignPairStmtIterator;
+  friend class SgParamBindPtrAssignIterator;
+  friend class ExprTreeTraversal;
+  friend class NumberTraversal;
+
   public:
   //! Constructor.
   SageIRInterface(SgNode *root, 
@@ -684,13 +691,13 @@ public:
   //! target = expr
   OA::OA_ptr<OA::ExprStmtPairIterator> 
     getExprStmtPairIterator(OA::StmtHandle h);
+
+  //! Return an iterator over all independent MemRefExpr for given proc
+  OA::OA_ptr<OA::MemRefExprIterator> getIndepMemRefExprIter(OA::ProcHandle h);
+
+  //! Return an iterator over all dependent MemRefExpr for given proc
+  OA::OA_ptr<OA::MemRefExprIterator> getDepMemRefExprIter(OA::ProcHandle h);
   
-  //! Return an iterator over all independent locations for given proc
-  OA::OA_ptr<OA::LocIterator> getIndepLocIter(OA::ProcHandle h);
-  
-  //! Return an iterator over all dependent locations for given proc
-  OA::OA_ptr<OA::LocIterator> getDepLocIter(OA::ProcHandle h);
- 
   //! Given a statement, return its Activity::IRStmtType
   OA::Activity::IRStmtType getActivityStmtType(OA::StmtHandle h);
 
@@ -710,6 +717,8 @@ public:
   void dump(OA::OA_ptr<OA::UnknownRef> memRefExp, std::ostream& os);
   void dump(OA::OA_ptr<OA::Deref> memRefExp, std::ostream& os);
   void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, std::ostream &os);
+
+  string SageIRInterface::refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
 
   //-------------------------------------------------------------------------
   // Interface to ROSE
@@ -734,8 +743,12 @@ public:
   AstAttributeMechanism &getAttribute(SgNode *n);
 
  private:
+  //-------------------------------------------------------------------------
+  // Memory References
+  //-------------------------------------------------------------------------
   //! traverses AST and initializes the maps involving MemRefHandles and MREs
   void initMemRefMaps();
+  void findAllMemRefsAndMemRefExprs(SgNode *astNode, OA::StmtHandle stmt);
 
   // assumption is that StmtHandles and MemRefHandles are unique across
   // different program and procedure contexts for which analysis is being
@@ -753,6 +766,55 @@ public:
   // why would we need this one?
   //std::map<OA::OA_ptr<OA::MemRefExpr>,OA::MemRefHandle >
   //  mMre2MemrefMap;
+
+  //-------------------------------------------------------------------------
+  // Pointer Assignments
+  //-------------------------------------------------------------------------
+  //! traverses AST and initializes the pointer assignments that occur
+  //! in statements and at parameter bindings
+  void initPointerAssignMaps();
+  void findAllPtrAssignAndParamBindPairs(SgNode *astNode, OA::StmtHandle stmt);
+
+  std::map<OA::StmtHandle,
+           std::set<
+               std::pair<OA::OA_ptr<OA::MemRefExpr>, 
+                         OA::OA_ptr<OA::MemRefExpr> > > > mStmtToPtrPairs;
+  std::map<OA::CallHandle,
+           std::set<
+               std::pair<int, 
+                         OA::OA_ptr<OA::MemRefExpr> > > > mCallToParamPtrPairs;
+
+  //-------------------------------------------------------------------------
+  // Helper data structures and methods
+  //-------------------------------------------------------------------------
+  private:
+  // List of all SgFunctionDeclarations in the program, stored as
+  // a map from the first non-defining declaration (if non-NULL)
+  // to the defining declaration.
+  std::map<SgFunctionDeclaration *, SgFunctionDeclaration *> mFunctions;
+
+  //! Return the method in which node occurs.
+  SgFunctionDefinition *getEnclosingMethod(SgNode *node);
+
+  //! Returns true if the contructor initializer creates a base type.
+  bool createsBaseType(SgConstructorInitializer *ctorInitializer) const;
+
+  //! Look through typedefs to return a type.
+  SgType *getBaseType(SgType *type);
+
+  //! Given a SgNode return a symbol handle to represent the
+  //! corresponding SgThisExp.  This symbol handle references
+  //! a SgClassSymbol.
+  OA::SymHandle getThisExpSymHandle(SgNode *node);
+
+
+  //! Return the lhs of a constructor initializer.
+  SgNode *getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer);    
+
+  // Strip off any leading SgCastExps/SgAssignInitializers in 
+  // the tree root at node.
+  SgNode *lookThroughCastExpAndAssignInitializer(SgNode *node); 
+
 };
 
 #define OA_VTABLE_STR "__oa_vtable_ptr"

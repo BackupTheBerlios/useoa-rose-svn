@@ -12,8 +12,7 @@
 class SageIRMemRefIterator : public OA::MemRefHandleIterator 
 {
   public:
-    SageIRMemRefIterator(OA::IRHandle h, SageIRInterface *ir);
-    SageIRMemRefIterator() : mValid(false) { }
+    SageIRMemRefIterator(OA::StmtHandle h, SageIRInterface& ir);
     virtual ~SageIRMemRefIterator() { };
   
     virtual OA::MemRefHandle current() const; 
@@ -25,7 +24,7 @@ class SageIRMemRefIterator : public OA::MemRefHandleIterator
     virtual void reset();
 
   private:
-    void create(OA::IRHandle h);
+    void create(OA::StmtHandle h);
 
     std::list<OA::MemRefHandle> mMemRefList;
     
@@ -33,7 +32,7 @@ class SageIRMemRefIterator : public OA::MemRefHandleIterator
     std::list<OA::MemRefHandle>::iterator mBegin;
     std::list<OA::MemRefHandle>::iterator mMemRefIter;
     bool mValid;
-    SageIRInterface *mIR;
+    SageIRInterface& mIR;
 };
 
 // This is identical to Open64MemRefHandleIterator.
@@ -42,8 +41,7 @@ class SageMemRefHandleIterator
   public virtual OA::MemRefHandleIterator
 {
  public:
-  SageMemRefHandleIterator (OA::OA_ptr<std::list<OA::MemRefHandle> > pList)\
-
+  SageMemRefHandleIterator (OA::OA_ptr<std::list<OA::MemRefHandle> > pList)
     : OA::IRHandleListIterator<OA::MemRefHandle>(pList) {}
   ~SageMemRefHandleIterator () {}
 

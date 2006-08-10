@@ -105,9 +105,9 @@ void SageIRProcIterator::FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst
 }
 
 SageIRProcIterator::SageIRProcIterator(SgNode *node, 
-                                       OA::OA_ptr<SageIRInterface> in,
+                                       SageIRInterface& in,
                                        bool excludeInputFiles)
-  : mExcludeInputFiles(excludeInputFiles)
+  : ir(in), mExcludeInputFiles(excludeInputFiles)
 {
  //given an sgstmt put all call expressions in calls_in_stmt
    FindProcsInSgTree(node, procs_in_proj);
@@ -115,7 +115,6 @@ SageIRProcIterator::SageIRProcIterator(SgNode *node,
   st_iter = procs_in_proj.begin();
   end = procs_in_proj.end();
   valid=TRUE;
-  ir=in;
 }
 
 
@@ -127,7 +126,7 @@ OA::ProcHandle SageIRProcIterator::current() const
 
   if (isValid()) {
     //cerr << "cur stmt: " << cur->unparseToString() << endl;
-    h = (OA::irhandle_t)(ir->getNodeNumber(cur));    
+    h = (OA::irhandle_t)(ir.getNodeNumber(cur));    
     //cerr << "handle : " << h.hval() << endl;
   }
   return h;
