@@ -69,7 +69,7 @@ int main ( unsigned argc,  char * argv[] )
         OA::OA_ptr<SageIRProcIterator> procIter;
 	// Do not process include files, e.g., iostream.h.
 	bool excludeInputFiles = true;
-        procIter = new SageIRProcIterator(sageProject, irInterface, excludeInputFiles);
+        procIter = new SageIRProcIterator(sageProject, *irInterface, excludeInputFiles);
 
         for (; procIter->isValid(); ++(*procIter) ) 
 	{

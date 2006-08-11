@@ -2598,6 +2598,14 @@ OA::SymHandle SageIRInterface::getSymHandle(OA::LeafHandle h)
 // ParamBindingsIRInterface
 //-------------------------------------------------------------------------
 
+//! returns true if given symbol is a parameter 
+bool SageIRInterface::isParam(OA::SymHandle h)
+{   
+  SgNode *node = getNodePtr(h);
+  SgNode *parent = node->get_parent();
+  return isSgFunctionParameterList(parent);
+}
+
 // return the formal parameter that an actual parameter is associated with 
 OA::SymHandle SageIRInterface::getFormalForActual(OA::ProcHandle caller, 
                                                   OA::CallHandle call, 
@@ -3653,6 +3661,8 @@ void SageIRInterface::initPointerAssignMaps()
 void SageIRInterface::findAllPtrAssignAndParamBindPairs(SgNode *astNode, 
                                                         OA::StmtHandle stmt)
 {
+    return; // FIXME
+
     ROSE_ASSERT(astNode != NULL);  bool retVal = false;
     switch(astNode->variantT()) {
 
@@ -4115,3 +4125,26 @@ SageIRInterface::lookThroughCastExpAndAssignInitializer(SgNode *node)
   }
   return ret;
 }
+
+bool SageIRInterface::isMemRefNode(SgNode *astNode)
+{ 
+    // initialize all of the mre information if it hasn't been done
+    if (mMemref2mreSetMap.empty()) {
+        initMemRefMaps();
+    }
+
+    // If this node does not have any MREs associated with it then it
+    // is not a MemRefHandle
+    if (mMemref2mreSetMap[OA::MemRefHandle((OA::irhandle_t)astNode)].empty()) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+OA::ProcHandle SageIRInterface::getProcHandle(SgFunctionDefinition *node)
+{
+      OA::ProcHandle procHandle = getNodeNumber(node);
+        return procHandle;
+}
+

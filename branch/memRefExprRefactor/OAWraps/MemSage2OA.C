@@ -106,7 +106,22 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
         }
     case V_SgVarRefExp:
         {
-            ROSE_ASSERT(0);
+            // if not an access to field (how to tell this?) FIXME
+                // is a MemRefHandle
+                OA::MemRefHandle memref = (OA::irhandle_t)astNode;
+                // create a NamedRef
+                bool addressTaken = false;
+                bool accuracy = true;
+                OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+                OA::SymHandle sym= getNodeNumber(astNode);
+                OA::OA_ptr<OA::MemRefExpr> mre;
+                mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
+                mStmt2allMemRefsMap[stmt].insert(memref);
+                mMemref2mreSetMap[memref].insert(mre);
+
+                // if is a reference type then FIXME: implement this
+                    // wrap the NamedRef in a Deref
+
             break;
         }
     case V_SgClassNameRefExp:
@@ -177,7 +192,20 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
     // ---------------------------------------- Initializer cases
     case V_SgInitializedName:
         {
-            ROSE_ASSERT(0);
+            SgInitializedName *initName = isSgInitializedName(astNode);
+            ROSE_ASSERT(initName != NULL);
+
+            // if initptr is not null then             
+            if (initName->get_initptr()!=NULL) {
+                ROSE_ASSERT(0); // planned but not implemented yet
+
+                // is a MemRefHandle
+
+                // make a NamedRef for the variable being initialized
+
+                // if is a reference then set the addressOf flag for the
+                // MREs for the node under the SgInitializer node
+            }
             break;
         }
     case V_SgAggregateInitializer:
@@ -249,7 +277,16 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
         }
     case V_SgAssignOp:
         {
-            ROSE_ASSERT(0);
+            // change MREType for lhs to DEF FIXME
+
+            // if parent is not a SgExpressionRoot
+            if (!isSgExpressionRoot(astNode->get_parent())) {
+                ROSE_ASSERT(0); // planned out but not implemented yet
+                //`is a MemRefHandle because it results in a use 
+                // of the location indicated by the lhs            
+
+                // the MREs for this are the MREs for left child set to USE
+            }
             break;
         }
     case V_SgPlusAssignOp:
@@ -268,10 +305,6 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
         }
     // ---------------------------------------- Unary Op cases
     case V_SgExpressionRoot:
-        {
-            ROSE_ASSERT(0);
-            break;
-        }
     case V_SgMinusOp:
     case V_SgUnaryAddOp:
     case V_SgNotOp:
@@ -279,7 +312,7 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
     case V_SgCastExp:
     case V_SgThrowOp:
         {
-            ROSE_ASSERT(0);
+            findAllMemRefsAndMemRefExprs(((SgUnaryOp*)astNode)->get_operand(), stmt);
             break;
         }
     case V_SgPointerDerefExp:
@@ -289,7 +322,13 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
         }
     case V_SgAddressOfOp:
         {
-            ROSE_ASSERT(0);
+            // is a MemRefHandle
+            OA::MemRefHandle memref = (OA::irhandle_t)astNode;
+
+            // MREs are all MREs for child node with addressOf=true
+            // FIXME: this needs to be a call to topMemRef
+
+            // child is no longer a MemRefHandle
             break;
         }
     case V_SgMinusMinusOp:
@@ -302,7 +341,9 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
     // ---------------------------------------- Statement cases
     case V_SgExprStatement:
         {
-            ROSE_ASSERT(0);
+            SgExprStatement *exprStatement = isSgExprStatement(astNode);
+            ROSE_ASSERT(exprStatement!=NULL);
+            findAllMemRefsAndMemRefExprs(exprStatement->get_the_expr(),stmt);
             break;
         }
     //case V_SgCaseOptionStatement: // NOT in enum? spelled differently?
@@ -327,7 +368,17 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
         }
     case V_SgVariableDeclaration:
         {
-            ROSE_ASSERT(0);
+            // recurse on variables
+            SgVariableDeclaration *varDecl = isSgVariableDeclaration(astNode);
+            ROSE_ASSERT(varDecl != NULL);
+            SgInitializedNamePtrList &variables = varDecl->get_variables();
+            SgInitializedNamePtrList::iterator varIter;
+            for (varIter=variables.begin(); varIter!=variables.end(); ++varIter)
+            {
+                SgNode *lhs = *varIter;
+                ROSE_ASSERT(lhs != NULL);
+                findAllMemRefsAndMemRefExprs(lhs,stmt);
+            }
             break;
         }
     case V_SgVariableDefinition:
@@ -400,7 +451,8 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
         break;
 
     default:
-        ROSE_ASSERT(0);  // should have a case for all possible nodes
+        // do nothing, there are nodes not listed above such as SgIntVal
+        break;
 
     } // end of switch
 }

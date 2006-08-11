@@ -670,7 +670,7 @@ public:
   
   //! Given a subprogram return an IRSymIterator for all
   //! symbols that are referenced within the subprogram
-  OA::OA_ptr<OA::IRSymIterator> getRefSymIterator(OA::ProcHandle h);
+  //OA::OA_ptr<OA::IRSymIterator> getRefSymIterator(OA::ProcHandle h);
 
   //! returns true if given symbol is a parameter 
   bool isParam(OA::SymHandle);
@@ -724,13 +724,13 @@ public:
   // Interface to ROSE
   //-------------------------------------------------------------------------
   OA::IRHandle getHandle(SgNode *astNode) { return getNodeNumber(astNode); }
-  OA::MemRefHandle getMemRefHandle(SgNode *astNode) { 
-    OA::MemRefHandle memRefHandle = (OA::MemRefHandle) 0;
-    if ( isMemRefNode(astNode) ) {
-      memRefHandle = getNodeNumber(astNode);
-    }
-    return memRefHandle;
-  }
+//  OA::MemRefHandle getMemRefHandle(SgNode *astNode) { 
+//    OA::MemRefHandle memRefHandle = (OA::MemRefHandle) 0;
+//    if ( isMemRefNode(astNode) ) {
+//      memRefHandle = getNodeNumber(astNode);
+//    }
+//    return memRefHandle;
+//  }
   OA::ProcHandle getProcHandle(SgFunctionDefinition *astNode);
   OA::CallHandle getProcExprHandle(SgNode *astNode);
   //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
