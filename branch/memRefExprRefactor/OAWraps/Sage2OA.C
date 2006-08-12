@@ -1226,11 +1226,10 @@ SageIRInterface::getDefMemRefs(OA::StmtHandle stmt)
 
   // get iterator over memory references for this statement
   // and only put DEFs in the list
-  std::set<OA::MemRefHandle>::iterator mIter;
-  for (mIter=mStmt2allMemRefsMap[stmt].begin();
-       mIter!=mStmt2allMemRefsMap[stmt].end(); mIter++)
-  {
-    OA::MemRefHandle memref = *mIter;
+  OA::OA_ptr<SageIRMemRefIterator> mIter;
+  mIter = new SageIRMemRefIterator(stmt, *this);
+  for ( ; mIter->isValid(); ++(*mIter) ) {
+    OA::MemRefHandle memref = mIter->current();
 
     // loop over memory reference expressions for this memref handle
     set<OA::OA_ptr<OA::MemRefExpr> >::iterator mreIter;
@@ -1261,11 +1260,10 @@ SageIRInterface::getUseMemRefs(OA::StmtHandle stmt)
 
   // get iterator over memory references for this statement
   // and only put USES in the list
-  std::set<OA::MemRefHandle>::iterator mIter;
-  for (mIter=mStmt2allMemRefsMap[stmt].begin();
-       mIter!=mStmt2allMemRefsMap[stmt].end(); mIter++)
-  {
-    OA::MemRefHandle memref = *mIter;
+  OA::OA_ptr<SageIRMemRefIterator> mIter;
+  mIter = new SageIRMemRefIterator(stmt, *this);
+  for ( ; mIter->isValid(); ++(*mIter) ) {
+    OA::MemRefHandle memref = mIter->current();
 
     // loop over memory reference expressions for this memref handle
     set<OA::OA_ptr<OA::MemRefExpr> >::iterator mreIter;
@@ -1291,23 +1289,9 @@ SageIRInterface::getUseMemRefs(OA::StmtHandle stmt)
 OA::OA_ptr<OA::MemRefHandleIterator> 
 SageIRInterface::getAllMemRefs(OA::StmtHandle stmt)
 {
-  OA::OA_ptr<std::list<OA::MemRefHandle> > retList;
-  retList = new std::list<OA::MemRefHandle>;
-
-  // get iterator over memory references for this statement
-  // and for now just copy the list
-  std::set<OA::MemRefHandle>::iterator memrefIter;
-  for (memrefIter=mStmt2allMemRefsMap[stmt].begin();
-       memrefIter!=mStmt2allMemRefsMap[stmt].end();
-       memrefIter++)
-  {
-    OA::MemRefHandle memref = *memrefIter;
-    retList->push_back(memref);
-  }
-
-  OA::OA_ptr<SageMemRefHandleIterator> retval;
-  retval = new SageMemRefHandleIterator(retList);
-  return retval;
+  OA::OA_ptr<SageIRMemRefIterator> mIter;
+  mIter = new SageIRMemRefIterator(stmt,*this);
+  return mIter;
 }
 
 OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)

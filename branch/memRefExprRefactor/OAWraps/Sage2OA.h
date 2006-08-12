@@ -724,13 +724,14 @@ public:
   // Interface to ROSE
   //-------------------------------------------------------------------------
   OA::IRHandle getHandle(SgNode *astNode) { return getNodeNumber(astNode); }
-//  OA::MemRefHandle getMemRefHandle(SgNode *astNode) { 
-//    OA::MemRefHandle memRefHandle = (OA::MemRefHandle) 0;
-//    if ( isMemRefNode(astNode) ) {
-//      memRefHandle = getNodeNumber(astNode);
-//    }
-//    return memRefHandle;
-//  }
+  OA::MemRefHandle getMemRefHandle(SgNode *astNode) { 
+    OA::MemRefHandle memRefHandle = (OA::MemRefHandle) 0;
+    //if ( isMemRefNode(astNode) ) { // causes infinite recursion since
+    //called within initMemRefs and calls initMemRefs
+      memRefHandle = getNodeNumber(astNode);
+    //}
+    return memRefHandle;
+  }
   OA::ProcHandle getProcHandle(SgFunctionDefinition *astNode);
   OA::CallHandle getProcExprHandle(SgNode *astNode);
   //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
@@ -749,6 +750,11 @@ public:
   //! traverses AST and initializes the maps involving MemRefHandles and MREs
   void initMemRefMaps();
   void findAllMemRefsAndMemRefExprs(SgNode *astNode, OA::StmtHandle stmt);
+
+  //! finds the topmost MemRefHandle in the subtree rooted at the given node
+  //! if the tree represents only an rvalue, then MemRefHandle(0) is returned
+  //! unless the rvalue is an addressOf, which is assigned a MemRefHandle
+  OA::MemRefHandle findTopMemRefHandle(SgNode *node);
 
   // assumption is that StmtHandles and MemRefHandles are unique across
   // different program and procedure contexts for which analysis is being

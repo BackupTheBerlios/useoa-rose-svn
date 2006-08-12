@@ -106,22 +106,37 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
         }
     case V_SgVarRefExp:
         {
-            // if not an access to field (how to tell this?) FIXME
-                // is a MemRefHandle
-                OA::MemRefHandle memref = (OA::irhandle_t)astNode;
-                // create a NamedRef
-                bool addressTaken = false;
-                bool accuracy = true;
-                OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
-                OA::SymHandle sym= getNodeNumber(astNode);
-                OA::OA_ptr<OA::MemRefExpr> mre;
-                mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
-                mStmt2allMemRefsMap[stmt].insert(memref);
-                mMemref2mreSetMap[memref].insert(mre);
+            SgVarRefExp *varRefExp = isSgVarRefExp(astNode);
+            ROSE_ASSERT(varRefExp!=NULL);
 
-                // if is a reference type then FIXME: implement this
-                    // wrap the NamedRef in a Deref
+            // is a MemRefHandle
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
 
+            //======= create a NamedRef
+            bool addressTaken = false;
+            bool accuracy = true;
+            // default MemRefType, ancestors will change this if necessary
+            OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+            // get the symbol for the variable
+            SgVariableSymbol *symbol = varRefExp->get_symbol();
+            ROSE_ASSERT(symbol != NULL);
+            SgInitializedName *initName = symbol->get_declaration();
+            ROSE_ASSERT(initName != NULL);
+            OA::SymHandle sym = getNodeNumber(initName);
+            // construct the NamedRef
+            OA::OA_ptr<OA::MemRefExpr> mre;
+            mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
+            
+            // if is a reference type then 
+            SgType *type = varRefExp->get_type();
+            if (isSgReferenceType(type)) {
+                // wrap the NamedRef in a Deref
+                int numderefs = 1;
+                mre = new OA::Deref(addressTaken,accuracy,mrType,mre,numderefs);
+            }
+                
+            mMemref2mreSetMap[memref].insert(mre);
             break;
         }
     case V_SgClassNameRefExp:
@@ -277,16 +292,35 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
         }
     case V_SgAssignOp:
         {
-            // change MREType for lhs to DEF FIXME
+            SgBinaryOp *assignOp = isSgBinaryOp(astNode);
+            ROSE_ASSERT(assignOp != NULL);
 
-            // if parent is not a SgExpressionRoot
-            if (!isSgExpressionRoot(astNode->get_parent())) {
-                ROSE_ASSERT(0); // planned out but not implemented yet
-                //`is a MemRefHandle because it results in a use 
-                // of the location indicated by the lhs            
+            // recurse on children
+            findAllMemRefsAndMemRefExprs(assignOp->get_lhs_operand(), stmt); 
+            findAllMemRefsAndMemRefExprs(assignOp->get_rhs_operand(), stmt); 
 
-                // the MREs for this are the MREs for left child set to USE
+            // astNode is a MemRefHandle because it results in a use 
+            // of the location indicated by the lhs            
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+
+            // 1) the MREs for this are the MREs for left child set to USE
+            // 2) change MRType for top memory reference on the lhs to DEF 
+            OA::MemRefHandle lhs_memref 
+                = findTopMemRefHandle(assignOp->get_lhs_operand());
+            OA::OA_ptr<OA::MemRefExprIterator> mIter
+                = getMemRefExprIterator(lhs_memref);
+            for ( ; mIter->isValid(); ++(*mIter) ) {
+                OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
+                // 1) take the lhs mres, clone them, set to USE
+                OA::OA_ptr<OA::MemRefExpr> mre = lhs_mre->clone();
+                mre->setMemRefType(OA::MemRefExpr::USE);
+                mMemref2mreSetMap[memref].insert(mre);
+
+                // 2) change to a define
+                lhs_mre->setMemRefType(OA::MemRefExpr::DEF);
             }
+
             break;
         }
     case V_SgPlusAssignOp:
@@ -322,13 +356,29 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
         }
     case V_SgAddressOfOp:
         {
+            SgAddressOfOp *addressOfOp = isSgAddressOfOp(astNode);
+            ROSE_ASSERT(addressOfOp != NULL);
+
+            // recurse on child
+            findAllMemRefsAndMemRefExprs(addressOfOp->get_operand_i(),stmt);
+
             // is a MemRefHandle
-            OA::MemRefHandle memref = (OA::irhandle_t)astNode;
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
 
             // MREs are all MREs for child node with addressOf=true
-            // FIXME: this needs to be a call to topMemRef
+            OA::MemRefHandle child_memref 
+                = findTopMemRefHandle(addressOfOp->get_operand_i());
+            OA::OA_ptr<OA::MemRefExprIterator> mIter
+                = getMemRefExprIterator(child_memref);
+            for ( ; mIter->isValid(); ++(*mIter) ) {
+                OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
+                child_mre->setAddressTaken();
+                mMemref2mreSetMap[memref].insert(child_mre);
+            }
 
             // child is no longer a MemRefHandle
+            mMemref2mreSetMap[child_memref].clear();
             break;
         }
     case V_SgMinusMinusOp:
@@ -343,7 +393,7 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
         {
             SgExprStatement *exprStatement = isSgExprStatement(astNode);
             ROSE_ASSERT(exprStatement!=NULL);
-            findAllMemRefsAndMemRefExprs(exprStatement->get_the_expr(),stmt);
+            findAllMemRefsAndMemRefExprs(exprStatement->get_expression_root(),stmt);
             break;
         }
     //case V_SgCaseOptionStatement: // NOT in enum? spelled differently?
@@ -358,7 +408,9 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
     //    }
     case V_SgReturnStmt:
         {
-            ROSE_ASSERT(0);
+            SgReturnStmt *returnStmt = isSgReturnStmt(astNode);
+            ROSE_ASSERT(returnStmt != NULL);
+            findAllMemRefsAndMemRefExprs(returnStmt->get_return_expr(), stmt);
             break;
         }
     case V_SgSpawnStmt:
@@ -423,14 +475,15 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
             break;
         }
 
+
     // The statement cases that we should not see
-    case V_SgFunctionDefinition:
     case V_SgNamespaceDefinitionStatement:
     case V_SgClassDefinition:
         ROSE_ASSERT(0);
         break;
 
     // The "do nothing" statement cases
+    case V_SgFunctionDefinition:
     case V_SgLabelStatement:
     case V_SgDefaultOptionStmt:
     case V_SgBreakStmt:
@@ -455,4 +508,30 @@ void SageIRInterface::findAllMemRefsAndMemRefExprs(SgNode *astNode,
         break;
 
     } // end of switch
+}
+
+//! finds the topmost MemRefHandle in the subtree rooted at the given node
+//! if the tree represents only an rvalue, then MemRefHandle(0) is returned
+//! unless the rvalue is an addressOf, which is assigned a MemRefHandle
+OA::MemRefHandle SageIRInterface::findTopMemRefHandle(SgNode *astNode)
+{
+    OA::MemRefHandle memref = getMemRefHandle(astNode);
+    // if there are MREs assocated with this node, then return node    
+    if (!mMemref2mreSetMap[memref].empty()) {
+        return getMemRefHandle(astNode);
+
+    } else {
+        // determine the number of children the node has
+        std::vector< SgNode * > kids 
+            = astNode->get_traversalSuccessorContainer();
+
+        // if only one child the return topMemRefHandle on that
+        if (kids.size()==1) {
+            return findTopMemRefHandle(kids[0]);
+
+        // else if two or more children then return MemRefHandle(0) 
+        } else {
+            return getMemRefHandle(0);
+        }
+    }
 }
