@@ -1830,7 +1830,7 @@ SageIRMemRefIterator::takeAddressOfMre(OA::OA_ptr<OA::MemRefExpr> mre)
   addrOf = mre->clone();
   ROSE_ASSERT(!addrOf.ptrEqual(0));
 
-  addrOf->setAddressTaken();
+  addrOf->setAddressTaken(true);
 
   return addrOf;
 

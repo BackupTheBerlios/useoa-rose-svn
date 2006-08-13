@@ -1909,3 +1909,7 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
    - adjusted regression test and output for AliasIRInterface for gcc-3.2
    - passes regressAll with OpenAnalysis trunk r180 compiled on Okapi with 
         gcc-3.2 and rose-0.8.7a/compile-gcc-3.2
+
+8/13/06     UseOA-Rose svn trunk r151    Michelle Strout
+    Made minor changes to how setAddressTaken() was being called due to
+    its change in semantics in OA.  regressAll works with OpenAnalysis r183.
