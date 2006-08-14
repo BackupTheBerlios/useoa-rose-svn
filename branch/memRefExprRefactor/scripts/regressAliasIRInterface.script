@@ -1,116 +1,116 @@
-echo "Testing TestCases/AliasTests/addressOf.c, TestResults/AliasIRInterface/addressOf.c.out checked by MMS 8/4/06"
+echo "Testing TestCases/AliasTests/addressOf.c, TestResults/AliasIRInterface/addressOf.c.out checked by MMS 8/13/06 should move MRH to v+2"
 ./CtoOA TestCases/AliasTests/addressOf.c >& t
 diff t TestResults/AliasIRInterface/addressOf.c.out
 
-echo "Testing TestCases/AliasTests/aggregateInit.c, TestResults/AliasIRInterface/aggregateInit.c.out missing UnnamedRef for init array MMS 8/7/06"
+echo "Testing TestCases/AliasTests/aggregateInit.c, TestResults/AliasIRInterface/aggregateInit.c.out checked by MMS 8/13/06"
 ./CtoOA TestCases/AliasTests/aggregateInit.c >& t
 diff t TestResults/AliasIRInterface/aggregateInit.c.out
 
-echo "Testing TestCases/AliasTests/alias1.c, TestResults/AliasIRInterface/alias1.c.out checked by AIS 7/03/06 (rechecked for r93)"
+echo "Testing TestCases/AliasTests/alias1.c, TestResults/AliasIRInterface/alias1.c.out checked by MMS 8/13/06"
 ./CtoOA TestCases/AliasTests/alias1.c >& t
 diff t TestResults/AliasIRInterface/alias1.c.out
 
-echo "Testing TestCases/AliasTests/alias2.c, TestResults/AliasIRInterface/alias2.c.out checked by AIS 7/03/06 (rechecked for r93)"
+echo "Testing TestCases/AliasTests/alias2.c, TestResults/AliasIRInterface/alias2.c.out checked by MMS 8/13/06"
 ./CtoOA TestCases/AliasTests/alias2.c >& t
 diff t TestResults/AliasIRInterface/alias2.c.out
 
-echo "Testing TestCases/AliasTests/alias4.c, TestResults/AliasIRInterface/alias4.c.out checked by AIS 7/03/06 (rechecked for r93)"
+echo "Testing TestCases/AliasTests/alias4.c, TestResults/AliasIRInterface/alias4.c.out checked by MMS 8/13/06"
 ./CtoOA TestCases/AliasTests/alias4.c >& t
 diff t TestResults/AliasIRInterface/alias4.c.out
 
-echo "Testing TestCases/AliasTests/alias4b.c, TestResults/AliasIRInterface/alias4b.c.out checked by AIS 7/03/06 (rechecked for r93)"
+echo "Testing TestCases/AliasTests/alias4b.c, TestResults/AliasIRInterface/alias4b.c.out checked by MMS 8/13/06"
 ./CtoOA TestCases/AliasTests/alias4b.c >& t
 diff t TestResults/AliasIRInterface/alias4b.c.out
 
-echo "Testing TestCases/AliasTests/assignOps.c, TestResults/AliasIRInterface/assignOps.c.out has known USEDEF errors MMS 8/4/06"
+echo "Testing TestCases/AliasTests/assignOps.c, TestResults/AliasIRInterface/assignOps.c.out checked by MMS 8/13/06"
 ./CtoOA TestCases/AliasTests/assignOps.c >& t
 diff t TestResults/AliasIRInterface/assignOps.c.out
 
-echo "Testing TestCases/AliasTests/assignReturn.c, TestResults/AliasIRInterface/assignReturn.c.out missing use of a in *p=a=&g return ptrassigns broke MMS 8/2/06"
+echo "Testing TestCases/AliasTests/assignReturn.c, TestResults/AliasIRInterface/assignReturn.c.out missing use of a in *p=a=&g return ptrassigns broke MMS 8/2/06 XXX"
 ./CtoOA TestCases/AliasTests/assignReturn.c >& t
 diff t TestResults/AliasIRInterface/assignReturn.c.out
 
-echo "Testing TestCases/AliasTests/class.C, TestResults/AliasIRInterface/class.C.out missing LOC for sInt MMS 8/7/06"
+echo "Testing TestCases/AliasTests/class.C, TestResults/AliasIRInterface/class.C.out missing LOC for sInt MMS 8/7/06 XXX"
 ./CtoOA TestCases/AliasTests/class.C >& t
 diff t TestResults/AliasIRInterface/class.C.out
 
-echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c.out checked by MMS 6/22/06"
+echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c.out checked by MMS 6/22/06 XXX"
 ./CtoOA TestCases/AliasTests/comma.c >& t
 diff t TestResults/AliasIRInterface/comma.c.out
 
-echo "Testing TestCases/AliasTests/fields.c, TestResults/AliasIRInterface/fields.c.out (*z)->p is not correct MMS 8/2/06"
+echo "Testing TestCases/AliasTests/fields.c, TestResults/AliasIRInterface/fields.c.out (*z)->p is not correct MMS 8/2/06 XXX"
 ./CtoOA TestCases/AliasTests/fields.c >& t
 diff t TestResults/AliasIRInterface/fields.c.out
 
-echo "Testing TestCases/AliasTests/func_call.c, TestResults/AliasIRInterface/func_call.c.out p=fp2() has two MemRefHandles that are the same? aborting MMS 8/1/06"
+echo "Testing TestCases/AliasTests/func_call.c, TestResults/AliasIRInterface/func_call.c.out p=fp2() has two MemRefHandles that are the same? aborting MMS 8/1/06 XXX"
 ./CtoOA TestCases/AliasTests/func_call.c >& t
 diff t TestResults/AliasIRInterface/func_call.c.out
 
-echo "Testing TestCases/AliasTests/functionPtr.c, TestResults/AliasIRInterface/functionPtr.c.out checked by MMS 8/1/06"
+echo "Testing TestCases/AliasTests/functionPtr.c, TestResults/AliasIRInterface/functionPtr.c.out checked by MMS 8/1/06 XXX"
 ./CtoOA TestCases/AliasTests/functionPtr.c >& t
 diff t TestResults/AliasIRInterface/functionPtr.c.out
 
-echo "Testing TestCases/AliasTests/functionPtr2.c, TestResults/AliasIRInterface/functionPtr2.c.out checked by MMS 8/1/06"
+echo "Testing TestCases/AliasTests/functionPtr2.c, TestResults/AliasIRInterface/functionPtr2.c.out checked by MMS 8/1/06 XXX"
 ./CtoOA TestCases/AliasTests/functionPtr2.c >& t
 diff t TestResults/AliasIRInterface/functionPtr2.c.out
 
-echo "Testing TestCases/AliasTests/invokeBaseCtor.C, TestResults/AliasIRInterface/invokeBaseCtor.C.out checked by BSW 6/26/06"
+echo "Testing TestCases/AliasTests/invokeBaseCtor.C, TestResults/AliasIRInterface/invokeBaseCtor.C.out checked by BSW 6/26/06 XXX"
 ./CtoOA TestCases/AliasTests/invokeBaseCtor.C >& t
 diff t TestResults/AliasIRInterface/invokeBaseCtor.C.out
 
-echo "Testing TestCases/AliasTests/localNonLocal.c, TestResults/AliasIRInterface/localNonLocal.c.out checked by BSW 6/28/06"
+echo "Testing TestCases/AliasTests/localNonLocal.c, TestResults/AliasIRInterface/localNonLocal.c.out checked by BSW 6/28/06 XXX"
 ./CtoOA TestCases/AliasTests/localNonLocal.c >& t
 diff t TestResults/AliasIRInterface/localNonLocal.c.out
 
-echo "Testing TestCases/AliasTests/passArrayPtr.c, TestResults/AliasIRInterface/passArrayPtr.c.out checked by MMS 7/27/06"
+echo "Testing TestCases/AliasTests/passArrayPtr.c, TestResults/AliasIRInterface/passArrayPtr.c.out checked by MMS 7/27/06 XXX"
 ./CtoOA TestCases/AliasTests/passArrayPtr.c >& t
 diff t TestResults/AliasIRInterface/passArrayPtr.c.out
 
-echo "Testing TestCases/AliasTests/parambinds-formals-intPtrs.C, TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out should ap be formal param? MMS 8/7/06"
+echo "Testing TestCases/AliasTests/parambinds-formals-intPtrs.C, TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out should ap be formal param? MMS 8/7/06 XXX"
 ./CtoOA TestCases/AliasTests/parambinds-formals-intPtrs.C >& t
 diff t TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out
 
-echo "Testing TestCases/AliasTests/passIntPtrArrayRef.c, TestResults/AliasIRInterface/passIntPtrArrayRef.c.out checked by MMS 7/24/06"
+echo "Testing TestCases/AliasTests/passIntPtrArrayRef.c, TestResults/AliasIRInterface/passIntPtrArrayRef.c.out checked by MMS 7/24/06 XXX"
 ./CtoOA TestCases/AliasTests/passIntPtrArrayRef.c >& t
 diff t TestResults/AliasIRInterface/passIntPtrArrayRef.c.out
 
-echo "Testing TestCases/AliasTests/passIntPtrArrayRef2.c, TestResults/AliasIRInterface/passIntPtrArrayRef2.c.out checked by MMS 7/24/06"
+echo "Testing TestCases/AliasTests/passIntPtrArrayRef2.c, TestResults/AliasIRInterface/passIntPtrArrayRef2.c.out checked by MMS 7/24/06 XXX"
 ./CtoOA TestCases/AliasTests/passIntPtrArrayRef2.c >& t
 diff t TestResults/AliasIRInterface/passIntPtrArrayRef2.c.out
 
-echo "Testing TestCases/AliasTests/passIntPtrArrayRef3.c, TestResults/AliasIRInterface/passIntPtrArrayRef3.c.out checked by MMS 7/24/06"
+echo "Testing TestCases/AliasTests/passIntPtrArrayRef3.c, TestResults/AliasIRInterface/passIntPtrArrayRef3.c.out checked by MMS 7/24/06 XXX"
 ./CtoOA TestCases/AliasTests/passIntPtrArrayRef3.c >& t
 diff t TestResults/AliasIRInterface/passIntPtrArrayRef3.c.out
 
-echo "Testing TestCases/AliasTests/passIntPtr.c, TestResults/AliasIRInterface/passIntPtr.c.out checked by MMS 7/24/06"
+echo "Testing TestCases/AliasTests/passIntPtr.c, TestResults/AliasIRInterface/passIntPtr.c.out checked by MMS 7/24/06 XXX"
 ./CtoOA TestCases/AliasTests/passIntPtr.c >& t
 diff t TestResults/AliasIRInterface/passIntPtr.c.out
 
-echo "Testing TestCases/AliasTests/refParam.C, TestResults/AliasIRInterface/refParam.C.out checked by MMS 8/1/06"
+echo "Testing TestCases/AliasTests/refParam.C, TestResults/AliasIRInterface/refParam.C.out checked by MMS 8/1/06 XXX"
 ./CtoOA TestCases/AliasTests/refParam.C >& t
 diff t TestResults/AliasIRInterface/refParam.C.out
 
-echo "Testing TestCases/AliasTests/ref.C, TestResults/AliasIRInterface/ref.C.out MemRefHandle for refPtr itself? MMS 8/1/06"
+echo "Testing TestCases/AliasTests/ref.C, TestResults/AliasIRInterface/ref.C.out MemRefHandle for refPtr itself? MMS 8/1/06 XXX"
 ./CtoOA TestCases/AliasTests/ref.C >& t
 diff t TestResults/AliasIRInterface/ref.C.out
 
-echo "Testing TestCases/AliasTests/refClass.C, TestResults/AliasIRInterface/refClass.C.out ctor inits should be defining namedrefs not derefs MMS 8/1/06"
+echo "Testing TestCases/AliasTests/refClass.C, TestResults/AliasIRInterface/refClass.C.out ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX"
 ./CtoOA TestCases/AliasTests/refClass.C >& t
 diff t TestResults/AliasIRInterface/refClass.C.out
 
-echo "Testing TestCases/AliasTests/refClass2.C, TestResults/AliasIRInterface/refClass2.C.out ctor inits should be defining namedrefs not derefs MMS 8/1/06"
+echo "Testing TestCases/AliasTests/refClass2.C, TestResults/AliasIRInterface/refClass2.C.out ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX"
 ./CtoOA TestCases/AliasTests/refClass2.C >& t
 diff t TestResults/AliasIRInterface/refClass2.C.out
 
-echo "Testing TestCases/AliasTests/retPtr1.c, TestResults/AliasIRInterface/retPtr1.c.out checked by MMS 8/02/06"
+echo "Testing TestCases/AliasTests/retPtr1.c, TestResults/AliasIRInterface/retPtr1.c.out checked by MMS 8/02/06 XXX"
 ./CtoOA TestCases/AliasTests/retPtr1.c >& t
 diff t TestResults/AliasIRInterface/retPtr1.c.out
 
-echo "Testing TestCases/AliasTests/swap.c, TestResults/AliasIRInterface/swap.c.out i++ should be USEDEF otherwise fine MMS 7/23/06"
+echo "Testing TestCases/AliasTests/swap.c, TestResults/AliasIRInterface/swap.c.out i++ should be USEDEF otherwise fine MMS 7/23/06 XXX"
 ./CtoOA TestCases/AliasTests/swap.c >& t
 diff t TestResults/AliasIRInterface/swap.c.out
 
-echo "Testing TestCases/AliasTests/ternop.c, TestResults/AliasIRInterface/ternop.c.out should there be one for (((r < *q)?r: *q)) MMS 8/2/06"
+echo "Testing TestCases/AliasTests/ternop.c, TestResults/AliasIRInterface/ternop.c.out should there be one for (((r < *q)?r: *q)) MMS 8/2/06 XXX"
 ./CtoOA TestCases/AliasTests/ternop.c >& t
 diff t TestResults/AliasIRInterface/ternop.c.out
 

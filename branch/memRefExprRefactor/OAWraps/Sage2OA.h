@@ -732,6 +732,10 @@ public:
     //}
     return memRefHandle;
   }
+  OA::CallHandle getCallHandle(SgNode *astNode) { 
+      OA::CallHandle retval = getNodeNumber(astNode);
+      return retval;
+  }
   OA::ProcHandle getProcHandle(SgFunctionDefinition *astNode);
   OA::CallHandle getProcExprHandle(SgNode *astNode);
   //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
@@ -748,13 +752,22 @@ public:
   // Memory References
   //-------------------------------------------------------------------------
   //! traverses AST and initializes the maps involving MemRefHandles and MREs
-  void initMemRefMaps();
-  void findAllMemRefsAndMemRefExprs(SgNode *astNode, OA::StmtHandle stmt);
+  void initMemRefAndPtrAssignMaps();
+  void findAllMemRefsAndPtrAssigns(SgNode *astNode, OA::StmtHandle stmt);
 
   //! finds the topmost MemRefHandle in the subtree rooted at the given node
   //! if the tree represents only an rvalue, then MemRefHandle(0) is returned
   //! unless the rvalue is an addressOf, which is assigned a MemRefHandle
   OA::MemRefHandle findTopMemRefHandle(SgNode *node);
+
+  //! Determine if all the MREs associated with a given memref are lval
+  bool is_lval(OA::MemRefHandle memref);
+
+  void makePtrAssignPair(OA::StmtHandle stmt,
+                         OA::MemRefHandle lhs_memref,
+                         OA::MemRefHandle rhs_memref);
+
+  std::string findFieldName(OA::MemRefHandle memref);
 
   // assumption is that StmtHandles and MemRefHandles are unique across
   // different program and procedure contexts for which analysis is being
@@ -778,8 +791,8 @@ public:
   //-------------------------------------------------------------------------
   //! traverses AST and initializes the pointer assignments that occur
   //! in statements and at parameter bindings
-  void initPointerAssignMaps();
-  void findAllPtrAssignAndParamBindPairs(SgNode *astNode, OA::StmtHandle stmt);
+  //void initPointerAssignMaps();
+  //void findAllPtrAssignAndParamBindPairs(SgNode *astNode, OA::StmtHandle stmt);
 
   std::map<OA::StmtHandle,
            std::set<

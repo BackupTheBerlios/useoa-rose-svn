@@ -1297,9 +1297,9 @@ SageIRInterface::getAllMemRefs(OA::StmtHandle stmt)
 OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)
 { 
   // if haven't already determined the set of ptr assigns for the program
-  // then call initPointerAssignMaps
+  // then call the initialization procedure
   if (mStmtToPtrPairs.empty() ) {
-      initPointerAssignMaps();
+      initMemRefAndPtrAssignMaps();
   }
 
   // if there are no pointer pairs for this statement then 
@@ -2439,7 +2439,15 @@ void SgPtrAssignPairStmtIterator::create(OA::StmtHandle stmt)
   SgNode *node = mIR->getNodePtr(stmt);
   ROSE_ASSERT(node != NULL);
 
-  ROSE_ASSERT(0);  // needs to be implemented
+  // loop through the pairs we found in initMemRefsAndPtrAssigns
+  std::set<std::pair<OA::OA_ptr<OA::MemRefExpr>,
+                     OA::OA_ptr<OA::MemRefExpr> > >::iterator pairIter;
+  for (pairIter=mIR->mStmtToPtrPairs[stmt].begin();
+       pairIter!=mIR->mStmtToPtrPairs[stmt].end();
+       pairIter++)
+  {
+      mMemRefList.push_back(*pairIter);
+  }
 }
 
 
@@ -3608,6 +3616,7 @@ AstAttributeMechanism &SageIRInterface::getAttribute(SgNode *n)
     return *n->get_attributeMechanism();
 }
 
+/*
 void SageIRInterface::initPointerAssignMaps()
 {
   // if haven't already determined the set of memrefs for the program
@@ -3634,14 +3643,17 @@ void SageIRInterface::initPointerAssignMaps()
       }
   }
 }
+*/
 
 /*!
+ * DECIDED to move all of this to findAllMemRefsAndPtrAssigns.
    Should originally be called on a statement so astNode and stmt will
    be the same.  This is a recursive procedure that traverses down
    the AST and does work in a preorder.
    As pointer assignments are found, mStmtToPtrPairs and
    mCallToParamPtrPairs are updated.
 */
+/*
 void SageIRInterface::findAllPtrAssignAndParamBindPairs(SgNode *astNode, 
                                                         OA::StmtHandle stmt)
 {
@@ -3956,7 +3968,7 @@ void SageIRInterface::findAllPtrAssignAndParamBindPairs(SgNode *astNode,
 
     } // end of switch
 }
-
+*/
 //! Return the method in which node occurs.
 SgFunctionDefinition *SageIRInterface::getEnclosingMethod(SgNode *node)
 {
@@ -4114,7 +4126,7 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
 { 
     // initialize all of the mre information if it hasn't been done
     if (mMemref2mreSetMap.empty()) {
-        initMemRefMaps();
+        initMemRefAndPtrAssignMaps();
     }
 
     // If this node does not have any MREs associated with it then it

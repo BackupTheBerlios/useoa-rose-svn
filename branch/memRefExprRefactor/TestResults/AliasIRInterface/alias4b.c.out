@@ -27,6 +27,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("a"), F, full)
             MemRefHandle("b") => 
                 NamedRef( USE, SymHandle("b"), F, full)
+            MemRefHandle("a = b") => 
+                NamedRef( USE, SymHandle("a"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("a = b;") =>
         [

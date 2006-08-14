@@ -32,6 +32,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("locPtr"), F, full)
             MemRefHandle("&loc") => 
                 NamedRef( USE, SymHandle("loc"), T, full)
+            MemRefHandle("locPtr = &loc") => 
+                NamedRef( USE, SymHandle("locPtr"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("locPtr = &loc;") =>
         [
@@ -44,6 +46,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("a"), F, full)
             MemRefHandle("locPtr") => 
                 NamedRef( USE, SymHandle("locPtr"), F, full)
+            MemRefHandle("a = locPtr") => 
+                NamedRef( USE, SymHandle("a"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("a = locPtr;") =>
         [
@@ -56,6 +60,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("b"), F, full)
             MemRefHandle("locPtr") => 
                 NamedRef( USE, SymHandle("locPtr"), F, full)
+            MemRefHandle("b = locPtr") => 
+                NamedRef( USE, SymHandle("b"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("b = locPtr;") =>
         [
