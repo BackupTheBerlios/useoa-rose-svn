@@ -1,0 +1,36 @@
+echo "Generating TestResults/CallGraph/swap.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/swap.c >& TestResults/CallGraph/swap.c.out
+echo "Generating TestResults/CallGraph/functionPtr.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr.c >& TestResults/CallGraph/functionPtr.c.out
+echo "Generating TestResults/CallGraph/functionPtr1.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr1.c >& TestResults/CallGraph/functionPtr1.c.out
+echo "Generating TestResults/CallGraph/functionPtr2.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr2.c >& TestResults/CallGraph/functionPtr2.c.out
+echo "Generating TestResults/CallGraph/functionPtr3.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr3.c >& TestResults/CallGraph/functionPtr3.c.out
+echo "Generating TestResults/CallGraph/functionPtr4.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr4.c >& TestResults/CallGraph/functionPtr4.c.out
+echo "Generating TestResults/CallGraph/functionPtr5.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr5.c >& TestResults/CallGraph/functionPtr5.c.out
+echo "Generating TestResults/CallGraph/functionPtr6.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr6.c >& TestResults/CallGraph/functionPtr6.c.out
+echo "Generating TestResults/CallGraph/functions2.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions2.c >& TestResults/CallGraph/functions2.c.out
+echo "Generating TestResults/CallGraph/functions3.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions3.c >& TestResults/CallGraph/functions3.c.out
+echo "Generating TestResults/CallGraph/functions4.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions4.c >& TestResults/CallGraph/functions4.c.out
+echo "Generating TestResults/CallGraph/functions5.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions5.c >& TestResults/CallGraph/functions5.c.out
+echo "Generating TestResults/CallGraph/functions6.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions6.c >& TestResults/CallGraph/functions6.c.out
+echo "Generating TestResults/CallGraph/activity_proc_call1.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/activity_proc_call1.c >& TestResults/CallGraph/activity_proc_call1.c.out
+echo "Generating TestResults/CallGraph/interalias_proc_call1.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/interalias_proc_call1.c >& TestResults/CallGraph/interalias_proc_call1.c.out
+echo "Generating TestResults/CallGraph/nested_calls_1.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/nested_calls_1.c >& TestResults/CallGraph/nested_calls_1.c.out
+echo "Generating TestResults/CallGraph/multi_func_calls.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/multi_func_calls.c >& TestResults/CallGraph/multi_func_calls.c.out
+echo "Generating TestResults/CallGraph/multi_func_calls_2.c.out"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/multi_func_calls_2.c >& TestResults/CallGraph/multi_func_calls_2.c.out

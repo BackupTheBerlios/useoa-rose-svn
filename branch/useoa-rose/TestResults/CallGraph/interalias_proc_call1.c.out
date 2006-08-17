@@ -1,0 +1,27 @@
+
+graph DGraph:
+
+    Node 1: 
+        head [defined]
+
+    Node 2: 
+        bar [defined]
+
+    Edge: 1 => 2
+        bar(t1,t1)
+
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        bar(t1,t1)	 => [ bar ] 
+
+digraph DGraph {
+    node [shape=rectangle];
+    1 [ label="head [defined]" ];
+    2 [ label="bar [defined]" ];
+    1 -> 2 [ label="bar(t1,t1)" ];}
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        bar(t1,t1)	 => [ bar ] 
+
+*******  end of DoCallGraph *********
+

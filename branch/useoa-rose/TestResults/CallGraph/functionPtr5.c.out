@@ -1,0 +1,63 @@
+
+graph DGraph:
+
+    Node 1: 
+        main [defined]
+
+    Node 2: 
+        read [referenced]
+
+    Node 3: 
+        car [defined]
+
+    Node 4: 
+        foo [defined]
+
+    Node 5: 
+        bar [defined]
+
+    Node 6: 
+        zoo [defined]
+
+    Edge: 1 => 2
+        read()
+
+    Edge: 1 => 3
+        car(fp)
+
+    Edge: 3 => 4
+        ( *funcPtr)()
+
+    Edge: 3 => 5
+        ( *funcPtr)()
+
+    Edge: 3 => 6
+        ( *funcPtr)()
+
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        read()	 => [ warning: ProcHandle is 0   ] 
+        car(fp)	 => [ car ] 
+        ( *funcPtr)()	 => [ foo    bar    zoo ] 
+
+digraph DGraph {
+    node [shape=rectangle];
+    1 [ label="main [defined]" ];
+    2 [ label="read [referenced]" ];
+    3 [ label="car [defined]" ];
+    4 [ label="foo [defined]" ];
+    5 [ label="bar [defined]" ];
+    6 [ label="zoo [defined]" ];
+    1 -> 2 [ label="read()" ];
+    1 -> 3 [ label="car(fp)" ];
+    3 -> 4 [ label="( *funcPtr)()" ];
+    3 -> 5 [ label="( *funcPtr)()" ];
+    3 -> 6 [ label="( *funcPtr)()" ];}
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        read()	 => [ warning: ProcHandle is 0   ] 
+        car(fp)	 => [ car ] 
+        ( *funcPtr)()	 => [ foo    bar    zoo ] 
+
+*******  end of DoCallGraph *********
+

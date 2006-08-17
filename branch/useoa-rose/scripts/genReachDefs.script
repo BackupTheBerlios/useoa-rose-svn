@@ -1,0 +1,6 @@
+echo "Generating TestResults/ReachDefsTests/reachdef_if1.c.out"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/reachdef_if1.c >& TestResults/ReachDefsTests/reachdef_if1.c.out
+echo "Generating TestResults/ReachDefsTests/reachdef_if2.c.out"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/reachdef_if2.c >& TestResults/ReachDefsTests/reachdef_if2.c.out
+echo "Generating TestResults/ReachDefsTests/reachdef_loopif1.c.out"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/reachdef_loopif1.c >& TestResults/ReachDefsTests/reachdef_loopif1.c.out

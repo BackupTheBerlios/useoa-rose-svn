@@ -1,0 +1,37 @@
+
+graph DGraph:
+
+    Node 1: 
+        foo [defined]
+
+    Node 2: 
+        functiontest [defined]
+
+    Node 3: 
+        sin [referenced]
+
+    Edge: 2 => 1
+        foo(n)
+
+    Edge: 2 => 3
+        std::sin(x)
+
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        foo(n)	 => [ foo ] 
+        std::sin(x)	 => [ warning: ProcHandle is 0   ] 
+
+digraph DGraph {
+    node [shape=rectangle];
+    1 [ label="foo [defined]" ];
+    2 [ label="functiontest [defined]" ];
+    3 [ label="sin [referenced]" ];
+    2 -> 1 [ label="foo(n)" ];
+    2 -> 3 [ label="std::sin(x)" ];}
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        foo(n)	 => [ foo ] 
+        std::sin(x)	 => [ warning: ProcHandle is 0   ] 
+
+*******  end of DoCallGraph *********
+

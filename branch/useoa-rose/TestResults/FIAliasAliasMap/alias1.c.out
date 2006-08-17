@@ -1,0 +1,93 @@
+
+InterAliasMap(
+    AliasMap(
+        mProcHandle: ProcHandle(main)
+        mNumSets: 4
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(loc)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(a)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(b)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                2	 => [ MemRefHandle(a) ] 
+                3	 => [ MemRefHandle(b) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(loc)
+                    )    
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(b)
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(a)
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(b)
+                    ) ] 
+
+    )
+)

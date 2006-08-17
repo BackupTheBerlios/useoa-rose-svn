@@ -1,0 +1,7 @@
+"/s/parsons/c/fac/mstrout/oadev/ROSE/rose-0.8.7a/armstrong/g++_HEADERS/hdrs1/ext/mt_allocator.h", line 149: warning: 
+          type qualifier on return type is meaningless
+      _M_get_align()
+      ^
+
+CtoOA: /s/bach/e/proj/oadev/ROSE/rose-0.8.7a/ROSE-0.8.7a/src/frontend/EDG_SAGE_Connection/sage_il_to_str.C:347: SgTemplateArgumentPtrList* sage_form_template_args(a_template_arg*, an_il_to_str_output_control_block*): Assertion `false' failed.
+Error: case tak_template reached in sage_form_template_args() 
