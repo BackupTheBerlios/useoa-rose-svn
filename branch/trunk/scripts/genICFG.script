@@ -1,0 +1,22 @@
+echo "Generating TestResults/ICFG/swap.c.out"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/swap.c >& TestResults/ICFG/swap.c.out
+echo "Generating TestResults/ICFG/functionPtr.c.out"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr.c >& TestResults/ICFG/functionPtr.c.out
+echo "Generating TestResults/ICFG/functionPtr1.c.out"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr1.c >& TestResults/ICFG/functionPtr1.c.out
+echo "Generating TestResults/ICFG/functionPtr2.c.out"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr2.c >& TestResults/ICFG/functionPtr2.c.out
+echo "Generating TestResults/ICFG/functionPtr3.c.out"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr3.c >& TestResults/ICFG/functionPtr3.c.out
+echo "Generating TestResults/ICFG/functionPtr4.c.out"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr4.c >& TestResults/ICFG/functionPtr4.c.out
+echo "Generating TestResults/ICFG/functionPtr5.c.out"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr5.c >& TestResults/ICFG/functionPtr5.c.out
+echo "Generating TestResults/ICFG/functionPtr6.c.out"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functionPtr6.c >& TestResults/ICFG/functionPtr6.c.out
+echo "Generating TestResults/ICFG/functions6.c.out"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/functions6.c >& TestResults/ICFG/functions6.c.out
+echo "Generating TestResults/ICFG/multi_func_calls.c.out"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/multi_func_calls.c >& TestResults/ICFG/multi_func_calls.c.out
+echo "Generating TestResults/ICFG/multi_func_calls_2.c.out"
+./OATest -edg:w --oa-ICFG -c TestCases/ICFG/multi_func_calls_2.c >& TestResults/ICFG/multi_func_calls_2.c.out

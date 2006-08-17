@@ -1,0 +1,86 @@
+"TestCases/AliasTests/refParam.C", line 29: warning: expression has no effect
+    *b;
+    ^
+
+
+PROCEDURE = { < ProcHandle("foo"), SymHandle("foo") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("a") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("void foo(int *&a){a = b;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{a = b;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("a = b;") =>
+        [
+            MemRefHandle("a") => 
+                Deref( DEF, NamedRef( USE, SymHandle("a"), F, full), 1, F, full)
+            MemRefHandle("b") => 
+                NamedRef( USE, SymHandle("b"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("a = b;") =>
+        [
+            < Deref( DEF, NamedRef( USE, SymHandle("a"), F, full), 1, F, full)
+            , NamedRef( USE, SymHandle("b"), F, full) >
+        ] }
+    LOCATION = { < SymHandle("b"), not local > }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("foo"), not local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int m;b = &m;int *x;foo(x);*b;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int m;b = &m;int *x;foo(x);*b;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int m;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("b = &m;") =>
+        [
+            MemRefHandle("b") => 
+                NamedRef( DEF, SymHandle("b"), F, full)
+            MemRefHandle("&m") => 
+                NamedRef( USE, SymHandle("m"), T, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("b = &m;") =>
+        [
+            < NamedRef( DEF, SymHandle("b"), F, full)
+            , NamedRef( USE, SymHandle("m"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *x;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("foo(x);") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("foo(x);") =>
+        [
+            CallHandle("foo(x)") => 
+                NamedRef( USE, SymHandle("foo"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("foo(x)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("x"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("*b;") =>
+        [
+            MemRefHandle("b") => 
+                NamedRef( USE, SymHandle("b"), F, full)
+            MemRefHandle("*b") => 
+                Deref( USE, NamedRef( USE, SymHandle("b"), F, full), 1, F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("b"), not local > }
+    LOCATION = { < SymHandle("m"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("foo"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }

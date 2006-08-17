@@ -1,0 +1,24 @@
+echo "Testing TestCases/MemRefExpr/arrays1.B, TestResults/MemRefExpr/arrays1.B.out error"
+./test-open64 --oa-MemRefExpr TestCases/MemRefExpr/arrays1.B > t
+diff t TestResults/MemRefExpr/arrays1.B.out
+
+echo "Testing TestCases/MemRefExpr/arrays5.B, TestResults/MemRefExpr/arrays5.B.out checked by ???"
+./test-open64 --oa-MemRefExpr TestCases/MemRefExpr/arrays5.B > t
+diff t TestResults/MemRefExpr/arrays5.B.out
+
+echo "Testing TestCases/MemRefExpr/functions1.B, TestResults/MemRefExpr/functions1.B.out checked by ???"
+./test-open64 --oa-MemRefExpr TestCases/MemRefExpr/functions1.B > t
+diff t TestResults/MemRefExpr/functions1.B.out
+
+echo "Testing TestCases/MemRefExpr/globalActive_2.B, TestResults/MemRefExpr/globalActive_2.B.out checked by ???"
+./test-open64 --oa-MemRefExpr TestCases/MemRefExpr/globalActive_2.B > t
+diff t TestResults/MemRefExpr/globalActive_2.B.out
+
+echo "Testing TestCases/MemRefExpr/head_tlm_driver_g.pre.B, TestResults/MemRefExpr/head_tlm_driver_g.pre.B.out checked by ???"
+./test-open64 --oa-MemRefExpr TestCases/MemRefExpr/head_tlm_driver_g.pre.B > t
+diff t TestResults/MemRefExpr/head_tlm_driver_g.pre.B.out
+
+echo "Testing TestCases/MemRefExpr/interalias_proc_call1.B, TestResults/MemRefExpr/interalias_proc_call1.B.out checked by ???"
+./test-open64 --oa-MemRefExpr TestCases/MemRefExpr/interalias_proc_call1.B > t
+diff t TestResults/MemRefExpr/interalias_proc_call1.B.out
+

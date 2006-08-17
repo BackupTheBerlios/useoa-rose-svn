@@ -1,0 +1,17 @@
+
+ReachDefsStandard(
+    mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
+            StmtHandle(y =(5);)	 => [ StmtHandle(x =(2);) ] 
+            StmtHandle(x =(y + y);)	 => [ StmtHandle(x =(2);)    StmtHandle(y =(5);) ] 
+            StmtHandle(y =(3);)	 => [ StmtHandle(x =(2);) ] 
+            StmtHandle(z = y;)	 => [ StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);) ] 
+            StmtHandle(if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);})	 => [ StmtHandle(x =(2);) ] 
+            StmtHandle()	 => [ StmtHandle(y =(5);)    StmtHandle(x =(y + y);) ] 
+            StmtHandle()	 => [ StmtHandle(x =(2);)    StmtHandle(y =(3);) ] 
+            StmtHandle(return 0;)	 => [ StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;) ] 
+
+    mExitReachDefs: [ StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;) ] 
+)
+
+*******  end of DoReachDef *********
+

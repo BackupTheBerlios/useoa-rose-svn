@@ -1,0 +1,4 @@
+echo "Generating TestResults/ICFGDep/activity_int6.c.out"
+./OATest -edg:w --oa-ICFGDep -c TestCases/ICFGDep/activity_int6.c >& TestResults/ICFGDep/activity_int6.c.out
+echo "Generating TestResults/ICFGDep/activity_int7.c.out"
+./OATest -edg:w --oa-ICFGDep -c TestCases/ICFGDep/activity_int7.c >& TestResults/ICFGDep/activity_int7.c.out
