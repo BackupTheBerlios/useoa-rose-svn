@@ -1901,3 +1901,40 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 8/02/06     UseOA-Rose svn trunk r135    Michelle Strout
    Added a number of test cases to AliasIRInterface.
    regressAll works with OpenAnalysis r167
+
+8/17/06     UseOA-Rose svn branch-memRefExprRefactor r156   Brian White
+   - Began work to incorporate parameter bindings from trunk:
+       - These will be created by createParamBindPtrAssignPairs,
+         which will be invoked by the SgFunctionCallExp, 
+         SgConstructorInitializer, and SgDeleteExp cases of
+         findAllMemRefsAndPtrAssigns.
+       - Paramter bindings are registered with makeParamPtrPair,
+         which puts parameter binding pairs in mCallToParamPtrPairs.
+         I suspect, though, that makeParamPtrPair needs to take
+         an MRE rather than a MemRefHandle.
+       - SgParamBindPtrAssignIterator::create was updated to
+         look at mCallToParamPtrPairs.
+       - Am making an effort to handle SgDeleteExp, something we
+         weren't doing previously.
+   - Created a common.C file to hold Rose related utilities.
+     Most of these are imported from the trunk.  I am using
+     spaces not tabs :)  Let's try not to junk up SageIRInterface,
+     as I had been doing, with general routines that can go 
+     in common.C.  Possibly needs a name change.
+   - Began experimenting with functions that encapsulate the
+     mapping from OA::MemRefHandle to Sage nodes.  e.g.,
+     changed Michelle's getCallHandle (SgNode -> CallHandle)
+     to verify that it is being passed a SgFunctionCallExp,
+     a SgConstructorInitializer, or a SgDeleteExp.  This should
+     help avoid logical mistakes and also provide a single/few
+     places which explicitly codify the mapping between the
+     two domains.  Two other related functions/methods are:
+     verifyCallHandleType(OA::CallHandle call), which asserts
+     that call may be cast to a SgNode that is one of the
+     three above types, and verifyCallHandleNodeType(SgNode *node),
+     which verifies that node is one of the above three types.
+     The idea is that any function/method manipulating
+     CallHandles, or SgNodes it expects to be represented by 
+     CallHandles, should invoke one of the verify routines
+     and should perform conversions only through the getCallHandle
+     routine.

@@ -733,6 +733,23 @@ public:
     return memRefHandle;
   }
   OA::CallHandle getCallHandle(SgNode *astNode) { 
+      switch(astNode->variantT()) {
+      case V_SgFunctionCallExp:
+      case V_SgConstructorInitializer:
+      case V_SgDeleteExp:
+          {
+              // We expect that a call handle is one of
+              // these three cases.
+	      break;
+          }
+      default:
+          {
+              std::cerr << "astNode type: " << astNode->sage_class_name();
+	      std::cerr << " not expected to be represented by";
+	      std::cerr << " a call handle!" << std::endl;
+              ROSE_ABORT();
+          }
+      }
       OA::CallHandle retval = getNodeNumber(astNode);
       return retval;
   }
@@ -741,6 +758,8 @@ public:
   //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
   SgNode *getSgNode(OA::IRHandle h) { return getNodePtr(h); }
   bool isMemRefNode(SgNode *astNode);
+
+  void verifyCallHandleType(OA::CallHandle call);
 
  protected:
 
@@ -766,6 +785,10 @@ public:
   void makePtrAssignPair(OA::StmtHandle stmt,
                          OA::MemRefHandle lhs_memref,
                          OA::MemRefHandle rhs_memref);
+
+  void makeParamPtrPair(OA::CallHandle call,
+                        int formal,
+                        OA::MemRefHandle actual);
 
   std::string findFieldName(OA::MemRefHandle memref);
 
@@ -793,6 +816,8 @@ public:
   //! in statements and at parameter bindings
   //void initPointerAssignMaps();
   //void findAllPtrAssignAndParamBindPairs(SgNode *astNode, OA::StmtHandle stmt);
+
+  void createParamBindPtrAssignPairs(SgNode *node);
 
   std::map<OA::StmtHandle,
            std::set<

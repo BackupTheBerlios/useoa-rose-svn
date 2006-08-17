@@ -1,5 +1,6 @@
 #include "SageOACallGraph.h"
 #include "MemSage2OA.h"
+#include "common.h"
 
 using namespace std;
 
@@ -2423,10 +2424,16 @@ SgParamBindPtrAssignIterator::reset()
 // only for pointer or reference formals.
 void SgParamBindPtrAssignIterator::create(OA::CallHandle call)
 {
-  SgNode *node = mIR->getNodePtr(call);
-  ROSE_ASSERT(node != NULL);
-
-  ROSE_ASSERT(0); // MMS 8/10/06, not implemented  
+  
+  // loop through the pairs we found in initMemRefsAndPtrAssigns
+  std::set<std::pair<int, 
+                     OA::OA_ptr<OA::MemRefExpr> > >::iterator pairIter;
+  for (pairIter=mIR->mCallToParamPtrPairs[call].begin();
+       pairIter!=mIR->mCallToParamPtrPairs[call].end();
+       pairIter++)
+  {
+      mPairList.push_back(*pairIter);
+  }
 }
 
 // Create iterator consisting of lhs/rhs pairs from pointer
@@ -2435,9 +2442,6 @@ void SgPtrAssignPairStmtIterator::create(OA::StmtHandle stmt)
 {
   if ( mIR->getAliasStmtType(stmt) != OA::Alias::PTR_ASSIGN_STMT )
     return;
-
-  SgNode *node = mIR->getNodePtr(stmt);
-  ROSE_ASSERT(node != NULL);
 
   // loop through the pairs we found in initMemRefsAndPtrAssigns
   std::set<std::pair<OA::OA_ptr<OA::MemRefExpr>,
@@ -3144,14 +3148,24 @@ SageIRInterface::getCallsiteParams(OA::CallHandle h)
   SgNode *node = getNodePtr(h);
   ROSE_ASSERT(node != NULL);
 
+  verifyCallHandleType(h);
+
   SgExprListExp* exprListExp = NULL;
 
   // Create a list to hold the handles to the actual arguments.
   OA::OA_ptr<std::list<OA::ExprHandle> > exprHandleList;
   exprHandleList = new std::list<OA::ExprHandle>;
 
-  // A callsite is represented in Sage as a SgFunctionCallExp or
-  // as a SgConstructorInitializer.
+  // A callsite is represented in Sage as a SgFunctionCallExp,
+  // a SgConstructorInitializer, or a SgDeleteExp.
+
+    
+  ROSE_ABORT();
+  // still need some work here.  
+  // look at Michelle's concern.
+  // also, should never return a NULL actual.
+  // for constructor initializer needing lhs, the new'ed thing
+  // can be left-hand side.
 
   switch(node->variantT()) {
     
@@ -3231,12 +3245,20 @@ SageIRInterface::getCallsiteParams(OA::CallHandle h)
         lhs = lookThroughCastExpAndAssignInitializer(lhs);
       }
 
+      // if parent is SgNewExp, return that.
+      // getTopMemRefHandle from SgNewExp.
+
       // NB:  lhs could be NULL here, e.g., 'return (new B)'
       OA::ExprHandle exprHandle = getNodeNumber(lhs);
       exprHandleList->push_back(exprHandle);
 
       break;
     }
+  case V_SgDeleteExp:
+      {
+          ROSE_ABORT();
+          break;
+      }
   default:
     {
       cerr << "Expected a callHandle to be a SgFunctionCallExp or " << endl;
@@ -4142,5 +4164,15 @@ OA::ProcHandle SageIRInterface::getProcHandle(SgFunctionDefinition *node)
 {
       OA::ProcHandle procHandle = getNodeNumber(node);
         return procHandle;
+}
+
+/*!
+   Verify that a call handle is actually a node
+   of the expected type.
+*/
+void SageIRInterface::verifyCallHandleType(OA::CallHandle call)
+{
+    SgNode *node = getNodePtr(call);
+    verifyCallHandleNodeType(node);
 }
 

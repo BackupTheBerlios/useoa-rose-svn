@@ -31,7 +31,7 @@ bin_PROGRAMS =
 OBJEXT = o
 EXEEXT = 
 
-libSage2OASources = Sage2OA.C MemSage2OA.C SageOACallGraph.C 
+libSage2OASources = Sage2OA.C MemSage2OA.C SageOACallGraph.C common.C
 
 
 #lib_LIBRARIES = libSage2OA.a
@@ -39,7 +39,7 @@ lib_LIBRARIES = libSage2OA.so
 LIBRARIES = $(lib_LIBRARIES)
 
 libSage2OA_so_SOURCES = $(libSage2OASources)
-am__objects_1 = Sage2OA.$(OBJEXT) SageOACallGraph.$(OBJEXT) MemSage2OA.$(OBJEXT)
+am__objects_1 = Sage2OA.$(OBJEXT) SageOACallGraph.$(OBJEXT) MemSage2OA.$(OBJEXT) common.$(OBJEXT)
 am_libSage2OA_so_OBJECTS = $(am__objects_1)
 libSage2OA_so_OBJECTS = $(am_libSage2OA_so_OBJECTS)
 
