@@ -1,0 +1,59 @@
+# comment in file.test
+# Regression tests for FIAliasAliasMap generation
+testname::FIAliasAliasMap
+inputdir::TestCases/AliasTests
+outputdir::TestResults/FIAliasAliasMap
+driverexec::./OATest -edg:w --oa-FIAliasAliasMap -c
+
+# list of tests
+#       input file,             status
+test::  alias1.c,               checked by AIS 6/23/06
+test::  alias2.c,               checked by AIS 6/23/06
+test::  alias3.c,               checked by AIS 6/23/06
+test::  alias4.c,               checked by AIS 6/23/06
+test::  alias4b.c,              checked by AIS 6/23/06
+test::  comma.c,                checked by AIS 6/23/06
+test::  constQualified.c,       checked by MMS 7/27/06
+test::  utke.c,                 checked by AIS 6/23/06
+test::  OAWikiEx.c,             checked by AIS 6/23/06
+#test::  funCall.c,              checked by ???
+test::  functionPtr.c,          checked by AIS 6/27/06
+test::  functionPtr2.c,         checked by MMS 7/24/06
+test::  passIntPtrArrayRef.c,   checked by MMS 7/24/06
+test::  passIntPtrArrayRef2.c,  checked by MMS 7/24/06
+test::  passIntPtrArrayRef3.c,  checked by MMS 7/24/06
+test::  passIntPtr.c,           checked by MMS 7/23/06
+test::  swap.c,                 checked by MMS 7/23/06
+test::  invLoc.c,               checked by MMS 7/23/06
+
+#test::  diffArrays.c,           checked by ???
+#test::  diffTypes.c,            checked by ???
+#test::  LiangEtAl00.c,          checked by ???
+#test::  LiangEtAl99.c,          checked by ???
+#test::  LiangEtAlICSM99Fig2.c,  checked by ???
+#test::  LiangEtAlICSM99Fig5.c,  checked by ???
+#test::  RyderEtAlFig11.c,       checked by ???
+#test::  RyderEtAlFig14.c,       checked by ???
+#test::  RyderEtAlFig15.c,       checked by ???
+#test::  RyderEtAlFig1a.c,       checked by ???
+#test::  RyderEtAlFig1b.c,       checked by ???
+#test::  RyderEtAlFig1c.c,       checked by ???
+#test::  RyderEtAlFig2.c,        checked by ???
+#test::  RyderEtAlFig3.c,        checked by ???
+#test::  RyderEtAlFig7.c,        checked by ???
+#test::  RyderEtAlFig9.c,        checked by ???
+#test::  YongEtAlPLDI99.c,       checked by ???
+
+# C++ Tests:
+
+#test::  HindEtAlIBM95Fig4.C,    checked by ???
+#test::  HindEtAlISSTA00Fig1.C,  checked by ???
+#test::  LattnerEtAl03Fig1.C,    checked by ???
+#test::  PandeEtAlRutgers05.C,   checked by ???
+#test::  PioliThesis99Fig1.C,    checked by ???
+#test::  PioliThesis99Fig3.C,    checked by ???
+#test::  refCall.C,              checked by ???
+#test::  refClass.C,             checked by ???
+#test::  refParam.C,             checked by ???
+#test::  RinardEtAlPLDI96Fig4.C, checked by ???
+#test::  ref.C,                  checked by ???

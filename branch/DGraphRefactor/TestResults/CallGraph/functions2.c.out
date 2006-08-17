@@ -1,0 +1,33 @@
+
+graph DGraph:
+
+    Node 1: 
+        factorial [defined]
+
+    Node 2: 
+        main [defined]
+
+    Edge: 1 => 1
+        factorial((n - 1))
+
+    Edge: 2 => 1
+        factorial(n)
+
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        factorial((n - 1))	 => [ factorial ] 
+        factorial(n)	 => [ factorial ] 
+
+digraph DGraph {
+    node [shape=rectangle];
+    1 [ label="factorial [defined]" ];
+    2 [ label="main [defined]" ];
+    1 -> 1 [ label="factorial((n - 1))" ];
+    2 -> 1 [ label="factorial(n)" ];}
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        factorial((n - 1))	 => [ factorial ] 
+        factorial(n)	 => [ factorial ] 
+
+*******  end of DoCallGraph *********
+

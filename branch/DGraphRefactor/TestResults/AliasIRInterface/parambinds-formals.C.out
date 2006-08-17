@@ -1,0 +1,1097 @@
+
+PROCEDURE = { < ProcHandle("SubClass::SubClass"), SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_") >
+            < 1, SymHandle("par") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+            MemRefHandle("myParent&") => 
+                Deref( DEF, NamedRef( USE, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full), 1, F, part)
+            MemRefHandle("par") => 
+                NamedRef( USE, SymHandle("par"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("") =>
+        [
+            < Deref( DEF, NamedRef( USE, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full), 1, F, part)
+            , NamedRef( USE, SymHandle("par"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline SubClass(class Base &par) : myParent(par){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("par"), local > }
+
+PROCEDURE = { < ProcHandle("SubClass::~SubClass"), SymHandle("method:SubClass::~SubClass__SubClass__scope____dtSubClass____MFb_SubClass__Fb_v_Gb__Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::SubClass::~SubClass__SubClass__scope____dtSubClass____MFb_SubClass__Fb_v_Gb__Fe_") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline ~SubClass(){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("method:SubClass::~SubClass__SubClass__scope____dtSubClass____MFb_SubClass__Fb_v_Gb__Fe_"), local > }
+    LOCATION = { < SymHandle("this::SubClass::~SubClass__SubClass__scope____dtSubClass____MFb_SubClass__Fb_v_Gb__Fe_"), local > }
+
+PROCEDURE = { < ProcHandle("SubSubClass::SubSubClass"), SymHandle("method:SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_") >
+            < 1, SymHandle("par") >
+            < 2, SymHandle("aint") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+            MemRefHandle("SubClass") => 
+                Deref( DEF, NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), F, full), 1, F, part)
+            MemRefHandle("SubClass(par)") => 
+                NamedRef( USE, SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full)
+            MemRefHandle("par") => 
+                NamedRef( USE, SymHandle("par"), F, full)
+            MemRefHandle("myInt&") => 
+                Deref( DEF, NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), F, full), 1, F, part)
+            MemRefHandle("aint") => 
+                NamedRef( USE, SymHandle("aint"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("") =>
+        [
+            < Deref( DEF, NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), F, full), 1, F, part)
+            , NamedRef( USE, SymHandle("aint"), F, full) >
+        ] }
+    CALLSITES = { StmtHandle("") =>
+        [
+            CallHandle("SubClass") => 
+                NamedRef( USE, SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("SubClass") =>
+        [
+            < 0, Deref( DEF, NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), F, full), 1, T, part) >
+            < 1, NamedRef( USE, SymHandle("par"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline SubSubClass(class Base &par,int &aint) : SubClass(par), myInt(aint){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("method:SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("par"), local > }
+    LOCATION = { < SymHandle("aint"), local > }
+
+PROCEDURE = { < ProcHandle("SubSubClass::~SubSubClass"), SymHandle("method:SubSubClass::~SubSubClass__SubSubClass__scope____dtSubSubClass____MFb_SubSubClass__Fb_v_Gb__Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::SubSubClass::~SubSubClass__SubSubClass__scope____dtSubSubClass____MFb_SubSubClass__Fb_v_Gb__Fe_") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline ~SubSubClass(){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("method:SubSubClass::~SubSubClass__SubSubClass__scope____dtSubSubClass____MFb_SubSubClass__Fb_v_Gb__Fe_"), local > }
+    LOCATION = { < SymHandle("this::SubSubClass::~SubSubClass__SubSubClass__scope____dtSubSubClass____MFb_SubSubClass__Fb_v_Gb__Fe_"), local > }
+
+PROCEDURE = { < ProcHandle("foo_ref1"), SymHandle("foo_ref1") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("x") >
+            < 1, SymHandle("b") >
+            < 2, SymHandle("s") >
+            < 3, SymHandle("sc") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("void foo_ref1(int &x,class Base &b,class SubClass &s,class SubSubClass &sc){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("foo_ref1"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("b"), local > }
+    LOCATION = { < SymHandle("s"), local > }
+    LOCATION = { < SymHandle("sc"), local > }
+
+PROCEDURE = { < ProcHandle("foo_ref2"), SymHandle("foo_ref2") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("f") >
+            < 1, SymHandle("sc") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class Base &foo_ref2(double &f,class SubSubClass &sc){return sc;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{return sc;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("return sc;") =>
+        [
+            MemRefHandle("sc") => 
+                Deref( USE, NamedRef( USE, SymHandle("sc"), F, full), 1, F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("return sc;") =>
+        [
+            < NamedRef( DEF, SymHandle("foo_ref2"), F, full)
+            , Deref( USE, NamedRef( USE, SymHandle("sc"), F, full), 1, F, full) >
+        ] }
+    LOCATION = { < SymHandle("foo_ref2"), local > }
+    LOCATION = { < SymHandle("f"), local > }
+    LOCATION = { < SymHandle("sc"), local > }
+
+PROCEDURE = { < ProcHandle("foo_ptr1"), SymHandle("foo_ptr1") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("x") >
+            < 1, SymHandle("b") >
+            < 2, SymHandle("s") >
+            < 3, SymHandle("sc") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("void foo_ptr1(int *x,class Base *b,class SubClass *s,class SubSubClass *sc){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("foo_ptr1"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("b"), local > }
+    LOCATION = { < SymHandle("s"), local > }
+    LOCATION = { < SymHandle("sc"), local > }
+
+PROCEDURE = { < ProcHandle("foo_ptr2"), SymHandle("foo_ptr2") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("s") >
+            < 1, SymHandle("sc") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class SubClass *foo_ptr2(char *s,class SubSubClass *sc){return sc;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{return sc;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("return sc;") =>
+        [
+            MemRefHandle("sc") => 
+                NamedRef( USE, SymHandle("sc"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("return sc;") =>
+        [
+            < NamedRef( DEF, SymHandle("foo_ptr2"), F, full)
+            , NamedRef( USE, SymHandle("sc"), F, full) >
+        ] }
+    LOCATION = { < SymHandle("foo_ptr2"), local > }
+    LOCATION = { < SymHandle("s"), local > }
+    LOCATION = { < SymHandle("sc"), local > }
+
+PROCEDURE = { < ProcHandle("ellipsis_intptrs"), SymHandle("ellipsis_intptrs") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("x") >
+            < 1, SymHandle("") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("void ellipsis_intptrs(int x,... ){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("ellipsis_intptrs"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle(""), local > }
+
+PROCEDURE = { < ProcHandle("ellipsis_baseptrs"), SymHandle("ellipsis_baseptrs") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("x") >
+            < 1, SymHandle("") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("void ellipsis_baseptrs(int x,... ){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("ellipsis_baseptrs"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle(""), local > }
+
+PROCEDURE = { < ProcHandle("ellipsis_baserefs"), SymHandle("ellipsis_baserefs") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("x") >
+            < 1, SymHandle("") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("void ellipsis_baserefs(int x,... ){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("ellipsis_baserefs"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle(""), local > }
+
+PROCEDURE = { < ProcHandle("ellipsis_int"), SymHandle("ellipsis_int") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("i") >
+            < 1, SymHandle("") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("void ellipsis_int(int i,... ){int j;va_list ap;va_start(ap,((const void *)i));j =(va_arg(ap,int ));va_end(ap);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int j;va_list ap;va_start(ap,((const void *)i));j =(va_arg(ap,int ));va_end(ap);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int j;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("va_list ap;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("va_start(ap,((const void *)i));") =>
+        [
+            MemRefHandle("ap") => 
+                NamedRef( USE, SymHandle("ap"), F, full)
+            MemRefHandle("i") => 
+                NamedRef( USE, SymHandle("i"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("va_start(ap,((const void *)i));") =>
+        [
+            CallHandle("va_start(ap,((const void *)i))") => 
+                NamedRef( USE, SymHandle("va_start"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("va_start(ap,((const void *)i))") =>
+        [
+            < 1, NamedRef( USE, SymHandle("i"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("j =(va_arg(ap,int ));") =>
+        [
+            MemRefHandle("j") => 
+                NamedRef( DEF, SymHandle("j"), F, full)
+            MemRefHandle("ap") => 
+                NamedRef( USE, SymHandle("ap"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("va_end(ap);") =>
+        [
+            MemRefHandle("ap") => 
+                NamedRef( USE, SymHandle("ap"), F, full)
+        ] }
+    LOCATION = { < SymHandle("va_start"), local > }
+    LOCATION = { < SymHandle("ellipsis_int"), local > }
+    LOCATION = { < SymHandle("i"), local > }
+    LOCATION = { < SymHandle(""), local > }
+    LOCATION = { < SymHandle("j"), local > }
+    LOCATION = { < SymHandle("ap"), local > }
+
+PROCEDURE = { < ProcHandle("DoIt"), SymHandle("DoIt") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("a") >
+            < 1, SymHandle("b") >
+            < 2, SymHandle("c") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("int DoIt(float a,char b,char c){return(((int )a) +((int )b)) +((int )c);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{return(((int )a) +((int )b)) +((int )c);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("return(((int )a) +((int )b)) +((int )c);") =>
+        [
+            MemRefHandle("a") => 
+                NamedRef( USE, SymHandle("a"), F, full)
+            MemRefHandle("b") => 
+                NamedRef( USE, SymHandle("b"), F, full)
+            MemRefHandle("c") => 
+                NamedRef( USE, SymHandle("c"), F, full)
+        ] }
+    LOCATION = { < SymHandle("DoIt"), local > }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("b"), local > }
+    LOCATION = { < SymHandle("c"), local > }
+
+PROCEDURE = { < ProcHandle("DoMore"), SymHandle("DoMore") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("a") >
+            < 1, SymHandle("b") >
+            < 2, SymHandle("c") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("int DoMore(float a,char b,char c){return(((int )a) -((int )b)) +((int )c);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{return(((int )a) -((int )b)) +((int )c);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("return(((int )a) -((int )b)) +((int )c);") =>
+        [
+            MemRefHandle("a") => 
+                NamedRef( USE, SymHandle("a"), F, full)
+            MemRefHandle("b") => 
+                NamedRef( USE, SymHandle("b"), F, full)
+            MemRefHandle("c") => 
+                NamedRef( USE, SymHandle("c"), F, full)
+        ] }
+    LOCATION = { < SymHandle("DoMore"), local > }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("b"), local > }
+    LOCATION = { < SymHandle("c"), local > }
+
+PROCEDURE = { < ProcHandle("bar_arrays"), SymHandle("bar_arrays") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("c") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("char *bar_arrays(char(*c)[10]){return c[0];}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{return c[0];}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("return c[0];") =>
+        [
+            MemRefHandle("c[0]") => 
+                Deref( USE, NamedRef( USE, SymHandle("c"), F, full), 1, F, part)
+            MemRefHandle("c") => 
+                NamedRef( USE, SymHandle("c"), F, full)
+        ] }
+    LOCATION = { < SymHandle("bar_arrays"), local > }
+    LOCATION = { < SymHandle("c"), local > }
+
+PROCEDURE = { < ProcHandle("bar_arrays2"), SymHandle("bar_arrays2") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("a") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *bar_arrays2(int *a){return a + 3;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{return a + 3;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("return a + 3;") =>
+        [
+            MemRefHandle("a + 3") => 
+                Deref( USE, NamedRef( USE, SymHandle("a"), F, full), 1, T, part)
+            MemRefHandle("a") => 
+                NamedRef( USE, SymHandle("a"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("return a + 3;") =>
+        [
+            < NamedRef( DEF, SymHandle("bar_arrays2"), F, full)
+            , Deref( USE, NamedRef( USE, SymHandle("a"), F, full), 1, T, part) >
+        ] }
+    LOCATION = { < SymHandle("bar_arrays2"), local > }
+    LOCATION = { < SymHandle("a"), local > }
+
+PROCEDURE = { < ProcHandle("PassPtr"), SymHandle("PassPtr") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("pt2Func") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("void PassPtr(int(*pt2Func)(float , char , char )){int result =( *pt2Func)((12),'a','b');}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int result =( *pt2Func)((12),'a','b');}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int result =( *pt2Func)((12),'a','b');") =>
+        [
+            MemRefHandle("result") => 
+                NamedRef( DEF, SymHandle("result"), F, full)
+            MemRefHandle("( *pt2Func)") => 
+                Deref( USE, NamedRef( USE, SymHandle("pt2Func"), F, full), 1, F, full)
+            MemRefHandle("pt2Func") => 
+                NamedRef( USE, SymHandle("pt2Func"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("int result =( *pt2Func)((12),'a','b');") =>
+        [
+            CallHandle("( *pt2Func)((12),'a','b')") => 
+                Deref( USE, NamedRef( USE, SymHandle("pt2Func"), F, full), 1, F, full)
+        ] }
+    LOCATION = { < SymHandle("PassPtr"), local > }
+    LOCATION = { < SymHandle("pt2Func"), local > }
+    LOCATION = { < SymHandle("result"), local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int x;int y;int z;double f;class Base b;class SubClass s(b);class SubSubClass sc(s,y);class Base *bp = ::new Base ;class SubClass *sp = new SubClass(sc);class SubSubClass *scp = new SubSubClass( *bp,y);class A aclass;foo_ref1(x,b,s,sc);foo_ref1((sc.myInt),b,s,sc);foo_ref1(x,sc,sc,sc);foo_ref1((((class SubSubClass &)( *(scp -> next))).myInt),(s.myParent),s,sc);class Base &bref = foo_ref2(f,sc);foo_ptr1(&x,&b,&s,&sc);foo_ptr1(&sc.myInt,&b,&s,&sc);foo_ptr1(&x,(((&sc))),((&sc)),&sc);foo_ptr1(&x,((( *(( *(aclass.bptr)).cptr)).baseptr)[3]),sp,scp);char hi[] = "hello";class Base *bptr =(foo_ptr2(hi,&sc));ellipsis_intptrs(3,&x,&y,&z);ellipsis_intptrs(5,&x,&y,&z,&z,&scp -> myInt);ellipsis_baseptrs(3,bp,sp,scp);b.next =(((&sc)));ellipsis_baseptrs(4,&b,&s,(b.next),&sc);ellipsis_baserefs(1, *(b.next));x = 7;int &q = x;ellipsis_int(1,q);char bye[][10] = {("hi"),("bye"),("adios")};char *cptr = bar_arrays(bye);int a[5] = {(1),(2),(3),(4),(5)};int *iptr = bar_arrays2(a);int(*pt2Function)(float , char , char ) =(0);PassPtr(DoIt);pt2Function = DoIt;pt2Function = DoMore;PassPtr(pt2Function);return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int x;int y;int z;double f;class Base b;class SubClass s(b);class SubSubClass sc(s,y);class Base *bp = ::new Base ;class SubClass *sp = new SubClass(sc);class SubSubClass *scp = new SubSubClass( *bp,y);class A aclass;foo_ref1(x,b,s,sc);foo_ref1((sc.myInt),b,s,sc);foo_ref1(x,sc,sc,sc);foo_ref1((((class SubSubClass &)( *(scp -> next))).myInt),(s.myParent),s,sc);class Base &bref = foo_ref2(f,sc);foo_ptr1(&x,&b,&s,&sc);foo_ptr1(&sc.myInt,&b,&s,&sc);foo_ptr1(&x,(((&sc))),((&sc)),&sc);foo_ptr1(&x,((( *(( *(aclass.bptr)).cptr)).baseptr)[3]),sp,scp);char hi[] = "hello";class Base *bptr =(foo_ptr2(hi,&sc));ellipsis_intptrs(3,&x,&y,&z);ellipsis_intptrs(5,&x,&y,&z,&z,&scp -> myInt);ellipsis_baseptrs(3,bp,sp,scp);b.next =(((&sc)));ellipsis_baseptrs(4,&b,&s,(b.next),&sc);ellipsis_baserefs(1, *(b.next));x = 7;int &q = x;ellipsis_int(1,q);char bye[][10] = {("hi"),("bye"),("adios")};char *cptr = bar_arrays(bye);int a[5] = {(1),(2),(3),(4),(5)};int *iptr = bar_arrays2(a);int(*pt2Function)(float , char , char ) =(0);PassPtr(DoIt);pt2Function = DoIt;pt2Function = DoMore;PassPtr(pt2Function);return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int x;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int y;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int z;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("double f;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class Base b;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class SubClass s(b);") =>
+        [
+            MemRefHandle("s") => 
+                NamedRef( DEF, SymHandle("s"), F, full)
+            MemRefHandle("SubClass(b)") => 
+                NamedRef( USE, SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full)
+            MemRefHandle("b") => 
+                NamedRef( USE, SymHandle("b"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("class SubClass s(b);") =>
+        [
+            CallHandle("s") => 
+                NamedRef( USE, SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("s") =>
+        [
+            < 0, NamedRef( DEF, SymHandle("s"), T, full) >
+            < 1, NamedRef( USE, SymHandle("b"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class SubSubClass sc(s,y);") =>
+        [
+            MemRefHandle("sc") => 
+                NamedRef( DEF, SymHandle("sc"), F, full)
+            MemRefHandle("SubSubClass(s,y)") => 
+                NamedRef( USE, SymHandle("method:SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), F, full)
+            MemRefHandle("s") => 
+                NamedRef( USE, SymHandle("s"), T, full)
+            MemRefHandle("y") => 
+                NamedRef( USE, SymHandle("y"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("class SubSubClass sc(s,y);") =>
+        [
+            CallHandle("sc") => 
+                NamedRef( USE, SymHandle("method:SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("sc") =>
+        [
+            < 0, NamedRef( DEF, SymHandle("sc"), T, full) >
+            < 1, NamedRef( USE, SymHandle("s"), T, full) >
+            < 2, NamedRef( USE, SymHandle("y"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class Base *bp = ::new Base ;") =>
+        [
+            MemRefHandle("bp") => 
+                NamedRef( DEF, SymHandle("bp"), F, full)
+            MemRefHandle("::new Base") => 
+                UnnamedRef( USE, StmtHandle("::new Base"), T, part)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("class Base *bp = ::new Base ;") =>
+        [
+            < NamedRef( DEF, SymHandle("bp"), F, full)
+            , UnnamedRef( USE, StmtHandle("::new Base"), T, part) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class SubClass *sp = new SubClass(sc);") =>
+        [
+            MemRefHandle("sp") => 
+                NamedRef( DEF, SymHandle("sp"), F, full)
+            MemRefHandle("new SubClass(sc)") => 
+                UnnamedRef( USE, StmtHandle("new SubClass(sc)"), T, part)
+            MemRefHandle("SubClass(sc)") => 
+                NamedRef( USE, SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____Fb_v_Gb__Fe_"), F, full)
+            MemRefHandle("sc") => 
+                NamedRef( USE, SymHandle("sc"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("class SubClass *sp = new SubClass(sc);") =>
+        [
+            < NamedRef( DEF, SymHandle("sp"), F, full)
+            , UnnamedRef( USE, StmtHandle("new SubClass(sc)"), T, part) >
+        ] }
+    CALLSITES = { StmtHandle("class SubClass *sp = new SubClass(sc);") =>
+        [
+            CallHandle("new SubClass(sc)") => 
+                NamedRef( USE, SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____Fb_v_Gb__Fe_"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("new SubClass(sc)") =>
+        [
+            < 0, NamedRef( DEF, SymHandle("sp"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class SubSubClass *scp = new SubSubClass( *bp,y);") =>
+        [
+            MemRefHandle("scp") => 
+                NamedRef( DEF, SymHandle("scp"), F, full)
+            MemRefHandle("new SubSubClass( *bp,y)") => 
+                UnnamedRef( USE, StmtHandle("new SubSubClass( *bp,y)"), T, part)
+            MemRefHandle("SubSubClass( *bp,y)") => 
+                NamedRef( USE, SymHandle("method:SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), F, full)
+            MemRefHandle("y") => 
+                NamedRef( USE, SymHandle("y"), T, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("class SubSubClass *scp = new SubSubClass( *bp,y);") =>
+        [
+            < NamedRef( DEF, SymHandle("scp"), F, full)
+            , UnnamedRef( USE, StmtHandle("new SubSubClass( *bp,y)"), T, part) >
+        ] }
+    CALLSITES = { StmtHandle("class SubSubClass *scp = new SubSubClass( *bp,y);") =>
+        [
+            CallHandle("new SubSubClass( *bp,y)") => 
+                NamedRef( USE, SymHandle("method:SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("new SubSubClass( *bp,y)") =>
+        [
+            < 0, NamedRef( DEF, SymHandle("scp"), F, full) >
+            < 2, NamedRef( USE, SymHandle("y"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class A aclass;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("foo_ref1(x,b,s,sc);") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("b") => 
+                NamedRef( USE, SymHandle("b"), T, full)
+            MemRefHandle("s") => 
+                NamedRef( USE, SymHandle("s"), T, full)
+            MemRefHandle("sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("foo_ref1(x,b,s,sc);") =>
+        [
+            CallHandle("foo_ref1(x,b,s,sc)") => 
+                NamedRef( USE, SymHandle("foo_ref1"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("foo_ref1(x,b,s,sc)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("x"), T, full) >
+            < 1, NamedRef( USE, SymHandle("b"), T, full) >
+            < 2, NamedRef( USE, SymHandle("s"), T, full) >
+            < 3, NamedRef( USE, SymHandle("sc"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("foo_ref1((sc.myInt),b,s,sc);") =>
+        [
+            MemRefHandle("(sc.myInt)") => 
+                Deref( USE, NamedRef( USE, SymHandle("sc"), F, part), 1, T, part)
+            MemRefHandle("b") => 
+                NamedRef( USE, SymHandle("b"), T, full)
+            MemRefHandle("s") => 
+                NamedRef( USE, SymHandle("s"), T, full)
+            MemRefHandle("sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("foo_ref1((sc.myInt),b,s,sc);") =>
+        [
+            CallHandle("foo_ref1((sc.myInt),b,s,sc)") => 
+                NamedRef( USE, SymHandle("foo_ref1"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("foo_ref1((sc.myInt),b,s,sc)") =>
+        [
+            < 0, Deref( USE, NamedRef( USE, SymHandle("sc"), F, part), 1, T, part) >
+            < 1, NamedRef( USE, SymHandle("b"), T, full) >
+            < 2, NamedRef( USE, SymHandle("s"), T, full) >
+            < 3, NamedRef( USE, SymHandle("sc"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("foo_ref1(x,sc,sc,sc);") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+            MemRefHandle("sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+            MemRefHandle("sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("foo_ref1(x,sc,sc,sc);") =>
+        [
+            CallHandle("foo_ref1(x,sc,sc,sc)") => 
+                NamedRef( USE, SymHandle("foo_ref1"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("foo_ref1(x,sc,sc,sc)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("x"), T, full) >
+            < 1, NamedRef( USE, SymHandle("sc"), T, full) >
+            < 2, NamedRef( USE, SymHandle("sc"), T, full) >
+            < 3, NamedRef( USE, SymHandle("sc"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("foo_ref1((((class SubSubClass &)( *(scp -> next))).myInt),(s.myParent),s,sc);") =>
+        [
+            MemRefHandle("(((class SubSubClass &)( *(scp -> next))).myInt)") => 
+                Deref( USE, Deref( USE, Deref( USE, NamedRef( USE, SymHandle("scp"), F, full), 1, F, part), 1, F, part), 1, T, part)
+            MemRefHandle("(scp -> next)") => 
+                Deref( USE, NamedRef( USE, SymHandle("scp"), F, full), 1, F, part)
+            MemRefHandle("scp") => 
+                NamedRef( USE, SymHandle("scp"), F, full)
+            MemRefHandle("(s.myParent)") => 
+                Deref( USE, NamedRef( USE, SymHandle("s"), F, part), 1, T, part)
+            MemRefHandle("s") => 
+                NamedRef( USE, SymHandle("s"), T, full)
+            MemRefHandle("sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("foo_ref1((((class SubSubClass &)( *(scp -> next))).myInt),(s.myParent),s,sc);") =>
+        [
+            CallHandle("foo_ref1((((class SubSubClass &)( *(scp -> next))).myInt),(s.myParent),s,sc)") => 
+                NamedRef( USE, SymHandle("foo_ref1"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("foo_ref1((((class SubSubClass &)( *(scp -> next))).myInt),(s.myParent),s,sc)") =>
+        [
+            < 0, Deref( USE, Deref( USE, Deref( USE, NamedRef( USE, SymHandle("scp"), F, full), 1, F, part), 1, F, part), 1, T, part) >
+            < 1, Deref( USE, NamedRef( USE, SymHandle("s"), F, part), 1, T, part) >
+            < 2, NamedRef( USE, SymHandle("s"), T, full) >
+            < 3, NamedRef( USE, SymHandle("sc"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class Base &bref = foo_ref2(f,sc);") =>
+        [
+            MemRefHandle("bref&") => 
+                NamedRef( DEF, SymHandle("bref"), F, full)
+            MemRefHandle("bref&") => 
+                Deref( DEF, NamedRef( USE, SymHandle("bref"), F, full), 1, F, full)
+            MemRefHandle("foo_ref2(f,sc)") => 
+                NamedRef( USE, SymHandle("foo_ref2"), F, full)
+            MemRefHandle("f") => 
+                NamedRef( USE, SymHandle("f"), T, full)
+            MemRefHandle("sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("class Base &bref = foo_ref2(f,sc);") =>
+        [
+            < NamedRef( DEF, SymHandle("bref"), F, full)
+            , NamedRef( USE, SymHandle("foo_ref2"), F, full) >
+            < Deref( DEF, NamedRef( USE, SymHandle("bref"), F, full), 1, F, full)
+            , NamedRef( USE, SymHandle("foo_ref2"), F, full) >
+        ] }
+    CALLSITES = { StmtHandle("class Base &bref = foo_ref2(f,sc);") =>
+        [
+            CallHandle("foo_ref2(f,sc)") => 
+                NamedRef( USE, SymHandle("foo_ref2"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("foo_ref2(f,sc)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("f"), T, full) >
+            < 1, NamedRef( USE, SymHandle("sc"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("foo_ptr1(&x,&b,&s,&sc);") =>
+        [
+            MemRefHandle("&x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("&b") => 
+                NamedRef( USE, SymHandle("b"), T, full)
+            MemRefHandle("&s") => 
+                NamedRef( USE, SymHandle("s"), T, full)
+            MemRefHandle("&sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("foo_ptr1(&x,&b,&s,&sc);") =>
+        [
+            CallHandle("foo_ptr1(&x,&b,&s,&sc)") => 
+                NamedRef( USE, SymHandle("foo_ptr1"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("foo_ptr1(&x,&b,&s,&sc)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("x"), T, full) >
+            < 1, NamedRef( USE, SymHandle("b"), T, full) >
+            < 2, NamedRef( USE, SymHandle("s"), T, full) >
+            < 3, NamedRef( USE, SymHandle("sc"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("foo_ptr1(&sc.myInt,&b,&s,&sc);") =>
+        [
+            MemRefHandle("&sc.myInt") => 
+                NamedRef( USE, SymHandle("sc"), F, part)
+            MemRefHandle("&b") => 
+                NamedRef( USE, SymHandle("b"), T, full)
+            MemRefHandle("&s") => 
+                NamedRef( USE, SymHandle("s"), T, full)
+            MemRefHandle("&sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("foo_ptr1(&sc.myInt,&b,&s,&sc);") =>
+        [
+            CallHandle("foo_ptr1(&sc.myInt,&b,&s,&sc)") => 
+                NamedRef( USE, SymHandle("foo_ptr1"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("foo_ptr1(&sc.myInt,&b,&s,&sc)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("sc"), F, part) >
+            < 1, NamedRef( USE, SymHandle("b"), T, full) >
+            < 2, NamedRef( USE, SymHandle("s"), T, full) >
+            < 3, NamedRef( USE, SymHandle("sc"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("foo_ptr1(&x,(((&sc))),((&sc)),&sc);") =>
+        [
+            MemRefHandle("&x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("(&sc)") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+            MemRefHandle("(&sc)") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+            MemRefHandle("&sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("foo_ptr1(&x,(((&sc))),((&sc)),&sc);") =>
+        [
+            CallHandle("foo_ptr1(&x,(((&sc))),((&sc)),&sc)") => 
+                NamedRef( USE, SymHandle("foo_ptr1"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("foo_ptr1(&x,(((&sc))),((&sc)),&sc)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("x"), T, full) >
+            < 1, NamedRef( USE, SymHandle("sc"), T, full) >
+            < 2, NamedRef( USE, SymHandle("sc"), T, full) >
+            < 3, NamedRef( USE, SymHandle("sc"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("foo_ptr1(&x,((( *(( *(aclass.bptr)).cptr)).baseptr)[3]),sp,scp);") =>
+        [
+            MemRefHandle("&x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("((( *(( *(aclass.bptr)).cptr)).baseptr)[3])") => 
+                Deref( USE, Deref( USE, NamedRef( USE, SymHandle("aclass"), F, part), 1, F, part), 1, F, part)
+            MemRefHandle("(( *(aclass.bptr)).cptr)") => 
+                Deref( USE, NamedRef( USE, SymHandle("aclass"), F, part), 1, F, part)
+            MemRefHandle("(aclass.bptr)") => 
+                NamedRef( USE, SymHandle("aclass"), F, part)
+            MemRefHandle("sp") => 
+                NamedRef( USE, SymHandle("sp"), F, full)
+            MemRefHandle("scp") => 
+                NamedRef( USE, SymHandle("scp"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("foo_ptr1(&x,((( *(( *(aclass.bptr)).cptr)).baseptr)[3]),sp,scp);") =>
+        [
+            CallHandle("foo_ptr1(&x,((( *(( *(aclass.bptr)).cptr)).baseptr)[3]),sp,scp)") => 
+                NamedRef( USE, SymHandle("foo_ptr1"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("foo_ptr1(&x,((( *(( *(aclass.bptr)).cptr)).baseptr)[3]),sp,scp)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("x"), T, full) >
+            < 1, Deref( USE, Deref( USE, NamedRef( USE, SymHandle("aclass"), F, part), 1, F, part), 1, F, part) >
+            < 2, NamedRef( USE, SymHandle("sp"), F, full) >
+            < 3, NamedRef( USE, SymHandle("scp"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("char hi[] = "hello";") =>
+        [
+            MemRefHandle("hi") => 
+                NamedRef( DEF, SymHandle("hi"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("class Base *bptr =(foo_ptr2(hi,&sc));") =>
+        [
+            MemRefHandle("bptr") => 
+                NamedRef( DEF, SymHandle("bptr"), F, full)
+            MemRefHandle("(foo_ptr2(hi,&sc))") => 
+                NamedRef( USE, SymHandle("foo_ptr2"), F, full)
+            MemRefHandle("hi") => 
+                NamedRef( USE, SymHandle("hi"), F, full)
+            MemRefHandle("&sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("class Base *bptr =(foo_ptr2(hi,&sc));") =>
+        [
+            < NamedRef( DEF, SymHandle("bptr"), F, full)
+            , NamedRef( USE, SymHandle("foo_ptr2"), F, full) >
+        ] }
+    CALLSITES = { StmtHandle("class Base *bptr =(foo_ptr2(hi,&sc));") =>
+        [
+            CallHandle("(foo_ptr2(hi,&sc))") => 
+                NamedRef( USE, SymHandle("foo_ptr2"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("(foo_ptr2(hi,&sc))") =>
+        [
+            < 1, NamedRef( USE, SymHandle("sc"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("ellipsis_intptrs(3,&x,&y,&z);") =>
+        [
+            MemRefHandle("&x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("&y") => 
+                NamedRef( USE, SymHandle("y"), T, full)
+            MemRefHandle("&z") => 
+                NamedRef( USE, SymHandle("z"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("ellipsis_intptrs(3,&x,&y,&z);") =>
+        [
+            CallHandle("ellipsis_intptrs(3,&x,&y,&z)") => 
+                NamedRef( USE, SymHandle("ellipsis_intptrs"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("ellipsis_intptrs(3,&x,&y,&z)") =>
+        [
+            < 2, NamedRef( USE, SymHandle("y"), T, full) >
+            < 3, NamedRef( USE, SymHandle("z"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("ellipsis_intptrs(5,&x,&y,&z,&z,&scp -> myInt);") =>
+        [
+            MemRefHandle("&x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("&y") => 
+                NamedRef( USE, SymHandle("y"), T, full)
+            MemRefHandle("&z") => 
+                NamedRef( USE, SymHandle("z"), T, full)
+            MemRefHandle("&z") => 
+                NamedRef( USE, SymHandle("z"), T, full)
+            MemRefHandle("&scp -> myInt") => 
+                Deref( USE, NamedRef( USE, SymHandle("scp"), F, full), 1, F, part)
+            MemRefHandle("scp") => 
+                NamedRef( USE, SymHandle("scp"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("ellipsis_intptrs(5,&x,&y,&z,&z,&scp -> myInt);") =>
+        [
+            CallHandle("ellipsis_intptrs(5,&x,&y,&z,&z,&scp -> myInt)") => 
+                NamedRef( USE, SymHandle("ellipsis_intptrs"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("ellipsis_intptrs(5,&x,&y,&z,&z,&scp -> myInt)") =>
+        [
+            < 2, NamedRef( USE, SymHandle("y"), T, full) >
+            < 3, NamedRef( USE, SymHandle("z"), T, full) >
+            < 4, NamedRef( USE, SymHandle("z"), T, full) >
+            < 5, Deref( USE, NamedRef( USE, SymHandle("scp"), F, full), 1, F, part) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("ellipsis_baseptrs(3,bp,sp,scp);") =>
+        [
+            MemRefHandle("bp") => 
+                NamedRef( USE, SymHandle("bp"), F, full)
+            MemRefHandle("sp") => 
+                NamedRef( USE, SymHandle("sp"), F, full)
+            MemRefHandle("scp") => 
+                NamedRef( USE, SymHandle("scp"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("ellipsis_baseptrs(3,bp,sp,scp);") =>
+        [
+            CallHandle("ellipsis_baseptrs(3,bp,sp,scp)") => 
+                NamedRef( USE, SymHandle("ellipsis_baseptrs"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("ellipsis_baseptrs(3,bp,sp,scp)") =>
+        [
+            < 2, NamedRef( USE, SymHandle("sp"), F, full) >
+            < 3, NamedRef( USE, SymHandle("scp"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("b.next =(((&sc)));") =>
+        [
+            MemRefHandle("b.next") => 
+                NamedRef( DEF, SymHandle("b"), F, part)
+            MemRefHandle("(&sc)") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("b.next =(((&sc)));") =>
+        [
+            < NamedRef( DEF, SymHandle("b"), F, part)
+            , NamedRef( USE, SymHandle("sc"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("ellipsis_baseptrs(4,&b,&s,(b.next),&sc);") =>
+        [
+            MemRefHandle("&b") => 
+                NamedRef( USE, SymHandle("b"), T, full)
+            MemRefHandle("&s") => 
+                NamedRef( USE, SymHandle("s"), T, full)
+            MemRefHandle("(b.next)") => 
+                NamedRef( USE, SymHandle("b"), F, part)
+            MemRefHandle("&sc") => 
+                NamedRef( USE, SymHandle("sc"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("ellipsis_baseptrs(4,&b,&s,(b.next),&sc);") =>
+        [
+            CallHandle("ellipsis_baseptrs(4,&b,&s,(b.next),&sc)") => 
+                NamedRef( USE, SymHandle("ellipsis_baseptrs"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("ellipsis_baseptrs(4,&b,&s,(b.next),&sc)") =>
+        [
+            < 2, NamedRef( USE, SymHandle("s"), T, full) >
+            < 3, NamedRef( USE, SymHandle("b"), F, part) >
+            < 4, NamedRef( USE, SymHandle("sc"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("ellipsis_baserefs(1, *(b.next));") =>
+        [
+            MemRefHandle("*(b.next)") => 
+                Deref( USE, NamedRef( USE, SymHandle("b"), F, part), 1, F, part)
+            MemRefHandle("(b.next)") => 
+                NamedRef( USE, SymHandle("b"), F, part)
+        ] }
+    CALLSITES = { StmtHandle("ellipsis_baserefs(1, *(b.next));") =>
+        [
+            CallHandle("ellipsis_baserefs(1, *(b.next))") => 
+                NamedRef( USE, SymHandle("ellipsis_baserefs"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("x = 7;") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( DEF, SymHandle("x"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("int &q = x;") =>
+        [
+            MemRefHandle("q&") => 
+                NamedRef( DEF, SymHandle("q"), F, full)
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("int &q = x;") =>
+        [
+            < NamedRef( DEF, SymHandle("q"), F, full)
+            , NamedRef( USE, SymHandle("x"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("ellipsis_int(1,q);") =>
+        [
+            MemRefHandle("q") => 
+                NamedRef( USE, SymHandle("q"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("ellipsis_int(1,q);") =>
+        [
+            CallHandle("ellipsis_int(1,q)") => 
+                NamedRef( USE, SymHandle("ellipsis_int"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("char bye[][10] = {("hi"),("bye"),("adios")};") =>
+        [
+            MemRefHandle("bye") => 
+                NamedRef( DEF, SymHandle("bye"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("char *cptr = bar_arrays(bye);") =>
+        [
+            MemRefHandle("cptr") => 
+                NamedRef( DEF, SymHandle("cptr"), F, full)
+            MemRefHandle("bar_arrays(bye)") => 
+                NamedRef( USE, SymHandle("bar_arrays"), F, full)
+            MemRefHandle("bye") => 
+                NamedRef( USE, SymHandle("bye"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("char *cptr = bar_arrays(bye);") =>
+        [
+            < NamedRef( DEF, SymHandle("cptr"), F, full)
+            , NamedRef( USE, SymHandle("bar_arrays"), F, full) >
+        ] }
+    CALLSITES = { StmtHandle("char *cptr = bar_arrays(bye);") =>
+        [
+            CallHandle("bar_arrays(bye)") => 
+                NamedRef( USE, SymHandle("bar_arrays"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("int a[5] = {(1),(2),(3),(4),(5)};") =>
+        [
+            MemRefHandle("a") => 
+                NamedRef( DEF, SymHandle("a"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *iptr = bar_arrays2(a);") =>
+        [
+            MemRefHandle("iptr") => 
+                NamedRef( DEF, SymHandle("iptr"), F, full)
+            MemRefHandle("bar_arrays2(a)") => 
+                NamedRef( USE, SymHandle("bar_arrays2"), F, full)
+            MemRefHandle("a") => 
+                NamedRef( USE, SymHandle("a"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("int *iptr = bar_arrays2(a);") =>
+        [
+            < NamedRef( DEF, SymHandle("iptr"), F, full)
+            , NamedRef( USE, SymHandle("bar_arrays2"), F, full) >
+        ] }
+    CALLSITES = { StmtHandle("int *iptr = bar_arrays2(a);") =>
+        [
+            CallHandle("bar_arrays2(a)") => 
+                NamedRef( USE, SymHandle("bar_arrays2"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("int(*pt2Function)(float , char , char ) =(0);") =>
+        [
+            MemRefHandle("pt2Function") => 
+                NamedRef( DEF, SymHandle("pt2Function"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("PassPtr(DoIt);") =>
+        [
+            MemRefHandle("DoIt") => 
+                NamedRef( USE, SymHandle("DoIt"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("PassPtr(DoIt);") =>
+        [
+            CallHandle("PassPtr(DoIt)") => 
+                NamedRef( USE, SymHandle("PassPtr"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("PassPtr(DoIt)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("DoIt"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("pt2Function = DoIt;") =>
+        [
+            MemRefHandle("pt2Function") => 
+                NamedRef( DEF, SymHandle("pt2Function"), F, full)
+            MemRefHandle("DoIt") => 
+                NamedRef( USE, SymHandle("DoIt"), T, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("pt2Function = DoIt;") =>
+        [
+            < NamedRef( DEF, SymHandle("pt2Function"), F, full)
+            , NamedRef( USE, SymHandle("DoIt"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("pt2Function = DoMore;") =>
+        [
+            MemRefHandle("pt2Function") => 
+                NamedRef( DEF, SymHandle("pt2Function"), F, full)
+            MemRefHandle("DoMore") => 
+                NamedRef( USE, SymHandle("DoMore"), T, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("pt2Function = DoMore;") =>
+        [
+            < NamedRef( DEF, SymHandle("pt2Function"), F, full)
+            , NamedRef( USE, SymHandle("DoMore"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("PassPtr(pt2Function);") =>
+        [
+            MemRefHandle("pt2Function") => 
+                NamedRef( USE, SymHandle("pt2Function"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("PassPtr(pt2Function);") =>
+        [
+            CallHandle("PassPtr(pt2Function)") => 
+                NamedRef( USE, SymHandle("PassPtr"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("PassPtr(pt2Function)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("pt2Function"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("method:SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("foo_ref1"), local > }
+    LOCATION = { < SymHandle("foo_ref2"), local > }
+    LOCATION = { < SymHandle("foo_ptr1"), local > }
+    LOCATION = { < SymHandle("foo_ptr2"), local > }
+    LOCATION = { < SymHandle("ellipsis_intptrs"), local > }
+    LOCATION = { < SymHandle("ellipsis_baseptrs"), local > }
+    LOCATION = { < SymHandle("ellipsis_baserefs"), local > }
+    LOCATION = { < SymHandle("ellipsis_int"), local > }
+    LOCATION = { < SymHandle("DoIt"), local > }
+    LOCATION = { < SymHandle("DoMore"), local > }
+    LOCATION = { < SymHandle("bar_arrays"), local > }
+    LOCATION = { < SymHandle("bar_arrays2"), local > }
+    LOCATION = { < SymHandle("PassPtr"), local > }
+    LOCATION = { < SymHandle("main"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("y"), local > }
+    LOCATION = { < SymHandle("z"), local > }
+    LOCATION = { < SymHandle("f"), local > }
+    LOCATION = { < SymHandle("b"), local > }
+    LOCATION = { < SymHandle("s"), local > }
+    LOCATION = { < SymHandle("sc"), local > }
+    LOCATION = { < SymHandle("bp"), local > }
+    LOCATION = { < SymHandle("sp"), local > }
+    LOCATION = { < SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____Fb_v_Gb__Fe_"), local > }
+    LOCATION = { < SymHandle("scp"), local > }
+    LOCATION = { < SymHandle("aclass"), local > }
+    LOCATION = { < SymHandle("bref"), local > }
+    LOCATION = { < SymHandle("hi"), local > }
+    LOCATION = { < SymHandle("bptr"), local > }
+    LOCATION = { < SymHandle("q"), local > }
+    LOCATION = { < SymHandle("bye"), local > }
+    LOCATION = { < SymHandle("cptr"), local > }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("iptr"), local > }
+    LOCATION = { < SymHandle("pt2Function"), local > }

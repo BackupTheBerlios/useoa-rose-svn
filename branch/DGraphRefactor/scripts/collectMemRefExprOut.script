@@ -1,0 +1,16 @@
+# pass -edg:w to turn off front-end warnings
+# pass -c so ROSE doesn't give us spurious output
+
+echo "Testing TestCases/MemRefExprTests/t1.c\n\tTestResults/MemRefExprTests/t1.c checked by ???"
+cat TestResults/MemRefExpr/t1.c.out
+echo "Testing TestCases/MemRefExprTests/t2.c\n\tTestResults/MemRefExprTests/t2.c checked by ???"
+cat TestResults/MemRefExpr/t2.c.out
+echo "Testing TestCases/MemRefExprTests/t3.c\n\tTestResults/MemRefExprTests/t3.c checked by ???"
+cat TestResults/MemRefExpr/t3.c.out
+echo "Testing TestCases/MemRefExprTests/t4.c\n\tTestResults/MemRefExprTests/t4.c checked by ???"
+cat TestResults/MemRefExpr/t4.c.out
+echo "Testing TestCases/MemRefExprTests/t5.c\n\tTestResults/MemRefExprTests/t5.c checked by ???"
+cat TestResults/MemRefExpr/t5.c.out
+echo "Testing TestCases/MemRefExprTests/MemRefExprTestInput.C\n\tTestResults/MemRefExprTests/MemRefExprTestInput.C checked by ???"
+cat TestResults/MemRefExpr/MemRefExprTestInput.C.out
+
