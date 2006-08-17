@@ -3140,157 +3140,51 @@ SageIRInterface::getSizeInBytes(OA::SymHandle h)
 //
 //-------------------------------------------------------------------------  
 
-// Get IRCallsiteParamIterator for a callsite. 
-// Iterator visits actual parameters in called order. 
+/** \brief  Create an IRCallsiteParamIterator for the callsite.
+ *  \param  h  A CallHandle representing a function or method,
+ *             including destructor or constructor, invocation.
+ *  \returns  An IRCallsiteParamIterator that iterates
+ *            over the actuals in called order.
+ *
+ *  NB:  The first actual is the receiver for non-static
+ *       method invocations, including constructors and
+ *       destructors.  
+ *
+ */
 OA::OA_ptr<OA::IRCallsiteParamIterator> 
 SageIRInterface::getCallsiteParams(OA::CallHandle h)
 {
-  SgNode *node = getNodePtr(h);
-  ROSE_ASSERT(node != NULL);
+    SgNode *node = getNodePtr(h);
+    ROSE_ASSERT(node != NULL);
 
-  verifyCallHandleType(h);
+    verifyCallHandleType(h);
 
-  SgExprListExp* exprListExp = NULL;
+    // Get the expressions passed as actual arguments 
+    // to the function or method invocation.
+    std::list<SgNode *> actuals;
+    getActuals(node, actuals); 
 
-  // Create a list to hold the handles to the actual arguments.
-  OA::OA_ptr<std::list<OA::ExprHandle> > exprHandleList;
-  exprHandleList = new std::list<OA::ExprHandle>;
+    // Create a list to hold the handles to the actual arguments.
+    OA::OA_ptr<std::list<OA::ExprHandle> > exprHandleList;
+    exprHandleList = new std::list<OA::ExprHandle>;
 
-  // A callsite is represented in Sage as a SgFunctionCallExp,
-  // a SgConstructorInitializer, or a SgDeleteExp.
+    // Iterate over the actual arguments as represented by
+    // SgExpressions.  Convert them to OA::ExprHandle and put
+    // them in the list of handles.
+    for(std::list<SgNode *>::iterator actualIt = actuals.begin(); 
+        actualIt != actuals.end(); ++actualIt) { 
 
-    
-  ROSE_ABORT();
-  // still need some work here.  
-  // look at Michelle's concern.
-  // also, should never return a NULL actual.
-  // for constructor initializer needing lhs, the new'ed thing
-  // can be left-hand side.
+        SgNode *actual = *actualIt;
+        ROSE_ASSERT(actual != NULL);
 
-  switch(node->variantT()) {
-    
-  case V_SgFunctionCallExp:
-    {
-      SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
-      ROSE_ASSERT(functionCallExp != NULL);
-
-      // Get the list of actual arguments from the function call.
-      exprListExp = functionCallExp->get_args();  
-      ROSE_ASSERT (exprListExp != NULL);  
-   
-      // If this is a method call, fold the object upon which the
-      // method is invoked into the argument list as the first argument.
-      // OpenAnalysis doesn't know about methods and wouldn't be otherwise
-      // able to account, e.g., for MODs and USEs of the 'this' object.
-      SgExpression *function = functionCallExp->get_function();
-      ROSE_ASSERT(function != NULL);
-      
-      if ( isSgDotExp(function) || isSgArrowExp(function) ) {
-        SgBinaryOp *dotOrArrow = isSgBinaryOp(function);
-        ROSE_ASSERT(dotOrArrow != NULL);
-        
-        SgNode *lhs = dotOrArrow->get_lhs_operand();
-        ROSE_ASSERT(lhs != NULL);
-        
-        SgDotExp *dotExp = isSgDotExp(function);
-        if ( dotExp != NULL ) {
-          
-          SgPointerDerefExp *pointerDerefExp = isSgPointerDerefExp(lhs); 
-
-          if ( pointerDerefExp != NULL ) {
-            
-            // ??? is this comment still true?
-            // The function is a dot expression whose lhs is
-            // a pointer dereference.  This is equivalent
-            // to an arrow expression.  Do not return the
-            // SgPointerDerefExp as a MemRefHandle since
-            // getMemRefExprIterator does not return a MemRefExpr
-            // for such a MemRefHandle, assuming instead that
-            // MemRefExprs are associated with the SgDotExp.
-            // Since this is equivalent to an arrow expression,
-            // we really want to return the lhs of the arrow--
-            // i.e., the operand of the SgPointerDerefExp.
-            lhs = pointerDerefExp->get_operand_i();
-            
-          }
-          
-        }
-        
-        ROSE_ASSERT(0); // not sure this is quite right MMS 8/10/06
-        //lhs = lookThroughCastExpAndAssignInitializer(lhs);
-        ROSE_ASSERT( isMemRefNode(lhs) );
-        OA::ExprHandle exprHandle = getNodeNumber(lhs);
-        exprHandleList->push_back(exprHandle);
-
-      }
-
-      break;
+        OA::MemRefHandle actual_memref 
+            = findTopMemRefHandle(actual);
+        exprHandleList->push_back(actual_memref);
     }
 
-  case V_SgConstructorInitializer:
-    {
-      SgConstructorInitializer *ctorInitializer =
-        isSgConstructorInitializer(node);
-      ROSE_ASSERT(ctorInitializer != NULL);
-
-      exprListExp = ctorInitializer->get_args();
-      ROSE_ASSERT (exprListExp != NULL);  
-   
-      // As above, this is a method, so fold the object upon which the
-      // method is invoked into the argument list as the first argument.
-      // This may seem a little strange since we may not consider
-      // a constructor to be invoked on an object.
-      SgNode *lhs = getConstructorInitializerLhs(ctorInitializer);
-      if ( lhs != NULL ) {
-        lhs = lookThroughCastExpAndAssignInitializer(lhs);
-      }
-
-      // if parent is SgNewExp, return that.
-      // getTopMemRefHandle from SgNewExp.
-
-      // NB:  lhs could be NULL here, e.g., 'return (new B)'
-      OA::ExprHandle exprHandle = getNodeNumber(lhs);
-      exprHandleList->push_back(exprHandle);
-
-      break;
-    }
-  case V_SgDeleteExp:
-      {
-          ROSE_ABORT();
-          break;
-      }
-  default:
-    {
-      cerr << "Expected a callHandle to be a SgFunctionCallExp or " << endl;
-      cerr << "a SgConstructorInitializer" << node->sage_class_name() << endl;
-      ROSE_ABORT();
-      break;
-    }
-  }
-
-  ROSE_ASSERT(exprListExp != NULL);
-
-  SgExpressionPtrList & actualArgs =  
-    exprListExp->get_expressions();  
-
-  // Iterate over the actual arguments as represented by
-  // SgExpressions.  Convert them to OA::ExprHandle and put
-  // them in the list of handles.
-  for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
-      actualIt != actualArgs.end(); ++actualIt) { 
- 
-    SgExpression *actualArg = *actualIt;
-    ROSE_ASSERT(actualArg != NULL);
-
-    OA::ExprHandle exprHandle = getNodeNumber(actualArg);
-    exprHandleList->push_back(exprHandle);
-
-  }
-
-  OA::OA_ptr<OA::IRCallsiteParamIterator> retIter;
-  retIter = new SageIRCallsiteParamIterator(exprHandleList);
-  return retIter;
-
+    OA::OA_ptr<OA::IRCallsiteParamIterator> retIter;
+    retIter = new SageIRCallsiteParamIterator(exprHandleList);
+    return retIter;
 }
 
 //! get iterator over formal parameters in a function declaration 
@@ -4055,51 +3949,6 @@ OA::SymHandle SageIRInterface::getThisExpSymHandle(SgNode *node)
   OA::SymHandle sym;
 
   return sym;
-}
-
-// Return the lhs of a constructor initializer.
-SgNode *SageIRInterface::getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer)
-{
-  if ( ctorInitializer == NULL ) return NULL;
-  SgNode *lhs = NULL;
-
-  // Recurse up the parents of ctorInitializer.  Return the lhs
-  // of an assignment or the SgInitializedName of a
-  // SgAssignInitializer.  These handle a new expression.
-  // If the parent of the constructor initializer is a 
-  // SgInitializedName, return that.  This handles a constructor
-  // invoked through a stack declaration.  Stop the recursion and return
-  // NULL if we reach a SgStatement without first finding
-  // any of these cases.
-
-  SgNode *parent = ctorInitializer->get_parent();
-
-  if ( isSgInitializedName(parent) )
-    return parent;
-  
-  bool expectInit = false;
-  
-  while ( parent != NULL ) {
-    
-    if ( isSgStatement(parent) ) break;
-    
-    if ( isSgAssignInitializer(parent) ) {
-      expectInit = true;
-    } else if ( ( expectInit ) && ( isSgInitializedName(parent) ) ) {
-      lhs = parent;
-      break;
-    } else {
-      SgAssignOp *assignOp = isSgAssignOp(parent);
-      if ( assignOp ) {
-        lhs = assignOp->get_lhs_operand();
-        break;
-
-      }
-    }
-    
-    parent = parent->get_parent();
-  }
-  return lhs;
 }
 
 /** \brief Strip off any leading SgCastExps or SgAssignInitializers

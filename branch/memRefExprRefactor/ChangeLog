@@ -1938,3 +1938,19 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
      CallHandles, should invoke one of the verify routines
      and should perform conversions only through the getCallHandle
      routine.
+
+8/17/06     UseOA-Rose svn branch-memRefExprRefactor r158   Brian White	
+    - Completed SageIRInterface::getCallsiteParams by implementing
+      getActuals(SgNode*) in common.C.  
+      NB:  getCallsiteParams returns an expression for the
+      receiver, which might be unnamed (e.g., new Foo), as the
+      first actual.
+    - Added the invocation of createParamBindPtrAssignPairs to
+      the SgFunctionCallExp, SgConstructorInitialiazer, and
+      SgDeleteExp cases of findAllMemRefsAndPtrAssigns.
+    - Updated SageIRInterface::createParamBindPtrAssignPairs.
+      That logic is essentially unchanged from the trunk.
+    - Changed makeParamPtr to take a MRE rather than a MemRefHandle.
+      This is necessary for the handling of the receiver, wherein
+      we may take the address of the MRE returned from the
+      relevant MemRefHandle.

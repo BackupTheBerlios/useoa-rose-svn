@@ -788,7 +788,7 @@ public:
 
   void makeParamPtrPair(OA::CallHandle call,
                         int formal,
-                        OA::MemRefHandle actual);
+                        OA::OA_ptr<OA::MemRefExpr> actual);
 
   std::string findFieldName(OA::MemRefHandle memref);
 
@@ -851,9 +851,6 @@ public:
   //! a SgClassSymbol.
   OA::SymHandle getThisExpSymHandle(SgNode *node);
 
-
-  //! Return the lhs of a constructor initializer.
-  SgNode *getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer);    
 
   // Strip off any leading SgCastExps/SgAssignInitializers in 
   // the tree root at node.

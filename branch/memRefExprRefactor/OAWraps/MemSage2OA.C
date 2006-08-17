@@ -136,223 +136,153 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
         getCallsiteParams(call);
     actualsIter->reset();
 
-    // NB:  Working here.
-    ROSE_ASSERT(0);
-#if 0
     int paramNum = 0;
+
+    // Handle the implicit this parameter outside of the loop.
+    // Note that the implicit actual is included in actualsIter,
+    // though the formal is not represented in typePtrList.
 
     // If this is a method, constructor, or destructor invocation,
     // we need to fold the receiver in as the 1st actual argument.
     // This folding is handled by getCallsiteParams; we need
     // only _not_ consume a formal type.
     if ( isCallAMethodInvocation ) {
-    
+
         ROSE_ASSERT(actualsIter->isValid());
+        
+        OA::ExprHandle actualExpr = actualsIter->current(); 
+
+        // I need a MemRefHandle.  I could cast actualExpr
+        // to a SgNode and then ask for its topMemRefHandle.
+        // Fine.  I'll do that.
+        SgNode *actualNode = getNodePtr(actualExpr);
+
+        OA::MemRefHandle actualMemRefHandle 
+            = findTopMemRefHandle(actualNode);
+      
+        OA::OA_ptr<OA::MemRefExprIterator> actualMreIterPtr 
+            = getMemRefExprIterator(actualMemRefHandle);
+      
+        // for each mem-ref-expr associated with this memref
+        for (actualMreIterPtr->reset(); actualMreIterPtr->isValid(); 
+             (*actualMreIterPtr)++) {
+
+            OA::OA_ptr<OA::MemRefExpr> curr = actualMreIterPtr->current();
+            OA::OA_ptr<OA::MemRefExpr> actualMre = curr;
+
+            if ( isCallADotExp == true ) {
+                // We are returning a MemRefExpr representing the object b
+                // upon which a method is invoked in the expression b.foo()
+                // (i.e., a dot expression).  This pair is intended to
+                // represent the implicit binding between the 'this' pointer
+                // and this object.  Since 'this' is a pointer, we should
+                // bind it to the address of b.
+
+                actualMre = curr->clone();
+                actualMre->setAddressTaken(true);
+            }
+	  
+            makeParamPtrPair(call, paramNum, actualMre);
+        }	
+    
+        // Consume the actual corresponding to the implicit receiver
+        // and update the parameter number.
+        (*actualsIter)++; 
+        paramNum++;
+    }
+
+    // We model parameters passed to a vararg/... as a single formal
+    // parameter.  Thus:
+    // 
+    // void ellipsis_intptrs(int x, ...) 
+    // { 
+    // } 
+    //
+    // has only two formals:  x (0th formal) and ... (1st formal).
+    //
+    // Therefore, the param pairs for:
+    //
+    // ellipsis_intptrs(3, &x, &y, &z);
+    //
+    // are (just for the pointers):
+    // 
+    // < 1, NamedRef( USE, SymHandle("x"), T, full) >
+    // < 1, NamedRef( USE, SymHandle("y"), T, full) >
+    // < 1, NamedRef( USE, SymHandle("z"), T, full) >
+    //
+    // In particular, notice that the param num is 1 for each of these.
+    bool incrementParamNum = true;
+
+    // Simultaneously iterate over both formals and actuals.
+    // If the formal is a reference parameter (i.e., 
+    // a pointer or a reference) store it in the iterator's list.
+    SgTypePtrList::iterator formalIt = typePtrList.begin();
+    for ( ; actualsIter->isValid(); (*actualsIter)++ ) { 
+        bool treatAsPointerParam = false;
 
         OA::ExprHandle actualExpr = actualsIter->current(); 
-        SgNode *actualNode = mIR->getNodePtr(actualExpr);
-        // actualExpr could be NULL if expression was 'return (new B)'--
-        // i.e., no lhs.
-        //    ROSE_ASSERT(actualNode != NULL);
-    
-    // We fold the object upon which a method is invoked into
-    // the argument list (as the first actual) of a method
-    // invocation.  If this is the first arg of a method
-    // invocation we need special processing for the 'this'
-    // expression.
-    
-    OA::MemRefHandle actualMemRefHandle = (OA::MemRefHandle)0;
-    
-    bool isArrowExp = false;
-    if ( actualNode != NULL ) {
-      actualNode = mIR->lookThroughCastExpAndAssignInitializer(actualNode);
-      if ( mIR->isMemRefNode(actualNode) )
-	actualMemRefHandle = mIR->getNodeNumber(actualNode);
-    }
+        SgNode *actualNode = getNodePtr(actualExpr);
+        ROSE_ASSERT(actualNode != NULL);
 
-    if ( actualMemRefHandle == (OA::MemRefHandle)0 ) {
+        SgType *type = NULL;
+        // In the presence of varargs, we may have fewer
+        // formals than actuals.
+        if ( formalIt != typePtrList.end() ) {
+            type = *formalIt;
+        }
+
+        // In the presence of varags, get the type from the actual.
+        if ( ( type == NULL ) || ( isSgTypeEllipse(type) ) ) {
+            SgExpression *actual = isSgExpression(actualNode);
+            ROSE_ASSERT(actual != NULL);
+            type = actual->get_type();
+            // Do not increment the parameter number since
+            // the rest of the args are varargs.
+            incrementParamNum = false;
+        }
+        ROSE_ASSERT(type != NULL);
+    
+        if ( isSgReferenceType(type) || isSgPointerType(type) ) {
+            treatAsPointerParam = true;
+        }
+
+        if ( treatAsPointerParam ) {
+
+            // As above, take the long way to convert an ExprHandle to
+            // a MemRefHandle.       
+            OA::MemRefHandle actualMemRefHandle 
+                = findTopMemRefHandle(actualNode);
+
+            // Notice that actualMemRefHandle may be NULL/0.
+            // For example, consider that printf's first formal is
+            // a const char *.  There is no MemRefHandle here (is there?)
+
+            OA::OA_ptr<OA::MemRefExprIterator> actualMreIterPtr 
+                = getMemRefExprIterator(actualMemRefHandle);
       
-      // This isn't true.  Consider that printf's first formal is
-      // a const char *.  We may pass it an actual string, which
-      // is not a MemRefNode.
-      
-    } else {
-      
-      OA::OA_ptr<OA::MemRefExprIterator> actualMreIterPtr 
-	= mIR->getMemRefExprIterator(actualMemRefHandle);
-      
-      // for each mem-ref-expr associated with this memref
-      for (actualMreIterPtr->reset(); actualMreIterPtr->isValid(); (*actualMreIterPtr)++) {
-	
-	OA::OA_ptr<OA::MemRefExpr> actualMre;
-	
-	if ( ( handleThisExp == true ) && ( isCallADotExp == true ) ) {
-	  
-	  // We are returning a MemRefExpr representing the object b
-	  // upon which a method is invoked in the expression b.foo()
-	  // (i.e., a dot expression).  This pair is intended to
-	  // represent the implicit binding between the 'this' pointer
-	  // and this object.  Since 'this' is a pointer, we should
-	  // bind it to the address of b.
-	  
-	  OA::OA_ptr<OA::MemRefExpr> curr = actualMreIterPtr->current();
-	  actualMre = curr->clone();
-	  actualMre->setAddressTaken(true);
-	  
-	} else { 
-	  
-	  actualMre = actualMreIterPtr->current();
-	  
-	}
-	
-	makeParamPtrPair(call, paramNum, actualMre);
-	
-      }
-      
-    }
-    
-    (*actualsIter)++; 
-    paramNum++;
+            // for each mem-ref-expr associated with this memref
+            for (actualMreIterPtr->reset(); actualMreIterPtr->isValid(); 
+                 (*actualMreIterPtr)++) {
 
+                OA::OA_ptr<OA::MemRefExpr> actualMre = 
+                    actualMreIterPtr->current();
 
+                makeParamPtrPair(call, paramNum, actualMre);
+            }
+        }
 
-    }
-
-  
-
-  if ( ( paramNum == 0 ) && ( isCallAMethodInvocation ) ) {
-
-    bool handleThisExp = true;
-
-
-  }
-
-  // Handle the implicit this parameter outside of the loop.
-  // Note that the implicit actual is included in actualsIter,
-  // though the formal is not represented in typePtrList.
-
-  // We model parameters passed to a vararg/... as a single formal
-  // parameter.  Thus:
-  // 
-  // void ellipsis_intptrs(int x, ...) 
-  // { 
-  // } 
-  //
-  // has only two formals:  x (0th formal) and ... (1st formal).
-  //
-  // Therefore, the param pairs for:
-  //
-  // ellipsis_intptrs(3, &x, &y, &z);
-  //
-  // are (just for the pointers):
-  // 
-  // < 1, NamedRef( USE, SymHandle("x"), T, full) >
-  // < 1, NamedRef( USE, SymHandle("y"), T, full) >
-  // < 1, NamedRef( USE, SymHandle("z"), T, full) >
-  //
-  // In particular, notice that the param num is 1 for each of these.
-  bool incrementParamNum = true;
-
-  // Simultaneously iterate over both formals and actuals.
-  // If the formal is a reference parameter (i.e., 
-  // a pointer or a reference) store it in the iterator's list.
-  SgTypePtrList::iterator formalIt = typePtrList.begin();
-  for ( ; actualsIter->isValid(); (*actualsIter)++ ) { 
-    
-    bool handleThisExp = false;
-    bool treatAsPointerParam = false;
-
-    OA::ExprHandle actualExpr = actualsIter->current(); 
-    SgNode *actualNode = mIR->getNodePtr(actualExpr);
-    ROSE_ASSERT(actualNode != NULL);
-
-    SgType *type = NULL;
-    // In the presence of varargs, we may have fewer
-    // formals than actuals.
-    if ( formalIt != typePtrList.end() ) {
-      type = *formalIt;
-    }
-    // In the presence of varags, get the type from the
-    // actual.
-    if ( ( type == NULL ) || ( isSgTypeEllipse(type) ) ) {
-      SgExpression *actual = isSgExpression(actualNode);
-      ROSE_ASSERT(actual != NULL);
-      type = actual->get_type();
-      incrementParamNum = false;
-    }
-    ROSE_ASSERT(type != NULL);
-    
-    // BW 7/11/06  This should not be here!  We have already
-    // consulted the type of the formals above.  Including
-    // this conditional here would cause us to get the
-    // wrong type for the first vararg-- in that case, the
-    // formal is not NULL (it corresponds to ...), but
-    // its type is not a reference or a pointer.  We
-    // should have instead taken the type from the actual.
-    // This addresses part of bug #7964.
-    //    if ( formalIt != typePtrList.end() ) {
-    //      type = *formalIt;
-    //    }
-    
-    if ( isSgReferenceType(type) || isSgPointerType(type) ) {
-      treatAsPointerParam = true;
-    }
-    
-    if ( treatAsPointerParam ) {
-
-      // We fold the object upon which a method is invoked into
-      // the argument list (as the first actual) of a method
-      // invocation.  If this is the first arg of a method
-      // invocation we need special processing for the 'this'
-      // expression.
-
-      OA::MemRefHandle actualMemRefHandle = (OA::MemRefHandle)0;
-
-      bool isArrowExp = false;
-
-      // Ensure that this expression is actually represented 
-      // by a MemRefHandle.  
-      actualNode = mIR->lookThroughCastExpAndAssignInitializer(actualNode);
-      //	ROSE_ASSERT(mIR->isMemRefNode(actualNode));
-      
-      if ( mIR->isMemRefNode(actualNode) )
-	actualMemRefHandle = mIR->getNodeNumber(actualNode);
-      
-      if ( actualMemRefHandle == (OA::MemRefHandle)0 ) {
-
-	// This isn't true.  Consider that printf's first formal is
-	// a const char *.  We may pass it an actual string, which
-	// is not a MemRefNode.
-
-      } else {
-
-	OA::OA_ptr<OA::MemRefExprIterator> actualMreIterPtr 
-	  = mIR->getMemRefExprIterator(actualMemRefHandle);
-	
-	// for each mem-ref-expr associated with this memref
-	for (; actualMreIterPtr->isValid(); (*actualMreIterPtr)++) {
-	  
-	  OA::OA_ptr<OA::MemRefExpr> actualMre;
-	  
-	  actualMre = actualMreIterPtr->current();
-	  
-	  mPairList.push_back(pair<int, OA::OA_ptr<OA::MemRefExpr> >(paramNum, actualMre));
-	  
-	}
-
-      }
-
-    }
-
-    if (formalIt != typePtrList.end()) {
-      ++formalIt;
-    }
-    if ( incrementParamNum ) {
-      paramNum++;
-    }
-
-  }
-#endif
+        // If we haven't run out of formal types because of varargs,
+        // go to the next one.
+        if (formalIt != typePtrList.end()) {
+            ++formalIt;
+        }
+ 
+        // Similarly, if we haven't hit any varargs, increment
+        // the param num.
+        if ( incrementParamNum ) {
+            paramNum++;
+        }
+    } 
 }
 
 void SageIRInterface::initMemRefAndPtrAssignMaps()
@@ -520,6 +450,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // else
                 // is not a MemRefHandle
             
+            // Create parameter binding params arising from
+            // the actual arguments and any potential receiver,
+            // for non-static method invocations, 
+            // of the function/method invocation.
+            createParamBindPtrAssignPairs(funcCallExp);
+
             break;
         }
     case V_SgSizeOfOp:
@@ -539,6 +475,13 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgDeleteExp:
         {
+            SgDeleteExp *deleteExp = isSgDeleteExp(astNode);
+            ROSE_ASSERT(deleteExp != NULL);
+
+            // Create parameter binding params arising from
+            // the receiver used to invoke the destructor.
+            createParamBindPtrAssignPairs(deleteExp);
+
             ROSE_ASSERT(0);
             break;
         }
@@ -650,6 +593,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 isSgConstructorInitializer(astNode);
             ROSE_ASSERT(ctorInit != NULL);
 
+            // Create parameter binding params arising from
+            // the actual arguments and receiver (objected created)
+            // of the constructor invocation.
+            createParamBindPtrAssignPairs(ctorInit);
 
             ROSE_ASSERT(0);
             break;
@@ -1178,18 +1125,10 @@ SageIRInterface::makePtrAssignPair(OA::StmtHandle stmt,
 void
 SageIRInterface::makeParamPtrPair(OA::CallHandle call,
                                   int formal,
-                                  OA::MemRefHandle actual)
+                                  OA::OA_ptr<OA::MemRefExpr> MRE)
 {
-    OA::OA_ptr<OA::MemRefExprIterator> actualIter;
-    actualIter = getMemRefExprIterator(actual);
-    for (actualIter->reset(); actualIter->isValid(); 
-         ++(*actualIter) ) 
-    {
-        OA::OA_ptr<OA::MemRefExpr> actual_mre = actualIter->current();
-        mCallToParamPtrPairs[call].insert(
-            std::pair<int, 
-	              OA::OA_ptr<OA::MemRefExpr> >(formal, actual_mre));
-    }
+    mCallToParamPtrPairs[call].insert(std::pair<int, 
+                                      OA::OA_ptr<OA::MemRefExpr> >(formal, MRE));
 }
 
 
