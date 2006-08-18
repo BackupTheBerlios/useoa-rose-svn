@@ -100,7 +100,7 @@ int DoOpenAnalysis(SgFunctionDefinition* f)
 	//cfgxaifout+=strname.str();
 	cfgxaifout+="\"/> \n";
 
-    OA::OA_ptr<OA::DGraph::Interface::NodesIterator> nodeItPtr 
+    OA::OA_ptr<OA::DGraph::NodesIteratorInterface> nodeItPtr 
         = cfg->getNodesIterator();
 	for (; nodeItPtr->isValid(); ++(*nodeItPtr)) 
 	{

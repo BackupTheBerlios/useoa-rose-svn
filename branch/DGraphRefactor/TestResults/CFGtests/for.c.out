@@ -1,3 +1,4 @@
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 **************************************
 Inside CFG performAnalysis
 CFG::PerformAnalysis before EntryNode
@@ -22,48 +23,45 @@ End of DGraphImplement
 CFG addNode ends
 CFG::performAnalysis after start node 
 DGraphImplement::addEdge(e)
-	e = double x;
+	e = int i;
+int i;
+double x;
 double x;
 double y;
 double y;
-double z;
-double z;
-x =(2);
-x =(2);
-if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);}
-**************************************
-Inside CFG::build_CFG_twoway_branch
-True branch
-In CFG addNode
-In DGraphImplement addNodeAddNode
+double f;
+double f;
+f = __builtin_huge_val();
+f = __builtin_huge_val();
+for(i = 0;i < 20;i++) {x =((3 * i));y =((2) * x);f +=(x + y);}
+DGraphImplement::addEdge(e)
+	e = In DGraphImplement addNodeAddNode
 
 (before) Adding into DGraph :: Node not found in the set
 
 (After) Adding into DGraph:: Node found in the set
 End of DGraphImplement
-CFG addNode ends
-y =(5);
-y =(5);
-x =(y + y);
-x =(y + y);
-
-
-DGraphImplement::addEdge(e)
-	e = false branch
-In CFG addNode
+	adding e->sink, which is ...
 In DGraphImplement addNodeAddNode
 
 (before) Adding into DGraph:: Node found in the set
 
 (After) Adding into DGraph:: Node found in the set
 End of DGraphImplement
-CFG addNode ends
-y =(3);
-y =(3);
+
+ CFG Node
+x =((3 * i));
+x =((3 * i));
+y =((2) * x);
+y =((2) * x);
+f +=(x + y);
+f +=(x + y);
 
 
 DGraphImplement::addEdge(e)
-	e = z = y;
+	e = DGraphImplement::addEdge(e)
+	e = DGraphImplement::addEdge(e)
+	e = return 0;
 In DGraphImplement addNodeAddNode
 
 (before) Adding into DGraph:: Node found in the set
@@ -73,13 +71,10 @@ End of DGraphImplement
 
  CFG Node
 DGraphImplement::addEdge(e)
-	e = DGraphImplement::addEdge(e)
-	e = z = y;
-return 0;
-
+	e = 
 In DGraphImplement addNodeAddNode
 
-(before) Adding into DGraph:: Node found in the set
+(before) Adding into DGraph :: Node not found in the set
 
 (After) Adding into DGraph:: Node found in the set
 End of DGraphImplement
@@ -90,7 +85,7 @@ CFG::performAnalysis before ExitNode
 In CFG addNode
 In DGraphImplement addNodeAddNode
 
-(before) Adding into DGraph :: Node not found in the set
+(before) Adding into DGraph:: Node found in the set
 
 (After) Adding into DGraph:: Node found in the set
 End of DGraphImplement
@@ -101,38 +96,12 @@ DGraphImplement::addEdge(e)
 	e = End of CFG performAnalysis
 Inside DGRaphImplement output 
 
-graph DGraphImplement:
-
-    Node 1: 
-        ====== CFG node 2 ======
-
-
-    Node 3: 
-        ====== CFG node 6 ======
-y =(5);
-x =(y + y);
-
-
-
-    Node 7: 
-        ====== CFG node 14 ======
-
-Printing Edges in the DGraphImplement output
+digraph DGraphImplement {
+    node [shape=rectangle];
+    1 [ label="====== CFG node 2 ======\n" ];
+    3 [ label="====== CFG node 6 ======\nfor(i = 0;i < 20;i++) {x =((3 * i));y =((2) * x);f +=(x + y);}\n" ];
+    7 [ label="====== CFG node 14 ======\n\n" ];Printing Edges in the DGraphImplement output
 DGraphImplement Printing EdgesIterator
 DGraphImplement Printing EdgesIterator
 
-    Edge: 1 => 2
-        { 1 FALLTHROUGH_EDGE 0 }
-
-DGraphImplement::reverse_postorder_recurse
-	pNode = <>
-	n = <>
-
-ReachDefsStandard(
-    mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
-
-    mExitReachDefs: [  ] 
-)
-
-*******  end of DoReachDef *********
-
+    1 -> 2 [ label="{ 1 FALLTHROUGH_EDGE 0 }" ];}

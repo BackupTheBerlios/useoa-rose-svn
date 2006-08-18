@@ -478,8 +478,8 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
         = cfg->getNodesIterator();
 	for (; nodeItPtr->isValid(); ++(*nodeItPtr)) 
 	{
-		OA::OA_ptr<OA::CFG::CFG::Node> n = 
-		  (nodeItPtr->current()).convert<OA::CFG::CFG::Node>();
+		OA::OA_ptr<OA::CFG::Node> n = 
+		  (nodeItPtr->current()).convert<OA::CFG::Node>();
 		//FIXME: n->longdump(cfg, std::cerr); std::cerr << endl;
   
 		// basic blocks
@@ -493,7 +493,7 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
 		cfgxaifout+="\n";
 		cfgxaifout+="<Statement List>\n";
 		
-    OA::OA_ptr<OA::CFG::CFGInterface::NodeStatementsIterator> stmtItPtr
+    OA::OA_ptr<OA::CFG::NodeStatementsIteratorInterface> stmtItPtr
             = n->getNodeStatementsIterator();
       for (; stmtItPtr->isValid(); ++(*stmtItPtr)) 
       {
@@ -514,12 +514,12 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
         = cfg->getEdgesIterator();
 	for (; edgeItPtr->isValid(); ++(*edgeItPtr)) 
     {
-      OA::OA_ptr<OA::CFG::CFG::Edge> e 
-          = edgeItPtr->current().convert<OA::CFG::CFG::Edge>();
-      OA::OA_ptr<OA::CFG::CFG::Node> n1 
-          = e->source().convert<OA::CFG::CFG::Node>();
-      OA::OA_ptr<OA::CFG::CFG::Node> n2 
-          = e->sink().convert<OA::CFG::CFG::Node>();
+      OA::OA_ptr<OA::CFG::Edge> e 
+          = edgeItPtr->current().convert<OA::CFG::Edge>();
+      OA::OA_ptr<OA::CFG::Node> n1 
+          = e->source().convert<OA::CFG::Node>();
+      OA::OA_ptr<OA::CFG::Node> n2 
+          = e->sink().convert<OA::CFG::Node>();
       
       char tmpstr[100];
       sprintf(tmpstr, "<ControlFlowEdge source=\"%d\" target=\"%d\"/>", 
@@ -971,8 +971,8 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 
   /*  OA::OA_ptr<OA::OutputBuilderDOT> dotBuilder;
   dotBuilder = new OA::OutputBuilderDOT();
-  cfg->configOutput(dotBuilder);
-  cfg->output(*irInterface);*/
+  cfg->configOutput(dotBuilder); */
+  cfg->output(*irInterface);
 
 
 

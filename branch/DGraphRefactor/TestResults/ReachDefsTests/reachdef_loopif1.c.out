@@ -1,21 +1,176 @@
+**************************************
+Inside CFG performAnalysis
+CFG::PerformAnalysis before EntryNode
+In CFG addNode
+In DGraphImplement addNodeAddNode
+
+(before) Adding into DGraph :: Node not found in the set
+
+(After) Adding into DGraph:: Node found in the set
+End of DGraphImplement
+CFG addNode ends
+CFG::PerformAnalysis after EntryNode
+
+CFG::performAnalysis before start node
+In CFG addNode
+In DGraphImplement addNodeAddNode
+
+(before) Adding into DGraph:: Node found in the set
+
+(After) Adding into DGraph:: Node found in the set
+End of DGraphImplement
+CFG addNode ends
+CFG::performAnalysis after start node 
+DGraphImplement::addEdge(e)
+	e = double x;
+double x;
+double y;
+double y;
+double z;
+double z;
+int i;
+int i;
+i = 1;
+i = 1;
+while(i != 10){x =(2);if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}z = y;i++;}
+DGraphImplement::addEdge(e)
+	e = In DGraphImplement addNodeAddNode
+
+(before) Adding into DGraph :: Node not found in the set
+
+(After) Adding into DGraph:: Node found in the set
+End of DGraphImplement
+	adding e->sink, which is ...
+In DGraphImplement addNodeAddNode
+
+(before) Adding into DGraph:: Node found in the set
+
+(After) Adding into DGraph:: Node found in the set
+End of DGraphImplement
+
+ CFG Node
+x =(2);
+x =(2);
+if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}
+**************************************
+Inside CFG::build_CFG_twoway_branch
+True branch
+In CFG addNode
+In DGraphImplement addNodeAddNode
+
+(before) Adding into DGraph:: Node found in the set
+
+(After) Adding into DGraph:: Node found in the set
+End of DGraphImplement
+CFG addNode ends
+y =(5);
+y =(5);
+x =(y + y);
+x =(y + y);
+y =(x *(5));
+y =(x *(5));
+
+
+DGraphImplement::addEdge(e)
+	e = false branch
+In CFG addNode
+In DGraphImplement addNodeAddNode
+
+(before) Adding into DGraph:: Node found in the set
+
+(After) Adding into DGraph:: Node found in the set
+End of DGraphImplement
+CFG addNode ends
+y =(3);
+y =(3);
+
+
+DGraphImplement::addEdge(e)
+	e = z = y;
+In DGraphImplement addNodeAddNode
+
+(before) Adding into DGraph :: Node not found in the set
+
+(After) Adding into DGraph:: Node found in the set
+End of DGraphImplement
+
+ CFG Node
+DGraphImplement::addEdge(e)
+	e = DGraphImplement::addEdge(e)
+	e = z = y;
+i++;
+i++;
+
+
+DGraphImplement::addEdge(e)
+	e = DGraphImplement::addEdge(e)
+	e = return 0;
+In DGraphImplement addNodeAddNode
+
+(before) Adding into DGraph:: Node found in the set
+
+(After) Adding into DGraph:: Node found in the set
+End of DGraphImplement
+
+ CFG Node
+DGraphImplement::addEdge(e)
+	e = 
+In DGraphImplement addNodeAddNode
+
+(before) Adding into DGraph:: Node found in the set
+
+(After) Adding into DGraph:: Node found in the set
+End of DGraphImplement
+
+ CFG Node
+
+CFG::performAnalysis before ExitNode
+In CFG addNode
+In DGraphImplement addNodeAddNode
+
+(before) Adding into DGraph:: Node found in the set
+
+(After) Adding into DGraph:: Node found in the set
+End of DGraphImplement
+CFG addNode ends
+CFG::performAnalysis after ExitNode
+DGraphImplement::addEdge(e)
+	e = DGraphImplement::addEdge(e)
+	e = End of CFG performAnalysis
+Inside DGRaphImplement output 
+
+graph DGraphImplement:
+
+    Node 1: 
+        ====== CFG node 2 ======
+
+
+    Node 3: 
+        ====== CFG node 6 ======
+while(i != 10){x =(2);if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}z = y;i++;}
+
+
+    Node 7: 
+        ====== CFG node 14 ======
+z = y;
+i++;
+
+
+Printing Edges in the DGraphImplement output
+DGraphImplement Printing EdgesIterator
+DGraphImplement Printing EdgesIterator
+
+    Edge: 1 => 2
+        { 1 FALLTHROUGH_EDGE 0 }
+
+DGraphImplement::reverse_postorder_recurse
+	pNode = <>
+	n = <>
 
 ReachDefsStandard(
     mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
-            StmtHandle(x =(2);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(y =(5);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(x =(y + y);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(y =(x *(5));)	 => [ StmtHandle(i = 1;)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(y =(3);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(z = y;)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(i++;)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(while(i != 10){x =(2);if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}z = y;i++;})	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);})	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle()	 => [ StmtHandle(i = 1;)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle()	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle()	 => [ StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(return 0;)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
 
-    mExitReachDefs: [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+    mExitReachDefs: [  ] 
 )
 
 *******  end of DoReachDef *********
