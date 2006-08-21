@@ -11,7 +11,7 @@ driverexec::./CtoOA
 #test::  func-ptrs.C,		  	 assertion failure 4/24/06 MMS
 #test::	t1.c,				     error 4/24/06 MMS
 #test::  smg2000-typedefStruct.C, assertion failure 6/26/06 AIS
-test::  addressOf.c,             checked by MMS 8/13/06 should move MRH to v+2
+test::  addressOf.c,             checked by MMS 8/20/06 
 test::  aggregateInit.c,         checked by MMS 8/13/06
 test::  alias1.c,                checked by MMS 8/13/06
 test::  alias2.c,                checked by MMS 8/13/06
@@ -19,11 +19,11 @@ test::  alias2.c,                checked by MMS 8/13/06
 test::  alias4.c,                checked by MMS 8/13/06
 test::  alias4b.c,               checked by MMS 8/13/06
 test::  assignOps.c,             checked by MMS 8/13/06
-test::  assignReturn.c,          missing use of a in *p=a=&g return ptrassigns broke MMS 8/2/06 XXX
+test::  assignReturn.c,          checked by MMS 8/20/06
 test::  class.C,                 missing LOC for sInt MMS 8/7/06 XXX
 test::  comma.c,                 checked by MMS 6/22/06 XXX
 #test::  dataMemberPtrs.C,        aborts MMS 8/7/06
-test::  fields.c,                (*z)->p is not correct MMS 8/2/06 XXX
+test::  fields.c,                checked by MMS 8/20/06
 #test::  constQualified.c,       checked by ???
 #test::  utke.c,                 checked by ???
 #test::  OAWikiEx.c,             checked by ???

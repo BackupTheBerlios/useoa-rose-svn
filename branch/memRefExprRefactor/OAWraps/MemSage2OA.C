@@ -371,16 +371,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 mre = new OA::Deref(addressTaken,accuracy,mrType,mre,numderefs);
             }
 
-            // if it is an array type then
-            if (isSgArrayType(type)) {
-                // set the addressTaken for the var because could
-                // be computing the address of the array
-                mre->setAddressTaken(true);
-                // conservatively assume that we are computing address somewhere
-                // into the array
-                mre->setAccuracy(false);
-            }
-                
             mMemref2mreSetMap[memref].insert(mre);
             break;
         }
@@ -548,6 +538,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     for ( ; mIter->isValid(); ++(*mIter) ) {
                         OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
                         mMemref2mreSetMap[child_memref].erase(child_mre);
+                        mStmt2allMemRefsMap[stmt].erase(child_memref);
                         // an address taken will cancel out a deref and
                         // return the result
                         child_mre = child_mre->setAddressTaken();
@@ -614,7 +605,49 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     // ---------------------------------------- Binary Op cases
     case V_SgArrowExp:
         {
-            ROSE_ASSERT(0);
+            SgArrowExp *arrowExp = isSgArrowExp(astNode);
+            ROSE_ASSERT(arrowExp != NULL);
+            
+            // recurse on lhs and rhs
+            findAllMemRefsAndPtrAssigns(arrowExp->get_lhs_operand(),stmt);
+            findAllMemRefsAndPtrAssigns(arrowExp->get_rhs_operand(),stmt);
+            
+            // is a MemRefHandle
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+
+            // clones MREs for lhs and wraps them in a Deref and a FieldAccess
+            OA::MemRefHandle lhs_memref 
+                = findTopMemRefHandle(arrowExp->get_lhs_operand());
+            OA::MemRefHandle rhs_memref 
+                = findTopMemRefHandle(arrowExp->get_rhs_operand());
+            std::string field_name = findFieldName(rhs_memref);
+            OA::OA_ptr<OA::MemRefExprIterator> mIter
+                = getMemRefExprIterator(lhs_memref);
+            for ( ; mIter->isValid(); ++(*mIter) ) {
+                OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
+                OA::OA_ptr<OA::Deref> deref_mre;
+                bool addressTaken = false;
+                int numDerefs = 1;
+                OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                deref_mre = new OA::Deref( addressTaken, 
+                                           lhs_mre->hasFullAccuracy(),
+                                           OA::MemRefExpr::USE,
+                                           nullMRE,
+                                           numDerefs);
+                OA::OA_ptr<OA::MemRefExpr> fieldAccess;
+                addressTaken = false;
+                fieldAccess = new OA::FieldAccess(false, 
+                                              deref_mre->hasFullAccuracy(),
+                                              OA::MemRefExpr::USE,
+                                              deref_mre->composeWith(lhs_mre),
+                                              field_name);
+                mMemref2mreSetMap[memref].insert(fieldAccess);
+            }
+            // make rhs not a MemRefHandle
+            mMemref2mreSetMap[rhs_memref].clear();
+            mStmt2allMemRefsMap[stmt].erase(rhs_memref);
+
             break;
         }
     case V_SgDotExp:
@@ -652,7 +685,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // make lhs and rhs not a MemRefHandle
             mMemref2mreSetMap[lhs_memref].clear();
+            mStmt2allMemRefsMap[stmt].erase(lhs_memref);
             mMemref2mreSetMap[rhs_memref].clear();
+            mStmt2allMemRefsMap[stmt].erase(rhs_memref);
             break;
         }
     case V_SgDotStarOp:
@@ -666,14 +701,36 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             break;
         }
 
+    case V_SgAddOp:
+    case V_SgSubtractOp:
+        {
+            // these two could be used in ptr arithmetic
+            // if they are then take the memory reference handle
+            // away from the child
+            SgBinaryOp *binaryOp = isSgBinaryOp(astNode);
+            ROSE_ASSERT(binaryOp != NULL);
+            // recurse on lhs and rhs
+            findAllMemRefsAndPtrAssigns(binaryOp->get_lhs_operand(),stmt);
+            findAllMemRefsAndPtrAssigns(binaryOp->get_rhs_operand(),stmt);
+            
+            // if either of the children are array types 
+            // then this node should be a MemRefHandle
+            // because a[2] is represented as a+2 in Sage
+            // if either of the children are pointer types
+            // then this node should be a MemRefHandle due to 
+            // ptr arithmetic
+            createMemRefExprsForPtrArith(binaryOp, 
+                                         binaryOp->get_lhs_operand(), stmt);
+            createMemRefExprsForPtrArith(binaryOp, 
+                                         binaryOp->get_rhs_operand(), stmt);
+            break;
+        }
     case V_SgEqualityOp:
     case V_SgLessThanOp:
     case V_SgGreaterThanOp:
     case V_SgNotEqualOp: 
     case V_SgLessOrEqualOp:
     case V_SgGreaterOrEqualOp:
-    case V_SgAddOp:
-    case V_SgSubtractOp:
     case V_SgMultiplyOp:
     case V_SgDivideOp:
     case V_SgIntegerDivideOp:
@@ -756,6 +813,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     for ( ; mIter->isValid(); ++(*mIter) ) {
                         OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
                         mMemref2mreSetMap[lhs_memref].erase(lhs_mre);
+                        mStmt2allMemRefsMap[stmt].erase(lhs_memref);
                         // an address taken will cancel out a deref and
                         // return the result
                         lhs_mre = lhs_mre->setAddressTaken();
@@ -766,6 +824,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     for ( ; mIter->isValid(); ++(*mIter) ) {
                         OA::OA_ptr<OA::MemRefExpr> rhs_mre = mIter->current();
                         mMemref2mreSetMap[rhs_memref].erase(rhs_mre);
+                        mStmt2allMemRefsMap[stmt].erase(rhs_memref);
                         rhs_mre = rhs_mre->setAddressTaken();
                         mMemref2mreSetMap[rhs_memref].insert(rhs_mre);
                     }
@@ -779,6 +838,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgPlusAssignOp:
     case V_SgMinusAssignOp:
+        // FIXME: do we need to worry about pointer arithmetic involving the
+        // above two?
     case V_SgAndAssignOp:
     case V_SgIorAssignOp:
     case V_SgMultAssignOp:
@@ -812,7 +873,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 mMemref2mreSetMap[memref].insert(mre);
                 lhs_mre->setMemRefType(OA::MemRefExpr::USEDEF);
             }
-            break;
+            break; 
         }
     // ---------------------------------------- Unary Op cases
     case V_SgExpressionRoot:
@@ -888,6 +949,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // child is no longer a MemRefHandle
             mMemref2mreSetMap[child_memref].clear();
+            mStmt2allMemRefsMap[stmt].erase(child_memref);
             break;
         }
     case V_SgMinusMinusOp:
@@ -916,13 +978,14 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 OA::OA_ptr<OA::MemRefExpr> mre = child_mre->clone();
                 mre->setMemRefType(OA::MemRefExpr::USE);
                 mMemref2mreSetMap[memref].insert(mre);
-                if ( mode == SgUnaryOp::prefix ) {
-                    // Memory reference is defined first and then used.
-                    child_mre->setMemRefType(OA::MemRefExpr::DEFUSE);
-                } else {
-                    // Memory reference is used first and then defined.
-                    child_mre->setMemRefType(OA::MemRefExpr::USEDEF);
-                }
+                // the memory reference
+                // to a in ++a and a++, a is always used before it is 
+                // defined.  Whether the update occurs before or after 
+                // the use of ++a or a++ is something that
+                // we will specify when there is someway to indicate 
+                // ordering between MemRefHandles.
+                // Memory reference is used first and then defined.
+                child_mre->setMemRefType(OA::MemRefExpr::USEDEF);
             }
             break;
         }
@@ -950,6 +1013,63 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgReturnStmt *returnStmt = isSgReturnStmt(astNode);
             ROSE_ASSERT(returnStmt != NULL);
             findAllMemRefsAndPtrAssigns(returnStmt->get_return_expr(), stmt);
+
+            //----------- Ptr Assigns
+            // if the method or function we are in has a ptr or 
+            // reference return type
+            // Make a pair with a NamedRef for the function being assigned
+            // the memory references for the top MemRefHandle of the return exp
+            SgFunctionDefinition *enclosingFunction =
+                getEnclosingMethod(returnStmt);
+            ROSE_ASSERT(enclosingFunction != NULL);
+            SgFunctionDeclaration *functionDeclaration =
+                enclosingFunction->get_declaration();
+            ROSE_ASSERT(functionDeclaration != NULL);
+        
+            SgType *return_type = functionDeclaration->get_orig_return_type();
+            if (isSgReferenceType(return_type) || isSgPointerType(return_type)){
+  
+                // Create the lhs to represent the method declaration.
+                bool addressTaken = false;
+                bool fullAccuracy = true;
+                OA::SymHandle symHandle = getProcSymHandle(functionDeclaration);
+    
+                OA::OA_ptr<OA::MemRefExpr> function;
+                function = new OA::NamedRef(addressTaken, 
+                                            fullAccuracy,
+                                            OA::MemRefExpr::DEF,
+                                            symHandle);
+
+                // get the memory reference handle for the return exp
+                OA::MemRefHandle child_memref 
+                    = findTopMemRefHandle(returnStmt->get_return_expr());
+                SgExpression *child_node=NULL;
+                SgType *child_type;
+                if (child_memref!=OA::MemRefHandle(0)) {
+                    child_node = isSgExpression(getSgNode(child_memref));
+                    ROSE_ASSERT(child_node);
+                    child_type = child_node->get_type();
+                }
+
+                // if returning a reference then need to modify the MREs
+                // for the return expression
+                // FIXME: very similar to some code in SgAssignOp case
+                if (isSgReferenceType(child_type)) {
+                    // set the addressOf for child 
+                    OA::OA_ptr<OA::MemRefExprIterator> mIter;
+                    mIter = getMemRefExprIterator(child_memref);
+                    for ( ; mIter->isValid(); ++(*mIter) ) {
+                        OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
+                        mMemref2mreSetMap[child_memref].erase(child_mre);
+                        mStmt2allMemRefsMap[stmt].erase(child_memref);
+                        child_mre = child_mre->setAddressTaken();
+                        mMemref2mreSetMap[child_memref].insert(child_mre);
+                    }
+                }
+
+                makePtrAssignPair(stmt, function, child_memref);
+            }
+ 
             break;
         }
     case V_SgSpawnStmt:
@@ -1099,7 +1219,6 @@ bool SageIRInterface::is_lval(OA::MemRefHandle memref)
     }
     return retval;
 }
-
 void 
 SageIRInterface::makePtrAssignPair(OA::StmtHandle stmt,
                                    OA::MemRefHandle lhs_memref, 
@@ -1120,6 +1239,21 @@ SageIRInterface::makePtrAssignPair(OA::StmtHandle stmt,
                  OA::OA_ptr<OA::MemRefExpr> >(lhs_mre,rhs_mre));
         } 
     }
+}
+
+void 
+SageIRInterface::makePtrAssignPair(OA::StmtHandle stmt,
+                                   OA::OA_ptr<OA::MemRefExpr> lhs_mre,
+                                   OA::MemRefHandle rhs_memref)
+{
+    OA::OA_ptr<OA::MemRefExprIterator> rhsIter;
+    rhsIter = getMemRefExprIterator(rhs_memref);
+    for (rhsIter->reset(); rhsIter->isValid(); ++(*rhsIter) ) {
+      OA::OA_ptr<OA::MemRefExpr> rhs_mre=rhsIter->current();
+      mStmtToPtrPairs[stmt].insert(
+        pair<OA::OA_ptr<OA::MemRefExpr>, 
+             OA::OA_ptr<OA::MemRefExpr> >(lhs_mre,rhs_mre));
+    } 
 }
 
 void
@@ -1149,3 +1283,52 @@ std::string SageIRInterface::findFieldName(OA::MemRefHandle memref)
     return retval;
 }
 
+/*!
+   Takes the node where pointer arithmetic might be occuring
+   and determines if it is based on the given child.
+ */
+void SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node, 
+                                  SgExpression* child, OA::StmtHandle stmt)
+{
+    OA::MemRefHandle child_memref  = findTopMemRefHandle(child);
+    SgExpression *child_node=NULL;
+    SgType *child_type;
+    if (child_memref!=OA::MemRefHandle(0)) {
+        child_node = isSgExpression(getSgNode(child_memref));
+        ROSE_ASSERT(child_node);
+        child_type = child_node->get_type();
+    }
+    if (child_node && 
+        (isSgArrayType(child_type)||isSgPointerType(child_type)))
+    {
+        // this node is a MemRefHandle
+        OA::MemRefHandle memref = getMemRefHandle(node);
+        mStmt2allMemRefsMap[stmt].insert(memref);
+
+        OA::OA_ptr<OA::MemRefExprIterator> mIter 
+            = getMemRefExprIterator(child_memref);
+        for ( ; mIter->isValid(); ++(*mIter) ) {
+            OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
+            if (isSgArrayType(child_type)) {
+                // set the addressTaken for the var because could
+                // be computing the address of the array
+                child_mre->setAddressTaken(true);
+                // conservatively assume that we are computing address 
+                // somewhere into the array
+                child_mre->setAccuracy(false);
+                // take the MRE away from the lhs and make it
+                // belong to this node
+                mMemref2mreSetMap[child_memref].erase(child_mre);
+                mStmt2allMemRefsMap[stmt].erase(child_memref);
+                mMemref2mreSetMap[memref].insert(child_mre);
+            }
+            if (isSgPointerType(child_type)) {
+                // get a clone of the lhs
+                OA::OA_ptr<OA::MemRefExpr> mre = child_mre->clone();
+                // set the clones accuracy to partial
+                mre->setAccuracy(false);
+                mMemref2mreSetMap[memref].insert(mre);
+            }
+        }
+    }
+}

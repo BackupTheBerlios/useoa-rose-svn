@@ -85,10 +85,15 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("p") => 
                 NamedRef( DEF, SymHandle("p"), F, full)
-            MemRefHandle("v") => 
-                NamedRef( USE, SymHandle("v"), T, part)
             MemRefHandle("p =(v + 2)") => 
                 NamedRef( USE, SymHandle("p"), F, full)
+            MemRefHandle("(v + 2)") => 
+                NamedRef( USE, SymHandle("v"), T, part)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p =(v + 2);") =>
+        [
+            < NamedRef( DEF, SymHandle("p"), F, full)
+            , NamedRef( USE, SymHandle("v"), T, part) >
         ] }
     MEMREFEXPRS = { StmtHandle("p = p;") =>
         [

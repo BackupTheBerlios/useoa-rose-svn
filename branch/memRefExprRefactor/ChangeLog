@@ -1954,3 +1954,19 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       This is necessary for the handling of the receiver, wherein
       we may take the address of the MRE returned from the
       relevant MemRefHandle.
+
+8/20/06     UseOA-Rose svn branch-memRefExprRefactor r160   Michelle Strout
+    - moving MRH to + of v+2 when v is a pointer or an array reference type
+      this also affects -. 
+      Andy these are places you will need to work with to get more precise
+      array references.
+    - changed the prefix and postfix code to indicate that in the 
+      memory reference
+      to a in ++a and a++, a is always used before it is defined.  Whether the
+      update occurs before or after the use of ++a or a++ is something that
+      we will specify when there is someway to indicate ordering between
+      MemRefHandles.
+    - Added code for creating a pointer assignment at a return statement if
+      the return type is a pointer type or a reference type.
+    - Implemented MemRefExpr creation for SgArrowExp.
+

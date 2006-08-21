@@ -1,4 +1,4 @@
-echo "Testing TestCases/AliasTests/addressOf.c, TestResults/AliasIRInterface/addressOf.c.out checked by MMS 8/13/06 should move MRH to v+2"
+echo "Testing TestCases/AliasTests/addressOf.c, TestResults/AliasIRInterface/addressOf.c.out checked by MMS 8/20/06"
 ./CtoOA TestCases/AliasTests/addressOf.c >& t
 diff t TestResults/AliasIRInterface/addressOf.c.out
 
@@ -26,7 +26,7 @@ echo "Testing TestCases/AliasTests/assignOps.c, TestResults/AliasIRInterface/ass
 ./CtoOA TestCases/AliasTests/assignOps.c >& t
 diff t TestResults/AliasIRInterface/assignOps.c.out
 
-echo "Testing TestCases/AliasTests/assignReturn.c, TestResults/AliasIRInterface/assignReturn.c.out missing use of a in *p=a=&g return ptrassigns broke MMS 8/2/06 XXX"
+echo "Testing TestCases/AliasTests/assignReturn.c, TestResults/AliasIRInterface/assignReturn.c.out checked by MMS 8/20/06"
 ./CtoOA TestCases/AliasTests/assignReturn.c >& t
 diff t TestResults/AliasIRInterface/assignReturn.c.out
 
@@ -38,7 +38,7 @@ echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c
 ./CtoOA TestCases/AliasTests/comma.c >& t
 diff t TestResults/AliasIRInterface/comma.c.out
 
-echo "Testing TestCases/AliasTests/fields.c, TestResults/AliasIRInterface/fields.c.out (*z)->p is not correct MMS 8/2/06 XXX"
+echo "Testing TestCases/AliasTests/fields.c, TestResults/AliasIRInterface/fields.c.out checked by MMS 8/20/06"
 ./CtoOA TestCases/AliasTests/fields.c >& t
 diff t TestResults/AliasIRInterface/fields.c.out
 

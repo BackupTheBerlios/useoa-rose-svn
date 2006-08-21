@@ -785,12 +785,19 @@ public:
   void makePtrAssignPair(OA::StmtHandle stmt,
                          OA::MemRefHandle lhs_memref,
                          OA::MemRefHandle rhs_memref);
+  void makePtrAssignPair(OA::StmtHandle stmt,
+                         OA::OA_ptr<OA::MemRefExpr> lhs_mre,
+                         OA::MemRefHandle rhs_memref);
+
 
   void makeParamPtrPair(OA::CallHandle call,
                         int formal,
                         OA::OA_ptr<OA::MemRefExpr> actual);
 
   std::string findFieldName(OA::MemRefHandle memref);
+
+  void createMemRefExprsForPtrArith(SgExpression* node, 
+                                    SgExpression* child, OA::StmtHandle stmt);
 
   // assumption is that StmtHandles and MemRefHandles are unique across
   // different program and procedure contexts for which analysis is being
