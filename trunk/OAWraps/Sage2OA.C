@@ -6982,7 +6982,7 @@ class ExprTreeTraversal
 		isSgVarArgStartOp(astNode)) {
 
       // CallNode
-      OA::ExprHandle h = mIR->getNodeNumber(astNode);
+      OA::CallHandle h = mIR->getNodeNumber(astNode);
       OA::OA_ptr<OA::ExprTree::CallNode> node;
       node = new OA::ExprTree::CallNode(h);
       if ( !parent.ptrEqual(NULL) ) {

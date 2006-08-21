@@ -156,6 +156,7 @@ void usage(char **argv)
   cerr << "          --oa-ReachConsts" << endl;
   cerr << "          --oa-AliasMapXAIF" << endl;
   cerr << "          --oa-SideEffect" << endl;
+  cerr << "          --oa-Linearity" << endl;
   exit(-1);
 }
 
@@ -411,6 +412,11 @@ main ( unsigned argc,  char * argv[] )
     else if( cmds->HasOption("--oa-AliasMapXAIF") )
     {
       printf("TO DO, implement AliasMapXAIF analysis\n");
+      return 1;
+    }
+    else if( cmds->HasOption("--oa-Linearity") )
+    {
+      printf("TO DO, implement Linearity analysis\n");
       return 1;
     }
     else
