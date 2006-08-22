@@ -1986,4 +1986,14 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - Changed default case of findAllMemRefsAndPtrAssigns to ABORT.
       If you see a case there which is really a no-op, add it 
       to the no-op case.  
-	
+
+8/22/06     UseOA-Rose svn branch-memRefExprRefactor r167   Brian White	
+    - Fixed assertion failure in getFormalTypes.  Evidently, a 
+      the base type of a SgPointerDerefExp need not be a SgPointerType,
+      but may also be a SgFunctionType.
+    - Created SageIRInterface::convertReferenceActuals(SgNode *node)
+      to take the address of any actual whose formal is a reference,
+      i.e., apply our reference conversion rules which model 
+      references as formals.  Invoke for SgFunctionCallExp and
+      SgConstructorInitializer.  SgDeleteExp has no actuals,
+      aside from the implicit reference, which can not be a reference.

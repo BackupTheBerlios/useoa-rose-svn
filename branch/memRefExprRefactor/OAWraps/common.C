@@ -247,10 +247,15 @@ getFormalTypes(SgNode *node)
                 SgType *type = pointerDerefExp->get_type();
                 ROSE_ASSERT(type != NULL);
 
-                SgPointerType *pointerType = isSgPointerType(type);
-                ROSE_ASSERT(pointerType != NULL);
+                functionType = isSgFunctionType(type);
+                if ( functionType == NULL ) {
+                    SgPointerType *pointerType = isSgPointerType(type);
+                    ROSE_ASSERT(pointerType != NULL);
+  
+                    functionType = 
+                        isSgFunctionType(pointerType->get_base_type());
+                }
 
-                functionType = isSgFunctionType(pointerType->get_base_type());
                 ROSE_ASSERT(functionType != NULL);
             } else {
                 SgFunctionDeclaration *functionDeclaration = 
@@ -313,6 +318,7 @@ getFormalTypes(SgNode *node)
             ROSE_ASSERT(funcDecl != NULL); 
 
             functionType = funcDecl->get_type();
+            ROSE_ASSERT(functionType != NULL);
             
             break;
         }

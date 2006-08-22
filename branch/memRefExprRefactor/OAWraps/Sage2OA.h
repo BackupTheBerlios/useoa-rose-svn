@@ -826,6 +826,8 @@ public:
 
   void createParamBindPtrAssignPairs(SgNode *node);
 
+  void convertReferenceActuals(SgNode *node);
+
   std::map<OA::StmtHandle,
            std::set<
                std::pair<OA::OA_ptr<OA::MemRefExpr>, 

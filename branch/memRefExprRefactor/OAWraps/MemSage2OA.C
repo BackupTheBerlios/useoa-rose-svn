@@ -305,6 +305,108 @@ void SageIRInterface::initMemRefAndPtrAssignMaps()
   }
 }
 
+/** \brief  Apply the reference conversion rules to the actual
+ *          arguments of a method/function invocation.
+ *  \param  node  An AST node representing a 
+ *                method/function/constructor/destructor invocation.
+ *
+ *  Iterates over the actuals passed to the function or method.
+ *  If any of the corresponding formals are references, then take
+ *  the address of the actual, in accordance with our modeling
+ *  references as pointers.
+ */
+void SageIRInterface::convertReferenceActuals(SgNode *node)
+{
+    verifyCallHandleNodeType(node);
+
+    SgExprListExp* exprListExp = NULL;
+
+    switch(node->variantT()) {
+    case V_SgFunctionCallExp:
+        {      
+            SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
+            ROSE_ASSERT(functionCallExp != NULL);
+      
+            exprListExp = functionCallExp->get_args();
+            break;
+        }
+    case V_SgConstructorInitializer:
+        {
+            SgConstructorInitializer *ctorInitializer =
+                isSgConstructorInitializer(node);
+            ROSE_ASSERT(ctorInitializer != NULL);
+
+            exprListExp = ctorInitializer->get_args();
+            break;
+        }
+    case V_SgDeleteExp:
+        {
+            // A destructor does not have an argument list.
+            break;
+        }
+    default:
+        {
+	    std::cerr << "Call must be a SgFunctionCallExp,"
+                      << " a SgConstructorInitializer, or a SgDeleteExp."
+                      << std::endl
+                      << "Instead got a " << node->sage_class_name()
+                      << std::endl;
+            ROSE_ABORT();
+            break;
+        }
+    }
+
+    if ( exprListExp == NULL ) {
+        return;
+    }
+
+    SgExpressionPtrList & actualArgs =  
+        exprListExp->get_expressions();  
+      
+    // Simultaneously iterate over the formals and the actuals.
+    // NB:  neither of these iteration spaces have
+    //      the implicit receiver folded in.
+    SgTypePtrList &typePtrList = getFormalTypes(node);
+    SgTypePtrList::iterator formalIt = typePtrList.begin();
+
+    // Iterate over actuals, not formals, since the number
+    // of actuals >= the number of formals (consider 
+    // varargs).  Any actuals beyond the number of formals
+    // can not be references.
+    for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
+        actualIt != actualArgs.end(); ++actualIt) { 
+
+        SgExpression *actualArg = *actualIt;
+        ROSE_ASSERT(actualArg != NULL);
+
+        SgType *type = *formalIt;
+        ROSE_ASSERT(type != NULL);
+
+        // The formal is a reference type, so take the
+        // address of the actual.
+        if ( isSgReferenceType(type) ) {
+            OA::MemRefHandle actual_memref 
+                = findTopMemRefHandle(actualArg);
+            OA::OA_ptr<OA::MemRefExprIterator> mIter 
+                = getMemRefExprIterator(actual_memref);
+            for ( ; mIter->isValid(); ++(*mIter) ) {
+                OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
+
+                // We can only take the address of an l-value.
+                // i.e., if the actual already has its address
+                // taken, we can not take it again.
+                if ( !child_mre->hasAddressTaken() ) {
+                    mMemref2mreSetMap[actual_memref].erase(child_mre);
+                    child_mre = child_mre->setAddressTaken();
+                    mMemref2mreSetMap[actual_memref].insert(child_mre);
+                }
+            }
+        }
+        ++formalIt;
+    }
+}
+
+
 /*!
    Should originally be called on a statement so astNode and stmt will
    be the same.  This is a recursive procedure that traverses down
@@ -440,6 +542,16 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // else
                 // is not a MemRefHandle
             
+            // Look at the actuals passed to the 
+            // function/method/constructor/destructor invocation.
+            // If its corresponding formal type is a reference,
+            // then we need to take the address of the actual
+            // (as part of modeling references as pointers).
+            // NB:  Make certain we do this before creating
+            //      the param bindings, which will look at the
+            //      stored MREs.
+            convertReferenceActuals(funcCallExp);
+
             // Create parameter binding params arising from
             // the actual arguments and any potential receiver,
             // for non-static method invocations, 
@@ -582,6 +694,16 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgConstructorInitializer *ctorInit =
                 isSgConstructorInitializer(astNode);
             ROSE_ASSERT(ctorInit != NULL);
+
+            // Look at the actuals passed to the 
+            // function/method/constructor/destructor invocation.
+            // If its corresponding formal type is a reference,
+            // then we need to take the address of the actual
+            // (as part of modeling references as pointers).
+            // NB:  Make certain we do this before creating
+            //      the param bindings, which will look at the
+            //      stored MREs.
+            convertReferenceActuals(ctorInit);
 
             // Create parameter binding params arising from
             // the actual arguments and receiver (objected created)
