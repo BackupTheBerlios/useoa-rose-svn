@@ -1,8 +1,8 @@
-"TestCases/AliasTests/ref.C", line 19: warning: expression has no effect
+"TestCases/AliasTests/ref.C", line 22: warning: expression has no effect
     *ptr;
     ^
 
-"TestCases/AliasTests/ref.C", line 20: warning: expression has no effect
+"TestCases/AliasTests/ref.C", line 23: warning: expression has no effect
     *refPtr;                // read as **refPtr;
     ^
 

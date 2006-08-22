@@ -58,7 +58,7 @@ echo "Testing TestCases/AliasTests/invokeBaseCtor.C, TestResults/AliasIRInterfac
 ./CtoOA TestCases/AliasTests/invokeBaseCtor.C >& t
 diff t TestResults/AliasIRInterface/invokeBaseCtor.C.out
 
-echo "Testing TestCases/AliasTests/localNonLocal.c, TestResults/AliasIRInterface/localNonLocal.c.out checked by BSW 6/28/06 XXX"
+echo "Testing TestCases/AliasTests/localNonLocal.c, TestResults/AliasIRInterface/localNonLocal.c.out checked by BSW 6/28/06 (rechecked by MMS 8/21/06)"
 ./CtoOA TestCases/AliasTests/localNonLocal.c >& t
 diff t TestResults/AliasIRInterface/localNonLocal.c.out
 
@@ -82,15 +82,15 @@ echo "Testing TestCases/AliasTests/passIntPtrArrayRef3.c, TestResults/AliasIRInt
 ./CtoOA TestCases/AliasTests/passIntPtrArrayRef3.c >& t
 diff t TestResults/AliasIRInterface/passIntPtrArrayRef3.c.out
 
-echo "Testing TestCases/AliasTests/passIntPtr.c, TestResults/AliasIRInterface/passIntPtr.c.out checked by MMS 7/24/06 XXX"
+echo "Testing TestCases/AliasTests/passIntPtr.c, TestResults/AliasIRInterface/passIntPtr.c.out checked by MMS 8/21/06"
 ./CtoOA TestCases/AliasTests/passIntPtr.c >& t
 diff t TestResults/AliasIRInterface/passIntPtr.c.out
 
-echo "Testing TestCases/AliasTests/refParam.C, TestResults/AliasIRInterface/refParam.C.out checked by MMS 8/1/06 XXX"
+echo "Testing TestCases/AliasTests/refParam.C, TestResults/AliasIRInterface/refParam.C.out in a=b a should be DEF and parambinds not correct for foo MMS 8/21/06"
 ./CtoOA TestCases/AliasTests/refParam.C >& t
 diff t TestResults/AliasIRInterface/refParam.C.out
 
-echo "Testing TestCases/AliasTests/ref.C, TestResults/AliasIRInterface/ref.C.out MemRefHandle for refPtr itself? MMS 8/1/06 XXX"
+echo "Testing TestCases/AliasTests/ref.C, TestResults/AliasIRInterface/ref.C.out checked by MMS 8/21/06"
 ./CtoOA TestCases/AliasTests/ref.C >& t
 diff t TestResults/AliasIRInterface/ref.C.out
 

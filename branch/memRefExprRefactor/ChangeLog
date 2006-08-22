@@ -1970,3 +1970,9 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       the return type is a pointer type or a reference type.
     - Implemented MemRefExpr creation for SgArrowExp.
 
+8/21/06     UseOA-Rose svn branch-memRefExprRefactor r165   Michelle Strout
+    - added functionality for ifs, whiles, switchs, etc.
+    - fixed bug where I was incorrectly removing MemRefHandle associations
+      from StmtHandles
+    - Got three more regression tests checked
+

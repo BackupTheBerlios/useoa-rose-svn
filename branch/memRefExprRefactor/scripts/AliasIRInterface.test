@@ -32,15 +32,15 @@ test::  func_call.c,             p=fp2() has two MemRefHandles that are the same
 test::  functionPtr.c,           checked by MMS 8/1/06 XXX
 test::  functionPtr2.c,          checked by MMS 8/1/06 XXX
 test::  invokeBaseCtor.C,        checked by BSW 6/26/06 XXX
-test::  localNonLocal.c,         checked by BSW 6/28/06 XXX
+test::  localNonLocal.c,         checked by BSW 6/28/06 (rechecked by MMS 8/21/06)
 test::  passArrayPtr.c,          checked by MMS 7/27/06 XXX
 test::  parambinds-formals-intPtrs.C,   should ap be formal param? MMS 8/7/06 XXX
 test::  passIntPtrArrayRef.c,    checked by MMS 7/24/06 XXX
 test::  passIntPtrArrayRef2.c,   checked by MMS 7/24/06 XXX
 test::  passIntPtrArrayRef3.c,   checked by MMS 7/24/06 XXX
-test::  passIntPtr.c,            checked by MMS 7/24/06 XXX
-test::  refParam.C,              checked by MMS 8/1/06 XXX
-test::  ref.C,                   MemRefHandle for refPtr itself? MMS 8/1/06 XXX
+test::  passIntPtr.c,            checked by MMS 8/21/06
+test::  refParam.C,              in a=b a should be DEF and parambinds not correct for foo MMS 8/21/06
+test::  ref.C,                   checked by MMS 8/21/06
 test::  refClass.C,              ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX
 test::  refClass2.C,             ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX
 test::  retPtr1.c,               checked by MMS 8/02/06 XXX

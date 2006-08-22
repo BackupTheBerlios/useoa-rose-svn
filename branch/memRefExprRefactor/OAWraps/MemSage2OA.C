@@ -538,7 +538,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     for ( ; mIter->isValid(); ++(*mIter) ) {
                         OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
                         mMemref2mreSetMap[child_memref].erase(child_mre);
-                        mStmt2allMemRefsMap[stmt].erase(child_memref);
                         // an address taken will cancel out a deref and
                         // return the result
                         child_mre = child_mre->setAddressTaken();
@@ -813,7 +812,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     for ( ; mIter->isValid(); ++(*mIter) ) {
                         OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
                         mMemref2mreSetMap[lhs_memref].erase(lhs_mre);
-                        mStmt2allMemRefsMap[stmt].erase(lhs_memref);
                         // an address taken will cancel out a deref and
                         // return the result
                         lhs_mre = lhs_mre->setAddressTaken();
@@ -824,7 +822,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     for ( ; mIter->isValid(); ++(*mIter) ) {
                         OA::OA_ptr<OA::MemRefExpr> rhs_mre = mIter->current();
                         mMemref2mreSetMap[rhs_memref].erase(rhs_mre);
-                        mStmt2allMemRefsMap[stmt].erase(rhs_memref);
                         rhs_mre = rhs_mre->setAddressTaken();
                         mMemref2mreSetMap[rhs_memref].insert(rhs_mre);
                     }
@@ -1061,7 +1058,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     for ( ; mIter->isValid(); ++(*mIter) ) {
                         OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
                         mMemref2mreSetMap[child_memref].erase(child_mre);
-                        mStmt2allMemRefsMap[stmt].erase(child_memref);
                         child_mre = child_mre->setAddressTaken();
                         mMemref2mreSetMap[child_memref].insert(child_mre);
                     }
@@ -1114,23 +1110,81 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgIfStmt:
         {
-            ROSE_ASSERT(0);
+            SgIfStmt *ifStmt = isSgIfStmt(astNode);
+            ROSE_ASSERT(ifStmt != NULL);
+          
+            SgStatement *condition = ifStmt->get_conditional();
+            if ( condition != NULL ) {
+                findAllMemRefsAndPtrAssigns( condition, stmt );
+            }
+            break;
+        }
+    case V_SgSwitchStatement:
+        {
+            SgSwitchStatement *switchStmt = isSgSwitchStatement(astNode);
+            ROSE_ASSERT(switchStmt != NULL);
+            SgStatement *selector = switchStmt->get_item_selector();
+            if ( selector != NULL) {
+                findAllMemRefsAndPtrAssigns( selector, stmt );
+            }
             break;
         }
     case V_SgForStatement:
         {
-            ROSE_ASSERT(0);
+            SgForStatement *forStatement = isSgForStatement(astNode);        
+            ROSE_ASSERT(forStatement != NULL);
+        
+            SgForInitStatement *forInitStmt = forStatement->get_for_init_stmt();
+            if (forInitStmt != NULL) {
+                findAllMemRefsAndPtrAssigns( forInitStmt, stmt );
+            }
+            SgExpression *testExpr = forStatement->get_test_expr();
+            if (testExpr != NULL) {
+                findAllMemRefsAndPtrAssigns( testExpr, stmt );
+            }
+
+            // I'm pretty suspicious of putting this here.  bwhite.
+            // FIXME: MMS, yeah I agree, I think this needs to be
+            // associated with the increment statement somehow?
+            SgExpression *incrExpr = forStatement->get_increment_expr();
+            if (incrExpr != NULL) {
+                findAllMemRefsAndPtrAssigns( incrExpr, stmt );
+            }
             break;
         }
     case V_SgWhileStmt:
+        {
+            SgWhileStmt *whileStmt = isSgWhileStmt(astNode);
+            ROSE_ASSERT(whileStmt != NULL);
+
+            SgStatement *condition = whileStmt->get_condition();
+            if ( condition != NULL ) {
+                findAllMemRefsAndPtrAssigns( condition, stmt );
+            }
+            break;
+        }
     case V_SgDoWhileStmt:
         {
-            ROSE_ASSERT(0);
+            // recurse on condition
+            SgDoWhileStmt *doWhileStmt = isSgDoWhileStmt(astNode);
+            ROSE_ASSERT(doWhileStmt != NULL);
+
+            SgStatement *condition = doWhileStmt->get_condition();
+            if ( condition != NULL ) {
+                findAllMemRefsAndPtrAssigns( condition, stmt );
+            }
             break;
         }
     case V_SgCatchOptionStmt:
         {
-            ROSE_ASSERT(0);
+            // recurse on condition
+            SgCatchOptionStmt *catchOptionStmt = isSgCatchOptionStmt(astNode);
+            ROSE_ASSERT(catchOptionStmt != NULL);
+        
+            SgVariableDeclaration *condition = catchOptionStmt->get_condition();
+            if ( condition != NULL ) {
+                findAllMemRefsAndPtrAssigns( condition, stmt );
+            }
             break;
         }
 
