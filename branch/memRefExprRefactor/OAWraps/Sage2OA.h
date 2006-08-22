@@ -844,9 +844,6 @@ public:
   // to the defining declaration.
   std::map<SgFunctionDeclaration *, SgFunctionDeclaration *> mFunctions;
 
-  //! Return the method in which node occurs.
-  SgFunctionDefinition *getEnclosingMethod(SgNode *node);
-
   //! Returns true if the contructor initializer creates a base type.
   bool createsBaseType(SgConstructorInitializer *ctorInitializer) const;
 
@@ -855,7 +852,7 @@ public:
 
   //! Given a SgNode return a symbol handle to represent the
   //! corresponding SgThisExp.  This symbol handle references
-  //! a SgClassSymbol.
+  //! a SgFunctionParameterList.
   OA::SymHandle getThisExpSymHandle(SgNode *node);
 
 

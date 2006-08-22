@@ -1976,3 +1976,14 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       from StmtHandles
     - Got three more regression tests checked
 
+8/22/06     UseOA-Rose svn branch-memRefExprRefactor r166   Brian White
+    - Copied getThisExpSymHandle from branch, with some cleanup.
+      getThisExpSymHandle uses a SgFunctionParameterList from the 
+      enclosing method to represent a 'this' expression.
+    - Renamed getEnclosingMethod to getEnclosingFunction and moved
+      to common.C.
+    - Copied StringVal case from branch to findAllMemRefsAndPtrAssigns.
+    - Changed default case of findAllMemRefsAndPtrAssigns to ABORT.
+      If you see a case there which is really a no-op, add it 
+      to the no-op case.  
+	

@@ -20,4 +20,7 @@ lookupDestructorInClass(SgClassDefinition *classDefinition);
 
 void getActuals(SgNode *node, std::list<SgNode *> &actuals);
 
+//! Return the method in which node occurs.
+SgFunctionDefinition *getEnclosingFunction(SgNode *node);
+
 #endif /* _USEOA_COMMON_H */

@@ -1382,7 +1382,7 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
       } else {
         
         SgFunctionDefinition *enclosingProc = 
-          getEnclosingMethod(declarationStmt);
+          getEnclosingFunction(declarationStmt);
         
         SgFunctionDefinition *procDefn = 
           isSgFunctionDefinition(procNode);
@@ -2278,7 +2278,7 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
         ROSE_ASSERT(declarationStmt != NULL);
 
         SgFunctionDefinition *functionDefinition = 
-          getEnclosingMethod(declarationStmt);
+          getEnclosingFunction(declarationStmt);
 
         if (functionDefinition == NULL) {
 
@@ -3187,6 +3187,68 @@ SageIRInterface::getCallsiteParams(OA::CallHandle h)
     return retIter;
 }
 
+/** \brief  Return a SymHandle representing a 'this' expression.
+ *  \param  node  A SgNode from which we would like to derive
+ *                a SymHandle for a 'this' expression.
+ *  \returns  A SymHandle representing a 'this' expression
+ *            corresponding to the method or SgThisExp
+ *            represented by node.
+ *
+ *  node should be either a SgMemberFunctionDeclaration or
+ *  a SgThisExp.
+ *
+ *  We use the SgFunctionParameterList from the enclosing
+ *  method to represent the method-specific 'this' expression.
+ *  NB:  Using a class-wide 'this' expression (e.g., a SgClassSymbol)
+ *  would lead to loss of precision.
+ */
+OA::SymHandle SageIRInterface::getThisExpSymHandle(SgNode *node)
+{
+    SgFunctionDeclaration *functionDeclaration = NULL;
+
+    switch(node->variantT()) {
+    case V_SgMemberFunctionDeclaration:
+        {
+            functionDeclaration = isSgFunctionDeclaration(node);
+            break;
+        }
+
+    case V_SgThisExp:
+        {
+            SgThisExp *thisExp = isSgThisExp(node);
+            ROSE_ASSERT(thisExp != NULL);
+
+            SgFunctionDefinition *functionDefinition = 
+                getEnclosingFunction(thisExp);
+            ROSE_ASSERT(functionDefinition != NULL);
+
+            functionDeclaration = functionDefinition->get_declaration();
+            break;
+        }
+
+    default:
+        {
+            std::cerr << "'This' should be represented by its enclosing "
+                      << "methods' SgFunctionParameterList."
+                      << std::endl
+                      << "Don't know how to extract a SgFunctionParameterList "
+                      << "from a " << node->sage_class_name() 
+                      << std::endl;
+            ROSE_ABORT();
+            break;
+        }
+    }
+
+    ROSE_ASSERT(functionDeclaration != NULL);
+
+    SgFunctionParameterList *paramList = 
+        functionDeclaration->get_parameterList();
+    ROSE_ASSERT(paramList != NULL);
+
+    OA::SymHandle symHandle = getNodeNumber(paramList);      
+    return symHandle;
+}
+
 //! get iterator over formal parameters in a function declaration 
 OA::OA_ptr<OA::IRFormalParamIterator> 
 SageIRInterface::getFormalParamIterator(OA::SymHandle h)
@@ -3885,27 +3947,6 @@ void SageIRInterface::findAllPtrAssignAndParamBindPairs(SgNode *astNode,
     } // end of switch
 }
 */
-//! Return the method in which node occurs.
-SgFunctionDefinition *SageIRInterface::getEnclosingMethod(SgNode *node)
-{
-  if ( node == NULL ) return NULL;
-
-  if ( isSgGlobal(node) ) return NULL;
-
-  SgFunctionDefinition *functionDefinition =
-    isSgFunctionDefinition(node);
-
-  if ( functionDefinition != NULL )
-    return functionDefinition;
-
-  SgFunctionDeclaration *functionDeclaration =
-    isSgFunctionDeclaration(node);
-
-  if ( functionDeclaration != NULL )
-    return getEnclosingMethod(functionDeclaration->get_definition());
-
-  return getEnclosingMethod(node->get_parent());
-}
 
 bool
 SageIRInterface::createsBaseType(SgConstructorInitializer *ctorInitializer) const
@@ -3937,18 +3978,6 @@ SgType* SageIRInterface::getBaseType(SgType *type)
   }
 
   return type;
-}
-
-OA::SymHandle SageIRInterface::getThisExpSymHandle(SgNode *node)
-{
-/* MMS 8/10/06, 
-   See the trunk for this code.  It is a bit of a mess and needs cleaned up.
-*/
-  ROSE_ASSERT(0);
- 
-  OA::SymHandle sym;
-
-  return sym;
 }
 
 /** \brief Strip off any leading SgCastExps or SgAssignInitializers

@@ -593,3 +593,34 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
         }
     }
 }
+
+//! Return the function in which node occurs.
+SgFunctionDefinition *getEnclosingFunction(SgNode *node)
+{
+    if ( node == NULL ) {
+        return NULL;
+    }
+
+    if ( isSgGlobal(node) ) {
+        return NULL;
+    }
+
+    SgFunctionDefinition *functionDefinition =
+        isSgFunctionDefinition(node);
+
+    if ( functionDefinition != NULL ) {
+        return functionDefinition;
+    }
+
+    SgFunctionDeclaration *functionDeclaration =
+        isSgFunctionDeclaration(node);
+
+    if ( functionDeclaration != NULL ) {
+        functionDeclaration = 
+            isSgFunctionDeclaration(functionDeclaration->get_definingDeclaration());
+        ROSE_ASSERT(functionDeclaration != NULL);
+        return getEnclosingFunction(functionDeclaration->get_definition());
+    }
+
+    return getEnclosingFunction(node->get_parent());
+}

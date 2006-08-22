@@ -1017,7 +1017,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // Make a pair with a NamedRef for the function being assigned
             // the memory references for the top MemRefHandle of the return exp
             SgFunctionDefinition *enclosingFunction =
-                getEnclosingMethod(returnStmt);
+                getEnclosingFunction(returnStmt);
             ROSE_ASSERT(enclosingFunction != NULL);
             SgFunctionDeclaration *functionDeclaration =
                 enclosingFunction->get_declaration();
@@ -1195,6 +1195,55 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         ROSE_ASSERT(0);
         break;
 
+    case V_SgStringVal:
+        {
+            // BW 7/7/06
+            // Added to handle bug reported by Michelle:
+            // the following statement:
+            //    char a[] = "testing";
+            // gets only one MEMREFEXPR:
+            //    MEMREFEXPRS = { StmtHandle("char a[] = "testing";") =>
+            //        [
+            //            MemRefHandle("a") =>
+            //                NamedRef( DEF, SymHandle("a"), F, full)
+            //        ] }
+            // There needs to be an UnnamedRef for the "testing" string 
+            // and a PtrAssign otherwise the alias analysis will 
+            // have *a and anything that aliases it access
+            // UnknownLoc.
+
+            SgStringVal *stringVal = isSgStringVal(astNode);
+            ROSE_ASSERT(stringVal != NULL);
+
+            // is a MemRefHandle
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+
+            //======= create a NamedRef
+            // Set addressTaken and fullAccuracy like new/malloc.
+            // string value computes the address of a memory location,
+            // so consider it an addressOf operation.
+            bool addressTaken = true;
+
+            // This does _not_ accurately represent the memory 
+            // expression, as this would require the precise calling context.
+            bool accuracy = false;
+            // default MemRefType, ancestors will change this if necessary
+            OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+            // get the symbol for the string
+            OA::StmtHandle stmtHandle;
+            stmtHandle = getNodeNumber(stringVal);
+
+            OA::OA_ptr<OA::MemRefExpr> mre;
+            mre = new OA::UnnamedRef(addressTaken, accuracy, 
+                                     mrType, stmtHandle);
+
+            mMemref2mreSetMap[memref].insert(mre);
+
+            break;
+        }
+
+
     // The "do nothing" statement cases
     case V_SgFunctionDefinition:
     case V_SgLabelStatement:
@@ -1214,11 +1263,37 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgPragmaDeclaration:
     case V_SgGlobal:
     case V_SgBasicBlock:
+    case V_SgBoolValExp:
+    case V_SgCharVal:
+    case V_SgDoubleVal:
+    case V_SgEnumVal:
+    case V_SgFloatVal: 
+    case V_SgIntVal:
+    case V_SgLongDoubleVal:
+    case V_SgLongIntVal:
+    case V_SgLongLongIntVal:
+    case V_SgShortVal:
+    case V_SgUnsignedCharVal:
+    case V_SgUnsignedIntVal:
+    case V_SgUnsignedLongLongIntVal:
+    case V_SgUnsignedLongVal:
+    case V_SgUnsignedShortVal:
+    case V_SgWcharVal:
         break;
 
     default:
-        // do nothing, there are nodes not listed above such as SgIntVal
-        break;
+        {
+            // do nothing, there are nodes not listed above such as SgIntVal
+
+            // I think we should ROSE_ABORT().  If you think we _really_
+            // should not be handling a case, add it to the no-op case
+            // directly above.  BW 8/22/06
+            std::cerr << "Do not know how to handle a " 
+                      << astNode->sage_class_name()
+                      << std::endl;
+            ROSE_ABORT();
+            break;
+        }
 
     } // end of switch
 }
