@@ -1918,3 +1918,6 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     fixed compiler error due to the changed from OpenAnalysis/ExprTree.hpp
     in r195 where CallNode needed a CallHandle not a ExprHandle. File changed
     was Sage20A.C
+
+8/23/06     UseOA-Rose svn trunk r165    Priyadarshini Malusare
+   - modified OATest.C for ManagerReachDefsStandard

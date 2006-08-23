@@ -1013,8 +1013,8 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 
   
   // then can do ReachDefs
-  OA::OA_ptr<OA::ReachDefs::ManagerStandard> rdman;
-  rdman = new OA::ReachDefs::ManagerStandard(irInterface);
+  OA::OA_ptr<OA::ReachDefs::ManagerReachDefsStandard> rdman;
+  rdman = new OA::ReachDefs::ManagerReachDefsStandard(irInterface);
   OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds= 
      rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect); 
   
@@ -1109,8 +1109,8 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   interSideEffect = new OA::SideEffect::InterSideEffectStandard;
 
   // then can do ReachDefs
-  OA::OA_ptr<OA::ReachDefs::ManagerStandard> rdman;
-  rdman = new OA::ReachDefs::ManagerStandard(irInterface);
+  OA::OA_ptr<OA::ReachDefs::ManagerReachDefsStandard> rdman;
+  rdman = new OA::ReachDefs::ManagerReachDefsStandard(irInterface);
   OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds= 
       rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect);
 
