@@ -1997,3 +1997,8 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       references as formals.  Invoke for SgFunctionCallExp and
       SgConstructorInitializer.  SgDeleteExp has no actuals,
       aside from the implicit reference, which can not be a reference.
+
+8/22/06     UseOA-Rose svn branch-memRefExprRefactor r168   Michelle Strout
+    - functionPtr.c, not indicating addressOf when a function name is on
+      the rhs of an assignment.  In SgAssignOp, if rhs is SgFunctionRefExpr
+      make all of its MREs have addressOf set.

@@ -909,12 +909,23 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 lhs_mre->setMemRefType(OA::MemRefExpr::DEF);
             }
 
+            // if the rhs is a SgFunctionRefExpr then we are assigning
+            // a function to a function ptr and we need to set
+            // the address of for the rhs MREs
+            OA::MemRefHandle rhs_memref 
+                = findTopMemRefHandle(assignOp->get_rhs_operand());
+            if (isSgFunctionRefExp(getSgNode(rhs_memref))) {
+                mIter = getMemRefExprIterator(rhs_memref);
+                for ( ; mIter->isValid(); ++(*mIter) ) {
+                    OA::OA_ptr<OA::MemRefExpr> rhs_mre = mIter->current();
+                    rhs_mre->setAddressTaken(true);
+                }
+            }
+
             //----------- Ptr Assigns
             // FIXME: some of this logic might be useful for initializations
             // rhs top memref can only have an lval or pointer val if it is
             // NOT MemRefHandle(0)
-            OA::MemRefHandle rhs_memref 
-                = findTopMemRefHandle(assignOp->get_rhs_operand());
             if (rhs_memref!=OA::MemRefHandle(0))  {
                 SgExpression* lhs_expr 
                     = isSgExpression(assignOp->get_lhs_operand());

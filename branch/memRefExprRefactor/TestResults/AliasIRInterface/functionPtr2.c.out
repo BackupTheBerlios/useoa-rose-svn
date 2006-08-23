@@ -36,6 +36,8 @@ PROCEDURE = { < ProcHandle("foo"), SymHandle("foo") > }
                 Deref( DEF, NamedRef( USE, SymHandle("x"), F, full), 1, F, full)
             MemRefHandle("*y") => 
                 Deref( USE, NamedRef( USE, SymHandle("y"), F, full), 1, F, full)
+            MemRefHandle("*x = *y") => 
+                Deref( USE, NamedRef( USE, SymHandle("x"), F, full), 1, F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("*x = *y;") =>
         [
@@ -68,6 +70,8 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
                 Deref( DEF, NamedRef( USE, SymHandle("yy"), F, full), 1, F, full)
             MemRefHandle("*xx") => 
                 Deref( USE, NamedRef( USE, SymHandle("xx"), F, full), 1, F, full)
+            MemRefHandle("*yy = *xx") => 
+                Deref( USE, NamedRef( USE, SymHandle("yy"), F, full), 1, F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("*yy = *xx;") =>
         [
@@ -89,6 +93,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("input") => 
                 NamedRef( DEF, SymHandle("input"), F, full)
+            MemRefHandle("read") => 
+                NamedRef( USE, SymHandle("read"), F, full)
         ] }
     CALLSITES = { StmtHandle("int input = read();") =>
         [
@@ -140,6 +146,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"), F, full)
+            MemRefHandle("fp = foo") => 
+                NamedRef( USE, SymHandle("fp"), F, full)
             MemRefHandle("foo") => 
                 NamedRef( USE, SymHandle("foo"), T, full)
         ] }
@@ -155,6 +163,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"), F, full)
+            MemRefHandle("fp = bar") => 
+                NamedRef( USE, SymHandle("fp"), F, full)
             MemRefHandle("bar") => 
                 NamedRef( USE, SymHandle("bar"), T, full)
         ] }

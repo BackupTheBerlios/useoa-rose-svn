@@ -15,6 +15,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("x") => 
                 NamedRef( DEF, SymHandle("x"), F, full)
+            MemRefHandle("read") => 
+                NamedRef( USE, SymHandle("read"), F, full)
         ] }
     CALLSITES = { StmtHandle("int x = read();") =>
         [
@@ -35,6 +37,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("foo"), T, full)
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"), F, full)
+            MemRefHandle("fp = foo") => 
+                NamedRef( USE, SymHandle("fp"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("fp = foo;") =>
         [
@@ -50,6 +54,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("bar"), T, full)
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"), F, full)
+            MemRefHandle("fp = bar") => 
+                NamedRef( USE, SymHandle("fp"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("fp = bar;") =>
         [

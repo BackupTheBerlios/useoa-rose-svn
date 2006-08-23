@@ -29,8 +29,8 @@ test::  fields.c,                checked by MMS 8/20/06
 #test::  OAWikiEx.c,             checked by ???
 #test::  funCall.c,              checked by ???
 test::  func_call.c,             p=fp2() has two MemRefHandles that are the same? aborting MMS 8/1/06 XXX
-test::  functionPtr.c,           checked by MMS 8/1/06 XXX
-test::  functionPtr2.c,          checked by MMS 8/1/06 XXX
+test::  functionPtr.c,           checked by MMS 8/22/06
+test::  functionPtr2.c,          checked by MMS 8/22/06
 test::  invokeBaseCtor.C,        checked by BSW 6/26/06 XXX
 test::  localNonLocal.c,         checked by BSW 6/28/06 (rechecked by MMS 8/21/06)
 test::  passArrayPtr.c,          checked by MMS 7/27/06 XXX
