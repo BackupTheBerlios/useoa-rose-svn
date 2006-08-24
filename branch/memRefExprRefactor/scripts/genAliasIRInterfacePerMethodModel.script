@@ -1,0 +1,58 @@
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/addressOf.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/addressOf.c >& TestResults/AliasIRInterfacePerMethodModel/addressOf.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/aggregateInit.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/aggregateInit.c >& TestResults/AliasIRInterfacePerMethodModel/aggregateInit.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/alias1.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/alias1.c >& TestResults/AliasIRInterfacePerMethodModel/alias1.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/alias2.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/alias2.c >& TestResults/AliasIRInterfacePerMethodModel/alias2.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/alias4.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/alias4.c >& TestResults/AliasIRInterfacePerMethodModel/alias4.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/alias4b.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/alias4b.c >& TestResults/AliasIRInterfacePerMethodModel/alias4b.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/assignOps.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/assignOps.c >& TestResults/AliasIRInterfacePerMethodModel/assignOps.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/assignReturn.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/assignReturn.c >& TestResults/AliasIRInterfacePerMethodModel/assignReturn.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/class.C.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/class.C >& TestResults/AliasIRInterfacePerMethodModel/class.C.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/comma.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/comma.c >& TestResults/AliasIRInterfacePerMethodModel/comma.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/fields.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/fields.c >& TestResults/AliasIRInterfacePerMethodModel/fields.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/func_call.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/func_call.c >& TestResults/AliasIRInterfacePerMethodModel/func_call.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/functionPtr.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/functionPtr.c >& TestResults/AliasIRInterfacePerMethodModel/functionPtr.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/functionPtr2.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/functionPtr2.c >& TestResults/AliasIRInterfacePerMethodModel/functionPtr2.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/invokeBaseCtor.C.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/invokeBaseCtor.C >& TestResults/AliasIRInterfacePerMethodModel/invokeBaseCtor.C.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/localNonLocal.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/localNonLocal.c >& TestResults/AliasIRInterfacePerMethodModel/localNonLocal.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/passArrayPtr.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/passArrayPtr.c >& TestResults/AliasIRInterfacePerMethodModel/passArrayPtr.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/parambinds-formals-intPtrs.C.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/parambinds-formals-intPtrs.C >& TestResults/AliasIRInterfacePerMethodModel/parambinds-formals-intPtrs.C.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/passIntPtrArrayRef.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/passIntPtrArrayRef.c >& TestResults/AliasIRInterfacePerMethodModel/passIntPtrArrayRef.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/passIntPtrArrayRef2.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/passIntPtrArrayRef2.c >& TestResults/AliasIRInterfacePerMethodModel/passIntPtrArrayRef2.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/passIntPtrArrayRef3.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/passIntPtrArrayRef3.c >& TestResults/AliasIRInterfacePerMethodModel/passIntPtrArrayRef3.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/passIntPtr.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/passIntPtr.c >& TestResults/AliasIRInterfacePerMethodModel/passIntPtr.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/refParam.C.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/refParam.C >& TestResults/AliasIRInterfacePerMethodModel/refParam.C.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/ref.C.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/ref.C >& TestResults/AliasIRInterfacePerMethodModel/ref.C.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/refClass.C.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/refClass.C >& TestResults/AliasIRInterfacePerMethodModel/refClass.C.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/refClass2.C.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/refClass2.C >& TestResults/AliasIRInterfacePerMethodModel/refClass2.C.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/retPtr1.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/retPtr1.c >& TestResults/AliasIRInterfacePerMethodModel/retPtr1.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/swap.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/swap.c >& TestResults/AliasIRInterfacePerMethodModel/swap.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/ternop.c.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/ternop.c >& TestResults/AliasIRInterfacePerMethodModel/ternop.c.out

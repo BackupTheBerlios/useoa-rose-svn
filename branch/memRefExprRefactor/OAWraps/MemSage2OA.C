@@ -821,10 +821,61 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             std::string field_name = findFieldName(rhs_memref);
             OA::OA_ptr<OA::MemRefExprIterator> mIter
                 = getMemRefExprIterator(lhs_memref);
+            OA::OA_ptr<OA::MemRefExprIterator> mRhsIter
+                = getMemRefExprIterator(rhs_memref);
             for ( ; mIter->isValid(); ++(*mIter) ) {
                 OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
                 OA::OA_ptr<OA::MemRefExpr> fieldAccess;
                 bool addressTaken = false;
+
+#if 1
+                if ( mUseVtableOpt ) {
+
+                    // If we are using the vtable optimization, we don't
+                    // return receiver."method" for a virtual method 
+                    // invocation, but
+                    // (*receiver.FieldHandle(OA_VTABLE_STR))."method".
+
+                    // There should only be one rhs MRE.
+                    OA::OA_ptr<OA::MemRefExpr> rhs_mre;
+                    int numRhs = 0;
+                    for(; mRhsIter->isValid(); ++(*mRhsIter)) {
+                        rhs_mre = mRhsIter->current();
+                        ++numRhs;
+                    }
+                    ROSE_ASSERT(numRhs == 1);
+
+                    if ( rhs_mre->isaNamed() ) {
+                        OA::OA_ptr<OA::NamedRef> namedRef = 
+                            rhs_mre.convert<OA::NamedRef>();
+                        ROSE_ASSERT(!namedRef.ptrEqual(0));
+	
+                        OA::SymHandle symHandle = namedRef->getSymHandle();
+                        SgNode *node = getNodePtr(symHandle);
+                        ROSE_ASSERT(node != NULL);
+	
+                        SgFunctionDeclaration *functionDeclaration = 
+                            isSgFunctionDeclaration(node);
+
+                        if ( ( functionDeclaration != NULL ) &&
+                             ( isVirtual(functionDeclaration) ) ) {
+
+                            OA::OA_ptr<OA::FieldAccess> fieldAccess;
+                            fieldAccess = new OA::FieldAccess(false, 
+                                                              lhs_mre->hasFullAccuracy(),
+                                                              OA::MemRefExpr::USE,
+                                                              lhs_mre,
+                                                              OA_VTABLE_STR);
+
+                            lhs_mre = new OA::Deref(false,
+                                                    fieldAccess->hasFullAccuracy(),
+                                                    OA::MemRefExpr::USE,
+                                                    fieldAccess,
+                                                    1);
+                        }
+                    }
+                }
+#endif
                 fieldAccess = new OA::FieldAccess(false, 
                                                   lhs_mre->hasFullAccuracy(),
                                                   OA::MemRefExpr::USE,
@@ -1271,9 +1322,30 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgInitializedNamePtrList::iterator varIter;
             for (varIter=variables.begin(); varIter!=variables.end(); ++varIter)
             {
-                SgNode *lhs = *varIter;
+                SgInitializedName *lhs = *varIter;
                 ROSE_ASSERT(lhs != NULL);
                 findAllMemRefsAndPtrAssigns(lhs,stmt);
+
+                // Retrieve any MREs create for a variable declaration.
+                // Really, there should be at most one.  This should
+                // have been created by the above call to 
+                // findAllMemRefsAndPtrAssigns.
+                OA::MemRefHandle var_memref 
+                    = findTopMemRefHandle(lhs);
+                OA::OA_ptr<OA::MemRefExprIterator> mIter
+                    = getMemRefExprIterator(var_memref);
+
+#if 1
+                // For each MRE, determine if there are
+                // implicit ptr assign pairs, which arise if this
+                // is an object declaration.
+                for ( ; mIter->isValid(); ++(*mIter) ) {
+                    OA::OA_ptr<OA::MemRefExpr> mre = mIter->current();
+                    createImplicitPtrAssignPairsForObjectDeclaration(stmt,
+                                                                     mre,
+                                                                     lhs);
+                }
+#endif
             }
             break;
         }
@@ -1393,9 +1465,25 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
     // The statement cases that we should not see
     case V_SgNamespaceDefinitionStatement:
-    case V_SgClassDefinition:
         ROSE_ASSERT(0);
         break;
+
+    case V_SgClassDefinition:
+        {
+            SgClassDefinition *classDefn = isSgClassDefinition(astNode);
+            ROSE_ASSERT(classDefn != NULL);
+
+            // If we are using the virtual function table model,
+            // we need to create implicit ptr assignments on a 
+            // class definition.
+#if 1
+	    std::list<SgMemberFunctionDeclaration *> visitedVirtualMethods;
+            createImplicitPtrAssignPairsForClassDefinition(stmt,
+                                                           classDefn,
+                                                           visitedVirtualMethods);
+#endif
+            break;
+        }
 
     case V_SgStringVal:
         {
@@ -1550,6 +1638,626 @@ bool SageIRInterface::is_lval(OA::MemRefHandle memref)
     }
     return retval;
 }
+
+/** \brief Create implicit pointer assignment pairs to model
+ *         virtual methods in classDefinition and its base classes.
+ *  \param  stmt  The StmtHandle of the statement generating
+ *                these implicit assignments.
+ *  \param  lhsMRE  The MemRefExpr that will be used as the base
+ *                  to create implicit pointer assignment pairs.
+ *  \param  classDefinition  The class for which we need to 
+ *                           model virtual methods.
+ *  \param  visitedVirtualMethods  A list of virtual methods for
+ *                                 which we have already created
+ *                                 implicit pointer assignment
+ *                                 pairs for with respect to the
+ *                                 top-level invocation of this
+ *                                 method on lhsMRE/classDefinition.
+ *
+ *  This method handles both the virtual function table model
+ *  and the per-method model.
+ *
+ *  Virtual function table model:
+ *  If classDefinition does not have any virtual methods
+ *      recurse up its class hierarchy.
+ *  Else
+ *      Create an implicit ptr assignment pair < lhsMRE."vptr", &classDefn >
+ *         where classDefn is a NamedRef representing the class.
+ *        
+ *  Per-method model:
+ *  For each virtual method vm in classDefinition
+ *      Create an implicit ptr assignment pair < lhsMRE."vm", &vm >
+ *         where vm is a NamedRef representing the method.
+ *  Recurse up classDefinition's class hierarchy (always).
+ *
+ *  NB:  We expect that lhs is already Deref'ed if it needs to be.
+ */
+void
+SageIRInterface::
+createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
+                                              OA::OA_ptr<OA::MemRefExpr> lhsMRE,
+                                              SgClassDefinition *classDefinition,
+                                              std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods)
+{
+    // A lhs need not be a pointer.  We now create implicit ptr assignments
+    // for object allocations, e.g., A a;.  While it is true that 
+    // we can statically determine virtual methods invocations for 
+    // objects (as opposed to pointers), we make take the address of
+    // the object and assign it to a pointer.  A *b = &a.  
+    // We need b to have access to these implicit ptr assignments.
+
+    ROSE_ASSERT(classDefinition != NULL);
+
+    if ( mUseVtableOpt ) {
+
+        bool hasMethods = classHasVirtualMethods(classDefinition);
+        if ( hasMethods == true ) {
+
+            // Use the vtable optimization.  Rather than
+            // create implicit ptr assigns for each method of an object a 
+            // of class A, we create a single implicit assignment:
+            // < a.FieldHandle(OA_VTABLE_STR), &A >
+            // This is effectively a pointer to a (virtual) table,
+            // though we create it whenever there are methods, virtual
+            // or otherwise.
+            // 1/15/06:  No longer true, now we just create it if there
+            // are virtual methods.  Why were we ever creating for
+            // non-virtual methods.
+
+            // At each declaration of class A we create implicit pairs
+            // for each method of the form:
+            // < A.method, &A::method >
+            // where the first MRE is a FieldAccess
+            // and the second is a NamedRef.
+            // Thus *((*(*a).FieldHandle(OA_VTABLE_STR)).method), as
+            // returned by getCallMemRefExpr(), is aliased to *A.method 
+            // is aliased to A::method
+            // via FIAlias, which resolves the string-based FieldAccess to
+            // the symbol-based NamedRef which unambiguously 
+            // specifies the method.
+
+            // Create the implicit ptr assignment.
+            bool addressTaken = false;
+            bool fullAccuracy = true;
+            OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::DEF;
+            string mangledMethodName = OA_VTABLE_STR;
+	
+            // NB:  we expect that lhsMRE was already Deref'ed
+            //      before being passed here if it is a pointer.
+            OA::OA_ptr<OA::FieldAccess> fieldAccess;
+            fieldAccess = new OA::FieldAccess(addressTaken, 
+                                              fullAccuracy,
+                                              memRefType,
+                                              lhsMRE,
+                                              mangledMethodName);
+
+            // Create the rhs to represent the class of the lhs.
+            addressTaken = true;
+            memRefType = OA::MemRefExpr::USE;
+            OA::SymHandle symHandle;
+            symHandle = getVTableBaseSymHandle(classDefinition);
+	
+            OA::OA_ptr<OA::NamedRef> classMRE;
+            classMRE = new OA::NamedRef(addressTaken, 
+                                        fullAccuracy,
+                                        memRefType,
+                                        symHandle);
+
+            _makePtrAssignPair(stmt, fieldAccess, classMRE);	
+ 
+            // Do not recurse at this point.
+            // This virtual table will suffice to handle
+            // all virtual methods in the parent class as well.
+            return;
+        }
+
+    } else {
+
+        // This is the non-virtual table optimization, i.e., per-method
+        // virtual method model.
+
+        // Create an implicit ptr assignment pair for all methods in this
+        // class definition and for all methods in all superclasses.
+
+        // First, visit all methods in this class.
+        SgDeclarationStatementPtrList &members = 
+            classDefinition->get_members(); 
+        for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
+             it != members.end(); ++it) { 
+
+            SgDeclarationStatement *declarationStatement = *it; 
+            ROSE_ASSERT(declarationStatement != NULL);
+
+            switch(declarationStatement->variantT()) {
+            case V_SgMemberFunctionDeclaration:
+                {
+                    SgMemberFunctionDeclaration *functionDeclaration =  
+                        isSgMemberFunctionDeclaration(declarationStatement); 
+                    // Base case: 
+                    // Create implicit pointer assignment pairs for any
+                    // methods declared in this class.
+                    if ( ( functionDeclaration != NULL ) &&
+                         ( isVirtual(functionDeclaration) ) ) {
+
+                        // Don't visit a virtual method if we have already
+                        // visited a virtual method which overrides it.
+                        bool visitedAnOverridingMethod = false;
+                        std::list<SgMemberFunctionDeclaration *>::iterator it =
+                            visitedVirtualMethods.begin();
+                        for(; it != visitedVirtualMethods.end(); ++it) {
+                            SgMemberFunctionDeclaration *memberFuncDecl = *it;
+                            ROSE_ASSERT(memberFuncDecl != NULL);
+                            if ( matchingFunctions(memberFuncDecl, 
+                                                   functionDeclaration) ) {
+                                visitedAnOverridingMethod = true;
+                                break;
+                            }
+                        }
+
+                        if ( !visitedAnOverridingMethod ) {
+                            visitedVirtualMethods.push_back(functionDeclaration);
+		
+                            // Create an implicit pointer assignment pair 
+                            // for this method m of class C of the form:
+                            // < (*lhs).m, &C::m >
+                            // Since we do not accurately model structures,
+                            // we collapse the lhs 'a.b.c' to 'a' and 
+                            // flag it is an inaccurate.
+                            // 1/15/06:  If lhsMRE is inaccurate, 
+                            // it will already have been marked as such.
+
+                            // Create the lhs of the pair.
+                            OA::OA_ptr<OA::MemRefExpr> baseLHS;
+                            baseLHS = lhsMRE->clone();
+
+                            bool addressTaken = false;
+                            bool fullAccuracy = true;
+                            if ( !baseLHS->hasFullAccuracy() ) {
+                                fullAccuracy = false;
+                            }
+
+                            OA::MemRefExpr::MemRefType memRefType = 
+                                OA::MemRefExpr::DEF;
+                            string mangledMethodName = 
+                                mangleFunctionName(functionDeclaration);
+		
+                            // As above, we expect that the lhs has
+                            // already been Deref'ed if need be.
+                            OA::OA_ptr<OA::FieldAccess> fieldAccess;
+                            fieldAccess = new OA::FieldAccess(addressTaken, 
+                                                              fullAccuracy,
+                                                              memRefType,
+                                                              baseLHS,
+                                                              mangledMethodName);
+		
+                            // Create the rhs to represent the method 
+                            // declaration.
+                            memRefType = OA::MemRefExpr::USE;
+                            OA::SymHandle symHandle;
+                            symHandle = getProcSymHandle(functionDeclaration);
+
+                            addressTaken = true;
+                            OA::OA_ptr<OA::NamedRef> method;
+                            method = new OA::NamedRef(addressTaken, 
+                                                      fullAccuracy,
+                                                      memRefType,
+                                                      symHandle);
+		
+                            // Create the pair.
+                            _makePtrAssignPair(stmt, fieldAccess, method);
+                        }
+                    }
+                    break;
+                }
+            default:
+                {
+                    break;
+                }
+            }
+        }
+    }
+
+    // Recursively call this method on each base class.
+    SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances(); 
+    for (SgBaseClassPtrList::iterator i = baseClassList.begin(); 
+         i != baseClassList.end(); ++i) {
+
+        SgBaseClass *baseClass = *i;
+        ROSE_ASSERT(baseClass != NULL);
+ 
+        SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
+        ROSE_ASSERT(classDeclaration != NULL);
+
+        classDeclaration = getDefiningDeclaration(classDeclaration);
+        ROSE_ASSERT(classDeclaration != NULL);
+
+        SgClassDefinition  *parentClassDefn = 
+            classDeclaration->get_definition(); 
+        if ( parentClassDefn != NULL ) {
+            createImplicitPtrAssignPairsForVirtualMethods(stmt,
+                                                          lhsMRE,
+                                                          parentClassDefn,
+                                                          visitedVirtualMethods);
+        }
+    }
+}
+
+/** \brief If the explicit ptr assign pair <lhs_mre, rhs_mre> allocates
+ *         and instantiates an object via new (in rhs_mre), then create
+ *         implicit pointer assign pairs to model virtual methods.
+ *  \param stmt  The statement within which the <lhs_mre, rhs_mre> pair
+ *               occurs.
+ *  \param lhs_mre  A MemRefExpr for the left-hand side of the assignment.
+ *  \param rhs_mre  A MemRefExpr for the right-hand side of the assignment.
+ *
+ *  The implicit pointer assignments bind a field of an object
+ *  to the symbol for a virtual method.
+ *
+ *  We offer two models: the default virtual table model and 
+ *  a per-method model.  Selection is controlled via mUseVtableOpt.
+ *
+ *  Under the virtual table optimization:
+ *  For each <lhs, rhs> where rhs is a new expression
+ *     type = class allocated by rhs new expression
+ *     lhs->"vptr" = &type
+ *
+ *  For each class definition (SgClassDefinition) of type t
+ *     For each virtual method vm of t
+ *        t.vm = &t::vm
+ *
+ *  Under the per-method model:
+ *  For each <lhs, rhs> where rhs is a new expression
+ *     type = class allocated by rhs new expression
+ *     For each virtual method vm of type
+ *         lhs->vm = &type::vm
+ */
+void
+SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::StmtHandle stmt, 
+                                                                        OA::OA_ptr<OA::MemRefExpr> lhs_mre, 
+                                                                        OA::OA_ptr<OA::MemRefExpr> rhs_mre)
+{
+    if ( !rhs_mre->isaUnnamed() ) {
+        return;
+    }
+
+    OA::OA_ptr<OA::UnnamedRef> unnamed_mre = rhs_mre.convert<OA::UnnamedRef>();
+    ROSE_ASSERT(!unnamed_mre.ptrEqual(0));
+
+    OA::StmtHandle rhs_stmt = unnamed_mre->getStmtHandle();
+
+    // Verify that this stmt handle maps to an AST node of an
+    // expected type.
+    verifyStmtHandleType(stmt);
+
+    SgNode *node = getNodePtr(stmt);
+    ROSE_ASSERT(node != NULL);
+
+    SgNewExp *newExp = isSgNewExp(node);
+    if ( newExp == NULL ) {
+        return;
+    }
+
+    SgType *type = newExp->get_type();
+    ROSE_ASSERT(type != NULL);
+
+    // We only create implicit pointer assignment pairs
+    // for classes/structs, not basic types.
+    if ( !isSgNamedType(type) ) {
+        return;
+    }
+
+    // The explicit ptr assignment pair does involve a right-hand
+    // side that is allocating an object.  Therefore, we do
+    // need to create implicit assignment pairs.
+
+    // Extract the class being allocated.
+    SgClassDeclaration *classDeclaration =
+        getClassDeclaration(type);
+    if ( classDeclaration == NULL ) {
+        return;
+    }
+
+    classDeclaration = getDefiningDeclaration(classDeclaration);
+    if ( classDeclaration == NULL ) {
+        return;
+    }
+
+    SgClassDefinition *classDefinition = 
+        classDeclaration->get_definition();
+
+    if ( classDefinition == NULL ) {
+        return;
+    }
+
+    std::list<SgMemberFunctionDeclaration *> visitedVirtualMethods;
+
+    // The lhs is obviously a pointer if it is assigned
+    // to a new expression.  Therefore, dereference it
+    // so that createImplicitPtrAssignPairsForVirtualMethods
+    // may add a field access to it.
+    OA::OA_ptr<OA::MemRefExpr> derefedLhs;
+
+    // The MRE we are dereferencing represents a new expression.
+    // Since it produces an address, it better have its
+    // address taken.  Verify that and then dereference
+    // by setting addressTaken to false.
+    ROSE_ASSERT(lhs_mre->hasAddressTaken());
+  
+    derefedLhs = lhs_mre->clone();
+    derefedLhs->setAddressTaken(false);
+
+    createImplicitPtrAssignPairsForVirtualMethods(stmt,
+                                                  derefedLhs,
+                                                  classDefinition,
+                                                  visitedVirtualMethods);
+}
+
+/** \brief If the declaration corresponding to initName declares
+ *         an object, then create implicit pointer assign
+ *         pairs to model its virtual methods.
+ *  \param stmt  The statement within which the object declaration occurs.
+ *  \param lhs_mre  A MemRefExpr for the object declared.
+ *  \param initName  a SgNode representing an initialized name from
+ *                   a declaration.
+ *
+ *  The implicit pointer assignments bind a field of an object
+ *  to the symbol for a virtual method.
+ *
+ *  We offer two models: the default virtual table model and 
+ *  a per-method model.  Selection is controlled via mUseVtableOpt.
+ *
+ *  Under the virtual table optimization:
+ *  For each object declaration where lhs is the object declared.
+ *     type = object's class
+ *     lhs."vptr" = &type
+ *
+ *  For each class definition (SgClassDefinition) of type t
+ *     For each virtual method vm of t
+ *        t.vm = &t::vm
+ *
+ *  Under the per-method model:
+ *  For each object declaration where lhs is the object declared.
+ *     type = declared object's class
+ *     For each virtual method vm of type
+ *         lhs.vm = &type::vm
+ */
+void
+SageIRInterface::createImplicitPtrAssignPairsForObjectDeclaration(OA::StmtHandle stmt, 
+                                                                  OA::OA_ptr<OA::MemRefExpr> lhs_mre,
+                                                                  SgInitializedName *initName)
+{
+    ROSE_ASSERT(initName != NULL);
+
+    SgType *type = initName->get_type();
+    ROSE_ASSERT(type != NULL);
+  
+    // We are only interested in object instantiations, 
+    // not pointer or reference declarations.
+    if ( isSgReferenceType(type) || isSgPointerType(type) ) {
+        return;    
+    }
+
+    // Could replace the above conditional with this;
+    // just being explicit.
+    if ( !isSgNamedType(type) ) {
+        return;
+    }
+
+    SgClassDeclaration *classDeclaration =
+        getClassDeclaration(type);
+    if ( classDeclaration == NULL ) {
+        return;
+    }
+
+    classDeclaration = getDefiningDeclaration(classDeclaration);
+    if ( classDeclaration == NULL ) {
+        return;
+    }
+
+    SgClassDefinition *classDefinition = 
+        classDeclaration->get_definition();
+    if ( classDefinition == NULL ) {
+        return;
+    }
+
+    if ( !classHasVirtualMethods(classDefinition) ) {
+        return;
+    }
+
+    std::list<SgMemberFunctionDeclaration *> visitedVirtualMethods;
+
+    createImplicitPtrAssignPairsForVirtualMethods(stmt,
+                                                  lhs_mre,
+                                                  classDefinition,
+                                                  visitedVirtualMethods);
+}
+
+
+/** \brief Create implicit pointer assignment pairs to model
+ *         virtual methods in classDefinition and its base classes
+ *         for the virtual function table model.
+ *  \param  stmt  The StmtHandle of the statement generating
+ *                these implicit assignments.
+ *  \param  classDefinition  The class for which we need to 
+ *                           model virtual methods.
+ *  \param  visitedVirtualMethods  A list of virtual methods for
+ *                                 which we have already created
+ *                                 implicit pointer assignment
+ *                                 pairs for with respect to the
+ *                                 top-level invocation of this
+ *                                 method on classDefinition.
+ *
+ *
+ *  For all virtual methods vm in class C
+ *     create pair < C."vm", &C::vm >
+ *
+ *  Recurse up class hierarhcy.
+ *
+ *  NB:  The recursion means that the virtual function table
+ *       for this class with contain entries to virtual methods
+ *       defined by it or any of its ancestors.
+ *
+ *  Compare this method with createImplicitPtrAssignPairsForVirtualMethods,
+ *  which creates per-method implicit assignments at object creation
+ *  and instantiation for the non-virtual function table model.  
+ *  Instead of creating those pairs once per creation/instantiation,
+ *  we create analogous pairs here once per class definition.
+ *
+ *  Expect use of these pairs:
+ *  A call handle for the virtual function table model should
+ *  be *((*receiver)."OA_VTABLE_STR")."method".  
+ *  createImplicitPtrAssignPairsForVirtualMethods should create
+ *  < (*reciever)."OA_VTABLE_STR", &Class > for the virtual function
+ *  table model.
+ *  Here, we create < Class."method", Class::method >.  Unifying the
+ *  above resolves the call handle to
+ *  < *((*receiver)."OA_VTABLE_STR")."method", Class::method >.
+ */
+void
+SageIRInterface::createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle stmt,
+                                                                SgClassDefinition *classDefinition,
+                                                                std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods)
+{
+    if ( !mUseVtableOpt ) {
+        return;
+    }
+
+    ROSE_ASSERT(classDefinition != NULL);
+
+    // Create an implicit ptr assignment pair for all methods in this
+    // class definition and for all methods in all superclasses.
+    // Such ptr assignments will assign a function symbol to a slot
+    // in the virtual function table.
+
+    // First, visit all methods in this class.
+    SgDeclarationStatementPtrList &members = classDefinition->get_members(); 
+    for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
+         it != members.end(); ++it) { 
+
+        SgDeclarationStatement *declarationStatement = *it; 
+        ROSE_ASSERT(declarationStatement != NULL);
+
+        switch(declarationStatement->variantT()) {
+        case V_SgMemberFunctionDeclaration:
+            {
+                SgMemberFunctionDeclaration *functionDeclaration =  
+                    isSgMemberFunctionDeclaration(declarationStatement); 
+	
+                // Base case: 
+                // Create implicit pointer assignment pairs for any methods
+                // declared in this class.
+                if ( ( functionDeclaration != NULL ) && 
+                     ( isVirtual(functionDeclaration) ) ) {
+
+                    // Don't visit a virtual method if we have already
+                    // visited a virtual method which overrides it.
+                    bool visitedAnOverridingMethod = false;
+                    std::list<SgMemberFunctionDeclaration *>::iterator it =
+                        visitedVirtualMethods.begin();
+                    for(; it != visitedVirtualMethods.end(); ++it) {
+                        SgMemberFunctionDeclaration *memberFuncDecl = *it;
+                        ROSE_ASSERT(memberFuncDecl != NULL);
+                        if ( matchingFunctions(memberFuncDecl, 
+                                               functionDeclaration) ) {
+                            visitedAnOverridingMethod = true;
+                            break;
+                        }
+                    }
+
+                    if ( !visitedAnOverridingMethod ) {
+                        visitedVirtualMethods.push_back(functionDeclaration);
+
+                        // Create the lhs MRE-- i.e., the vtable slot entry
+                        // for this method: A."method".
+                        bool addressTaken = false;
+                        bool fullAccuracy = true;
+                        OA::MemRefExpr::MemRefType memRefType = OA::MemRefExpr::USE;
+    
+                        OA::SymHandle symHandle;
+                        symHandle = getVTableBaseSymHandle(classDefinition);
+    
+                        OA::OA_ptr<OA::NamedRef> classMRE;
+                        classMRE = new OA::NamedRef(addressTaken, 
+                                                    fullAccuracy,
+                                                    memRefType,
+                                                    symHandle);
+    
+                        string mangledMethodName = 
+                            mangleFunctionName(functionDeclaration);
+                        memRefType = OA::MemRefExpr::DEF;
+    
+                        OA::OA_ptr<OA::FieldAccess> fieldAccess;
+                        fieldAccess = new OA::FieldAccess(addressTaken, 
+                                                          fullAccuracy,
+                                                          memRefType,
+                                                          classMRE,
+                                                          mangledMethodName);
+    
+                        // Create the rhs MRE-- i.e., the resolved function
+                        // symbol &A::method.
+                        memRefType = OA::MemRefExpr::USE;
+                        symHandle = getProcSymHandle(functionDeclaration);
+    	  
+                        addressTaken = true;
+                        OA::OA_ptr<OA::NamedRef> method;
+                        method = new OA::NamedRef(addressTaken, 
+                                                  fullAccuracy,
+                                                  memRefType,
+                                                  symHandle);
+    
+                        // Create the pair.
+                        _makePtrAssignPair(stmt, fieldAccess, method);
+                    }
+                }
+                break;
+            }
+        default:
+            {
+                break;
+            }
+        }
+    }
+
+    // Now recurse up the class hierarchy.  Any virtual methods defined
+    // in a base class and not overridden by this class will be 
+    // flatten into this class' virtual function table.
+    SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances(); 
+    for (SgBaseClassPtrList::iterator i = baseClassList.begin(); 
+         i != baseClassList.end(); ++i) {
+ 
+        SgBaseClass *baseClass = *i;
+        ROSE_ASSERT(baseClass != NULL);
+
+        SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
+        ROSE_ASSERT(classDeclaration != NULL);
+
+        classDeclaration = getDefiningDeclaration(classDeclaration);
+        ROSE_ASSERT(classDeclaration != NULL);
+
+        SgClassDefinition  *parentClassDefinition  = 
+            classDeclaration->get_definition(); 
+
+        if ( parentClassDefinition != NULL ) {
+            createImplicitPtrAssignPairsForClassDefinition(stmt,
+                                                           parentClassDefinition,
+                                                           visitedVirtualMethods);
+        }
+    }
+}
+
+void 
+SageIRInterface::_makePtrAssignPair(OA::StmtHandle stmt,
+                                   OA::OA_ptr<OA::MemRefExpr> lhs_mre,
+                                   OA::OA_ptr<OA::MemRefExpr> rhs_mre)
+{
+    // You should _not_ be calling this method. 
+    // It should only be invoked (from methods invoked) from
+    // makePtrAssignPair.
+    mStmtToPtrPairs[stmt].insert(
+        pair<OA::OA_ptr<OA::MemRefExpr>, 
+             OA::OA_ptr<OA::MemRefExpr> >(lhs_mre,rhs_mre));
+}
+
 void 
 SageIRInterface::makePtrAssignPair(OA::StmtHandle stmt,
                                    OA::MemRefHandle lhs_memref, 
@@ -1565,9 +2273,11 @@ SageIRInterface::makePtrAssignPair(OA::StmtHandle stmt,
              ++(*rhsIter) ) 
         {
           OA::OA_ptr<OA::MemRefExpr> rhs_mre=rhsIter->current();
-          mStmtToPtrPairs[stmt].insert(
-            pair<OA::OA_ptr<OA::MemRefExpr>, 
-                 OA::OA_ptr<OA::MemRefExpr> >(lhs_mre,rhs_mre));
+          _makePtrAssignPair(stmt, lhs_mre, rhs_mre);
+          // We need to create implicit pointer assignment pairs
+          // to model virtual method calls if the RHS allocates
+          // and instantiates an object via new. 
+	  createImplicitPtrAssignPairsForDynamicObjectAllocation(stmt, lhs_mre, rhs_mre);
         } 
     }
 }
@@ -1581,9 +2291,11 @@ SageIRInterface::makePtrAssignPair(OA::StmtHandle stmt,
     rhsIter = getMemRefExprIterator(rhs_memref);
     for (rhsIter->reset(); rhsIter->isValid(); ++(*rhsIter) ) {
       OA::OA_ptr<OA::MemRefExpr> rhs_mre=rhsIter->current();
-      mStmtToPtrPairs[stmt].insert(
-        pair<OA::OA_ptr<OA::MemRefExpr>, 
-             OA::OA_ptr<OA::MemRefExpr> >(lhs_mre,rhs_mre));
+      _makePtrAssignPair(stmt, lhs_mre, rhs_mre);
+      // We need to create implicit pointer assignment pairs
+      // to model virtual method calls if the RHS allocates
+      // and instantiates an object via new. 
+      createImplicitPtrAssignPairsForDynamicObjectAllocation(stmt, lhs_mre, rhs_mre);
     } 
 }
 
@@ -1606,7 +2318,7 @@ std::string SageIRInterface::findFieldName(OA::MemRefHandle memref)
         OA::OA_ptr<OA::MemRefExpr> mre = mIter->current();
         if (mre->isaNamed()) {
             OA::OA_ptr<OA::NamedRef> named_mre = mre.convert<OA::NamedRef>();
-            retval = toString(named_mre->getSymHandle());
+            retval = toStringWithoutScope(named_mre->getSymHandle());
         } else {
             ROSE_ASSERT(0);
         }

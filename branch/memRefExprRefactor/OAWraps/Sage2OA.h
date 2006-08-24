@@ -375,7 +375,8 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   //! Constructor.
   SageIRInterface(SgNode *root, 
                   std::vector<SgNode*> *na, 
-                  bool use_persistent_handles = FALSE);
+                  bool use_persistent_handles = FALSE,
+                  bool useVtableOpt = FALSE);
   ~SageIRInterface();
 
     
@@ -442,6 +443,7 @@ private:
   SgNode * wholeProject;
   OA::OA_ptr<OA::IRRegionStmtIterator> body (OA::StmtHandle h);
   bool persistent_handles;
+  bool mUseVtableOpt;
   //------------------------------
   // loops
   //------------------------------
@@ -588,6 +590,7 @@ public:
   std::string toString(const OA::OpHandle h) { return ""; }
   std::string toString(const OA::MemRefHandle h);
   std::string toString(const OA::SymHandle h); 
+  std::string toStringWithoutScope(const OA::SymHandle h); 
   std::string toString(const OA::ConstSymHandle h) {
     //-----
     // reasoning by BK:
@@ -732,6 +735,8 @@ public:
     //}
     return memRefHandle;
   }
+  OA::SymHandle getSymHandle(SgNode *astNode);
+  OA::SymHandle getVTableBaseSymHandle(SgClassDefinition *classDefn);
   OA::CallHandle getCallHandle(SgNode *astNode) { 
       switch(astNode->variantT()) {
       case V_SgFunctionCallExp:
@@ -760,6 +765,7 @@ public:
   bool isMemRefNode(SgNode *astNode);
 
   void verifyCallHandleType(OA::CallHandle call);
+  void verifyStmtHandleType(OA::StmtHandle stmt);
 
  protected:
 
@@ -782,6 +788,11 @@ public:
   //! Determine if all the MREs associated with a given memref are lval
   bool is_lval(OA::MemRefHandle memref);
 
+  //! A utility function _only_ to be invoked from within makePtrAssignPair.
+  void _makePtrAssignPair(OA::StmtHandle stmt,
+                          OA::OA_ptr<OA::MemRefExpr> lhs_mre,
+                          OA::OA_ptr<OA::MemRefExpr> rhs_mre);
+
   void makePtrAssignPair(OA::StmtHandle stmt,
                          OA::MemRefHandle lhs_memref,
                          OA::MemRefHandle rhs_memref);
@@ -795,6 +806,24 @@ public:
                         OA::OA_ptr<OA::MemRefExpr> actual);
 
   std::string findFieldName(OA::MemRefHandle memref);
+
+  void createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
+                                                     OA::OA_ptr<OA::MemRefExpr> lhsMRE,
+                                                     SgClassDefinition *classDefinition,
+                                                     std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods);
+
+  void createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::StmtHandle stmt, 
+                                                              OA::OA_ptr<OA::MemRefExpr> lhs_mre, 
+                                                              OA::OA_ptr<OA::MemRefExpr> rhs_mre);
+
+
+   void createImplicitPtrAssignPairsForObjectDeclaration(OA::StmtHandle stmt, 
+                                                         OA::OA_ptr<OA::MemRefExpr> lhs_mre,
+                                                         SgInitializedName *initName);
+
+   void createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle stmt,
+                                                       SgClassDefinition *classDefinition,
+                                                       std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods);
 
   void createMemRefExprsForPtrArith(SgExpression* node, 
                                     SgExpression* child, OA::StmtHandle stmt);

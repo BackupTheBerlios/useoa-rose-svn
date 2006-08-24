@@ -132,7 +132,7 @@ void readDebuggingFlags() {
 
 void usage(char **argv)
 {
-  cerr << "usage: " << argv[0] << " [ debugFlags ] opt filename" << endl;
+  cerr << "usage: " << argv[0] << " [--usePerMethodVirtualModel] [ debugFlags ] opt filename" << endl;
   cerr << "     where debugFlags is one or more of: " << endl;
   cerr << "          --debug" << endl;
   cerr << "          --outputRose" << endl;
@@ -158,6 +158,8 @@ void usage(char **argv)
   cerr << "          --oa-SideEffect" << endl;
   exit(-1);
 }
+
+bool useVtableOpt = true;
 
 int
 main ( unsigned argc,  char * argv[] )
@@ -198,6 +200,7 @@ main ( unsigned argc,  char * argv[] )
     if ( cmds->HasOption("--exitWithTop") )  { exitWithTop = true; }
     if ( cmds->HasOption("--skipAnalysis") ) { skipAnalysis = true; }
     if ( cmds->HasOption("--silent") )       { silent = true; }
+    if ( cmds->HasOption("--usePerMethodVirtualModel") ) { useVtableOpt = false; }
     
     if( cmds->HasOption("--oa-CFG") )
     {
@@ -224,7 +227,7 @@ main ( unsigned argc,  char * argv[] )
     {
       //printf("TO DO, implement mem ref expr analysis\n");
       OA::OA_ptr<SageIRInterface> ir; 
-      ir = new SageIRInterface(sageProject, &nodeArray, p_h);
+      ir = new SageIRInterface(sageProject, &nodeArray, p_h, useVtableOpt);
       for (int i = 0; i < filenum; ++i) 
       {
           SgFile &sageFile = sageProject->get_file(i);
@@ -437,7 +440,7 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
 	if ( debug )
 	  printf("*******start of DoOpenAnalysis\n");
 	OA::OA_ptr<SageIRInterface> irInterface; 
-        irInterface = new SageIRInterface(p, na, p_handle);
+        irInterface = new SageIRInterface(p, na, p_handle, useVtableOpt);
 	if(!f->get_body())
 	{
                 if ( debug ) 
@@ -545,7 +548,7 @@ int DoCallGraph(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
         if ( debug ) 
            printf("*******start of DoCallGraph\n");
         OA::OA_ptr<SageIRInterface> irInterface;
-        irInterface = new SageIRInterface(sgproject, na, p_handle);
+        irInterface = new SageIRInterface(sgproject, na, p_handle, useVtableOpt);
   //irInterface->createNodeArray(sgproject); //what about global vars?
   
     //FIAlias
@@ -587,7 +590,7 @@ int DoICFG(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
   if ( debug ) 
     printf("*******start of DoICFG\n");
   OA::OA_ptr<SageIRInterface> irInterface;
-  irInterface = new SageIRInterface(sgproject, na, p_handle);
+  irInterface = new SageIRInterface(sgproject, na, p_handle, useVtableOpt);
   //irInterface->createNodeArray(sgproject); //what about global vars?
   
   // eachCFG 
@@ -644,7 +647,7 @@ int DoICFGDep(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
   if ( debug ) 
     printf("*******start of DoICFGDep\n");
   OA::OA_ptr<SageIRInterface> irInterface;
-  irInterface = new SageIRInterface(sgproject, na, p_handle);
+  irInterface = new SageIRInterface(sgproject, na, p_handle, useVtableOpt);
   //irInterface->createNodeArray(sgproject); //what about global vars?
   
   // eachCFG 
@@ -726,7 +729,7 @@ int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
       printf("*******start of ParamBinding \n");
     }
   OA::OA_ptr<SageIRInterface> irInterface;
-  irInterface = new SageIRInterface(sgproject, na, p_handle);
+  irInterface = new SageIRInterface(sgproject, na, p_handle, useVtableOpt);
   
   //FIAlias
   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
@@ -778,7 +781,7 @@ int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handl
 	      printf("*******start of ParamBinding \n");
          }
       OA::OA_ptr<SageIRInterface> irInterface;
-      irInterface = new SageIRInterface(sgproject, na, p_handle);
+      irInterface = new SageIRInterface(sgproject, na, p_handle, useVtableOpt);
    
       //FIAlias
         OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
@@ -815,7 +818,7 @@ int DoAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, 
         if ( debug )
 	   printf("*******start of DoCallGraph\n");
         OA::OA_ptr<SageIRInterface> irInterface;
-        irInterface = new SageIRInterface(p, na, p_handle);
+        irInterface = new SageIRInterface(p, na, p_handle, useVtableOpt);
 
 	//try
 	//{
@@ -852,7 +855,7 @@ int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   int returnvalue=FALSE;
   if ( debug ) printf("*******start of FIAlias\n");
   OA::OA_ptr<SageIRInterface> irInterface;
-  irInterface = new SageIRInterface(p, na, p_handle);
+  irInterface = new SageIRInterface(p, na, p_handle, useVtableOpt);
   
   //FIAlias
   OA::OA_ptr<OA::Alias::ManagerFIAliasEquivSets> fialiasman;
@@ -880,7 +883,7 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   int returnvalue=FALSE;
   if ( debug ) printf("*******start of FIAlias\n");
   OA::OA_ptr<SageIRInterface> irInterface;
-  irInterface = new SageIRInterface(p, na, p_handle);
+  irInterface = new SageIRInterface(p, na, p_handle, useVtableOpt);
   
 #if 0
   list<SgNode *> nodes = NodeQuery::querySubTree(p,
@@ -921,7 +924,7 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   int returnvalue=FALSE;
   if ( debug ) printf("*******start of DoUDDUChains\n");
   OA::OA_ptr<SageIRInterface> irInterface;
-  irInterface = new SageIRInterface(p, na, p_handle);
+  irInterface = new SageIRInterface(p, na, p_handle, useVtableOpt);
   //irInterface->createNodeArray(f); //what about global vars? //done in constr.
   // CFG
 
@@ -1027,7 +1030,7 @@ int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> 
   /* int returnvalue=FALSE;
    if ( debug ) printf("*******start of DoUDDUChains\n");
    OA::OA_ptr<SageIRInterface> irInterface;
-   irInterface = new SageIRInterface(p, na, p_handle);
+   irInterface = new SageIRInterface(p, na, p_handle, useVtableOpt);
            
     
    //CFG
@@ -1071,7 +1074,7 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   int returnvalue=FALSE;
   if ( debug ) printf("*******start of DoUDDUChains\n");
   OA::OA_ptr<SageIRInterface> irInterface;
-  irInterface = new SageIRInterface(p, na, p_handle);
+  irInterface = new SageIRInterface(p, na, p_handle, useVtableOpt);
   //irInterface->createNodeArray(f); //what about global vars? //done in constr.
   // CFG
   OA::OA_ptr<OA::CFG::ManagerStandard> cfgmanstd;

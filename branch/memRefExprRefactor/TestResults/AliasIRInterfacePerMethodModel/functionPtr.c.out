@@ -1,0 +1,83 @@
+"TestCases/AliasTests/functionPtr.c", line 8: warning: return type of function
+          "main" must be "int"
+    void main() { 
+         ^
+
+Using per-method virtual table model
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("void main(){int x = read();if(x) {fp = foo;}else {fp = bar;}( *fp)();}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int x = read();if(x) {fp = foo;}else {fp = bar;}( *fp)();}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int x = read();") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( DEF, SymHandle("x"), F, full)
+            MemRefHandle("read") => 
+                NamedRef( USE, SymHandle("read"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("int x = read();") =>
+        [
+            CallHandle("read()") => 
+                NamedRef( USE, SymHandle("read"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("if(x) {fp = foo;}else {fp = bar;}") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("{fp = foo;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("fp = foo;") =>
+        [
+            MemRefHandle("foo") => 
+                NamedRef( USE, SymHandle("foo"), T, full)
+            MemRefHandle("fp") => 
+                NamedRef( DEF, SymHandle("fp"), F, full)
+            MemRefHandle("fp = foo") => 
+                NamedRef( USE, SymHandle("fp"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("fp = foo;") =>
+        [
+            < NamedRef( DEF, SymHandle("fp"), F, full)
+            , NamedRef( USE, SymHandle("foo"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("{fp = bar;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("fp = bar;") =>
+        [
+            MemRefHandle("bar") => 
+                NamedRef( USE, SymHandle("bar"), T, full)
+            MemRefHandle("fp") => 
+                NamedRef( DEF, SymHandle("fp"), F, full)
+            MemRefHandle("fp = bar") => 
+                NamedRef( USE, SymHandle("fp"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("fp = bar;") =>
+        [
+            < NamedRef( DEF, SymHandle("fp"), F, full)
+            , NamedRef( USE, SymHandle("bar"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("( *fp)();") =>
+        [
+            MemRefHandle("fp") => 
+                NamedRef( USE, SymHandle("fp"), F, full)
+            MemRefHandle("( *fp)") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp"), F, full), 1, F, full)
+        ] }
+    CALLSITES = { StmtHandle("( *fp)();") =>
+        [
+            CallHandle("( *fp)()") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp"), F, full), 1, F, full)
+        ] }
+    LOCATION = { < SymHandle("fp"), not local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("read"), not local > }
+    LOCATION = { < SymHandle("foo"), not local > }
+    LOCATION = { < SymHandle("bar"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }

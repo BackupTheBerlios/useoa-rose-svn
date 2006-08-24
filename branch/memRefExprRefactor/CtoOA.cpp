@@ -15,6 +15,7 @@
 #include <string>
 #include <iostream>
 #include <OpenAnalysis/Alias/NotationGenerator.hpp>
+#include <CommandOptions.h>
 
 //! print usage information to stdout
 void usage(char *programName);
@@ -36,6 +37,11 @@ int main ( unsigned argc,  char * argv[] )
     // (pointers are faster, persistent are easier to debug
     bool p_h=FALSE; 
     //    p_h = TRUE;
+
+    CmdOptions *cmds = CmdOptions::GetInstance();
+    cmds->SetOptions(argc, argv);
+    bool useVtableOpt = true;
+    if ( cmds->HasOption("--usePerMethodVirtualModel") ) { useVtableOpt = false; }
 
     // read in command line arguments
     // usage: CtoOA inputFile
@@ -65,7 +71,7 @@ int main ( unsigned argc,  char * argv[] )
         // Loop through every function in the file of this project.
         std::vector<SgNode*> nodeArray;
         OA::OA_ptr<SageIRInterface> irInterface; 
-        irInterface = new SageIRInterface(sageProject, &nodeArray, p_h);
+        irInterface = new SageIRInterface(sageProject, &nodeArray, p_h, useVtableOpt);
         OA::OA_ptr<SageIRProcIterator> procIter;
 	// Do not process include files, e.g., iostream.h.
 	bool excludeInputFiles = true;
@@ -84,7 +90,7 @@ int main ( unsigned argc,  char * argv[] )
 void usage(char *programName)
 {
     cout << programName << ": missing operand" << endl;
-    cout << "Usage: CtoOA source target" << endl;
+    cout << "Usage: CtoOA [--usePerMethodVirtualModel] source target" << endl;
 }
 
 void outputNotation(OA::ProcHandle proc,

@@ -1,6 +1,72 @@
 
 #include "common.h"
 
+/** \brief Strip the "const" keyword from a string.
+ *  \param name  A string (intending to represent a formal parameter
+ *               type).
+ *  \returns  A string holding name stripped of the "const" prefix.
+ *
+ *  This was copied from 
+ *  .../ROSE/src/midend/astUtil/astInterface/AstInterface.C
+ *
+ *  To do:  move this to a generally-accessible utilities file
+ *          or make it accessible from AstInterface (by adding
+ *          its declaration to AstInterface.h).
+ */
+static std::string stripParameterType( const std::string& name)
+{
+    char *const_start = strstr( name.c_str(), "const");
+    std::string r = (const_start == 0)? name : std::string(const_start + 5);
+    int end = r.size()-1;
+    if (r[end] == '&') {
+        r[end] = ' ';
+    }
+    std::string result = "";
+    for (unsigned int i = 0; i < r.size(); ++i) {
+        if (r[i] != ' ') {
+            result.push_back(r[i]);
+        }
+    }
+    return result; 
+} 
+
+/** \brief Return a type's name and size.
+ *  \param t  A Sage type.
+ *  \param tname  On output, holds the string name of the type.
+ *  \param stripname  On output, holds the string name of the type,
+ *                    stripped of any "const" prefix.
+ *  \param size  On output, holds the size?  I don't know what
+ *               this size corresponds to.  Certainly not the size
+ *               of the type (which needn't be a word) or string.
+ *
+ *  This was copied from 
+ *  .../ROSE/src/midend/astUtil/astInterface/AstInterface.C
+ *
+ *  To do:  move this to a generally-accessible utilities file
+ *          or make it accessible from AstInterface (by adding
+ *          its declaration to AstInterface.h).
+ */
+void getTypeInfo(SgType *t, std::string *tname, 
+		 std::string* stripname, int* size)
+{
+    std::string r1 = get_type_name(t);
+    std::string result = "";
+    for (unsigned int i = 0; i < r1.size(); ++i) {
+        if (r1[i] != ' ') {
+            result.push_back(r1[i]);
+        }
+    }
+    if (tname != 0) {
+        *tname = result;
+    }
+    if (stripname != 0) {
+        *stripname = stripParameterType(result);
+    }
+    if (size != 0) {
+        *size = 4;
+    }
+}
+
 /** \brief isMethodCall returns true if the invoked procedure is
  *         a method (i.e., a constructor, a destructor, or a non-static
  *         method).
@@ -201,6 +267,57 @@ void verifyCallHandleNodeType(SgNode *node)
     default:
         {
             std::cerr << "verifyCallHandleNodeType:  was not expecting a "
+                      << node->sage_class_name()
+                      << std::endl;
+            ROSE_ABORT();
+        }
+    }
+}
+
+/*!
+   Verify that a node intended to be used as a stmt handle
+   is one of the expected node types for a stmt handle.
+*/
+void verifyStmtHandleNodeType(SgNode *node)
+{
+    if ( isSgStatement(node) ) {
+        return;
+    }
+    switch(node->variantT()) {
+    case V_SgNewExp:
+        {
+            // These are the expected stmt handle node types.
+            break;
+        }
+    default:
+        {
+            std::cerr << "verifyStmtHandleNodeType:  was not expecting a "
+                      << node->sage_class_name()
+                      << std::endl;
+            ROSE_ABORT();
+        }
+    }
+}
+
+/*!
+   Verify that a node intended to be used as a sym handle
+   is one of the expected node types for a sym handle.
+*/
+void verifySymHandleNodeType(SgNode *node)
+{
+    switch(node->variantT()) {
+    case V_SgClassDefinition:
+        {
+            // We use a class definition within
+            // createImplicitPtrAssignPairsForVirtualMethods as the
+            // base of the rhs in the implicit ptr assign pair
+            // for the virtual table model.
+            // These are the expected stmt handle node types.
+            break;
+        }
+    default:
+        {
+            std::cerr << "verifySymHandleNodeType:  was not expecting a "
                       << node->sage_class_name()
                       << std::endl;
             ROSE_ABORT();
@@ -630,3 +747,381 @@ SgFunctionDefinition *getEnclosingFunction(SgNode *node)
 
     return getEnclosingFunction(node->get_parent());
 }
+
+
+/** \brief  Return boolean indicating whether a function is declared
+ *          virtual in its defining class.
+ *  \param  functionDeclaration  A function declaration within the AST.
+ *  \returns  Boolean indicating whether functionDeclaration is virtual.
+ */
+static bool 
+isVirtualWithinDefiningClass(SgFunctionDeclaration *functionDeclaration)
+{
+
+    if ( functionDeclaration == NULL ) {
+        return false;
+    }
+
+    if ( functionDeclaration->get_functionModifier().isVirtual() ) {
+        return true;
+    }
+
+    SgDeclarationStatement *firstNondefiningDeclaration =
+        functionDeclaration->get_firstNondefiningDeclaration();
+
+    if ( firstNondefiningDeclaration == NULL ) {
+        return false;
+    }
+
+    SgFunctionDeclaration *firstNondefiningFuncDeclaration =
+        isSgFunctionDeclaration(firstNondefiningDeclaration);
+    ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
+
+    return firstNondefiningFuncDeclaration->get_functionModifier().isVirtual();
+}
+
+/** \brief  Return boolean indicating whether a function is declared
+ *          virtual in some parent class of SgClassDefinition.
+ *  \param  functionDeclaration  A function declaration within the AST.
+ *  \returns  Boolean indicating whether functionDeclaration is virtual.
+ */
+bool 
+isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration, 
+                                     SgClassDefinition *classDefinition)
+{
+    SgType *functionType =
+        functionDeclaration->get_type();
+    ROSE_ASSERT(functionType != NULL);
+  
+    // Look in each of the class' parent classes.
+    SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances(); 
+    for (SgBaseClassPtrList::iterator i = baseClassList.begin(); 
+         i != baseClassList.end(); ++i) {
+     
+        SgBaseClass *baseClass = *i;
+        ROSE_ASSERT(baseClass != NULL);
+
+        SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
+        ROSE_ASSERT(classDeclaration != NULL);
+
+        SgClassDefinition  *parentClassDefinition  = 
+            classDeclaration->get_definition(); 
+
+        // Visit all methods in the parent class.
+        SgDeclarationStatementPtrList &members = 
+            parentClassDefinition->get_members(); 
+
+        bool isDeclaredVirtual = false;
+
+        for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
+             it != members.end(); ++it) { 
+
+            SgDeclarationStatement *declarationStatement = *it; 
+            ROSE_ASSERT(declarationStatement != NULL);
+
+            switch(declarationStatement->variantT()) {
+            case V_SgMemberFunctionDeclaration:
+                {
+                    SgMemberFunctionDeclaration *memberFunctionDeclaration =  
+                        isSgMemberFunctionDeclaration(declarationStatement); 
+
+                    if ( isVirtual(memberFunctionDeclaration) ) {
+                        SgType *parentMemberFunctionType =
+                            memberFunctionDeclaration->get_type();
+                        ROSE_ASSERT(parentMemberFunctionType != NULL);
+
+                        eqTypes eq;
+                        if ( eq(parentMemberFunctionType, functionType) ) {
+                            return true;
+                        }
+	            }
+                    break;
+                }
+            default:
+                {
+                    break;
+                }
+            }
+        }
+
+        if ( isDeclaredVirtualWithinClassAncestry(functionDeclaration, 
+                                                  parentClassDefinition) ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/** \brief  Return boolean indicating whether a function is declared
+ *          virtual in some parent class, regardless of whether it is
+ *          declared virtual in its defining class.
+ *  \param  functionDeclaration  A function declaration within the AST.
+ *  \returns  Boolean indicating whether functionDeclaration is virtual.
+ */
+static bool 
+isDeclaredVirtualWithinAncestor(SgFunctionDeclaration *functionDeclaration)
+{
+    SgMemberFunctionDeclaration *memberFunctionDeclaration =
+        isSgMemberFunctionDeclaration(functionDeclaration);
+    if ( memberFunctionDeclaration == NULL ) {
+        return false;
+    }
+
+    SgClassDefinition *classDefinition = 
+        isSgClassDefinition(memberFunctionDeclaration->get_scope());
+    ROSE_ASSERT(classDefinition != NULL);
+
+    return isDeclaredVirtualWithinClassAncestry(functionDeclaration,
+                                                classDefinition);
+}
+
+/** \brief  Return boolean indicating whether a function is
+ *          virtual-- i.e., whether it is declared virtual
+ *          in its defining class or any of that class' 
+ *          base classes.
+ */
+bool
+isVirtual(SgFunctionDeclaration *functionDeclaration)
+{
+    if ( functionDeclaration == NULL ) {
+        return false;
+    }
+
+    if ( isVirtualWithinDefiningClass(functionDeclaration) ) {
+        return true;
+    }
+    
+    return isDeclaredVirtualWithinAncestor(functionDeclaration);
+}
+
+/** \brief Return true if a class or any of its base classes 
+ *         has a virtual method.
+ *  \param classDefinition  a SgNode representing a class definition.
+ *  \return boolean indicating whether the class represented by
+ *                  classDefinition, or any of its base classes,
+ *                  define a virtual method.
+ */
+bool classHasVirtualMethods(SgClassDefinition *classDefinition)
+{
+    bool hasMethods = false;
+
+    if ( classDefinition == NULL ) return hasMethods;
+
+    SgDeclarationStatementPtrList &members = classDefinition->get_members(); 
+    for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
+         it != members.end(); ++it) { 
+
+        SgDeclarationStatement *declarationStatement = *it; 
+        ROSE_ASSERT(declarationStatement != NULL);
+
+        switch(declarationStatement->variantT()) {
+        case V_SgMemberFunctionDeclaration:
+            {
+                SgMemberFunctionDeclaration *functionDeclaration =  
+                    isSgMemberFunctionDeclaration(declarationStatement); 
+                if ( isVirtual(functionDeclaration) ) {
+                    return true;
+                }
+                break;
+            }
+        default:
+            {
+                break;
+            }
+        }
+    }
+
+    if ( hasMethods ) {
+        return true;
+    }
+
+    // The class did not directly define any virtual methods, look in
+    // its base classes.
+    SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances(); 
+    for (SgBaseClassPtrList::iterator i = baseClassList.begin(); 
+         i != baseClassList.end(); ++i) {
+
+        SgBaseClass *baseClass = *i;
+        ROSE_ASSERT(baseClass != NULL);
+
+        SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
+        ROSE_ASSERT(classDeclaration != NULL);
+
+        SgClassDefinition  *parentClassDefinition  = 
+            classDeclaration->get_definition(); 
+
+        if ( parentClassDefinition != NULL ) {
+            if ( classHasVirtualMethods(parentClassDefinition) ) {
+                return true;
+            }
+        }
+    }
+    return hasMethods;
+}
+
+/** \brief  Return boolean indicating whether two functions have the
+ *          same type signature.
+ */
+bool matchingFunctions(SgFunctionDeclaration *decl1, 
+                       SgFunctionDeclaration *decl2)
+{
+  // Compare the names of the two methods.
+  SgName name1 = decl1->get_name();
+  SgName name2 = decl2->get_name();
+  if ( name1 != name2 )
+    return false;
+
+  // Compare the return types of the two funcs.
+  SgType *func1Type = decl1->get_orig_return_type();
+  SgType *func2Type = decl2->get_orig_return_type();
+
+  std::string ret1Type, ret2Type;
+  getTypeInfo(func1Type, 0, &ret1Type);
+  getTypeInfo(func2Type, 0, &ret2Type);
+  if ( ret1Type != ret2Type )
+    return false;
+
+
+  // Compare the number and types of the formal arguments
+  SgInitializedNamePtrList &func1Params = decl1->get_args();
+  SgInitializedNamePtrList &func2Params = decl2->get_args();
+  if ( func1Params.size() != func2Params.size() )
+    return false;
+
+  SgInitializedNamePtrList::iterator p1 = func1Params.begin();
+  SgInitializedNamePtrList::iterator p2 = func2Params.begin();
+  for ( ; p1 != func1Params.end(); ++p1, ++p2) {
+    SgType* t1 = (*p1)->get_type();
+    SgType* t2 = (*p2)->get_type();
+    
+    std::string param1Type, param2Type;
+    getTypeInfo(t1, 0, &param1Type);
+    getTypeInfo(t2, 0, &param2Type);
+    if (param1Type != param2Type) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/** \brief Return a function's mangled name.
+ *
+ *  We do not rely on ROSE's funcDecl->get_mangled_name().str()
+ *  because it will include the class scope information
+ *  for a member function.  This will undermine its use
+ *  in a virtual method field because we want a single
+ *  field to be able to point to any of a number of
+ *  virtual methods defined/declared within a class 
+ *  hierarchy.
+ *
+ *  For now, just include the function name and the
+ *  return and formal types, each separated by an underscore.
+ *  This may not be sufficient to capture, e.g., template
+ *  info.
+ */
+std::string mangleFunctionName(SgFunctionDeclaration *functionDeclaration)
+{
+    ROSE_ASSERT(functionDeclaration != NULL);
+    std::string mangled;
+ 
+    mangled = functionDeclaration->get_name().str();
+
+    SgType *funcType = functionDeclaration->get_orig_return_type();
+  
+    // Include the function's return type.
+    std::string retType;
+    getTypeInfo(funcType, 0, &retType);
+    mangled += "_" + retType;
+
+    // Include the formal types.
+    SgInitializedNamePtrList &funcParams = functionDeclaration->get_args();
+    SgInitializedNamePtrList::iterator p = funcParams.begin();
+    for ( ; p != funcParams.end(); ++p) {
+        SgType* t = (*p)->get_type();
+        ROSE_ASSERT(t != NULL);
+        std::string paramType;
+        getTypeInfo(t, 0, &paramType);
+        mangled += "_" + paramType;
+    }
+    return mangled;
+}
+
+/** \brief Return the declaration of the class with a given type.
+ *  \param type  a SgNode representing a type.
+ *  \return a SgClassDeclaration that is the class declaration
+ *          for the given type, or NULL if type does not
+ *          correspond to a class.
+ */
+SgClassDeclaration *
+getClassDeclaration(SgType *type)
+{
+    SgClassDeclaration *classDeclaration = NULL;
+    if ( type == NULL ) {
+        return NULL;
+    }
+
+    switch(type->variantT()) {
+    case V_SgTypedefType:
+        {
+            SgTypedefType *typedefType = isSgTypedefType(type);
+            ROSE_ASSERT(typedefType != NULL);
+
+            SgDeclarationStatement *declStmt = typedefType->get_declaration();
+            ROSE_ASSERT(declStmt != NULL);
+
+            SgTypedefDeclaration *typedefDeclaration = 
+                isSgTypedefDeclaration(declStmt);
+            ROSE_ASSERT(typedefDeclaration != NULL);
+
+            SgType *baseType = typedefDeclaration->get_base_type();
+            ROSE_ASSERT(baseType != NULL);
+
+            if ( isSgTypedefType(baseType) ) {
+                // Recursive case:  base type of typedef is also a 
+                // typedef type.
+                classDeclaration = getClassDeclaration(baseType);
+            } else if ( isSgNamedType(baseType) ) {
+                SgNamedType *namedType = isSgNamedType(type);
+
+                SgDeclarationStatement *innerDecl = 
+                    namedType->get_declaration();
+                ROSE_ASSERT(innerDecl != NULL);
+
+                classDeclaration = isSgClassDeclaration(innerDecl);
+            }
+            break;
+        }
+
+    case V_SgClassType:
+        {
+            SgClassType *classType = isSgClassType(type);
+            ROSE_ASSERT(classType != NULL);
+
+            SgDeclarationStatement *declStmt = classType->get_declaration();
+            ROSE_ASSERT(declStmt != NULL);
+
+            classDeclaration = isSgClassDeclaration(declStmt);
+            ROSE_ASSERT(classDeclaration != NULL);
+
+            break;
+        }
+
+   default:
+        {
+            break;
+        }
+   }
+   return classDeclaration;
+}
+
+SgFunctionDeclaration *getDefiningDeclaration(SgFunctionDeclaration *funcDecl)
+{
+  return isSgFunctionDeclaration(funcDecl->get_definingDeclaration());
+}
+
+SgClassDeclaration *getDefiningDeclaration(SgClassDeclaration *classDecl)
+{
+  return isSgClassDeclaration(classDecl->get_definingDeclaration());
+}
+

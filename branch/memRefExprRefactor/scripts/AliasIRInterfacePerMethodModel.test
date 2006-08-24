@@ -1,0 +1,52 @@
+# comment in file.test
+# Regression tests for AliasIRInterface generation
+testname::AliasIRInterfacePerMethodModel
+inputdir::TestCases/AliasTests
+outputdir::TestResults/AliasIRInterfacePerMethodModel
+driverexec::./CtoOA --usePerMethodVirtualModel
+
+# list of tests
+#       input file,    			 status
+#test::  parambinds-formals.C,	 error email sent 4/19/06 MMS
+#test::  func-ptrs.C,		  	 assertion failure 4/24/06 MMS
+#test::	t1.c,				     error 4/24/06 MMS
+#test::  smg2000-typedefStruct.C, assertion failure 6/26/06 AIS
+test::  addressOf.c,             checked by MMS 8/20/06 
+test::  aggregateInit.c,         checked by MMS 8/13/06
+test::  alias1.c,                checked by MMS 8/13/06
+test::  alias2.c,                checked by MMS 8/13/06
+#test::  alias3.c,                error 6/26/06 AIS
+test::  alias4.c,                checked by MMS 8/13/06
+test::  alias4b.c,               checked by MMS 8/13/06
+test::  assignOps.c,             checked by MMS 8/13/06
+test::  assignReturn.c,          checked by MMS 8/20/06
+test::  class.C,                 missing LOC for sInt MMS 8/23/06
+test::  comma.c,                 UnnamedRefs right? MMS 8/23/06
+#test::  dataMemberPtrs.C,        aborts MMS 8/7/06
+test::  fields.c,                checked by MMS 8/20/06
+#test::  constQualified.c,       checked by ???
+#test::  utke.c,                 checked by ???
+#test::  OAWikiEx.c,             checked by ???
+#test::  funCall.c,              checked by ???
+test::  func_call.c,             p=fp2() has two MemRefHandles that are the same? aborting MMS 8/1/06 XXX
+test::  functionPtr.c,           checked by MMS 8/22/06
+test::  functionPtr2.c,          checked by MMS 8/22/06
+test::  invokeBaseCtor.C,        checked by BSW 6/26/06 XXX
+test::  localNonLocal.c,         checked by BSW 6/28/06 (rechecked by MMS 8/21/06)
+test::  passArrayPtr.c,          checked by MMS 7/27/06 XXX
+test::  parambinds-formals-intPtrs.C,   should ap be formal param? MMS 8/7/06 XXX
+test::  passIntPtrArrayRef.c,    checked by MMS 7/24/06 XXX
+test::  passIntPtrArrayRef2.c,   checked by MMS 7/24/06 XXX
+test::  passIntPtrArrayRef3.c,   checked by MMS 7/24/06 XXX
+test::  passIntPtr.c,            checked by MMS 8/21/06
+test::  refParam.C,              in a=b a should be DEF and parambinds not correct for foo MMS 8/21/06
+test::  ref.C,                   checked by MMS 8/21/06
+test::  refClass.C,              ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX
+test::  refClass2.C,             ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX
+test::  retPtr1.c,               checked by MMS 8/02/06 XXX
+test::  swap.c,                  i++ should be USEDEF otherwise fine MMS 7/23/06 XXX
+test::  ternop.c,                should there be one for (((r < *q)?r: *q)) MMS 8/2/06 XXX
+#test::  retPtr2.c,              Added by PLM 08/01/06, BUG 008270 
+#test::  retPtr3.c,              Added by PLM 08/01/06, core dump
+#test::  retPtr4.c,              Added by PLM 08/01/06, BUG 008270
+#test::  retPtr5.c,              Added by PLM 08/01/06, core dump 

@@ -1,0 +1,11 @@
+Using per-method virtual table model
+
+PROCEDURE = { < ProcHandle("SubClass::SubClass"), SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_") >
+            < 1, SymHandle("parSubClass") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+CtoOA: MemSage2OA.C:225: void SageIRInterface::createParamBindPtrAssignPairs(SgNode*): Assertion `actualNode != __null' failed.
+        [

@@ -1,0 +1,6 @@
+Using per-method virtual table model
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int *r;int *p;int **q;int a;int b;r = &a;p = &b;q = &p;*(((r < *q)?r: *q)) = 42;return 0;}") =>
+CtoOA: MemSage2OA.C:599: void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle): Assertion `0' failed.
+        [
