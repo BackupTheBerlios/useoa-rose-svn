@@ -1921,3 +1921,10 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 
 8/23/06     UseOA-Rose svn trunk r165    Priyadarshini Malusare
    - modified OATest.C for ManagerReachDefsStandard
+
+8/24/06     UseOA_Rose svn trunk r173   Priyadarshini Malusare
+    - Modified OATest.C for New GraphRefactor.
+    - Works with OpenAnalysis trunk r210 compiled on Okapi with gcc-3.2.
+    - ICFG TestCases are regenerated to satisfy Node Numbers of New
+    GraphRefactor.
+

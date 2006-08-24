@@ -1,4 +1,99 @@
 
+graph DGraph:
+
+    Node 1: 
+        ====== CFG node 1 ======
+
+
+    Node 2: 
+        ====== CFG node 2 ======
+double x;
+double y;
+double z;
+int i;
+i = 1;
+
+
+    Node 3: 
+        ====== CFG node 3 ======
+while(i != 10){x =(2);if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}z = y;i++;}
+
+
+    Node 4: 
+        ====== CFG node 4 ======
+x =(2);
+if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}
+
+
+    Node 5: 
+        ====== CFG node 5 ======
+y =(5);
+x =(y + y);
+y =(x *(5));
+
+
+
+    Node 6: 
+        ====== CFG node 6 ======
+y =(3);
+
+
+
+    Node 7: 
+        ====== CFG node 7 ======
+z = y;
+i++;
+
+
+
+    Node 8: 
+        ====== CFG node 8 ======
+return 0;
+
+
+    Node 9: 
+        ====== CFG node 9 ======
+
+
+
+    Node 10: 
+        ====== CFG node 10 ======
+
+
+    Edge: 1 => 2
+        { 1 FALLTHROUGH_EDGE 0 }
+
+    Edge: 2 => 3
+        { 2 FALLTHROUGH_EDGE 0 }
+
+    Edge: 4 => 5
+        { 3 TRUE_EDGE 0 }
+
+    Edge: 4 => 6
+        { 4 FALSE_EDGE 0 }
+
+    Edge: 5 => 7
+        { 5 FALLTHROUGH_EDGE 0 }
+
+    Edge: 6 => 7
+        { 6 FALLTHROUGH_EDGE 0 }
+
+    Edge: 3 => 4
+        { 7 TRUE_EDGE 0 }
+
+    Edge: 7 => 3
+        { 8 FALLTHROUGH_EDGE 0 }
+
+    Edge: 3 => 8
+        { 9 FALSE_EDGE 0 }
+
+    Edge: 9 => 10
+        { 10 FALLTHROUGH_EDGE 0 }
+
+    Edge: 8 => 10
+        { 11 RETURN_EDGE 0 }
+
+
 ReachDefsStandard(
     mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
             StmtHandle(x =(2);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 

@@ -1,5 +1,6 @@
 # comment in file.test
 # Regression tests for ICFG generation
+# Regenreated after GraphRefactor for new Node Numbers PLM 08/24/06
 testname::ICFG
 inputdir::TestCases/ICFG
 outputdir::TestResults/ICFG

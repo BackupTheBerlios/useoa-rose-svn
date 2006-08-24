@@ -1,0 +1,4 @@
+echo "Testing TestCases/CFGtests/for.c, TestResults/CFGtests/for.c.out "
+./OATest -edg:w --oa-CFG -c TestCases/CFGtests/for.c >& t
+diff t TestResults/CFGtests/for.c.out
+

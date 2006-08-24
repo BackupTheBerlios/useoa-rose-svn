@@ -1,0 +1,13 @@
+# comment in file.test
+# Regression tests for Reaching Definitio 
+testname::CFG
+inputdir::TestCases/CFGtests
+outputdir::TestResults/CFGtests
+driverexec::./OATest -edg:w --oa-CFG -c
+
+# list of tests
+#       input file,             status
+test::  for.c,  
+
+
+
