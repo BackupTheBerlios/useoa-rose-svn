@@ -511,7 +511,36 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgMemberFunctionRefExp:
         {
-            ROSE_ASSERT(0);
+            // FIXME: shares enough code with SgFunctionRefExp
+            // that we probably want to factor the two
+            SgMemberFunctionRefExp *memberFunctionRefExp 
+                = isSgMemberFunctionRefExp(astNode); 
+            ROSE_ASSERT(memberFunctionRefExp!=NULL);
+
+            // occurs on rhs of SgDotExp or SgArrowExp when calling member func
+            // so that it is treated like other fields, will make a 
+            // MemRefHandle here that will later be taken away at the SgDotExp
+            // or SgArrowExp
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+            
+            //======= create a NamedRef
+            bool addressTaken = false;
+            bool accuracy = true;
+            OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+            // get the symbol for the member function
+            SgFunctionSymbol *functionSymbol 
+                = memberFunctionRefExp->get_symbol();
+            ROSE_ASSERT(functionSymbol != NULL);
+            SgFunctionDeclaration *functionDeclaration =
+                functionSymbol->get_declaration();
+            ROSE_ASSERT(functionDeclaration != NULL);
+            OA::SymHandle sym = getProcSymHandle(functionDeclaration);
+            // construct the NamedRef
+            OA::OA_ptr<OA::MemRefExpr> mre;
+            mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
+ 
+            mMemref2mreSetMap[memref].insert(mre);
             break;
         }
     case V_SgFunctionCallExp:
@@ -861,7 +890,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgBitXorOp: 
     case V_SgBitAndOp:
     case V_SgBitOrOp:
-    case V_SgCommaOpExp:
     case V_SgLshiftOp:
     case V_SgRshiftOp:
         {
@@ -871,6 +899,34 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // recurse on lhs and rhs
             findAllMemRefsAndPtrAssigns(binaryOp->get_lhs_operand(),stmt);
             findAllMemRefsAndPtrAssigns(binaryOp->get_rhs_operand(),stmt);
+            break;
+        }
+    case V_SgCommaOpExp:
+        {
+            SgBinaryOp *binaryOp = isSgBinaryOp(astNode);
+            ROSE_ASSERT(binaryOp != NULL);
+
+            // recurse on lhs and rhs
+            findAllMemRefsAndPtrAssigns(binaryOp->get_lhs_operand(),stmt);
+            findAllMemRefsAndPtrAssigns(binaryOp->get_rhs_operand(),stmt);
+            
+            // is a MemRefHandle
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+
+            // takes MREs from rhs 
+            OA::MemRefHandle rhs_memref 
+                = findTopMemRefHandle(binaryOp->get_rhs_operand());
+            OA::OA_ptr<OA::MemRefExprIterator> mIter
+                = getMemRefExprIterator(rhs_memref);
+            for ( ; mIter->isValid(); ++(*mIter) ) {
+                OA::OA_ptr<OA::MemRefExpr> rhs_mre = mIter->current();
+                mMemref2mreSetMap[memref].insert(rhs_mre);
+            }
+
+            // make rhs not a MemRefHandle
+            mMemref2mreSetMap[rhs_memref].clear();
+            mStmt2allMemRefsMap[stmt].erase(rhs_memref);
             break;
         }
     case V_SgPntrArrRefExp:
@@ -1238,7 +1294,20 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgCtorInitializerList:
         {
-            ROSE_ASSERT(0);
+            // FIXME: is this something that should only recurse
+            // on children if this node is the stmt?
+            SgCtorInitializerList *initializerList 
+                = isSgCtorInitializerList(astNode);
+            ROSE_ASSERT(initializerList != NULL);
+
+            // recurse on children
+            SgInitializedNamePtrList &list = initializerList->get_ctors();
+            SgInitializedNamePtrList::iterator listIter;
+            for (listIter=list.begin(); listIter!=list.end(); listIter++) {
+                SgInitializedName* initName = *listIter;
+                ROSE_ASSERT(initName != NULL);
+                findAllMemRefsAndPtrAssigns(initName,stmt);
+            }
             break;
         }
     case V_SgIfStmt:

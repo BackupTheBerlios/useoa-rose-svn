@@ -20,8 +20,8 @@ test::  alias4.c,                checked by MMS 8/13/06
 test::  alias4b.c,               checked by MMS 8/13/06
 test::  assignOps.c,             checked by MMS 8/13/06
 test::  assignReturn.c,          checked by MMS 8/20/06
-test::  class.C,                 missing LOC for sInt MMS 8/7/06 XXX
-test::  comma.c,                 checked by MMS 6/22/06 XXX
+test::  class.C,                 missing LOC for sInt MMS 8/23/06
+test::  comma.c,                 UnnamedRefs right? MMS 8/23/06
 #test::  dataMemberPtrs.C,        aborts MMS 8/7/06
 test::  fields.c,                checked by MMS 8/20/06
 #test::  constQualified.c,       checked by ???

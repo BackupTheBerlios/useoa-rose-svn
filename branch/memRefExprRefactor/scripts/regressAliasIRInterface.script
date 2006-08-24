@@ -30,11 +30,11 @@ echo "Testing TestCases/AliasTests/assignReturn.c, TestResults/AliasIRInterface/
 ./CtoOA TestCases/AliasTests/assignReturn.c >& t
 diff t TestResults/AliasIRInterface/assignReturn.c.out
 
-echo "Testing TestCases/AliasTests/class.C, TestResults/AliasIRInterface/class.C.out missing LOC for sInt MMS 8/7/06 XXX"
+echo "Testing TestCases/AliasTests/class.C, TestResults/AliasIRInterface/class.C.out missing LOC for sInt MMS 8/23/06"
 ./CtoOA TestCases/AliasTests/class.C >& t
 diff t TestResults/AliasIRInterface/class.C.out
 
-echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c.out checked by MMS 6/22/06 XXX"
+echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c.out UnnamedRefs right? MMS 8/23/06"
 ./CtoOA TestCases/AliasTests/comma.c >& t
 diff t TestResults/AliasIRInterface/comma.c.out
 
