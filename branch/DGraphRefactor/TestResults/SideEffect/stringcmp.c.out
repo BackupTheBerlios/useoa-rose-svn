@@ -1,4 +1,46 @@
 
+ParamBindings(
+    mCallerToCalleeMap: CallHandle	 => std::map<ProcHandle, std::map<MemRefHandle, SymHandle> > 
+            CallHandle(stringcmp(a,b))	 => 
+            second: ProcHandle	 => std::map<MemRefHandle, SymHandle> 
+                    ProcHandle(stringcmp)	 => 
+                    second: MemRefHandle	 => SymHandle
+                            MemRefHandle(a)	 => SymHandle(s)
+                            MemRefHandle(b)	 => SymHandle(t)
+
+
+
+    mCalleeToCallerMap: CallHandle	 => std::map<SymHandle, MemRefHandle> 
+            CallHandle(stringcmp(a,b))	 => 
+            second: SymHandle	 => MemRefHandle
+                    SymHandle(s)	 => MemRefHandle(a)
+                    SymHandle(t)	 => MemRefHandle(b)
+
+
+    mProcToFormalSetMap: ProcHandle	 => OA_ptr<std::set<SymHandle> >
+            ProcHandle(stringcmp)	 => [ SymHandle(s)    SymHandle(t) ] 
+
+    mCallToActualSetMap: CallHandle	 => OA_ptr<std::set<MemRefHandle> >
+            CallHandle(stringcmp(a,b))	 => [ MemRefHandle(a)    MemRefHandle(b) ] 
+
+    mCallToExprListMap: CallHandle	 => OA_ptr<std::list<ExprHandle>
+            CallHandle(stringcmp(a,b))	 => [ ExprHandle(a)    ExprHandle(b) ] 
+
+    mExprToTreeMap: ExprHandle	 => OA_ptr<ExprTree>
+            ExprHandle(a)	 => [ 
+                ET MemRefNode ( a ) ] 
+            ExprHandle(b)	 => [ 
+                ET MemRefNode ( b ) ] 
+
+    mCallToFormalToActualMap: CallHandle	 => SymToExprHandleMap
+            CallHandle(stringcmp(a,b))	 => 
+            symToExprMap: SymHandle	 => ExprHandle
+                    SymHandle(s)	 => ExprHandle(a)
+                    SymHandle(t)	 => ExprHandle(b)
+
+
+)
+
 InterSideEffectStandard(
     ProcToSideEffectMap: ProcHandle	 => OA_ptr<OA::SideEffect::SideEffectStandard>
             ProcHandle(stringcmp)	 => 

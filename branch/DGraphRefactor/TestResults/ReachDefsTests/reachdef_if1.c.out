@@ -1,137 +1,81 @@
-**************************************
-Inside CFG performAnalysis
-CFG::PerformAnalysis before EntryNode
-In CFG addNode
-In DGraphImplement addNodeAddNode
 
-(before) Adding into DGraph :: Node not found in the set
-
-(After) Adding into DGraph:: Node found in the set
-End of DGraphImplement
-CFG addNode ends
-CFG::PerformAnalysis after EntryNode
-
-CFG::performAnalysis before start node
-In CFG addNode
-In DGraphImplement addNodeAddNode
-
-(before) Adding into DGraph:: Node found in the set
-
-(After) Adding into DGraph:: Node found in the set
-End of DGraphImplement
-CFG addNode ends
-CFG::performAnalysis after start node 
-DGraphImplement::addEdge(e)
-	e = double x;
-double x;
-double y;
-double y;
-double z;
-double z;
-x =(2);
-x =(2);
-if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);}
-**************************************
-Inside CFG::build_CFG_twoway_branch
-True branch
-In CFG addNode
-In DGraphImplement addNodeAddNode
-
-(before) Adding into DGraph :: Node not found in the set
-
-(After) Adding into DGraph:: Node found in the set
-End of DGraphImplement
-CFG addNode ends
-y =(5);
-y =(5);
-x =(y + y);
-x =(y + y);
-
-
-DGraphImplement::addEdge(e)
-	e = false branch
-In CFG addNode
-In DGraphImplement addNodeAddNode
-
-(before) Adding into DGraph:: Node found in the set
-
-(After) Adding into DGraph:: Node found in the set
-End of DGraphImplement
-CFG addNode ends
-y =(3);
-y =(3);
-
-
-DGraphImplement::addEdge(e)
-	e = z = y;
-In DGraphImplement addNodeAddNode
-
-(before) Adding into DGraph:: Node found in the set
-
-(After) Adding into DGraph:: Node found in the set
-End of DGraphImplement
-
- CFG Node
-DGraphImplement::addEdge(e)
-	e = DGraphImplement::addEdge(e)
-	e = z = y;
-return 0;
-
-In DGraphImplement addNodeAddNode
-
-(before) Adding into DGraph:: Node found in the set
-
-(After) Adding into DGraph:: Node found in the set
-End of DGraphImplement
-
- CFG Node
-
-CFG::performAnalysis before ExitNode
-In CFG addNode
-In DGraphImplement addNodeAddNode
-
-(before) Adding into DGraph :: Node not found in the set
-
-(After) Adding into DGraph:: Node found in the set
-End of DGraphImplement
-CFG addNode ends
-CFG::performAnalysis after ExitNode
-DGraphImplement::addEdge(e)
-	e = DGraphImplement::addEdge(e)
-	e = End of CFG performAnalysis
-Inside DGRaphImplement output 
-
-graph DGraphImplement:
+graph DGraph:
 
     Node 1: 
+        ====== CFG node 1 ======
+
+
+    Node 2: 
         ====== CFG node 2 ======
+double x;
+double y;
+double z;
+x =(2);
+if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);}
 
 
     Node 3: 
-        ====== CFG node 6 ======
+        ====== CFG node 3 ======
 y =(5);
 x =(y + y);
+
+
+
+    Node 4: 
+        ====== CFG node 4 ======
+y =(3);
+
+
+
+    Node 5: 
+        ====== CFG node 5 ======
+z = y;
+return 0;
+
+
+    Node 6: 
+        ====== CFG node 6 ======
 
 
 
     Node 7: 
-        ====== CFG node 14 ======
+        ====== CFG node 7 ======
 
-Printing Edges in the DGraphImplement output
-DGraphImplement Printing EdgesIterator
-DGraphImplement Printing EdgesIterator
 
     Edge: 1 => 2
         { 1 FALLTHROUGH_EDGE 0 }
 
-DGraphImplement::reverse_postorder_recurse
-	pNode = <>
-	n = <>
+    Edge: 2 => 3
+        { 2 TRUE_EDGE 0 }
+
+    Edge: 2 => 4
+        { 3 FALSE_EDGE 0 }
+
+    Edge: 3 => 5
+        { 4 FALLTHROUGH_EDGE 0 }
+
+    Edge: 4 => 5
+        { 5 FALLTHROUGH_EDGE 0 }
+
+    Edge: 6 => 7
+        { 6 FALLTHROUGH_EDGE 0 }
+
+    Edge: 5 => 7
+        { 7 RETURN_EDGE 0 }
+
 
 ReachDefsStandard(
     mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
+            StmtHandle(y =(5);)	 => [ StmtHandle(x =(2);) ] 
+            StmtHandle(x =(y + y);)	 => [ StmtHandle(x =(2);)    StmtHandle(y =(5);) ] 
+            StmtHandle(y =(3);)	 => [ StmtHandle(x =(2);) ] 
+            StmtHandle(z = y;)	 => [ StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);) ] 
+            StmtHandle(if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);})	 => [ StmtHandle(x =(2);) ] 
+            StmtHandle()	 => [ StmtHandle(y =(5);)    StmtHandle(x =(y + y);) ] 
+            StmtHandle()	 => [ StmtHandle(x =(2);)    StmtHandle(y =(3);) ] 
+            StmtHandle(return 0;)	 => [ StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;) ] 
 
-    mExitReachDefs: [  ] 
+    mExitReachDefs: [ StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;) ] 
 )
 
 *******  end of DoReachDef *********

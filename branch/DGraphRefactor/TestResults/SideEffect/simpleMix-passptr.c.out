@@ -1,4 +1,47 @@
 
+ParamBindings(
+    mCallerToCalleeMap: CallHandle	 => std::map<ProcHandle, std::map<MemRefHandle, SymHandle> > 
+            CallHandle(f(x,&c))	 => 
+            second: ProcHandle	 => std::map<MemRefHandle, SymHandle> 
+                    ProcHandle(f)	 => 
+                    second: MemRefHandle	 => SymHandle
+                            MemRefHandle(x)	 => SymHandle(n)
+                            MemRefHandle(&c)	 => SymHandle(q)
+
+
+
+    mCalleeToCallerMap: CallHandle	 => std::map<SymHandle, MemRefHandle> 
+            CallHandle(f(x,&c))	 => 
+            second: SymHandle	 => MemRefHandle
+                    SymHandle(n)	 => MemRefHandle(x)
+                    SymHandle(q)	 => MemRefHandle(&c)
+
+
+    mProcToFormalSetMap: ProcHandle	 => OA_ptr<std::set<SymHandle> >
+            ProcHandle(f)	 => [ SymHandle(n)    SymHandle(q) ] 
+
+    mCallToActualSetMap: CallHandle	 => OA_ptr<std::set<MemRefHandle> >
+            CallHandle(f(x,&c))	 => [ MemRefHandle(x)    MemRefHandle(&c) ] 
+
+    mCallToExprListMap: CallHandle	 => OA_ptr<std::list<ExprHandle>
+            CallHandle(f(x,&c))	 => [ ExprHandle(x)    ExprHandle(&c) ] 
+
+    mExprToTreeMap: ExprHandle	 => OA_ptr<ExprTree>
+            ExprHandle(x)	 => [ 
+                ET MemRefNode ( x ) ] 
+            ExprHandle(&c)	 => [ 
+                ET MemRefNode ( &c )
+                ET MemRefNode ( c ) ] 
+
+    mCallToFormalToActualMap: CallHandle	 => SymToExprHandleMap
+            CallHandle(f(x,&c))	 => 
+            symToExprMap: SymHandle	 => ExprHandle
+                    SymHandle(n)	 => ExprHandle(x)
+                    SymHandle(q)	 => ExprHandle(&c)
+
+
+)
+
 InterSideEffectStandard(
     ProcToSideEffectMap: ProcHandle	 => OA_ptr<OA::SideEffect::SideEffectStandard>
             ProcHandle(f)	 => 
