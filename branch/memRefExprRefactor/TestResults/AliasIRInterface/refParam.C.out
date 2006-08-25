@@ -17,14 +17,16 @@ PROCEDURE = { < ProcHandle("foo"), SymHandle("foo") > }
     MEMREFEXPRS = { StmtHandle("a = b;") =>
         [
             MemRefHandle("a") => 
-                Deref( DEF, NamedRef( USE, SymHandle("a"), F, full), 1, F, full)
+                NamedRef( DEF, SymHandle("a"), F, full)
             MemRefHandle("b") => 
-                NamedRef( USE, SymHandle("b"), F, full)
+                NamedRef( USE, SymHandle("b"), T, full)
+            MemRefHandle("a = b") => 
+                Deref( USE, NamedRef( DEF, SymHandle("a"), F, full), 1, F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("a = b;") =>
         [
-            < Deref( DEF, NamedRef( USE, SymHandle("a"), F, full), 1, F, full)
-            , NamedRef( USE, SymHandle("b"), F, full) >
+            < NamedRef( DEF, SymHandle("a"), F, full)
+            , NamedRef( USE, SymHandle("b"), T, full) >
         ] }
     LOCATION = { < SymHandle("b"), not local > }
     LOCATION = { < SymHandle("a"), local > }
@@ -44,6 +46,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("b") => 
                 NamedRef( DEF, SymHandle("b"), F, full)
+            MemRefHandle("b = &m") => 
+                NamedRef( USE, SymHandle("b"), F, full)
             MemRefHandle("&m") => 
                 NamedRef( USE, SymHandle("m"), T, full)
         ] }
@@ -59,6 +63,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("x") => 
                 NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("foo") => 
+                NamedRef( USE, SymHandle("foo"), F, full)
         ] }
     CALLSITES = { StmtHandle("foo(x);") =>
         [

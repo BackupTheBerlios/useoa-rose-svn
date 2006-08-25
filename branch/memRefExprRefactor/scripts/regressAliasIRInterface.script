@@ -86,7 +86,7 @@ echo "Testing TestCases/AliasTests/passIntPtr.c, TestResults/AliasIRInterface/pa
 ./CtoOA TestCases/AliasTests/passIntPtr.c >& t
 diff t TestResults/AliasIRInterface/passIntPtr.c.out
 
-echo "Testing TestCases/AliasTests/refParam.C, TestResults/AliasIRInterface/refParam.C.out in a=b a should be DEF and parambinds not correct for foo MMS 8/21/06"
+echo "Testing TestCases/AliasTests/refParam.C, TestResults/AliasIRInterface/refParam.C.out checked by MMS 8/24/06"
 ./CtoOA TestCases/AliasTests/refParam.C >& t
 diff t TestResults/AliasIRInterface/refParam.C.out
 
@@ -102,15 +102,19 @@ echo "Testing TestCases/AliasTests/refClass2.C, TestResults/AliasIRInterface/ref
 ./CtoOA TestCases/AliasTests/refClass2.C >& t
 diff t TestResults/AliasIRInterface/refClass2.C.out
 
-echo "Testing TestCases/AliasTests/retPtr1.c, TestResults/AliasIRInterface/retPtr1.c.out checked by MMS 8/02/06 XXX"
+echo "Testing TestCases/AliasTests/retPtr1.c, TestResults/AliasIRInterface/retPtr1.c.out checked by MMS 8/24/06"
 ./CtoOA TestCases/AliasTests/retPtr1.c >& t
 diff t TestResults/AliasIRInterface/retPtr1.c.out
+
+echo "Testing TestCases/AliasTests/sizeOf.C, TestResults/AliasIRInterface/sizeOf.C.out checked by MMS 8/24/06"
+./CtoOA TestCases/AliasTests/sizeOf.C >& t
+diff t TestResults/AliasIRInterface/sizeOf.C.out
 
 echo "Testing TestCases/AliasTests/swap.c, TestResults/AliasIRInterface/swap.c.out i++ should be USEDEF otherwise fine MMS 7/23/06 XXX"
 ./CtoOA TestCases/AliasTests/swap.c >& t
 diff t TestResults/AliasIRInterface/swap.c.out
 
-echo "Testing TestCases/AliasTests/ternop.c, TestResults/AliasIRInterface/ternop.c.out should there be one for (((r < *q)?r: *q)) MMS 8/2/06 XXX"
+echo "Testing TestCases/AliasTests/ternop.c, TestResults/AliasIRInterface/ternop.c.out checked by MMS 8/24/06"
 ./CtoOA TestCases/AliasTests/ternop.c >& t
 diff t TestResults/AliasIRInterface/ternop.c.out
 

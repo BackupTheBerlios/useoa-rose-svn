@@ -39,13 +39,14 @@ test::  passIntPtrArrayRef.c,    checked by MMS 7/24/06 XXX
 test::  passIntPtrArrayRef2.c,   checked by MMS 7/24/06 XXX
 test::  passIntPtrArrayRef3.c,   checked by MMS 7/24/06 XXX
 test::  passIntPtr.c,            checked by MMS 8/21/06
-test::  refParam.C,              in a=b a should be DEF and parambinds not correct for foo MMS 8/21/06
+test::  refParam.C,              checked by MMS 8/24/06
 test::  ref.C,                   checked by MMS 8/21/06
 test::  refClass.C,              ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX
 test::  refClass2.C,             ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX
-test::  retPtr1.c,               checked by MMS 8/02/06 XXX
+test::  retPtr1.c,               checked by MMS 8/24/06
+test::  sizeOf.C,                checked by MMS 8/24/06               
 test::  swap.c,                  i++ should be USEDEF otherwise fine MMS 7/23/06 XXX
-test::  ternop.c,                should there be one for (((r < *q)?r: *q)) MMS 8/2/06 XXX
+test::  ternop.c,                checked by MMS 8/24/06
 #test::  retPtr2.c,              Added by PLM 08/01/06, BUG 008270 
 #test::  retPtr3.c,              Added by PLM 08/01/06, core dump
 #test::  retPtr4.c,              Added by PLM 08/01/06, BUG 008270

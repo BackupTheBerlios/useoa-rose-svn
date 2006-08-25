@@ -591,12 +591,50 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgSizeOfOp:
         {
-            ROSE_ASSERT(0);
+            SgSizeOfOp *sizeOp = isSgSizeOfOp(astNode);
+            ROSE_ASSERT(sizeOp!=NULL);
+
+            // recurse on child
+            if (sizeOp->get_operand_expr() != NULL) {
+                findAllMemRefsAndPtrAssigns(sizeOp->get_operand_expr(),stmt);
+            }
             break;
         }
     case V_SgConditionalExp:
         {
-            ROSE_ASSERT(0);
+            SgConditionalExp *condExp = isSgConditionalExp(astNode);
+            ROSE_ASSERT(condExp!=NULL);
+
+            // recurse on children
+            findAllMemRefsAndPtrAssigns(condExp->get_conditional_exp(),stmt);
+            findAllMemRefsAndPtrAssigns(condExp->get_true_exp(),stmt);
+            findAllMemRefsAndPtrAssigns(condExp->get_false_exp(),stmt);
+
+            // is a MemRefHandle
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+
+            // take the MREs from the true and false branch and assign
+            // the all to this MemRefHandle
+            OA::MemRefHandle true_memref 
+                = findTopMemRefHandle(condExp->get_true_exp());
+            OA::OA_ptr<OA::MemRefExprIterator> mIter
+                = getMemRefExprIterator(true_memref);
+            for ( ; mIter->isValid(); ++(*mIter) ) {
+                OA::OA_ptr<OA::MemRefExpr> mre = mIter->current();
+                mMemref2mreSetMap[memref].insert(mre);
+            }
+            mMemref2mreSetMap[true_memref].clear();
+            mStmt2allMemRefsMap[stmt].erase(true_memref);
+            OA::MemRefHandle false_memref 
+                = findTopMemRefHandle(condExp->get_false_exp());
+            mIter = getMemRefExprIterator(false_memref);
+            for ( ; mIter->isValid(); ++(*mIter) ) {
+                OA::OA_ptr<OA::MemRefExpr> mre = mIter->current();
+                mMemref2mreSetMap[memref].insert(mre);
+            }
+            mMemref2mreSetMap[false_memref].clear();
+            mStmt2allMemRefsMap[stmt].erase(false_memref);
             break;
         }
     case V_SgNewExp:
@@ -1055,6 +1093,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                         // an address taken will cancel out a deref and
                         // return the result
                         lhs_mre = lhs_mre->setAddressTaken();
+                        lhs_mre->setMemRefType(OA::MemRefExpr::DEF);
                         mMemref2mreSetMap[lhs_memref].insert(lhs_mre);
                     }
                     // set the addressOf for rhs as well}
@@ -1553,6 +1592,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgPragmaDeclaration:
     case V_SgGlobal:
     case V_SgBasicBlock:
+        break;
+
     case V_SgBoolValExp:
     case V_SgCharVal:
     case V_SgDoubleVal:
@@ -1569,8 +1610,18 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgUnsignedLongVal:
     case V_SgUnsignedShortVal:
     case V_SgWcharVal:
-        break;
-
+        {
+            // if this node has a non-null operand then recurse on it
+            // this is used in at least the sizeof case
+            SgValueExp *valueExp = isSgValueExp(astNode);
+            ROSE_ASSERT(valueExp!=NULL);
+            
+            SgExpression* expr = valueExp->get_valueExpressionTree();
+            if (expr!=NULL) {
+                findAllMemRefsAndPtrAssigns(expr, stmt);
+            }
+            break;
+        }
     default:
         {
             // do nothing, there are nodes not listed above such as SgIntVal

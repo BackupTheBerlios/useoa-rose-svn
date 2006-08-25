@@ -2106,3 +2106,10 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       SgFunctionDeclaration *getDefiningDeclaration
 
 
+8/24/06     UseOA-Rose svn branch-memRefExprRefactor r176   Michelle Strout
+    - fixed bug in SgAssignOp where the lhs was having its addressTaken but
+      not having the result set to DEF.  Now refParam.C works in 
+      AliasIRInterface.test
+    - verified retPtr1.c
+    - implemented SgConditionalExp
+    - implemented SgSizeOfOp
