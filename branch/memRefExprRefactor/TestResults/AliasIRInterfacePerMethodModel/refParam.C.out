@@ -18,15 +18,15 @@ PROCEDURE = { < ProcHandle("foo"), SymHandle("foo") > }
     MEMREFEXPRS = { StmtHandle("a = b;") =>
         [
             MemRefHandle("a") => 
-                NamedRef( USE, SymHandle("a"), F, full)
+                NamedRef( DEF, SymHandle("a"), F, full)
             MemRefHandle("b") => 
                 NamedRef( USE, SymHandle("b"), T, full)
             MemRefHandle("a = b") => 
-                Deref( USE, NamedRef( USE, SymHandle("a"), F, full), 1, F, full)
+                Deref( USE, NamedRef( DEF, SymHandle("a"), F, full), 1, F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("a = b;") =>
         [
-            < NamedRef( USE, SymHandle("a"), F, full)
+            < NamedRef( DEF, SymHandle("a"), F, full)
             , NamedRef( USE, SymHandle("b"), T, full) >
         ] }
     LOCATION = { < SymHandle("b"), not local > }

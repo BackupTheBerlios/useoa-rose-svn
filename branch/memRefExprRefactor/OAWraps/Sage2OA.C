@@ -1380,7 +1380,34 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
       
       SgNode *declarationParent = declarationStmt->get_parent();
       ROSE_ASSERT(declarationParent != NULL);
+
+      SgFunctionDefinition *enclosingProc = 
+	getEnclosingFunction(declarationStmt);
       
+      if ( enclosingProc == NULL ) {
+	// This variable was either declared in the global scope
+	// or in a class/struct.  Consider it non-local.
+	// Is this correct?  If it is declared within a 
+	// class and it is private, should be consider it
+	// local and visible only within methods of that class?
+	isLocal = false;
+      } else {
+
+        SgFunctionDefinition *procDefn = 
+          isSgFunctionDefinition(procNode);
+
+	if ( enclosingProc == procDefn ) {
+          // This symbol is local to this procedure.
+          isLocal = true;
+        } else {
+          // This symbol is not visible within this procedure, 
+          // so return a NULL location.
+	  return loc;
+	}
+
+      }
+      
+#if 0
       if ( isSgGlobal(declarationParent) ) {
         // This symbol is global.
         isLocal = false;
@@ -1399,9 +1426,15 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
         } else {
           // This symbol is not visible within this procedure, 
           // so return a NULL location.
+	  if ( enclosingProc)
+	    std::cout << "enclosing proc: " << enclosingProc->unparseToString() << std::endl;
+	  if (procDefn)
+	    std::cout << "procDefn: " << procDefn->unparseToString() << std::endl;
+	  std::cout << "init: " << initName->get_name().str() << std::endl;
           return loc;
         }
       } 
+#endif
     break;
     }
   case V_SgFunctionDeclaration:

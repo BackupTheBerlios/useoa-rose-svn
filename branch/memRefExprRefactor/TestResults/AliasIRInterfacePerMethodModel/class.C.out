@@ -50,5 +50,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("A::sInt") => 
                 NamedRef( USE, SymHandle("sInt"), F, full)
         ] }
+    LOCATION = { < SymHandle("sInt"), not local > }
     LOCATION = { < SymHandle("a"), local > }
     LOCATION = { < SymHandle("main"), not local > }

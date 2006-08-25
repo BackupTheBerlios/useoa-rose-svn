@@ -220,11 +220,20 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
     for ( ; actualsIter->isValid(); (*actualsIter)++ ) { 
         bool treatAsPointerParam = false;
 
+        SgType *type = NULL;
+
         OA::ExprHandle actualExpr = actualsIter->current(); 
         SgNode *actualNode = getNodePtr(actualExpr);
-        ROSE_ASSERT(actualNode != NULL);
+        if ( actualNode == NULL ) {
+            // The OA::Expr/MemRefHandle representing the actual
+            // may legitimately be NULL, which causes actualNode
+            // to be NULL.  This occurs when the actual is not
+            // a memory reference, such as 5, sizeof(int), etc.
+            // Obviously, if there is no memory reference, there
+            // is no pointer assignment and we have no work to do.
+            goto nxt_iter;
+        } 
 
-        SgType *type = NULL;
         // In the presence of varargs, we may have fewer
         // formals than actuals.
         if ( formalIt != typePtrList.end() ) {
@@ -270,7 +279,7 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
                 makeParamPtrPair(call, paramNum, actualMre);
             }
         }
-
+    nxt_iter:
         // If we haven't run out of formal types because of varargs,
         // go to the next one.
         if (formalIt != typePtrList.end()) {

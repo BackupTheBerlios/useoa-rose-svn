@@ -2,5 +2,97 @@ Using per-method virtual table model
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){int *r;int *p;int **q;int a;int b;r = &a;p = &b;q = &p;*(((r < *q)?r: *q)) = 42;return 0;}") =>
-CtoOA: MemSage2OA.C:599: void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle): Assertion `0' failed.
         [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int *r;int *p;int **q;int a;int b;r = &a;p = &b;q = &p;*(((r < *q)?r: *q)) = 42;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *r;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *p;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int **q;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int a;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int b;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("r = &a;") =>
+        [
+            MemRefHandle("r") => 
+                NamedRef( DEF, SymHandle("r"), F, full)
+            MemRefHandle("&a") => 
+                NamedRef( USE, SymHandle("a"), T, full)
+            MemRefHandle("r = &a") => 
+                NamedRef( USE, SymHandle("r"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("r = &a;") =>
+        [
+            < NamedRef( DEF, SymHandle("r"), F, full)
+            , NamedRef( USE, SymHandle("a"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("p = &b;") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"), F, full)
+            MemRefHandle("&b") => 
+                NamedRef( USE, SymHandle("b"), T, full)
+            MemRefHandle("p = &b") => 
+                NamedRef( USE, SymHandle("p"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p = &b;") =>
+        [
+            < NamedRef( DEF, SymHandle("p"), F, full)
+            , NamedRef( USE, SymHandle("b"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("q = &p;") =>
+        [
+            MemRefHandle("q") => 
+                NamedRef( DEF, SymHandle("q"), F, full)
+            MemRefHandle("&p") => 
+                NamedRef( USE, SymHandle("p"), T, full)
+            MemRefHandle("q = &p") => 
+                NamedRef( USE, SymHandle("q"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("q = &p;") =>
+        [
+            < NamedRef( DEF, SymHandle("q"), F, full)
+            , NamedRef( USE, SymHandle("p"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("*(((r < *q)?r: *q)) = 42;") =>
+        [
+            MemRefHandle("r") => 
+                NamedRef( USE, SymHandle("r"), F, full)
+            MemRefHandle("q") => 
+                NamedRef( USE, SymHandle("q"), F, full)
+            MemRefHandle("q") => 
+                NamedRef( USE, SymHandle("q"), F, full)
+            MemRefHandle("*(((r < *q)?r: *q)) = 42") => 
+                Deref( USE, NamedRef( USE, SymHandle("r"), F, full), 1, F, full)
+            MemRefHandle("*(((r < *q)?r: *q)) = 42") => 
+                Deref( USE, Deref( USE, NamedRef( USE, SymHandle("q"), F, full), 1, F, full), 1, F, full)
+            MemRefHandle("*q") => 
+                Deref( USE, NamedRef( USE, SymHandle("q"), F, full), 1, F, full)
+            MemRefHandle("*(((r < *q)?r: *q))") => 
+                Deref( DEF, NamedRef( USE, SymHandle("r"), F, full), 1, F, full)
+            MemRefHandle("*(((r < *q)?r: *q))") => 
+                Deref( DEF, Deref( USE, NamedRef( USE, SymHandle("q"), F, full), 1, F, full), 1, F, full)
+            MemRefHandle("((r < *q)?r: *q)") => 
+                NamedRef( USE, SymHandle("r"), F, full)
+            MemRefHandle("((r < *q)?r: *q)") => 
+                Deref( USE, NamedRef( USE, SymHandle("q"), F, full), 1, F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("r"), local > }
+    LOCATION = { < SymHandle("p"), local > }
+    LOCATION = { < SymHandle("q"), local > }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("b"), local > }
+    LOCATION = { < SymHandle("main"), not local > }

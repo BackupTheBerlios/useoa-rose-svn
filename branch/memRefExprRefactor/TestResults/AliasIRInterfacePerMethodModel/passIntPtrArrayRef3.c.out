@@ -10,5 +10,5 @@ PROCEDURE = { < ProcHandle("blah"), SymHandle("blah") > }
             < 1, SymHandle("t") >
         ] }
     MEMREFEXPRS = { StmtHandle("int blah(int *s,int *t){if((s[0]) ==(t[0])) {}else {}return 0;}") =>
-CtoOA: MemSage2OA.C:985: void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle): Assertion `0' failed.
+CtoOA: MemSage2OA.C:1032: void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle): Assertion `0' failed.
         [

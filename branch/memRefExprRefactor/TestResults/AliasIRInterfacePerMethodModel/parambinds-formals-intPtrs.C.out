@@ -17,5 +17,5 @@ PROCEDURE = { < ProcHandle("ellipsis_intptrs"), SymHandle("ellipsis_intptrs") > 
             < 1, SymHandle("") >
         ] }
     MEMREFEXPRS = { StmtHandle("void ellipsis_intptrs(int i,... ){int *j;va_list ap;va_start(ap,((const void *)i));j =(va_arg(ap,int *));va_end(ap);}") =>
-CtoOA: MemSage2OA.C:634: void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle): Assertion `0' failed.
+CtoOA: MemSage2OA.C:681: void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle): Assertion `0' failed.
         [

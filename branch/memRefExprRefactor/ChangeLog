@@ -2113,3 +2113,30 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - verified retPtr1.c
     - implemented SgConditionalExp
     - implemented SgSizeOfOp
+
+8/25/06     UseOA-Rose svn branch-memRefExprRefactor r177  Brian White
+    - Updated AliasIRInterfacePerMethodModel.test to reflect
+      above changes to AliasIRInterface.test.
+	
+    - Fixed bug:  we were getting a NULL location for static
+      member variables.  Changed logic in getLocation to 
+      reflect this from Michelle 
+      (8/24/06 Subject: Re: missing Location for static class variable)
+
+      All member variables are "not local" in OA terminology.  The definition
+      of local in OA means that a variable is ONLY visible within that one
+      procedure.  That is not the case for member variables since even if they
+      are private they are visible in all member methods.
+
+      Now we get a location for 'sInt' in class.C
+	
+    - Fixed assertion failure on line MemSage2OA.C:225 occuring
+      in func_call.c as noted by Michelle on 8/24/06
+      Subject: Some issues in the refactor
+
+      Simply removed this assertion in favor of a conditional.
+      It had been asserting that the SgNode derived from
+      a MemRefHandle for an actual was non-NULL.  However,
+      if an actual does not reference memory (e.g., 5, sizeof(Foo)),
+      then there will be no MemRefHandle and hence no
+      SgNode *actual.

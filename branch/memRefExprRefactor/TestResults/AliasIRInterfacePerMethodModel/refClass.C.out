@@ -23,5 +23,5 @@ PROCEDURE = { < ProcHandle("foo::foo"), SymHandle("method:foo::foo__foo__scope__
             < 1, SymHandle("x") >
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
-CtoOA: MemSage2OA.C:621: void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle): Assertion `0' failed.
+CtoOA: MemSage2OA.C:668: void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle): Assertion `0' failed.
         [

@@ -52,6 +52,8 @@ echo "Generating TestResults/AliasIRInterfacePerMethodModel/refClass2.C.out"
 ./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/refClass2.C >& TestResults/AliasIRInterfacePerMethodModel/refClass2.C.out
 echo "Generating TestResults/AliasIRInterfacePerMethodModel/retPtr1.c.out"
 ./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/retPtr1.c >& TestResults/AliasIRInterfacePerMethodModel/retPtr1.c.out
+echo "Generating TestResults/AliasIRInterfacePerMethodModel/sizeOf.C.out"
+./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/sizeOf.C >& TestResults/AliasIRInterfacePerMethodModel/sizeOf.C.out
 echo "Generating TestResults/AliasIRInterfacePerMethodModel/swap.c.out"
 ./CtoOA --usePerMethodVirtualModel TestCases/AliasTests/swap.c >& TestResults/AliasIRInterfacePerMethodModel/swap.c.out
 echo "Generating TestResults/AliasIRInterfacePerMethodModel/ternop.c.out"

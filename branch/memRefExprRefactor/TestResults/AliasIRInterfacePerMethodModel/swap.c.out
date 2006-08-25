@@ -13,5 +13,5 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
             < 2, SymHandle("j") >
         ] }
     MEMREFEXPRS = { StmtHandle("void swap(int *v,int i,int j){int temp;temp =(v[i]);v[i] =(v[j]);v[j] = temp;}") =>
-CtoOA: MemSage2OA.C:985: void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle): Assertion `0' failed.
+CtoOA: MemSage2OA.C:1032: void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle): Assertion `0' failed.
         [
