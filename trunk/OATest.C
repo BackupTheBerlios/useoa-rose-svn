@@ -47,6 +47,9 @@
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
 #include <OpenAnalysis/Utils/Util.hpp>
 #include <OpenAnalysis/ReachConsts/ManagerReachConstsStandard.hpp>
+#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
+#include <OpenAnalysis/XAIF/UDDUChainsXAIF.hpp>
+#include <OpenAnalysis/XAIF/ManagerUDDUChainsXAIF.hpp>
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
 
 #include <string>
@@ -84,6 +87,7 @@ int DoICFG(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoICFGDep(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle);
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
+int DoUDDUChainsXAIF(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
 void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
 int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
@@ -378,8 +382,24 @@ main ( unsigned argc,  char * argv[] )
     }
     else if( cmds->HasOption("--oa-UDDUChainsXAIF") )
     {
-      printf("TO DO, implement UDDUChainsXAIF analysis\n");
-      return 1;
+      for (int i = 0; i < filenum; ++i)
+      {
+        SgFile &sageFile = sageProject->get_file(i);         SgGlobal *root = sageFile.get_root();
+        SgDeclarationStatementPtrList& declList = root->get_declarations ();
+        for (SgDeclarationStatementPtrList::iterator p = declList.begin(); p != declList.end(); ++p)
+        {
+          SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
+          if (func == 0)
+            continue;
+          SgFunctionDefinition *defn = func->get_definition();
+          if (defn == 0)
+            continue;
+          // SgBasicBlock *stmts = defn->get_body();
+          // create a control flow graph and generate text output
+          DoUDDUChainsXAIF(defn, sageProject, &nodeArray, p_h);
+        }
+      }
+
     }
     else if( cmds->HasOption("--oa-MPICFG") )
     {
@@ -1040,7 +1060,116 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
 {
   int returnvalue=FALSE;
 
-  /*! commented out by PLM 08/17/06
+  if ( debug ) printf("*******start of DoUDDUChains\n");
+  OA::OA_ptr<SageIRInterface> irInterface;
+  irInterface = new SageIRInterface(p, na, p_handle);
+
+  OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
+  cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
+
+
+  //*********** this gets the same free error
+  OA::OA_ptr<OA::CFG::CFG> cfg=
+  cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+
+  cfg->output(*irInterface);
+
+
+
+
+  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  bool excludeInputFiles = true;
+  // Don't pull in any procedures defined in input files.  For testing
+  // purposes only:  avoids unexpected/spurious results due to
+  // stdlib.h, etc.
+  procIter = new SageIRProcIterator(p,irInterface, excludeInputFiles);
+  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+  interAlias = fialiasman->performAnalysis(procIter);
+  OA::ProcHandle proc((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+  OA::OA_ptr<OA::Alias::Interface> alias = interAlias->getAliasResults(proc);
+
+ // Interprocedural Side-Effect Analysis
+  // for now generate default conservative interprocedural side-effect results
+  OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
+  interSideEffect = new OA::SideEffect::InterSideEffectStandard;
+
+
+  // then can do ReachDefs
+  OA::OA_ptr<OA::ReachDefs::ManagerReachDefsStandard> rdman;
+  rdman = new OA::ReachDefs::ManagerReachDefsStandard(irInterface);
+  OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds=
+     rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect);
+
+  rds->output(*irInterface);
+
+  // then UDDUChains
+  OA::OA_ptr<OA::UDDUChains::ManagerUDDUChainsStandard> udman;
+  udman = new OA::UDDUChains::ManagerUDDUChainsStandard(irInterface);
+  OA::OA_ptr<OA::UDDUChains::UDDUChainsStandard> udduchains=
+      udman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),alias,rds,interSideEffect);
+
+  udduchains->dump(std::cout, irInterface);
+  udduchains->output(*irInterface);
+  
+
+
+}
+
+
+int DoUDDUChainsXAIF(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+{
+  int returnvalue=FALSE;
+
+  if ( debug ) printf("*******start of DoUDDUChainsXAIF\n");
+  OA::OA_ptr<SageIRInterface> irInterface;
+  irInterface = new SageIRInterface(p, na, p_handle);
+
+  OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
+  cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
+
+
+  //*********** this gets the same free error
+  OA::OA_ptr<OA::CFG::CFG> cfg=
+  cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+
+  cfg->output(*irInterface);
+
+
+
+
+  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  bool excludeInputFiles = true;
+  // Don't pull in any procedures defined in input files.  For testing
+  // purposes only:  avoids unexpected/spurious results due to
+  // stdlib.h, etc.
+  procIter = new SageIRProcIterator(p,irInterface, excludeInputFiles);
+  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+  interAlias = fialiasman->performAnalysis(procIter);
+  OA::ProcHandle proc((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+  OA::OA_ptr<OA::Alias::Interface> alias = interAlias->getAliasResults(proc);
+
+
+
+  // Interprocedural Side-Effect Analysis
+  // for now generate default conservative interprocedural side-effect results
+  OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
+  interSideEffect = new OA::SideEffect::InterSideEffectStandard;
+
+  // then can do ReachDefs
+  OA::OA_ptr<OA::ReachDefs::ManagerReachDefsStandard> rdman;
+  rdman = new OA::ReachDefs::ManagerReachDefsStandard(irInterface);
+  OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds=
+     rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect);
+
+  rds->output(*irInterface);
+
+ 
+
+  /*
   if ( debug ) printf("*******start of DoUDDUChains\n");
   OA::OA_ptr<SageIRInterface> irInterface;
   irInterface = new SageIRInterface(p, na, p_handle);
@@ -1079,20 +1208,25 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   rdman = new OA::ReachDefs::ManagerReachDefsStandard(irInterface);
   OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds= 
       rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect);
-
+*/
 
   // then UDDUChains
-  OA::OA_ptr<OA::UDDUChains::ManagerStandard> udman;
-  udman = new OA::UDDUChains::ManagerStandard(irInterface);
+  OA::OA_ptr<OA::UDDUChains::ManagerUDDUChainsStandard> udman;
+  udman = new OA::UDDUChains::ManagerUDDUChainsStandard(irInterface);
   OA::OA_ptr<OA::UDDUChains::UDDUChainsStandard> udduchains= 
       udman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),alias,rds,interSideEffect);
 
   udduchains->dump(std::cout, irInterface);
 
+ // and finally UDDUChainsXAIF
+  OA::OA_ptr<OA::XAIF::ManagerStandard> udmanXAIF;
+  udmanXAIF = new OA::XAIF::ManagerStandard(irInterface);
+  OA::OA_ptr<OA::XAIF::UDDUChainsXAIF> udduchainsXAIF=
+  udmanXAIF->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,udduchains);
+  udduchainsXAIF->dump(std::cout, irInterface);
 
-  */
   
-	std::cout << "\n*******  end of DoUDDUChains *********\n\n";
+	std::cout << "\n*******  end of DoUDDUChainsXAIF *********\n\n";
 	return returnvalue;
 }
 

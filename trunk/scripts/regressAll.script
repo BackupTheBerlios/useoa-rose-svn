@@ -19,3 +19,8 @@ source scripts/regressSideEffect.script
 echo "########################### running regressReachDefs.script"
 source scripts/regressReachDefs.script
 
+echo "########################### running regressUDDUChains.script"
+source scripts/regressUDDUChains.script
+
+
+

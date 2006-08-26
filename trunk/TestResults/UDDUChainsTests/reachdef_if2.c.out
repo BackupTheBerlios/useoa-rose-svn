@@ -1,0 +1,7 @@
+Catastrophic error: could not open source file
+          "TestCases/UDDUChainsTests/reachdef_if2.c"
+
+1 catastrophic error detected in the compilation of "TestCases/UDDUChainsTests/reachdef_if2.c".
+Compilation terminated.
+OATest: /home/mstrout/ROSE/rose-0.8.7a/ROSE-0.8.7a/src/frontend/EDG/EDG_3.3/src/host_envir.c:1512: void exit_compilation(an_error_severity): Assertion `false' failed.
+abort on exit from EDG front-end processing! 

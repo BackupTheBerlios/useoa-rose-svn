@@ -1,0 +1,4 @@
+echo "Testing TestCases/UDDUChainsTests/reachdef_if1.c, TestResults/UDDUChainsTests/reachdef_if1.c.out Not Checked Yet"
+./OATest -edg:w --oa-UDDUChains -c TestCases/UDDUChainsTests/reachdef_if1.c >& t
+diff t TestResults/UDDUChainsTests/reachdef_if1.c.out
+

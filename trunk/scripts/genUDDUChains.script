@@ -1,0 +1,2 @@
+echo "Generating TestResults/UDDUChainsTests/reachdef_if1.c.out"
+./OATest -edg:w --oa-UDDUChains -c TestCases/UDDUChainsTests/reachdef_if1.c >& TestResults/UDDUChainsTests/reachdef_if1.c.out
