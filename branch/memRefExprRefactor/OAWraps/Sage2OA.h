@@ -591,6 +591,7 @@ public:
   std::string toString(const OA::MemRefHandle h);
   std::string toString(const OA::SymHandle h); 
   std::string toStringWithoutScope(const OA::SymHandle h); 
+  std::string toStringWithoutScope(SgNode *node);
   std::string toString(const OA::ConstSymHandle h) {
     //-----
     // reasoning by BK:

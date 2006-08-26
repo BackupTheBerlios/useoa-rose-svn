@@ -648,7 +648,34 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgNewExp:
         {
-            ROSE_ASSERT(0);
+            SgNewExp *newExp = isSgNewExp(astNode);
+            ROSE_ASSERT(newExp != NULL);
+
+            // Invocations of new are represented by unnamed memory references,
+            // just as calls to malloc.
+
+            // Notice that we also need to represent the access to the 
+            // invoked constructor/method.  Do this at the 
+            // SgConstructorInitializer accessible from newExp as 
+            // newExp->get_constructor_args();
+
+            // is a MemRefHandle
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+
+            // create an UnnamedRef
+            OA::OA_ptr<OA::MemRefExpr> mre;
+            bool addressTaken = true;
+            bool fullAccuracy = false;
+            mre = new OA::UnnamedRef(addressTaken, fullAccuracy,
+                                     OA::MemRefExpr::USE, stmt);
+
+            SgConstructorInitializer *ctorInitializer =
+                newExp->get_constructor_args();
+            ROSE_ASSERT(ctorInitializer != NULL);
+
+            findAllMemRefsAndPtrAssigns(ctorInitializer, stmt);
+
             break;
         }
     case V_SgDeleteExp:
@@ -665,7 +692,24 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgThisExp:
         {
-            ROSE_ASSERT(0);
+            SgThisExp *thisExp = isSgThisExp(astNode);
+            ROSE_ASSERT(thisExp != NULL);
+
+            bool addressTaken = false;
+            bool accuracy = true;
+	    OA::SymHandle symHandle = getThisExpSymHandle(thisExp);
+
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+
+            OA::OA_ptr<OA::MemRefExpr> mre;
+            mre = new OA::NamedRef(addressTaken, 
+                                   accuracy,
+                                   OA::MemRefExpr::USE,
+                                   symHandle);
+            ROSE_ASSERT(!mre.ptrEqual(0));
+
+            mMemref2mreSetMap[memref].insert(mre);
             break;
         }
     case V_SgVarArgStartOp:
@@ -771,6 +815,54 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 isSgConstructorInitializer(astNode);
             ROSE_ASSERT(ctorInit != NULL);
 
+            // A SgConstructorInitializer appears as a child of a SgNewExp.
+            // We need to extract the constructor invoked and treat it
+            // analogously to a method invocation (in the SgDotExp/SgArrowExp
+            // cases).
+
+            // Note that we do not consider this a use of the 
+            // receiver/object created.  This is somewhat asymmetric
+            // given that we do consider the object created to be
+            // the first, implicit actual.  Instead, we only create
+            // a call MRE here.
+
+            // Get the declaration of the function.
+            SgFunctionDeclaration *functionDeclaration = 
+                ctorInit->get_declaration();
+            ROSE_ASSERT(functionDeclaration != NULL);
+
+            bool addressTaken = false;
+            bool fullAccuracy = true;
+	
+            OA::SymHandle symHandle = getProcSymHandle(functionDeclaration);
+    
+            OA::OA_ptr<OA::MemRefExpr> method;
+            method = new OA::NamedRef(addressTaken, 
+                                      fullAccuracy,
+                                      OA::MemRefExpr::USE,
+                                      symHandle);
+
+            OA::CallHandle call = getCallHandle(astNode);
+            mCallToMRE[call] = method;
+
+            // Create MREs for the actuals passed to the constructor.
+
+            // Get the list of actual arguments from the constructor call.
+            SgExprListExp* exprListExp = ctorInit->get_args();  
+            ROSE_ASSERT (exprListExp != NULL);  
+	
+            SgExpressionPtrList & actualArgs =  
+                exprListExp->get_expressions();  
+	
+            for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
+                actualIt != actualArgs.end(); ++actualIt) { 
+
+                SgExpression *actualArg = *actualIt;
+                ROSE_ASSERT(actualArg != NULL);
+
+                findAllMemRefsAndPtrAssigns(actualArg,stmt);
+            }
+
             // Look at the actuals passed to the 
             // function/method/constructor/destructor invocation.
             // If its corresponding formal type is a reference,
@@ -786,7 +878,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // of the constructor invocation.
             createParamBindPtrAssignPairs(ctorInit);
 
-            ROSE_ASSERT(0);
             break;
         }
     case V_SgAssignInitializer:
@@ -818,7 +909,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 = findTopMemRefHandle(arrowExp->get_lhs_operand());
             OA::MemRefHandle rhs_memref 
                 = findTopMemRefHandle(arrowExp->get_rhs_operand());
-            std::string field_name = findFieldName(rhs_memref);
+	    //            std::string field_name = findFieldName(rhs_memref);
+	    std::string field_name = toStringWithoutScope(arrowExp->get_rhs_operand());
             OA::OA_ptr<OA::MemRefExprIterator> mIter
                 = getMemRefExprIterator(lhs_memref);
             for ( ; mIter->isValid(); ++(*mIter) ) {
@@ -865,7 +957,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 = findTopMemRefHandle(dotExp->get_lhs_operand());
             OA::MemRefHandle rhs_memref 
                 = findTopMemRefHandle(dotExp->get_rhs_operand());
-            std::string field_name = findFieldName(rhs_memref);
+	    //            std::string field_name = findFieldName(rhs_memref);
+	    std::string field_name = toStringWithoutScope(dotExp->get_rhs_operand());
             OA::OA_ptr<OA::MemRefExprIterator> mIter
                 = getMemRefExprIterator(lhs_memref);
             OA::OA_ptr<OA::MemRefExprIterator> mRhsIter
@@ -1601,6 +1694,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgPragmaDeclaration:
     case V_SgGlobal:
     case V_SgBasicBlock:
+    case V_SgFunctionDeclaration:
         break;
 
     case V_SgBoolValExp:
@@ -2371,6 +2465,14 @@ SageIRInterface::makeParamPtrPair(OA::CallHandle call,
 
 std::string SageIRInterface::findFieldName(OA::MemRefHandle memref)
 {
+    ROSE_ASSERT(0);
+    
+    // This method needs to be phased out.  It is not nearly general
+    // enough.  e.g., it will die on a->field, a.b.field, etc.
+    // This is too difficult to do from OA, just do it from ROSE--
+    // i.e., just convert the rhs operand of an arrow or dot
+    // expression to a string.
+
     std::string retval = "<none>";
     OA::OA_ptr<OA::MemRefExprIterator> mIter
         = getMemRefExprIterator(memref);
@@ -2380,6 +2482,7 @@ std::string SageIRInterface::findFieldName(OA::MemRefHandle memref)
             OA::OA_ptr<OA::NamedRef> named_mre = mre.convert<OA::NamedRef>();
             retval = toStringWithoutScope(named_mre->getSymHandle());
         } else {
+	  dump(mre, std::cout);
             ROSE_ASSERT(0);
         }
     }

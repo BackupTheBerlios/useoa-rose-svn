@@ -315,6 +315,10 @@ void verifySymHandleNodeType(SgNode *node)
             // These are the expected stmt handle node types.
             break;
         }
+    case V_SgInitializedName:
+        {
+            break;
+        }
     default:
         {
             std::cerr << "verifySymHandleNodeType:  was not expecting a "

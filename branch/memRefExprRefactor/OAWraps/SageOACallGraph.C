@@ -166,8 +166,15 @@ void FindCallsitesPass::visit(SgNode* node)
       call_lst.push_back(exp);
 
   } else if ( isSgConstructorInitializer(exp) ) {
-    ROSE_ASSERT(0); // MMS, not sure how we handle these yet
-/*
+    //    ROSE_ASSERT(0); // MMS, not sure how we handle these yet
+
+    // I don't like this ... I suspect this problem will go
+    // away after the AST is properly normalized.  Until then,
+    // this ugly (and probably incorrect) approach will suffice
+    // to effectively ignore constructor invocations on base
+    // types (as well as any other type which does not define
+    // constructors explicitly).  BW
+
     // 2/1/06 BW:  Only consider this a function call if it creates
     // a named type.  Otherwise we get problems (e.g., in getFormalTypes)
     // when we expect that a basic type has a constructor with a 
@@ -179,7 +186,7 @@ void FindCallsitesPass::visit(SgNode* node)
     if ( !mIR->createsBaseType(ctorInitializer) ) {
       call_lst.push_back(exp);
     } 
-*/
+
   }
 
   return;

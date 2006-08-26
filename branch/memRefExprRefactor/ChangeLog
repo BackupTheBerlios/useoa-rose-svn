@@ -2140,3 +2140,30 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       if an actual does not reference memory (e.g., 5, sizeof(Foo)),
       then there will be no MemRefHandle and hence no
       SgNode *actual.
+
+8/25/06     UseOA-Rose svn branch-memRefExprRefactor r178  Brian White	
+    - Implemented SgConstructorInitializer.
+
+    - Implemented SgNewExp.
+
+    - Implemented SgThisExp.
+
+    - Deprecated findFieldName.  Convert ROSE ast node to string
+      using toStringWithoutScope instead.
+
+    - Uncommented handling of SgConstructorInitializer in 
+      FindCallsitesPass::visit.  This isn't correct, but will
+      work for the majority of cases.  The problem is that
+      createsBaseType, which should be called createsBasicType,
+      is lame.  It assumes that any SgConstructorInitializer
+      not backed by a method/constructor declaration creates
+      a basic type.  We know that this also occurs when a
+      constructor is not explicitly defined.
+
+      This problem should go away once we have AST normalization
+      implemented.  
+
+      Then again, even if createsBaseType were implemented
+      correctly, later code (such as getFormalTypes) would
+      die since it expects a method declaration for each
+      SgConstructorInitializer.

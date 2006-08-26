@@ -2420,6 +2420,175 @@ std::string SageIRInterface::toStringWithoutScope(const OA::SymHandle h)
   return ret; 
 }
 
+std::string SageIRInterface::toStringWithoutScope(SgNode *node)
+{
+  SgName nm;
+  std::string ret;
+
+  switch(node->variantT()) {
+    
+  case V_SgFunctionDeclaration:
+    {
+      SgFunctionDeclaration *fd = isSgFunctionDeclaration(node);
+      ROSE_ASSERT(fd != NULL);
+
+      //      nm = fd->get_name();
+      //      ret = nm.str();
+      ret = mangleFunctionName(fd);
+
+      break;
+    }
+
+  case V_SgMemberFunctionDeclaration:
+    {
+      SgMemberFunctionDeclaration *fd = isSgMemberFunctionDeclaration(node);
+      ROSE_ASSERT(fd != NULL);
+
+      //      nm = fd->get_name();
+      //      nm = fd->get_qualified_name() + "__" + fd->get_mangled_name();
+      //      ret = string("method:") + nm.str();
+      ret = mangleFunctionName(fd);
+
+      break;
+    }
+
+  case V_SgVarRefExp:
+    {
+      SgVarRefExp *varRefExp = isSgVarRefExp(node);
+      ROSE_ASSERT(varRefExp != NULL);
+
+      SgVariableSymbol *symbol = varRefExp->get_symbol(); 
+      ROSE_ASSERT(symbol != NULL); 
+
+      SgInitializedName *initName = symbol->get_declaration(); 
+      ROSE_ASSERT(initName != NULL); 
+
+      return toStringWithoutScope(initName);
+
+      break;
+    }
+  case V_SgInitializedName:
+    {
+      SgInitializedName *initName = isSgInitializedName(node);
+      ROSE_ASSERT(initName != NULL);
+
+      nm = initName->get_name();
+
+      if (nm.str() == NULL) {
+        // This occurs when using varags or in a function
+        // prototype which does not name its args.
+        SgNode *parent = initName->get_parent();
+        ROSE_ASSERT(isSgFunctionParameterList(parent));
+        ret = "anonymousArg";
+      } else {
+
+        SgDeclarationStatement *declarationStmt = 
+          initName->get_declaration();
+        ROSE_ASSERT(declarationStmt != NULL);
+
+        SgFunctionDefinition *functionDefinition = 
+          getEnclosingFunction(declarationStmt);
+
+        if (functionDefinition == NULL) {
+
+          //      ret = string("global: " ) + nm.str();
+          ret = nm.str();
+
+        } else {
+
+          SgFunctionDeclaration *functionDeclaration = 
+            functionDefinition->get_declaration();
+          ROSE_ASSERT(functionDefinition != NULL);
+          
+          SgName funcName;
+          funcName = functionDeclaration->get_name();
+          
+          SgMemberFunctionDeclaration *fd = 
+            isSgMemberFunctionDeclaration(functionDeclaration);
+          if (fd != NULL) {
+            funcName = fd->get_qualified_name();
+          }
+          
+          //      ret = nm.str() + string(" defined in: ") + funcName.str();
+          ret = nm.str();
+        }
+      }
+
+      break;
+    }
+
+  case V_SgThisExp:
+    {
+      ret = "this";
+      break;
+    }
+
+  case V_SgClassSymbol:
+    {
+      SgClassSymbol *classSymbol = isSgClassSymbol(node);
+      ROSE_ASSERT(classSymbol != NULL);
+
+      nm = classSymbol->get_name();
+      ret = string("SgClassSymbol: ") + nm.str();
+
+      break;
+    }
+  case V_SgFunctionParameterList:
+    {
+      // If we see a SgFunctionDefinition where we expected a symbol,
+      // it means that the symbol represents a 'this' pointer.
+      SgFunctionParameterList *parameterList = 
+        isSgFunctionParameterList(node);
+      ROSE_ASSERT(parameterList != NULL);
+
+      SgNode *parent = parameterList->get_parent();
+      ROSE_ASSERT(parent != NULL);
+
+      SgFunctionDeclaration *functionDeclaration = 
+        isSgFunctionDeclaration(parent);
+      ROSE_ASSERT(functionDeclaration != NULL);
+          
+      SgName funcName;
+      funcName = functionDeclaration->get_name() + "__" + 
+        functionDeclaration->get_mangled_name();
+
+      SgMemberFunctionDeclaration *fd = 
+        isSgMemberFunctionDeclaration(functionDeclaration);
+      ROSE_ASSERT(fd != NULL);
+
+      SgClassDefinition *classDefinition = isSgClassDefinition(fd->get_scope());
+      ROSE_ASSERT(classDefinition != NULL);
+
+      SgName qualifiedName;
+      qualifiedName = classDefinition->get_qualified_name();
+
+      ret = string("this::") + qualifiedName.str() + "::" + funcName.str();
+      
+      break;
+    }
+  case V_SgMemberFunctionType:
+  case V_SgFunctionType:
+    {
+      SgFunctionType *functionType = isSgFunctionType(node);
+      ROSE_ASSERT(functionType != NULL);
+
+      // We model a function's return slot with its 
+      // SgFunctionType.
+
+      ROSE_ABORT();
+      break;
+    }
+  default:
+    {
+      ret = node->sage_class_name();
+      break;
+    }
+
+  }
+
+  return ret; 
+}
+
 std::string SageIRInterface::toString(const OA::SymHandle h) 
 {
   SgNode *node = getNodePtr(h);
