@@ -2167,3 +2167,6 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       correctly, later code (such as getFormalTypes) would
       die since it expects a method declaration for each
       SgConstructorInitializer.
+
+8/26/06     UseOA-Rose svn branch-memRefExprRefactor r179  Andy Stone
+    - Implemented SgPntrArrRefExp

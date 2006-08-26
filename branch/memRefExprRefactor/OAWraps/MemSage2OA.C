@@ -1122,7 +1122,65 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgPntrArrRefExp:
         {
-            ROSE_ASSERT(0);
+            SgPntrArrRefExp *arrRefExp = isSgPntrArrRefExp(astNode);
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            ROSE_ASSERT(arrRefExp != NULL);
+
+            // recurse on children
+            findAllMemRefsAndPtrAssigns(arrRefExp->get_lhs_operand(), stmt);
+            findAllMemRefsAndPtrAssigns(arrRefExp->get_rhs_operand(), stmt); 
+
+            // if through a constant pointer
+            if(!isSgPointerType(arrRefExp->get_lhs_operand()->get_type())) {
+                // take the lhs MREs and make each of them have partial
+                // accuracy and assign them to this MemRefHandle -make lhs not
+                // a MemRefHandle
+                    OA::MemRefHandle lhs_memref 
+                        = findTopMemRefHandle(arrRefExp->get_lhs_operand());
+
+                    OA::OA_ptr<OA::MemRefExprIterator> mIter
+                        = getMemRefExprIterator(lhs_memref);
+                    for ( ; mIter->isValid(); ++(*mIter) ) {
+                        OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
+                        lhs_mre->setAccuracy(false);
+                        mMemref2mreSetMap[memref].insert(lhs_mre);
+                    }
+                // child is no longer a MemRefHandle
+                mMemref2mreSetMap[lhs_memref].clear();
+                mStmt2allMemRefsMap[stmt].erase(lhs_memref);
+            }
+            // else if through a variable pointer
+            else {
+                // clone the lhs MREs and make each clone have partial accuracy
+                // and assign them to this MemRefHandle
+                OA::MemRefHandle lhs_memref 
+                    = findTopMemRefHandle(arrRefExp->get_lhs_operand());
+
+                OA::OA_ptr<OA::MemRefExprIterator> mIter
+                    = getMemRefExprIterator(lhs_memref);
+                for ( ; mIter->isValid(); ++(*mIter) ) {
+                    OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
+
+                    OA::OA_ptr<OA::Deref> deref_mre;
+                    bool addressTaken = false;
+                    int numDerefs = 1;
+                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                    deref_mre = new OA::Deref( addressTaken, 
+                                               lhs_mre->hasFullAccuracy(),
+                                               OA::MemRefExpr::USE,
+                                               nullMRE,
+                                               numDerefs);
+
+                    OA::OA_ptr<OA::MemRefExpr> mre = lhs_mre->clone();
+                    mre = deref_mre->composeWith(mre);
+                    
+                    mre->setAccuracy(false);
+
+                    mMemref2mreSetMap[memref].insert(mre);
+                }
+            }
+
+            mStmt2allMemRefsMap[stmt].insert(memref);
             break;
         }
     case V_SgAssignOp:
