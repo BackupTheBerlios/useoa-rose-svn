@@ -19,8 +19,8 @@ test::  alias2.c,                checked by MMS 8/13/06
 test::  alias4.c,                checked by MMS 8/13/06
 test::  alias4b.c,               checked by MMS 8/13/06
 test::  assignOps.c,             checked by MMS 8/13/06
-test::  assignReturn.c,          checked by MMS 8/20/06
-test::  class.C,                 missing LOC for sInt MMS 8/23/06
+test::  assignReturn.c,          checked by MMS 8/28/06
+test::  class.C,                 member names broken MMS 8/28/06
 test::  comma.c,                 UnnamedRefs right? MMS 8/23/06
 #test::  dataMemberPtrs.C,        aborts MMS 8/7/06
 test::  fields.c,                checked by MMS 8/20/06
@@ -28,16 +28,16 @@ test::  fields.c,                checked by MMS 8/20/06
 #test::  utke.c,                 checked by ???
 #test::  OAWikiEx.c,             checked by ???
 #test::  funCall.c,              checked by ???
-test::  func_call.c,             p=fp2() has two MemRefHandles that are the same? aborting MMS 8/1/06 XXX
+test::  func_call.c,             checked by MMS 8/25/06
 test::  functionPtr.c,           checked by MMS 8/22/06
 test::  functionPtr2.c,          checked by MMS 8/22/06
-test::  invokeBaseCtor.C,        checked by BSW 6/26/06 XXX
+test::  invokeBaseCtor.C,        problems emailed to BSW MMS 8/28/06
 test::  localNonLocal.c,         checked by BSW 6/28/06 (rechecked by MMS 8/21/06)
-test::  passArrayPtr.c,          checked by MMS 7/27/06 XXX
+test::  passArrayPtr.c,          const ptr not passed correctly MMS 8/28/06
 test::  parambinds-formals-intPtrs.C,   should ap be formal param? MMS 8/7/06 XXX
-test::  passIntPtrArrayRef.c,    checked by MMS 7/24/06 XXX
-test::  passIntPtrArrayRef2.c,   checked by MMS 7/24/06 XXX
-test::  passIntPtrArrayRef3.c,   checked by MMS 7/24/06 XXX
+test::  passIntPtrArrayRef.c,    unnamed refs should be diff for const ptrs MMS 8/28/06
+test::  passIntPtrArrayRef2.c,   must model array params as ptrs MMS 8/28/06
+test::  passIntPtrArrayRef3.c,   why is a being passed different than b MMS 8/28/06
 test::  passIntPtr.c,            checked by MMS 8/21/06
 test::  refParam.C,              checked by MMS 8/24/06
 test::  ref.C,                   checked by MMS 8/21/06

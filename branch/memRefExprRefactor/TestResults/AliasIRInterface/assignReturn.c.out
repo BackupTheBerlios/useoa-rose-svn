@@ -109,6 +109,13 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("r"), F, full)
             MemRefHandle("foo") => 
                 NamedRef( USE, SymHandle("foo"), F, full)
+            MemRefHandle("foo(&q)") => 
+                NamedRef( USE, SymHandle("foo"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("r = foo(&q);") =>
+        [
+            < NamedRef( DEF, SymHandle("r"), F, full)
+            , NamedRef( USE, SymHandle("foo"), F, full) >
         ] }
     CALLSITES = { StmtHandle("r = foo(&q);") =>
         [

@@ -56,4 +56,10 @@ SgClassDeclaration *getDefiningDeclaration(SgClassDeclaration *funcDecl);
 bool matchingFunctions(SgFunctionDeclaration *decl1, 
                        SgFunctionDeclaration *decl2);
 
+bool isFunc(SgFunctionCallExp *functionCallExp,
+                             char *funcName);
+
+bool returnsAddress(SgFunctionCallExp *functionCallExp);
+
+
 #endif /* _USEOA_COMMON_H */

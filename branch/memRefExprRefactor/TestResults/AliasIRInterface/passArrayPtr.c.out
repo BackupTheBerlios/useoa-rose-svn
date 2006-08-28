@@ -71,9 +71,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("x") => 
                 NamedRef( DEF, SymHandle("x"), F, full)
             MemRefHandle("a") => 
-                NamedRef( USE, SymHandle("a"), T, full)
+                NamedRef( USE, SymHandle("a"), F, full)
             MemRefHandle("a") => 
-                NamedRef( USE, SymHandle("a"), T, full)
+                NamedRef( USE, SymHandle("a"), F, full)
+            MemRefHandle("strcmp") => 
+                NamedRef( USE, SymHandle("strcmp"), F, full)
         ] }
     CALLSITES = { StmtHandle("int x = strcmp(a,a);") =>
         [
@@ -82,13 +84,15 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("strcmp(a,a)") =>
         [
-            < 0, NamedRef( USE, SymHandle("a"), T, full) >
-            < 1, NamedRef( USE, SymHandle("a"), T, full) >
+            < 0, NamedRef( USE, SymHandle("a"), F, full) >
+            < 1, NamedRef( USE, SymHandle("a"), F, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("a[3] = 'b';") =>
         [
             MemRefHandle("a[3]") => 
                 NamedRef( DEF, SymHandle("a"), F, part)
+            MemRefHandle("a[3] = 'b'") => 
+                NamedRef( USE, SymHandle("a"), F, part)
         ] }
     MEMREFEXPRS = { StmtHandle("char v =(a[2]);") =>
         [

@@ -570,15 +570,33 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 = getMemRefExprIterator(funcMemRef);
             mCallToMRE[call] = mIter->current();
             
-            // FIXME: still needs implemented
             // if the function is malloc then
+            if (isFunc(funcCallExp, "malloc")) {
                 // is a MemRefHandle
-                // create UnnamedRef
-            // else if the function returns a pointer or reference?
+                OA::MemRefHandle memref = getMemRefHandle(astNode);
+                mStmt2allMemRefsMap[stmt].insert(memref);
+
+                //======= create UnnamedRef
+                bool addressTaken = true;
+                bool accuracy = false;
+                OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+                OA::OA_ptr<OA::MemRefExpr> mre;
+                mre = new OA::UnnamedRef(addressTaken,accuracy, mrType, stmt);
+ 
+                mMemref2mreSetMap[memref].insert(mre);
+ 
+            // else if the function returns a pointer or reference
+            // the MRE for this node is the same as the CallMRE
+            } else if (returnsAddress(funcCallExp)) {
                 // is a MemRefHandle
-                // clone MRE for function field
-            // else
-                // is not a MemRefHandle
+                OA::MemRefHandle memref = getMemRefHandle(astNode);
+                mStmt2allMemRefsMap[stmt].insert(memref);
+                // clone MRE for function 
+                OA::OA_ptr<OA::MemRefExpr> mre;
+                mre = getCallMemRefExpr(getCallHandle(astNode));
+
+                mMemref2mreSetMap[memref].insert(mre->clone());
+            }
             
             // Look at the actuals passed to the 
             // function/method/constructor/destructor invocation.
@@ -716,13 +734,48 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgVarArgCopyOp:
     case V_SgVarArgStartOneOperandOp:
         {
-            // don't think we are seeing these now, 8/9/06 Dan email
+            // don't think these nodes are currently used in ROSE, 
+            // 8/9/06 Dan email
             ROSE_ASSERT(0);
             break;
         }
     case V_SgVarArgOp:
         {
-            ROSE_ASSERT(0);
+            SgVarArgOp *varArgOp = isSgVarArgOp(astNode);
+            ROSE_ASSERT(varArgOp!=NULL);
+
+            // is a MemRefHandle
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+
+            // recurse on child
+            findAllMemRefsAndPtrAssigns(varArgOp->get_operand_expr(), stmt);
+
+            // Treat this node as a MemRefHandle that is accessing the
+            // symbol for the variable parameter
+            int count = 0;
+            OA::SymHandle sym;
+            /*
+            SgNode*
+            while ((sym=getFormalSym(
+                            getProcHandle(getEnclosingFunction(stmt)), count))
+                   !=OA::SymHande(0))
+            {
+                count++;
+            }
+            // the last count value didn't work so the var arg is at count-1
+            sym = getFormalSym(
+                    getProcHandle(getEnclosingFunction(stmt)), count-1);
+                    */
+            
+            //======= create a NamedRef
+            bool addressTaken = false;
+            bool accuracy = true;
+            OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+            OA::OA_ptr<OA::MemRefExpr> mre;
+            mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
+  
+            mMemref2mreSetMap[memref].insert(mre);
             break;
         }
     case V_SgVarArgEndOp:

@@ -1129,3 +1129,63 @@ SgClassDeclaration *getDefiningDeclaration(SgClassDeclaration *classDecl)
   return isSgClassDeclaration(classDecl->get_definingDeclaration());
 }
 
+/** \brief Returns boolean indicating whether the invoked
+ *         function has name funcName.
+ *  \param  functionCallExp A SgFunctionCallExp representing
+ *          an invoked function.
+ *  \param  funcName  A string representing the name of a function.
+ *  \returns  Boolean indicating whether the name of the invoked
+ *            function is funcName.
+ */
+bool isFunc(SgFunctionCallExp *functionCallExp,
+                             char *funcName)
+{
+  if( functionCallExp == NULL) return false;
+
+  SgExpression *expression = functionCallExp->get_function();
+  ROSE_ASSERT(expression != NULL);
+
+  SgFunctionRefExp *functionRefExp = isSgFunctionRefExp(expression);
+
+  if (functionRefExp == NULL) return false;
+
+  // Found a standard function reference.  
+  SgFunctionDeclaration *functionDeclaration =
+    functionRefExp->get_symbol_i()->get_declaration();
+  ROSE_ASSERT(functionDeclaration != NULL);
+
+  SgName name = functionDeclaration->get_name();
+  return ( !strcmp(funcName, name.str() ) );
+}
+
+bool returnsAddress(SgFunctionCallExp *functionCallExp)
+{
+  ROSE_ASSERT(functionCallExp != NULL);
+
+  bool returnsAddr = false;
+
+  SgType *type = functionCallExp->get_type();
+  //  SgType *type = functionCallExp->get_return_type();
+  ROSE_ASSERT(type != NULL);
+
+  if ( isSgReferenceType(type) || isSgPointerType(type) ) {
+    returnsAddr = true;
+  }
+
+  // I believe in earlier versions of ROSE, that the type
+  // of a function call expression was the type of the expression
+  // (i.e., the return type).  Evidently, this has changed.
+  // Leave the above code for backward compatibility?
+  SgFunctionType *funcType = isSgFunctionType(type);
+
+  // NB:  type could be SgTypeVoid and need not be a SgFunctionType.
+  if ( funcType != NULL ) {
+    SgType *retType = funcType->get_return_type();
+    if ( isSgReferenceType(retType) || isSgPointerType(retType) ) {
+      returnsAddr = true;
+    }
+  }
+
+  return returnsAddr;
+}
+

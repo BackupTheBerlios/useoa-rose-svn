@@ -1,5 +1,8 @@
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
+Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
 PROCEDURE = { < ProcHandle("blah"), SymHandle("blah") > }
     FORMALS = {
@@ -55,9 +58,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("x") => 
                 NamedRef( DEF, SymHandle("x"), F, full)
             MemRefHandle("a") => 
-                NamedRef( USE, SymHandle("a"), T, full)
+                NamedRef( USE, SymHandle("a"), F, full)
             MemRefHandle("b") => 
-                NamedRef( USE, SymHandle("b"), T, full)
+                NamedRef( USE, SymHandle("b"), F, full)
+            MemRefHandle("blah") => 
+                NamedRef( USE, SymHandle("blah"), F, full)
         ] }
     CALLSITES = { StmtHandle("int x = blah(a,b);") =>
         [
@@ -66,8 +71,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("blah(a,b)") =>
         [
-            < 0, NamedRef( USE, SymHandle("a"), T, full) >
-            < 1, NamedRef( USE, SymHandle("b"), T, full) >
+            < 1, NamedRef( USE, SymHandle("b"), F, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

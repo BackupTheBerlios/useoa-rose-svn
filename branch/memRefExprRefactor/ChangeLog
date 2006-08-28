@@ -2170,3 +2170,7 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 
 8/26/06     UseOA-Rose svn branch-memRefExprRefactor r179  Andy Stone
     - Implemented SgPntrArrRefExp
+
+8/28/06     UseOA-Rose svn branch-memRefExprRefactor r181  Michelle Strout
+    - Finished implementing MRE creation at SgFunctionCallExp.
+    - Rechecked the CtoOA output for assignReturn.c
