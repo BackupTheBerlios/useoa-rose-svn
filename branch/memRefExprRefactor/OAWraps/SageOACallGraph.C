@@ -1,4 +1,5 @@
 #include "SageOACallGraph.h"
+#include "common.h"
 
 
 //SageIRCallsiteIterator implementation
@@ -163,7 +164,11 @@ void FindCallsitesPass::visit(SgNode* node)
   // Both can be captured by looking at SgConstructorInitializers instead.
 
   if( isSgFunctionCallExp(exp) ) {
-      call_lst.push_back(exp);
+      // FIXME: this logic is also in MemSage2OA.C.  We should encapsulate
+      // it somehow.
+      if (!isFunc(isSgFunctionCallExp(exp),"va_start")) {
+        call_lst.push_back(exp);
+      }
 
   } else if ( isSgConstructorInitializer(exp) ) {
     //    ROSE_ASSERT(0); // MMS, not sure how we handle these yet

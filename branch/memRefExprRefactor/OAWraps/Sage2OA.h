@@ -803,31 +803,34 @@ public:
 
 
   void makeParamPtrPair(OA::CallHandle call,
-                        int formal,
+                       int formal,
                         OA::OA_ptr<OA::MemRefExpr> actual);
 
   std::string findFieldName(OA::MemRefHandle memref);
 
   void createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
-                                                     OA::OA_ptr<OA::MemRefExpr> lhsMRE,
-                                                     SgClassDefinition *classDefinition,
-                                                     std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods);
+          OA::OA_ptr<OA::MemRefExpr> lhsMRE,
+          SgClassDefinition *classDefinition,
+          std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods);
 
-  void createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::StmtHandle stmt, 
-                                                              OA::OA_ptr<OA::MemRefExpr> lhs_mre, 
-                                                              OA::OA_ptr<OA::MemRefExpr> rhs_mre);
+  void createImplicitPtrAssignPairsForDynamicObjectAllocation(
+          OA::StmtHandle stmt, OA::OA_ptr<OA::MemRefExpr> lhs_mre, 
+          OA::OA_ptr<OA::MemRefExpr> rhs_mre);
 
 
    void createImplicitPtrAssignPairsForObjectDeclaration(OA::StmtHandle stmt, 
-                                                         OA::OA_ptr<OA::MemRefExpr> lhs_mre,
-                                                         SgInitializedName *initName);
+                                             OA::OA_ptr<OA::MemRefExpr> lhs_mre,
+                                             SgInitializedName *initName);
 
    void createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle stmt,
-                                                       SgClassDefinition *classDefinition,
-                                                       std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods);
+               SgClassDefinition *classDefinition,
+               std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods);
 
   void createMemRefExprsForPtrArith(SgExpression* node, 
                                     SgExpression* child, OA::StmtHandle stmt);
+
+  void createUseDefForVarArg(OA::MemRefHandle memref,
+                             OA::MemRefHandle valist_memref);
 
   // assumption is that StmtHandles and MemRefHandles are unique across
   // different program and procedure contexts for which analysis is being

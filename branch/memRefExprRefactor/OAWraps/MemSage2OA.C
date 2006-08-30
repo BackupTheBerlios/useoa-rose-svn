@@ -244,7 +244,7 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
         if ( ( type == NULL ) || ( isSgTypeEllipse(type) ) ) {
             SgExpression *actual = isSgExpression(actualNode);
             ROSE_ASSERT(actual != NULL);
-            type = actual->get_type();
+            type = getBaseType(actual->get_type());
             // Do not increment the parameter number since
             // the rest of the args are varargs.
             incrementParamNum = false;
@@ -388,12 +388,27 @@ void SageIRInterface::convertReferenceActuals(SgNode *node)
         SgExpression *actualArg = *actualIt;
         ROSE_ASSERT(actualArg != NULL);
 
-        SgType *type = *formalIt;
-        ROSE_ASSERT(type != NULL);
+        // In the presence of varargs, we may have fewer
+        // formals than actuals.
+        SgType *type = NULL;
+        if ( formalIt != typePtrList.end() ) {
+            type = getBaseType(*formalIt);
+        }
 
-        // The formal is a reference type, so take the
-        // address of the actual.
-        if ( isSgReferenceType(type) ) {
+        // In the presence of varags, get the type from the
+        // actual.
+        SgType *actual_type;
+        SgExpression *actual = isSgExpression(actualArg);
+        ROSE_ASSERT(actual != NULL);
+        actual_type = getBaseType(actual->get_type());
+        if ( ( type == NULL ) || ( isSgTypeEllipse(type) ) ) {
+            type = actual_type;
+        }
+        ROSE_ASSERT(type != NULL && actual_type!=NULL);
+
+        // If the parameter is a reference type or an array type
+        // take the address of the actual.
+        if ( isSgReferenceType(type) || isSgArrayType(actual_type) ) {
             OA::MemRefHandle actual_memref 
                 = findTopMemRefHandle(actualArg);
             OA::OA_ptr<OA::MemRefExprIterator> mIter 
@@ -475,7 +490,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
             
             // if is a reference type then 
-            SgType *type = varRefExp->get_type();
+            SgType *type = getBaseType(varRefExp->get_type());
             if (isSgReferenceType(type)) {
                 // wrap the NamedRef in a Deref
                 int numderefs = 1;
@@ -561,14 +576,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             findAllMemRefsAndPtrAssigns(funcCallExp->get_function(),stmt);
             findAllMemRefsAndPtrAssigns(funcCallExp->get_args(),stmt);
 
-            // is a CallHandle
-            // FIXME: should I go ahead and assign this call to this stmt here?
-            OA::CallHandle call = getCallHandle(astNode);
-            OA::MemRefHandle funcMemRef 
-                = findTopMemRefHandle(funcCallExp->get_function());
-            OA::OA_ptr<OA::MemRefExprIterator> mIter
-                = getMemRefExprIterator(funcMemRef);
-            mCallToMRE[call] = mIter->current();
+            bool isaCallHandle = true;
             
             // if the function is malloc then
             if (isFunc(funcCallExp, "malloc")) {
@@ -585,34 +593,83 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
  
                 mMemref2mreSetMap[memref].insert(mre);
  
-            // else if the function returns a pointer or reference
-            // the MRE for this node is the same as the CallMRE
-            } else if (returnsAddress(funcCallExp)) {
-                // is a MemRefHandle
+            // if the function is va_start then
+            // hardcoding handling of varargs macros and functions
+            } else if (isFunc(funcCallExp, "va_start")) {
+                // not going to treat this guy like a normal function
+                isaCallHandle = false;
+
+                // is a MemRefHandle 
                 OA::MemRefHandle memref = getMemRefHandle(astNode);
                 mStmt2allMemRefsMap[stmt].insert(memref);
-                // clone MRE for function 
-                OA::OA_ptr<OA::MemRefExpr> mre;
-                mre = getCallMemRefExpr(getCallHandle(astNode));
 
-                mMemref2mreSetMap[memref].insert(mre->clone());
+                // create a DEF and a USE to deref of a clone of the first 
+                // actual parameter,
+                // which will be of type va_list and we are assuming 
+                // that is a ptr type of some kind
+                SgExprListExp* exprListExp = funcCallExp->get_args();
+                SgExpressionPtrList & actualArgs =
+                            exprListExp->get_expressions();
+
+                // get mem ref for the first parameter
+                SgExpressionPtrList::iterator actualIt = actualArgs.begin();
+                SgExpression *actualArg = *actualIt;
+                ROSE_ASSERT(actualArg != NULL);
+                OA::MemRefHandle actual_memref 
+                    = findTopMemRefHandle(actualArg);
+
+                createUseDefForVarArg(memref, actual_memref);
+
+                // also remove the USE MRE for the va_start function
+                OA::MemRefHandle function_memref 
+                    = findTopMemRefHandle(funcCallExp->get_function());
+                mMemref2mreSetMap[function_memref].clear();
+                mStmt2allMemRefsMap[stmt].erase(function_memref);
+
+            // else if the function returns a pointer or reference
+            // the MRE for this node is the same as the CallMRE
+            } 
+            if (isaCallHandle) {
+                // is a CallHandle
+                // FIXME: should I go ahead and assign this call to this stmt here?
+                OA::CallHandle call = getCallHandle(astNode);
+                OA::MemRefHandle funcMemRef 
+                    = findTopMemRefHandle(funcCallExp->get_function());
+                OA::OA_ptr<OA::MemRefExprIterator> mIter
+                    = getMemRefExprIterator(funcMemRef);
+                mCallToMRE[call] = mIter->current();
+
+                if (returnsAddress(funcCallExp) 
+                    && !isFunc(funcCallExp, "malloc")) 
+                {
+                    // is a MemRefHandle
+                    OA::MemRefHandle memref = getMemRefHandle(astNode);
+                    mStmt2allMemRefsMap[stmt].insert(memref);
+                    // clone MRE for function 
+                    OA::OA_ptr<OA::MemRefExpr> mre;
+                    mre = getCallMemRefExpr(getCallHandle(astNode));
+
+                    mMemref2mreSetMap[memref].insert(mre->clone());
+                }
+
+                // Look at the actuals passed to the 
+                // function/method/constructor/destructor invocation.
+                // If its corresponding formal type is a reference,
+                // then we need to take the address of the actual
+                // (as part of modeling references as pointers
+                //  or as part of modeling constant ptrs to arrays
+                //  as array variables).
+                // NB:  Make certain we do this before creating
+                //      the param bindings, which will look at the
+                //      stored MREs.
+                convertReferenceActuals(funcCallExp);
+
+                // Create parameter binding params arising from
+                // the actual arguments and any potential receiver,
+                // for non-static method invocations, 
+                // of the function/method invocation.
+                createParamBindPtrAssignPairs(funcCallExp);
             }
-            
-            // Look at the actuals passed to the 
-            // function/method/constructor/destructor invocation.
-            // If its corresponding formal type is a reference,
-            // then we need to take the address of the actual
-            // (as part of modeling references as pointers).
-            // NB:  Make certain we do this before creating
-            //      the param bindings, which will look at the
-            //      stored MREs.
-            convertReferenceActuals(funcCallExp);
-
-            // Create parameter binding params arising from
-            // the actual arguments and any potential receiver,
-            // for non-static method invocations, 
-            // of the function/method invocation.
-            createParamBindPtrAssignPairs(funcCallExp);
 
             break;
         }
@@ -752,35 +809,64 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             findAllMemRefsAndPtrAssigns(varArgOp->get_operand_expr(), stmt);
 
             // Treat this node as a MemRefHandle that is accessing the
-            // symbol for the variable parameter
-            int count = 0;
-            OA::SymHandle sym;
-            /*
-            SgNode*
-            while ((sym=getFormalSym(
-                            getProcHandle(getEnclosingFunction(stmt)), count))
-                   !=OA::SymHande(0))
-            {
-                count++;
+            // symbol for the ellipsis parameter
+            OA::SymHandle formalSym;
+            SgFunctionDefinition *functionDefinition 
+                = getEnclosingFunction(getSgNode(stmt));
+            SgFunctionDeclaration *functionDeclaration
+                = functionDefinition->get_declaration();
+            // Get the list of formal parameters for the function.
+            SgFunctionParameterList *parameterList = 
+                functionDeclaration->get_parameterList(); 
+            if (parameterList != NULL) {
+                // Iterate over the formal parameters as represented by
+                // SgInitializedNames.  
+                const SgInitializedNamePtrList &formalParams 
+                    = parameterList->get_args(); 
+                for(SgInitializedNamePtrList::const_iterator formalIt 
+                        = formalParams.begin();
+                    formalIt != formalParams.end(); ++formalIt) 
+                {
+                    SgInitializedName* formalParam = *formalIt;  
+                    ROSE_ASSERT(formalParam != NULL); 
+
+                    SgType* type = getBaseType(formalParam->get_type());
+                    if (isSgTypeEllipse(type)) {
+                        formalSym = getSymHandle(formalParam);
+                        break;
+                    }
+                }
             }
-            // the last count value didn't work so the var arg is at count-1
-            sym = getFormalSym(
-                    getProcHandle(getEnclosingFunction(stmt)), count-1);
-                    */
-            
+
             //======= create a NamedRef
             bool addressTaken = false;
             bool accuracy = true;
             OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
             OA::OA_ptr<OA::MemRefExpr> mre;
-            mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
+            mre = new OA::NamedRef(addressTaken,accuracy, mrType, formalSym);
   
             mMemref2mreSetMap[memref].insert(mre);
+
+            // also create a use and def to the deref of the va_list
+            createUseDefForVarArg(memref, 
+                findTopMemRefHandle(varArgOp->get_operand_expr()));
             break;
         }
     case V_SgVarArgEndOp:
         {
-            ROSE_ASSERT(0);
+            SgVarArgEndOp *varArgEndOp = isSgVarArgEndOp(astNode);
+            ROSE_ASSERT(varArgEndOp!=NULL);
+
+            // is a MemRefHandle
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+
+            // recurse on child
+            findAllMemRefsAndPtrAssigns(varArgEndOp->get_operand_expr(), stmt);
+
+            // also create a use and def to the deref of the va_list
+            createUseDefForVarArg(memref, 
+                findTopMemRefHandle(varArgEndOp->get_operand_expr()));
             break;
         }
 
@@ -830,10 +916,25 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     }
                 }
 
+                SgType *type = getBaseType(initName->get_type());
+
+                // if is an array, then the init is an UnnamedRef
+                // like "my string" or {1,3,5}.  By default the UnnamedRef
+                // are set up with their addressTaken.  Since we are modeling
+                // array variables as actual arrays instead of constant
+                // ptrs to an array, we need to remove the addressTaken
+                // for the rhs MREs
+                if (isSgArrayType(type)) {
+                    OA::OA_ptr<OA::MemRefExprIterator> mIter;
+                    mIter = getMemRefExprIterator(child_memref);
+                    for ( ; mIter->isValid(); ++(*mIter) ) {
+                        OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
+                        child_mre->setAddressTaken(false);
+                    }
+                }
+
                 //----------- Ptr Assigns
-                if (isSgReferenceType(initName->get_type())
-                    || isSgPointerType(initName->get_type())
-                    || isSgArrayType(initName->get_type()) ) 
+                if (isSgReferenceType(type) || isSgPointerType(type))
                 {
                     makePtrAssignPair(stmt, memref, child_memref);
                 }
@@ -920,7 +1021,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // function/method/constructor/destructor invocation.
             // If its corresponding formal type is a reference,
             // then we need to take the address of the actual
-            // (as part of modeling references as pointers).
+            // (as part of modeling references as pointers
+            //  or as part of modeling constant ptrs to arrays
+            //  as array variables).
             // NB:  Make certain we do this before creating
             //      the param bindings, which will look at the
             //      stored MREs.
@@ -1184,20 +1287,22 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             findAllMemRefsAndPtrAssigns(arrRefExp->get_rhs_operand(), stmt); 
 
             // if through a constant pointer
-            if(!isSgPointerType(arrRefExp->get_lhs_operand()->get_type())) {
+            if(!isSgPointerType(getBaseType(
+                            arrRefExp->get_lhs_operand()->get_type()))) 
+            {
                 // take the lhs MREs and make each of them have partial
                 // accuracy and assign them to this MemRefHandle -make lhs not
                 // a MemRefHandle
-                    OA::MemRefHandle lhs_memref 
-                        = findTopMemRefHandle(arrRefExp->get_lhs_operand());
+                OA::MemRefHandle lhs_memref 
+                    = findTopMemRefHandle(arrRefExp->get_lhs_operand());
 
-                    OA::OA_ptr<OA::MemRefExprIterator> mIter
-                        = getMemRefExprIterator(lhs_memref);
-                    for ( ; mIter->isValid(); ++(*mIter) ) {
-                        OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
-                        lhs_mre->setAccuracy(false);
-                        mMemref2mreSetMap[memref].insert(lhs_mre);
-                    }
+                OA::OA_ptr<OA::MemRefExprIterator> mIter
+                    = getMemRefExprIterator(lhs_memref);
+                for ( ; mIter->isValid(); ++(*mIter) ) {
+                    OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
+                    lhs_mre->setAccuracy(false);
+                    mMemref2mreSetMap[memref].insert(lhs_mre);
+                }
                 // child is no longer a MemRefHandle
                 mMemref2mreSetMap[lhs_memref].clear();
                 mStmt2allMemRefsMap[stmt].erase(lhs_memref);
@@ -1267,11 +1372,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 lhs_mre->setMemRefType(OA::MemRefExpr::DEF);
             }
 
+            OA::MemRefHandle rhs_memref 
+                = findTopMemRefHandle(assignOp->get_rhs_operand());
             // if the rhs is a SgFunctionRefExpr then we are assigning
             // a function to a function ptr and we need to set
             // the address of for the rhs MREs
-            OA::MemRefHandle rhs_memref 
-                = findTopMemRefHandle(assignOp->get_rhs_operand());
             if (isSgFunctionRefExp(getSgNode(rhs_memref))) {
                 mIter = getMemRefExprIterator(rhs_memref);
                 for ( ; mIter->isValid(); ++(*mIter) ) {
@@ -1284,18 +1389,18 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // FIXME: some of this logic might be useful for initializations
             // rhs top memref can only have an lval or pointer val if it is
             // NOT MemRefHandle(0)
+            SgExpression* lhs_expr 
+                = isSgExpression(assignOp->get_lhs_operand());
+            SgType *lhs_type = getBaseType(lhs_expr->get_type());
             if (rhs_memref!=OA::MemRefHandle(0))  {
-                SgExpression* lhs_expr 
-                    = isSgExpression(assignOp->get_lhs_operand());
-                SgType *type = lhs_expr->get_type();
                 
                 bool ptr_assign_found = false;
                 // if the top mem ref for the lhs_operand is a pointer type
-                if (isSgPointerType(type)) {
+                if (isSgPointerType(lhs_type)) {
                     ptr_assign_found = true;
 
                 // if top mem ref for lhs is a reference type and rhs has lval
-                } else if (isSgReferenceType(type) && is_lval(rhs_memref) ) {
+                } else if (isSgReferenceType(lhs_type) && is_lval(rhs_memref)) {
                     ptr_assign_found = true;
                     // remove the deref from the lhs, 
                     // by default references have deref put on assuming a use
@@ -1537,7 +1642,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 if (child_memref!=OA::MemRefHandle(0)) {
                     child_node = isSgExpression(getSgNode(child_memref));
                     ROSE_ASSERT(child_node);
-                    child_type = child_node->get_type();
+                    child_type = getBaseType(child_node->get_type());
                 }
 
                 // if returning a reference then need to modify the MREs
@@ -2202,7 +2307,7 @@ SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::Stmt
         return;
     }
 
-    SgType *type = newExp->get_type();
+    SgType *type = getBaseType(newExp->get_type());
     ROSE_ASSERT(type != NULL);
 
     // We only create implicit pointer assignment pairs
@@ -2293,7 +2398,7 @@ SageIRInterface::createImplicitPtrAssignPairsForObjectDeclaration(OA::StmtHandle
 {
     ROSE_ASSERT(initName != NULL);
 
-    SgType *type = initName->get_type();
+    SgType *type = getBaseType(initName->get_type());
     ROSE_ASSERT(type != NULL);
   
     // We are only interested in object instantiations, 
@@ -2613,7 +2718,7 @@ void SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
     if (child_memref!=OA::MemRefHandle(0)) {
         child_node = isSgExpression(getSgNode(child_memref));
         ROSE_ASSERT(child_node);
-        child_type = child_node->get_type();
+        child_type = getBaseType(child_node->get_type());
     }
     if (child_node && 
         (isSgArrayType(child_type)||isSgPointerType(child_type)))
@@ -2647,5 +2752,35 @@ void SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
                 mMemref2mreSetMap[memref].insert(mre);
             }
         }
+    }
+}
+
+void SageIRInterface::createUseDefForVarArg(OA::MemRefHandle memref,
+        OA::MemRefHandle valist_memref)
+{
+    // clone each MRE associated with the first parameter
+    OA::OA_ptr<OA::MemRefExprIterator> mIter 
+        = getMemRefExprIterator(valist_memref);
+    for ( ; mIter->isValid(); ++(*mIter) ) {
+        OA::OA_ptr<OA::MemRefExpr> mre = mIter->current();
+        OA::OA_ptr<OA::Deref> deref_mre;
+        bool addressTaken = false;
+        bool fullAccuracy = false;
+        int numDerefs = 1;
+        OA::OA_ptr<OA::MemRefExpr> nullMRE;
+        deref_mre = new OA::Deref( addressTaken, 
+                                   fullAccuracy,
+                                   // FIXME: this needs to be BOTH to
+                                   // indicate no known order
+                                   OA::MemRefExpr::USEDEF,
+                                   mre->clone(),
+                                   numDerefs);
+        mMemref2mreSetMap[memref].insert(deref_mre);
+        /* can't do this effectively because the comparison on mres
+         * ignores the MRType 
+        mre = deref_mre->clone();
+        mre->setMemRefType(OA::MemRefExpr::DEF);
+        mMemref2mreSetMap[memref].insert(mre);
+        */
     }
 }

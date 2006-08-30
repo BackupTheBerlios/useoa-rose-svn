@@ -59,21 +59,18 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("a") => 
                 NamedRef( DEF, SymHandle("a"), F, full)
             MemRefHandle(""testing"") => 
-                UnnamedRef( USE, StmtHandle(""testing""), T, part)
-        ] }
-    PTRASSIGNPAIRS = { StmtHandle("char a[] = "testing";") =>
-        [
-            < NamedRef( DEF, SymHandle("a"), F, full)
-            , UnnamedRef( USE, StmtHandle(""testing""), T, part) >
+                UnnamedRef( USE, StmtHandle(""testing""), F, part)
+            MemRefHandle(""testing"") => 
+                UnnamedRef( USE, StmtHandle(""testing""), F, part)
         ] }
     MEMREFEXPRS = { StmtHandle("int x = strcmp(a,a);") =>
         [
             MemRefHandle("x") => 
                 NamedRef( DEF, SymHandle("x"), F, full)
             MemRefHandle("a") => 
-                NamedRef( USE, SymHandle("a"), F, full)
+                NamedRef( USE, SymHandle("a"), T, full)
             MemRefHandle("a") => 
-                NamedRef( USE, SymHandle("a"), F, full)
+                NamedRef( USE, SymHandle("a"), T, full)
             MemRefHandle("strcmp") => 
                 NamedRef( USE, SymHandle("strcmp"), F, full)
         ] }
@@ -84,8 +81,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("strcmp(a,a)") =>
         [
-            < 0, NamedRef( USE, SymHandle("a"), F, full) >
-            < 1, NamedRef( USE, SymHandle("a"), F, full) >
+            < 0, NamedRef( USE, SymHandle("a"), T, full) >
+            < 1, NamedRef( USE, SymHandle("a"), T, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("a[3] = 'b';") =>
         [

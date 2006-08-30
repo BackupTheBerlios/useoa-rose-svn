@@ -2174,3 +2174,23 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 8/28/06     UseOA-Rose svn branch-memRefExprRefactor r181  Michelle Strout
     - Finished implementing MRE creation at SgFunctionCallExp.
     - Rechecked the CtoOA output for assignReturn.c
+
+8/29/06     UseOA-Rose svn branch-memRefExprRefactor r182  Michelle Strout
+    - Rechecked and generated ./CtoOA TestCases/AliasTests/retPtr1.c    
+    - Implemented the va_start, va_arg, and va_end.  
+      Treating va_start as if      
+      it is NOT a function call.  This logic ends up in      
+      findAllMemRefsAndPtrAssigns and SageOACallGraph.C:FindCallsitesPass. 
+      I don't like that it is spread out like this.
+      Also right now I just have it do a USEDEF on a Deref to the va_list
+      parameter, but I should introduce a new MemRefExprType in OpenAnalysis
+      to indicate no known ordering between the USE and the DEF.
+    - use getBaseType everywhere when I get type
+    - Made it so that when pass an array variable its address is taken.
+      This is due to the fact that we are modeling array variables
+      as one location versus a constant pointer to a separate location.
+    - Array initializers such as strings should not have its address 
+      taken when being used to initialize and array variable.
+      Fixed that in the SgInitializedNamed node.
+    - Verified these fixes on a number of test cases in AliasIRInterface.test.
+
