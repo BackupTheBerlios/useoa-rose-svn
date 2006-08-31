@@ -1352,6 +1352,17 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
   OA::OA_ptr<OA::Location> loc;
   loc = NULL;
 
+  /*
+      From Michelle:
+      (8/24/06 Subject: Re: missing Location for static class variable)
+
+      All member variables are "not local" in OA terminology.  The definition
+      of local in OA means that a variable is ONLY visible within that one
+      procedure.  That is not the case for member variables since even if they
+      are private they are visible in all member methods.
+  */
+
+
   if((((int)s)==0) || (s.hval()==0))
   {
     return loc;
@@ -1378,13 +1389,19 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
       SgDeclarationStatement *declarationStmt = initName->get_declaration();
       ROSE_ASSERT(declarationStmt != NULL);
       
-      SgNode *declarationParent = declarationStmt->get_parent();
-      ROSE_ASSERT(declarationParent != NULL);
-
       SgFunctionDefinition *enclosingProc = 
 	getEnclosingFunction(declarationStmt);
       
-      if ( enclosingProc == NULL ) {
+      // For some reason, the declaration stmt of the initialized
+      // name for myParent is the SgCtorInitializerList and is
+      // not a SgVariableDeclaration!?  BW  8/29/06
+      // class SubClass : public Base {
+      //  public:
+      //   SubClass(Base & parSubClass) : myParent(parSubClass) {}
+      //  Base &myParent;
+      // };
+      if ( ( enclosingProc == NULL ) || 
+           isSgCtorInitializerList(declarationStmt) ) {
 	// This variable was either declared in the global scope
 	// or in a class/struct.  Consider it non-local.
 	// Is this correct?  If it is declared within a 
@@ -1398,6 +1415,12 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
 
 	if ( enclosingProc == procDefn ) {
           // This symbol is local to this procedure.
+#if 0
+        cout << "getLocation initName: " << initName->get_name().str() << endl;
+	cout << "enclosing: " << enclosingProc->unparseToString() << endl;
+	cout << "procDefn: " << procDefn->unparseToString() << endl;
+	cout << "decl: " << declarationStmt->unparseToString() << endl;
+#endif
           isLocal = true;
         } else {
           // This symbol is not visible within this procedure, 
@@ -1408,6 +1431,10 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
       }
       
 #if 0
+
+      SgNode *declarationParent = declarationStmt->get_parent();
+      ROSE_ASSERT(declarationParent != NULL);
+
       if ( isSgGlobal(declarationParent) ) {
         // This symbol is global.
         isLocal = false;
@@ -1464,38 +1491,9 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
         isSgFunctionParameterList(node);
       ROSE_ASSERT(parameterList != NULL);
 
-      SgNode *parent = parameterList->get_parent();
-      ROSE_ASSERT(parent != NULL);
+      // See comment above.  Member variables are not local.
+      isLocal = false;
 
-      SgFunctionDeclaration *functionDeclaration = 
-        isSgFunctionDeclaration(parent);
-      ROSE_ASSERT(functionDeclaration != NULL);
-        
-      SgFunctionDefinition *procDefn = isSgFunctionDefinition(procNode);
-      ROSE_ASSERT(procDefn != NULL);
-
-      SgFunctionDeclaration *procDecl = procDefn->get_declaration();
-      ROSE_ASSERT(procDecl != NULL);
-
-      if ( ( functionDeclaration == procDecl ) ||
-           ( functionDeclaration == procDecl->get_firstNondefiningDeclaration())
-           || ( functionDeclaration->get_firstNondefiningDeclaration() 
-                 == procDecl ) 
-           || ( ( functionDeclaration->get_firstNondefiningDeclaration() 
-                   == procDecl->get_firstNondefiningDeclaration() ) 
-               && ( functionDeclaration->get_firstNondefiningDeclaration() 
-                    != NULL ) 
-              ) 
-         )  
-      {
-        isLocal = true;
-      }
-
-      if ( !isLocal ) {
-        // This symbol is not visible within this procedure, 
-        // so return a NULL location.
-        return loc;
-      }
       break;
     }
   default:
@@ -2297,7 +2295,24 @@ std::string SageIRInterface::toStringWithoutScope(const OA::SymHandle h)
 
       break;
     }
+ 
+  case V_SgFunctionRefExp:
+  case V_SgMemberFunctionRefExp:
+    {
+      SgFunctionRefExp *functionRefExp = isSgFunctionRefExp(node);
+      ROSE_ASSERT(functionRefExp != NULL);
+      
+      SgFunctionSymbol *functionSymbol = functionRefExp->get_symbol();
+      ROSE_ASSERT(functionSymbol != NULL);
 
+      SgFunctionDeclaration *functionDecl = 
+        isSgFunctionDeclaration(functionSymbol);
+      ROSE_ASSERT(functionDecl != NULL);
+
+      ret = toStringWithoutScope(functionDecl);
+
+      break;
+    }
   case V_SgInitializedName:
     {
       SgInitializedName *initName = isSgInitializedName(node);
@@ -2448,6 +2463,40 @@ std::string SageIRInterface::toStringWithoutScope(SgNode *node)
       //      nm = fd->get_qualified_name() + "__" + fd->get_mangled_name();
       //      ret = string("method:") + nm.str();
       ret = mangleFunctionName(fd);
+
+      break;
+    }
+
+  case V_SgFunctionRefExp:
+    {
+      SgFunctionRefExp *functionRefExp = isSgFunctionRefExp(node);
+      ROSE_ASSERT(functionRefExp != NULL);
+      
+      SgFunctionSymbol *functionSymbol = functionRefExp->get_symbol();
+      ROSE_ASSERT(functionSymbol != NULL);
+
+      SgFunctionDeclaration *functionDecl = 
+        functionSymbol->get_declaration();
+      ROSE_ASSERT(functionDecl != NULL);
+
+      ret = toStringWithoutScope(functionDecl);
+
+      break;
+    }
+
+  case V_SgMemberFunctionRefExp:
+    {
+      SgMemberFunctionRefExp *functionRefExp = isSgMemberFunctionRefExp(node);
+      ROSE_ASSERT(functionRefExp != NULL);
+      
+      SgFunctionSymbol *functionSymbol = functionRefExp->get_symbol();
+      ROSE_ASSERT(functionSymbol != NULL);
+
+      SgFunctionDeclaration *functionDecl = 
+        functionSymbol->get_declaration();
+      ROSE_ASSERT(functionDecl != NULL);
+
+      ret = toStringWithoutScope(functionDecl);
 
       break;
     }
@@ -3571,48 +3620,9 @@ SageIRInterface::getCallsiteParams(OA::CallHandle h)
  */
 OA::SymHandle SageIRInterface::getThisExpSymHandle(SgNode *node)
 {
-    SgFunctionDeclaration *functionDeclaration = NULL;
+    SgNode *thisNode = getThisExpNode(node);
 
-    switch(node->variantT()) {
-    case V_SgMemberFunctionDeclaration:
-        {
-            functionDeclaration = isSgFunctionDeclaration(node);
-            break;
-        }
-
-    case V_SgThisExp:
-        {
-            SgThisExp *thisExp = isSgThisExp(node);
-            ROSE_ASSERT(thisExp != NULL);
-
-            SgFunctionDefinition *functionDefinition = 
-                getEnclosingFunction(thisExp);
-            ROSE_ASSERT(functionDefinition != NULL);
-
-            functionDeclaration = functionDefinition->get_declaration();
-            break;
-        }
-
-    default:
-        {
-            std::cerr << "'This' should be represented by its enclosing "
-                      << "methods' SgFunctionParameterList."
-                      << std::endl
-                      << "Don't know how to extract a SgFunctionParameterList "
-                      << "from a " << node->sage_class_name() 
-                      << std::endl;
-            ROSE_ABORT();
-            break;
-        }
-    }
-
-    ROSE_ASSERT(functionDeclaration != NULL);
-
-    SgFunctionParameterList *paramList = 
-        functionDeclaration->get_parameterList();
-    ROSE_ASSERT(paramList != NULL);
-
-    OA::SymHandle symHandle = getNodeNumber(paramList);      
+    OA::SymHandle symHandle = getNodeNumber(thisNode);      
     return symHandle;
 }
 

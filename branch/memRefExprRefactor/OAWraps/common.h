@@ -50,6 +50,9 @@ std::string mangleFunctionName(SgFunctionDeclaration *funcDecl);
 SgClassDeclaration *
 getClassDeclaration(SgType *type);
 
+SgClassDefinition *
+getClassDefinition(SgType *type);
+
 SgFunctionDeclaration *getDefiningDeclaration(SgFunctionDeclaration *funcDecl);
 SgClassDeclaration *getDefiningDeclaration(SgClassDeclaration *funcDecl);
 
@@ -61,5 +64,12 @@ bool isFunc(SgFunctionCallExp *functionCallExp,
 
 bool returnsAddress(SgFunctionCallExp *functionCallExp);
 
+SgNode *getThisExpNode(SgNode *node);
+
+bool isObjectInitialization(SgConstructorInitializer *ctorInitializer);
+
+bool isBaseClassInvocation(SgConstructorInitializer *ctorInitializer);
+
+SgNode *getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer);
 
 #endif /* _USEOA_COMMON_H */

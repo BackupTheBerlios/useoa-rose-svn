@@ -516,8 +516,8 @@ lookupDestructorInClass(SgClassDefinition *classDefinition)
 /**  \brief  Return the lhs of a constructor initializer.
  *   \param  ctorInitializer  A SgConstructorInitializer representing
  *                            the invocation of a constructor.
- *   \returns An expression representing the object created by
- *            the constructor.
+ *   \returns An expression used to represent the this (implicit or
+ *            explicit) of a constructor invocation.
  *
  *   In the following examples, we return the lhs:
  *       Foo f;
@@ -533,11 +533,17 @@ lookupDestructorInClass(SgClassDefinition *classDefinition)
  *       bar(new Foo);
  *       (new Foo)->methodCall();
  *
+ *   For cases involving the invocation of a baseclass constructor:
+ * 
+ *       class Foo : public Bar { Foo(Foo &f) : Bar(f) { } };
+ *
+ *   we represent the actual implicit 'this' via a SgExprListExp.
+ *
  *   We don't really return an expression.  Notice in the first
  *   few examples, the only thing we can return is a SgInitializedName.
  *
  */
-static SgNode *
+SgNode *
 getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer)
 {
     ROSE_ASSERT( ctorInitializer != NULL );
@@ -554,8 +560,27 @@ getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer)
 
     SgNode *parent = ctorInitializer->get_parent();
 
-    if ( isSgInitializedName(parent) )
-        return parent;
+    SgInitializedName *initName = isSgInitializedName(parent);
+    if ( initName != NULL ) {
+      // If the parent is a SgInitializedName whose name is the
+      // same as the constructor being invoked, then that SgInitializedName
+      // is not a variable, but a base class.
+      if ( isObjectInitialization(ctorInitializer) ) {
+          return initName;
+      } else {
+        // In this case, the implicit actual to the constructor
+        // invocation is the 'this' param of the caller (constructor).
+        // First, get the caller.  However, we want to return
+        // something that may be used as the actual/MemRefHandle.
+        // We use the SgExprListExp of the invoked constructor
+        // for that purpose.
+        SgExprListExp *args = ctorInitializer->get_args();
+        ROSE_ASSERT(args != NULL);
+
+        return args;
+      }
+
+    }
   
     bool expectInit = false;
   
@@ -1116,7 +1141,29 @@ getClassDeclaration(SgType *type)
             break;
         }
    }
+
+   classDeclaration = isSgClassDeclaration(getDefiningDeclaration(classDeclaration));
+   ROSE_ASSERT(classDeclaration != NULL);
+
    return classDeclaration;
+}
+
+/** \brief Return the definition of the class with a given type.
+ *  \param type  a SgNode representing a type.
+ *  \return a SgClassDefinition that is the class definition
+ *          for the given type, or NULL if type does not
+ *          correspond to a class.
+ */
+SgClassDefinition *
+getClassDefinition(SgType *type)
+{
+    SgClassDeclaration *classDeclaration = getClassDeclaration(type);
+    ROSE_ASSERT(classDeclaration != NULL);
+
+    SgClassDefinition *classDefinition = 
+        classDeclaration->get_definition();
+
+    return classDefinition;
 }
 
 SgFunctionDeclaration *getDefiningDeclaration(SgFunctionDeclaration *funcDecl)
@@ -1189,3 +1236,130 @@ bool returnsAddress(SgFunctionCallExp *functionCallExp)
   return returnsAddr;
 }
 
+/** \brief  Return a SgNode representing a 'this' expression.
+ *  \param  node  A SgNode from which we would like to derive
+ *                a SgNode for a 'this' expression.
+ *  \returns  A SymHandle representing a 'this' expression
+ *            corresponding to the method or SgThisExp
+ *            represented by node.
+ *
+ *  node should be either a SgMemberFunctionDeclaration or
+ *  a SgThisExp.
+ *
+ *  We use the SgFunctionParameterList from the enclosing
+ *  method to represent the method-specific 'this' expression.
+ *  NB:  Using a class-wide 'this' expression (e.g., a SgClassSymbol)
+ *  would lead to loss of precision.
+ */
+SgNode *getThisExpNode(SgNode *node)
+{
+    // Proper handling of 'this' is discussed in the thread
+    // Subject: Member function bug and others
+    // between Michelle and Brian around Aug 29, 2006.
+
+    SgFunctionDeclaration *functionDeclaration = NULL;
+
+    switch(node->variantT()) {
+    case V_SgMemberFunctionDeclaration:
+        {
+            functionDeclaration = isSgFunctionDeclaration(node);
+            break;
+        }
+
+    case V_SgThisExp:
+        {
+            SgThisExp *thisExp = isSgThisExp(node);
+            ROSE_ASSERT(thisExp != NULL);
+
+            SgFunctionDefinition *functionDefinition = 
+                getEnclosingFunction(thisExp);
+            ROSE_ASSERT(functionDefinition != NULL);
+
+            functionDeclaration = functionDefinition->get_declaration();
+            break;
+        }
+
+    default:
+        {
+            std::cerr << "'This' should be represented by its enclosing "
+                      << "methods' SgFunctionParameterList."
+                      << std::endl
+                      << "Don't know how to extract a SgFunctionParameterList "
+                      << "from a " << node->sage_class_name() 
+                      << std::endl;
+            ROSE_ABORT();
+            break;
+        }
+    }
+
+    ROSE_ASSERT(functionDeclaration != NULL);
+
+    SgFunctionParameterList *paramList = 
+        functionDeclaration->get_parameterList();
+    ROSE_ASSERT(paramList != NULL);
+
+    return paramList;
+}
+
+/** \brief  Return boolean indicating whether the SgConstructorInitializer
+ *          initializes an object.
+ *  \param  ctorInitializer  A SgConstructorInitializer.
+ *  \returns  Boolean indicating whether ctorInitializer initializes
+ *            an object.
+ *
+ *  The following are object initializations:
+ *  Foo f;
+ *  Foo(Bar &b) : mBar(b) { }
+ *
+ *  The following are not:
+ *  Foo *f = new Foo;
+ *  class Foo : public Bar { Foo(Foo &f) : Bar(f) { } }
+ *
+ *  Notice that the Bar in Bar(f) in the initializer is represented 
+ *  by a SgInitializedName, whose name is 'Bar'.  Thus if the name 
+ *  of the SgInitializedName and of the invoked constructor are the
+ *  same, this is an invocation of a base class constructor.
+ */
+bool isObjectInitialization(SgConstructorInitializer *ctorInitializer)
+{
+    ROSE_ASSERT(ctorInitializer != NULL);
+
+    SgNode *parent = ctorInitializer->get_parent();
+
+    SgInitializedName *initName = isSgInitializedName(parent);
+    if ( initName != NULL ) {
+        if ( isBaseClassInvocation(ctorInitializer) ) {
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+bool isBaseClassInvocation(SgConstructorInitializer *ctorInitializer)
+{
+    ROSE_ASSERT(ctorInitializer != NULL);
+
+    SgNode *parent = ctorInitializer->get_parent();
+
+    SgInitializedName *initName = isSgInitializedName(parent);
+    if ( initName != NULL ) {
+      // If the parent is a SgInitializedName whose name is the
+      // same as the constructor being invoked, then that SgInitializedName
+      // is not a variable, but a base class.
+      SgMemberFunctionDeclaration *invokedCtor = 
+        ctorInitializer->get_declaration();
+      ROSE_ASSERT(invokedCtor != NULL);
+
+      if ( invokedCtor->get_name() == initName->get_name() ) {
+        // In this case, the implicit actual to the constructor
+        // invocation is the 'this' param of the caller (constructor).
+        // First, get the caller.  However, we want to return
+        // something that may be used as the actual/MemRefHandle.
+        // We use the SgExprListExp of the invoked constructor
+        // for that purpose.
+        return true;
+      }
+    }
+    return false;
+}

@@ -2194,3 +2194,96 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       Fixed that in the SgInitializedNamed node.
     - Verified these fixes on a number of test cases in AliasIRInterface.test.
 
+8/31/06     UseOA-Rose svn branch-memRefExprRefactor r183  Brian White
+    - Fixed toStringWithoutScope to properly handle SgFunctionRefExp/
+      SgMemberFunctionRefExp cases.  We get the field_name by asking
+      toStringWithoutScope for the string of one of these guys.
+
+    - getLocation was returning isLocal for the 'this' ptr.
+      Changed isLocal = false for this case, as per the comment
+      above on 8/25.
+
+    - Fixed getLocation so that myParent is not considered local in
+      this example:
+
+        class SubClass : public Base {
+          public:
+          SubClass(Base & parSubClass) : myParent(parSubClass) {}
+          Base &myParent;
+        };
+
+      The problem was that the declaration stmt for myParent is
+      the SgCtorInitializerList, rather than a SgVariableDeclaration
+      (in the class definition).  Therefore, because the declaration
+      was 'enclosing in' a function, I was calling it local.
+      We know check for this SgCtorInitializerList case.
+
+    - Changed SgInitializedName case so that it first creates and
+      stores its MRE and then recurses.  A problem occurred when
+      the child of a SgInitializedName was a SgConstructorInitializer,
+      for which we had to get the lhs for the implicit this actual.
+      i.e., this case:
+	 Foo() : mF(f)
+      We would attempt to make &mF the 'this' actual, where mF
+      is the SgInitializedName.  Unfortunately, as this MRE
+      hadn't been registered, findTopMemRefHandle was instead
+      returning f.
+
+    - Implemented SgDeleteExp:  created call handle MRE for SgDeleteExp,
+      which may be a FieldAccess if the destructor is virtual.
+	
+    - A slew of things regarding handling of 'this'
+
+        - SymHandle associated with the 'this' formal is _always_
+          a SgFunctionParameterList.  The MRE for 'this' formal is
+          NamedRef(SymHandle(SgFunctionParmaterList)).  See
+          SageIRInterface::getThisExpSymHandle and getThisExpNode.
+
+        - Created MemRefHandle/MRE for 'this' in SgExprListExp
+          case whenever it would be used to model 'this'.
+          i.e., when 
+	     getConstructorInitializerLhs(ctorInitializer) == exprListExp
+          This should occur only for invocations of a base constructor
+          in the constructor initializer list.
+
+          It may have been cleaner to create this MRE elsewhere
+          (e.g., at the ctorInitializer), however I wanted to maintain
+          the invariant that an MRE/MemRefHandle is created in the
+          case for that MemRefHandle.  Though I violate this below ...
+
+        - Notice that not all SgInitializedNames correspond to
+          variable initializations.  e.g., in the SgInitializedName
+          case I no longer create an MRE here:
+
+	  // class Foo : public Bar { Foo(Foo &f) : Bar(f) { } }
+          //
+          // Bar in Bar(f) in the initializer is represented 
+          // by a SgInitializedName, whose name is 'Bar'.  
+          // i.e., though it appears to be so, this is not
+          // a variable initialization.  Therefore, do 
+          // not create an MRE for it.  Instead,
+          // just visit the constructor initializer,
+          // which will create the required call MRE.
+
+        - Handle implicit this for member variable initialization
+          in constructor initialization list (in SgInitializedName case)
+
+              class Foo { Foo(Bar &b) : mBar(b) };
+          
+          In the above example we model mBar(b) as this->mBar = b.
+          Therefore, need to conjure up a MemRefHandle for 'this'.
+          
+          If mBar(b) would invoke a copy constructor, then it will
+          have a SgConstructorInitializer, whose args are held
+          in a SgExprListExp.  In these case, we may use the
+          SgExprListExp for 'this's MemRefHandle, as above.
+
+          If mBar had a basic type, we would not have an SgExprListExp
+          since the initializer would not be a SgConstructorInitializer.
+          Instead we would have a SgAssignInitializer.  Since we don't
+          use this for anything else, we may return it as the MemRefHandle.
+
+        - Therefore, the following may be used as MemRefHandles for
+          a 'this' expression:  SgThisExp (when present), SgExprListExp,
+          or SgAssignInitializer/SgAggregateInitializer.
+     

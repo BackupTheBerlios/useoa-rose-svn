@@ -890,7 +890,6 @@ public:
   //! a SgFunctionParameterList.
   OA::SymHandle getThisExpSymHandle(SgNode *node);
 
-
   // Strip off any leading SgCastExps/SgAssignInitializers in 
   // the tree root at node.
   SgNode *lookThroughCastExpAndAssignInitializer(SgNode *node); 

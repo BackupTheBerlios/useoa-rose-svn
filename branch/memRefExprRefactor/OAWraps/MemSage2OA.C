@@ -93,10 +93,11 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
         {
             isCallAMethodInvocation = true;
 
-            SgNode *parent = node->get_parent();
-            ROSE_ASSERT(parent != NULL);
+            SgConstructorInitializer *ctorInit =
+                isSgConstructorInitializer(node);
+            ROSE_ASSERT(ctorInit != NULL);
 
-            if ( isSgInitializedName(parent) ) {
+            if ( isObjectInitialization(ctorInit) ) {
                 // If the parent of the constructor initialize is a var, then
                 // we are in the case:
                 // A a;
@@ -105,6 +106,10 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
                 // Therefore, in the implicit param binding with 'this', we
                 // need to treat this as if it were a dot expression, so
                 // that we take the address of a:  this = &a.
+
+                // Note, it is _not_ sufficient that the parent be a 
+                // SgInitializedName (as was checked previously), as this
+                // might also indicate invocation of a base class.
                 isCallADotExp = true;
             }
             break;
@@ -453,6 +458,94 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgExprListExp* exprListExp = isSgExprListExp(astNode);
             ROSE_ASSERT (exprListExp != NULL);  
 
+            // A SgExprListExp is used as a MemRefHandle
+            // associated with an implicit this actual,
+            // when one is not available in the AST.
+            // e.g., for invocations of base class constructors
+            // within a SgConstructorInitializerList, we
+            // need to pass something as the actual for the
+            // zeroth formal representing the receiver.
+            //
+            // class Foo : public Bar { Foo(Foo &f) : Bar(f) { } };
+            //
+            // In the case of Bar(f), the actual MRE will
+            // be a NamedRef(SymHandle(Foo::Foo SgFunctionParameterList)),
+            // as SgFunctionParameterLists are used to 
+            // represent 'this' formals.  This formal of Foo::Foo
+            // is passed as an actual to Bar::Bar.
+
+            // Syntactically, one might suspect that we need
+            // to introduce an implicit actual here as well:
+            //
+            // class Foo {
+            //   void someMethod() { }
+            //   void someOtherMethod() { someMethod(); }
+            // };
+            //
+            // i.e., someMethod() is implicitly this->someMethod().
+            // However, I believe that Sage normalizes this call.
+            // Let's verify that ...
+
+            SgNode *parent = exprListExp->get_parent();
+            ROSE_ASSERT(parent != NULL);
+
+            SgFunctionCallExp *functionCall = isSgFunctionCallExp(parent);
+            if ( functionCall != NULL ) {
+                SgBinaryOp *arrowOrDotExp =
+                    isSgBinaryOp(functionCall->get_function());
+                if ( arrowOrDotExp != NULL ) {
+                    // Assert that a (non-static) method invocation 
+                    // has a non-NULL receiver.
+                    // Note that static method invocations have
+                    // a get_function() which returns a SgMemberFunctionRef,
+                    // not an arrow or dot expression.
+                    ROSE_ASSERT(isSgArrowExp(arrowOrDotExp) || 
+                                isSgDotExp(arrowOrDotExp));
+                    ROSE_ASSERT(arrowOrDotExp->get_lhs_operand() != NULL);
+                }
+            } 
+
+            // Given the above assertion, we should only need to 
+            // introduce implicit 'this' actuals for invocations
+            // of a baseclass contructor within a 
+            // SgConstructorInitializerList.  
+            SgConstructorInitializer *ctorInitializer = 
+                isSgConstructorInitializer(parent);
+
+            // If we would use this node to represent an implicit
+            // this, then we need to create a MemRefHandle/MRE pair
+            // for it.
+            if ( ( ctorInitializer != NULL ) &&
+                 ( getConstructorInitializerLhs(ctorInitializer) == exprListExp ) ) {
+                // is a MemRefHandle
+                OA::MemRefHandle memref = getMemRefHandle(astNode);
+                mStmt2allMemRefsMap[stmt].insert(memref);
+
+                //======= create a NamedRef
+                bool addressTaken = false;
+                bool accuracy = true;
+                // default MemRefType, ancestors will change this if necessary
+                OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+                // get the symbol for the variable
+
+                SgFunctionDefinition *enclosingFunction =
+                    getEnclosingFunction(astNode);
+                ROSE_ASSERT(enclosingFunction != NULL);
+                SgFunctionDeclaration *functionDeclaration =
+                    enclosingFunction->get_declaration();
+	        OA::SymHandle symHandle = 
+                    getThisExpSymHandle(functionDeclaration);
+
+                OA::OA_ptr<OA::MemRefExpr> mre;
+                mre = new OA::NamedRef(addressTaken, 
+                                       accuracy,
+                                       mrType,
+                                       symHandle);
+                ROSE_ASSERT(!mre.ptrEqual(0));
+
+                mMemref2mreSetMap[memref].insert(mre);
+            }
+
             // recurse on all expressions
             SgExpressionPtrList & exprs = exprListExp->get_expressions();  
             for(SgExpressionPtrList::iterator exprIter = exprs.begin();
@@ -758,11 +851,100 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgDeleteExp *deleteExp = isSgDeleteExp(astNode);
             ROSE_ASSERT(deleteExp != NULL);
 
+            SgExpression *receiver = deleteExp->get_variable();
+            ROSE_ASSERT(receiver != NULL);
+
+            // Visit the receiver of the delete expression,
+            // which will be the implicit this.
+            findAllMemRefsAndPtrAssigns(receiver, stmt);
+
+            SgType *type = receiver->get_type(); 
+            ROSE_ASSERT(type != NULL);
+
+            SgClassDefinition *classDefn = getClassDefinition(type);
+            ROSE_ASSERT(classDefn != NULL);
+
+            SgMemberFunctionDeclaration *methodDecl = 
+                lookupDestructorInClass(classDefn); 
+            ROSE_ASSERT(methodDecl != NULL); 
+
+            // Create the MRE for the call handle.
+            OA::OA_ptr<OA::MemRefExpr> method;
+
+            // If the destructor is virtual, we need to create
+            // an invocation through a field access.
+            if ( isVirtual(methodDecl) ) {
+
+                // Notice that we first need to visit the receiver,
+                // so that we will have a MRE for the base of
+                // the field access.  
+
+                // clones MREs for lhs and wraps them in a Deref 
+                // and a FieldAccess
+                OA::MemRefHandle lhs_memref
+                    = findTopMemRefHandle(receiver);
+                std::string field_name 
+                    = toStringWithoutScope(methodDecl);
+                OA::OA_ptr<OA::MemRefExprIterator> mIter
+                    = getMemRefExprIterator(lhs_memref);
+                int numMREs = 0;
+                for ( ; mIter->isValid(); ++(*mIter) ) {
+                    OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
+                    OA::OA_ptr<OA::Deref> deref_mre;
+                    
+                    bool addressTaken = false;
+                    int numDerefs = 1;
+
+                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                    deref_mre = new OA::Deref(addressTaken, 
+                                              lhs_mre->hasFullAccuracy(),
+                                              OA::MemRefExpr::USE,
+                                              nullMRE,
+                                              numDerefs);
+                    OA::OA_ptr<OA::MemRefExpr> fieldAccess;
+                    addressTaken = false;
+                    fieldAccess = new OA::FieldAccess(false, 
+                                                      deref_mre->hasFullAccuracy(),
+                                                      OA::MemRefExpr::USE,
+                                                      deref_mre->composeWith(lhs_mre),
+                                                      field_name);
+                    
+                    // I do not think that there should be a general
+                    // MRE here.  Just a call handle.
+
+                    // mMemref2mreSetMap[memref].insert(fieldAccess);
+                    method = fieldAccess;
+
+                    ++numMREs;
+                }
+
+                // XXX:  Could we have multiple MREs here?  I don't
+                // think so.  Even if we could, mCallToMRE is
+                // not set up to handle it.  Abort if we see it.
+                ROSE_ASSERT( numMREs == 1 );
+
+            } else {
+
+                // Create a call handle for the delete expression.
+                bool addressTaken = false;
+                bool fullAccuracy = true;
+
+                OA::SymHandle symHandle = getProcSymHandle(methodDecl);
+    
+                OA::OA_ptr<OA::MemRefExpr> method;
+                method = new OA::NamedRef(addressTaken, 
+                                          fullAccuracy,
+                                          OA::MemRefExpr::USE,
+                                          symHandle);
+            }
+	
+            OA::CallHandle call = getCallHandle(astNode);
+            mCallToMRE[call] = method;
+
             // Create parameter binding params arising from
             // the receiver used to invoke the destructor.
             createParamBindPtrAssignPairs(deleteExp);
 
-            ROSE_ASSERT(0);
             break;
         }
     case V_SgThisExp:
@@ -879,25 +1061,128 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // if initptr is not null then             
             if (initName->get_initptr()!=NULL) {
-                // recurse on child
-                findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
+
+                // In the following case:
+                //
+                // class Foo : public Bar { Foo(Foo &f) : Bar(f) { } }
+                //
+                // Bar in Bar(f) in the initializer is represented 
+                // by a SgInitializedName, whose name is 'Bar'.  
+                // i.e., though it appears to be so, this is not
+                // a variable initialization.  Therefore, do 
+                // not create an MRE for it.  Instead,
+                // just visit the constructor initializer,
+                // which will create the required call MRE.
+
+                SgConstructorInitializer *ctorInitializer =
+                    isSgConstructorInitializer(initName->get_initptr());
+                if ( ctorInitializer && isBaseClassInvocation(ctorInitializer) ) {
+
+                    findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
+                    break;
+ 
+                }
+
+                SgNode *parent = initName->get_parent();
+                ROSE_ASSERT(parent != NULL);
 
                 // is a MemRefHandle
                 OA::MemRefHandle memref = getMemRefHandle(astNode);
+                bool requiresImplicitReceiver = false;
+                if ( isSgCtorInitializerList(parent) ) {
+
+                    // At this point, we know that initName is a
+                    // variable initialization within a constructor
+                    // intializer list.  That is, it is 
+                    // a member variable initialization.
+                    // These have an implicit receive in the Sage AST,
+                    // that we need to make explicit here.
+                    requiresImplicitReceiver = true;
+
+                    // We need a MemRefHandle for the implicit this.
+                    // If initialization occurs through a 
+                    // constructor invocation, we will use its
+                    // actual arg list, as is done to represent
+                    // the implicit receiver of a constructor invocation.
+                    // Otherwise, we will use the initializer of the
+                    // initName.
+                    if ( ctorInitializer != NULL ) {
+                        SgExprListExp *args = ctorInitializer->get_args();
+                        ROSE_ASSERT(args != NULL);
+                        memref = getMemRefHandle(args);
+                    } else {
+                        SgInitializer *initer = initName->get_initptr();
+                        ROSE_ASSERT(initer != NULL);
+                        memref = getMemRefHandle(initer);
+                    }
+
+                }
+
                 mStmt2allMemRefsMap[stmt].insert(memref);
 
-                //======= create a DEF NamedRef
-                // make a NamedRef for the variable being initialized
-                bool addressTaken = false;
-                bool accuracy = true;
-                OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::DEF;
-                // get the symbol for the variable
-                OA::SymHandle sym = getNodeNumber(initName);
-                // construct the NamedRef
+                // Create the MRE.
                 OA::OA_ptr<OA::MemRefExpr> mre;
-                mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
+     
+                if ( !requiresImplicitReceiver ) {
+
+                    //======= create a DEF NamedRef
+                    // make a NamedRef for the variable being initialized
+                    bool addressTaken = false;
+                    bool accuracy = true;
+                    OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::DEF;
+                    // get the symbol for the variable
+                    OA::SymHandle sym = getNodeNumber(initName);
+                    // construct the NamedRef
+                    mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
+
+                } else {
+
+                    //======= create a DEF FieldAccess
+                    // make a NamedRef for the variable being initialized
+                    bool addressTaken = false;
+                    bool accuracy = true;
+                    OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+
+                    // get the symbol for the implicit this.
+                    SgFunctionDefinition *enclosingFunction =
+                        getEnclosingFunction(astNode);
+                    ROSE_ASSERT(enclosingFunction != NULL);
+                    SgFunctionDeclaration *functionDeclaration =
+                        enclosingFunction->get_declaration();
+        	    OA::SymHandle symHandle = 
+                        getThisExpSymHandle(functionDeclaration);
+
+                    OA::OA_ptr<OA::MemRefExpr> base;
+                    base = new OA::NamedRef(addressTaken, 
+                                            accuracy,
+                                            mrType,
+                                            symHandle);
+
+                    // Deref the MRE.
+                    OA::OA_ptr<OA::Deref> deref_mre;
+                    int numDerefs = 1;
+                    deref_mre = new OA::Deref(addressTaken, 
+                                              accuracy,
+                                              OA::MemRefExpr::USE,
+                                              base,
+                                              numDerefs);
+
+                    // Create the FieldAccess MRE.
+                    OA::OA_ptr<OA::MemRefExpr> fieldAccess;
+                    std::string field_name = toStringWithoutScope(initName);
+                    fieldAccess = new OA::FieldAccess(addressTaken, 
+                                                      accuracy,
+                                                      OA::MemRefExpr::DEF,
+                                                      deref_mre,
+                                                      field_name);
+
+                    mre = fieldAccess;
+                }
 
                 mMemref2mreSetMap[memref].insert(mre);
+
+                // recurse on child
+                findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
 
                 OA::MemRefHandle child_memref 
                     = findTopMemRefHandle(initName->get_initptr());
