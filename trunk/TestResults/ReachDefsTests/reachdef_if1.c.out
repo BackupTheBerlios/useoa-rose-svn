@@ -43,25 +43,25 @@ return 0;
 
 
     Edge: 1 => 2
-        { 1 FALLTHROUGH_EDGE 0 }
+        { FALLTHROUGH_EDGE 0 }
 
     Edge: 2 => 3
-        { 2 TRUE_EDGE 0 }
+        { TRUE_EDGE 0 }
 
     Edge: 2 => 4
-        { 3 FALSE_EDGE 0 }
+        { FALSE_EDGE 0 }
 
     Edge: 3 => 5
-        { 4 FALLTHROUGH_EDGE 0 }
+        { FALLTHROUGH_EDGE 0 }
 
     Edge: 4 => 5
-        { 5 FALLTHROUGH_EDGE 0 }
+        { FALLTHROUGH_EDGE 0 }
 
     Edge: 6 => 7
-        { 6 FALLTHROUGH_EDGE 0 }
+        { FALLTHROUGH_EDGE 0 }
 
     Edge: 5 => 7
-        { 7 RETURN_EDGE 0 }
+        { RETURN_EDGE 0 }
 
 
 ReachDefsStandard(

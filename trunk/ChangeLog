@@ -1933,4 +1933,7 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - passes regressAll with OpenAnalysis trunk r211 compiled on Okapi with
       gcc-3.2 and rose-0.8.7a/compile-gcc-3.2
 
+8/30/06     UseOA-ROSE svn trunk r183   Priyadarshini Malusare
+    - Added TestCases and TestResults for AliasMapXAIF
+	- regressAll works with OpenAnalysis r216.
 

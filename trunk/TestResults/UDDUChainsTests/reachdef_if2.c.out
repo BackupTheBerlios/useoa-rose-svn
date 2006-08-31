@@ -1,7 +1,152 @@
-Catastrophic error: could not open source file
-          "TestCases/UDDUChainsTests/reachdef_if2.c"
 
-1 catastrophic error detected in the compilation of "TestCases/UDDUChainsTests/reachdef_if2.c".
-Compilation terminated.
-OATest: /home/mstrout/ROSE/rose-0.8.7a/ROSE-0.8.7a/src/frontend/EDG/EDG_3.3/src/host_envir.c:1512: void exit_compilation(an_error_severity): Assertion `false' failed.
-abort on exit from EDG front-end processing! 
+graph DGraph:
+
+    Node 1: 
+        ====== CFG node 1 ======
+
+
+    Node 2: 
+        ====== CFG node 2 ======
+double x;
+double y;
+double z;
+x =(2);
+if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}
+
+
+    Node 3: 
+        ====== CFG node 3 ======
+y =(5);
+x =(y + y);
+y =(x *(5));
+
+
+
+    Node 4: 
+        ====== CFG node 4 ======
+y =(3);
+
+
+
+    Node 5: 
+        ====== CFG node 5 ======
+z = y;
+return 0;
+
+
+    Node 6: 
+        ====== CFG node 6 ======
+
+
+
+    Node 7: 
+        ====== CFG node 7 ======
+
+
+    Edge: 1 => 2
+        { FALLTHROUGH_EDGE 0 }
+
+    Edge: 2 => 3
+        { TRUE_EDGE 0 }
+
+    Edge: 2 => 4
+        { FALSE_EDGE 0 }
+
+    Edge: 3 => 5
+        { FALLTHROUGH_EDGE 0 }
+
+    Edge: 4 => 5
+        { FALLTHROUGH_EDGE 0 }
+
+    Edge: 6 => 7
+        { FALLTHROUGH_EDGE 0 }
+
+    Edge: 5 => 7
+        { RETURN_EDGE 0 }
+
+
+ReachDefsStandard(
+    mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
+            StmtHandle(y =(5);)	 => [ StmtHandle(x =(2);) ] 
+            StmtHandle(x =(y + y);)	 => [ StmtHandle(x =(2);)    StmtHandle(y =(5);) ] 
+            StmtHandle(y =(x *(5));)	 => [ StmtHandle(y =(5);)    StmtHandle(x =(y + y);) ] 
+            StmtHandle(y =(3);)	 => [ StmtHandle(x =(2);) ] 
+            StmtHandle(z = y;)	 => [ StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);) ] 
+            StmtHandle(if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);})	 => [ StmtHandle(x =(2);) ] 
+            StmtHandle()	 => [ StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));) ] 
+            StmtHandle()	 => [ StmtHandle(x =(2);)    StmtHandle(y =(3);) ] 
+            StmtHandle(return 0;)	 => [ StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;) ] 
+
+    mExitReachDefs: [ StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;) ] 
+)
+
+UDDUChainsStandard(
+    mUDChainForStmt: StmtHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Use StatementHandle : StmtHandle(x =(y + y);)	 => 
+            Define Statements: [ StmtHandle(y =(5);) ] 
+            
+            Use StatementHandle : StmtHandle(y =(x *(5));)	 => 
+            Define Statements: [ StmtHandle(x =(y + y);) ] 
+            
+            Use StatementHandle : StmtHandle(z = y;)	 => 
+            Define Statements: [ StmtHandle(y =(x *(5));)    StmtHandle(y =(3);) ] 
+            
+            Use StatementHandle : StmtHandle(if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);})	 => 
+            Define Statements: [ StmtHandle(x =(2);) ] 
+
+    mDUChainForStmt: StmtHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Def StmtHandle: StmtHandle(x =(2);)	 => 
+            Use Statements: [ StmtHandle(if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}) ] 
+            
+            Def StmtHandle: StmtHandle(y =(5);)	 => 
+            Use Statements: [ StmtHandle(x =(y + y);) ] 
+            
+            Def StmtHandle: StmtHandle(x =(y + y);)	 => 
+            Use Statements: [ StmtHandle(y =(x *(5));) ] 
+            
+            Def StmtHandle: StmtHandle(y =(x *(5));)	 => 
+            Use Statements: [ StmtHandle(z = y;) ] 
+            
+            Def StmtHandle: StmtHandle(y =(3);)	 => 
+            Use Statements: [ StmtHandle(z = y;) ] 
+
+    mUDChainForMemRef: MemRefHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Use MemRefHandle: MemRefHandle(x)	 => 
+            Def Statements: [ StmtHandle(x =(2);) ] 
+            
+            Use MemRefHandle: MemRefHandle(y)	 => 
+            Def Statements: [ StmtHandle(y =(5);) ] 
+            
+            Use MemRefHandle: MemRefHandle(y)	 => 
+            Def Statements: [ StmtHandle(y =(5);) ] 
+            
+            Use MemRefHandle: MemRefHandle(x)	 => 
+            Def Statements: [ StmtHandle(x =(y + y);) ] 
+            
+            Use MemRefHandle: MemRefHandle(y)	 => 
+            Def Statements: [ StmtHandle(y =(x *(5));)    StmtHandle(y =(3);) ] 
+
+    mDUChainForMemRef: MemRefHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Def MemRefHandle: MemRefHandle(x)	 => 
+            Use Statements: [ StmtHandle(if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}) ] 
+            
+            Def MemRefHandle: MemRefHandle(y)	 => 
+            Use Statements: [ StmtHandle(x =(y + y);) ] 
+            
+            Def MemRefHandle: MemRefHandle(x)	 => 
+            Use Statements: [ StmtHandle(y =(x *(5));) ] 
+            
+            Def MemRefHandle: MemRefHandle(y)	 => 
+            Use Statements: [ StmtHandle(z = y;) ] 
+            
+            Def MemRefHandle: MemRefHandle(y)	 => 
+            Use Statements: [ StmtHandle(z = y;) ] 
+            
+            Def MemRefHandle: MemRefHandle(z)	 => 
+            Use Statements: [  ] 
+
+    mMemRefToStmtMap: MemRefHandle	 => StmtHandle

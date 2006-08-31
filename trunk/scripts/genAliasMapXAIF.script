@@ -1,0 +1,12 @@
+echo "Generating TestResults/AliasMapXAIF/alias1.c.out"
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/alias1.c >& TestResults/AliasMapXAIF/alias1.c.out
+echo "Generating TestResults/AliasMapXAIF/alias2.c.out"
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/alias2.c >& TestResults/AliasMapXAIF/alias2.c.out
+echo "Generating TestResults/AliasMapXAIF/alias3.c.out"
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/alias3.c >& TestResults/AliasMapXAIF/alias3.c.out
+echo "Generating TestResults/AliasMapXAIF/alias4.c.out"
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/alias4.c >& TestResults/AliasMapXAIF/alias4.c.out
+echo "Generating TestResults/AliasMapXAIF/alias4b.c.out"
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/alias4b.c >& TestResults/AliasMapXAIF/alias4b.c.out
+echo "Generating TestResults/AliasMapXAIF/funCall.c.out"
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/funCall.c >& TestResults/AliasMapXAIF/funCall.c.out

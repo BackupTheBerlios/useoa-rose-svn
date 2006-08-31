@@ -2,3 +2,11 @@ echo "Testing TestCases/UDDUChainsTests/reachdef_if1.c, TestResults/UDDUChainsTe
 ./OATest -edg:w --oa-UDDUChains -c TestCases/UDDUChainsTests/reachdef_if1.c >& t
 diff t TestResults/UDDUChainsTests/reachdef_if1.c.out
 
+echo "Testing TestCases/UDDUChainsTests/reachdef_if2.c, TestResults/UDDUChainsTests/reachdef_if2.c.out "
+./OATest -edg:w --oa-UDDUChains -c TestCases/UDDUChainsTests/reachdef_if2.c >& t
+diff t TestResults/UDDUChainsTests/reachdef_if2.c.out
+
+echo "Testing TestCases/UDDUChainsTests/reachdef_loopif1.c, TestResults/UDDUChainsTests/reachdef_loopif1.c.out "
+./OATest -edg:w --oa-UDDUChains -c TestCases/UDDUChainsTests/reachdef_loopif1.c >& t
+diff t TestResults/UDDUChainsTests/reachdef_loopif1.c.out
+

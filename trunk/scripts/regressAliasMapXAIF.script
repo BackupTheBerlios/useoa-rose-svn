@@ -1,0 +1,24 @@
+echo "Testing TestCases/AliasTests/alias1.c, TestResults/AliasMapXAIF/alias1.c.out "
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/alias1.c >& t
+diff t TestResults/AliasMapXAIF/alias1.c.out
+
+echo "Testing TestCases/AliasTests/alias2.c, TestResults/AliasMapXAIF/alias2.c.out "
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/alias2.c >& t
+diff t TestResults/AliasMapXAIF/alias2.c.out
+
+echo "Testing TestCases/AliasTests/alias3.c, TestResults/AliasMapXAIF/alias3.c.out "
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/alias3.c >& t
+diff t TestResults/AliasMapXAIF/alias3.c.out
+
+echo "Testing TestCases/AliasTests/alias4.c, TestResults/AliasMapXAIF/alias4.c.out "
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/alias4.c >& t
+diff t TestResults/AliasMapXAIF/alias4.c.out
+
+echo "Testing TestCases/AliasTests/alias4b.c, TestResults/AliasMapXAIF/alias4b.c.out "
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/alias4b.c >& t
+diff t TestResults/AliasMapXAIF/alias4b.c.out
+
+echo "Testing TestCases/AliasTests/funCall.c, TestResults/AliasMapXAIF/funCall.c.out "
+./OATest -edg:w --oa-AliasMapXAIF -c TestCases/AliasTests/funCall.c >& t
+diff t TestResults/AliasMapXAIF/funCall.c.out
+

@@ -43,25 +43,25 @@ return 0;
 
 
     Edge: 1 => 2
-        { 1 FALLTHROUGH_EDGE 0 }
+        { FALLTHROUGH_EDGE 0 }
 
     Edge: 2 => 3
-        { 2 TRUE_EDGE 0 }
+        { TRUE_EDGE 0 }
 
     Edge: 2 => 4
-        { 3 FALSE_EDGE 0 }
+        { FALSE_EDGE 0 }
 
     Edge: 3 => 5
-        { 4 FALLTHROUGH_EDGE 0 }
+        { FALLTHROUGH_EDGE 0 }
 
     Edge: 4 => 5
-        { 5 FALLTHROUGH_EDGE 0 }
+        { FALLTHROUGH_EDGE 0 }
 
     Edge: 6 => 7
-        { 6 FALLTHROUGH_EDGE 0 }
+        { FALLTHROUGH_EDGE 0 }
 
     Edge: 5 => 7
-        { 7 RETURN_EDGE 0 }
+        { RETURN_EDGE 0 }
 
 
 ReachDefsStandard(
@@ -77,54 +77,6 @@ ReachDefsStandard(
 
     mExitReachDefs: [ StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;) ] 
 )
-============= UDDUChains ============
-Use StmtHandle(139311404) x =(y + y);
-	Define Statements: 
-	y =(5);
-Use StmtHandle(139311476) z = y;
-	Define Statements: 
-	y =(5);
-	y =(3);
-Use StmtHandle(139399456) if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);}
-	Define Statements: 
-	x =(2);
-Def StmtHandle(139311296) x =(2);
-	Use Statements: 
-	if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);}
-Def StmtHandle(139311368) y =(5);
-	Use Statements: 
-	x =(y + y);
-	z = y;
-Def StmtHandle(139311440) y =(3);
-	Use Statements: 
-	z = y;
-Use MemRefHandle(139103116) x
-	Define Statements: 
-	x =(2);
-Use MemRefHandle(139103248) y
-	Define Statements: 
-	y =(5);
-Use MemRefHandle(139103292) y
-	Define Statements: 
-	y =(5);
-Use MemRefHandle(139103424) y
-	Define Statements: 
-	y =(5);
-	y =(3);
-Def MemRefHandle(139103072) x
-	Use Statements: 
-	if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);}
-Def MemRefHandle(139103160) y
-	Use Statements: 
-	x =(y + y);
-	z = y;
-Def MemRefHandle(139103204) x
-	Use Statements: 
-Def MemRefHandle(139103336) y
-	Use Statements: 
-	z = y;
-Def MemRefHandle(139103380) z
-	Use Statements: 
 
 UDDUChainsStandard(
     mUDChainForStmt: StmtHandle	 => OA::OA_ptr<StmtSet> 

@@ -1,0 +1,21 @@
+# comment in file.test
+# Regression tests for FIAlias generation
+testname::AliasMapXAIF
+inputdir::TestCases/AliasTests
+outputdir::TestResults/AliasMapXAIF
+driverexec::./OATest -edg:w --oa-AliasMapXAIF -c
+
+# list of tests
+#       input file,             status
+test::  alias1.c,              
+test::  alias2.c,               
+test::  alias3.c,               
+test::  alias4.c,               
+test::  alias4b.c,              
+test::  funCall.c,              
+
+
+
+
+
+

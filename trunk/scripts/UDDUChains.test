@@ -8,6 +8,8 @@ driverexec::./OATest -edg:w --oa-UDDUChains -c
 # list of tests
 #       input file,             status
 test::  reachdef_if1.c,         Not Checked Yet 
+test::  reachdef_if2.c,
+test::  reachdef_loopif1.c,
 
 
 
