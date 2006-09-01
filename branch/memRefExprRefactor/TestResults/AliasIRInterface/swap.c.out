@@ -30,6 +30,8 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
                 NamedRef( USE, SymHandle("i"), F, full)
             MemRefHandle("(v[i])") => 
                 Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+            MemRefHandle("temp =(v[i])") => 
+                NamedRef( USE, SymHandle("temp"), F, full)
         ] }
     MEMREFEXPRS = { StmtHandle("v[i] =(v[j]);") =>
         [
@@ -45,6 +47,8 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
                 Deref( DEF, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
             MemRefHandle("(v[j])") => 
                 Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+            MemRefHandle("v[i] =(v[j])") => 
+                Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
         ] }
     MEMREFEXPRS = { StmtHandle("v[j] = temp;") =>
         [
@@ -56,6 +60,8 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
                 NamedRef( USE, SymHandle("temp"), F, full)
             MemRefHandle("v[j]") => 
                 Deref( DEF, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+            MemRefHandle("v[j] = temp") => 
+                Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
         ] }
     LOCATION = { < SymHandle("v"), local > }
     LOCATION = { < SymHandle("i"), local > }
@@ -91,11 +97,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("for(i = 0;i < 4;i++) {swap(a,i,(i + 1));}") =>
         [
             MemRefHandle("i") => 
-                NamedRef( DEF, SymHandle("i"), F, full)
-            MemRefHandle("i") => 
                 NamedRef( USE, SymHandle("i"), F, full)
             MemRefHandle("i") => 
-                NamedRef( DEF, SymHandle("i"), F, full)
+                NamedRef( USEDEF, SymHandle("i"), F, full)
+            MemRefHandle("i++") => 
+                NamedRef( USE, SymHandle("i"), F, full)
         ] }
     MEMREFEXPRS = { StmtHandle("{swap(a,i,(i + 1));}") =>
         [
@@ -108,6 +114,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("i"), F, full)
             MemRefHandle("i") => 
                 NamedRef( USE, SymHandle("i"), F, full)
+            MemRefHandle("swap") => 
+                NamedRef( USE, SymHandle("swap"), F, full)
         ] }
     CALLSITES = { StmtHandle("swap(a,i,(i + 1));") =>
         [

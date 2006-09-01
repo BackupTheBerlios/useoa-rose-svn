@@ -256,7 +256,8 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
         }
         ROSE_ASSERT(type != NULL);
     
-        if ( isSgReferenceType(type) || isSgPointerType(type) ) {
+        if ( isSgReferenceType(type) || isSgPointerType(type)
+             || isSgArrayType(type) ) {
             treatAsPointerParam = true;
         }
 

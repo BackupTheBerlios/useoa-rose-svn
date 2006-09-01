@@ -20,8 +20,8 @@ test::  alias4.c,                checked by MMS 8/13/06
 test::  alias4b.c,               checked by MMS 8/13/06
 test::  assignOps.c,             checked by MMS 8/13/06
 test::  assignReturn.c,          checked by MMS 8/28/06
-test::  class.C,                 member names broken MMS 8/28/06
-test::  comma.c,                 UnnamedRefs right? MMS 8/23/06
+test::  class.C,                 email to Brian about not local of this MMS 8/31/06
+test::  comma.c,                 checked byMMS 8/31/06
 #test::  dataMemberPtrs.C,        aborts MMS 8/7/06
 test::  fields.c,                checked by MMS 8/20/06
 #test::  constQualified.c,       checked by ???
@@ -31,21 +31,21 @@ test::  fields.c,                checked by MMS 8/20/06
 test::  func_call.c,             checked by MMS 8/25/06
 test::  functionPtr.c,           checked by MMS 8/22/06
 test::  functionPtr2.c,          checked by MMS 8/22/06
-test::  invokeBaseCtor.C,        problems emailed to BSW MMS 8/28/06
+test::  invokeBaseCtor.C,        problems emailed to BSW MMS 8/31/06
 test::  localNonLocal.c,         checked by BSW 6/28/06 (rechecked by MMS 8/21/06)
 test::  passArrayPtr.c,          checked by MMS 8/29/06
 test::  parambinds-formals-intPtrs.C,   checked by MMS 8/29/06
 test::  passIntPtrArrayRef.c,    checked by MMS 8/29/06
 test::  passIntPtrArrayRef2.c,   checked by MMS 8/29/06
-test::  passIntPtrArrayRef3.c,   why is a being passed different than b MMS 8/28/06
+test::  passIntPtrArrayRef3.c,   checked by MMS 8/31/06
 test::  passIntPtr.c,            checked by MMS 8/21/06
 test::  refParam.C,              checked by MMS 8/24/06
 test::  ref.C,                   checked by MMS 8/21/06
-test::  refClass.C,              ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX
-test::  refClass2.C,             ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX
+test::  refClass.C,              email to Brian MMS 8/31/06
+test::  refClass2.C,             email to Brian MMS 8/31/06
 test::  retPtr1.c,               checked by MMS 8/29/06
 test::  sizeOf.C,                checked by MMS 8/24/06               
-test::  swap.c,                  i++ should be USEDEF otherwise fine MMS 7/23/06 XXX
+test::  swap.c,                  checked by MMS 8/31/06
 test::  ternop.c,                checked by MMS 8/24/06
 #test::  retPtr2.c,              Added by PLM 08/01/06, BUG 008270 
 #test::  retPtr3.c,              Added by PLM 08/01/06, core dump

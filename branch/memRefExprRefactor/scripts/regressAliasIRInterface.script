@@ -30,11 +30,11 @@ echo "Testing TestCases/AliasTests/assignReturn.c, TestResults/AliasIRInterface/
 ./CtoOA TestCases/AliasTests/assignReturn.c >& t
 diff t TestResults/AliasIRInterface/assignReturn.c.out
 
-echo "Testing TestCases/AliasTests/class.C, TestResults/AliasIRInterface/class.C.out member names broken MMS 8/28/06"
+echo "Testing TestCases/AliasTests/class.C, TestResults/AliasIRInterface/class.C.out email to Brian about not local of this MMS 8/31/06"
 ./CtoOA TestCases/AliasTests/class.C >& t
 diff t TestResults/AliasIRInterface/class.C.out
 
-echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c.out UnnamedRefs right? MMS 8/23/06"
+echo "Testing TestCases/AliasTests/comma.c, TestResults/AliasIRInterface/comma.c.out checked byMMS 8/31/06"
 ./CtoOA TestCases/AliasTests/comma.c >& t
 diff t TestResults/AliasIRInterface/comma.c.out
 
@@ -54,7 +54,7 @@ echo "Testing TestCases/AliasTests/functionPtr2.c, TestResults/AliasIRInterface/
 ./CtoOA TestCases/AliasTests/functionPtr2.c >& t
 diff t TestResults/AliasIRInterface/functionPtr2.c.out
 
-echo "Testing TestCases/AliasTests/invokeBaseCtor.C, TestResults/AliasIRInterface/invokeBaseCtor.C.out problems emailed to BSW MMS 8/28/06"
+echo "Testing TestCases/AliasTests/invokeBaseCtor.C, TestResults/AliasIRInterface/invokeBaseCtor.C.out problems emailed to BSW MMS 8/31/06"
 ./CtoOA TestCases/AliasTests/invokeBaseCtor.C >& t
 diff t TestResults/AliasIRInterface/invokeBaseCtor.C.out
 
@@ -78,7 +78,7 @@ echo "Testing TestCases/AliasTests/passIntPtrArrayRef2.c, TestResults/AliasIRInt
 ./CtoOA TestCases/AliasTests/passIntPtrArrayRef2.c >& t
 diff t TestResults/AliasIRInterface/passIntPtrArrayRef2.c.out
 
-echo "Testing TestCases/AliasTests/passIntPtrArrayRef3.c, TestResults/AliasIRInterface/passIntPtrArrayRef3.c.out why is a being passed different than b MMS 8/28/06"
+echo "Testing TestCases/AliasTests/passIntPtrArrayRef3.c, TestResults/AliasIRInterface/passIntPtrArrayRef3.c.out checked by MMS 8/31/06"
 ./CtoOA TestCases/AliasTests/passIntPtrArrayRef3.c >& t
 diff t TestResults/AliasIRInterface/passIntPtrArrayRef3.c.out
 
@@ -94,11 +94,11 @@ echo "Testing TestCases/AliasTests/ref.C, TestResults/AliasIRInterface/ref.C.out
 ./CtoOA TestCases/AliasTests/ref.C >& t
 diff t TestResults/AliasIRInterface/ref.C.out
 
-echo "Testing TestCases/AliasTests/refClass.C, TestResults/AliasIRInterface/refClass.C.out ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX"
+echo "Testing TestCases/AliasTests/refClass.C, TestResults/AliasIRInterface/refClass.C.out email to Brian MMS 8/31/06"
 ./CtoOA TestCases/AliasTests/refClass.C >& t
 diff t TestResults/AliasIRInterface/refClass.C.out
 
-echo "Testing TestCases/AliasTests/refClass2.C, TestResults/AliasIRInterface/refClass2.C.out ctor inits should be defining namedrefs not derefs MMS 8/1/06 XXX"
+echo "Testing TestCases/AliasTests/refClass2.C, TestResults/AliasIRInterface/refClass2.C.out email to Brian MMS 8/31/06"
 ./CtoOA TestCases/AliasTests/refClass2.C >& t
 diff t TestResults/AliasIRInterface/refClass2.C.out
 
@@ -110,7 +110,7 @@ echo "Testing TestCases/AliasTests/sizeOf.C, TestResults/AliasIRInterface/sizeOf
 ./CtoOA TestCases/AliasTests/sizeOf.C >& t
 diff t TestResults/AliasIRInterface/sizeOf.C.out
 
-echo "Testing TestCases/AliasTests/swap.c, TestResults/AliasIRInterface/swap.c.out i++ should be USEDEF otherwise fine MMS 7/23/06 XXX"
+echo "Testing TestCases/AliasTests/swap.c, TestResults/AliasIRInterface/swap.c.out checked by MMS 8/31/06"
 ./CtoOA TestCases/AliasTests/swap.c >& t
 diff t TestResults/AliasIRInterface/swap.c.out
 

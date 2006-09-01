@@ -68,6 +68,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("blah(a,a)") =>
         [
+            < 0, NamedRef( USE, SymHandle("a"), T, full) >
             < 1, NamedRef( USE, SymHandle("a"), T, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>

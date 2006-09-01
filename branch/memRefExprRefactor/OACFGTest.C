@@ -16,7 +16,7 @@
 #include "Sage2OA.h"
 #include "SageOACallGraph.h"
 #include "MemSage2OA.h"
-#include <OpenAnalysis/CFG/ManagerCFGStandard.hpp>
+#include <OpenAnalysis/CFG/ManagerCFG.hpp>
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
 
 #include <string>
@@ -83,7 +83,7 @@ int DoOpenAnalysis(SgFunctionDefinition* f)
         OA::OA_ptr<OA::CFG::ManagerStandard> cfgmanstd;
         cfgmanstd= new OA::CFG::ManagerStandard(irInterface);
 
-        OA::OA_ptr<OA::CFG::CFGStandard> cfg
+        OA::OA_ptr<OA::CFG::CFG> cfg
           = cfgmanstd->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f));
         cfg->dump(std::cout, irInterface);
 	//}
@@ -100,12 +100,12 @@ int DoOpenAnalysis(SgFunctionDefinition* f)
 	//cfgxaifout+=strname.str();
 	cfgxaifout+="\"/> \n";
 
-    OA::OA_ptr<OA::DGraph::Interface::NodesIterator> nodeItPtr 
+    OA::OA_ptr<OA::DGraph::NodesIteratorInterface> nodeItPtr 
         = cfg->getNodesIterator();
 	for (; nodeItPtr->isValid(); ++(*nodeItPtr)) 
 	{
-		OA::OA_ptr<OA::CFG::CFGStandard::Node> n = 
-		  (nodeItPtr->current()).convert<OA::CFG::CFGStandard::Node>();
+		OA::OA_ptr<OA::CFG::CFG::Node> n = 
+		  (nodeItPtr->current()).convert<OA::CFG::CFG::Node>();
 		//FIXME: n->longdump(cfg, std::cerr); std::cerr << endl;
   
 		// basic blocks
@@ -139,12 +139,12 @@ int DoOpenAnalysis(SgFunctionDefinition* f)
     OA::OA_ptr<OA::DGraph::Interface::EdgesIterator> edgeItPtr 
         = cfg->getEdgesIterator();
 	for (; edgeItPtr->isValid(); ++(*edgeItPtr)) {
-      OA::OA_ptr<OA::CFG::CFGStandard::Edge> e 
-          = edgeItPtr->current().convert<OA::CFG::CFGStandard::Edge>();
-      OA::OA_ptr<OA::CFG::CFGStandard::Node> n1 
-          = e->source().convert<OA::CFG::CFGStandard::Node>();
-      OA::OA_ptr<OA::CFG::CFGStandard::Node> n2 
-          = e->sink().convert<OA::CFG::CFGStandard::Node>();
+      OA::OA_ptr<OA::CFG::CFG::Edge> e 
+          = edgeItPtr->current().convert<OA::CFG::CFG::Edge>();
+      OA::OA_ptr<OA::CFG::CFG::Node> n1 
+          = e->source().convert<OA::CFG::CFG::Node>();
+      OA::OA_ptr<OA::CFG::CFG::Node> n2 
+          = e->sink().convert<OA::CFG::CFG::Node>();
       
       char tmpstr[100];
       sprintf(tmpstr, "<ControlFlowEdge source=\"%d\" target=\"%d\"/>", 

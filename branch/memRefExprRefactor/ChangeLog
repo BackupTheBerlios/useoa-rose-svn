@@ -2287,3 +2287,11 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
           a 'this' expression:  SgThisExp (when present), SgExprListExp,
           or SgAssignInitializer/SgAggregateInitializer.
      
+8/31/06     UseOA-Rose svn branch-memRefExprRefactor r185  Michelle Strout
+    - Copied changes over from the UseOA-ROSE trunk that enable
+      the memRefExprRefactor branch to compile with OpenAnalysis r220.
+    - Made it so that a parameter binding is created if the formal
+      parameter is an array type because we have to model those as
+      pointers.
+    - Verified swap.c, comma.c, passIntPtrArrayRef*.c, and some others.
+

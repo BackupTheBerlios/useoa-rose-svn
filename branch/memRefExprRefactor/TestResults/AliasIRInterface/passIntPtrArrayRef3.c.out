@@ -58,9 +58,9 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("x") => 
                 NamedRef( DEF, SymHandle("x"), F, full)
             MemRefHandle("a") => 
-                NamedRef( USE, SymHandle("a"), F, full)
+                NamedRef( USE, SymHandle("a"), T, full)
             MemRefHandle("b") => 
-                NamedRef( USE, SymHandle("b"), F, full)
+                NamedRef( USE, SymHandle("b"), T, full)
             MemRefHandle("blah") => 
                 NamedRef( USE, SymHandle("blah"), F, full)
         ] }
@@ -71,7 +71,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("blah(a,b)") =>
         [
-            < 1, NamedRef( USE, SymHandle("b"), F, full) >
+            < 0, NamedRef( USE, SymHandle("a"), T, full) >
+            < 1, NamedRef( USE, SymHandle("b"), T, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
