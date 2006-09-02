@@ -2295,3 +2295,6 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       pointers.
     - Verified swap.c, comma.c, passIntPtrArrayRef*.c, and some others.
 
+9/1/06     UseOA-Rose svn branch-memRefExprRefactor r186  Michelle Strout
+    - Fixed member variable inializers somewhat.  Now the ptr assignment
+      is correct, but still missing an MRE.
