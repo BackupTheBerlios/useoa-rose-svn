@@ -1937,3 +1937,5 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - Added TestCases and TestResults for AliasMapXAIF
 	- regressAll works with OpenAnalysis r216.
 
+9/02/06     UseOA-ROSE svn trunk r187   Andy Stone
+    - Added benchmarking scripts.

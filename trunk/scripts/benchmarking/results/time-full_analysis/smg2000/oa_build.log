@@ -1,0 +1,7 @@
+Compiling OpenAnalysis on 08/01/06 at 10:41:22 PM PDT
+Compilation finished on 08/01/06 at 10:41:22 PM PDT
+Compile started by stone48
+OADIR='/home/stone48/berlios/openanalysis/OpenAnalysis/trunk'
+ROSEDIR='/export/0/tmp.stone48/gcc3.4.3'
+CXXFLAGS='-O3'
+ARCH='i686-Linux'

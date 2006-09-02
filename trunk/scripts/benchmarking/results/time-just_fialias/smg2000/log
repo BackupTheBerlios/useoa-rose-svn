@@ -1,0 +1,97 @@
+
+#[08/04/06 03:38:17 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_1_8.files
+#                       File to produce: smg_1_8.stitch.c
+#[08/04/06 03:38:17 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_2_8.files
+#                       File to produce: smg_2_8.stitch.c
+#[08/04/06 03:38:17 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_3_8.files
+#                       File to produce: smg_3_8.stitch.c
+#[08/04/06 03:38:18 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_4_8.files
+#                       File to produce: smg_4_8.stitch.c
+#[08/04/06 03:38:18 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_5_8.files
+#                       File to produce: smg_5_8.stitch.c
+#[08/04/06 03:38:18 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_6_8.files
+#                       File to produce: smg_6_8.stitch.c
+#[08/04/06 03:38:19 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_7_8.files
+#                       File to produce: smg_7_8.stitch.c
+#[08/04/06 03:38:19 PM] recompiling OpenAnalysis
+@[08/04/06 03:38:19 PM] cd /home/stone48/berlios/openanalysis/OpenAnalysis/trunk
+@[08/04/06 03:38:19 PM] make -f Makefile.quick clean
+@[08/04/06 03:38:21 PM] make -f Makefile.quick configure
+@[08/04/06 03:38:39 PM] make -j4 -f Makefile.quick install
+#[08/04/06 03:42:33 PM] Build log after compilation:
+#                       Compiling OpenAnalysis on 08/04/06 at 03:38:39 PM PDT Compilation finished on 08/04/06 at 03:38:39 PM PDT Compile started by stone48 OADIR='/home/stone48/berlios/openanalysis/OpenAnalysis/trunk' ROSEDIR='/export/0/tmp.stone48/gcc3.4.3' CXXFLAGS='-O3' ARCH='i686-Linux'
+#[08/04/06 03:42:33 PM] recompiling UseOA-ROSE at: /home/stone48/UseOA-ROSE
+@[08/04/06 03:42:33 PM] make
+@[08/04/06 03:44:22 PM] make
+#[08/04/06 03:44:22 PM] Build log after compilation:
+#                       Compiling UseOA-ROSE on 08/04/06 at 03:44:22 PM PDT Compile started by stone48 OADIR='/home/stone48/berlios/openanalysis/OpenAnalysis/trunk' ROSEDIR='/export/0/tmp.stone48/gcc3.4.3' CXXFLAGS='-O3' ARCH='i686-Linux' COMPILE_SUCCESFUL='yes' Compilation finished on 08/04/06 at 03:44:22 PM PDT
+#[08/04/06 03:44:22 PM] Run a timed benchmark
+#                       Files file: smg_1_8.stitch.c.files
+#                       Description: 1 eighths SMG slice
+#                       Algorithm: --oa-FIAlias
+@[08/04/06 03:44:22 PM] /usr/bin/time -p ./OATest --oa-FIAlias -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_1_8.stitch.c --silent
+![08/04/06 03:44:34 PM] 1 eighths SMG slice
+!                       real 12.11
+!                       user 11.35
+!                       sys 0.15
+#[08/04/06 03:44:34 PM] Run a timed benchmark
+#                       Files file: smg_2_8.stitch.c.files
+#                       Description: 2 eighths SMG slice
+#                       Algorithm: --oa-FIAlias
+@[08/04/06 03:44:34 PM] /usr/bin/time -p ./OATest --oa-FIAlias -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_2_8.stitch.c --silent
+![08/04/06 03:45:30 PM] 2 eighths SMG slice
+!                       real 55.72
+!                       user 38.87
+!                       sys 0.49
+#[08/04/06 03:45:30 PM] Run a timed benchmark
+#                       Files file: smg_3_8.stitch.c.files
+#                       Description: 3 eighths SMG slice
+#                       Algorithm: --oa-FIAlias
+@[08/04/06 03:45:30 PM] /usr/bin/time -p ./OATest --oa-FIAlias -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_3_8.stitch.c --silent
+![08/04/06 03:46:59 PM] 3 eighths SMG slice
+!                       real 88.59
+!                       user 73.51
+!                       sys 0.43
+#[08/04/06 03:46:59 PM] Run a timed benchmark
+#                       Files file: smg_4_8.stitch.c.files
+#                       Description: 4 eighths SMG slice
+#                       Algorithm: --oa-FIAlias
+@[08/04/06 03:46:59 PM] /usr/bin/time -p ./OATest --oa-FIAlias -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_4_8.stitch.c --silent
+![08/04/06 03:48:56 PM] 4 eighths SMG slice
+!                       real 116.83
+!                       user 93.44
+!                       sys 0.49
+#[08/04/06 03:48:56 PM] Run a timed benchmark
+#                       Files file: smg_5_8.stitch.c.files
+#                       Description: 5 eighths SMG slice
+#                       Algorithm: --oa-FIAlias
+@[08/04/06 03:48:56 PM] /usr/bin/time -p ./OATest --oa-FIAlias -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_5_8.stitch.c --silent
+![08/04/06 03:51:30 PM] 5 eighths SMG slice
+!                       real 153.31
+!                       user 147.79
+!                       sys 0.58
+#[08/04/06 03:51:30 PM] Run a timed benchmark
+#                       Files file: smg_6_8.stitch.c.files
+#                       Description: 6 eighths SMG slice
+#                       Algorithm: --oa-FIAlias
+@[08/04/06 03:51:30 PM] /usr/bin/time -p ./OATest --oa-FIAlias -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_6_8.stitch.c --silent
+![08/04/06 03:55:04 PM] 6 eighths SMG slice
+!                       real 214.31
+!                       user 208.32
+!                       sys 0.71
+#[08/04/06 03:55:04 PM] Run a timed benchmark
+#                       Files file: smg_7_8.stitch.c.files
+#                       Description: 7 eighths SMG slice
+#                       Algorithm: --oa-FIAlias
+@[08/04/06 03:55:05 PM] /usr/bin/time -p ./OATest --oa-FIAlias -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_7_8.stitch.c --silent
+![08/04/06 04:00:06 PM] 7 eighths SMG slice
+!                       real 301.25
+!                       user 290.73
+!                       sys 0.91

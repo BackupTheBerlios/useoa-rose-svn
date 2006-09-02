@@ -46,7 +46,7 @@
 #include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
 #include <OpenAnalysis/Utils/Util.hpp>
-#include <OpenAnalysis/ReachConsts/ManagerReachConstsStandard.hpp>
+// #include <OpenAnalysis/ReachConsts/ManagerReachConstsStandard.hpp>
 #include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/XAIF/UDDUChainsXAIF.hpp>
 #include <OpenAnalysis/XAIF/ManagerUDDUChainsXAIF.hpp>
@@ -486,6 +486,7 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
 	  printf("*******start of DoOpenAnalysis\n");
 	OA::OA_ptr<SageIRInterface> irInterface; 
         irInterface = new SageIRInterface(p, na, p_handle);
+
 	if(!f->get_body())
 	{
                 if ( debug ) 

@@ -1,0 +1,92 @@
+
+#[08/03/06 09:12:39 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_1_8.files
+#                       File to produce: smg_1_8.stitch.c
+#[08/03/06 09:12:39 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_2_8.files
+#                       File to produce: smg_2_8.stitch.c
+#[08/03/06 09:12:39 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_3_8.files
+#                       File to produce: smg_3_8.stitch.c
+#[08/03/06 09:12:39 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_4_8.files
+#                       File to produce: smg_4_8.stitch.c
+#[08/03/06 09:12:39 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_5_8.files
+#                       File to produce: smg_5_8.stitch.c
+#[08/03/06 09:12:40 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_6_8.files
+#                       File to produce: smg_6_8.stitch.c
+#[08/03/06 09:12:40 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_7_8.files
+#                       File to produce: smg_7_8.stitch.c
+#[08/03/06 09:12:41 PM] Run a timed benchmark
+#                       Files file: smg_1_8.stitch.c.files
+#                       Description: 1_eighths_SMG_slice
+#                       Algorithm: --oa-NoAnalysis
+@[08/03/06 09:12:41 PM] /usr/bin/time -p ./OATest --oa-NoAnalysis -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_1_8.stitch.c --silent
+![08/03/06 09:12:49 PM] 1_eighths_SMG_slice
+!                       Command exited with non-zero status 1
+!                       real 8.03
+!                       user 7.76
+!                       sys 0.09
+#[08/03/06 09:12:49 PM] Run a timed benchmark
+#                       Files file: smg_2_8.stitch.c.files
+#                       Description: 2_eighths_SMG_slice
+#                       Algorithm: --oa-NoAnalysis
+@[08/03/06 09:12:49 PM] /usr/bin/time -p ./OATest --oa-NoAnalysis -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_2_8.stitch.c --silent
+![08/03/06 09:13:11 PM] 2_eighths_SMG_slice
+!                       Command exited with non-zero status 1
+!                       real 21.65
+!                       user 21.31
+!                       sys 0.16
+#[08/03/06 09:13:11 PM] Run a timed benchmark
+#                       Files file: smg_3_8.stitch.c.files
+#                       Description: 3_eighths_SMG_slice
+#                       Algorithm: --oa-NoAnalysis
+@[08/03/06 09:13:11 PM] /usr/bin/time -p ./OATest --oa-NoAnalysis -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_3_8.stitch.c --silent
+![08/03/06 09:13:51 PM] 3_eighths_SMG_slice
+!                       Command exited with non-zero status 1
+!                       real 40.27
+!                       user 39.56
+!                       sys 0.22
+#[08/03/06 09:13:51 PM] Run a timed benchmark
+#                       Files file: smg_4_8.stitch.c.files
+#                       Description: 4_eighths_SMG_slice
+#                       Algorithm: --oa-NoAnalysis
+@[08/03/06 09:13:51 PM] /usr/bin/time -p ./OATest --oa-NoAnalysis -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_4_8.stitch.c --silent
+![08/03/06 09:14:36 PM] 4_eighths_SMG_slice
+!                       Command exited with non-zero status 1
+!                       real 44.21
+!                       user 43.43
+!                       sys 0.28
+#[08/03/06 09:14:36 PM] Run a timed benchmark
+#                       Files file: smg_5_8.stitch.c.files
+#                       Description: 5_eighths_SMG_slice
+#                       Algorithm: --oa-NoAnalysis
+@[08/03/06 09:14:36 PM] /usr/bin/time -p ./OATest --oa-NoAnalysis -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_5_8.stitch.c --silent
+![08/03/06 09:15:27 PM] 5_eighths_SMG_slice
+!                       Command exited with non-zero status 1
+!                       real 50.67
+!                       user 50.17
+!                       sys 0.24
+#[08/03/06 09:15:27 PM] Run a timed benchmark
+#                       Files file: smg_6_8.stitch.c.files
+#                       Description: 6_eighths_SMG_slice
+#                       Algorithm: --oa-NoAnalysis
+@[08/03/06 09:15:27 PM] /usr/bin/time -p ./OATest --oa-NoAnalysis -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_6_8.stitch.c --silent
+![08/03/06 09:16:25 PM] 6_eighths_SMG_slice
+!                       Command exited with non-zero status 1
+!                       real 58.34
+!                       user 57.38
+!                       sys 0.27
+#[08/03/06 09:16:25 PM] Run a timed benchmark
+#                       Files file: smg_7_8.stitch.c.files
+#                       Description: 7_eighths_SMG_slice
+#                       Algorithm: --oa-NoAnalysis
+@[08/03/06 09:16:25 PM] /usr/bin/time -p ./OATest --oa-NoAnalysis -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_7_8.stitch.c --silent
+![08/03/06 09:17:36 PM] 7_eighths_SMG_slice
+!                       Command exited with non-zero status 1
+!                       real 70.74
+!                       user 70.01
+!                       sys 0.30

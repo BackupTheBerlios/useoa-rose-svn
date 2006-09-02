@@ -1,0 +1,388 @@
+#! /bin/bash
+# Benchmark script by: Andy Stone (aistone@gmail.com)
+# (C) 2006 Contributors of OpenAnalysis
+#
+# The idea behind this script is to use it in conjunction with a commands
+# file.  This script includes a bunch of functions that make it really easy
+# to produce scripts for all sorts of tests (described below).  The commands
+# file uses these functions to do useful things.  Look under
+# /scripts/benchmarks/examples for some example command files that illustrate
+# what I'm talking about.
+#
+# As this script runs it outputs all sorts of useful information (sometimes
+# even the results!) into a log file.  By default this file will be
+# benchmark.log, but it can be changed to something else with the '--log'
+# command line argument.  If you'd rather have everything dump to standard
+# out then set the log to /dev/stdout like so: '--log=/dev/stdout'.
+#
+# Kinds of tests you can run with this script:
+#   timed benchmarks   - calculate the total time it takes OpenAnalysis to run
+#                        some analysis.
+#   peak memory usage  - determine what the maximum memory usage is when
+#                        OpenAnalysis runs some analysis.
+#   profiles           - uses gprof to profile OpenAnalysis running some
+#                        analysis.
+#
+# usage:
+#    ./runBenchmarks.sh cmdFile --log=logfile
+
+# I wrap this code in a subshell so that calls to exit won't close the
+# user's shell if the script is sourced. It also allows the script to
+# temporarily change environmental variables like CXXFLAGS around.
+(
+
+################################################################################
+#   Help System
+################################################################################
+
+# output usage information (users get this is they screw up a command line
+# arg).
+function usage() {
+    echo "Usage: `basename $0` [-l file or --logfile file] cmdFile" 1>&2
+}
+
+# print help message
+function helpMsg() {
+#    echo "The idea behind this script is to use it in conjunction with a commands"
+#    echo "file.  This script includes a bunch of functions that make it really easy"
+#    echo "to produce scripts for all sorts of tests (described below).  The commands"
+#    echo "file uses these functions to do useful things.  Look under"
+#    echo "/scripts/benchmarks/examples for some example command files that illustrate"
+#    echo "what I'm talking about."
+#    echo ""
+#    echo "As this script runs it outputs all sorts of useful information (sometimes"
+#    echo "even the results!) into a log file.  By default this file will be"
+#    echo "benchmark.log, but it can be changed to something else with the '--log'"
+#    echo "command line argument.  If you'd rather have everything dump to standard"
+#    echo "out then set the log to /dev/stdout like so: '--log=/dev/stdout'."
+#    echo " "
+#    echo "Kinds of tests you can run with this script:"
+#    echo "  timed benchmarks   - calculate the total time it takes OpenAnalysis to run"
+#    echo "                       some analysis."
+#    echo "  peak memory usage  - determine what the maximum memory usage is when"
+#    echo "                       OpenAnalysis runs some analysis."
+#    echo "  profiles           - uses gprof to profile OpenAnalysis running some"
+#    echo "                       analysis."
+    usage
+}
+
+################################################################################
+#   Command line argument parsing
+#   Various variables the script uses are initialized here
+################################################################################
+
+# check to see if the help options is being passed
+# this needs to be checked explicitly 
+if [[ $1 == "--help" || $1 == "-h" ]] ; then
+    helpMsg
+    exit 2
+fi
+
+# check usage and get options
+#LOGFILE=`pwd -P`/benchmark.log
+set -- `getopt -l "logFile:" "l:" "$@"` || {
+    usage
+    exit 1
+}
+
+# Set default values for the script's options:
+
+# log file
+LOGFILE=`pwd`/benchmark.log
+
+# directory where the benchmark scripts are.
+# NOTE - This script assumes that it's being source from the root UseOA-ROSE
+#        directory.
+SCRIPTDIR=`pwd`/scripts/benchmarks
+
+# set non-null if we should use gprof to output profiling information
+GPROF_PROFILE="true"
+
+# number of times to repeat the benchmark.
+REDUNDENCIES=1
+
+# directory where branches of openanalysis reside
+BRANCH_DIR="/home/stone48/berlios/openanalysis/OpenAnalysis/branch"
+
+# directory where UseOA is located
+USEOA_DIR=`pwd -P`
+
+
+
+# parse options
+while : ; do
+    case "$1" in
+        "-l" | "--logfile") shift;
+            LOGFILE=$1
+            # For some reason getopt will sorround the argument with
+            # single quotes.  This lil' bugger removes them:
+            LOGFILE=${LOGFILE:1: (( ${#LOGFILE} - 2 )) }
+            # if the LOGFILE has a relative path, change it so that
+            # it's fully qualified
+            if [[ ${LOGFILE:0:1} != "/" ]] ; then
+                PWD=`pwd`
+                LOGFILE="$PWD/$LOGFILE"
+            fi
+        ;;
+        "-h" | "--help") shift;
+            helpMsg
+            exit 2
+        ;;
+        --) break ;;
+    esac
+    shift
+done
+shift    # REMOVE THE TRAILING --
+if [[ $# == 0 ]]; then
+    usage
+    exit 1
+else
+    CMDFILE=$1
+    CMDFILE=${CMDFILE:1: (( ${#CMDFILE} - 2 )) }
+fi
+
+
+
+
+# Insure that we have the correct profiling flags
+if [[ -n $GPROF_PROFILE ]]; then
+    export PROFILE_OPTIONS="-O0 -g -pg"
+else
+    export PROFILE_OPTIONS="-O3"
+fi
+
+
+
+################################################################################
+#   Logging system
+################################################################################
+
+# Create the logfile, if a logfile with the same name already exists it will
+# be wiped out.
+function constructLog() {
+    touch $LOGFILE
+    echo "" > $LOGFILE
+}
+
+# write $1 into the log file
+function logMsg() {
+    echo `date +"[%D %r]"` "$1" >> $LOGFILE
+}
+
+# execute $1 with time and output results into the logfile
+# functions like 
+function logTime() {
+    /usr/bin/time -p $1 2>> $LOGFILE
+}
+
+################################################################################
+#  Compiling system
+#
+#  Benchmark scripts should never need to be concerned about whether UseOA-ROSE
+#  or OpenAnalysis was compiled with the correct options for the kind of
+#  benchmark or profile they wish to run.  When one of these projects is
+#  build (someone executes make) information about compiler flags will be dumped
+#  into the project's build log (a file named 'build.log').  By querying
+#  information from that file we can determine how the project is currently
+#  configured (and thus determine if recompilation is necessary).
+################################################################################
+
+#USEOA_PROFILE_OPTIONS
+#OA_PROFILE_OPTIONS
+
+################################################################################
+# Compare:
+
+# returns 1 if $1 was set to the value of the environmental variable $1_$2 in
+# the config log.  The config log shows the state of various variables, like
+# CXXFLAGS, when make was last run.
+#
+# Basically a call to checkCompile USEOA_ROSE CXXFLAGS "/path/to/build.log" will
+# return true if the value for CXXFLAGS in the log matches the value the
+# USEOA_ROSE_CXXFLAGS environmental variable is currently set to.
+function doesValInLogMatchVal() {
+    ENV_VAR_VAL=`env | grep ^$1_$2 | sed -e "s/$1_$2=//g"`
+
+    if [[ $ENV_VAR_VAL == `grep $2 $3 | cut -d\' -f 2` ]]; then
+        return 1
+    fi
+    return 0
+}
+
+# determine if the build log at the bippin
+function isUseOARoseRecompileNecessary() {
+    ENV_VAR_VAL=`env | grep ^$1_$2 | sed -e "s/$1_$2=//g"`
+    BUILD_LOG_PATH=
+
+    PASSED_CHECKS=1
+    doesValInLogMatchVal USEOA_ROSE OADIR        "build.log"
+    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
+    doesValInLogMatchVal USEOA_ROSE ROSEDIR      "build.log"
+    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
+    doesValInLogMatchVal USEOA_ROSE CXXFLAGS     "build.log"
+    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
+    doesValInLogMatchVal USEOA_ROSE ARCH         "build.log"
+    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
+
+    # if all checks passed then a recompile is not necessary
+    if [[ $PASSED_CHECKS == 1 ]]; then return 0
+    else return 1; fi
+}
+
+function isOARecompileNecessary() {
+    PASSED_CHECKS=1
+    doesValInLogMatchVal USEOA_ROSE OADIR        "build.log"
+    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
+    doesValInLogMatchVal USEOA_ROSE ROSEDIR      "build.log"
+    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
+    doesValInLogMatchVal USEOA_ROSE CXXFLAGS     "build.log"
+    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
+    doesValInLogMatchVal USEOA_ROSE ARCH         "build.log"
+    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
+
+    # if all checks passed then a recompile is not necessary
+    if [[ $PASSED_CHECKS == 1 ]]; then return 0
+    else return 1; fi
+}
+
+#function recompileUseOARose() {
+#
+#}
+
+#function recompileOA() {
+#
+#}
+
+# $1 should be set to the branch which will be recompiled.
+# All branches are assumed to be stored as subdirectories of $BRANCH_DIR.
+# As the branch is compiled messages will be added to the log file marking
+# what part of the build process is being executed.
+function compileOABranchForProfile {
+    logMsg "recompiling OpenAnalysis branch with profiling options: $1"
+    
+    export CXXFLAGS="-O3 -g -pg"
+
+    cd "$BRANCH_DIR/$1"
+    logMsg "    clean"
+    make -f Makefile.quick clean
+    logMsg "    configure"
+    make -f Makefile.quick configure
+    logMsg "    make"
+    make -j4 -f Makefile.quick install
+    logMsg "    finish"
+    cd -
+}
+
+# $1 should be set to the branch.  All branches are assumed to be stored as
+# subdirectories of $BRANCH_DIR.  For example, if
+# $BRANCH_DIR="/home/oadeveloper/mybranches" and $1="private-branch" then
+# UseOA-ROSE will be compiled against a version of OpenAnalysis stored in
+# /home/oadeveloper/mybranches/private-branch.
+function recompileUseOAForProfilingWithBranch() {
+    logMsg "recompiling UseOA for profiling with branch: $1"
+    export CXXFLAGS="-O3 -g -pg"
+    export OPENANALYSIS_DIR="$BRANCH_DIR/$1"
+    make clean
+    make -j4
+}
+
+# Like recompileUseOAForProfilingWithBranch except it links to the trunk
+function recompileUseOAForProfiling() {
+    logMsg "recompiling UseOA for profiling: $1"
+    export CXXFLAGS="-O3 -g -pg"
+    make clean
+    make -j4
+}
+
+
+#profile "/home/stone48/testprogs/verysmall.files" "mjk-step2-afterMREchanges"
+
+function runTimedBenchmark() {
+    # if we need to recompile OA recompile it
+    isOARecompileNecessary
+    if [[ $? ]] ; then recompileOA fi
+
+    # if we need to recompile UseOA-ROSE recompile it
+    isUseOARoseRecompileNecessary
+    if [[ $? ]] ; then recompileUseOARose fi
+
+    logMsg "Running profile of: $2"
+    
+    TESTLINE=`$SCRIPTDIR/OATestLine.py $1 $ALGORITHM`
+    logTime "`$SCRIPTDIR/OATestLine.py $1 $ALGORITHM` --silent"
+    #logTime "`$SCRIPTDIR/OATestLine.py $1 $ALGORITHM`"
+}
+
+function profile() {
+    logMsg "Running profile of: $2"
+
+    # Profile with GPROF
+    $SCRIPTDIR/OABenchmark.py $1 $ALGORITHM $REDUNDENCIES $2
+}
+
+
+function analyzeMemoryUsage() {
+    logMsg "Analyze memory usage for: $2"
+
+    # Profile without GPROF (use UNIX time command)
+    TESTLINE=`$SCRIPTDIR/OATestLine.py $1 $ALGORITHM`
+    $TESTLINE &
+    MEMUSG=`$SCRIPTDIR/peakMem.sh`
+    logMsg "Memory usage = $MEMUSG"
+}
+
+function getLOC() {
+    # Get the CXXFLAGS
+    FILES_FILE_CXXFLAGS=`grep 'CXXFLAGS=' $1 | cut -d = -f 2`
+
+    # Iterate through each file in the files file
+    sed -e '/#/d' -e '/CXXFLAGS=/d' $1 > tmp_files
+    for file in `cat tmp_files` ; do
+        cpp $FILES_FILE_CXXFLAGS $file > $1.pp.c
+        logMsg "LOC: `c_count $1.pp.c | head -n1`"
+    done
+}
+
+function roseC {
+    TESTLINE=`$SCRIPTDIR/OATestLine.py $1 -justFlagsAndFiles`
+    logMsg "Running simple rose translator on $2"
+    logMsg "Exact command: rosec $TESTLINE"
+    rosec $TESTLINE
+}
+
+
+# This script assumes that only one run of OATest is running at any given time
+# Why? The peamMem.sh script assumes this.  Plus things could get all out of
+# whack if two running copies of this script starts recompiling OA or something.
+function insureSafeEnvironment() {
+    killall --quiet OATest
+}
+
+
+# Take every file listed in some files file and stitch them into one massive
+# C code
+# Parameters:
+#   $1 -> files file
+#   $2 -> file name of stiched file to be produced
+function stitchFiles() {
+    # remove the CXXFLAGS and comment lines from the files file
+    sed -e '/#/d' -e '/CXXFLAGS=/d' $1 > tmp
+    # cat every file in the files file together
+    for file in `cat tmp` ; do echo // START FILE: $file; cat $file ; done > $2
+    FILES_FILE_CXXFLAGS=`grep 'CXXFLAGS=' $1 | cut -d = -f 2`
+    echo CXXFLAGS="$FILES_FILE_CXXFLAGS" > $2.files
+    echo "$2" >> $2.files
+}
+
+
+# -----------------------------------------------------------------------------
+
+insureSafeEnvironment
+constructLog
+
+# run the commands specified in the commands file
+source $CMDFILE
+
+# -----------------------------------------------------------------------------
+
+)

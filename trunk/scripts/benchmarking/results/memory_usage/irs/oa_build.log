@@ -1,0 +1,7 @@
+Compiling OpenAnalysis on 08/25/06 at 11:47:20 AM MDT
+Compilation finished on 08/25/06 at 11:47:20 AM MDT
+Compile started by stonea
+OADIR='/s/bach/l/under/stonea/berlios/openanalysis/OpenAnalysis/trunk/'
+ROSEDIR='/s/bach/e/proj/oadev/ROSE/rose-0.8.7a/armstrong'
+CXXFLAGS='-g -O0'
+ARCH='i686-Linux'
