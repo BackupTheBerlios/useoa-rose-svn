@@ -2305,3 +2305,56 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - Rechecked everything in FIAliasAliasMap.test.  Only found one
       problem in constQualified.c.  Need to fix that pointer
       arithmetic node.
+
+9/06/06     UseOA-Rose svn branch-memRefExprRefactor r189  Brian White	
+
+        - Some fixes to SgDotExp case:
+
+            - Only create a FieldAccess for member variable accesses and
+              virtual methods.  For non-virtual methods instead create
+              a NamedRef.  
+
+            - Do not erase the lhs_memref, as we need the lhs MRE
+              as the receiver for a method invocation.  _Do_ 
+              remove it for non-method invocations.
+     
+        - Changed getLocation so that 'this' is considered local.
+          Remember, it is modeled as a parameter.
+        
+        - Was not visiting the SgExprListExp from a SgConstructorInitializer.
+          Visiting the SgExprListExp is necessary because we 
+          use it to model the implicit this.  Changed this.
+          Since the SgExprListExp case visits its children, we 
+          no longer need to explicitly visit the actuals/children of a
+          SgConstructorInitializer.
+
+        - When using the child/lhs MRE as the implicit actual of a
+          SgDotExp (method invocation), we need to take its address.
+
+        - I was seeing initMemRefAndPtrAssignMaps being invoked twice
+          on the same SageIRInterface object.  Here's why.  Evidently,
+          my benchmark was so simple that it did not create any
+          pointer assignment pairs.
+
+          Therefore, this check in getAliasStmtType was failing.
+	
+          if (mStmtToPtrPairs.empty() ) {
+              initMemRefAndPtrAssignMaps();
+          }
+
+          To fix this, I have changed all guards to
+
+          if (mStmt2allMemRefsMap.empty() ) {
+              initMemRefAndPtrAssignMaps();
+          }
+
+          This may be slightly counter-intuitive in getAliasStmtType,
+          for example, where a statement to mem ref map doesn't
+          seem relevant.  Nevertheless, this is a consistent
+          and safe guard for initMemRefAndPtrAssignMaps-- if a
+          program does anything at all it will have a non-empty map.
+
+        - Multipe, redundant MemRefHandles were showing up aggregateInit.c
+          and passArrayPtr.c, evidently because of the redundant
+          calls to initMemRefAndPtrAssignMaps fixed above.  Updated
+          their regression results.

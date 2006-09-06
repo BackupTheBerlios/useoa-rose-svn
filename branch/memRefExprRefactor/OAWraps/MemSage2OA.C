@@ -1161,7 +1161,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     } else {
                         SgInitializer *initer = initName->get_initptr();
                         ROSE_ASSERT(initer != NULL);
+
                         receiver_memref = getMemRefHandle(initer);
+
                     }
 
                 }
@@ -1170,9 +1172,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
                 // Create the MRE.
                 OA::OA_ptr<OA::MemRefExpr> mre;
-     
-                if ( !requiresImplicitReceiver ) {
 
+                if ( !requiresImplicitReceiver ) {
                     //======= create a DEF NamedRef
                     // make a NamedRef for the variable being initialized
                     bool addressTaken = false;
@@ -1227,6 +1228,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                                       field_name);
 
                     mre = fieldAccess;
+		    SgNode *node = getNodePtr(symHandle);
+                    SgNode *memNode = (SgNode*)(memref.hval());
+
                 }
 
                 mMemref2mreSetMap[memref].insert(mre);
@@ -1303,18 +1307,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // Get the list of actual arguments from the constructor call.
             SgExprListExp* exprListExp = ctorInit->get_args();  
             ROSE_ASSERT (exprListExp != NULL);  
-	
-            SgExpressionPtrList & actualArgs =  
-                exprListExp->get_expressions();  
-	
-            for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
-                actualIt != actualArgs.end(); ++actualIt) { 
 
-                SgExpression *actualArg = *actualIt;
-                ROSE_ASSERT(actualArg != NULL);
+            // Note that we use the SgExprList of the constructor
+            // to model the actual 'this' argument.  Therefore, visit
+            // that.
 
-                findAllMemRefsAndPtrAssigns(actualArg,stmt);
-            }
+            // Notice that since we visit the SgExprListExp and since 
+            // that case visits its sub-expressions, we do not 
+            // need to explicitly visit the actual args here.
+            findAllMemRefsAndPtrAssigns(exprListExp, stmt);
 
             // Look at the actuals passed to the 
             // function/method/constructor/destructor invocation.
@@ -1414,74 +1415,103 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 = findTopMemRefHandle(dotExp->get_rhs_operand());
 	    //            std::string field_name = findFieldName(rhs_memref);
 	    std::string field_name = toStringWithoutScope(dotExp->get_rhs_operand());
+
+            bool isVirtualInvocation = false;
+            bool isMethodInvocation = false;
+            SgMemberFunctionRefExp *memberFunctionRefExp =
+                isSgMemberFunctionRefExp(dotExp->get_rhs_operand());
+            if (memberFunctionRefExp != NULL) {
+                SgMemberFunctionDeclaration *methodDecl =
+                    getInvokedMethod(memberFunctionRefExp);
+                ROSE_ASSERT(methodDecl != NULL);
+
+                isVirtualInvocation = isVirtual(methodDecl);
+                isMethodInvocation = true;
+            }
+
+
             OA::OA_ptr<OA::MemRefExprIterator> mIter
                 = getMemRefExprIterator(lhs_memref);
             OA::OA_ptr<OA::MemRefExprIterator> mRhsIter
                 = getMemRefExprIterator(rhs_memref);
             for ( ; mIter->isValid(); ++(*mIter) ) {
                 OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
-                OA::OA_ptr<OA::MemRefExpr> fieldAccess;
                 bool addressTaken = false;
 
-#if 1
-                if ( mUseVtableOpt ) {
+                OA::OA_ptr<OA::MemRefExpr> memberAccess;
+                if ( mUseVtableOpt && isVirtualInvocation ) {
 
                     // If we are using the vtable optimization, we don't
                     // return receiver."method" for a virtual method 
                     // invocation, but
                     // (*receiver.FieldHandle(OA_VTABLE_STR))."method".
 
-                    // There should only be one rhs MRE.
-                    OA::OA_ptr<OA::MemRefExpr> rhs_mre;
-                    int numRhs = 0;
-                    for(; mRhsIter->isValid(); ++(*mRhsIter)) {
-                        rhs_mre = mRhsIter->current();
-                        ++numRhs;
-                    }
-                    ROSE_ASSERT(numRhs == 1);
+                    OA::OA_ptr<OA::FieldAccess> fieldAccess;
+                    fieldAccess = new OA::FieldAccess(false, 
+                                                      lhs_mre->hasFullAccuracy(),
+                                                      OA::MemRefExpr::USE,
+                                                      lhs_mre,
+                                                      OA_VTABLE_STR);
 
-                    if ( rhs_mre->isaNamed() ) {
-                        OA::OA_ptr<OA::NamedRef> namedRef = 
-                            rhs_mre.convert<OA::NamedRef>();
-                        ROSE_ASSERT(!namedRef.ptrEqual(0));
-	
-                        OA::SymHandle symHandle = namedRef->getSymHandle();
-                        SgNode *node = getNodePtr(symHandle);
-                        ROSE_ASSERT(node != NULL);
-	
-                        SgFunctionDeclaration *functionDeclaration = 
-                            isSgFunctionDeclaration(node);
-
-                        if ( ( functionDeclaration != NULL ) &&
-                             ( isVirtual(functionDeclaration) ) ) {
-
-                            OA::OA_ptr<OA::FieldAccess> fieldAccess;
-                            fieldAccess = new OA::FieldAccess(false, 
-                                                              lhs_mre->hasFullAccuracy(),
-                                                              OA::MemRefExpr::USE,
-                                                              lhs_mre,
-                                                              OA_VTABLE_STR);
-
-                            lhs_mre = new OA::Deref(false,
-                                                    fieldAccess->hasFullAccuracy(),
-                                                    OA::MemRefExpr::USE,
-                                                    fieldAccess,
-                                                    1);
-                        }
-                    }
+                    lhs_mre = new OA::Deref(false,
+                                            fieldAccess->hasFullAccuracy(),
+                                            OA::MemRefExpr::USE,
+                                            fieldAccess,
+                                            1);
                 }
-#endif
-                fieldAccess = new OA::FieldAccess(false, 
-                                                  lhs_mre->hasFullAccuracy(),
-                                                  OA::MemRefExpr::USE,
-                                                  lhs_mre,
-                                                  field_name);
-                mMemref2mreSetMap[memref].insert(fieldAccess);
+
+                
+                if ( isVirtualInvocation || !isMethodInvocation ) {
+
+                    // Virtual method invocations need to be represented
+                    // via a FieldAccess, as do member variable accesses.
+                    OA::OA_ptr<OA::MemRefExpr> fieldAccess;
+                    fieldAccess = new OA::FieldAccess(false, 
+                                                      lhs_mre->hasFullAccuracy(),
+                                                      OA::MemRefExpr::USE,
+                                                      lhs_mre,
+                                                      field_name);
+
+                    memberAccess = fieldAccess;
+
+                } else {
+
+                    // Non-virtual method invocations are represented 
+                    // by the NamedRef create for the rhs.  Clone it
+                    // here, erase it below.  We only expect there to 
+                    // be one rhs MRE.
+                    int numRhses = 0;
+
+                    for ( ; mRhsIter->isValid(); ++(*mRhsIter) ) {
+                        OA::OA_ptr<OA::MemRefExpr> rhs_mre = mRhsIter->current();
+                        memberAccess = rhs_mre->clone();
+                        ++numRhses;
+                    }
+                    ROSE_ASSERT(numRhses != 0);
+                    ROSE_ASSERT(numRhses == 1);
+
+                }
+
+                mMemref2mreSetMap[memref].insert(memberAccess);
             }
 
             // make lhs and rhs not a MemRefHandle
-            mMemref2mreSetMap[lhs_memref].clear();
-            mStmt2allMemRefsMap[stmt].erase(lhs_memref);
+            // No!  We need the lhs_memref for the actual.  BW 8/31/06
+            // Only remove it if this is not a method invocation.
+            if ( !isMethodInvocation ) {
+                mMemref2mreSetMap[lhs_memref].clear();
+                mStmt2allMemRefsMap[stmt].erase(lhs_memref);
+            } else {
+                // For a method invocation, we use the child/lhs receiver 
+                // MRE as the implicit actual.  Therefore, not only do we
+                // not remove it, but we need to take its address.
+                OA::OA_ptr<OA::MemRefExprIterator> mLhsIter
+                    = getMemRefExprIterator(lhs_memref);
+                for ( ; mLhsIter->isValid(); ++(*mLhsIter) ) {
+                    OA::OA_ptr<OA::MemRefExpr> lhs_mre = mLhsIter->current();
+                    lhs_mre->setAddressTaken(true);
+                }
+            }
             mMemref2mreSetMap[rhs_memref].clear();
             mStmt2allMemRefsMap[stmt].erase(rhs_memref);
             break;

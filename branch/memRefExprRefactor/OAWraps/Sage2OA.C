@@ -1304,7 +1304,7 @@ OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)
 { 
   // if haven't already determined the set of ptr assigns for the program
   // then call the initialization procedure
-  if (mStmtToPtrPairs.empty() ) {
+  if (mStmt2allMemRefsMap.empty() ) {
       initMemRefAndPtrAssignMaps();
   }
 
@@ -1453,11 +1453,6 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
         } else {
           // This symbol is not visible within this procedure, 
           // so return a NULL location.
-	  if ( enclosingProc)
-	    std::cout << "enclosing proc: " << enclosingProc->unparseToString() << std::endl;
-	  if (procDefn)
-	    std::cout << "procDefn: " << procDefn->unparseToString() << std::endl;
-	  std::cout << "init: " << initName->get_name().str() << std::endl;
           return loc;
         }
       } 
@@ -1491,8 +1486,8 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
         isSgFunctionParameterList(node);
       ROSE_ASSERT(parameterList != NULL);
 
-      // See comment above.  Member variables are not local.
-      isLocal = false;
+      // This is a modeled as a parameter, therefore it is local.
+      isLocal = true;
 
       break;
     }
@@ -3596,6 +3591,8 @@ SageIRInterface::getCallsiteParams(OA::CallHandle h)
         OA::MemRefHandle actual_memref 
             = findTopMemRefHandle(actual);
         exprHandleList->push_back(actual_memref);
+
+        SgNode *memNode = (SgNode *)(actual_memref.hval());
     }
 
     OA::OA_ptr<OA::IRCallsiteParamIterator> retIter;
@@ -4402,7 +4399,7 @@ SageIRInterface::lookThroughCastExpAndAssignInitializer(SgNode *node)
 bool SageIRInterface::isMemRefNode(SgNode *astNode)
 { 
     // initialize all of the mre information if it hasn't been done
-    if (mMemref2mreSetMap.empty()) {
+    if (mStmt2allMemRefsMap.empty() ) {
         initMemRefAndPtrAssignMaps();
     }
 

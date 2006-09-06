@@ -72,4 +72,7 @@ bool isBaseClassInvocation(SgConstructorInitializer *ctorInitializer);
 
 SgNode *getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer);
 
+SgMemberFunctionDeclaration *
+getInvokedMethod(SgMemberFunctionRefExp *memberFunctionRefExp);
+
 #endif /* _USEOA_COMMON_H */

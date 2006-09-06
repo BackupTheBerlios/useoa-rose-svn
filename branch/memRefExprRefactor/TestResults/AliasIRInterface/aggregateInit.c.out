@@ -17,8 +17,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("a"), F, full)
             MemRefHandle("{(0),(1),(2),(3),(4)}") => 
                 UnnamedRef( USE, StmtHandle("int a[] = {(0),(1),(2),(3),(4)};"), F, part)
-            MemRefHandle("{(0),(1),(2),(3),(4)}") => 
-                UnnamedRef( USE, StmtHandle("int a[] = {(0),(1),(2),(3),(4)};"), F, part)
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

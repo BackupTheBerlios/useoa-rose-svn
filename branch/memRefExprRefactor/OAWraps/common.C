@@ -1363,3 +1363,23 @@ bool isBaseClassInvocation(SgConstructorInitializer *ctorInitializer)
     }
     return false;
 }
+
+SgMemberFunctionDeclaration *
+getInvokedMethod(SgMemberFunctionRefExp *memberFunctionRefExp)
+{
+    ROSE_ASSERT(memberFunctionRefExp != NULL);
+
+    // Get the declaration of the function.
+    SgFunctionSymbol *functionSymbol = memberFunctionRefExp->get_symbol();
+    ROSE_ASSERT(functionSymbol != NULL);
+      
+    SgFunctionDeclaration *functionDeclaration = 
+        functionSymbol->get_declaration();
+    ROSE_ASSERT(functionDeclaration != NULL);
+
+    SgMemberFunctionDeclaration *methodDecl =
+        isSgMemberFunctionDeclaration(functionDeclaration);
+    ROSE_ASSERT(methodDecl != NULL);
+
+    return methodDecl;
+}

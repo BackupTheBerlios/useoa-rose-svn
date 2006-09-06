@@ -11,8 +11,6 @@
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
 PROCEDURE = { < ProcHandle("strcmp"), SymHandle("strcmp") > }
     FORMALS = {
@@ -58,8 +56,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("a") => 
                 NamedRef( DEF, SymHandle("a"), F, full)
-            MemRefHandle(""testing"") => 
-                UnnamedRef( USE, StmtHandle(""testing""), F, part)
             MemRefHandle(""testing"") => 
                 UnnamedRef( USE, StmtHandle(""testing""), F, part)
         ] }

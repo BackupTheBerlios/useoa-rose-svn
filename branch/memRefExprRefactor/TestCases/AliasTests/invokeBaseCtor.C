@@ -1,4 +1,5 @@
 class Base {
+public:
 };
 
 class SubClass : public Base {
