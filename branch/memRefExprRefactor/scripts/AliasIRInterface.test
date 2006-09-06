@@ -31,7 +31,7 @@ test::  fields.c,                checked by MMS 8/20/06
 test::  func_call.c,             checked by MMS 8/25/06
 test::  functionPtr.c,           checked by MMS 8/22/06
 test::  functionPtr2.c,          checked by MMS 8/22/06
-test::  invokeBaseCtor.C,        problems emailed to BSW MMS 8/31/06
+test::  invokeBaseCtor.C,        problems emailed to BSW MMS 9/5/06
 test::  localNonLocal.c,         checked by BSW 6/28/06 (rechecked by MMS 8/21/06)
 test::  passArrayPtr.c,          checked by MMS 8/29/06
 test::  parambinds-formals-intPtrs.C,   checked by MMS 8/29/06
@@ -41,7 +41,7 @@ test::  passIntPtrArrayRef3.c,   checked by MMS 8/31/06
 test::  passIntPtr.c,            checked by MMS 8/21/06
 test::  refParam.C,              checked by MMS 8/24/06
 test::  ref.C,                   checked by MMS 8/21/06
-test::  refClass.C,              email to Brian MMS 8/31/06
+test::  refClass.C,              email to Brian MMS 9/5/06
 test::  refClass2.C,             email to Brian MMS 8/31/06
 test::  retPtr1.c,               checked by MMS 8/29/06
 test::  sizeOf.C,                checked by MMS 8/24/06               

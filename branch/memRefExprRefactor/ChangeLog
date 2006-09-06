@@ -2298,3 +2298,10 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 9/1/06     UseOA-Rose svn branch-memRefExprRefactor r186  Michelle Strout
     - Fixed member variable inializers somewhat.  Now the ptr assignment
       is correct, but still missing an MRE.
+
+9/5/06     UseOA-Rose svn branch-memRefExprRefactor r188  Michelle Strout
+    - Fixed bug where the MemRefExpr for the field being initialized
+      was not being listed.
+    - Rechecked everything in FIAliasAliasMap.test.  Only found one
+      problem in constQualified.c.  Need to fix that pointer
+      arithmetic node.

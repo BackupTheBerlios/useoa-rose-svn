@@ -54,7 +54,7 @@ echo "Testing TestCases/AliasTests/functionPtr2.c, TestResults/AliasIRInterface/
 ./CtoOA TestCases/AliasTests/functionPtr2.c >& t
 diff t TestResults/AliasIRInterface/functionPtr2.c.out
 
-echo "Testing TestCases/AliasTests/invokeBaseCtor.C, TestResults/AliasIRInterface/invokeBaseCtor.C.out problems emailed to BSW MMS 8/31/06"
+echo "Testing TestCases/AliasTests/invokeBaseCtor.C, TestResults/AliasIRInterface/invokeBaseCtor.C.out problems emailed to BSW MMS 9/5/06"
 ./CtoOA TestCases/AliasTests/invokeBaseCtor.C >& t
 diff t TestResults/AliasIRInterface/invokeBaseCtor.C.out
 
@@ -94,7 +94,7 @@ echo "Testing TestCases/AliasTests/ref.C, TestResults/AliasIRInterface/ref.C.out
 ./CtoOA TestCases/AliasTests/ref.C >& t
 diff t TestResults/AliasIRInterface/ref.C.out
 
-echo "Testing TestCases/AliasTests/refClass.C, TestResults/AliasIRInterface/refClass.C.out email to Brian MMS 8/31/06"
+echo "Testing TestCases/AliasTests/refClass.C, TestResults/AliasIRInterface/refClass.C.out email to Brian MMS 9/5/06"
 ./CtoOA TestCases/AliasTests/refClass.C >& t
 diff t TestResults/AliasIRInterface/refClass.C.out
 

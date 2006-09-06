@@ -1,4 +1,5 @@
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
+Using per-method virtual table model
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
 InterAliasMap(
@@ -224,6 +225,7 @@ InterAliasMap(
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 2	 => [ MemRefHandle(x) ] 
+                3	 => [ MemRefHandle(blah) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 

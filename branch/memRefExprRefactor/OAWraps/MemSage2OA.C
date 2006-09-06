@@ -1082,12 +1082,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     isSgConstructorInitializer(initName->get_initptr());
                 if ( ctorInitializer && isBaseClassInvocation(ctorInitializer) ) {
 
-                    findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
+                    //findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
                     break;
  
                 }
 
-                // If the cild is not a SgConstructorInitializer, then
+                // If the child is not a SgConstructorInitializer, then
                 // we need to get the MemRefHandle
                 // for what we are being initialized to
                 // We need to do this before creating any implicit 
@@ -1134,6 +1134,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // we are on the SgInitializedName node, it is the lhs
                 // and it is a MemRefHandle
                 OA::MemRefHandle memref = getMemRefHandle(astNode);
+                mStmt2allMemRefsMap[stmt].insert(memref);
                 OA::MemRefHandle receiver_memref;
                 bool requiresImplicitReceiver = false;
                 if ( isSgCtorInitializerList(parent) ) {

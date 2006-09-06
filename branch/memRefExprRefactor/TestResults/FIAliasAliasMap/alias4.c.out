@@ -1,3 +1,4 @@
+Using per-method virtual table model
 
 InterAliasMap(
     AliasMap(
@@ -29,7 +30,7 @@ InterAliasMap(
                 2	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                1	 => [ MemRefHandle(a) ] 
+                1	 => [ MemRefHandle(a)    MemRefHandle(a = b) ] 
                 2	 => [ MemRefHandle(b) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
