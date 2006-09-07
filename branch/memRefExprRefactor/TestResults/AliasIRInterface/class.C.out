@@ -36,13 +36,19 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("a.foo();") =>
         [
+            MemRefHandle("a") => 
+                NamedRef( USE, SymHandle("a"), T, full)
             MemRefHandle("a.foo") => 
-                FieldAccess( USE, NamedRef( USE, SymHandle("a"), F, full), foo_void, F, full)
+                NamedRef( USE, SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), F, full)
         ] }
     CALLSITES = { StmtHandle("a.foo();") =>
         [
             CallHandle("a.foo()") => 
-                FieldAccess( USE, NamedRef( USE, SymHandle("a"), F, full), foo_void, F, full)
+                NamedRef( USE, SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("a.foo()") =>
+        [
+            < 0, NamedRef( USE, SymHandle("a"), T, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return A::sInt;") =>
         [
@@ -51,4 +57,5 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     LOCATION = { < SymHandle("sInt"), not local > }
     LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), not local > }
     LOCATION = { < SymHandle("main"), not local > }
