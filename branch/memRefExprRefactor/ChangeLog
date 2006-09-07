@@ -2358,3 +2358,35 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
           and passArrayPtr.c, evidently because of the redundant
           calls to initMemRefAndPtrAssignMaps fixed above.  Updated
           their regression results.
+
+9/06/06     UseOA-Rose svn branch-memRefExprRefactor r191  Brian White
+        - Changed SgInitializedName case so that we take the address
+          of a NamedRef representing a variable declaration, if
+          the declaration involves a constructor invocation since
+          the variable will be passed as the implicit this actual
+          (a pointer).
+
+        - I was forgetting to add the created MRE for the SgNewExp case.
+
+        - The SgInitializedName case of findAllMemRefsAndPtrAssigns was
+          previously getting the right-hand side (of the assignment)
+          MemRefHandle by visiting the initializer of the SgInitializedName.
+          Unfortunately, this initializer is sometimes used to 
+          generate the implicit this occuring on the lhs.  As such,
+          calling getTopMemRefHandle on the initializer, to get the
+          MemRefHandle for the rhs, would return the same MemRefHandle
+          as used on the lhs.  So, instead we look past the initializer
+          whenever we use it on the lhs.
+
+          Michelle had previously fixed this problem by simply 
+          visiting the child first, before the initializer was
+          recorded as a MemRefHandle.  Unfortunately, this does not
+          work because the child of the SgInitializedName might be
+          a SgConstructorInitializer, for which we need to model
+          an implicit this.  Such an implicit this might well be
+          the SgInitializedName itself.  Therefore, we need the MRE
+          for the SgInitializedName to exist before visiting the child.
+	
+        - Added the following tests to AliasIRInterface.test
+
+            - paramBindgsForDotMethodInvoc

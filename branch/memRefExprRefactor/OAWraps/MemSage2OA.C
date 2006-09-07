@@ -839,6 +839,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             mre = new OA::UnnamedRef(addressTaken, fullAccuracy,
                                      OA::MemRefExpr::USE, stmt);
 
+            mMemref2mreSetMap[memref].insert(mre);
+
             SgConstructorInitializer *ctorInitializer =
                 newExp->get_constructor_args();
             ROSE_ASSERT(ctorInitializer != NULL);
@@ -1063,9 +1065,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // if initptr is not null then             
             if (initName->get_initptr()!=NULL) {
 
-                // recurse on child
-                findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
-
                 // In the following case:
                 //
                 // class Foo : public Bar { Foo(Foo &f) : Bar(f) { } }
@@ -1082,55 +1081,18 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     isSgConstructorInitializer(initName->get_initptr());
                 if ( ctorInitializer && isBaseClassInvocation(ctorInitializer) ) {
 
-                    //findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
+                    findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
                     break;
  
-                }
-
-                // If the child is not a SgConstructorInitializer, then
-                // we need to get the MemRefHandle
-                // for what we are being initialized to
-                // We need to do this before creating any implicit 
-                // receiver which will sit on the SgAssignInitializer
-                // node and be above what we are being initialized to.
-                OA::MemRefHandle child_memref 
-                    = findTopMemRefHandle(initName->get_initptr());
-                // if is a reference then set the addressOf flag for the
-                // MREs for the node under the SgInitializer node
-                if (isSgReferenceType(getBaseType(initName->get_type()))) {
-                    OA::OA_ptr<OA::MemRefExprIterator> mIter 
-                        = getMemRefExprIterator(child_memref);
-                    for ( ; mIter->isValid(); ++(*mIter) ) {
-                        OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
-                        mMemref2mreSetMap[child_memref].erase(child_mre);
-                        // an address taken will cancel out a deref and
-                        // return the result
-                        child_mre = child_mre->setAddressTaken();
-                        mMemref2mreSetMap[child_memref].insert(child_mre);
-                    }
-                }
-
-                SgType *type = getBaseType(initName->get_type());
-
-                // if is an array, then the init is an UnnamedRef
-                // like "my string" or {1,3,5}.  By default the UnnamedRef
-                // are set up with their addressTaken.  Since we are modeling
-                // array variables as actual arrays instead of constant
-                // ptrs to an array, we need to remove the addressTaken
-                // for the rhs MREs
-                if (isSgArrayType(type)) {
-                    OA::OA_ptr<OA::MemRefExprIterator> mIter;
-                    mIter = getMemRefExprIterator(child_memref);
-                    for ( ; mIter->isValid(); ++(*mIter) ) {
-                        OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
-                        child_mre->setAddressTaken(false);
-                    }
                 }
 
                 // Now Figure out the MRE for us 
                 SgNode *parent = initName->get_parent();
                 ROSE_ASSERT(parent != NULL);
 
+
+                SgNode *topChildNode = initName->get_initptr();
+     
                 // we are on the SgInitializedName node, it is the lhs
                 // and it is a MemRefHandle
                 OA::MemRefHandle memref = getMemRefHandle(astNode);
@@ -1164,11 +1126,52 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
                         receiver_memref = getMemRefHandle(initer);
 
+                        // Here we use the initializer as a MemRefHandle on
+                        // the lhs, so we can not pass it to
+                        // findTopMemRefHandle below, which is used to
+                        // find a MemRefHandle for the rhs.  If we did,
+                        // since the initializer is a MemRefHandle, it would
+                        // again be returned and used both for the lhs
+                        // and rhs.
+                        switch(initer->variantT()) {
+                        case V_SgConstructorInitializer:
+                            {
+                                // Should have handled this above.
+                                ROSE_ABORT();
+                                break;
+                            }
+
+                        case V_SgAssignInitializer:
+                            {
+                                SgAssignInitializer *assignIniter =
+                                    isSgAssignInitializer(initer);
+                                ROSE_ASSERT(assignIniter != NULL);
+
+                                topChildNode = assignIniter->get_operand_i();
+
+                                break;
+                            }
+
+                        case V_SgAggregateInitializer:
+                            {
+                                SgAggregateInitializer *aggregateIniter =
+                                    isSgAggregateInitializer(initer);
+                                ROSE_ASSERT(aggregateIniter != NULL);
+
+                                topChildNode = aggregateIniter->get_initializers();
+
+                                break;
+                            }
+
+                        default:
+                            {
+                                ROSE_ABORT();
+                                break;
+                            }
+                        }
                     }
 
                 }
-
-                mStmt2allMemRefsMap[stmt].insert(receiver_memref);
 
                 // Create the MRE.
                 OA::OA_ptr<OA::MemRefExpr> mre;
@@ -1177,6 +1180,14 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     //======= create a DEF NamedRef
                     // make a NamedRef for the variable being initialized
                     bool addressTaken = false;
+                    // If this initialization invokes a constructor,
+                    // then the variable declared will be passed 
+                    // as the implicit this actual.  Since it
+                    // is an object, and this is a pointer, we need
+                    // to take its address.
+                    if ( ctorInitializer) {
+                        addressTaken = true;
+                    }
                     bool accuracy = true;
                     OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::DEF;
                     // get the symbol for the variable
@@ -1185,6 +1196,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
 
                 } else {
+
+                    mStmt2allMemRefsMap[stmt].insert(receiver_memref);
 
                     //======= create a DEF FieldAccess
                     // make a NamedRef for the variable being initialized
@@ -1228,12 +1241,74 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                                       field_name);
 
                     mre = fieldAccess;
-		    SgNode *node = getNodePtr(symHandle);
-                    SgNode *memNode = (SgNode*)(memref.hval());
 
                 }
 
                 mMemref2mreSetMap[memref].insert(mre);
+
+                // If the child is not a SgConstructorInitializer, then
+                // we need to get the MemRefHandle
+                // for what we are being initialized to
+                // We need to do this before creating any implicit 
+                // receiver which will sit on the SgAssignInitializer
+                // node and be above what we are being initialized to.
+
+                // No!  Note that when we visit a constructor initializer
+                // we need to create the implicit actual.  In some
+                // cases, e.g., 
+                //
+                // Foo::Foo(Bar bar) : mBar(bar) { }
+                //
+                // the implicit 'this' will be the initialized name,
+                // here mBar.  Therefore, we need to have already
+                // created the MRE for the initialized name.
+                // Hence, we do that above, before visiting the
+                // constructor initializer.  BSW 9/6/06  
+                findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
+
+                // However ... as noted above (If the child is not ...)
+                // we use a SgAssignInitializer/SgAggregateInitializer
+                // to model the implicit this (above).  Therefore, 
+                // if we attempt to find the top MemRefHandle from 
+                // the initializer, we will get a MemRefHandle to
+                // the implicit this-- i.e., part of the lhs of the
+                // intialization.  However, we seek here the rhs of
+                // the initialization-- i.e., the thing behind the
+                // initializer.  Therefore, set topChildNode to
+                // point to the node behind the initializer.
+                OA::MemRefHandle child_memref 
+                    = findTopMemRefHandle(topChildNode);
+                // if is a reference then set the addressOf flag for the
+                // MREs for the node under the SgInitializer node
+                if (isSgReferenceType(getBaseType(initName->get_type()))) {
+                    OA::OA_ptr<OA::MemRefExprIterator> mIter 
+                        = getMemRefExprIterator(child_memref);
+                    for ( ; mIter->isValid(); ++(*mIter) ) {
+                        OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
+                        mMemref2mreSetMap[child_memref].erase(child_mre);
+                        // an address taken will cancel out a deref and
+                        // return the result
+                        child_mre = child_mre->setAddressTaken();
+                        mMemref2mreSetMap[child_memref].insert(child_mre);
+                    }
+                }
+
+                SgType *type = getBaseType(initName->get_type());
+
+                // if is an array, then the init is an UnnamedRef
+                // like "my string" or {1,3,5}.  By default the UnnamedRef
+                // are set up with their addressTaken.  Since we are modeling
+                // array variables as actual arrays instead of constant
+                // ptrs to an array, we need to remove the addressTaken
+                // for the rhs MREs
+                if (isSgArrayType(type)) {
+                    OA::OA_ptr<OA::MemRefExprIterator> mIter;
+                    mIter = getMemRefExprIterator(child_memref);
+                    for ( ; mIter->isValid(); ++(*mIter) ) {
+                        OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
+                        child_mre->setAddressTaken(false);
+                    }
+                }
 
                 //----------- Ptr Assigns
                 if (isSgReferenceType(type) || isSgPointerType(type))

@@ -58,3 +58,5 @@ echo "Generating TestResults/AliasIRInterface/swap.c.out"
 ./CtoOA TestCases/AliasTests/swap.c >& TestResults/AliasIRInterface/swap.c.out
 echo "Generating TestResults/AliasIRInterface/ternop.c.out"
 ./CtoOA TestCases/AliasTests/ternop.c >& TestResults/AliasIRInterface/ternop.c.out
+echo "Generating TestResults/AliasIRInterface/paramBindingsForDotMethodInvoc.C.out"
+./CtoOA TestCases/AliasTests/paramBindingsForDotMethodInvoc.C >& TestResults/AliasIRInterface/paramBindingsForDotMethodInvoc.C.out
