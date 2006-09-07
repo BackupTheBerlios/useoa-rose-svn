@@ -126,3 +126,55 @@ echo "Testing TestCases/AliasTests/paramBindingsForArrowMethodInvoc.C, TestResul
 ./CtoOA TestCases/AliasTests/paramBindingsForArrowMethodInvoc.C >& t
 diff t TestResults/AliasIRInterface/paramBindingsForArrowMethodInvoc.C.out
 
+echo "Testing TestCases/AliasTests/paramBindingsForStaticMethodInvoc.C, TestResults/AliasIRInterface/paramBindingsForStaticMethodInvoc.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/paramBindingsForStaticMethodInvoc.C >& t
+diff t TestResults/AliasIRInterface/paramBindingsForStaticMethodInvoc.C.out
+
+echo "Testing TestCases/AliasTests/staticMemberVarAccess.C, TestResults/AliasIRInterface/staticMemberVarAccess.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/staticMemberVarAccess.C >& t
+diff t TestResults/AliasIRInterface/staticMemberVarAccess.C.out
+
+echo "Testing TestCases/AliasTests/paramBindingsForStackCtorInvoc.C, TestResults/AliasIRInterface/paramBindingsForStackCtorInvoc.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/paramBindingsForStackCtorInvoc.C >& t
+diff t TestResults/AliasIRInterface/paramBindingsForStackCtorInvoc.C.out
+
+echo "Testing TestCases/AliasTests/paramBindingsForDynamicCtorInvoc.C, TestResults/AliasIRInterface/paramBindingsForDynamicCtorInvoc.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/paramBindingsForDynamicCtorInvoc.C >& t
+diff t TestResults/AliasIRInterface/paramBindingsForDynamicCtorInvoc.C.out
+
+echo "Testing TestCases/AliasTests/paramBindingsForDestructorInvoc.C, TestResults/AliasIRInterface/paramBindingsForDestructorInvoc.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/paramBindingsForDestructorInvoc.C >& t
+diff t TestResults/AliasIRInterface/paramBindingsForDestructorInvoc.C.out
+
+echo "Testing TestCases/AliasTests/implicitReceiverMethodInvoc.C, TestResults/AliasIRInterface/implicitReceiverMethodInvoc.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/implicitReceiverMethodInvoc.C >& t
+diff t TestResults/AliasIRInterface/implicitReceiverMethodInvoc.C.out
+
+echo "Testing TestCases/AliasTests/implicitReceiverDestructorInvoc.C, TestResults/AliasIRInterface/implicitReceiverDestructorInvoc.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/implicitReceiverDestructorInvoc.C >& t
+diff t TestResults/AliasIRInterface/implicitReceiverDestructorInvoc.C.out
+
+echo "Testing TestCases/AliasTests/implicitReceiverCtorInvoc.C, TestResults/AliasIRInterface/implicitReceiverCtorInvoc.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/implicitReceiverCtorInvoc.C >& t
+diff t TestResults/AliasIRInterface/implicitReceiverCtorInvoc.C.out
+
+echo "Testing TestCases/AliasTests/implicitMemberVarAccess.C, TestResults/AliasIRInterface/implicitMemberVarAccess.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/implicitMemberVarAccess.C >& t
+diff t TestResults/AliasIRInterface/implicitMemberVarAccess.C.out
+
+echo "Testing TestCases/AliasTests/implicitMemberVarAccessInCtorList.C, TestResults/AliasIRInterface/implicitMemberVarAccessInCtorList.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/implicitMemberVarAccessInCtorList.C >& t
+diff t TestResults/AliasIRInterface/implicitMemberVarAccessInCtorList.C.out
+
+echo "Testing TestCases/AliasTests/implicitMemberVarRefDefnInCtorList..C, TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList..C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/implicitMemberVarRefDefnInCtorList..C >& t
+diff t TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList..C.out
+
+echo "Testing TestCases/AliasTests/implicitMemberVarObjDefnInCtorList.C, TestResults/AliasIRInterface/implicitMemberVarObjDefnInCtorList.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/implicitMemberVarObjDefnInCtorList.C >& t
+diff t TestResults/AliasIRInterface/implicitMemberVarObjDefnInCtorList.C.out
+
+echo "Testing TestCases/AliasTests/invokeBaseCtorInCtorList.C, TestResults/AliasIRInterface/invokeBaseCtorInCtorList.C.out checked by BSW 9/7/60"
+./CtoOA TestCases/AliasTests/invokeBaseCtorInCtorList.C >& t
+diff t TestResults/AliasIRInterface/invokeBaseCtorInCtorList.C.out
+

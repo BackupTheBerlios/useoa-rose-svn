@@ -5,14 +5,13 @@ class Foo {
 
 public:
   Foo() { }
-  void someMethod(int *x) { }
+  ~Foo() { }
 };
 
 int main()
 {
-    Foo f;
-    int x;
+    Foo *f = new Foo();
+    delete f;
 
-    f.someMethod(&x);
     return 0;
 }

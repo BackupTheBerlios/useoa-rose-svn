@@ -192,6 +192,8 @@ void FindCallsitesPass::visit(SgNode* node)
       call_lst.push_back(exp);
     } 
 
+  } else if ( isSgDeleteExp(exp) ) {
+    call_lst.push_back(exp);
   }
 
   return;

@@ -1,0 +1,59 @@
+
+PROCEDURE = { < ProcHandle("Foo::someMethod"), SymHandle("method:Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_i_Gb___Pb__i__Pe___Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_i_Gb___Pb__i__Pe___Fe_") >
+            < 1, SymHandle("x") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline int someMethod(int *x){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("this::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_i_Gb___Pb__i__Pe___Fe_"), not local > }
+    LOCATION = { < SymHandle("method:Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_i_Gb___Pb__i__Pe___Fe_"), not local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){class Foo f;int x;f.someMethod(&x);return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{class Foo f;int x;f.someMethod(&x);return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class Foo f;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int x;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("f.someMethod(&x);") =>
+        [
+            MemRefHandle("f") => 
+                NamedRef( USE, SymHandle("f"), F, full)
+            MemRefHandle("f.someMethod") => 
+                NamedRef( USE, SymHandle("method:Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_i_Gb___Pb__i__Pe___Fe_"), F, full)
+            MemRefHandle("&x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("f.someMethod(&x);") =>
+        [
+            CallHandle("f.someMethod(&x)") => 
+                NamedRef( USE, SymHandle("method:Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_i_Gb___Pb__i__Pe___Fe_"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("f.someMethod(&x)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("f"), T, full) >
+            < 1, NamedRef( USE, SymHandle("x"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("f"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("method:Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_i_Gb___Pb__i__Pe___Fe_"), not local > }

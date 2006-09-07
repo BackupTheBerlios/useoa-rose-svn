@@ -77,7 +77,7 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
     OA::CallHandle call = getCallHandle(node);
   
     bool isCallADotExp           = false;
-    bool isCallAMethodInvocation = false;
+    bool isCallANonStaticMethodInvocation = false;
 
     switch(node->variantT()) {
     case V_SgFunctionCallExp:
@@ -85,13 +85,14 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
             SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
             ROSE_ASSERT(functionCallExp != NULL);
       
-            isCallAMethodInvocation = isMethodCall(functionCallExp,  
-                                                   isCallADotExp);
+            isCallANonStaticMethodInvocation = 
+                isNonStaticMethodCall(functionCallExp,  
+                                      isCallADotExp);
             break;
         }
     case V_SgConstructorInitializer:
         {
-            isCallAMethodInvocation = true;
+            isCallANonStaticMethodInvocation = true;
 
             SgConstructorInitializer *ctorInit =
                 isSgConstructorInitializer(node);
@@ -116,7 +117,7 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
         }
     case V_SgDeleteExp:
         {
-            isCallAMethodInvocation = true; 
+            isCallANonStaticMethodInvocation = true; 
             break;
         }
     default:
@@ -151,7 +152,7 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
     // we need to fold the receiver in as the 1st actual argument.
     // This folding is handled by getCallsiteParams; we need
     // only _not_ consume a formal type.
-    if ( isCallAMethodInvocation ) {
+    if ( isCallANonStaticMethodInvocation ) {
 
         ROSE_ASSERT(actualsIter->isValid());
         
@@ -864,6 +865,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgType *type = receiver->get_type(); 
             ROSE_ASSERT(type != NULL);
 
+            SgPointerType *ptrType = isSgPointerType(type);
+            ROSE_ASSERT(ptrType != NULL);
+            type = ptrType->get_base_type();
+
             SgClassDefinition *classDefn = getClassDefinition(type);
             ROSE_ASSERT(classDefn != NULL);
 
@@ -934,7 +939,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
                 OA::SymHandle symHandle = getProcSymHandle(methodDecl);
     
-                OA::OA_ptr<OA::MemRefExpr> method;
                 method = new OA::NamedRef(addressTaken, 
                                           fullAccuracy,
                                           OA::MemRefExpr::USE,

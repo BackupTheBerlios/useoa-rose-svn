@@ -5,7 +5,7 @@ class Foo {
 
 public:
   Foo() { }
-  void someMethod(int *x) { }
+  someMethod(int *x) { }
 };
 
 int main()

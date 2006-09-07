@@ -2145,6 +2145,10 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
   if ( expression != NULL ) {
     SgConstructorInitializer *ctorInitializer =
       isSgConstructorInitializer(expression);
+    SgAssignInitializer *assignInitializer =
+      isSgAssignInitializer(expression);
+    SgAggregateInitializer *aggregateInitializer =
+      isSgAggregateInitializer(expression);
     if ( ctorInitializer ) {
       SgMemberFunctionDeclaration *constructor =
         ctorInitializer->get_declaration();
@@ -2156,6 +2160,9 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
 
       strdump = classDefinition->get_qualified_name().str() + 
         expression->unparseToString();
+    } else if ( assignInitializer || aggregateInitializer ) {
+      // These may be used to model the implicit this at a call site.
+      strdump = "assign_or_agg_initializer";
     } else {
       strdump = expression->unparseToString();
     }
@@ -2203,6 +2210,15 @@ std::string SageIRInterface::toString(const OA::CallHandle h)
       retstr = functionCallExp->unparseToString();
       break;
     }
+
+  case V_SgDeleteExp:
+    {
+      SgDeleteExp *deleteExp = isSgDeleteExp(node);
+      ROSE_ASSERT(deleteExp != NULL);
+      retstr = deleteExp->unparseToString();
+      break;
+    }
+
   case V_SgConstructorInitializer:
     {
       SgConstructorInitializer *ctorInitializer = 
@@ -3640,14 +3656,15 @@ SageIRInterface::getFormalParamIterator(OA::SymHandle h)
   OA::OA_ptr<std::list<OA::SymHandle> > symHandleList;
   symHandleList = new std::list<OA::SymHandle>;
 
-  // If this is a method (including a constructor), fold something to
-  // correspond to the implicit actual 'this' into the argument list as 
-  // the first formal.
+  // If this is a non-static method (including a constructor), 
+  // fold something to correspond to the implicit actual 'this' 
+  // into the argument list as the first formal.
   // OpenAnalysis doesn't know about methods and wouldn't be otherwise
   // able to account, e.g., for MODs and USEs of the 'this' object.
   SgMemberFunctionDeclaration *memberFunctionDeclaration =
     isSgMemberFunctionDeclaration(functionDeclaration);
-  if ( memberFunctionDeclaration != NULL ) {
+  if ( ( memberFunctionDeclaration != NULL ) && 
+       ( isNonStaticMethod(memberFunctionDeclaration) ) ) {
     OA::SymHandle symHandle = getThisExpSymHandle(memberFunctionDeclaration);
     symHandleList->push_back(symHandle);
     

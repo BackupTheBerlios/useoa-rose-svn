@@ -2400,3 +2400,32 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
         - Added the following tests to AliasIRInterface.test
 
             - paramBindgsForArrowMethodInvoc	
+
+9/7/06     UseOA-Rose svn branch-memRefExprRefactor r193  Brian White
+
+        - Fixed getFormalParamIterator so that it does not retrun
+          an implicit 'this' formal for a static method.
+
+        - Fixed SgDeleteExp case so that when it asks for the
+          delete'd variables type, it recognizes that the variable
+          has type SgPointerType.
+
+        - Added SgDeleteExp call handle in FindCallsitesPass::visit.
+
+        - Added SgDeleteExp case to toString.
+	
+        - Added the following tests to AliasIRInterface.test
+
+            - paramBindgsForStaticMethodInvoc	
+            - staticMemberVarAccess
+            - paramBindingsForStackCtorInvoc
+            - paramBindingsForDynamicCtorInvoc
+            - paramBindingsForDestructorInvoc
+            - implicitReceiverMethodInvoc
+            - implicitReceiverDestructorInvoc
+            - implicitReceiverCtorInvoc
+            - implicitMemberVarAccess
+            - implicitMemberVarAccessInCtorList
+            - implicitMemberVarRefDefnInCtorList
+            - implicitMemberVarObjDefnInCtorList
+            - invokeBaseCtorInCtorList

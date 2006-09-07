@@ -67,7 +67,7 @@ void getTypeInfo(SgType *t, std::string *tname,
     }
 }
 
-/** \brief isMethodCall returns true if the invoked procedure is
+/** \brief isNonStaticMethodCall returns true if the invoked procedure is
  *         a method (i.e., a constructor, a destructor, or a non-static
  *         method).
  *  \param functionCall A Sage node representing a function call expression.
@@ -76,7 +76,7 @@ void getTypeInfo(SgType *t, std::string *tname,
  *                   (isDotExp = true) or a pointer (isDotExp = false).
  *  \returns  Boolean indicating whether the invoked procedure is a method.
  *
- *  Be Careful!  For the purposes of isMethodCall a method is anything
+ *  Be Careful!  For the purposes of isNonStaticMethodCall a method is anything
  *  which has or creates a receiver/"this."  That is a constructor
  *  (which creates a this and may modify/initialization it), a 
  *  destructor, or a non-static method.  Each of these is passed
@@ -85,7 +85,7 @@ void getTypeInfo(SgType *t, std::string *tname,
  *  implicit "this" (which is convenient, since we don't have one).
  */
 bool
-isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
+isNonStaticMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
 {
     ROSE_ASSERT(functionCall != NULL);
 
@@ -1138,6 +1138,7 @@ getClassDeclaration(SgType *type)
 
    default:
         {
+            ROSE_ABORT();
             break;
         }
    }
@@ -1382,4 +1383,14 @@ getInvokedMethod(SgMemberFunctionRefExp *memberFunctionRefExp)
     ROSE_ASSERT(methodDecl != NULL);
 
     return methodDecl;
+}
+
+/** \brief isNonStaticMethod returns boolen indicating whether the
+ *         method is a non-static method.
+ */
+bool
+isNonStaticMethod(SgMemberFunctionDeclaration *memberFunctionDecl)
+{
+    ROSE_ASSERT(memberFunctionDecl != NULL);
+    return ( !memberFunctionDecl->get_declarationModifier().get_storageModifier().isStatic() );
 }
