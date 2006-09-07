@@ -2390,3 +2390,13 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
         - Added the following tests to AliasIRInterface.test
 
             - paramBindgsForDotMethodInvoc
+
+9/7/06     UseOA-Rose svn branch-memRefExprRefactor r192  Brian White	
+
+        - Updated SgArrowExp case to reflect SgDotExp.  In particular,
+          do not create FieldAccesses for non-virtual method invocations.
+          Instead, just return the NamedRef for the invoked method.
+
+        - Added the following tests to AliasIRInterface.test
+
+            - paramBindgsForArrowMethodInvoc	

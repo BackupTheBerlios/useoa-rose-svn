@@ -51,4 +51,5 @@ test::  ternop.c,                checked by MMS 8/24/06
 #test::  retPtr3.c,              Added by PLM 08/01/06, core dump
 #test::  retPtr4.c,              Added by PLM 08/01/06, BUG 008270
 #test::  retPtr5.c,              Added by PLM 08/01/06, core dump 
-test::  paramBindingsForDotMethodInvoc.C,  checked by BSW 9/06/06
+test::  paramBindingsForDotMethodInvoc.C,  checked by BSW 9/6/06
+test::  paramBindingsForArrowMethodInvoc.C,  checked by BSW 9/7/06

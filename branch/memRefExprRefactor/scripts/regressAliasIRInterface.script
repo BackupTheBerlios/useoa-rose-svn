@@ -118,7 +118,11 @@ echo "Testing TestCases/AliasTests/ternop.c, TestResults/AliasIRInterface/ternop
 ./CtoOA TestCases/AliasTests/ternop.c >& t
 diff t TestResults/AliasIRInterface/ternop.c.out
 
-echo "Testing TestCases/AliasTests/paramBindingsForDotMethodInvoc.C, TestResults/AliasIRInterface/paramBindingsForDotMethodInvoc.C.out checked by BSW 9/06/06"
+echo "Testing TestCases/AliasTests/paramBindingsForDotMethodInvoc.C, TestResults/AliasIRInterface/paramBindingsForDotMethodInvoc.C.out checked by BSW 9/6/06"
 ./CtoOA TestCases/AliasTests/paramBindingsForDotMethodInvoc.C >& t
 diff t TestResults/AliasIRInterface/paramBindingsForDotMethodInvoc.C.out
+
+echo "Testing TestCases/AliasTests/paramBindingsForArrowMethodInvoc.C, TestResults/AliasIRInterface/paramBindingsForArrowMethodInvoc.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/paramBindingsForArrowMethodInvoc.C >& t
+diff t TestResults/AliasIRInterface/paramBindingsForArrowMethodInvoc.C.out
 

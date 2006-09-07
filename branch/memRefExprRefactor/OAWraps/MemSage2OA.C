@@ -1442,29 +1442,97 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 = findTopMemRefHandle(arrowExp->get_rhs_operand());
 	    //            std::string field_name = findFieldName(rhs_memref);
 	    std::string field_name = toStringWithoutScope(arrowExp->get_rhs_operand());
+
+            bool isVirtualInvocation = false;
+            bool isMethodInvocation = false;
+            SgMemberFunctionRefExp *memberFunctionRefExp =
+                isSgMemberFunctionRefExp(arrowExp->get_rhs_operand());
+            if (memberFunctionRefExp != NULL) {
+                SgMemberFunctionDeclaration *methodDecl =
+                    getInvokedMethod(memberFunctionRefExp);
+                ROSE_ASSERT(methodDecl != NULL);
+
+                isVirtualInvocation = isVirtual(methodDecl);
+                isMethodInvocation = true;
+            }
+
             OA::OA_ptr<OA::MemRefExprIterator> mIter
                 = getMemRefExprIterator(lhs_memref);
+            OA::OA_ptr<OA::MemRefExprIterator> mRhsIter
+                = getMemRefExprIterator(rhs_memref);
             for ( ; mIter->isValid(); ++(*mIter) ) {
                 OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
-                OA::OA_ptr<OA::Deref> deref_mre;
                 bool addressTaken = false;
-                int numDerefs = 1;
-                OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                deref_mre = new OA::Deref( addressTaken, 
-                                           lhs_mre->hasFullAccuracy(),
-                                           OA::MemRefExpr::USE,
-                                           nullMRE,
-                                           numDerefs);
-                OA::OA_ptr<OA::MemRefExpr> fieldAccess;
-                addressTaken = false;
-                fieldAccess = new OA::FieldAccess(false, 
-                                              deref_mre->hasFullAccuracy(),
-                                              OA::MemRefExpr::USE,
-                                              deref_mre->composeWith(lhs_mre),
-                                              field_name);
-                mMemref2mreSetMap[memref].insert(fieldAccess);
+
+                OA::OA_ptr<OA::MemRefExpr> memberAccess;
+                if ( mUseVtableOpt && isVirtualInvocation ) {
+
+                    // If we are using the vtable optimization, we don't
+                    // return receiver->"method" for a virtual method 
+                    // invocation, but
+                    // (*(*receiver).FieldHandle(OA_VTABLE_STR))."method".
+
+                    lhs_mre = new OA::Deref(false,
+                                            lhs_mre->hasFullAccuracy(),
+                                            OA::MemRefExpr::USE,
+                                            lhs_mre,
+                                            1);
+
+                    OA::OA_ptr<OA::FieldAccess> fieldAccess;
+                    fieldAccess = new OA::FieldAccess(false, 
+                                                      lhs_mre->hasFullAccuracy(),
+                                                      OA::MemRefExpr::USE,
+                                                      lhs_mre,
+                                                      OA_VTABLE_STR);
+
+                    lhs_mre = fieldAccess;
+
+                }
+
+                
+                if ( isVirtualInvocation || !isMethodInvocation ) {
+
+                    lhs_mre = new OA::Deref(false,
+                                            lhs_mre->hasFullAccuracy(),
+                                            OA::MemRefExpr::USE,
+                                            lhs_mre,
+                                            1);
+
+                    // Virtual method invocations need to be represented
+                    // via a FieldAccess, as do member variable accesses.
+                    OA::OA_ptr<OA::MemRefExpr> fieldAccess;
+                    fieldAccess = new OA::FieldAccess(false, 
+                                                      lhs_mre->hasFullAccuracy(),
+                                                      OA::MemRefExpr::USE,
+                                                      lhs_mre,
+                                                      field_name);
+
+                    memberAccess = fieldAccess;
+
+                } else {
+
+                    // Non-virtual method invocations are represented 
+                    // by the NamedRef create for the rhs.  Clone it
+                    // here, erase it below.  We only expect there to 
+                    // be one rhs MRE.
+                    int numRhses = 0;
+
+                    for ( ; mRhsIter->isValid(); ++(*mRhsIter) ) {
+                        OA::OA_ptr<OA::MemRefExpr> rhs_mre = mRhsIter->current();
+                        memberAccess = rhs_mre->clone();
+                        ++numRhses;
+                    }
+                    ROSE_ASSERT(numRhses != 0);
+                    ROSE_ASSERT(numRhses == 1);
+
+                }
+
+                mMemref2mreSetMap[memref].insert(memberAccess);
             }
+
             // make rhs not a MemRefHandle
+            // Note that lhs continues to be a MemRefHandle.
+
             mMemref2mreSetMap[rhs_memref].clear();
             mStmt2allMemRefsMap[stmt].erase(rhs_memref);
 
