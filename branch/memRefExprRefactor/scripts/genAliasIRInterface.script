@@ -82,8 +82,8 @@ echo "Generating TestResults/AliasIRInterface/implicitMemberVarAccess.C.out"
 ./CtoOA TestCases/AliasTests/implicitMemberVarAccess.C >& TestResults/AliasIRInterface/implicitMemberVarAccess.C.out
 echo "Generating TestResults/AliasIRInterface/implicitMemberVarAccessInCtorList.C.out"
 ./CtoOA TestCases/AliasTests/implicitMemberVarAccessInCtorList.C >& TestResults/AliasIRInterface/implicitMemberVarAccessInCtorList.C.out
-echo "Generating TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList..C.out"
-./CtoOA TestCases/AliasTests/implicitMemberVarRefDefnInCtorList..C >& TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList..C.out
+echo "Generating TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList.C.out"
+./CtoOA TestCases/AliasTests/implicitMemberVarRefDefnInCtorList.C >& TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList.C.out
 echo "Generating TestResults/AliasIRInterface/implicitMemberVarObjDefnInCtorList.C.out"
 ./CtoOA TestCases/AliasTests/implicitMemberVarObjDefnInCtorList.C >& TestResults/AliasIRInterface/implicitMemberVarObjDefnInCtorList.C.out
 echo "Generating TestResults/AliasIRInterface/invokeBaseCtorInCtorList.C.out"

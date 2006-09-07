@@ -63,6 +63,6 @@ test::  implicitReceiverDestructorInvoc.C,  checked by BSW 9/7/06
 test::  implicitReceiverCtorInvoc.C,  checked by BSW 9/7/06
 test::  implicitMemberVarAccess.C,  checked by BSW 9/7/06
 test::  implicitMemberVarAccessInCtorList.C,  checked by BSW 9/7/06
-test::  implicitMemberVarRefDefnInCtorList..C,  checked by BSW 9/7/06
+test::  implicitMemberVarRefDefnInCtorList.C,  checked by BSW 9/7/06
 test::  implicitMemberVarObjDefnInCtorList.C,  checked by BSW 9/7/06
 test::  invokeBaseCtorInCtorList.C,  checked by BSW 9/7/60

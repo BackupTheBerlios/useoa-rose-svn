@@ -2162,7 +2162,7 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
         expression->unparseToString();
     } else if ( assignInitializer || aggregateInitializer ) {
       // These may be used to model the implicit this at a call site.
-      strdump = "assign_or_agg_initializer";
+      strdump = "assign_or_agg_initializer:" + expression->unparseToString();
     } else {
       strdump = expression->unparseToString();
     }

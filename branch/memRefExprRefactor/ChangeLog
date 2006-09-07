@@ -2429,3 +2429,8 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
             - implicitMemberVarRefDefnInCtorList
             - implicitMemberVarObjDefnInCtorList
             - invokeBaseCtorInCtorList
+
+9/7/06     UseOA-Rose svn branch-memRefExprRefactor r198  Brian White	
+
+        - Just got regresAliasIRInterface.test synced up.  
+          Revision r193 had some diffs in the regression tests.

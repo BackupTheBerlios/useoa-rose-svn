@@ -15,7 +15,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("a") => 
                 NamedRef( DEF, SymHandle("a"), F, full)
-            MemRefHandle("{(0),(1),(2),(3),(4)}") => 
+            MemRefHandle("assign_or_agg_initializer:{(0),(1),(2),(3),(4)}") => 
                 UnnamedRef( USE, StmtHandle("int a[] = {(0),(1),(2),(3),(4)};"), F, part)
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>

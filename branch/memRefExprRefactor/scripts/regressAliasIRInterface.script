@@ -166,9 +166,9 @@ echo "Testing TestCases/AliasTests/implicitMemberVarAccessInCtorList.C, TestResu
 ./CtoOA TestCases/AliasTests/implicitMemberVarAccessInCtorList.C >& t
 diff t TestResults/AliasIRInterface/implicitMemberVarAccessInCtorList.C.out
 
-echo "Testing TestCases/AliasTests/implicitMemberVarRefDefnInCtorList..C, TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList..C.out checked by BSW 9/7/06"
-./CtoOA TestCases/AliasTests/implicitMemberVarRefDefnInCtorList..C >& t
-diff t TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList..C.out
+echo "Testing TestCases/AliasTests/implicitMemberVarRefDefnInCtorList.C, TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList.C.out checked by BSW 9/7/06"
+./CtoOA TestCases/AliasTests/implicitMemberVarRefDefnInCtorList.C >& t
+diff t TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList.C.out
 
 echo "Testing TestCases/AliasTests/implicitMemberVarObjDefnInCtorList.C, TestResults/AliasIRInterface/implicitMemberVarObjDefnInCtorList.C.out checked by BSW 9/7/06"
 ./CtoOA TestCases/AliasTests/implicitMemberVarObjDefnInCtorList.C >& t

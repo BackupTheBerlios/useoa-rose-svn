@@ -8,7 +8,7 @@ PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__
         [
             MemRefHandle("mX") => 
                 FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), F, full), 1, F, full), mX, F, full)
-            MemRefHandle("implicit_this") => 
+            MemRefHandle("assign_or_agg_initializer:5") => 
                 NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline Foo() : mX(5){}") =>
