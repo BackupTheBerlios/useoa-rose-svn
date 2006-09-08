@@ -37,12 +37,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("i") => 
                 NamedRef( USE, SymHandle("i"), F, full)
             MemRefHandle("(const_array + i)") => 
-                NamedRef( USE, SymHandle("const_array"), F, part)
+                Deref( USE, NamedRef( USE, SymHandle("const_array"), F, full), 1, T, part)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("const int *q =(const_array + i);") =>
         [
             < NamedRef( DEF, SymHandle("q"), F, full)
-            , NamedRef( USE, SymHandle("const_array"), F, part) >
+            , Deref( USE, NamedRef( USE, SymHandle("const_array"), F, full), 1, T, part) >
         ] }
     MEMREFEXPRS = { StmtHandle("x = *q;") =>
         [

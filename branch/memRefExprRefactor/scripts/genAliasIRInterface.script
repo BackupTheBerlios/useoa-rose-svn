@@ -20,20 +20,40 @@ echo "Generating TestResults/AliasIRInterface/comma.c.out"
 ./CtoOA TestCases/AliasTests/comma.c >& TestResults/AliasIRInterface/comma.c.out
 echo "Generating TestResults/AliasIRInterface/fields.c.out"
 ./CtoOA TestCases/AliasTests/fields.c >& TestResults/AliasIRInterface/fields.c.out
+echo "Generating TestResults/AliasIRInterface/constQualified.c.out"
+./CtoOA TestCases/AliasTests/constQualified.c >& TestResults/AliasIRInterface/constQualified.c.out
 echo "Generating TestResults/AliasIRInterface/func_call.c.out"
 ./CtoOA TestCases/AliasTests/func_call.c >& TestResults/AliasIRInterface/func_call.c.out
 echo "Generating TestResults/AliasIRInterface/functionPtr.c.out"
 ./CtoOA TestCases/AliasTests/functionPtr.c >& TestResults/AliasIRInterface/functionPtr.c.out
 echo "Generating TestResults/AliasIRInterface/functionPtr2.c.out"
 ./CtoOA TestCases/AliasTests/functionPtr2.c >& TestResults/AliasIRInterface/functionPtr2.c.out
+echo "Generating TestResults/AliasIRInterface/implicitMemberVarAccess.C.out"
+./CtoOA TestCases/AliasTests/implicitMemberVarAccess.C >& TestResults/AliasIRInterface/implicitMemberVarAccess.C.out
+echo "Generating TestResults/AliasIRInterface/implicitMemberVarAccessInCtorList.C.out"
+./CtoOA TestCases/AliasTests/implicitMemberVarAccessInCtorList.C >& TestResults/AliasIRInterface/implicitMemberVarAccessInCtorList.C.out
+echo "Generating TestResults/AliasIRInterface/implicitMemberVarObjDefnInCtorList.C.out"
+./CtoOA TestCases/AliasTests/implicitMemberVarObjDefnInCtorList.C >& TestResults/AliasIRInterface/implicitMemberVarObjDefnInCtorList.C.out
+echo "Generating TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList.C.out"
+./CtoOA TestCases/AliasTests/implicitMemberVarRefDefnInCtorList.C >& TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList.C.out
+echo "Generating TestResults/AliasIRInterface/implicitReceiverCtorInvoc.C.out"
+./CtoOA TestCases/AliasTests/implicitReceiverCtorInvoc.C >& TestResults/AliasIRInterface/implicitReceiverCtorInvoc.C.out
+echo "Generating TestResults/AliasIRInterface/implicitReceiverDestructorInvoc.C.out"
+./CtoOA TestCases/AliasTests/implicitReceiverDestructorInvoc.C >& TestResults/AliasIRInterface/implicitReceiverDestructorInvoc.C.out
+echo "Generating TestResults/AliasIRInterface/implicitReceiverMethodInvoc.C.out"
+./CtoOA TestCases/AliasTests/implicitReceiverMethodInvoc.C >& TestResults/AliasIRInterface/implicitReceiverMethodInvoc.C.out
 echo "Generating TestResults/AliasIRInterface/invokeBaseCtor.C.out"
 ./CtoOA TestCases/AliasTests/invokeBaseCtor.C >& TestResults/AliasIRInterface/invokeBaseCtor.C.out
-echo "Generating TestResults/AliasIRInterface/localNonLocal.c.out"
-./CtoOA TestCases/AliasTests/localNonLocal.c >& TestResults/AliasIRInterface/localNonLocal.c.out
+echo "Generating TestResults/AliasIRInterface/invokeBaseCtorInCtorList.C.out"
+./CtoOA TestCases/AliasTests/invokeBaseCtorInCtorList.C >& TestResults/AliasIRInterface/invokeBaseCtorInCtorList.C.out
 echo "Generating TestResults/AliasIRInterface/passArrayPtr.c.out"
 ./CtoOA TestCases/AliasTests/passArrayPtr.c >& TestResults/AliasIRInterface/passArrayPtr.c.out
 echo "Generating TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out"
 ./CtoOA TestCases/AliasTests/parambinds-formals-intPtrs.C >& TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out
+echo "Generating TestResults/AliasIRInterface/paramBindingsForArrowMethodInvoc.C.out"
+./CtoOA TestCases/AliasTests/paramBindingsForArrowMethodInvoc.C >& TestResults/AliasIRInterface/paramBindingsForArrowMethodInvoc.C.out
+echo "Generating TestResults/AliasIRInterface/paramBindingsForDotMethodInvoc.C.out"
+./CtoOA TestCases/AliasTests/paramBindingsForDotMethodInvoc.C >& TestResults/AliasIRInterface/paramBindingsForDotMethodInvoc.C.out
 echo "Generating TestResults/AliasIRInterface/passIntPtrArrayRef.c.out"
 ./CtoOA TestCases/AliasTests/passIntPtrArrayRef.c >& TestResults/AliasIRInterface/passIntPtrArrayRef.c.out
 echo "Generating TestResults/AliasIRInterface/passIntPtrArrayRef2.c.out"
@@ -72,19 +92,3 @@ echo "Generating TestResults/AliasIRInterface/paramBindingsForDynamicCtorInvoc.C
 ./CtoOA TestCases/AliasTests/paramBindingsForDynamicCtorInvoc.C >& TestResults/AliasIRInterface/paramBindingsForDynamicCtorInvoc.C.out
 echo "Generating TestResults/AliasIRInterface/paramBindingsForDestructorInvoc.C.out"
 ./CtoOA TestCases/AliasTests/paramBindingsForDestructorInvoc.C >& TestResults/AliasIRInterface/paramBindingsForDestructorInvoc.C.out
-echo "Generating TestResults/AliasIRInterface/implicitReceiverMethodInvoc.C.out"
-./CtoOA TestCases/AliasTests/implicitReceiverMethodInvoc.C >& TestResults/AliasIRInterface/implicitReceiverMethodInvoc.C.out
-echo "Generating TestResults/AliasIRInterface/implicitReceiverDestructorInvoc.C.out"
-./CtoOA TestCases/AliasTests/implicitReceiverDestructorInvoc.C >& TestResults/AliasIRInterface/implicitReceiverDestructorInvoc.C.out
-echo "Generating TestResults/AliasIRInterface/implicitReceiverCtorInvoc.C.out"
-./CtoOA TestCases/AliasTests/implicitReceiverCtorInvoc.C >& TestResults/AliasIRInterface/implicitReceiverCtorInvoc.C.out
-echo "Generating TestResults/AliasIRInterface/implicitMemberVarAccess.C.out"
-./CtoOA TestCases/AliasTests/implicitMemberVarAccess.C >& TestResults/AliasIRInterface/implicitMemberVarAccess.C.out
-echo "Generating TestResults/AliasIRInterface/implicitMemberVarAccessInCtorList.C.out"
-./CtoOA TestCases/AliasTests/implicitMemberVarAccessInCtorList.C >& TestResults/AliasIRInterface/implicitMemberVarAccessInCtorList.C.out
-echo "Generating TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList.C.out"
-./CtoOA TestCases/AliasTests/implicitMemberVarRefDefnInCtorList.C >& TestResults/AliasIRInterface/implicitMemberVarRefDefnInCtorList.C.out
-echo "Generating TestResults/AliasIRInterface/implicitMemberVarObjDefnInCtorList.C.out"
-./CtoOA TestCases/AliasTests/implicitMemberVarObjDefnInCtorList.C >& TestResults/AliasIRInterface/implicitMemberVarObjDefnInCtorList.C.out
-echo "Generating TestResults/AliasIRInterface/invokeBaseCtorInCtorList.C.out"
-./CtoOA TestCases/AliasTests/invokeBaseCtorInCtorList.C >& TestResults/AliasIRInterface/invokeBaseCtorInCtorList.C.out

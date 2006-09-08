@@ -176,6 +176,8 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
             OA::OA_ptr<OA::MemRefExpr> curr = actualMreIterPtr->current();
             OA::OA_ptr<OA::MemRefExpr> actualMre = curr;
 
+            /* MMS, took out because the appropriate MRE has already been
+             * calculated
             if ( isCallADotExp == true ) {
                 // We are returning a MemRefExpr representing the object b
                 // upon which a method is invoked in the expression b.foo()
@@ -187,6 +189,7 @@ SageIRInterface::createParamBindPtrAssignPairs(SgNode *node)
                 actualMre = curr->clone();
                 actualMre->setAddressTaken(true);
             }
+            */
 	  
             makeParamPtrPair(call, paramNum, actualMre);
         }	
@@ -467,15 +470,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // within a SgConstructorInitializerList, we
             // need to pass something as the actual for the
             // zeroth formal representing the receiver.
-            //
-            // class Foo : public Bar { Foo(Foo &f) : Bar(f) { } };
-            //
-            // In the case of Bar(f), the actual MRE will
-            // be a NamedRef(SymHandle(Foo::Foo SgFunctionParameterList)),
-            // as SgFunctionParameterLists are used to 
-            // represent 'this' formals.  This formal of Foo::Foo
-            // is passed as an actual to Bar::Bar.
 
+            // For constructors the logic to create the implicit this
+            // actual now resides at SgConstructorInitializer.
+            
             // Syntactically, one might suspect that we need
             // to introduce an implicit actual here as well:
             //
@@ -507,6 +505,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 }
             } 
 
+            /*
             // Given the above assertion, we should only need to 
             // introduce implicit 'this' actuals for invocations
             // of a baseclass contructor within a 
@@ -547,6 +546,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
                 mMemref2mreSetMap[memref].insert(mre);
             }
+            */
 
             // recurse on all expressions
             SgExpressionPtrList & exprs = exprListExp->get_expressions();  
@@ -961,7 +961,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             bool addressTaken = false;
             bool accuracy = true;
-	    OA::SymHandle symHandle = getThisExpSymHandle(thisExp);
+            OA::SymHandle symHandle = getThisExpSymHandle(thisExp);
 
             OA::MemRefHandle memref = getMemRefHandle(astNode);
             mStmt2allMemRefsMap[stmt].insert(memref);
@@ -1068,41 +1068,46 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // if initptr is not null then             
             if (initName->get_initptr()!=NULL) {
+                // recurse on the child
+                findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
 
-                // In the following case:
-                //
-                // class Foo : public Bar { Foo(Foo &f) : Bar(f) { } }
-                //
-                // Bar in Bar(f) in the initializer is represented 
-                // by a SgInitializedName, whose name is 'Bar'.  
-                // i.e., though it appears to be so, this is not
-                // a variable initialization.  Therefore, do 
-                // not create an MRE for it.  Instead,
-                // just visit the constructor initializer,
-                // which will create the required call MRE.
-
+                // If our immediate child is a SgConstructorInitializer
+                // then this node is not a MemRefHandle and there
+                // will be now pointer assignments modeled where this
+                // node is the lhs.
+                // Examples:
+                //   class Foo : public Bar { Foo(Foo &f) : Bar(f) { } }
+                //   Foo f();
+                //   class Foo { Foo(Bar &b) : mBar(b) {}  Bar mBar; };
+                // We do not need a DEF memory reference for the target
+                // of the implicit "this" in the above cases.  When the
+                // target of "this" is defined in the constructor procedure
+                // that will show up in the side-effect results.
                 SgConstructorInitializer *ctorInitializer =
                     isSgConstructorInitializer(initName->get_initptr());
-                if ( ctorInitializer && isBaseClassInvocation(ctorInitializer) ) {
-
-                    findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
+                if (ctorInitializer) {
                     break;
- 
                 }
 
-                // Now Figure out the MRE for us 
-                SgNode *parent = initName->get_parent();
-                ROSE_ASSERT(parent != NULL);
 
+                // Since our immediate child is NOT a SgConstructorInitializer
+                // we know that the will be a pointer assignment if 
+                // this node represents a pointer or reference type.
+                // Therefore, before we do anything like creating
+                // a MemRefHandle for an implicit "this", going to get
+                // the MemRefHandle for our child.
+                OA::MemRefHandle child_memref 
+                    = findTopMemRefHandle(initName->get_initptr());
 
-                SgNode *topChildNode = initName->get_initptr();
-     
-                // we are on the SgInitializedName node, it is the lhs
-                // and it is a MemRefHandle
-                OA::MemRefHandle memref = getMemRefHandle(astNode);
-                mStmt2allMemRefsMap[stmt].insert(memref);
+                // If this is an initialization of a member variable
+                // then we are going to need an implicit "this".
+                // We will associate it with our immediate child
+                // which should be a SgAssignInitializer or 
+                // a SgAggregateInitializer.
                 OA::MemRefHandle receiver_memref;
                 bool requiresImplicitReceiver = false;
+                SgNode *parent = initName->get_parent();
+                ROSE_ASSERT(parent != NULL);
                 if ( isSgCtorInitializerList(parent) ) {
 
                     // At this point, we know that initName is a
@@ -1113,110 +1118,39 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     // that we need to make explicit here.
                     requiresImplicitReceiver = true;
 
-                    // We need a MemRefHandle for the implicit this.
-                    // If initialization occurs through a 
-                    // constructor invocation, we will use its
-                    // actual arg list, as is done to represent
-                    // the implicit receiver of a constructor invocation.
-                    // Otherwise, we will use the initializer of the
-                    // initName.
-                    if ( ctorInitializer != NULL ) {
-                        SgExprListExp *args = ctorInitializer->get_args();
-                        ROSE_ASSERT(args != NULL);
-                        receiver_memref = getMemRefHandle(args);
-                    } else {
-                        SgInitializer *initer = initName->get_initptr();
-                        ROSE_ASSERT(initer != NULL);
+                    // setting up the MemRefHandle for implicit "this"
+                    SgInitializer *initer = initName->get_initptr();
+                    ROSE_ASSERT(initer != NULL);
 
-                        receiver_memref = getMemRefHandle(initer);
-
-                        // Here we use the initializer as a MemRefHandle on
-                        // the lhs, so we can not pass it to
-                        // findTopMemRefHandle below, which is used to
-                        // find a MemRefHandle for the rhs.  If we did,
-                        // since the initializer is a MemRefHandle, it would
-                        // again be returned and used both for the lhs
-                        // and rhs.
-                        switch(initer->variantT()) {
-                        case V_SgConstructorInitializer:
-                            {
-                                // Should have handled this above.
-                                ROSE_ABORT();
-                                break;
-                            }
-
-                        case V_SgAssignInitializer:
-                            {
-                                SgAssignInitializer *assignIniter =
-                                    isSgAssignInitializer(initer);
-                                ROSE_ASSERT(assignIniter != NULL);
-
-                                topChildNode = assignIniter->get_operand_i();
-
-                                break;
-                            }
-
-                        case V_SgAggregateInitializer:
-                            {
-                                SgAggregateInitializer *aggregateIniter =
-                                    isSgAggregateInitializer(initer);
-                                ROSE_ASSERT(aggregateIniter != NULL);
-
-                                topChildNode = aggregateIniter->get_initializers();
-
-                                break;
-                            }
-
-                        default:
-                            {
-                                ROSE_ABORT();
-                                break;
-                            }
-                        }
-                    }
-
+                    receiver_memref = getMemRefHandle(initer);
+                    mStmt2allMemRefsMap[stmt].insert(receiver_memref);
                 }
 
-                // Create the MRE.
+                // we are on the SgInitializedName node, it is the lhs
+                // and it is a MemRefHandle
+                OA::MemRefHandle memref = getMemRefHandle(astNode);
+                mStmt2allMemRefsMap[stmt].insert(memref);
+
+                // Create the MRE for this SgInitializedName node
                 OA::OA_ptr<OA::MemRefExpr> mre;
 
                 if ( !requiresImplicitReceiver ) {
                     //======= create a DEF NamedRef
                     // make a NamedRef for the variable being initialized
                     bool addressTaken = false;
-                    // If this initialization invokes a constructor,
-                    // then the variable declared will be passed 
-                    // as the implicit this actual.  Since it
-                    // is an object, and this is a pointer, we need
-                    // to take its address.
-                    if ( ctorInitializer) {
-                        addressTaken = true;
-                    }
                     bool accuracy = true;
                     OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::DEF;
-                    // get the symbol for the variable
                     OA::SymHandle sym = getNodeNumber(initName);
-                    // construct the NamedRef
                     mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
 
                 } else {
-
-                    mStmt2allMemRefsMap[stmt].insert(receiver_memref);
-
                     //======= create a DEF FieldAccess
-                    // make a NamedRef for the variable being initialized
                     bool addressTaken = false;
                     bool accuracy = true;
                     OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
 
-                    // get the symbol for the implicit this.
-                    SgFunctionDefinition *enclosingFunction =
-                        getEnclosingFunction(astNode);
-                    ROSE_ASSERT(enclosingFunction != NULL);
-                    SgFunctionDeclaration *functionDeclaration =
-                        enclosingFunction->get_declaration();
-        	        OA::SymHandle symHandle = 
-                        getThisExpSymHandle(functionDeclaration);
+                    // get the symbol for the implicit formal this.
+        	        OA::SymHandle symHandle = getThisFormalSymHandle(astNode);
 
                     OA::OA_ptr<OA::MemRefExpr> base;
                     base = new OA::NamedRef(addressTaken, 
@@ -1224,7 +1158,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                             mrType,
                                             symHandle);
                     mMemref2mreSetMap[receiver_memref].insert(base);
-
 
                     // Deref the MRE.
                     OA::OA_ptr<OA::Deref> deref_mre;
@@ -1245,43 +1178,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                                       field_name);
 
                     mre = fieldAccess;
-
                 }
 
                 mMemref2mreSetMap[memref].insert(mre);
 
-                // If the child is not a SgConstructorInitializer, then
-                // we need to get the MemRefHandle
-                // for what we are being initialized to
-                // We need to do this before creating any implicit 
-                // receiver which will sit on the SgAssignInitializer
-                // node and be above what we are being initialized to.
 
-                // No!  Note that when we visit a constructor initializer
-                // we need to create the implicit actual.  In some
-                // cases, e.g., 
-                //
-                // Foo::Foo(Bar bar) : mBar(bar) { }
-                //
-                // the implicit 'this' will be the initialized name,
-                // here mBar.  Therefore, we need to have already
-                // created the MRE for the initialized name.
-                // Hence, we do that above, before visiting the
-                // constructor initializer.  BSW 9/6/06  
-                findAllMemRefsAndPtrAssigns(initName->get_initptr(),stmt);
-
-                // However ... as noted above (If the child is not ...)
-                // we use a SgAssignInitializer/SgAggregateInitializer
-                // to model the implicit this (above).  Therefore, 
-                // if we attempt to find the top MemRefHandle from 
-                // the initializer, we will get a MemRefHandle to
-                // the implicit this-- i.e., part of the lhs of the
-                // intialization.  However, we seek here the rhs of
-                // the initialization-- i.e., the thing behind the
-                // initializer.  Therefore, set topChildNode to
-                // point to the node behind the initializer.
-                OA::MemRefHandle child_memref 
-                    = findTopMemRefHandle(topChildNode);
                 // if is a reference then set the addressOf flag for the
                 // MREs for the node under the SgInitializer node
                 if (isSgReferenceType(getBaseType(initName->get_type()))) {
@@ -1351,17 +1252,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 isSgConstructorInitializer(astNode);
             ROSE_ASSERT(ctorInit != NULL);
 
-            // A SgConstructorInitializer appears as a child of a SgNewExp.
-            // We need to extract the constructor invoked and treat it
-            // analogously to a method invocation (in the SgDotExp/SgArrowExp
-            // cases).
-
-            // Note that we do not consider this a use of the 
-            // receiver/object created.  This is somewhat asymmetric
-            // given that we do consider the object created to be
-            // the first, implicit actual.  Instead, we only create
-            // a call MRE here.
-
             // Get the declaration of the function.
             SgFunctionDeclaration *functionDeclaration = 
                 ctorInit->get_declaration();
@@ -1380,6 +1270,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             OA::CallHandle call = getCallHandle(astNode);
             mCallToMRE[call] = method;
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+            mMemref2mreSetMap[memref].insert(method);
 
             // Create MREs for the actuals passed to the constructor.
 
@@ -1387,14 +1280,18 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgExprListExp* exprListExp = ctorInit->get_args();  
             ROSE_ASSERT (exprListExp != NULL);  
 
-            // Note that we use the SgExprList of the constructor
-            // to model the actual 'this' argument.  Therefore, visit
-            // that.
-
             // Notice that since we visit the SgExprListExp and since 
             // that case visits its sub-expressions, we do not 
             // need to explicitly visit the actual args here.
             findAllMemRefsAndPtrAssigns(exprListExp, stmt);
+            
+            // Note that we use the SgExprList of the constructor
+            // to model the actual 'this' argument.  
+            OA::MemRefHandle receiver_memref = getMemRefHandle(exprListExp);
+            mStmt2allMemRefsMap[stmt].insert(receiver_memref);
+            OA::OA_ptr<OA::MemRefExpr> receiver_mre
+                = createConstructorInitializerReceiverMRE(ctorInit);
+            mMemref2mreSetMap[receiver_memref].insert(receiver_mre);
 
             // Look at the actuals passed to the 
             // function/method/constructor/destructor invocation.
@@ -1686,7 +1583,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             findAllMemRefsAndPtrAssigns(binaryOp->get_lhs_operand(),stmt);
             findAllMemRefsAndPtrAssigns(binaryOp->get_rhs_operand(),stmt);
             
-            // if either of the children are array types 
+            // if either of the children are array types or ptr types
             // then this node should be a MemRefHandle
             // because a[2] is represented as a+2 in Sage
             // if either of the children are pointer types
@@ -3221,10 +3118,16 @@ void SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
                 mMemref2mreSetMap[memref].insert(child_mre);
             }
             if (isSgPointerType(child_type)) {
-                // get a clone of the lhs
+                // want  Deref(NamedRef(a),addressOf=T,part)
+                // addressOf doesn't cancel out deref because
+                // deref is partial but the namedRef to a is full
+                // get a clone of the child
                 OA::OA_ptr<OA::MemRefExpr> mre = child_mre->clone();
-                // set the clones accuracy to partial
-                mre->setAccuracy(false);
+                bool addressTaken = true;
+                int numDerefs = 1;
+                bool accuracy = false;
+                mre = new OA::Deref(addressTaken,accuracy,OA::MemRefExpr::USE,
+                                    mre, numDerefs);
                 mMemref2mreSetMap[memref].insert(mre);
             }
         }
@@ -3260,3 +3163,158 @@ void SageIRInterface::createUseDefForVarArg(OA::MemRefHandle memref,
         */
     }
 }
+/**  
+ *   \brief  Return an MRE for the SgConstructorInitializer's implicit this.
+ *   \param  ctorInitializer  A SgConstructorInitializer representing
+ *                            the invocation of a constructor.
+ *   \returns An expression used to represent the this (implicit or
+ *            explicit) of a constructor invocation.
+ *
+ *   In the following examples, we return an MRE with addressOf set for the lhs:
+ *       Foo f;
+ *       Foo lhs(f);   // copy constructor.
+ *       Foo lhs;      // default constructor.
+ *       Foo lhs(1);   // some other constructor;
+ *       Foo *lhs = new Foo;
+ *
+ *   In the following examples, the object constructed is
+ *   anonymous, so we return that anonymous expression (or UnnamedRef)-- 
+ *   in these examples, new Foo.
+ *       return (new Foo);
+ *       bar(new Foo);
+ *       (new Foo)->methodCall();
+ *
+ *   For cases involving the invocation of a baseclass constructor:
+ * 
+ *       class Foo : public Bar { Foo(Foo &f) : Bar(f) { } };
+ *
+ *   we return a NamedRef to the "this" formal of Foo.
+ *
+ *   For cases involving the construction of a member variable:
+ * 
+ *       class Foo  { Foo(Bar &f) : mBar(f) { } Bar mBar; };
+ *
+ *   we return &(Foo::this->mBar).
+ *
+ */
+OA::OA_ptr<OA::MemRefExpr> 
+SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializer *ctorInitializer)
+{
+    ROSE_ASSERT( ctorInitializer != NULL );
+    OA::OA_ptr<OA::MemRefExpr> mre;
+  
+    // Recurse up the parents of ctorInitializer.  Return the lhs
+    // of an assignment or the SgInitializedName of a
+    // SgAssignInitializer.  These handle a new expression.
+    // If the parent of the constructor initializer is a 
+    // SgInitializedName, the figure out whether we have a base
+    // class invocation, a member variable initialization, or a stack
+    // declaration.
+    // Stop the recursion and return
+    // NULL if we reach a SgStatement without first finding
+    // any of these cases.
+
+    SgNode *parent = ctorInitializer->get_parent();
+
+    SgInitializedName *initName = isSgInitializedName(parent);
+    if ( initName != NULL ) {
+      // If the parent is a SgInitializedName whose name is the
+      // same as the constructor being invoked, then that SgInitializedName
+      // is not a variable, but a base class.
+      if ( isBaseClassInvocation(ctorInitializer) ) {
+          bool addressTaken = false;
+          bool accuracy = true;
+          OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+          // get the symbol for the implicit formal this.
+          OA::SymHandle symHandle = getThisFormalSymHandle(initName);
+          mre = new OA::NamedRef(addressTaken, 
+                                  accuracy,
+                                  mrType,
+                                  symHandle);
+
+      // this is the case where a constructor is being called
+      // to construct a member variable
+      } else if (isSgCtorInitializerList(initName->get_parent()))  {
+          // FIXME: very similiar to some code in the SgInitialiazedName
+          // case of findMemRefExprsAndPtrAssigns
+          //======= create a USE FieldAccess with its address taken
+          bool addressTaken = false;
+          bool accuracy = true;
+          OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+          // get the symbol for the implicit formal this.
+          OA::SymHandle symHandle = getThisFormalSymHandle(initName);
+          mre = new OA::NamedRef(addressTaken, accuracy, mrType, symHandle);
+          // Deref the MRE.
+          OA::OA_ptr<OA::Deref> deref_mre;
+          int numDerefs = 1;
+          deref_mre = new OA::Deref(addressTaken, accuracy, OA::MemRefExpr::USE,
+                                    mre, numDerefs);
+          // Create the FieldAccess MRE.
+          addressTaken = true;
+          std::string field_name = toStringWithoutScope(initName);
+          mre = new OA::FieldAccess(addressTaken, accuracy,
+                                            OA::MemRefExpr::USE,
+                                            deref_mre,
+                                            field_name);
+
+      // this is the case where a stack variable is being constructed
+      } else if (isSgVariableDeclaration(initName->get_parent()))  {
+          // need the address of the stack variable being initialized
+          bool addressTaken = true;
+          bool accuracy = true;
+          OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+          OA::SymHandle sym = getNodeNumber(initName);
+          mre = new OA::NamedRef(addressTaken, accuracy, mrType, sym);
+
+      } else {
+          ROSE_ASSERT(0); // should not get here
+      }
+
+      return mre;
+    }
+  
+    // At this point we know that the immediate parent is not
+    // a SgInitializedName, because we took care of that case
+    // above and then returned.
+    // Now we keep moving up the tree.
+    SgNode *lhs; 
+    while ( ( parent != NULL ) && ( !isSgGlobal(parent) ) ) {
+    
+        if ( isSgStatement(parent) ) break;
+
+        // this is the case where we have, Foo* f = new Foo();
+        if ( isSgInitializedName(parent) ) {
+            lhs = parent;
+            break;
+            
+        // this is the case where we have, Foo* f; f = new Foo();
+        } else {
+            SgAssignOp *assignOp = isSgAssignOp(parent);
+            if ( assignOp ) {
+                lhs = assignOp->get_lhs_operand();
+                break;
+            }
+        }
+        parent = parent->get_parent();
+    }
+
+    if ( mre.ptrEqual(NULL) ) {
+        // We were unable to find a lhs.  Hopefully this is
+        // one of the anonymous memory object cases named above.
+        // In that case, our parent had better be a SgNewExp.
+        lhs = isSgNewExp(ctorInitializer->get_parent());
+    }
+    ROSE_ASSERT(lhs != NULL);
+
+    OA::MemRefHandle memref = findTopMemRefHandle(lhs);
+    OA::OA_ptr<OA::MemRefExprIterator> mIter 
+        = getMemRefExprIterator(memref);
+    ROSE_ASSERT(mIter->isValid());
+    mre = mIter->current();
+    mre = mre->clone();
+    mre->setMemRefType(OA::MemRefExpr::USE);
+
+    return mre;
+}
+
+

@@ -513,7 +513,9 @@ lookupDestructorInClass(SgClassDefinition *classDefinition)
     return NULL;
 }
 
-/**  \brief  Return the lhs of a constructor initializer.
+
+/**  DEPRECATED MMS 9/7/06
+ *   \brief  Return the lhs of a constructor initializer.
  *   \param  ctorInitializer  A SgConstructorInitializer representing
  *                            the invocation of a constructor.
  *   \returns An expression used to represent the this (implicit or
@@ -692,15 +694,14 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
             // method is invoked into the argument list as the first argument.
             // This may seem a little strange since we may not consider
             // a constructor to be invoked on an object.
-            SgNode *lhs = getConstructorInitializerLhs(ctorInitializer);
-            ROSE_ASSERT(lhs != NULL);
-  
-            actuals.push_back(lhs);
+            // The implicit "this" actual is stored at the SgExprListExp node
+            SgExprListExp* exprListExp = ctorInitializer->get_args();
+            ROSE_ASSERT (exprListExp != NULL);  
+
+            actuals.push_back(exprListExp);
 
             // Now, get the non-implicit receiver actuals and
             // push them on the result list.
-            SgExprListExp* exprListExp = ctorInitializer->get_args();
-            ROSE_ASSERT (exprListExp != NULL);  
 
             SgExpressionPtrList & actualArgs =  
                 exprListExp->get_expressions();  
@@ -1394,3 +1395,5 @@ isNonStaticMethod(SgMemberFunctionDeclaration *memberFunctionDecl)
     ROSE_ASSERT(memberFunctionDecl != NULL);
     return ( !memberFunctionDecl->get_declarationModifier().get_storageModifier().isStatic() );
 }
+
+

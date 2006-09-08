@@ -2434,3 +2434,17 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 
         - Just got regresAliasIRInterface.test synced up.  
           Revision r193 had some diffs in the regression tests.
+
+9/8/06     UseOA-Rose svn branch-memRefExprRefactor r200  Michelle Strout
+    - Fixed MRE creation at pointer arithmetic node: SgAddOp.
+      If have a pointer then need to take the address of a
+      partial deref to the pointer.
+    - Yanked logic for creating the implicit actual this for constructors
+      out of getActuals and put it in the SgConstructorInitializer
+      node in findMemRefsAndPtrAssigns code.  Now the implicit actual this
+      is created there and put at SgExprListExp for SgConstructorInitializer.
+      All further code assumes that.  We should do the same for
+      method calls, but that has not been done yet.
+    - Worked through most of the tests in AliasIRInterface.test, but
+      there are still some where the results need reverified.
+

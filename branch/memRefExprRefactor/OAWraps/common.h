@@ -78,4 +78,5 @@ getInvokedMethod(SgMemberFunctionRefExp *memberFunctionRefExp);
 bool
 isNonStaticMethod(SgMemberFunctionDeclaration *memberFunctionDecl);
 
+
 #endif /* _USEOA_COMMON_H */

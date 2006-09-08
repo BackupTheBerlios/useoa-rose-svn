@@ -2163,6 +2163,8 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
     } else if ( assignInitializer || aggregateInitializer ) {
       // These may be used to model the implicit this at a call site.
       strdump = "assign_or_agg_initializer:" + expression->unparseToString();
+    } else if ( isSgExprListExp(expression) ) {
+      strdump = "implicit actual this:" + expression->unparseToString();
     } else {
       strdump = expression->unparseToString();
     }
@@ -3614,6 +3616,21 @@ SageIRInterface::getCallsiteParams(OA::CallHandle h)
     OA::OA_ptr<OA::IRCallsiteParamIterator> retIter;
     retIter = new SageIRCallsiteParamIterator(exprHandleList);
     return retIter;
+}
+
+/*! \brief returns a SymHandle for the implicit "this" formal in the method
+ *         that the given node resides in
+ */
+OA::SymHandle 
+SageIRInterface::getThisFormalSymHandle(SgNode *astNode) 
+{
+    SgFunctionDefinition *enclosingFunction =
+        getEnclosingFunction(astNode);
+    ROSE_ASSERT(enclosingFunction != NULL);
+    SgFunctionDeclaration *functionDeclaration =
+        enclosingFunction->get_declaration();
+    OA::SymHandle symHandle = getThisExpSymHandle(functionDeclaration);
+    return symHandle;
 }
 
 /** \brief  Return a SymHandle representing a 'this' expression.

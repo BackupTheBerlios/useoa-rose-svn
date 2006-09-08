@@ -832,6 +832,16 @@ public:
   void createUseDefForVarArg(OA::MemRefHandle memref,
                              OA::MemRefHandle valist_memref);
 
+  OA::OA_ptr<OA::MemRefExpr> 
+  createConstructorInitializerReceiverMRE( SgConstructorInitializer *ctorInitializer);
+
+  OA::SymHandle getThisFormalSymHandle(SgNode *astNode);
+
+  //! Given a SgNode return a symbol handle to represent the
+  //! corresponding SgThisExp.  This symbol handle references
+  //! a SgFunctionParameterList.
+  OA::SymHandle getThisExpSymHandle(SgNode *node);
+
   // assumption is that StmtHandles and MemRefHandles are unique across
   // different program and procedure contexts for which analysis is being
   // currently performed
@@ -884,11 +894,6 @@ public:
 
   //! Look through typedefs to return a type.
   SgType *getBaseType(SgType *type);
-
-  //! Given a SgNode return a symbol handle to represent the
-  //! corresponding SgThisExp.  This symbol handle references
-  //! a SgFunctionParameterList.
-  OA::SymHandle getThisExpSymHandle(SgNode *node);
 
   // Strip off any leading SgCastExps/SgAssignInitializers in 
   // the tree root at node.

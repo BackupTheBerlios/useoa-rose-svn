@@ -15,8 +15,8 @@ PROCEDURE = { < ProcHandle("Bar::Bar"), SymHandle("method:Bar::Bar__Bar__scope__
         [
         ] }
     LOCATION = { < SymHandle("b"), local > }
-    LOCATION = { < SymHandle("this::Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb___Rb__Bar__Re___Fe_"), local > }
     LOCATION = { < SymHandle("method:Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb___Rb__Bar__Re___Fe_"), not local > }
+    LOCATION = { < SymHandle("this::Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb___Rb__Bar__Re___Fe_"), local > }
 
 PROCEDURE = { < ProcHandle("Bar::Bar"), SymHandle("method:Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb__Fe_") > }
     FORMALS = {
@@ -32,8 +32,8 @@ PROCEDURE = { < ProcHandle("Bar::Bar"), SymHandle("method:Bar::Bar__Bar__scope__
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("this::Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb__Fe_"), local > }
     LOCATION = { < SymHandle("method:Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb__Fe_"), not local > }
+    LOCATION = { < SymHandle("this::Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb__Fe_"), local > }
 
 PROCEDURE = { < ProcHandle("Bar::~Bar"), SymHandle("method:Bar::~Bar__Bar__scope____dtBar____MFb_Bar__Fb_v_Gb__Fe_") > }
     FORMALS = {
@@ -49,8 +49,8 @@ PROCEDURE = { < ProcHandle("Bar::~Bar"), SymHandle("method:Bar::~Bar__Bar__scope
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("this::Bar::~Bar__Bar__scope____dtBar____MFb_Bar__Fb_v_Gb__Fe_"), local > }
     LOCATION = { < SymHandle("method:Bar::~Bar__Bar__scope____dtBar____MFb_Bar__Fb_v_Gb__Fe_"), not local > }
+    LOCATION = { < SymHandle("this::Bar::~Bar__Bar__scope____dtBar____MFb_Bar__Fb_v_Gb__Fe_"), local > }
 
 PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Bar__Re___Fe_") > }
     FORMALS = {
@@ -79,8 +79,8 @@ PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__
         [
         ] }
     LOCATION = { < SymHandle("b"), local > }
-    LOCATION = { < SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Bar__Re___Fe_"), local > }
     LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Bar__Re___Fe_"), not local > }
+    LOCATION = { < SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Bar__Re___Fe_"), local > }
 
 PROCEDURE = { < ProcHandle("Foo::~Foo"), SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_") > }
     FORMALS = {
@@ -96,8 +96,8 @@ PROCEDURE = { < ProcHandle("Foo::~Foo"), SymHandle("method:Foo::~Foo__Foo__scope
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("this::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), local > }
     LOCATION = { < SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
+    LOCATION = { < SymHandle("this::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){return 0;}") =>

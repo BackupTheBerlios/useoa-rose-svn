@@ -1,8 +1,38 @@
-"TestCases/AliasTests/class.C", line 8: warning: variable "x" was declared but
-          never referenced
+"TestCases/AliasTests/class.C", line 13: warning: variable "x" was declared
+          but never referenced
           void foo() { int x; }
                            ^
 
+
+PROCEDURE = { < ProcHandle("A::A"), SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_") >
+            < 1, SymHandle("p") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+            MemRefHandle("mB&") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), F, full), 1, F, full), mB, F, full)
+            MemRefHandle("assign_or_agg_initializer:p") => 
+                NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), F, full)
+            MemRefHandle("p") => 
+                NamedRef( USE, SymHandle("p"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("") =>
+        [
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), F, full), 1, F, full), mB, F, full)
+            , NamedRef( USE, SymHandle("p"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline A(class B &p) : mB(p){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("p"), local > }
+    LOCATION = { < SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), not local > }
+    LOCATION = { < SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), local > }
 
 PROCEDURE = { < ProcHandle("A::foo"), SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_") > }
     FORMALS = {
@@ -25,14 +55,33 @@ PROCEDURE = { < ProcHandle("A::foo"), SymHandle("method:A::foo__A__scope__foo___
     LOCATION = { < SymHandle("this::A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
-    MEMREFEXPRS = { StmtHandle("int main(){class A a;a.foo();return A::sInt;}") =>
+    MEMREFEXPRS = { StmtHandle("int main(){class B b;class A a(b);a.foo();return A::sInt;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{class A a;a.foo();return A::sInt;}") =>
+    MEMREFEXPRS = { StmtHandle("{class B b;class A a(b);a.foo();return A::sInt;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("class A a;") =>
+    MEMREFEXPRS = { StmtHandle("class B b;") =>
         [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class A a(b);") =>
+        [
+            MemRefHandle("b") => 
+                NamedRef( USE, SymHandle("b"), T, full)
+            MemRefHandle("implicit actual this:b") => 
+                NamedRef( USE, SymHandle("a"), T, full)
+            MemRefHandle("A(b)") => 
+                NamedRef( USE, SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("class A a(b);") =>
+        [
+            CallHandle("a") => 
+                NamedRef( USE, SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("a") =>
+        [
+            < 0, NamedRef( USE, SymHandle("a"), T, full) >
+            < 1, NamedRef( USE, SymHandle("b"), T, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("a.foo();") =>
         [
@@ -56,6 +105,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("sInt"), F, full)
         ] }
     LOCATION = { < SymHandle("sInt"), not local > }
+    LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), not local > }
     LOCATION = { < SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), not local > }
     LOCATION = { < SymHandle("main"), not local > }

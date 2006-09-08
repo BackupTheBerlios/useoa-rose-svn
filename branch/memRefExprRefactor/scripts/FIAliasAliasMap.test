@@ -13,10 +13,10 @@ test::  alias3.c,               checked by AIS 6/23/06 (rechecked MMS 9/5/06)
 test::  alias4.c,               checked by AIS 6/23/06 (rechecked MMS 9/5/06)
 test::  alias4b.c,              checked by AIS 6/23/06 (rechecked MMS 9/5/06)
 test::  comma.c,                checked by AIS 6/23/06 (rechecked MMS 9/5/06)
-test::  constQualified.c,       not working MMS 9/5/06
+test::  constQualified.c,       checked MMS 9/6/06
 test::  utke.c,                 checked by AIS 6/23/06 (rechecked MMS 9/5/06)
 test::  OAWikiEx.c,             checked by AIS 6/23/06 (rechecked MMS 9/5/06)
-#test::  funCall.c,              checked by ???
+test::  funCall.c,              checked by MMS 9/6/06
 test::  functionPtr.c,          checked by AIS 6/27/06 (rechecked MMS 9/5/06)
 test::  functionPtr2.c,         checked by MMS 7/24/06 (rechecked MMS 9/5/06)
 test::  passIntPtrArrayRef.c,   checked by MMS 7/24/06 (rechecked MMS 9/5/06)

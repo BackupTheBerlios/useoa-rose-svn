@@ -3,7 +3,7 @@ Using per-method virtual table model
 InterAliasMap(
     AliasMap(
         mProcHandle: ProcHandle(main)
-        mNumSets: 11
+        mNumSets: 9
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -59,17 +59,6 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 8	 => [ 
-                    LocSubSet(
-                        mLoc: 
-                        NamedLoc(
-                            mSymHandle: SymHandle(const_array)
-                            mLocal: 0
-                            mFullOverlap: [  ] 
-                            mPartOverlap: [  ] 
-                        )
-                        mFull: 0
-                    ) ] 
-                9	 => [ 
                     InvisibleLoc(
                         mMRE: 
                         Deref(
@@ -80,23 +69,6 @@ InterAliasMap(
                             NamedRef(
                                 mAddressOf: 0
                                 mFullAccuracy: 1
-                                mMemRefType: USE
-                                mSymHandle: SymHandle(const_array)
-                            )
-                            mNumDeref: 1
-                        )
-                    ) ] 
-                10	 => [ 
-                    InvisibleLoc(
-                        mMRE: 
-                        Deref(
-                            mAddressOf: 0
-                            mFullAccuracy: 0
-                            mMemRefType: USE
-                            mMRE: 
-                            NamedRef(
-                                mAddressOf: 0
-                                mFullAccuracy: 0
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(const_array)
                             )
@@ -114,8 +86,6 @@ InterAliasMap(
                 6	 => 2
                 7	 => 2
                 8	 => 1
-                9	 => 1
-                10	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(const_array)    MemRefHandle(const_array) ] 
@@ -125,9 +95,7 @@ InterAliasMap(
                 5	 => [ MemRefHandle(y)    MemRefHandle(y)    MemRefHandle(y = *q) ] 
                 6	 => [ MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q) ] 
                 7	 => [ MemRefHandle(g) ] 
-                8	 => [ MemRefHandle((const_array + i)) ] 
-                9	 => [ MemRefHandle(const_array[i]) ] 
-                10	 => [ MemRefHandle(*q)    MemRefHandle(*q) ] 
+                8	 => [ MemRefHandle(*q)    MemRefHandle(*q)    MemRefHandle(const_array[i]) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
@@ -193,27 +161,6 @@ InterAliasMap(
                         mSymHandle: SymHandle(g)
                     ) ] 
                 8	 => [ 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 0
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(const_array)
-                    ) ] 
-                9	 => [ 
-                    Deref(
-                        mAddressOf: 0
-                        mFullAccuracy: 0
-                        mMemRefType: USE
-                        mMRE: 
-                        NamedRef(
-                            mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
-                            mSymHandle: SymHandle(const_array)
-                        )
-                        mNumDeref: 1
-                    ) ] 
-                10	 => [ 
                     Deref(
                         mAddressOf: 0
                         mFullAccuracy: 1
@@ -234,7 +181,7 @@ InterAliasMap(
                         mMRE: 
                         NamedRef(
                             mAddressOf: 0
-                            mFullAccuracy: 0
+                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(const_array)
                         )
