@@ -2308,10 +2308,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgValueExp *valueExp = isSgValueExp(astNode);
             ROSE_ASSERT(valueExp!=NULL);
             
+            ROSE_ABORT();
+            // Something has changed in ROSE-0.8.9a.  I will
+            // have to figure out what later.
+#if 0
             SgExpression* expr = valueExp->get_valueExpressionTree();
             if (expr!=NULL) {
                 findAllMemRefsAndPtrAssigns(expr, stmt);
             }
+#endif
             break;
         }
     default:

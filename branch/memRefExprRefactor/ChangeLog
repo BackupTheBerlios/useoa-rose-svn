@@ -2432,8 +2432,34 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 
 9/7/06     UseOA-Rose svn branch-memRefExprRefactor r198  Brian White	
 
-        - Just got regresAliasIRInterface.test synced up.  
+        - Just got regressAliasIRInterface.test synced up.  
           Revision r193 had some diffs in the regression tests.
+
+9/7/06     UseOA-Rose svn branch-memRefExprRefactor r199  Brian White
+
+        - Created the following tests in TestCases/AliasTests.
+          These are designed to test implicit assignments arising
+          from virtual method declarations.  They have not
+          been tested and have not been added to regressAliasIRInterface.test.
+
+            - dynamicInitOfClassWhoseBaseClassHasVirtualMethods.C
+            - assignOfObjPtrWhoseBaseClassHasVirtualMethods.C
+            - stackInitOfClassThatOverloadsBaseClassPureVirtualMethods.C
+            - virtualDotBaseMethodInvocation.C
+            - virtualDotOverloadedBaseMethodInvocation.C
+            - stackInitOfClassWithVirtualMethods.C
+            - assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C
+            - assignOfObjectPtrWithVirtualMethods.C
+            - virtualArrowMethodInvocation.C
+            - dynamicInitOfClassThatOverloadsBaseClassVirtualMethods.C
+            - assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C
+            - dynamicInitOfClassWithVirtualMethods.C
+            - stackInitOfClassThatOverloadsBaseClassVirtualMethods.C
+            - stackInitOfClassWhoseBaseClassHasVirtualMethods.C
+            - virtualArrowBaseMethodInvocation.C
+            - virtualDotMethodInvocation.C
+            - dynamicInitOfClassThatOverloadsBaseClassPureVirtualMethods.C
+            - virtualArrowOverloadedBaseMethodInvocation.C
 
 9/8/06     UseOA-Rose svn branch-memRefExprRefactor r200  Michelle Strout
     - Fixed MRE creation at pointer arithmetic node: SgAddOp.
@@ -2448,3 +2474,53 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - Worked through most of the tests in AliasIRInterface.test, but
       there are still some where the results need reverified.
 
+9/8/06     UseOA-Rose svn branch-memRefExprRefactor r201  Brian White
+
+        - Created the following tests in TestCases/AliasTests.
+          These are designed to test Peter Collingbourne's
+          (along with Chunhua Liao) AST normalization in ROSE,
+          checked into version ROSE-0.8.9a.  Much thanks to 
+          Peter for helping me with baroque C++ syntax.
+
+            - varInIfConditionalGoingOutOfScope.C
+            - varInForInitializerGoingOutOfScope.C
+            - inheritanceExample.C
+            - implicitInvocationOfBaseSpecialMethods.C
+            - varGoingOutOfScope.C
+            - tmpGoingOutOfScope.C
+            - inputDefaultFunctions.C
+            - destructingAroundControlFlow.C
+            - invokeUndefinedSpecialMethods.C
+            - multipleInheritance.C
+            - undefinedSpecialMethods.C
+            - implicitInvocationOfUndefinedBaseSpecialMethods.C
+            - varInForIncrGoingOutOfScope.C
+            - varInReturnGoingOutOfScope.C
+            - varInLoopConditionalGoingOutOfScope.C
+            - inputCode_implicitCodeGenerationTest.C
+
+9/8/06     UseOA-Rose svn branch-memRefExprRefactor r202  Brian White	
+
+        - This version requires ROSE-0.8.9a!
+
+        - I have added the invocation of the AST normalization to OATest.
+          This could potentially be placed in the SageIRInterface
+          constructor.  It seems to me that this should eventually
+          be migrated to the ROSE frontend.
+
+          I have not tested this, only compiled it.  If it gives you
+          trouble, or if you are using an earlier version of ROSE,
+          comment out the following from OATest.
+
+          #include <defaultFunctionGenerator.h>
+          #include <shortCircuitingTransformation.h>
+          #include <destructorCallAnnotator.h>
+
+          // Perform the AST normalization.
+          DefaultFunctionGenerator dfg;
+          dfg.traverse(sageProject, preorder);
+          AstPostProcessing(sageProject);
+          shortCircuitingTransformation(sageProject);
+          destructorCallAnnotator(sageProject);
+	
+        - Two minor changes to make this compile with ROSE-0.8.9a.
