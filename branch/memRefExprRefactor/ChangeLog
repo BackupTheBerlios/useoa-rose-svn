@@ -2524,3 +2524,19 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
           destructorCallAnnotator(sageProject);
 	
         - Two minor changes to make this compile with ROSE-0.8.9a.
+
+9/8/06     UseOA-Rose svn branch-memRefExprRefactor r203  Brian White	
+
+        - Fixed an assertion failure I created in r202.
+          By default, this version uses ROSE-0.8.9a.  If you
+          would like to use an earlier version, comment out
+          the following in MemSage2OA.C.
+
+          #define ROSE_0_8_9a      
+
+        - I have removed the AST normalization above from OATest.
+          I originally intended to put it in CtoOA, which we are all
+          currently using.  For now, I have removed it altogether--
+          it seems that we should get the regression tests working
+          with the new version of ROSE before adding one more
+          factor.

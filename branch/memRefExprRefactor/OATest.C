@@ -58,10 +58,6 @@
 using namespace std;
 #include <CommandOptions.h>
 
-#include <defaultFunctionGenerator.h>
-#include <shortCircuitingTransformation.h>
-#include <destructorCallAnnotator.h>
-
 // put in to help with g++ compiler bug
 /*
 #include <new>
@@ -190,13 +186,6 @@ main ( unsigned argc,  char * argv[] )
   {
     SgProject * sageProject =frontend( (int)(argc-1),&argv[1]);
     int filenum = sageProject->numberOfFiles();
-
-    // Perform the AST normalization.
-    DefaultFunctionGenerator dfg;
-    dfg.traverse(sageProject, preorder);
-    AstPostProcessing(sageProject);
-    shortCircuitingTransformation(sageProject);
-    destructorCallAnnotator(sageProject);
 
     // debug info
     //AstPDFGeneration pdftest;
