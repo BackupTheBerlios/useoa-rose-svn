@@ -1396,4 +1396,15 @@ isNonStaticMethod(SgMemberFunctionDeclaration *memberFunctionDecl)
     return ( !memberFunctionDecl->get_declarationModifier().get_storageModifier().isStatic() );
 }
 
-
+/** \brief  Return boolean indicating whether the invoked function is
+ *          va_start.
+ */
+bool
+isVaStart(SgFunctionCallExp *functionCallExp)
+{
+    ROSE_ASSERT(functionCallExp != NULL);
+    // careful, va_start seems to be showing up as __builtin_va_start
+    // in ROSE 0.8.9a.
+    return ( isFunc(functionCallExp, "va_start") ||
+             isFunc(functionCallExp, "__builtin_va_start") );
+}

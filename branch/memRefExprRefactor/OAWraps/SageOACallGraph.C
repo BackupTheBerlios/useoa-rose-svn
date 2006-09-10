@@ -164,9 +164,7 @@ void FindCallsitesPass::visit(SgNode* node)
   // Both can be captured by looking at SgConstructorInitializers instead.
 
   if( isSgFunctionCallExp(exp) ) {
-      // FIXME: this logic is also in MemSage2OA.C.  We should encapsulate
-      // it somehow.
-      if (!isFunc(isSgFunctionCallExp(exp),"va_start")) {
+      if (!isVaStart(isSgFunctionCallExp(exp))) {
         call_lst.push_back(exp);
       }
 

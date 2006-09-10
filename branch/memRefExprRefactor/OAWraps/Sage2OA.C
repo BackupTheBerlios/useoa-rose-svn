@@ -2127,6 +2127,42 @@ std::string SageIRInterface::toString(const OA::ProcHandle h)
   return ret;
 }
 
+std::string getFileNameByTraversalBackToFileNode ( SgNode* astNode )
+   {
+     string returnString;
+
+     ROSE_ASSERT (astNode != NULL);
+
+     std::cout << "Trying to find file name of node type: " << astNode->sage_class_name() << std::endl;
+
+  // Make sure this is not a project node (since the SgFile exists below 
+  // the project and could not be found by a traversal of the parent list)
+     if (isSgProject(astNode) == NULL)
+        {
+          SgNode* parent = astNode;
+          while ( (parent != NULL) && (isSgFile(parent) == NULL) )
+             {
+            // printf ("In getFileNameByTraversalBackToFileNode(): parent = %s \n",parent->sage_class_name());
+               parent = parent->get_parent();
+               if ( parent != NULL ) {
+		 std::cout << "parent node type is: " << parent->sage_class_name() << std::endl;
+               }
+             }
+
+          ROSE_ASSERT (parent != NULL);
+          SgFile* file = isSgFile(parent);
+          ROSE_ASSERT (file != NULL);
+          if (file != NULL)
+             {
+               returnString = ROSE::getFileName(file);
+             }
+
+          ROSE_ASSERT (returnString.length() > 0);
+        }
+
+     return returnString;
+   }
+
 std::string SageIRInterface::toString(const OA::MemRefHandle h)
 {
   std::string strdump;
@@ -2165,10 +2201,28 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
       strdump = "assign_or_agg_initializer:" + expression->unparseToString();
     } else if ( isSgExprListExp(expression) ) {
       strdump = "implicit actual this:" + expression->unparseToString();
+    } else if ( 0 && isSgVarRefExp(expression) ) {
+        
+      SgVarRefExp *varRefExp = isSgVarRefExp(expression);
+      ROSE_ASSERT(varRefExp != NULL);
+
+      getFileNameByTraversalBackToFileNode(varRefExp);
+
+
+      SgVariableSymbol *symbol = varRefExp->get_symbol(); 
+      ROSE_ASSERT(symbol != NULL); 
+
+      initializedName = symbol->get_declaration(); 
+      ROSE_ASSERT(initializedName != NULL); 
+      strdump = varRefExp->unparseToString();
+      // "fallthrough":  create the string below.
+
     } else {
       strdump = expression->unparseToString();
     }
-  } else if ( initializedName != NULL ) {
+  }
+
+  if ( initializedName != NULL ) {
     
     SgType *type = initializedName->get_type();
     ROSE_ASSERT(type != NULL);
@@ -2189,7 +2243,9 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
     } else {
       strdump = initializedName->get_name().getString();
     }
-  } else {
+  } 
+
+  if ( ( expression == NULL ) && ( initializedName == NULL ) ) {
     ROSE_ABORT();
   }
 

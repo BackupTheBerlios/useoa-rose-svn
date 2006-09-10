@@ -5,10 +5,10 @@ PROCEDURE = { < ProcHandle("ellipsis_intptrs"), SymHandle("ellipsis_intptrs") > 
             < 0, SymHandle("i") >
             < 1, SymHandle("") >
         ] }
-    MEMREFEXPRS = { StmtHandle("void ellipsis_intptrs(int i,... ){int *j;va_list ap;va_start(ap,((const void *)i));j =(va_arg(ap,int *));va_end(ap);}") =>
+    MEMREFEXPRS = { StmtHandle("void ellipsis_intptrs(int i,... ){int *j;va_list ap;__builtin_va_start(ap,((const void *)i));j =(va_arg(ap,int *));va_end(ap);}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{int *j;va_list ap;va_start(ap,((const void *)i));j =(va_arg(ap,int *));va_end(ap);}") =>
+    MEMREFEXPRS = { StmtHandle("{int *j;va_list ap;__builtin_va_start(ap,((const void *)i));j =(va_arg(ap,int *));va_end(ap);}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int *j;") =>
@@ -17,9 +17,9 @@ PROCEDURE = { < ProcHandle("ellipsis_intptrs"), SymHandle("ellipsis_intptrs") > 
     MEMREFEXPRS = { StmtHandle("va_list ap;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("va_start(ap,((const void *)i));") =>
+    MEMREFEXPRS = { StmtHandle("__builtin_va_start(ap,((const void *)i));") =>
         [
-            MemRefHandle("va_start(ap,((const void *)i))") => 
+            MemRefHandle("__builtin_va_start(ap,((const void *)i))") => 
                 Deref( USEDEF, NamedRef( USE, SymHandle("ap"), F, full), 1, F, part)
             MemRefHandle("ap") => 
                 NamedRef( USE, SymHandle("ap"), F, full)

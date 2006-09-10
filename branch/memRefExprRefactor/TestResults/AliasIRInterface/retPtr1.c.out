@@ -1,6 +1,3 @@
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
 PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
     FORMALS = {

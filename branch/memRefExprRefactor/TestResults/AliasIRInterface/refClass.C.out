@@ -11,12 +11,12 @@ PROCEDURE = { < ProcHandle("foo::foo"), SymHandle("method:foo::foo__foo__scope__
                 FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someRef, F, full)
             MemRefHandle("someOtherRef&") => 
                 FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someOtherRef, F, full)
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
             MemRefHandle("assign_or_agg_initializer:x") => 
                 NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full)
             MemRefHandle("assign_or_agg_initializer:((this) -> someRef)") => 
                 NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full)
-            MemRefHandle("x") => 
-                NamedRef( USE, SymHandle("x"), T, full)
             MemRefHandle("(this)") => 
                 NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full)
             MemRefHandle("((this) -> someRef)") => 

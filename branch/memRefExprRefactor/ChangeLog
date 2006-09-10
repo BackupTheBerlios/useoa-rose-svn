@@ -2560,3 +2560,36 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
           regression tests with absolute paths will not suffice
           because each developer would have a different absolute path.
           Re-created regression tests without warnings.
+
+        - This version works with ROSE 0.8.7a.
+	
+9/10/06     UseOA-Rose svn branch-memRefExprRefactor r205  Brian White	
+
+        - Switched to ROSE 0.8.9a.
+
+        - Adapted findTopMemRefHandle to cope with (constant) folded
+          expression, which show up in SgValueExp and SgCastExp.
+          In particular, a SgCastExp now has two children-- its
+          operand and the "original" expression tree, which is non-NULL
+          (presumably) if the operand holds a folded value.  
+          The presence of two children caused findTopMemRefHandle 
+          to return 0, since there is no top in the presence of
+          multiple children.  However, though there are two apparent 
+          child here, there is only one actual child.  We should
+          always visit the operand-- be the original, unfolded
+          expression or the folded expression.
+
+        - Fixed recognition of va_start to look for "__builtin_va_start"
+          as well as "va_start".  Evidently, the former is being
+          used in ROSE-0.8.9a.
+
+        - All AliasIRInterface regression tests pass, except refClass2.
+          However, to avoid an abort in parambinds-formals-intPtrs.C, you
+          will need to patch ROSE-0.8.9a according to this e-mail:
+          [I believe this problem actually arose in ROSE-0.8.8a]
+
+          Date: Sun, 10 Sep 2006 15:11:13 -0400 (EDT)
+          From: Brian White <bwhite@csl.cornell.edu>
+          To: michelle strout <mstrout@CS.ColoState.EDU>, andy stone <aistone@gmail.com>
+          Subject: null parent in va_start/va_arg & bug fix [was Re: null
+                   (grand)parent bug in ROSE-0.8.8a]

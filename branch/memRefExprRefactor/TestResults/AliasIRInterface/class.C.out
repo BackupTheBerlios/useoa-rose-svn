@@ -9,10 +9,10 @@ PROCEDURE = { < ProcHandle("A::A"), SymHandle("method:A::A__A__scope__A____MFb_A
         [
             MemRefHandle("mB&") => 
                 FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), F, full), 1, F, full), mB, F, full)
-            MemRefHandle("assign_or_agg_initializer:p") => 
-                NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), F, full)
             MemRefHandle("p") => 
                 NamedRef( USE, SymHandle("p"), F, full)
+            MemRefHandle("assign_or_agg_initializer:p") => 
+                NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("") =>
         [

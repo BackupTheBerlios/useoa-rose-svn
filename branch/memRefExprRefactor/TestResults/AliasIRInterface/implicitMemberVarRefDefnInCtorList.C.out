@@ -62,10 +62,10 @@ PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__
         [
             MemRefHandle("mBar&") => 
                 FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Bar__Re___Fe_"), F, full), 1, F, full), mBar, F, full)
-            MemRefHandle("assign_or_agg_initializer:b") => 
-                NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Bar__Re___Fe_"), F, full)
             MemRefHandle("b") => 
                 NamedRef( USE, SymHandle("b"), F, full)
+            MemRefHandle("assign_or_agg_initializer:b") => 
+                NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Bar__Re___Fe_"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("") =>
         [

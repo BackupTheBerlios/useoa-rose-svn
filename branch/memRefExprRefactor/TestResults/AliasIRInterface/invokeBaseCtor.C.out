@@ -9,10 +9,10 @@ PROCEDURE = { < ProcHandle("SubClass::SubClass"), SymHandle("method:SubClass::Su
         [
             MemRefHandle("myParent&") => 
                 FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full), 1, F, full), myParent, F, full)
-            MemRefHandle("assign_or_agg_initializer:parSubClass") => 
-                NamedRef( USE, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full)
             MemRefHandle("parSubClass") => 
                 NamedRef( USE, SymHandle("parSubClass"), F, full)
+            MemRefHandle("assign_or_agg_initializer:parSubClass") => 
+                NamedRef( USE, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("") =>
         [

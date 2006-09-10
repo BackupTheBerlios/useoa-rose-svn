@@ -2,6 +2,8 @@
 #include "SageOACallGraph.h"
 #include "common.h"
 
+#define ROSE_0_8_9a      
+
 using namespace std;
 
 SageIRMemRefIterator::SageIRMemRefIterator(OA::StmtHandle h, 
@@ -690,7 +692,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
  
             // if the function is va_start then
             // hardcoding handling of varargs macros and functions
-            } else if (isFunc(funcCallExp, "va_start")) {
+            } else if ( isVaStart(funcCallExp) ) {
                 // not going to treat this guy like a normal function
                 isaCallHandle = false;
 
@@ -2314,7 +2316,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgValueExp *valueExp = isSgValueExp(astNode);
             ROSE_ASSERT(valueExp!=NULL);
       
-	    //#define ROSE_0_8_9a      
 #ifdef ROSE_0_8_9a
             SgExpression* expr = valueExp->get_originalExpressionTree();
 #else
@@ -2367,6 +2368,30 @@ OA::MemRefHandle SageIRInterface::findTopMemRefHandle(SgNode *astNode)
 
         // else if two or more children then return MemRefHandle(0) 
         } else {
+#ifdef ROSE_0_8_9a      
+            // One of these children may be a folded expression,
+            // while the other is the original expression
+            // (accessible via get_originalExpressionTree).
+            // This may occur for SgValueExp (e.g., where the sizeof
+            // operator is in the expression tree and has been folded)
+            // and for SgCastExp.  Handle these two cases
+            // explicitly.
+            if ( isSgValueExp(astNode) ) {
+                // SgValueExps should only have one child-- the
+                // original expression tree.  Therefore, we should not
+                // be here.
+                ROSE_ABORT();
+            } else if ( isSgCastExp(astNode) ) {
+                // If some analysis/optimization has determined that it
+                // was safe to fold an expression, then we should
+                // ignore the original expression and just look at the
+                // folded value.
+                SgCastExp *castExp = isSgCastExp(astNode);
+                ROSE_ASSERT(castExp != NULL);
+
+                return findTopMemRefHandle(castExp->get_operand());
+            }
+#endif
             return getMemRefHandle(0);
         }
     }
