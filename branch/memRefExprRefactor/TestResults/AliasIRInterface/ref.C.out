@@ -1,11 +1,3 @@
-"TestCases/AliasTests/ref.C", line 22: warning: expression has no effect
-    *ptr;
-    ^
-
-"TestCases/AliasTests/ref.C", line 23: warning: expression has no effect
-    *refPtr;                // read as **refPtr;
-    ^
-
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){int m;int *ptr = &m;int *&refPtr = ptr;*ptr;*refPtr;return 0;}") =>

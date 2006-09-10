@@ -44,6 +44,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("f") => 
                 NamedRef( DEF, SymHandle("f"), F, full)
+            MemRefHandle("implicit actual this:") => 
+                UnnamedRef( USE, StmtHandle("class Foo *f = ::new Foo ;"), T, part)
+            MemRefHandle("Foo") => 
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
             MemRefHandle("::new Foo") => 
                 UnnamedRef( USE, StmtHandle("class Foo *f = ::new Foo ;"), T, part)
         ] }
@@ -59,12 +63,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("::new Foo") =>
         [
-            < 0, NamedRef( DEF, SymHandle("f"), F, full) >
+            < 0, UnnamedRef( USE, StmtHandle("class Foo *f = ::new Foo ;"), T, part) >
         ] }
     MEMREFEXPRS = { StmtHandle("delete f;") =>
         [
             MemRefHandle("f") => 
                 NamedRef( USE, SymHandle("f"), F, full)
+            MemRefHandle("delete f") => 
+                NamedRef( USE, SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
         ] }
     CALLSITES = { StmtHandle("delete f;") =>
         [

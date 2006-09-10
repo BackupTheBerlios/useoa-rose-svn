@@ -1,13 +1,3 @@
-"TestCases/AliasTests/parambinds-formals-intPtrs.C", line 30: warning: 
-          variable "ap" is used before its value is set
-      va_start(ap,(const void *)i);
-      ^
-
-"TestCases/AliasTests/parambinds-formals-intPtrs.C", line 28: warning: 
-          variable "j" was set but never used
-      int* j;
-           ^
-
 
 PROCEDURE = { < ProcHandle("ellipsis_intptrs"), SymHandle("ellipsis_intptrs") > }
     FORMALS = {

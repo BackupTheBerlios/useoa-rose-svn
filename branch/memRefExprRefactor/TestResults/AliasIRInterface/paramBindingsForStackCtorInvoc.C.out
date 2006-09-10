@@ -1,8 +1,3 @@
-"TestCases/AliasTests/paramBindingsForStackCtorInvoc.C", line 13: warning: 
-          variable "y" is used before its value is set
-      Foo f(y);
-            ^
-
 
 PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_") > }
     FORMALS = {
@@ -35,10 +30,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("class Foo f(y);") =>
         [
-            MemRefHandle("f") => 
-                NamedRef( DEF, SymHandle("f"), T, full)
+            MemRefHandle("implicit actual this:y") => 
+                NamedRef( USE, SymHandle("f"), T, full)
             MemRefHandle("y") => 
                 NamedRef( USE, SymHandle("y"), F, full)
+            MemRefHandle("Foo(y)") => 
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
         ] }
     CALLSITES = { StmtHandle("class Foo f(y);") =>
         [
@@ -47,7 +44,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("f") =>
         [
-            < 0, NamedRef( DEF, SymHandle("f"), T, full) >
+            < 0, NamedRef( USE, SymHandle("f"), T, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

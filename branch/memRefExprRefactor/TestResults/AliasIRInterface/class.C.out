@@ -1,8 +1,3 @@
-"TestCases/AliasTests/class.C", line 13: warning: variable "x" was declared
-          but never referenced
-          void foo() { int x; }
-                           ^
-
 
 PROCEDURE = { < ProcHandle("A::A"), SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_") > }
     FORMALS = {
@@ -31,8 +26,8 @@ PROCEDURE = { < ProcHandle("A::A"), SymHandle("method:A::A__A__scope__A____MFb_A
         [
         ] }
     LOCATION = { < SymHandle("p"), local > }
-    LOCATION = { < SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), not local > }
     LOCATION = { < SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("A::foo"), SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_") > }
     FORMALS = {
@@ -51,8 +46,8 @@ PROCEDURE = { < ProcHandle("A::foo"), SymHandle("method:A::foo__A__scope__foo___
     MEMREFEXPRS = { StmtHandle("int x;") =>
         [
         ] }
-    LOCATION = { < SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), not local > }
     LOCATION = { < SymHandle("this::A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), local > }
+    LOCATION = { < SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){class B b;class A a(b);a.foo();return A::sInt;}") =>
@@ -107,6 +102,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     LOCATION = { < SymHandle("sInt"), not local > }
     LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), not local > }
     LOCATION = { < SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), not local > }
-    LOCATION = { < SymHandle("main"), not local > }

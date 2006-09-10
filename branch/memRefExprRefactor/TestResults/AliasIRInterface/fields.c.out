@@ -1,8 +1,3 @@
-"TestCases/AliasTests/fields.c", line 5: warning: return type of function
-          "main" must be "int"
-  void main() {
-       ^
-
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("void main(){int n;struct test {int a;int b;int *p;}*x;struct test y;struct test **z;x = &y;z = &x;( *( *z)).p = &n;x -> p =(y.p);x -> p = &n;}") =>

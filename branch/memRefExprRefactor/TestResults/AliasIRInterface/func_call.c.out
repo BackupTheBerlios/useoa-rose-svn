@@ -1,8 +1,3 @@
-"TestCases/AliasTests/func_call.c", line 23: warning: variable "p" was set but
-          never used
-    int *p;
-         ^
-
 
 PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
     MEMREFEXPRS = { StmtHandle("int bar(){int x = 0;int *p;*hello() = x;fp = bar;( *fp)();bar();fp2 = hello;p =( *fp2)();p =((int *)(malloc(((sizeof(int ))))));return x;}") =>

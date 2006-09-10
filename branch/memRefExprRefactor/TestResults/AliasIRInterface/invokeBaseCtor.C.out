@@ -26,8 +26,8 @@ PROCEDURE = { < ProcHandle("SubClass::SubClass"), SymHandle("method:SubClass::Su
         [
         ] }
     LOCATION = { < SymHandle("parSubClass"), local > }
-    LOCATION = { < SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), not local > }
     LOCATION = { < SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_") > }
     FORMALS = {
@@ -45,8 +45,8 @@ PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__
         [
         ] }
     LOCATION = { < SymHandle("f"), local > }
-    LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), not local > }
     LOCATION = { < SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("SubSubClass::SubSubClass"), SymHandle("method:SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_") > }
     FORMALS = {
@@ -97,10 +97,10 @@ PROCEDURE = { < ProcHandle("SubSubClass::SubSubClass"), SymHandle("method:SubSub
     LOCATION = { < SymHandle("par"), local > }
     LOCATION = { < SymHandle("aint"), local > }
     LOCATION = { < SymHandle("f"), local > }
+    LOCATION = { < SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), local > }
     LOCATION = { < SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), not local > }
     LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), not local > }
     LOCATION = { < SymHandle("method:SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), not local > }
-    LOCATION = { < SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){return 0;}") =>

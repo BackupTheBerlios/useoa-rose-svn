@@ -948,6 +948,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::CallHandle call = getCallHandle(astNode);
             mCallToMRE[call] = method;
 
+            // We consider function/method invocations to be 
+            // uses, so add the call as a general MRE.
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            mStmt2allMemRefsMap[stmt].insert(memref);
+            mMemref2mreSetMap[memref].insert(method);
+
             // Create parameter binding params arising from
             // the receiver used to invoke the destructor.
             createParamBindPtrAssignPairs(deleteExp);
@@ -2308,7 +2314,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgValueExp *valueExp = isSgValueExp(astNode);
             ROSE_ASSERT(valueExp!=NULL);
       
-#define ROSE_0_8_9a      
+	    //#define ROSE_0_8_9a      
 #ifdef ROSE_0_8_9a
             SgExpression* expr = valueExp->get_originalExpressionTree();
 #else

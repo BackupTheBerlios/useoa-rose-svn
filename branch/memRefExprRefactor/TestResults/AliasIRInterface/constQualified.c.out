@@ -1,13 +1,3 @@
-"TestCases/AliasTests/constQualified.c", line 16: warning: variable "i" is
-          used before its value is set
-    const int *q = &const_array[i];
-                                ^
-
-"TestCases/AliasTests/constQualified.c", line 22: warning: expression has no
-          effect
-    const_array[i];
-    ^
-
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){int *p;int i;int x;int y;const int *q =(const_array + i);x = *q;p = &i;*p = 5;y = *q;g(x,y);const_array[i];return 0;}") =>

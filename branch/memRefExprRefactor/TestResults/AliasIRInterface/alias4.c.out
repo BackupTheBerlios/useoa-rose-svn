@@ -1,13 +1,3 @@
-"TestCases/AliasTests/alias4.c", line 10: warning: variable "b" is used before
-          its value is set
-    a = b;
-        ^
-
-"TestCases/AliasTests/alias4.c", line 7: warning: variable "a" was set but
-          never used
-    int *a;
-         ^
-
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){int *a;int *b;a = b;return 0;}") =>

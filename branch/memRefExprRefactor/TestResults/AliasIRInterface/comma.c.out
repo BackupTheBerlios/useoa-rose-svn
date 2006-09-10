@@ -1,8 +1,3 @@
-"TestCases/AliasTests/comma.c", line 5: warning: variable "z" was declared but
-          never referenced
-      int x=1, y=2, z=3;
-                    ^
-
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stdin_;") =>

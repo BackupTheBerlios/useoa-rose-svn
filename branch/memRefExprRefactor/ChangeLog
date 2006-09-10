@@ -2540,3 +2540,23 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
           it seems that we should get the regression tests working
           with the new version of ROSE before adding one more
           factor.
+
+9/9/06     UseOA-Rose svn branch-memRefExprRefactor r204  Brian White
+
+        - We consider function/method invocations to be uses, hence
+          they need to have MREs (as well as call MREs).  This has
+          already been done for methods, functions, and constructors,
+          but not destructors.  Modified SgDeleteExp case to 
+          create a MRE here as well.
+
+        - Something above affected the order of Locations in the
+          regression test output.  Re-created regression results
+          to reflect this new ordering.
+
+        - Suppressed warning messages by adding --edg:no_warnings -w
+          flag to CtoOA.  This is important because ROSE 0.8.9a
+          outputs absolute paths (in warnings) whereas our regression
+          results had relative paths.  Not that re-creating the
+          regression tests with absolute paths will not suffice
+          because each developer would have a different absolute path.
+          Re-created regression tests without warnings.

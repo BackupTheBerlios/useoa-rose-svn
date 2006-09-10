@@ -1,11 +1,3 @@
-"TestCases/AliasTests/alias2.c", line 14: warning: expression has no effect
-    *a;
-    ^
-
-"TestCases/AliasTests/alias2.c", line 15: warning: expression has no effect
-    *b;
-    ^
-
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){int loc;int *locPtr;int *a;int *b;locPtr = &loc;a = locPtr;b = locPtr;*a;*b;return 0;}") =>
