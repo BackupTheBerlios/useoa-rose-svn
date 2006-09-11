@@ -1939,3 +1939,10 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 
 9/02/06     UseOA-ROSE svn trunk r187   Andy Stone
     - Added benchmarking scripts.
+
+9/11/06     UseOA-ROSE svn trunk r206   Priyadarshini Malusare
+    - Changed source() to getSource() and sink() to getSink() in the
+      DoOpenAnalysis() of OATest.C.
+    - Passes regressAll with OpenAnalysis trunk r229 compiled on Okapi with
+      gcc-3.2 and rose-0.8.7a/compile-gcc-3.2
+

@@ -566,9 +566,9 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
       OA::OA_ptr<OA::CFG::Edge> e 
           = edgeItPtr->current().convert<OA::CFG::Edge>();
       OA::OA_ptr<OA::CFG::Node> n1 
-          = e->source().convert<OA::CFG::Node>();
+          = e->getSource().convert<OA::CFG::Node>();
       OA::OA_ptr<OA::CFG::Node> n2 
-          = e->sink().convert<OA::CFG::Node>();
+          = e->getSink().convert<OA::CFG::Node>();
       
       char tmpstr[100];
       sprintf(tmpstr, "<ControlFlowEdge source=\"%d\" target=\"%d\"/>", 
