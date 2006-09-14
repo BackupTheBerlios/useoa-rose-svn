@@ -2789,3 +2789,12 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
             by setting default value for parameter useVtableOpt
             of SageIRInterface constructor to true.  This option
             is controlled by the member variable mUseVtableOpt.
+
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r217  Brian White	
+
+          - Fixed findAllMemRefsAndMemRefExprs to visit global
+            class declarations.  This was not happening because
+            the method responsible for collecting global declarations,
+            getGlobalObjectDeclarationsAndClassDefinitions, was
+            incorrectly looking for a SgClassDefinition under SgGlobal,
+            instead of a SgClassDeclaration.

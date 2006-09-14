@@ -193,7 +193,7 @@ getGlobalObjectDeclarationsAndClassDefinitions(SgNode *project,
           
           break;
         }
-      case V_SgClassDefinition:
+      case V_SgClassDeclaration:
         {
           SgStatement *stmt = isSgStatement(child);
           ROSE_ASSERT(stmt != NULL);

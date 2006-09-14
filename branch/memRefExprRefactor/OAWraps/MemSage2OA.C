@@ -2662,6 +2662,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         ROSE_ASSERT(0);
         break;
 
+    case V_SgClassDeclaration:
+        {
+            SgClassDeclaration *classDecl = isSgClassDeclaration(astNode);
+            ROSE_ASSERT(classDecl != NULL);
+
+            findAllMemRefsAndPtrAssigns( classDecl->get_definition(), stmt );
+            break;
+        }
+
     case V_SgClassDefinition:
         {
             SgClassDefinition *classDefn = isSgClassDefinition(astNode);
