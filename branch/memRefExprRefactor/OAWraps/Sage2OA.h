@@ -378,7 +378,7 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   SageIRInterface(SgNode *root, 
                   std::vector<SgNode*> *na, 
                   bool use_persistent_handles = FALSE,
-                  bool useVtableOpt = FALSE);
+                  bool useVtableOpt = TRUE);
   ~SageIRInterface();
 
     
