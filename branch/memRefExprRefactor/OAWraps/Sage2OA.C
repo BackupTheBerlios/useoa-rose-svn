@@ -351,6 +351,7 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
   SgNamespaceDefinitionStatement *nmdef=NULL;
   SgSwitchStatement *switchStmt = NULL;
   SgCaseOptionStmt *caseOptionStmt = NULL;
+  SgDefaultOptionStmt *defaultOptionStmt = NULL;
 
   if(isSgScopeStatement(node))
   {
@@ -411,7 +412,7 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
     else if( ( fdef=isSgFunctionDefinition(node) ) != NULL )
     {
      FindAllStmts(fdef->get_body(), lst);
-   }      
+    }      
     else if( ( sggl=isSgGlobal(node) ) != NULL )
     {
       // get_declarations returns an SgDeclarationStatementPtrList
@@ -448,6 +449,8 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
     {
       FindAllStmts(caseOptionStmt->get_key(), lst);
       FindAllStmts(caseOptionStmt->get_body(), lst);
+    } else if( ( defaultOptionStmt = isSgDefaultOptionStmt(node) ) != NULL )  {
+      FindAllStmts(defaultOptionStmt->get_body(), lst);
     } else {
 #ifdef UNRELEASED_ROSE
       if ( !isSgNullStatement(node) ) {
