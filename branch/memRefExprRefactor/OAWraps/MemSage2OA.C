@@ -479,6 +479,7 @@ applyReferenceConversionRules2And4(OA::StmtHandle stmt,
 
     OA::OA_ptr<OA::MemRefExpr> addr_of_lhs_tmp_mre = lhs_tmp_mre->clone();
     addr_of_lhs_tmp_mre = addr_of_lhs_tmp_mre->setAddressTaken();
+    addr_of_lhs_tmp_mre->setMemRefType(OA::MemRefExpr::USE);
 
     // Record the type of the MRE (reference or non-reference).
     mMre2TypeMap[addr_of_lhs_tmp_mre] = other;
@@ -2125,7 +2126,21 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                             makePtrAssignPair(stmt, lhs_mre, rhs_mre);
 #if 1
                         } else if ( isSgReferenceType(lhs_type) ) {
-                            makePtrAssignPair(stmt, lhs_mre, rhs_mre);
+                          // Remember if lhs is a reference, then
+                          //    lhs = rhs;
+                          // is effectively
+                          //    *lhs = *rhs;
+                          // i.e., this is only a pointer assignment if
+                          // the base of the reference is a reference
+                          // (couldn't be) or a pointer.
+                          SgReferenceType *lhs_reference = 
+                              isSgReferenceType(lhs_type);
+                          ROSE_ASSERT(lhs_reference != NULL);
+                          SgType *base = getBaseType(lhs_reference->get_base_type());
+                          ROSE_ASSERT(base != NULL);
+                          if ( isSgPointerType(base) || isSgReferenceType(base) ) {
+                              makePtrAssignPair(stmt, lhs_mre, rhs_mre);
+                          }
                         }
 #else
                         // if top mem ref for lhs is a reference type and rhs has lval

@@ -86,6 +86,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             CallHandle("printf("*p = %d\n", *p)") => 
                 NamedRef( USE, SymHandle("printf"), F, full)
         ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("printf("*p = %d\n", *p)") =>
+        [
+            < 0, UnnamedRef( USE, StmtHandle(""*p = %d\n""), T, part) >
+        ] }
     MEMREFEXPRS = { StmtHandle("printf("*q = %d\n", *q);") =>
         [
             MemRefHandle("q") => 
@@ -101,6 +105,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             CallHandle("printf("*q = %d\n", *q)") => 
                 NamedRef( USE, SymHandle("printf"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("printf("*q = %d\n", *q)") =>
+        [
+            < 0, UnnamedRef( USE, StmtHandle(""*q = %d\n""), T, part) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

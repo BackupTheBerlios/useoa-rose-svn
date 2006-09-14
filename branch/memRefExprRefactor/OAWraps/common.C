@@ -1456,6 +1456,11 @@ SgType* getBaseType(SgType *type)
 
   }
 
+  SgModifierType *modifierType = isSgModifierType(type);
+  if (modifierType) {
+    return getBaseType(modifierType->get_base_type());
+  }
+
   return type;
 }
 
@@ -1512,5 +1517,6 @@ bool isNonconstReference(SgType *type)
     return ( isSgReferenceType(type) && !isConstType(type) );
 }
 #endif
+
 
 } // end of namespace UseOA
