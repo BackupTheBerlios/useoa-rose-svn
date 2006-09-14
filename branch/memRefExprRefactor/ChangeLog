@@ -2593,3 +2593,115 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
           To: michelle strout <mstrout@CS.ColoState.EDU>, andy stone <aistone@gmail.com>
           Subject: null parent in va_start/va_arg & bug fix [was Re: null
                    (grand)parent bug in ROSE-0.8.8a]
+
+9/11/06     UseOA-Rose svn branch-memRefExprRefactor r206  Brian White
+
+        - Put common.C in namespace UseOA.  Sage2OA.C and MemSage2OA.C use
+          namespace UseOA.
+	
+        - Some changes for handling reference conversion:
+
+            - Don't use isSgReferenceType to determine if a type is a
+              reference type in need of modeling, but rather use
+              isReferenceTypeRequiringModeling.
+	
+            - Added mMRE2TypeMap : mre -> typeEnum that indicates
+              whether an MRE has a reference or non-reference type.
+
+              NOTE!  When you create/clone/composeWith a new MRE,
+              you need to set its type.
+
+            - Modified SgArrowExp/SgDotExp so that if rhs in a->rhs or a.rhs
+              is a reference, then we deref *(a->rhs) and *(a.rhs).
+              That is, we apply reference conversion rule 3. 
+              Wrote referenceMemVarAccesses.C to test this.
+
+            - Modified SgFunctionCallExp so that we dereference the
+              return slot if it represents the return value of
+              reference type.  This is an application of reference
+              conversion rule 3.  Test:  returnReference.C.
+
+            - Now whenever we apply reference conversion rule 3 (to deref)
+              in SgVarRefExp, SgFunctionCallExp, SgArrowExp/SgDotExp,
+              we also leave behind, rather than replace, the original
+              expression.  Further, if we later take the address of
+              this deref, effectively to recover the original
+              base reference, we should remove the one that we left
+              behind, lest they be redundant.  
+
+              These base references (before the deref) have a
+              Sg_File_Info MemRefHandle!  Ugly!
+	
+            - Changed reference conversion rule 2.  
+
+              Previously:
+
+              If the rhs does not have an lvalue, e.g., 3+5, &y, etc.,
+              then replace lhs with *lhs.
+
+              Please see the thread between Michelle and Brian on
+              Sept 12 and 13 entitled 'formal references' for
+              the deficiencies with this approach.
+
+              Current approach (as implemented in 
+              applyReferenceConversionRule2):
+
+              For a reference initialization: 
+                  t_l &lhs = rhs.             (1)
+              If the rhs does not have an lval, the stmt must actually
+              be of the form:  
+                  t_l const &lhs = rhs;
+              Model this as:
+                  t_l tmpLhs = rhs;           (2a)
+                  t_l const &lhs = tmpLhs;    (2b)
+
+              Create ptr assigns for (2a) if necessary.
+              Apply reference conversion rule 4 to (2b) by ignoring
+              the const and noting that the rhs not has an lvalue.
+              Create ptr assign for (2b).
+
+              The tmp MREs created above use a 
+              Sg_File_Info MemRefHandle!  Ugly!	
+        
+	    - Modified SgInitializedName to apply reference conversion
+              rule 2, as well as reference conversion rule 4 (as 
+              previously implemented).  If the rhs of the initialization
+              has an lval, we take its address (rule 4), if it does not,
+              we apply rule 2 (above).  Tests:  referenceInit.C and
+              ctorReferenceInit.C, as well as the existing refClass.C
+              and refClass2.C.
+
+            - Removed the reference handling code from SgAssignOp.
+              Formerly, in the case where a variable with an lval
+              was assigned to a reference variable, we were removing
+              the derefence to the lval and taking the address of
+              the rhs.  Briefly, this is the correct behavior
+              for an initialization, which affects the location of
+              the reference, but not for a reference _assignment_,
+              which only affects the location that the reference
+              refers to.  Please see this thread:
+
+              Date: Tue, 12 Sep 2006 20:47:10 -0600
+              From: Michelle Strout <mstrout@CS.ColoState.EDU>
+              To: Brian White <bwhite@csl.cornell.edu>
+              Subject: Re: more reference logic
+
+            - Modified SgReturnStmt case to apply rules 2 (if the rhs
+              does not have an lval) and rule 4 (either after 2 or if
+              the rhs does have an lval).  This bit looks very (too?)
+              similar to the SgInitializedName case.  See the test
+              returnReference.C.
+        
+            - Modified convertReferenceActuals so that it applies
+              reference conversion rules 4 (as done previously, if the
+              actual has an lvalue) and 2 (if it does not), as appropriate.
+
+            - Merged convertReferenceActuals into 
+              createParamBindPtrAssignPairs, which now applies both
+              reference conversion rule 4 (as it did previously) and
+              reference conversion rule 2.
+
+            - After all of this work, what do we get?  Changed
+              the regression results for refParam.C, refClass.C.
+
+

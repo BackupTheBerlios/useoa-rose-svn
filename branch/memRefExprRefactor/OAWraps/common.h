@@ -5,6 +5,8 @@
 #include "rose.h"
 #include <OpenAnalysis/IRInterface/IRHandles.hpp>
 
+namespace UseOA {
+
 bool isNonStaticMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp);
 
 SgPointerDerefExp *isFunctionPointer(SgFunctionCallExp *functionCall);
@@ -62,6 +64,8 @@ bool matchingFunctions(SgFunctionDeclaration *decl1,
 bool isFunc(SgFunctionCallExp *functionCallExp,
                              char *funcName);
 
+bool returnsReference(SgFunctionCallExp *functionCallExp);
+
 bool returnsAddress(SgFunctionCallExp *functionCallExp);
 
 SgNode *getThisExpNode(SgNode *node);
@@ -80,5 +84,13 @@ isNonStaticMethod(SgMemberFunctionDeclaration *memberFunctionDecl);
 
 bool
 isVaStart(SgFunctionCallExp *functionCallExp);
+
+SgType* getBaseType(SgType *type);
+
+//bool isConstType(SgType *type);
+
+//bool isNonconstReference(SgType *type);
+
+} // end of namespace UseOA
 
 #endif /* _USEOA_COMMON_H */

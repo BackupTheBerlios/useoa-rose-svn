@@ -48,9 +48,9 @@ test::  passIntPtrArrayRef.c,    checked by MMS 8/29/06
 test::  passIntPtrArrayRef2.c,   checked by MMS 8/29/06
 test::  passIntPtrArrayRef3.c,   checked by MMS 8/31/06
 test::  passIntPtr.c,            checked by MMS 8/21/06
-test::  refParam.C,              checked by MMS 8/24/06
+test::  refParam.C,              checked by MMS 8/24/06 (rechecked by BSW 9/13/06)
 test::  ref.C,                   checked by MMS 8/21/06
-test::  refClass.C,              checked by MMS 9/8/06
+test::  refClass.C,              checked by MMS 9/8/06  (rechecked by BSW 9/13/06)
 test::  refClass2.C,             missing ptr assign MMS 9/8/06
 test::  retPtr1.c,               checked by MMS 8/29/06
 test::  sizeOf.C,                checked by MMS 8/24/06               

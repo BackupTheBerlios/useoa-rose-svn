@@ -1,6 +1,8 @@
 
 #include "common.h"
 
+namespace UseOA {
+
 /** \brief Strip the "const" keyword from a string.
  *  \param name  A string (intending to represent a formal parameter
  *               type).
@@ -1207,6 +1209,37 @@ bool isFunc(SgFunctionCallExp *functionCallExp,
   return ( !strcmp(funcName, name.str() ) );
 }
 
+bool returnsReference(SgFunctionCallExp *functionCallExp)
+{
+  ROSE_ASSERT(functionCallExp != NULL);
+
+  bool returnsReference = false;
+
+  SgType *type = functionCallExp->get_type();
+  //  SgType *type = functionCallExp->get_return_type();
+  ROSE_ASSERT(type != NULL);
+
+  if ( isSgReferenceType(type) ) {
+    returnsReference = true;
+  }
+
+  // I believe in earlier versions of ROSE, that the type
+  // of a function call expression was the type of the expression
+  // (i.e., the return type).  Evidently, this has changed.
+  // Leave the above code for backward compatibility?
+  SgFunctionType *funcType = isSgFunctionType(type);
+
+  // NB:  type could be SgTypeVoid and need not be a SgFunctionType.
+  if ( funcType != NULL ) {
+    SgType *retType = funcType->get_return_type();
+    if ( isSgReferenceType(retType) ) {
+      returnsReference = true;
+    }
+  }
+
+  return returnsReference;
+}
+
 bool returnsAddress(SgFunctionCallExp *functionCallExp)
 {
   ROSE_ASSERT(functionCallExp != NULL);
@@ -1408,3 +1441,76 @@ isVaStart(SgFunctionCallExp *functionCallExp)
     return ( isFunc(functionCallExp, "va_start") ||
              isFunc(functionCallExp, "__builtin_va_start") );
 }
+
+// Utility function to look through typedefs to return a type.
+SgType* getBaseType(SgType *type) 
+{
+  if ( type == NULL ) return NULL;
+
+  SgTypedefType *typedefType = isSgTypedefType(type);
+  if (typedefType != NULL) {
+
+    SgType *baseType = typedefType->get_base_type();
+    ROSE_ASSERT(baseType != NULL);
+    return getBaseType(baseType);
+
+  }
+
+  return type;
+}
+
+#if 0
+// evidently defined in src/midend/astInlining/typeTraits.C
+/**
+ *  \brief isConstType returns boolean indicating whether type has a const modifier.
+ */
+bool isConstType(SgType *type)
+{
+
+    // Determine whether the type has a const modifier.
+    ROSE_ASSERT(type != NULL);
+      
+    SgModifierNodes *modifierNodes = type->get_modifiers(); 
+
+    if (modifierNodes != NULL) {
+        SgModifierTypePtrVector modifierVector = modifierNodes->get_nodes(); 
+        for(SgModifierTypePtrVector::iterator it = modifierVector.begin(); 
+            it != modifierVector.end(); ++it) { 
+          
+            SgModifierType *modifierType = *it; 
+            ROSE_ASSERT(modifierType != NULL); 
+          
+            SgTypeModifier &typeModifier = modifierType->get_typeModifier(); 
+          
+            SgConstVolatileModifier &constVolatileModifier = 
+                typeModifier.get_constVolatileModifier(); 
+          
+            if ( constVolatileModifier.isConst() ) { 
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+#endif
+   
+#if 0
+// evidently defined in src/midend/astInlining/typeTraits.C
+/**
+ *  \brief isNonconstReference returns boolean indicating whether type is a 
+ *         non-const reference type.
+ */   
+bool isNonconstReference(SgType *type)
+{
+  // This probably isn't what you want.  This looks for a const reference,
+  // I'm not sure if such a beast exists.  You probably want a reference
+  // to a const type.  
+  ROSE_ABORT();
+
+    ROSE_ASSERT(type != NULL);
+    return ( isSgReferenceType(type) && !isConstType(type) );
+}
+#endif
+
+} // end of namespace UseOA

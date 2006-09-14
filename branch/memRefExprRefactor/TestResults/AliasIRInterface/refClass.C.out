@@ -20,12 +20,12 @@ PROCEDURE = { < ProcHandle("foo::foo"), SymHandle("method:foo::foo__foo__scope__
             MemRefHandle("(this)") => 
                 NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full)
             MemRefHandle("((this) -> someRef)") => 
-                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someRef, T, full)
+                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someRef, F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("") =>
         [
             < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someOtherRef, F, full)
-            , FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someRef, T, full) >
+            , FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someRef, F, full) >
             < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someRef, F, full)
             , NamedRef( USE, SymHandle("x"), T, full) >
         ] }
@@ -44,21 +44,25 @@ PROCEDURE = { < ProcHandle("foo::foo"), SymHandle("method:foo::foo__foo__scope__
         ] }
     MEMREFEXPRS = { StmtHandle("*((this) -> someRef);") =>
         [
+            MemRefHandle("refRelatedBaseOrTmp") => 
+                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someRef, F, full)
             MemRefHandle("(this)") => 
                 NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full)
             MemRefHandle("((this) -> someRef)") => 
-                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someRef, F, full)
-            MemRefHandle("*((this) -> someRef)") => 
                 Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someRef, F, full), 1, F, full)
+            MemRefHandle("*((this) -> someRef)") => 
+                Deref( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someRef, F, full), 1, F, full), 1, F, full)
         ] }
     MEMREFEXPRS = { StmtHandle("*((this) -> someOtherRef);") =>
         [
+            MemRefHandle("refRelatedBaseOrTmp") => 
+                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someOtherRef, F, full)
             MemRefHandle("(this)") => 
                 NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full)
             MemRefHandle("((this) -> someOtherRef)") => 
-                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someOtherRef, F, full)
-            MemRefHandle("*((this) -> someOtherRef)") => 
                 Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someOtherRef, F, full), 1, F, full)
+            MemRefHandle("*((this) -> someOtherRef)") => 
+                Deref( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full), 1, F, full), someOtherRef, F, full), 1, F, full), 1, F, full)
         ] }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"), local > }

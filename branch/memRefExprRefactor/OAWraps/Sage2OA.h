@@ -349,6 +349,8 @@ class SageIRExprStmtPairIterator
     ExprStmtPairList::iterator mIter;
 };
 
+enum typeEnum { reference, other };
+
 class 
 SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   public virtual OA::CFG::CFGIRInterfaceDefault,  
@@ -787,7 +789,7 @@ public:
   OA::MemRefHandle findTopMemRefHandle(SgNode *node);
 
   //! Determine if all the MREs associated with a given memref are lval
-  bool is_lval(OA::MemRefHandle memref);
+  //  bool is_lval(OA::MemRefHandle memref);
 
   //! A utility function _only_ to be invoked from within makePtrAssignPair.
   void _makePtrAssignPair(OA::StmtHandle stmt,
@@ -800,6 +802,10 @@ public:
   void makePtrAssignPair(OA::StmtHandle stmt,
                          OA::OA_ptr<OA::MemRefExpr> lhs_mre,
                          OA::MemRefHandle rhs_memref);
+
+  void makePtrAssignPair(OA::StmtHandle stmt,
+                         OA::OA_ptr<OA::MemRefExpr> lhs_mre,
+                         OA::OA_ptr<OA::MemRefExpr> rhs_mre);
 
 
   void makeParamPtrPair(OA::CallHandle call,
@@ -855,6 +861,9 @@ public:
 
   std::map<OA::CallHandle,OA::OA_ptr<OA::MemRefExpr> > mCallToMRE;
 
+  std::map<OA::OA_ptr<OA::MemRefExpr>, typeEnum >
+    mMre2TypeMap;
+
   // why would we need this one?
   //std::map<OA::OA_ptr<OA::MemRefExpr>,OA::MemRefHandle >
   //  mMre2MemrefMap;
@@ -867,9 +876,14 @@ public:
   //void initPointerAssignMaps();
   //void findAllPtrAssignAndParamBindPairs(SgNode *astNode, OA::StmtHandle stmt);
 
-  void createParamBindPtrAssignPairs(SgNode *node);
+  void createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node);
 
-  void convertReferenceActuals(SgNode *node);
+  OA::OA_ptr<OA::MemRefExpr> 
+  applyReferenceConversionRules2And4(OA::StmtHandle stmt,
+                                     SgType *lhs_type,
+                                     SgNode *lhs,
+                                     SgNode *rhs,
+                                     OA::OA_ptr<OA::MemRefExpr> rhs_mre);
 
   std::map<OA::StmtHandle,
            std::set<
@@ -891,9 +905,6 @@ public:
 
   //! Returns true if the contructor initializer creates a base type.
   bool createsBaseType(SgConstructorInitializer *ctorInitializer) const;
-
-  //! Look through typedefs to return a type.
-  SgType *getBaseType(SgType *type);
 
   // Strip off any leading SgCastExps/SgAssignInitializers in 
   // the tree root at node.

@@ -17,6 +17,10 @@
 #include <OpenAnalysis/Alias/NotationGenerator.hpp>
 #include <CommandOptions.h>
 
+#include <defaultFunctionGenerator.h>
+#include <shortCircuitingTransformation.h>
+#include <destructorCallAnnotator.h>
+
 //! print usage information to stdout
 void usage(char *programName);
 
@@ -60,6 +64,16 @@ int main ( unsigned argc,  char * argv[] )
     AstDOTGeneration dottest;
     dottest.generateInputFiles(sageProject);
     
+#if 0
+    // Perform the AST normalization.
+    //    DefaultFunctionGenerator dfg;
+    //    dfg.traverse(sageProject, preorder);
+    defaultFunctionGenerator(sageProject);
+    AstPostProcessing(sageProject);
+    shortCircuitingTransformation(sageProject);
+    destructorCallAnnotator(sageProject);
+#endif
+
     // Loop over every file.   BW 4/13/06
     int filenum = sageProject->numberOfFiles();
     for (int i = 0; i < filenum; ++i) 

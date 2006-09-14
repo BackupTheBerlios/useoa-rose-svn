@@ -8,6 +8,8 @@
 
 #include "common.h"
 
+using namespace UseOA;
+
 bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRefOrPtr)
 {
   ROSE_ASSERT(functionCall != NULL);
@@ -71,6 +73,32 @@ bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRe
   return isMethod;
 }
 
+/** \brief  Returns true if method is a pure virtual method.
+ *  \param  functionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether method is a pure virtual
+ *            method.
+ */
+bool isPureVirtual(SgFunctionDeclaration *functionDeclaration)
+{
+  if ( functionDeclaration == NULL ) return false;
+
+  if ( functionDeclaration->get_functionModifier().isPureVirtual() ) 
+    return true;
+
+  SgDeclarationStatement *firstNondefiningDeclaration =
+    functionDeclaration->get_firstNondefiningDeclaration();
+
+  if ( firstNondefiningDeclaration == NULL )
+    return false;
+
+  SgFunctionDeclaration *firstNondefiningFuncDeclaration =
+    isSgFunctionDeclaration(firstNondefiningDeclaration);
+  ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
+
+  return firstNondefiningFuncDeclaration->get_functionModifier().isPureVirtual();
+}
+
+#if 0
 SgFunctionDeclaration * 
 getFunctionDeclaration(SgFunctionCallExp *functionCall) 
 { 
@@ -169,31 +197,6 @@ bool isVirtual(SgFunctionDeclaration *functionDeclaration)
   ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
 
   return firstNondefiningFuncDeclaration->get_functionModifier().isVirtual();
-}
-
-/** \brief  Returns true if method is a pure virtual method.
- *  \param  functionDeclaration  A method declaration.
- *  \returns  Boolean indicating whether method is a pure virtual
- *            method.
- */
-bool isPureVirtual(SgFunctionDeclaration *functionDeclaration)
-{
-  if ( functionDeclaration == NULL ) return false;
-
-  if ( functionDeclaration->get_functionModifier().isPureVirtual() ) 
-    return true;
-
-  SgDeclarationStatement *firstNondefiningDeclaration =
-    functionDeclaration->get_firstNondefiningDeclaration();
-
-  if ( firstNondefiningDeclaration == NULL )
-    return false;
-
-  SgFunctionDeclaration *firstNondefiningFuncDeclaration =
-    isSgFunctionDeclaration(firstNondefiningDeclaration);
-  ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
-
-  return firstNondefiningFuncDeclaration->get_functionModifier().isPureVirtual();
 }
 
 bool isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration, SgClassDefinition *classDefinition)
@@ -384,6 +387,7 @@ methodOverridesVirtualMethod(SgMemberFunctionDeclaration *methodDecl,
   return true;
 #endif
 }
+#endif
 
 int main(int argc, char **argv)
 {
@@ -601,9 +605,12 @@ int main(int argc, char **argv)
       numResolutionsForMethod++;
     }
 
+#if 0
     if ( ( isVirtual(functionDeclaration) ) ||
 	 ( isDeclaredVirtualWithinAncestor(functionDeclaration) ) ) {
-      
+#else
+      if ( isVirtual(functionDeclaration) ) {
+#endif      
       //      std::cout << "tracking: " << functionDeclaration->unparseToString() << std::endl;
 
       SgClassDefinition *classDefinition = 

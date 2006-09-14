@@ -3,6 +3,7 @@
 #include "common.h"
 
 using namespace std;
+using namespace UseOA;
 
 static bool debug = false;
 
@@ -2248,7 +2249,14 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
     }
   } 
 
-  if ( ( expression == NULL ) && ( initializedName == NULL ) ) {
+  Sg_File_Info *fileInfo = isSg_File_Info(node);
+  if ( fileInfo != NULL ) {
+    // applyReferenceConversionRules2And4 uses Sg_File_Infos for temporary
+    // variables.
+    strdump = "refRelatedBaseOrTmp";
+  }
+
+  if ( ( expression == NULL ) && ( initializedName == NULL ) && ( fileInfo == NULL ) ) {
     ROSE_ABORT();
   }
 
@@ -4428,23 +4436,6 @@ SageIRInterface::createsBaseType(SgConstructorInitializer *ctorInitializer) cons
   }
 
   return ret;
-}
-
-// Utility function to look through typedefs to return a type.
-SgType* SageIRInterface::getBaseType(SgType *type) 
-{
-  if ( type == NULL ) return NULL;
-
-  SgTypedefType *typedefType = isSgTypedefType(type);
-  if (typedefType != NULL) {
-
-    SgType *baseType = typedefType->get_base_type();
-    ROSE_ASSERT(baseType != NULL);
-    return getBaseType(baseType);
-
-  }
-
-  return type;
 }
 
 /** \brief Strip off any leading SgCastExps or SgAssignInitializers

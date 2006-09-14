@@ -1,6 +1,7 @@
 #include "SageOACallGraph.h"
 #include "common.h"
 
+using namespace UseOA;
 
 //SageIRCallsiteIterator implementation
 

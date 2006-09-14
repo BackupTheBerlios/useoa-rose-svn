@@ -6,9 +6,17 @@
         Also want to verify that the correct MREs are generated when a constructor is called.
 */
 
+int x;
+int y;
+int *xPtr = &x;
+int *yPtr = &y;
+
 class foo {
  public:
   foo(int *x) : someRef(x), someOtherRef(someRef) { *x; *someRef; *(this->someOtherRef); }
+  foo() : someRef(xPtr), someOtherRef(yPtr) { }
+  foo(foo &f) : someRef(xPtr), someOtherRef(yPtr) { }
+  foo &operator=(foo &f) { return *this; }
  private:
   int *&someRef;
   int *&someOtherRef;
@@ -16,6 +24,7 @@ class foo {
 
 int main()
 {
+
   int y;
   int *ptr = &y;
   foo f(ptr);
