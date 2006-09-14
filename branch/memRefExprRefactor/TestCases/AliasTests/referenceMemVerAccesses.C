@@ -18,8 +18,8 @@ int main()
 {
   int x;
   Foo *f = new Foo(x);
-  f->mFoo = new Foo(x);
-  f->mFoo->mX = x;
+  f->mFooPtr = new Foo(x);
+  f->mFooPtr->mX = x;
 
   Foo obj(x);
   obj.mX = x;  

@@ -16,7 +16,7 @@ test::  comma.c,                checked by AIS 6/23/06 (rechecked MMS 9/5/06)
 test::  constQualified.c,       checked MMS 9/6/06
 test::  utke.c,                 checked by AIS 6/23/06 (rechecked MMS 9/5/06)
 test::  OAWikiEx.c,             checked by AIS 6/23/06 (rechecked MMS 9/5/06)
-test::  funCall.c,              checked by MMS 9/6/06
+test::  funCall.c,              checked by MMS 9/13/06
 test::  functionPtr.c,          checked by AIS 6/27/06 (rechecked MMS 9/5/06)
 test::  functionPtr2.c,         checked by MMS 7/24/06 (rechecked MMS 9/5/06)
 test::  passIntPtrArrayRef.c,   checked by MMS 7/24/06 (rechecked MMS 9/5/06)
@@ -32,9 +32,9 @@ test::  invLoc.c,               checked by MMS 7/23/06 (rechecked MMS 9/5/06)
 #test::  LiangEtAl99.c,          checked by ???
 #test::  LiangEtAlICSM99Fig2.c,  checked by ???
 #test::  LiangEtAlICSM99Fig5.c,  checked by ???
-#test::  RyderEtAlFig11.c,       checked by ???
-#test::  RyderEtAlFig14.c,       checked by ???
-#test::  RyderEtAlFig15.c,       checked by ???
+test::  RyderEtAlFig11.c,       checked by MMS 9/13/06
+test::  RyderEtAlFig14.c,       checked by MMS 9/13/06
+test::  RyderEtAlFig15.c,       checked by MMS 9/13/06
 #test::  RyderEtAlFig1a.c,       checked by ???
 #test::  RyderEtAlFig1b.c,       checked by ???
 #test::  RyderEtAlFig1c.c,       checked by ???

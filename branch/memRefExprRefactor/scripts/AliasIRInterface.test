@@ -51,8 +51,8 @@ test::  passIntPtr.c,            checked by MMS 8/21/06
 test::  refParam.C,              checked by MMS 8/24/06 (rechecked by BSW 9/13/06)
 test::  ref.C,                   checked by MMS 8/21/06
 test::  refClass.C,              checked by MMS 9/8/06  (rechecked by BSW 9/13/06)
-test::  refClass2.C,             missing ptr assign MMS 9/8/06
-test::  retPtr1.c,               checked by MMS 8/29/06
+test::  refClass2.C,             checked by MMS 9/14/06
+test::  retPtr1.c,               checked by MMS 9/14/06
 test::  sizeOf.C,                checked by MMS 8/24/06               
 test::  swap.c,                  checked by MMS 8/31/06
 test::  ternop.c,                checked by MMS 8/24/06
@@ -66,3 +66,8 @@ test::  paramBindingsForStackCtorInvoc.C,  checked by BSW 9/7/06
 test::  paramBindingsForDynamicCtorInvoc.C,  checked by BSW 9/7/06
 test::  paramBindingsForDestructorInvoc.C,  checked by BSW 9/7/06
 
+# Specifically testing references
+test::  ctorReferenceInit.C,        checked by MMS 9/14/06
+test::  refPtrFormal.C,             missing unnamed = &x sent email MMS 9/14/06
+test::  referenceMemVerAccesses.C,  has extra ptr assigns sent email MMS 9/14/06
+test::  referenceInit.C,            

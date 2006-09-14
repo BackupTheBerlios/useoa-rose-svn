@@ -75,6 +75,10 @@ EXEEXT =
 
 OPENANALYSIS_LIB_WITH_PATH =$(OPENANALYSIS_DIR)/$(OPENANALYSIS_ARCH)/lib/libOAul.a
 
+astNormalizer_SOURCES = astNormalizer.C
+astNormalizer_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH) OAWraps/libSage2OA.so
+astNormalizer_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
+
 OATest_SOURCES = OATest.C
 OATest_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH) OAWraps/libSage2OA.so
 OATest_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
@@ -82,10 +86,6 @@ OATest_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
 CtoOA_SOURCES = CtoOA.cpp
 CtoOA_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH) OAWraps/libSage2OA.so
 CtoOA_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
-
-astNormalizer_SOURCES = astNormalizer.cpp
-astNormalizer_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) 
-astNormalizer_LDADD = $(ROSE_LIBS)
 
 nullTranslator_SOURCES = nullTranslator.cpp
 nullTranslator_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH) OAWraps/libSage2OA.so
@@ -95,6 +95,10 @@ OACFGTest_SOURCES = CFGTest.C
 OACFGTest_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH)
 OACFGTest_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
 
+am_astNormalizer_OBJECTS = astNormalizer.$(OBJEXT)
+astNormalizer_OBJECTS = $(am_astNormalizer_OBJECTS)
+astNormalizer_LDFLAGS = 
+
 am_OATest_OBJECTS = OATest.$(OBJEXT)
 OATest_OBJECTS = $(am_OATest_OBJECTS)
 OATest_LDFLAGS = 
@@ -102,10 +106,6 @@ OATest_LDFLAGS =
 am_CtoOA_OBJECTS = CtoOA.$(OBJEXT)
 CtoOA_OBJECTS = $(am_CtoOA_OBJECTS)
 CtoOA_LDFLAGS = 
-
-am_astNormalizer_OBJECTS = astNormalizer.$(OBJEXT)
-astNormalizer_OBJECTS = $(am_astNormalizer_OBJECTS)
-astNormalizer_LDFLAGS = 
 
 am_nullTranslator_OBJECTS = nullTranslator.$(OBJEXT)
 nullTranslator_OBJECTS = $(am_nullTranslator_OBJECTS)
@@ -127,6 +127,10 @@ am_OACFGTest_OBJECTS = OACFGTest.$(OBJEXT)
 OACFGTest_OBJECTS = $(am_OACFGTest_OBJECTS)
 OACFGTest_LDFLAGS =
 
+astNormalizer$(EXEEXT): $(astNormalizer_OBJECTS) $(astNormalizer_DEPENDENCIES) 
+	@rm -f astNormalizer$(EXEEXT)
+	$(CXXLINK) $(astNormalizer_LDFLAGS) $(astNormalizer_OBJECTS) $(astNormalizer_LDADD)
+
 OATest$(EXEEXT): $(OATest_OBJECTS) $(OATest_DEPENDENCIES) 
 	@rm -f OATest$(EXEEXT)
 	$(CXXLINK) $(OATest_LDFLAGS) $(OATest_OBJECTS) $(OATest_LDADD)
@@ -134,10 +138,6 @@ OATest$(EXEEXT): $(OATest_OBJECTS) $(OATest_DEPENDENCIES)
 CtoOA$(EXEEXT): $(CtoOA_OBJECTS) $(CtoOA_DEPENDENCIES) 
 	@rm -f CtoOA$(EXEEXT)
 	$(CXXLINK) $(CtoOA_LDFLAGS) $(CtoOA_OBJECTS) $(CtoOA_LDADD)
-
-astNormalizer$(EXEEXT): $(astNormalizer_OBJECTS) $(astNormalizer_DEPENDENCIES) 
-	@rm -f astNormalizer$(EXEEXT)
-	$(CXXLINK) $(astNormalizer_LDFLAGS) $(astNormalizer_OBJECTS) $(astNormalizer_LDADD)
 
 nullTranslator$(EXEEXT): $(nullTranslator_OBJECTS) $(nullTranslator_DEPENDENCIES) 
 	@rm -f nullTranslator$(EXEEXT)

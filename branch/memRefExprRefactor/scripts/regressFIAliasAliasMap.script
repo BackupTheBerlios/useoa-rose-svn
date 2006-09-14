@@ -34,7 +34,7 @@ echo "Testing TestCases/AliasTests/OAWikiEx.c, TestResults/FIAliasAliasMap/OAWik
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/OAWikiEx.c >& t
 diff t TestResults/FIAliasAliasMap/OAWikiEx.c.out
 
-echo "Testing TestCases/AliasTests/funCall.c, TestResults/FIAliasAliasMap/funCall.c.out checked by MMS 9/6/06"
+echo "Testing TestCases/AliasTests/funCall.c, TestResults/FIAliasAliasMap/funCall.c.out checked by MMS 9/13/06"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/funCall.c >& t
 diff t TestResults/FIAliasAliasMap/funCall.c.out
 
@@ -69,4 +69,16 @@ diff t TestResults/FIAliasAliasMap/swap.c.out
 echo "Testing TestCases/AliasTests/invLoc.c, TestResults/FIAliasAliasMap/invLoc.c.out checked by MMS 7/23/06 (rechecked MMS 9/5/06)"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/invLoc.c >& t
 diff t TestResults/FIAliasAliasMap/invLoc.c.out
+
+echo "Testing TestCases/AliasTests/RyderEtAlFig11.c, TestResults/FIAliasAliasMap/RyderEtAlFig11.c.out checked by MMS 9/13/06"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig11.c >& t
+diff t TestResults/FIAliasAliasMap/RyderEtAlFig11.c.out
+
+echo "Testing TestCases/AliasTests/RyderEtAlFig14.c, TestResults/FIAliasAliasMap/RyderEtAlFig14.c.out checked by MMS 9/13/06"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig14.c >& t
+diff t TestResults/FIAliasAliasMap/RyderEtAlFig14.c.out
+
+echo "Testing TestCases/AliasTests/RyderEtAlFig15.c, TestResults/FIAliasAliasMap/RyderEtAlFig15.c.out checked by MMS 9/13/06"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig15.c >& t
+diff t TestResults/FIAliasAliasMap/RyderEtAlFig15.c.out
 

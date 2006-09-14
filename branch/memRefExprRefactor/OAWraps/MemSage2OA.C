@@ -336,7 +336,7 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
                         Sg_File_Info *fileInfo = node->get_file_info();
                         ROSE_ASSERT(fileInfo != NULL);
 
-			OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
+                        OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
 
                         // Need to erase the mre w/o the deref.
                         mMemref2mreSetMap[hiddenMemref].erase(actual_mre);

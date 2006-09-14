@@ -2704,6 +2704,9 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
             - After all of this work, what do we get?  Changed
               the regression results for refParam.C, refClass.C.
 
+9/13/06     UseOA-Rose svn branch-memRefExprRefactor r208  Michelle Strout
+    - Fixed a bug in getStmtIterator(), FindAllStmts().  We were not recursing
+      down into a SgDefaultOptionStmt.
 
 9/14/06     UseOA-Rose svn branch-memRefExprRefactor r213  Brian White
 	
@@ -2772,4 +2775,4 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 
               To run, e.g., in TestCases/AliasBenchmarks/PandeEtAl95/simul:
 
-              ../../../../CHAandAliasVirtualMethodResolver -out:results -I. simulate.C
+              ../../../../CHAandAliasVirtualMethodResolver -out:results -I. simulate.C>>>>>>> .r213

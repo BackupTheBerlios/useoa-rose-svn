@@ -1,0 +1,246 @@
+"/s/parsons/c/fac/mstrout/OA/armstrong/UseOA-ROSE-memRefExprRefactor-ROSE089a/TestCases/AliasTests/referenceMemVerAccesses.C", line 20: warning: 
+          variable "x" is used before its value is set
+    Foo *f = new Foo(x);
+                     ^
+
+
+PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_") >
+            < 1, SymHandle("x") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+            MemRefHandle("mX&") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full), 1, F, full), mX, F, full)
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("assign_or_agg_initializer:x") => 
+                NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("") =>
+        [
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full), 1, F, full), mX, F, full)
+            , NamedRef( USE, SymHandle("x"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline Foo(int x) : mX(x){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), not local > }
+    LOCATION = { < SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), local > }
+
+PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_") >
+            < 1, SymHandle("f") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+            MemRefHandle("refRelatedBaseOrTmp") => 
+                NamedRef( USE, SymHandle("f"), F, full)
+            MemRefHandle("mX&") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), F, full), 1, F, full), mX, F, full)
+            MemRefHandle("assign_or_agg_initializer:(f.mX)") => 
+                NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), F, full)
+            MemRefHandle("(f.mX)") => 
+                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mX, F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("") =>
+        [
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), F, full), 1, F, full), mX, F, full)
+            , FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mX, F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline Foo(class Foo &f) : mX((f.mX)){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("f"), local > }
+    LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), not local > }
+    LOCATION = { < SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), local > }
+
+PROCEDURE = { < ProcHandle("Foo::operator="), SymHandle("method:Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_") >
+            < 1, SymHandle("f") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline Foo &operator=(class Foo &f){return *(this);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{return *(this);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("return *(this);") =>
+        [
+            MemRefHandle("(this)") => 
+                NamedRef( USE, SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), F, full)
+            MemRefHandle("*(this)") => 
+                NamedRef( USE, SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("return *(this);") =>
+        [
+            < NamedRef( DEF, SymHandle("method:Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), F, full)
+            , NamedRef( USE, SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), F, full) >
+        ] }
+    LOCATION = { < SymHandle("f"), local > }
+    LOCATION = { < SymHandle("method:Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), not local > }
+    LOCATION = { < SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), local > }
+
+PROCEDURE = { < ProcHandle("Foo::~Foo"), SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline ~Foo(){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
+    LOCATION = { < SymHandle("this::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int x;class Foo *f = new Foo(x);f -> mFooPtr =(new Foo(x));(( *(f -> mFooPtr)).mX) = x;class Foo obj(x);(obj.mX) = x;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int x;class Foo *f = new Foo(x);f -> mFooPtr =(new Foo(x));(( *(f -> mFooPtr)).mX) = x;class Foo obj(x);(obj.mX) = x;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int x;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class Foo *f = new Foo(x);") =>
+        [
+            MemRefHandle("f") => 
+                NamedRef( DEF, SymHandle("f"), F, full)
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), F, full)
+            MemRefHandle("implicit actual this:x") => 
+                UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(x);"), T, part)
+            MemRefHandle("Foo(x)") => 
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
+            MemRefHandle("new Foo(x)") => 
+                UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(x);"), T, part)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("class Foo *f = new Foo(x);") =>
+        [
+            < NamedRef( DEF, SymHandle("f"), F, full)
+            , UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(x);"), T, part) >
+        ] }
+    CALLSITES = { StmtHandle("class Foo *f = new Foo(x);") =>
+        [
+            CallHandle("new Foo(x)") => 
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("new Foo(x)") =>
+        [
+            < 0, UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(x);"), T, part) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("f -> mFooPtr =(new Foo(x));") =>
+        [
+            MemRefHandle("f") => 
+                NamedRef( USE, SymHandle("f"), F, full)
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), F, full)
+            MemRefHandle("implicit actual this:x") => 
+                UnnamedRef( USE, StmtHandle("f -> mFooPtr =(new Foo(x));"), T, part)
+            MemRefHandle("Foo(x)") => 
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
+            MemRefHandle("(new Foo(x))") => 
+                UnnamedRef( USE, StmtHandle("f -> mFooPtr =(new Foo(x));"), T, part)
+            MemRefHandle("f -> mFooPtr") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full)
+            MemRefHandle("f -> mFooPtr =(new Foo(x))") => 
+                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("f -> mFooPtr =(new Foo(x));") =>
+        [
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full)
+            , UnnamedRef( USE, StmtHandle("f -> mFooPtr =(new Foo(x));"), T, part) >
+        ] }
+    CALLSITES = { StmtHandle("f -> mFooPtr =(new Foo(x));") =>
+        [
+            CallHandle("(new Foo(x))") => 
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("(new Foo(x))") =>
+        [
+            < 0, UnnamedRef( USE, StmtHandle("f -> mFooPtr =(new Foo(x));"), T, part) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("(( *(f -> mFooPtr)).mX) = x;") =>
+        [
+            MemRefHandle("refRelatedBaseOrTmp") => 
+                FieldAccess( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full), 1, F, full), mX, F, full)
+            MemRefHandle("f") => 
+                NamedRef( USE, SymHandle("f"), F, full)
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), F, full)
+            MemRefHandle("(( *(f -> mFooPtr)).mX)") => 
+                Deref( DEF, FieldAccess( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full), 1, F, full), mX, F, full), 1, F, full)
+            MemRefHandle("(f -> mFooPtr)") => 
+                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full)
+            MemRefHandle("(( *(f -> mFooPtr)).mX) = x") => 
+                Deref( USE, FieldAccess( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full), 1, F, full), mX, F, full), 1, F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("(( *(f -> mFooPtr)).mX) = x;") =>
+        [
+            < Deref( DEF, FieldAccess( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full), 1, F, full), mX, F, full), 1, F, full)
+            , NamedRef( USE, SymHandle("x"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class Foo obj(x);") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), F, full)
+            MemRefHandle("implicit actual this:x") => 
+                NamedRef( USE, SymHandle("obj"), T, full)
+            MemRefHandle("Foo(x)") => 
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
+        ] }
+    CALLSITES = { StmtHandle("class Foo obj(x);") =>
+        [
+            CallHandle("obj") => 
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("obj") =>
+        [
+            < 0, NamedRef( USE, SymHandle("obj"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("(obj.mX) = x;") =>
+        [
+            MemRefHandle("refRelatedBaseOrTmp") => 
+                FieldAccess( USE, NamedRef( USE, SymHandle("obj"), F, full), mX, F, full)
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), F, full)
+            MemRefHandle("(obj.mX)") => 
+                Deref( DEF, FieldAccess( USE, NamedRef( USE, SymHandle("obj"), F, full), mX, F, full), 1, F, full)
+            MemRefHandle("(obj.mX) = x") => 
+                Deref( USE, FieldAccess( USE, NamedRef( USE, SymHandle("obj"), F, full), mX, F, full), 1, F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("(obj.mX) = x;") =>
+        [
+            < Deref( DEF, FieldAccess( USE, NamedRef( USE, SymHandle("obj"), F, full), mX, F, full), 1, F, full)
+            , NamedRef( USE, SymHandle("x"), F, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("f"), local > }
+    LOCATION = { < SymHandle("obj"), local > }
+    LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }
