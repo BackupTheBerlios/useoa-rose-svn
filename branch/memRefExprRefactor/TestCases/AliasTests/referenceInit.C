@@ -16,7 +16,8 @@ int main()
    // should model as:
    // int *tmp = &x;
    // int **addrRef = &tmp;
-   const int *&addrRef = &x;   // reference to a const pointer.
+   //const int *&addrRef = &x;   // reference to a const pointer., does not compile
+   int * const &addrRef = &x;   // constant reference to a pointer.
 
    // lval on the lhs.
    int &ref = x;               // should get <ref, &x> ptr assign pair.

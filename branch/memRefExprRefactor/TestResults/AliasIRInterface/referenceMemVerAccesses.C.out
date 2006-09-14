@@ -115,6 +115,9 @@ PROCEDURE = { < ProcHandle("Foo::~Foo"), SymHandle("method:Foo::~Foo__Foo__scope
     LOCATION = { < SymHandle("this::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class Foo {public: inline Foo(int x) : mX(x){}inline Foo(class Foo &f) : mX((f.mX)){}inline Foo &operator=(class Foo &f){return *(this);}inline ~Foo(){}int &mX;class Foo *mFooPtr;};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("int main(){int x;class Foo *f = new Foo(x);f -> mFooPtr =(new Foo(x));(( *(f -> mFooPtr)).mX) = x;class Foo obj(x);(obj.mX) = x;return 0;}") =>
         [
         ] }
@@ -197,11 +200,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("(( *(f -> mFooPtr)).mX) = x") => 
                 Deref( USE, FieldAccess( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full), 1, F, full), mX, F, full), 1, F, full)
         ] }
-    PTRASSIGNPAIRS = { StmtHandle("(( *(f -> mFooPtr)).mX) = x;") =>
-        [
-            < Deref( DEF, FieldAccess( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full), 1, F, full), mX, F, full), 1, F, full)
-            , NamedRef( USE, SymHandle("x"), F, full) >
-        ] }
     MEMREFEXPRS = { StmtHandle("class Foo obj(x);") =>
         [
             MemRefHandle("x") => 
@@ -230,11 +228,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 Deref( DEF, FieldAccess( USE, NamedRef( USE, SymHandle("obj"), F, full), mX, F, full), 1, F, full)
             MemRefHandle("(obj.mX) = x") => 
                 Deref( USE, FieldAccess( USE, NamedRef( USE, SymHandle("obj"), F, full), mX, F, full), 1, F, full)
-        ] }
-    PTRASSIGNPAIRS = { StmtHandle("(obj.mX) = x;") =>
-        [
-            < Deref( DEF, FieldAccess( USE, NamedRef( USE, SymHandle("obj"), F, full), mX, F, full), 1, F, full)
-            , NamedRef( USE, SymHandle("x"), F, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

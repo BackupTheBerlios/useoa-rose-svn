@@ -68,6 +68,6 @@ test::  paramBindingsForDestructorInvoc.C,  checked by BSW 9/7/06
 
 # Specifically testing references
 test::  ctorReferenceInit.C,        checked by MMS 9/14/06
-test::  refPtrFormal.C,             missing unnamed = &x sent email MMS 9/14/06
-test::  referenceMemVerAccesses.C,  has extra ptr assigns sent email MMS 9/14/06
-test::  referenceInit.C,            
+test::  refPtrFormal.C,             checked by MMS 9/14/06
+test::  referenceMemVerAccesses.C,  checked by MMS 9/14/06
+test::  referenceInit.C,            waiting on fixes

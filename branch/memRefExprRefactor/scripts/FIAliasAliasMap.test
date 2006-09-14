@@ -3,7 +3,8 @@
 testname::FIAliasAliasMap
 inputdir::TestCases/AliasTests
 outputdir::TestResults/FIAliasAliasMap
-driverexec::./OATest -edg:w --oa-FIAliasAliasMap -c
+driverexec::./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c
+#driverexec::./OATest -edg:w --oa-FIAliasAliasMap -c
 
 # list of tests
 #       input file,             status

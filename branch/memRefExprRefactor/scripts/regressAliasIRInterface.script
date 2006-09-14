@@ -126,7 +126,7 @@ echo "Testing TestCases/AliasTests/passIntPtr.c, TestResults/AliasIRInterface/pa
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/passIntPtr.c >& t
 diff t TestResults/AliasIRInterface/passIntPtr.c.out
 
-echo "Testing TestCases/AliasTests/refParam.C, TestResults/AliasIRInterface/refParam.C.out checked by MMS 8/24/06"
+echo "Testing TestCases/AliasTests/refParam.C, TestResults/AliasIRInterface/refParam.C.out checked by MMS 8/24/06 (rechecked by BSW 9/13/06)"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/refParam.C >& t
 diff t TestResults/AliasIRInterface/refParam.C.out
 
@@ -134,15 +134,15 @@ echo "Testing TestCases/AliasTests/ref.C, TestResults/AliasIRInterface/ref.C.out
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/ref.C >& t
 diff t TestResults/AliasIRInterface/ref.C.out
 
-echo "Testing TestCases/AliasTests/refClass.C, TestResults/AliasIRInterface/refClass.C.out checked by MMS 9/8/06"
+echo "Testing TestCases/AliasTests/refClass.C, TestResults/AliasIRInterface/refClass.C.out checked by MMS 9/8/06  (rechecked by BSW 9/13/06)"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/refClass.C >& t
 diff t TestResults/AliasIRInterface/refClass.C.out
 
-echo "Testing TestCases/AliasTests/refClass2.C, TestResults/AliasIRInterface/refClass2.C.out missing ptr assign MMS 9/8/06"
+echo "Testing TestCases/AliasTests/refClass2.C, TestResults/AliasIRInterface/refClass2.C.out checked by MMS 9/14/06"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/refClass2.C >& t
 diff t TestResults/AliasIRInterface/refClass2.C.out
 
-echo "Testing TestCases/AliasTests/retPtr1.c, TestResults/AliasIRInterface/retPtr1.c.out checked by MMS 8/29/06"
+echo "Testing TestCases/AliasTests/retPtr1.c, TestResults/AliasIRInterface/retPtr1.c.out checked by MMS 9/14/06"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/retPtr1.c >& t
 diff t TestResults/AliasIRInterface/retPtr1.c.out
 
@@ -177,4 +177,20 @@ diff t TestResults/AliasIRInterface/paramBindingsForDynamicCtorInvoc.C.out
 echo "Testing TestCases/AliasTests/paramBindingsForDestructorInvoc.C, TestResults/AliasIRInterface/paramBindingsForDestructorInvoc.C.out checked by BSW 9/7/06"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/paramBindingsForDestructorInvoc.C >& t
 diff t TestResults/AliasIRInterface/paramBindingsForDestructorInvoc.C.out
+
+echo "Testing TestCases/AliasTests/ctorReferenceInit.C, TestResults/AliasIRInterface/ctorReferenceInit.C.out checked by MMS 9/14/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/ctorReferenceInit.C >& t
+diff t TestResults/AliasIRInterface/ctorReferenceInit.C.out
+
+echo "Testing TestCases/AliasTests/refPtrFormal.C, TestResults/AliasIRInterface/refPtrFormal.C.out checked by MMS 9/14/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/refPtrFormal.C >& t
+diff t TestResults/AliasIRInterface/refPtrFormal.C.out
+
+echo "Testing TestCases/AliasTests/referenceMemVerAccesses.C, TestResults/AliasIRInterface/referenceMemVerAccesses.C.out checked by MMS 9/14/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceMemVerAccesses.C >& t
+diff t TestResults/AliasIRInterface/referenceMemVerAccesses.C.out
+
+echo "Testing TestCases/AliasTests/referenceInit.C, TestResults/AliasIRInterface/referenceInit.C.out waiting on fixes"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceInit.C >& t
+diff t TestResults/AliasIRInterface/referenceInit.C.out
 

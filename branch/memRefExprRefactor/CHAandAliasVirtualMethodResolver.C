@@ -38,6 +38,7 @@
 // #define DEBUG
 
 // Taken, slightly modified, from OATest.C
+/*
 OA::OA_ptr<OA::Alias::EquivSets>
 DoFIAliasEquivSets(OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
 {
@@ -57,7 +58,27 @@ DoFIAliasEquivSets(OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
     fialiasman->performAnalysis(procIter);
   return alias;
 }
+*/
 
+OA::OA_ptr<OA::Alias::InterAliasMap>
+DoFIAliasAliasMap(OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
+{
+  int returnvalue=FALSE;
+  
+  //FIAlias
+  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  //  bool excludeInputFiles = true;
+  // Don't pull in any procedures defined in input files.  For testing
+  // purposes only:  avoids unexpected/spurious results due to 
+  // stdlib.h, etc.
+  //  procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
+  procIter = new SageIRProcIterator(p, *irInterface);
+  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+  interAlias = fialiasman->performAnalysis(procIter);
+  return interAlias;
+}
 // Return the function in which node occurs.
 // Taken, slightly modified, from getEnclosingMethod in SageOA.C.
 static 
@@ -604,8 +625,8 @@ int main(int argc, char **argv)
 
   irInterface = new SageIRInterface(project, &nodeArray, p_h);
 
-  OA::OA_ptr<OA::Alias::EquivSets> alias = DoFIAliasEquivSets(irInterface,
-                                                              project);
+  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias 
+      = DoFIAliasAliasMap(irInterface, project);
 
 #if 0
   AstMerge am;
@@ -1208,7 +1229,7 @@ int main(int argc, char **argv)
       OA::CallHandle callHandle = irInterface->getProcExprHandle(functionCallExp);
 
       // Get an OA ProcHandle.
-      OA::ProcHandle callee = irInterface->getProcHandle(enclosingFuncDefn);
+      OA::ProcHandle caller = irInterface->getProcHandle(enclosingFuncDefn);
 
       // Get all of the Call MemRefExprs at the callsite.  I think 
       // we are expecting only one?  Whoops ... interface only
@@ -1218,8 +1239,10 @@ int main(int argc, char **argv)
 
       // How many locations has the alias analysis assigned to this
       // callMRE?
+      OA::OA_ptr<OA::Alias::Interface> alias 
+          = interAlias->getAliasMapResults(caller);
       OA::OA_ptr<OA::LocIterator> locIter =
-        alias->getMayLocs(*callMRE, callee);
+        alias->getMayLocs(*callMRE, caller);
       unsigned int numAliasAnalysisResolutionsForMethod = 0;
       for (locIter->reset(); locIter->isValid(); (*locIter)++) {
         // Don't count invisible locations:
@@ -1241,7 +1264,8 @@ int main(int argc, char **argv)
            ( ( numAliasAnalysisResolutionsForMethod ) > 1 ) ) {
 	ostr << "CHA:  Method invocation has " << numResolutionsForMethod << " possible resolutions " << std::endl;
 	ostr << "Alias analysis:  Method invocation has " << numAliasAnalysisResolutionsForMethod << " possible resolutions " << std::endl;
-	ostr << functionCallExp->unparseToCompleteString() << std::endl;
+        ostr << "\tcaller:" << irInterface->toString(caller) << std::endl;
+	ostr << "\t" << functionCallExp->unparseToCompleteString() << std::endl;
       }
     }
 

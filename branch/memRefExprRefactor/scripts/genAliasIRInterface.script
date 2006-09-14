@@ -88,3 +88,11 @@ echo "Generating TestResults/AliasIRInterface/paramBindingsForDynamicCtorInvoc.C
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/paramBindingsForDynamicCtorInvoc.C >& TestResults/AliasIRInterface/paramBindingsForDynamicCtorInvoc.C.out
 echo "Generating TestResults/AliasIRInterface/paramBindingsForDestructorInvoc.C.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/paramBindingsForDestructorInvoc.C >& TestResults/AliasIRInterface/paramBindingsForDestructorInvoc.C.out
+echo "Generating TestResults/AliasIRInterface/ctorReferenceInit.C.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/ctorReferenceInit.C >& TestResults/AliasIRInterface/ctorReferenceInit.C.out
+echo "Generating TestResults/AliasIRInterface/refPtrFormal.C.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/refPtrFormal.C >& TestResults/AliasIRInterface/refPtrFormal.C.out
+echo "Generating TestResults/AliasIRInterface/referenceMemVerAccesses.C.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceMemVerAccesses.C >& TestResults/AliasIRInterface/referenceMemVerAccesses.C.out
+echo "Generating TestResults/AliasIRInterface/referenceInit.C.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceInit.C >& TestResults/AliasIRInterface/referenceInit.C.out

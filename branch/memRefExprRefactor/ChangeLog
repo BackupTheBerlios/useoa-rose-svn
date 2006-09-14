@@ -2798,3 +2798,10 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
             getGlobalObjectDeclarationsAndClassDefinitions, was
             incorrectly looking for a SgClassDefinition under SgGlobal,
             instead of a SgClassDeclaration.
+
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r218  Michelle Strout
+    - Fixed CHAandAliasVirtualMethodResolver.C by having it call 
+      ManagerFIAliasAliasMap instead of the one that generate EquivSets.
+    - verified some of the AliasIRInterface.test things involving references.
+      There are some diffs in there that seem new.  For example, comma.c
+      now aborts.

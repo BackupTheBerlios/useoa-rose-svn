@@ -536,16 +536,13 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
 
     cfgxaifout+="\n";
     // output edges
-    OA::OA_ptr<OA::DGraph::EdgesIteratorInterface> edgeItPtr 
-        = cfg->getEdgesIterator();
+    OA::OA_ptr<OA::CFG::EdgesIteratorInterface> edgeItPtr 
+        = cfg->getCFGEdgesIterator();
 	for (; edgeItPtr->isValid(); ++(*edgeItPtr)) 
     {
-      OA::OA_ptr<OA::CFG::Edge> e 
-          = edgeItPtr->current().convert<OA::CFG::Edge>();
-      OA::OA_ptr<OA::CFG::Node> n1 
-          = e->source().convert<OA::CFG::Node>();
-      OA::OA_ptr<OA::CFG::Node> n2 
-          = e->sink().convert<OA::CFG::Node>();
+      OA::OA_ptr<OA::CFG::EdgeInterface> e = edgeItPtr->currentCFGEdge();
+      OA::OA_ptr<OA::CFG::NodeInterface> n1 = e->getCFGSource();
+      OA::OA_ptr<OA::CFG::NodeInterface> n2 = e->getCFGSink();
       
       char tmpstr[100];
       sprintf(tmpstr, "<ControlFlowEdge source=\"%d\" target=\"%d\"/>", 
@@ -918,7 +915,10 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   int returnvalue=FALSE;
   if ( debug ) printf("*******start of FIAlias\n");
   OA::OA_ptr<SageIRInterface> irInterface;
-  irInterface = new SageIRInterface(p, na, p_handle);
+  //std::vector<SgNode*> nodeArray;
+  //bool p_h=FALSE; //for debugging only switch between persistent and "pointer" handles (pointers are faster, persistent are easier to debug
+  irInterface = new SageIRInterface(p, na, p_handle); 
+  //irInterface = new SageIRInterface(p, &nodeArray, p_h); 
   
 #if 0
   list<SgNode *> nodes = NodeQuery::querySubTree(p,

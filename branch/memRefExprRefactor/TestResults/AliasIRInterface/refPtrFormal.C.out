@@ -96,13 +96,18 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("constRefPtrArg((&x));") =>
         [
             MemRefHandle("refRelatedBaseOrTmp") => 
-                UnnamedRef( DEF, StmtHandle("constRefPtrArg((&x));"), T, full)
+                UnnamedRef( USE, StmtHandle("constRefPtrArg((&x));"), T, full)
             MemRefHandle("refRelatedBaseOrTmp") => 
                 UnnamedRef( DEF, StmtHandle("constRefPtrArg((&x));"), F, full)
             MemRefHandle("&x") => 
                 NamedRef( USE, SymHandle("x"), T, full)
             MemRefHandle("constRefPtrArg") => 
                 NamedRef( USE, SymHandle("constRefPtrArg"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("constRefPtrArg((&x));") =>
+        [
+            < UnnamedRef( DEF, StmtHandle("constRefPtrArg((&x));"), F, full)
+            , NamedRef( USE, SymHandle("x"), T, full) >
         ] }
     CALLSITES = { StmtHandle("constRefPtrArg((&x));") =>
         [
@@ -111,7 +116,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("constRefPtrArg((&x))") =>
         [
-            < 0, UnnamedRef( DEF, StmtHandle("constRefPtrArg((&x));"), T, full) >
+            < 0, UnnamedRef( USE, StmtHandle("constRefPtrArg((&x));"), T, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("constRefPtrArg(xPtr);") =>
         [
