@@ -30,8 +30,10 @@ int main()
   foo f(ptr);
   *ptr;
 
-  //foo& fooref(ptr);  // this does not compile
-  foo& fooref(foo);
+  //foo& fooref(ptr);    // this does not compile
+  foo& fooref(foo);      // this is viewed as a function prototype
+  //foo& fooref(foo) {}  // a function definition is not allowed
+  foo& fooref2 = f;  // call to a copy constructor?
 
   int z;
   foo* fooptr = new foo(&z);
