@@ -1,0 +1,19 @@
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+(this) -> simulation_unit::display()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+(this) -> simulation_unit::erase()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+(this) -> erase()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+(this) -> display()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+( *((s_grid[x_location])[y_location])).cycle()
+Summary CHA monomorphic call sites: 2
+Summary Alias analysis monomorphic call sites: 0
+Summary CHA total (virtual) resolutions: 17
+Summary Alias analysis total (virtual) resolutions: 0

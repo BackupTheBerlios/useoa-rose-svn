@@ -4533,3 +4533,17 @@ OA::SymHandle SageIRInterface::getVTableBaseSymHandle(SgClassDefinition *classDe
 {
     return getSymHandle(classDefn);
 }
+
+/** \brief Return the OA expression handle associated with a
+ *         function call expression.
+ *  \param astNode  A SgFunctionCallExp representing a function invocation
+ *                  or a SgConstructorInitializer representing a constructor
+ *                  invocation. 
+ *  \returns  an OA handle representing the function invocation.
+ */
+OA::CallHandle SageIRInterface::getProcExprHandle(SgNode *astNode)
+{
+  ROSE_ASSERT(isSgFunctionCallExp(astNode) || isSgConstructorInitializer(astNode));
+  OA::CallHandle callHandle = getNodeNumber(astNode);
+  return callHandle;
+}

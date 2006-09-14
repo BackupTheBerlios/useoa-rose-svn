@@ -1,0 +1,10 @@
+Method invocation has 3 possible resolutions 
+(this) -> Parent::answerName()
+Method invocation has 2 possible resolutions 
+(this) -> Child::answerName()
+Method invocation has 3 possible resolutions 
+f0.answerName()
+Method invocation has 3 possible resolutions 
+f1.answerName()
+Method invocation has 3 possible resolutions 
+f2.answerName()

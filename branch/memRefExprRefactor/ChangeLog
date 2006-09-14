@@ -2705,3 +2705,71 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
               the regression results for refParam.C, refClass.C.
 
 
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r213  Brian White
+	
+            - Copied CHAandAliasVirtualMethodResolver from trunk, 
+              which performs virtual call site resolution using both 
+              static class hierarchy analysis (a la 
+              staticVirtualMethodResolver, with which it
+              should be merged) and using FIAlias.
+
+            - Checked in Benchmarks from the paper 
+              "Static Type Determination and Aliasing for C++",  
+              Hemant Pande and Barbara G. Ryder, 
+              Laboratory of Computer Science Research Technical Report,  
+              Number LCSR-TR-250-A, October, 1995.
+
+              Located in TestCases/AliasBenchmarks/PandeEtAl95.
+
+              This is the complete benchmark suite from that paper, 
+              including:
+
+              chess
+              city
+              driv1
+              driv2
+              employ
+              family
+              fsm
+              garage
+              greed
+              life
+              np
+              objects
+              ocean
+              office
+	      primes
+              shapes
+              simul
+              tree
+              vcirc
+
+              According to BIBLIO file, these were found at 
+              http://www.cis.udel.edu/~hiper/C++benches/
+              by Cornell undergrads James Juwon Lee (primarily)
+              and David Drew.  In principle, they have annotated these
+              with (empty) stubs-- i.e., they do not account for
+              aliasing or side effects, though I expect there to be none. 
+
+              For example, in primes.C, we see a stub section that
+              begins with the comment // stubs
+
+              // stubs
+
+              int printf(const char *format, ...)
+              {
+                  return 0;
+              }
+
+              Stubs for some benchmarks may be missing, as James and David
+              were unable to get all benchmarks to compile.  There are
+              no makefiles, but everything should be a single file.  Where
+              everything was not in a single file, they should have
+              been concated into a single concat.C file.
+
+	      James said he was unable to compile: city, employ, ocean,
+              and np.
+
+              To run, e.g., in TestCases/AliasBenchmarks/PandeEtAl95/simul:
+
+              ../../../../CHAandAliasVirtualMethodResolver -out:results -I. simulate.C

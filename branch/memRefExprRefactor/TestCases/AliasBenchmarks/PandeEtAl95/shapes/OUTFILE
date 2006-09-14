@@ -1,0 +1,28 @@
+Method invocation has 3 possible resolutions 
+p -> draw()
+Method invocation has 2 possible resolutions 
+q -> north()
+Method invocation has 2 possible resolutions 
+p -> south()
+Method invocation has 3 possible resolutions 
+p -> move(((n -> x) - (s -> x)),(((n -> y) - (s -> y)) + 1))
+Method invocation has 2 possible resolutions 
+(this) -> rectangle::draw()
+Method invocation has 2 possible resolutions 
+(this) -> rectangle::move(a,b)
+Method invocation has 3 possible resolutions 
+p3 -> move((-10),(-10))
+Method invocation has 3 possible resolutions 
+p -> draw()
+Method invocation has 2 possible resolutions 
+q -> north()
+Method invocation has 2 possible resolutions 
+p -> south()
+Method invocation has 3 possible resolutions 
+p -> move(((n -> x) - (s -> x)),(((n -> y) - (s -> y)) + 1))
+Method invocation has 2 possible resolutions 
+(this) -> rectangle::draw()
+Method invocation has 2 possible resolutions 
+(this) -> rectangle::move(a,b)
+Method invocation has 3 possible resolutions 
+p3 -> move((-10),(-10))

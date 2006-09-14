@@ -1,0 +1,4 @@
+Method invocation has 4 possible resolutions 
+( *((w[((this) -> row) + i])[((this) -> column) + j])).who()
+Method invocation has 4 possible resolutions 
+( *((w_old[i])[j])).next(w_old)
