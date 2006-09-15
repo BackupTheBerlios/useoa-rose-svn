@@ -36,17 +36,14 @@ class EmployeeNode {
     EmployeeNode * next;
     
   public:
-    EmployeeNode(Employee *, EmployeeNode *);
+    EmployeeNode(Employee *e, EmployeeNode *n) {
+        employee = e;
+        next = n;
+    }
 
     Employee * Employee() { return employee; }
     EmployeeNode *  Next();
 };
-/*****************************************************************************/
-EmployeeNode::EmployeeNode(Employee * e, EmployeeNode * n)
-{
-    employee = e;
-    next = n;
-}
 /*****************************************************************************/
 EmployeeNode *
 EmployeeNode::Next()
