@@ -74,6 +74,39 @@ class Circle : public Point
   virtual void Hide();
   void Expand(int ExpandBy);
   inline void Contract(int ContractBy);
+  
+
+  Circle() : Point()
+{
+  }
+
+  
+
+  ~Circle()
+{
+    ((class Point *)(this)) -> ~Point();
+  }
+
+  
+
+  Circle(class Circle &rhs) : Radius(rhs.Radius), Point(rhs)
+{
+  }
+
+  
+
+  Circle &operator=(class Circle &rhs)
+{
+    (*((class Point *)(this)))=((class Point &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> Radius = rhs.Radius;
+    return  *(this);
+  }
+
 }
 
 ;

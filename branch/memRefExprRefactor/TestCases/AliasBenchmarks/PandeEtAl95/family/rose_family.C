@@ -61,7 +61,7 @@ class Parent
 
   virtual inline void answerName()
 {
-    (this) -> lastName;
+//    lastName;
   }
 
   
@@ -69,6 +69,19 @@ class Parent
   inline ~Parent()
 {
     delete ((this) -> lastName);
+  }
+
+  
+
+  Parent &operator=(class Parent &rhs)
+{
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> lastName = rhs.lastName;
+    return  *(this);
   }
 
 }
@@ -80,7 +93,7 @@ class Child : public Parent
   protected: char *firstName;
   
 
-  public: inline Child()
+  public: inline Child() : Parent()
 {
     (this) -> firstName = (new char );
     strcpy(((this) -> firstName),("None"));
@@ -96,7 +109,7 @@ class Child : public Parent
 
   
 
-  inline Child(class Child &aChild)
+  inline Child(class Child &aChild) : Parent()
 {
     (this) -> setLastName(aChild.getLastName());
     strlen((aChild.firstName)) , (this) -> firstName = (new char );
@@ -122,6 +135,7 @@ class Child : public Parent
 
   inline ~Child()
 {
+    ((class Parent *)(this)) -> ~Parent();
     delete ((this) -> firstName);
   }
 
@@ -130,7 +144,21 @@ class Child : public Parent
   virtual inline void answerName()
 {
     (this) -> Parent::answerName();
-    (this) -> firstName;
+//   firstName;
+  }
+
+  
+
+  Child &operator=(class Child &rhs)
+{
+    (*((class Parent *)(this)))=((class Parent &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> firstName = rhs.firstName;
+    return  *(this);
   }
 
 }
@@ -152,6 +180,7 @@ class GrandChild : public Child
 
   inline ~GrandChild()
 {
+    ((class Child *)(this)) -> ~Child();
     delete ((this) -> grandFatherName);
   }
 
@@ -160,7 +189,33 @@ class GrandChild : public Child
   virtual inline void answerName()
 {
     (this) -> Child::answerName();
-    (this) -> grandFatherName;
+//  grandFatherName;
+  }
+
+  
+
+  GrandChild() : Child()
+{
+  }
+
+  
+
+  GrandChild(class GrandChild &rhs) : grandFatherName(rhs.grandFatherName), Child(rhs)
+{
+  }
+
+  
+
+  GrandChild &operator=(class GrandChild &rhs)
+{
+    (*((class Child *)(this)))=((class Child &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> grandFatherName = rhs.grandFatherName;
+    return  *(this);
   }
 
 }
@@ -172,9 +227,9 @@ int main()
   class Parent p(("Jones"));
   class Child c(("Jones"),("Henry"));
   class GrandChild g(("Jones"),("Cynthia"),("Murray"));
-  class Parent &f0 = p;
-  class Parent &f1 = g;
-  class Parent &f2 = c;
+  class Parent &f0(p);
+  class Parent &f1(g);
+  class Parent &f2(c);
   f0.answerName();
   f1.answerName();
   f2.answerName();

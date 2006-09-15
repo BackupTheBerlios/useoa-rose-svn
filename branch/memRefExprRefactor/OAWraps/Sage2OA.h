@@ -849,6 +849,7 @@ public:
                                              SgInitializedName *initName);
 
    void createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle stmt,
+               SgClassDefinition *topClassDefinition,
                SgClassDefinition *classDefinition,
                std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods);
 

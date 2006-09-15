@@ -5,24 +5,25 @@
 
 // implicit assignments should occur at class definition for vtable model.
 class Base {
+public:
   Base() { }
   Base(Base &b) { }
   ~Base() { }
-  operator=(Base &b) { }
-  virtual virtMethodBase() { } 
+  Base &operator=(Base &b) { return *this; }
+  virtual void virtMethodBase() { } 
 };
 
 // implicit assignments should occur at class definition for vtable model.
-class Foo {
+class Foo : public Base {
 public:
   // Define all of the special methods, since we do not want to
   // test normalization in this example.
   Foo() { }
   Foo(Foo &f) { }
   ~Foo() { }
-  operator=(Foo &f) { }
-  virtual virtMethod1() { }
-  virtual virtMethod2(int x) { }
+  Foo &operator=(Foo &f) { return *this; }
+  virtual void virtMethod1() { }
+  virtual void virtMethod2(int x) { }
 };
 
 int main()

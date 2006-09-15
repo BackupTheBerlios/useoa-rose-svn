@@ -813,7 +813,10 @@ isVirtualWithinDefiningClass(SgFunctionDeclaration *functionDeclaration)
         isSgFunctionDeclaration(firstNondefiningDeclaration);
     ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
 
-    return firstNondefiningFuncDeclaration->get_functionModifier().isVirtual();
+    if ( firstNondefiningFuncDeclaration->get_functionModifier().isVirtual() ) {
+        return true;
+    }
+    return false;
 }
 
 /** \brief  Return boolean indicating whether a function is declared
@@ -915,6 +918,23 @@ isDeclaredVirtualWithinAncestor(SgFunctionDeclaration *functionDeclaration)
                                                 classDefinition);
 }
 
+/** \brief Returns true if the method is a constructor.
+ *  \param memberFunctionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether methodFunctionDeclaration is
+ *            a constructor.
+ */
+static
+bool isConstructor(SgMemberFunctionDeclaration *memberFunctionDeclaration)
+{
+  ROSE_ASSERT(memberFunctionDeclaration != NULL);
+
+  SgSpecialFunctionModifier &specialFunctionModifier =
+    memberFunctionDeclaration->get_specialFunctionModifier();
+
+  // Determine whether method is a constructor.
+  return ( specialFunctionModifier.isConstructor() );
+}
+
 /** \brief  Return boolean indicating whether a function is
  *          virtual-- i.e., whether it is declared virtual
  *          in its defining class or any of that class' 
@@ -927,11 +947,48 @@ isVirtual(SgFunctionDeclaration *functionDeclaration)
         return false;
     }
 
+    // Sometimes constructors are being marked as virtual.
+    // Clearly they are not.  Detect this case and return false.
+    SgMemberFunctionDeclaration *method =
+        isSgMemberFunctionDeclaration(functionDeclaration);
+    if ( method == NULL ) {
+        return false;
+    }
+
+    if ( isConstructor(method) ) {
+      return false;
+    }
+
     if ( isVirtualWithinDefiningClass(functionDeclaration) ) {
         return true;
     }
     
     return isDeclaredVirtualWithinAncestor(functionDeclaration);
+}
+
+/** \brief  Returns true if method is a pure virtual method.
+ *  \param  functionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether method is a pure virtual
+ *            method.
+ */
+bool isPureVirtual(SgFunctionDeclaration *functionDeclaration)
+{
+  if ( functionDeclaration == NULL ) return false;
+
+  if ( functionDeclaration->get_functionModifier().isPureVirtual() ) 
+    return true;
+
+  SgDeclarationStatement *firstNondefiningDeclaration =
+    functionDeclaration->get_firstNondefiningDeclaration();
+
+  if ( firstNondefiningDeclaration == NULL )
+    return false;
+
+  SgFunctionDeclaration *firstNondefiningFuncDeclaration =
+    isSgFunctionDeclaration(firstNondefiningDeclaration);
+  ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
+
+  return firstNondefiningFuncDeclaration->get_functionModifier().isPureVirtual();
 }
 
 /** \brief Return true if a class or any of its base classes 

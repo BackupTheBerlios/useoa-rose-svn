@@ -18,6 +18,37 @@ class item
     return 0;
   }
 
+  
+
+  item()
+{
+  }
+
+  
+
+  ~item()
+{
+  }
+
+  
+
+  item(class item &rhs) : source(rhs.source)
+{
+  }
+
+  
+
+  item &operator=(class item &rhs)
+{
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> source = rhs.source;
+    return  *(this);
+  }
+
 }
 
 ;
@@ -39,6 +70,39 @@ class counter : public item
     (this) -> value = v;
   }
 
+  
+
+  counter() : item()
+{
+  }
+
+  
+
+  ~counter()
+{
+    ((class item *)(this)) -> ~item();
+  }
+
+  
+
+  counter(class counter &rhs) : value(rhs.value), item(rhs)
+{
+  }
+
+  
+
+  counter &operator=(class counter &rhs)
+{
+    (*((class item *)(this)))=((class item &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> value = rhs.value;
+    return  *(this);
+  }
+
 }
 
 ;
@@ -50,6 +114,38 @@ class sieve : public item
 
   inline sieve(class item *src) : item(src)
 {
+  }
+
+  
+
+  sieve() : item()
+{
+  }
+
+  
+
+  ~sieve()
+{
+    ((class item *)(this)) -> ~item();
+  }
+
+  
+
+  sieve(class sieve &rhs) : item(rhs)
+{
+  }
+
+  
+
+  sieve &operator=(class sieve &rhs)
+{
+    (*((class item *)(this)))=((class item &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    return  *(this);
   }
 
 }
@@ -65,6 +161,39 @@ class filter : public item
   inline filter(class item *src,int f) : item(src)
 {
     (this) -> factor = f;
+  }
+
+  
+
+  filter() : item()
+{
+  }
+
+  
+
+  ~filter()
+{
+    ((class item *)(this)) -> ~item();
+  }
+
+  
+
+  filter(class filter &rhs) : factor(rhs.factor), item(rhs)
+{
+  }
+
+  
+
+  filter &operator=(class filter &rhs)
+{
+    (*((class item *)(this)))=((class item &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> factor = rhs.factor;
+    return  *(this);
   }
 
 }
@@ -104,3 +233,11 @@ int filter::out()
   }
 }
 
+// stubs
+
+extern "C" { int printf(const char *format,... )
+{
+  return 0;
+}
+
+ }

@@ -2867,6 +2867,18 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
       ROSE_ABORT();
       break;
     }
+  case V_SgClassDefinition:
+    {
+      SgClassDefinition *classDefn = isSgClassDefinition(node);
+      ROSE_ASSERT(classDefn != NULL);
+
+      SgName className = classDefn->get_qualified_name();
+      ret = node->sage_class_name();
+      ret += ":";
+      ret += className.str();
+
+      break;
+    }
   default:
     {
       ret = node->sage_class_name();

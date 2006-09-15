@@ -64,7 +64,8 @@ clean-recursive:
 
 #LD_LIBRARY_PATH += /soft/apps/packages/gcc-3.1/lib
 
-bin_PROGRAMS = OATest CtoOA staticVirtualMethodResolver astNormalizer nullTranslator CHAandAliasVirtualMethodResolver
+#bin_PROGRAMS = OATest CtoOA staticVirtualMethodResolver astNormalizer nullTranslator CHAandAliasVirtualMethodResolver
+bin_PROGRAMS = CtoOA CHAandAliasVirtualMethodResolver
 
 all:  recursive
 

@@ -10,7 +10,15 @@ SageIRCallsiteIterator::SageIRCallsiteIterator(SgStatement * sgstmt,
     : ir(in)
 {
  //given an sgstmt put all call expressions in calls_in_stmt
-  FindCallsitesInSgStmt(sgstmt, calls_in_stmt);
+  // Do not look for call sites within a SgClassDefinition.  We
+  // return this as a statement so we can create implicit
+  // virtual method ptr assign pairs from it.
+  // Its procedures will be passed explicitly as statements.
+  // If we recurse through the class definition, we will
+  // visit them twice.
+  if ( !isSgClassDefinition(sgstmt) && !isSgClassDeclaration(sgstmt) ) {
+      FindCallsitesInSgStmt(sgstmt, calls_in_stmt);
+  }
   begin = calls_in_stmt.begin();
   st_iter = calls_in_stmt.begin();
   end = calls_in_stmt.end();

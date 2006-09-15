@@ -11,7 +11,7 @@ public:
   Foo() { }
   Foo(Foo &f) { }
   ~Foo() { }
-  operator=(Foo &f) { }
+  Foo &operator=(Foo &f) { return *this; }
   virtual void virtMethod1() { }
   virtual void virtMethod2(int x) { }
 };

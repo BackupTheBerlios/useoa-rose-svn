@@ -178,6 +178,82 @@ echo "Testing TestCases/AliasTests/paramBindingsForDestructorInvoc.C, TestResult
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/paramBindingsForDestructorInvoc.C >& t
 diff t TestResults/AliasIRInterface/paramBindingsForDestructorInvoc.C.out
 
+echo "Testing TestCases/AliasTests/stackInitOfClassWithVirtualMethods.C, TestResults/AliasIRInterface/stackInitOfClassWithVirtualMethods.C.out checked by BSW 9/14/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/stackInitOfClassWithVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/stackInitOfClassWithVirtualMethods.C.out
+
+echo "Testing TestCases/AliasTests/dynamicInitOfClassWithVirtualMethods.C, TestResults/AliasIRInterface/dynamicInitOfClassWithVirtualMethods.C.out checked by BSW 9/14/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/dynamicInitOfClassWithVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/dynamicInitOfClassWithVirtualMethods.C.out
+
+echo "Testing TestCases/AliasTests/virtualDotMethodInvocation.C, TestResults/AliasIRInterface/virtualDotMethodInvocation.C.out checked by BSW 9/14/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/virtualDotMethodInvocation.C >& t
+diff t TestResults/AliasIRInterface/virtualDotMethodInvocation.C.out
+
+echo "Testing TestCases/AliasTests/virtualArrowMethodInvocation.C, TestResults/AliasIRInterface/virtualArrowMethodInvocation.C.out checked by BSW 9/14/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/virtualArrowMethodInvocation.C >& t
+diff t TestResults/AliasIRInterface/virtualArrowMethodInvocation.C.out
+
+echo "Testing TestCases/AliasTests/assignOfObjectPtrWithVirtualMethods.C, TestResults/AliasIRInterface/assignOfObjectPtrWithVirtualMethods.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/assignOfObjectPtrWithVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/assignOfObjectPtrWithVirtualMethods.C.out
+
+echo "Testing TestCases/AliasTests/stackInitOfClassWhoseBaseClassHasVirtualMethods.C, TestResults/AliasIRInterface/stackInitOfClassWhoseBaseClassHasVirtualMethods.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/stackInitOfClassWhoseBaseClassHasVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/stackInitOfClassWhoseBaseClassHasVirtualMethods.C.out
+
+echo "Testing TestCases/AliasTests/dynamicInitOfClassWhoseBaseClassHasVirtualMethods.C, TestResults/AliasIRInterface/dynamicInitOfClassWhoseBaseClassHasVirtualMethods.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/dynamicInitOfClassWhoseBaseClassHasVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/dynamicInitOfClassWhoseBaseClassHasVirtualMethods.C.out
+
+echo "Testing TestCases/AliasTests/virtualDotBaseMethodInvocation.C, TestResults/AliasIRInterface/virtualDotBaseMethodInvocation.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/virtualDotBaseMethodInvocation.C >& t
+diff t TestResults/AliasIRInterface/virtualDotBaseMethodInvocation.C.out
+
+echo "Testing TestCases/AliasTests/virtualDotRefBaseMethodInvocation.C, TestResults/AliasIRInterface/virtualDotRefBaseMethodInvocation.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/virtualDotRefBaseMethodInvocation.C >& t
+diff t TestResults/AliasIRInterface/virtualDotRefBaseMethodInvocation.C.out
+
+echo "Testing TestCases/AliasTests/virtualArrowBaseMethodInvocation.C, TestResults/AliasIRInterface/virtualArrowBaseMethodInvocation.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/virtualArrowBaseMethodInvocation.C >& t
+diff t TestResults/AliasIRInterface/virtualArrowBaseMethodInvocation.C.out
+
+echo "Testing TestCases/AliasTests/assignOfObjPtrWhoseBaseClassHasVirtualMethods.C, TestResults/AliasIRInterface/assignOfObjPtrWhoseBaseClassHasVirtualMethods.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/assignOfObjPtrWhoseBaseClassHasVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/assignOfObjPtrWhoseBaseClassHasVirtualMethods.C.out
+
+echo "Testing TestCases/AliasTests/stackInitOfClassThatOverloadsBaseClassVirtualMethods.C, TestResults/AliasIRInterface/stackInitOfClassThatOverloadsBaseClassVirtualMethods.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/stackInitOfClassThatOverloadsBaseClassVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/stackInitOfClassThatOverloadsBaseClassVirtualMethods.C.out
+
+echo "Testing TestCases/AliasTests/stackInitOfClassThatOverloadsBaseClassPureVirtualMethods.C, TestResults/AliasIRInterface/stackInitOfClassThatOverloadsBaseClassPureVirtualMethods.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/stackInitOfClassThatOverloadsBaseClassPureVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/stackInitOfClassThatOverloadsBaseClassPureVirtualMethods.C.out
+
+echo "Testing TestCases/AliasTests/dynamicInitOfClassThatOverloadsBaseClassVirtualMethods.C, TestResults/AliasIRInterface/dynamicInitOfClassThatOverloadsBaseClassVirtualMethods.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/dynamicInitOfClassThatOverloadsBaseClassVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/dynamicInitOfClassThatOverloadsBaseClassVirtualMethods.C.out
+
+echo "Testing TestCases/AliasTests/dynamicInitOfClassThatOverloadsBaseClassPureVirtualMethods.C, TestResults/AliasIRInterface/dynamicInitOfClassThatOverloadsBaseClassPureVirtualMethods.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/dynamicInitOfClassThatOverloadsBaseClassPureVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/dynamicInitOfClassThatOverloadsBaseClassPureVirtualMethods.C.out
+
+echo "Testing TestCases/AliasTests/virtualDotOverloadedBaseMethodInvocation.C, TestResults/AliasIRInterface/virtualDotOverloadedBaseMethodInvocation.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/virtualDotOverloadedBaseMethodInvocation.C >& t
+diff t TestResults/AliasIRInterface/virtualDotOverloadedBaseMethodInvocation.C.out
+
+echo "Testing TestCases/AliasTests/virtualArrowOverloadedBaseMethodInvocation.C, TestResults/AliasIRInterface/virtualArrowOverloadedBaseMethodInvocation.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/virtualArrowOverloadedBaseMethodInvocation.C >& t
+diff t TestResults/AliasIRInterface/virtualArrowOverloadedBaseMethodInvocation.C.out
+
+echo "Testing TestCases/AliasTests/assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C, TestResults/AliasIRInterface/assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C.out
+
+echo "Testing TestCases/AliasTests/assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C, TestResults/AliasIRInterface/assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C.out checked by BSW 9/15/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C >& t
+diff t TestResults/AliasIRInterface/assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C.out
+
 echo "Testing TestCases/AliasTests/ctorReferenceInit.C, TestResults/AliasIRInterface/ctorReferenceInit.C.out checked by MMS 9/14/06"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/ctorReferenceInit.C >& t
 diff t TestResults/AliasIRInterface/ctorReferenceInit.C.out
@@ -186,11 +262,7 @@ echo "Testing TestCases/AliasTests/refPtrFormal.C, TestResults/AliasIRInterface/
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/refPtrFormal.C >& t
 diff t TestResults/AliasIRInterface/refPtrFormal.C.out
 
-echo "Testing TestCases/AliasTests/referenceMemVerAccesses.C, TestResults/AliasIRInterface/referenceMemVerAccesses.C.out checked by MMS 9/14/06"
-./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceMemVerAccesses.C >& t
-diff t TestResults/AliasIRInterface/referenceMemVerAccesses.C.out
-
-echo "Testing TestCases/AliasTests/referenceInit.C, TestResults/AliasIRInterface/referenceInit.C.out waiting on fixes"
-./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceInit.C >& t
-diff t TestResults/AliasIRInterface/referenceInit.C.out
+echo "Testing TestCases/AliasTests/referenceMemVarAccesses.C, TestResults/AliasIRInterface/referenceMemVarAccesses.C.out checked by MMS 9/14/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceMemVarAccesses.C >& t
+diff t TestResults/AliasIRInterface/referenceMemVarAccesses.C.out
 

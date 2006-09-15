@@ -68,9 +68,27 @@ test::  paramBindingsForDestructorInvoc.C,  checked by BSW 9/7/06
 
 # Specifically for virtual methods
 test::  stackInitOfClassWithVirtualMethods.C,  checked by BSW 9/14/06
+test::  dynamicInitOfClassWithVirtualMethods.C,  checked by BSW 9/14/06
+test::  virtualDotMethodInvocation.C,  checked by BSW 9/14/06
+test::  virtualArrowMethodInvocation.C,  checked by BSW 9/14/06
+test::  assignOfObjectPtrWithVirtualMethods.C, checked by BSW 9/15/06
+test::  stackInitOfClassWhoseBaseClassHasVirtualMethods.C, checked by BSW 9/15/06
+test::  dynamicInitOfClassWhoseBaseClassHasVirtualMethods.C, checked by BSW 9/15/06
+test::  virtualDotBaseMethodInvocation.C, checked by BSW 9/15/06
+test::  virtualDotRefBaseMethodInvocation.C, checked by BSW 9/15/06
+test::  virtualArrowBaseMethodInvocation.C, checked by BSW 9/15/06
+test::  assignOfObjPtrWhoseBaseClassHasVirtualMethods.C, checked by BSW 9/15/06
+test::  stackInitOfClassThatOverloadsBaseClassVirtualMethods.C, checked by BSW 9/15/06
+test::  stackInitOfClassThatOverloadsBaseClassPureVirtualMethods.C, checked by BSW 9/15/06
+test::  dynamicInitOfClassThatOverloadsBaseClassVirtualMethods.C, checked by BSW 9/15/06
+test::  dynamicInitOfClassThatOverloadsBaseClassPureVirtualMethods.C, checked by BSW 9/15/06
+test::  virtualDotOverloadedBaseMethodInvocation.C, checked by BSW 9/15/06
+test::  virtualArrowOverloadedBaseMethodInvocation.C, checked by BSW 9/15/06
+test::  assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C, checked by BSW 9/15/06
+test::  assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C, checked by BSW 9/15/06
 
 # Specifically testing references
 test::  ctorReferenceInit.C,        checked by MMS 9/14/06
 test::  refPtrFormal.C,             checked by MMS 9/14/06
-test::  referenceMemVerAccesses.C,  checked by MMS 9/14/06
-test::  referenceInit.C,            waiting on fixes
+test::  referenceMemVarAccesses.C,  checked by MMS 9/14/06
+#test::  referenceInit.C,            waiting on fixes

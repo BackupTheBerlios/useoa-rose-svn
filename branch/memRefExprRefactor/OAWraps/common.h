@@ -47,6 +47,8 @@ bool classHasVirtualMethods(SgClassDefinition *classDefinition);
 
 bool isVirtual(SgFunctionDeclaration *functionDeclaration);
 
+bool isPureVirtual(SgFunctionDeclaration *functionDeclaration);
+
 std::string mangleFunctionName(SgFunctionDeclaration *funcDecl);
 
 SgClassDeclaration *

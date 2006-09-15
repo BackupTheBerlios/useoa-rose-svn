@@ -2849,3 +2849,63 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 	  - Passed the following tests:
 
               - stackInitOfClassWithVirtualMethods.C
+
+
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r225  Brian White	
+
+          - Modified SgDotExp case so that it only creates
+            a FieldAccess for a virtual method if the 
+            receiver is a reference, an not an object.
+
+          - Weren't creating a deref'ed fieldaccess call
+            mre for virtual methods-- changed SgDeleteExp
+            and SgFunctionCallExp cases to do this.
+
+          - Modified isVirtual to detect when it is called
+            on a constructor and to return false.
+            For some reason, constructors are sometimes
+            annotated as virtual by ROSE.
+
+          - When we created virtual method implicit
+            assignments at a class definition (vtable approach),
+            we need to always use the SgClassDefinition
+            of the top-level class we are visiting
+            as the virtual function table pointer base,
+            as opposed to the SgClassDefinition of a
+            derived class that may be defining a virtual
+            method.  Changed 
+            createImplicitPtrAssignPairsForClassDefinition
+            to take this topClass as an argument.
+
+          - Changed nearly all derefs to use derefMre, which
+            uses composeWith.
+	
+	  - Passed the following tests:
+
+              - dynamicInitOfClassWithVirtualMethods.C
+              - virtualDotMethodInvocation.C
+              - virtualArrowMethodInvocation.C
+              - assignOfObjectPtrWithVirtualMethods.C
+              - stackInitOfClassWhoseBaseClassHasVirtualMethods.C
+              - dynamicInitOfClassWhoseBaseClassHasVirtualMethods.C
+              - virtualDotBaseMethodInvocation.C
+              - virtualDotRefBaseMethodInvocation.C
+              - virtualArrowBaseMethodInvocation.C
+              - assignOfObjPtrWhoseBaseClassHasVirtualMethods.C
+
+9/15/06     UseOA-Rose svn branch-memRefExprRefactor r226  Brian White	
+
+          - No longer generate implicit ptr assign pairs for _pure_
+            virtual methods.  These can not be invoked, so including
+            them would be correct, but imprecise.
+	
+	  - "Completed" testing of virtual methods by passing the following tests:
+
+              - stackInitOfClassThatOverloadsBaseClassVirtualMethods.C	
+              - stackInitOfClassThatOverloadsBaseClassPureVirtualMethods.C
+              - dynamicInitOfClassThatOverloadsBaseClassVirtualMethods.C
+              - dynamicInitOfClassThatOverloadsBaseClassPureVirtualMethods.C
+              - virtualDotOverloadedBaseMethodInvocation.C
+              - virtualArrowOverloadedBaseMethodInvocation.C
+              - assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C
+              - assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C

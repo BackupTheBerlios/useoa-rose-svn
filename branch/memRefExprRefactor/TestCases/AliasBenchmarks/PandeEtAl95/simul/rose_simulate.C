@@ -107,7 +107,7 @@ int strlen(char *str)
 }
 
 
-screen_controller::screen_controller(int rows,int cols) : rowmax(rows), colmax(cols)
+screen_controller::screen_controller(int rows,int cols) : rowmax(rows), colmax(cols), cursor_controller2()
 {
   if (object_count) {
     error(("only one instance allowed"));
@@ -133,6 +133,7 @@ void screen_controller::setcols(int cols)
 
 screen_controller::~screen_controller()
 {
+  ((class cursor_controller2 *)(this)) -> ~cursor_controller2();
   (this) -> normal();
   printf(("turn on line wrap"),0,0);
 }
@@ -164,7 +165,19 @@ void screen_controller::lower_right()
 
 void screen_controller::draw_vertical(int row,int col,int length,char l_char)
 {
-  if ((row > ((this) -> rowmax)) || ((row + length) > ((this) -> rowmax))) {
+  bool rose_sc_bool_0 = false;
+  if ((row > ((this) -> rowmax))) {{
+      rose_sc_bool_0 = true;
+    }
+  }
+  else {
+    if (((row + length) > ((this) -> rowmax))) {
+      rose_sc_bool_0 = true;
+    }
+    else {
+    }
+  }
+  if (rose_sc_bool_0) {
     error(("draw_vertical: row index out of bounds"));
   }
   else {
@@ -183,7 +196,19 @@ void screen_controller::draw_vertical(int row,int col,int length,char l_char)
 
 void screen_controller::draw_horizontal(int row,int col,int length,char l_char)
 {
-  if ((col > ((this) -> colmax)) || ((col + length) > ((this) -> colmax))) {
+  bool rose_sc_bool_1 = false;
+  if ((col > ((this) -> colmax))) {{
+      rose_sc_bool_1 = true;
+    }
+  }
+  else {
+    if (((col + length) > ((this) -> colmax))) {
+      rose_sc_bool_1 = true;
+    }
+    else {
+    }
+  }
+  if (rose_sc_bool_1) {
     error(("draw_horizontal: row index out of bounds"));
   }
   else {
@@ -251,6 +276,30 @@ class simulation_unit *s_grid[25][80];
 class init_grid 
 {
   public: init_grid();
+  
+
+  ~init_grid()
+{
+  }
+
+  
+
+  init_grid(class init_grid &rhs)
+{
+  }
+
+  
+
+  init_grid &operator=(class init_grid &rhs)
+{
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    return  *(this);
+  }
+
 }
 
 ;
@@ -270,12 +319,36 @@ void simulation_unit::move(int x_steps,int y_steps)
 {
   int x_new = (((this) -> x) + x_steps);
   int y_new = (((this) -> y) + y_steps);
-  if ((x_new < 0) || (x_new >= 25)) {
+  bool rose_sc_bool_2 = false;
+  if ((x_new < 0)) {{
+      rose_sc_bool_2 = true;
+    }
+  }
+  else {
+    if ((x_new >= 25)) {
+      rose_sc_bool_2 = true;
+    }
+    else {
+    }
+  }
+  if (rose_sc_bool_2) {
     error(("move: x coord out of bounds"));
   }
   else {
   }
-  if ((y_new < 0) || (y_new >= 80)) {
+  bool rose_sc_bool_3 = false;
+  if ((y_new < 0)) {{
+      rose_sc_bool_3 = true;
+    }
+  }
+  else {
+    if ((y_new >= 80)) {
+      rose_sc_bool_3 = true;
+    }
+    else {
+    }
+  }
+  if (rose_sc_bool_3) {
     error(("move: y coord out of bounds"));
   }
   else {
@@ -321,6 +394,7 @@ class pop_around : public simulation_unit
 
   virtual inline ~pop_around()
 {
+    ((class simulation_unit *)(this)) -> ~simulation_unit();
   }
 
   
@@ -351,9 +425,46 @@ class pop_around : public simulation_unit
         y_direction = 2;
       }
     }
-    int x_jump = (x_direction)?(-1):1;
-    int y_jump = (y_direction)?(-1):1;
+    int x_jump;
+    if (x_direction) {
+      x_jump = (-1);
+    }
+    else {
+      x_jump = 1;
+    }
+    int y_jump;
+    if (y_direction) {
+      y_jump = (-1);
+    }
+    else {
+      y_jump = 1;
+    }
     (this) -> move(x_jump,y_jump);
+  }
+
+  
+
+  pop_around() : simulation_unit()
+{
+  }
+
+  
+
+  pop_around(class pop_around &rhs) : simulation_unit(rhs)
+{
+  }
+
+  
+
+  pop_around &operator=(class pop_around &rhs)
+{
+    (*((class simulation_unit *)(this)))=((class simulation_unit &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    return  *(this);
   }
 
 }
@@ -389,6 +500,7 @@ class crawl_around : public simulation_unit
 
   virtual inline ~crawl_around()
 {
+    ((class simulation_unit *)(this)) -> ~simulation_unit();
   }
 
   
@@ -418,6 +530,31 @@ class crawl_around : public simulation_unit
     else {
     }
     (this) -> move(x_step,y_step);
+  }
+
+  
+
+  crawl_around() : simulation_unit()
+{
+  }
+
+  
+
+  crawl_around(class crawl_around &rhs) : simulation_unit(rhs)
+{
+  }
+
+  
+
+  crawl_around &operator=(class crawl_around &rhs)
+{
+    (*((class simulation_unit *)(this)))=((class simulation_unit &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    return  *(this);
   }
 
 }

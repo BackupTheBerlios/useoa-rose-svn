@@ -1,6 +1,6 @@
 
 /* Purpose:  Test the invocation of a base class' virtual method
- *           on an object receiver, when the method is overloaded.
+ *           on a reference to an object receiver.
  */
 
 // implicit assignments should occur at class definition for vtable model.
@@ -11,7 +11,6 @@ public:
   ~Base() { }
   Base &operator=(Base &b) { return *this; }
   virtual void virtMethodBase() { } 
-  virtual void virtMethod2(int x) { }
 };
 
 // implicit assignments should occur at class definition for vtable model.
@@ -35,10 +34,7 @@ int main()
    // virtual function table ptr assignment for the
    // vtable model.
    Foo f;
-   int x;
-
-   // Call handle should be a NamedRef, as this may be statically 
-   // resolved.
-   f.virtMethod2(x);
+   Foo &fRef = f;
+   fRef.virtMethodBase();
    return 0;
 }

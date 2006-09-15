@@ -38,8 +38,11 @@
 #include <destructorCallAnnotator.h>
 
 #include "CallGraph.h"
+#include "common.h"
 
 // #define DEBUG
+
+using namespace UseOA;
 
 // Taken, slightly modified, from OATest.C
 /*
@@ -83,6 +86,72 @@ DoFIAliasAliasMap(OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
   interAlias = fialiasman->performAnalysis(procIter);
   return interAlias;
 }
+
+bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRefOrPtr)
+{
+  ROSE_ASSERT(functionCall != NULL);
+
+  SgExpression *expression = functionCall->get_function();
+  ROSE_ASSERT(expression != NULL);
+
+  bool isMethod = false;
+  isDotExp = false;
+  lhsIsRefOrPtr = false;
+
+  switch(expression->variantT()) {
+  case V_SgDotExp:
+    {
+      isMethod = true;
+
+      SgDotExp *dotExp = isSgDotExp(expression);
+      ROSE_ASSERT(dotExp != NULL);
+	  
+      SgExpression *lhs = dotExp->get_lhs_operand();
+      ROSE_ASSERT(lhs != NULL);
+	  
+      SgPointerDerefExp *pointerDerefExp =
+	isSgPointerDerefExp(lhs);
+	  
+      if ( pointerDerefExp != NULL ) {
+	;
+      } else {
+	isDotExp = true;
+      }
+
+      lhsIsRefOrPtr = isSgReferenceType(lhs->get_type());
+
+      break;
+    }
+  case V_SgArrowExp:
+    {
+      isMethod = true;
+      lhsIsRefOrPtr = true;
+      break;
+    }
+  case V_SgMemberFunctionRefExp:
+    {
+      isMethod = true;
+      break;
+    }
+  case V_SgFunctionRefExp:
+  case V_SgPointerDerefExp:
+    {
+      isMethod = false;
+      break;
+    }
+  default:
+    {
+      std::cerr << "Was not expecting an " << expression->sage_class_name() << std::endl;
+      std::cerr << "in a function call." << std::endl;
+      ROSE_ABORT();
+    }
+  }
+
+  return isMethod;
+}
+
+
+#if 0
 // Return the function in which node occurs.
 // Taken, slightly modified, from getEnclosingMethod in SageOA.C.
 static 
@@ -212,68 +281,6 @@ bool matchingMemberFunctions(SgMemberFunctionDeclaration *methodDecl1,
   return true;
 }
 
-bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRefOrPtr)
-{
-  ROSE_ASSERT(functionCall != NULL);
-
-  SgExpression *expression = functionCall->get_function();
-  ROSE_ASSERT(expression != NULL);
-
-  bool isMethod = false;
-  isDotExp = false;
-  lhsIsRefOrPtr = false;
-
-  switch(expression->variantT()) {
-  case V_SgDotExp:
-    {
-      isMethod = true;
-
-      SgDotExp *dotExp = isSgDotExp(expression);
-      ROSE_ASSERT(dotExp != NULL);
-	  
-      SgExpression *lhs = dotExp->get_lhs_operand();
-      ROSE_ASSERT(lhs != NULL);
-	  
-      SgPointerDerefExp *pointerDerefExp =
-	isSgPointerDerefExp(lhs);
-	  
-      if ( pointerDerefExp != NULL ) {
-	;
-      } else {
-	isDotExp = true;
-      }
-
-      lhsIsRefOrPtr = isSgReferenceType(lhs->get_type());
-
-      break;
-    }
-  case V_SgArrowExp:
-    {
-      isMethod = true;
-      lhsIsRefOrPtr = true;
-      break;
-    }
-  case V_SgMemberFunctionRefExp:
-    {
-      isMethod = true;
-      break;
-    }
-  case V_SgFunctionRefExp:
-  case V_SgPointerDerefExp:
-    {
-      isMethod = false;
-      break;
-    }
-  default:
-    {
-      std::cerr << "Was not expecting an " << expression->sage_class_name() << std::endl;
-      std::cerr << "in a function call." << std::endl;
-      ROSE_ABORT();
-    }
-  }
-
-  return isMethod;
-}
 
 SgFunctionDeclaration * 
 getFunctionDeclaration(SgFunctionCallExp *functionCall) 
@@ -373,31 +380,6 @@ bool isVirtual(SgFunctionDeclaration *functionDeclaration)
   ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
 
   return firstNondefiningFuncDeclaration->get_functionModifier().isVirtual();
-}
-
-/** \brief  Returns true if method is a pure virtual method.
- *  \param  functionDeclaration  A method declaration.
- *  \returns  Boolean indicating whether method is a pure virtual
- *            method.
- */
-bool isPureVirtual(SgFunctionDeclaration *functionDeclaration)
-{
-  if ( functionDeclaration == NULL ) return false;
-
-  if ( functionDeclaration->get_functionModifier().isPureVirtual() ) 
-    return true;
-
-  SgDeclarationStatement *firstNondefiningDeclaration =
-    functionDeclaration->get_firstNondefiningDeclaration();
-
-  if ( firstNondefiningDeclaration == NULL )
-    return false;
-
-  SgFunctionDeclaration *firstNondefiningFuncDeclaration =
-    isSgFunctionDeclaration(firstNondefiningDeclaration);
-  ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
-
-  return firstNondefiningFuncDeclaration->get_functionModifier().isPureVirtual();
 }
 
 bool isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration, SgClassDefinition *classDefinition)
@@ -588,6 +570,7 @@ methodOverridesVirtualMethod(SgMemberFunctionDeclaration *methodDecl,
   return true;
 #endif
 }
+#endif
 
 void usage(char **argv)
 {
@@ -1062,9 +1045,11 @@ int main(int argc, char **argv)
     }
 #endif
 
+#if 0
     if ( ( isVirtual(functionDeclaration) ) ||
 	 ( isDeclaredVirtualWithinAncestor(functionDeclaration) ) ) {
-      
+#endif
+    if ( ( isVirtual(functionDeclaration) ) ) {
 #ifdef DEBUG    
       std::cout << "tracking: " << functionDeclaration->unparseToString() << std::endl;
 #endif
@@ -1128,8 +1113,8 @@ int main(int argc, char **argv)
 	// Determine whether subclass of the class defining this
 	// method overrides the method.
 #if 1
-	if ( matchingMemberFunctions(method,
-				     memberFunctionDeclaration) ) {
+	if ( matchingFunctions(method,
+			       memberFunctionDeclaration) ) {
 #ifdef DEBUG    
 	  std::cout << "overries" << std::endl;
 #endif
@@ -1192,7 +1177,7 @@ int main(int argc, char **argv)
 	  // Determine whether subclass of the class defining this
 	  // method overrides the method.
 #if 1
-	  if ( matchingMemberFunctions(method,
+	  if ( matchingFunctions(method,
 				       memberFunctionDeclaration) ) {
 #ifdef DEBUG    
 	    std::cout << "overries" << std::endl;
