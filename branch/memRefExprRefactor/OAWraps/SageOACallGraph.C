@@ -6,10 +6,10 @@ using namespace UseOA;
 //SageIRCallsiteIterator implementation
 
 SageIRCallsiteIterator::SageIRCallsiteIterator(SgStatement * sgstmt, 
-                                               OA::OA_ptr<SageIRInterface> in)
+                                               SageIRInterface &in)
+    : ir(in)
 {
  //given an sgstmt put all call expressions in calls_in_stmt
-  ir=in;
   FindCallsitesInSgStmt(sgstmt, calls_in_stmt);
   begin = calls_in_stmt.begin();
   st_iter = calls_in_stmt.begin();
@@ -68,7 +68,7 @@ OA::CallHandle SageIRCallsiteIterator::current() const
 
   if (isValid()) {
     //cerr << "cur expr: " << cur->unparseToString() << endl;
-    h = (OA::irhandle_t)(ir->getNodeNumber(cur));    
+    h = (OA::irhandle_t)(ir.getNodeNumber(cur));    
     //cerr << "handle : " << h.hval() << endl;
   }
   return h;
@@ -187,7 +187,7 @@ void FindCallsitesPass::visit(SgNode* node)
       isSgConstructorInitializer(exp);
     ROSE_ASSERT(ctorInitializer != NULL);
 
-    if ( !mIR->createsBaseType(ctorInitializer) ) {
+    if ( !mIR.createsBaseType(ctorInitializer) ) {
       call_lst.push_back(exp);
     } 
 

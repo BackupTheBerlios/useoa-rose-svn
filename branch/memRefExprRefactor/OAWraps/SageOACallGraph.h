@@ -15,11 +15,11 @@
 class FindCallsitesPass : public SgSimpleProcessing {
 private:
  SgExpressionPtrList & call_lst;
- OA::OA_ptr<SageIRInterface> mIR;
+ SageIRInterface & mIR;
 protected:
   void visit(SgNode* node);
 public:
-  FindCallsitesPass(OA::OA_ptr<SageIRInterface> ir, SgExpressionPtrList& p) 
+  FindCallsitesPass(SageIRInterface &ir, SgExpressionPtrList& p) 
     : mIR(ir), call_lst(p) {}
 };
 
@@ -78,8 +78,8 @@ class SageIRProcIterator: public OA::IRProcIterator
 class SageIRCallsiteIterator: public OA::IRCallsiteIterator
 {
  public:
-  SageIRCallsiteIterator(SgStatement * sgstmt, OA::OA_ptr<SageIRInterface> in); 
-  SageIRCallsiteIterator() { valid=FALSE;}
+  SageIRCallsiteIterator(SgStatement * sgstmt, SageIRInterface &in); 
+//  SageIRCallsiteIterator() : { valid=FALSE; }
   ~SageIRCallsiteIterator() { }
 
   OA::CallHandle current() const;  // Returns the current item.
@@ -89,7 +89,7 @@ class SageIRCallsiteIterator: public OA::IRCallsiteIterator
   void operator++(int) { ++*this; } ;
 
   void reset();
-  OA::OA_ptr<SageIRInterface> ir;
+  SageIRInterface &ir;
  private:
   SgExpressionPtrList calls_in_stmt; 
   SgExpressionPtrList::iterator st_iter;
