@@ -502,8 +502,9 @@ SageIRInterface::getCallsites(OA::StmtHandle h)
 {
   OA::OA_ptr<OA::IRCallsiteIterator> iter;
   SgStatement * stmt=(SgStatement *)getNodePtr(h);
-  OA::OA_ptr<SageIRInterface> ir; ir = new SageIRInterface(*this);
-  iter=new SageIRCallsiteIterator(stmt, ir);
+//  OA::OA_ptr<SageIRInterface> ir; ir = new SageIRInterface(*this);
+//  iter=new SageIRCallsiteIterator(stmt, ir);
+  iter=new SageIRCallsiteIterator(stmt, *this);
   
   return iter;
 }
