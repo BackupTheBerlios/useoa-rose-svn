@@ -180,12 +180,34 @@ getGlobalObjectDeclarationsAndClassDefinitions(SgNode *project,
               isSgInitializedName(var);
             ROSE_ASSERT(initName != NULL);
 
+            SgClassType *classType = isSgClassType(initName->get_type());
+
             // We only collect object instantiations, not
             // declarations of points to objects.
-            if ( isSgClassType(initName->get_type()) ) {
+            if ( classType ) {
               SgStatement *stmt = isSgStatement(child);
               ROSE_ASSERT(stmt != NULL);
               globals.push_back(stmt);
+
+              SgClassDeclaration *classDecl = 
+		isSgClassDeclaration(classType->get_declaration());
+              ROSE_ASSERT(classDecl != NULL);
+
+              classDecl = getDefiningDeclaration(classDecl);
+              if ( classDecl != NULL ) {
+
+		bool found = false;
+		for (int i = 0; i < globals.size(); ++i) {
+		  if ( globals[i] == classDecl ) {
+		    found = true;
+		    break;
+		  }
+		}
+		if ( !found ) {
+		  globals.push_back(classDecl);
+		}
+              }
+
               break;
             }
 
@@ -197,7 +219,23 @@ getGlobalObjectDeclarationsAndClassDefinitions(SgNode *project,
         {
           SgStatement *stmt = isSgStatement(child);
           ROSE_ASSERT(stmt != NULL);
-          globals.push_back(stmt);
+          SgClassDeclaration *classDecl = isSgClassDeclaration(stmt);
+	  ROSE_ASSERT(classDecl != NULL);
+	  
+	  classDecl = getDefiningDeclaration(classDecl);
+	  if ( classDecl != NULL ) {
+	    
+	    bool found = false;
+	    for (int i = 0; i < globals.size(); ++i) {
+	      if ( globals[i] == classDecl ) {
+		found = true;
+		break;
+	      }
+	    }
+	    if ( !found ) {
+	      globals.push_back(stmt);
+	    }
+	  }
           break;
         }
       default:

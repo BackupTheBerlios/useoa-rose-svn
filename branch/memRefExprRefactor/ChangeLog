@@ -2909,3 +2909,13 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
               - virtualArrowOverloadedBaseMethodInvocation.C
               - assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C
               - assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C
+
+9/15/06     UseOA-Rose svn branch-memRefExprRefactor r227  Brian White	
+
+          - This is the version I used for the CGO submission.  Though
+            I did not run with the following change:
+
+          - Modified above re: handling of pure virtual methods.  
+            I have seen pure virtual methods with definitions!?
+            Therefore, do not create implicit ptr assigns if the
+            method is pure virtual _and_ does not have a definition.

@@ -40,7 +40,7 @@
 #include "CallGraph.h"
 #include "common.h"
 
-// #define DEBUG
+#define DEBUG
 
 using namespace UseOA;
 
@@ -86,6 +86,56 @@ DoFIAliasAliasMap(OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
   interAlias = fialiasman->performAnalysis(procIter);
   return interAlias;
 }
+
+void countFunctions(int &definedFunctions, int &definedVirtualFunctions, 
+                    int &invokedVirtualFunctions,
+                    OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
+{
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  bool excludeInputFiles = true;
+  // Don't pull in any procedures defined in input files.  For testing
+  // purposes only:  avoids unexpected/spurious results due to 
+  // stdlib.h, etc.
+  //  procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
+  procIter = new SageIRProcIterator(p, *irInterface, excludeInputFiles);
+  definedFunctions = 0;
+  definedVirtualFunctions = 0;
+  invokedVirtualFunctions = 0;
+  for (procIter->reset() ; procIter->isValid(); ++(*procIter)) {
+      OA::ProcHandle currProc = procIter->current();
+      ++definedFunctions;
+      SgFunctionDefinition *funcDefn = isSgFunctionDefinition(irInterface->getNodePtr(currProc));
+      ROSE_ASSERT(funcDefn != NULL);
+      SgFunctionDeclaration *funcDecl = 
+	isSgFunctionDeclaration(funcDefn->get_declaration());
+      ROSE_ASSERT(funcDecl != NULL);
+      if ( isVirtual(funcDecl) ) {
+        ++definedVirtualFunctions;
+      }
+
+      OA::OA_ptr<OA::IRStmtIterator> stmtIterPtr = irInterface->getStmtIterator(currProc);
+      // Iterate over the statements of this block adding procedure references
+      for ( ; stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
+
+	OA::StmtHandle stmt = stmtIterPtr->current();
+
+	OA::OA_ptr<OA::IRCallsiteIterator> callIter = irInterface->getCallsites(stmt);
+        for ( ; callIter->isValid(); (*callIter)++ ) {
+	  OA::CallHandle call = callIter->current();
+
+          SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(irInterface->getNodePtr(call));
+          if ( functionCallExp != NULL ) {
+              SgFunctionDeclaration *functionDeclaration = 
+                  getFunctionDeclaration(functionCallExp);
+              if ( isVirtual(functionDeclaration) ) {
+		++invokedVirtualFunctions;
+              }
+          }
+        }
+      }
+  }
+}
+
 
 bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRefOrPtr)
 {
@@ -578,6 +628,72 @@ void usage(char **argv)
   exit(-1);
 }
 
+      
+int
+findResolutionsForMethodInTypeHierarchy(SgMemberFunctionDeclaration *memberFunctionDeclaration, SgClassDefinition *classDefinition, ClassHierarchyWrapper &classHierarchy)
+{
+  int numResolutionsForMethod = 0;
+  // First examine the class itself.
+  // Iterate over all of the methods defined in this class.
+  SgDeclarationStatementPtrList &decls =
+    classDefinition->get_members();
+  for (SgDeclarationStatementPtrList::iterator declIter = decls.begin();
+       declIter != decls.end(); ++declIter) {
+    
+    SgDeclarationStatement *declStmt = *declIter;
+    ROSE_ASSERT(declStmt != NULL);
+    
+    SgMemberFunctionDeclaration *method =
+      isSgMemberFunctionDeclaration(declStmt);
+    if ( method == NULL ) {
+      continue;
+    }
+    
+#ifdef DEBUG    
+    std::cout << "checking overrides" << std::endl;
+#endif
+    // Determine whether subclass of the class defining this
+    // method overrides the method.
+    if ( matchingFunctions(method,
+			   memberFunctionDeclaration) ) {
+#ifdef DEBUG    
+      std::cout << "overries" << std::endl;
+#endif
+      // Do not consider a pure virtual method to be an 
+      // overriding method (since it can not be invoked).
+      if ( !isPureVirtual(method) ) {
+	numResolutionsForMethod++;
+      }
+    }
+  }
+
+  // Now look within the sub classes.
+  SgClassDefinitionPtrList subclasses = 
+    classHierarchy.getSubclasses(classDefinition);
+  
+#ifdef DEBUG
+  if ( classDefinition != NULL )
+    std::cout << "Looking up subclasses of " << classDefinition << " " << classDefinition->get_qualified_name().str() << std::endl;
+#endif
+
+  // Iterate over all subclasses.
+  for (SgClassDefinitionPtrList::iterator subclassIt = subclasses.begin();
+       subclassIt != subclasses.end(); ++subclassIt) {
+    
+    SgClassDefinition *subclass = *subclassIt;
+    ROSE_ASSERT(subclass != NULL);
+    
+#ifdef DEBUG    
+    std::cout << "subclass of " << classDefinition->get_qualified_name().str() << " got: " << subclass->get_qualified_name().str() << std::endl;
+#endif
+    
+
+    numResolutionsForMethod += findResolutionsForMethodInTypeHierarchy(memberFunctionDeclaration, subclass, classHierarchy);
+  }    
+  return numResolutionsForMethod;
+}
+
+
 int main(int argc, char **argv)
 {
   int modifiedArgc; 
@@ -622,336 +738,23 @@ int main(int argc, char **argv)
 
   irInterface = new SageIRInterface(project, &nodeArray, p_h);
 
+  int definedFunctions = 0;
+  int definedVirtualFunctions = 0;
+  int invokedVirtualFunctions = 0;
+  
+  countFunctions(definedFunctions, definedVirtualFunctions, 
+                 invokedVirtualFunctions,
+		 irInterface, project);
+
   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias 
       = DoFIAliasAliasMap(irInterface, project);
 
-#if 0
-  AstMerge am;
-  am.addAST(project);
-  
-  project = am.getAST();
   SgNode *root = project;
-#else
-  SgNode *root = project;
-#endif
-#if 1
-
-#if 0
-  // Loop over every file.   BW 4/13/06
-  int filenum = project->numberOfFiles();
-  for (int i = 0; i < filenum; ++i) 
-    {
-
-        SgFile &sageFile = project->get_file(i);
-        SgGlobal *root = sageFile.get_root();
-#endif
-
-  std::list<SgNode *> allCls;
-
-  // Keep track of the SgClassDefinitions we have already processed,
-  // to avoid redundant processing.
-  std::set<SgClassDefinition *> processedClsDefns;
-
-  // Unfortunately, SgClassDefinitions are not always visited by
-  // query and traversal mechanisms.  Consider this example:
-  //  class Base {
-  //  public:
-  //    virtual void foo() { }
-  //    virtual void bar() { }
-  //    virtual void baz() { }
-  //  } *a, *b, *p, *q;
-  // The SgClassDefinition for Base only shows up in the 
-  // SgVariableDeclarations of *a, *b, etc.  Therefore, we need
-  // to query the SgVariableDeclarations as well.
-
-  VariantVector v(V_SgClassDefinition); 
-  v = v + V_SgVariableDeclaration; 
-  allCls = NodeQuery::querySubTree ( root, v );
-
-  // build the class hierarchy
-  // start by iterating through all the classes
-  for ( std::list<SgNode *>::iterator it = allCls.begin(); it != allCls.end(); it++ )
-    {
-
-      SgClassDefinition *clsDescDef = NULL;
-
-      SgNode *n = *it;
-      ROSE_ASSERT(n != NULL);
-
-      if ( isSgClassDefinition(n) ) {
-	// We received a SgClassDefinition directly from the query.
-	clsDescDef = isSgClassDefinition( n );
-	if ( clsDescDef ) {
-
-	  SgClassDeclaration *classDecl =
-	    clsDescDef->get_declaration();
-	  ROSE_ASSERT(classDecl != NULL);
-
-	  SgClassDeclaration *definingClassDecl =
-	    isSgClassDeclaration(classDecl->get_definingDeclaration());
-	  ROSE_ASSERT(definingClassDecl != NULL);
-	  
-	  clsDescDef = definingClassDecl->get_definition();
-	  ROSE_ASSERT(clsDescDef != NULL);
-
-#ifdef DEBUG
-	  std::cout << "Found " << clsDescDef << " parent: " << clsDescDef->get_parent()->sage_class_name() << clsDescDef->unparseToCompleteString() << std::endl;
-#endif
-
-	}
-      } else if ( isSgVariableDeclaration(n) && 0 ) {
-	// This may be the case described above.  See if there
-	// is a class definition here.
-	SgVariableDeclaration *varDecl =
-	  isSgVariableDeclaration(n);
-	ROSE_ASSERT(varDecl != NULL);
-
-	SgInitializedNamePtrList &variables =
-	  varDecl->get_variables();
-	SgInitializedNamePtrList::iterator varIter;
-	for (varIter = variables.begin(); 
-	     varIter != variables.end(); ++varIter) {
-	  
-	  SgNode *var = *varIter;
-	  ROSE_ASSERT(var != NULL);
-	  
-	  SgInitializedName *initName =
-	    isSgInitializedName(var);
-	  ROSE_ASSERT(initName != NULL);
-	  
-	  SgType *initType = initName->get_type();
-	  SgClassType *classType =
-	    isSgClassType(initType);
-	  
-	  if ( !classType ) {
-	    SgPointerType *ptrType = isSgPointerType(initType);
-	    if (ptrType) {
-	      classType = isSgClassType(ptrType->get_base_type());
-	    } else {
-	      SgReferenceType *refType = isSgReferenceType(initType);
-	      if (refType)
-		classType = isSgClassType(refType->get_base_type());
-	    }
-	  }
-	  
-	  if ( classType ) {
-	    
-	    SgDeclarationStatement *declStmt = classType->get_declaration();
-	    ROSE_ASSERT(declStmt != NULL);
-	    
-	    SgClassDeclaration *classDeclaration = isSgClassDeclaration(declStmt);
-	    ROSE_ASSERT(classDeclaration != NULL);
-	    
-	    SgClassDeclaration *definingClassDeclaration = 
-	      isSgClassDeclaration(classDeclaration->get_definingDeclaration());
-	    if ( definingClassDeclaration != NULL ) {
-	      clsDescDef = definingClassDeclaration->get_definition();
-	      ROSE_ASSERT(clsDescDef != NULL);
-	    }
-	  }
-	}
-      } 
-      if ( clsDescDef == NULL ) continue;
-      // Notice that we may visit this class definition more than once.
-      // This will not lead to correctness problems because addNode
-      // and addEdge will not introduce redundant nodes or edges.
-      // However, for efficiency (and to avoid leaking memory),
-      // check to ensure we have not already handled this definition.
-
-#ifdef DEBUG
-      std::cout << "Examing class " << clsDescDef->get_qualified_name().str() << std::endl;
-#endif
-
-      if ( processedClsDefns.find(clsDescDef) != processedClsDefns.end() )
-	continue;
-      processedClsDefns.insert(clsDescDef);
-      SgBaseClassPtrList &baseClses = clsDescDef->get_inheritances();
-	  
-      // for each iterate through their parents and add parent - child relationship to the graph
-      for ( SgBaseClassPtrList::iterator it = baseClses.begin(); it != baseClses.end(); it++ )
-	{
-          //AS (032806) Added fix to get the defining class declaration
-	  SgClassDeclaration *baseCls = isSgClassDeclaration(( *it )->get_base_class()->get_definingDeclaration());
-          ROSE_ASSERT(baseCls!=NULL);
-	  SgClassDefinition *baseClsDef = baseCls->get_definition();
-	  ROSE_ASSERT ( baseClsDef != NULL);
-
-#ifdef DEBUG
-	  //	  Sg_File_Info *fileInfo = root->get_file_info();
-	  //	  ROSE_ASSERT(fileInfo);
-	  //	  std::cout << "Got " << baseClsDef << " " << baseClsDef->get_qualified_name().str() << " by examining class " << clsDescDef << " " << clsDescDef->get_qualified_name().str() << " in file " << fileInfo->get_filename() << std::endl;
-	  std::cout << "Got " << baseClsDef << " " << baseClsDef->get_qualified_name().str() << " by examining class " << clsDescDef << " " << clsDescDef->get_qualified_name().str() << std::endl;
-#endif
-	  
-	}
-    }
-
-#if 0
-    }
-#endif
-#endif
 
   // Instantiate a class hierarchy wrapper.
   ClassHierarchyWrapper classHierarchy( project );
 
-#if 0
-  std::list<SgNode *> nodes2 = NodeQuery::querySubTree(project,
-						      V_SgVariableDefinition);
 
-  for (std::list<SgNode *>::iterator it = nodes2.begin();
-       it != nodes2.end(); ++it ) {
-
-    SgNode *n = *it;
-    ROSE_ASSERT(n != NULL);
-
-    SgVariableDefinition *varDefn =
-      isSgVariableDefinition(n);
-    ROSE_ASSERT(varDefn != NULL);
-
-#ifdef DEBUG
-    std::cout << "Var defn: " << varDefn->unparseToCompleteString() << std::endl;
-#endif
-
-  }
-
-  std::list<SgNode *> nodes1 = NodeQuery::querySubTree(project,
-						      V_SgVariableDeclaration);
-
-  for (std::list<SgNode *>::iterator it = nodes1.begin();
-       it != nodes1.end(); ++it ) {
-
-    SgNode *n = *it;
-    ROSE_ASSERT(n != NULL);
-
-    SgVariableDeclaration *varDecl =
-      isSgVariableDeclaration(n);
-    ROSE_ASSERT(varDecl != NULL);
-
-    SgInitializedNamePtrList &variables =
-      varDecl->get_variables();
-    SgInitializedNamePtrList::iterator varIter;
-    for (varIter = variables.begin(); 
-	 varIter != variables.end(); ++varIter) {
-      
-      SgNode *var = *varIter;
-      ROSE_ASSERT(var != NULL);
-      
-      SgInitializedName *initName =
-	isSgInitializedName(var);
-      ROSE_ASSERT(initName != NULL);
-      
-      if ( isSgClassType(initName->get_type()) ) {
-
-	SgClassType *classType = isSgClassType(initName->get_type());
-	ROSE_ASSERT(classType != NULL);
-
-	SgDeclarationStatement *declStmt = classType->get_declaration();
-	ROSE_ASSERT(declStmt != NULL);
-	
-	SgClassDeclaration *classDeclaration = isSgClassDeclaration(declStmt);
-	ROSE_ASSERT(classDeclaration != NULL);
-      
-	//	std::cout << "From var decl got: " << classDeclaration->unparseToCompleteString() << std::endl;
-
-	SgClassDefinition *classDefinition =
-	  classDeclaration->get_definition();
-#ifdef DEBUG
-	if ( classDefinition != NULL ) {
-	  std::cout << "From var decl got: " << classDefinition->unparseToCompleteString() << std::endl;
-	}
-#endif
-
-      }
-
-    }
-    
-
-  }
-
-  std::list<SgNode *> nodes = NodeQuery::querySubTree(project,
-						      V_SgClassDeclaration);
-
-  for (std::list<SgNode *>::iterator it = nodes.begin();
-       it != nodes.end(); ++it ) {
-
-    SgNode *n = *it;
-    ROSE_ASSERT(n != NULL);
-
-    SgClassDeclaration *classDeclaration1 =
-      isSgClassDeclaration(n);
-    ROSE_ASSERT(classDeclaration1 != NULL);
-
-    SgDeclarationStatement *definingDecl =
-      classDeclaration1->get_definingDeclaration();
-    if ( definingDecl == NULL )
-      continue;
-    
-    SgClassDeclaration *classDeclaration =
-      isSgClassDeclaration(definingDecl);
-    ROSE_ASSERT(classDeclaration != NULL);
-
-
-    SgClassDefinition *classDefinition =
-      classDeclaration->get_definition();
-    ROSE_ASSERT(classDefinition != NULL);
-
-#ifdef DEBUG
-    std::cout << "Calling getSubclasses on " << classDefinition->unparseToCompleteString() << std::endl;
-#endif
-
-    SgClassDefinitionPtrList subclasses = 
-      classHierarchy.getSubclasses(classDefinition);
-
-    // Iterate over all subclasses.
-    for (SgClassDefinitionPtrList::iterator subclassIt = subclasses.begin();
-	 subclassIt != subclasses.end(); ++subclassIt) {
-      
-      SgClassDefinition *subclass = *subclassIt;
-      ROSE_ASSERT(subclass != NULL);
-      
-#ifdef DEBUG
-      std::cout << "subclass" << std::endl;
-#endif
-
-    }
-
-  }
-#endif
-#if 1
-#if 0
-  std::list<SgNode *> nodes = NodeQuery::querySubTree(project,
-						      V_SgClassDefinition);
-
-  for (std::list<SgNode *>::iterator it = nodes.begin();
-       it != nodes.end(); ++it ) {
-
-    SgNode *n = *it;
-    ROSE_ASSERT(n != NULL);
-
-    SgClassDefinition *classDefinition =
-      isSgClassDefinition(n);
-    ROSE_ASSERT(classDefinition != NULL);
-
-#ifdef DEBUG
-    std::cout << "Calling getSubclasses on " << classDefinition->unparseToCompleteString() << std::endl;
-#endif
-
-    SgClassDefinitionPtrList subclasses = 
-      classHierarchy.getSubclasses(classDefinition);
-
-    // Iterate over all subclasses.
-    for (SgClassDefinitionPtrList::iterator subclassIt = subclasses.begin();
-	 subclassIt != subclasses.end(); ++subclassIt) {
-      
-      SgClassDefinition *subclass = *subclassIt;
-      ROSE_ASSERT(subclass != NULL);
-      
-      std::cout << "subclass" << std::endl;
-
-    }
-
-  }
-#else
   // Collect all function/method invocations.
   std::list<SgNode *> nodes = NodeQuery::querySubTree(project,
 						      V_SgFunctionCallExp);
@@ -988,7 +791,6 @@ int main(int argc, char **argv)
     std::cout << "method: " << functionCallExp->unparseToCompleteString() << std::endl;
 #endif
 
-#if 1
     if ( isDotExp && !isLhsRefOrPtr ) {
       // If this is a dot expression (i.e., a.foo()), we can
       // statically determine its type-- unless the left-hand
@@ -999,24 +801,6 @@ int main(int argc, char **argv)
       continue;
     }
     numCallSites++;
-
-#else
-    numCallSites++;
-
-    if ( isDotExp && !isLhsRefOrPtr ) {
-      // If this is a dot expression (i.e., a.foo()), we can
-      // statically determine its type-- unless the left-hand
-      // side is a reference type.
-      numMonomorphicCallSites++;
-      numPossibleResolutions++;
-      numAliasAnalysisMonomorphicCallSites++;
-      numAliasAnalysisPossibleResolutions++;
-#ifdef DEBUG    
-      std::cout << "dot: " << functionCallExp->unparseToCompleteString() << std::endl;
-#endif
-      continue;
-    }
-#endif
 
 #ifdef DEBUG    
     std::cout << "methodPtr: " << functionCallExp->unparseToCompleteString() << std::endl;
@@ -1033,22 +817,6 @@ int main(int argc, char **argv)
 
     unsigned int numResolutionsForMethod = 0;
 
-#if 0
-    // I think this may double count.  Instead, look within the class
-    // itself (as opposed to only its parent classes).  I don't think
-    // we were doing this.
-
-    // Certainly can be resolved to the static method (unless it
-    // is pure virtual).
-    if ( !isPureVirtual(memberFunctionDeclaration) ) {
-      numResolutionsForMethod++;
-    }
-#endif
-
-#if 0
-    if ( ( isVirtual(functionDeclaration) ) ||
-	 ( isDeclaredVirtualWithinAncestor(functionDeclaration) ) ) {
-#endif
     if ( ( isVirtual(functionDeclaration) ) ) {
 #ifdef DEBUG    
       std::cout << "tracking: " << functionDeclaration->unparseToString() << std::endl;
@@ -1071,26 +839,9 @@ int main(int argc, char **argv)
       ROSE_ASSERT(classDefinition != NULL);
       
 
-      {
-      SgClassDefinitionPtrList subclasses = 
-	classHierarchy.getAncestorClasses(classDefinition);
-
-#ifdef DEBUG
-      if ( classDefinition != NULL )
-	std::cout << "Looking up ancestors of " << classDefinition << " " << classDefinition->get_qualified_name().str() << std::endl;
-#endif
-
-      // Iterate over all subclasses.
-      for (SgClassDefinitionPtrList::iterator subclassIt = subclasses.begin();
-	   subclassIt != subclasses.end(); ++subclassIt) {
-
-#ifdef DEBUG    
-	std::cout << "subclass of " << classDefinition->get_qualified_name().str() << " got: " << std::endl;
-#endif
-
-      }
-      }
-
+#if 1
+      numResolutionsForMethod = findResolutionsForMethodInTypeHierarchy(memberFunctionDeclaration, classDefinition, classHierarchy);
+#else
       // First examine the class itself.
       // Iterate over all of the methods defined in this class.
       SgDeclarationStatementPtrList &decls =
@@ -1112,7 +863,6 @@ int main(int argc, char **argv)
 #endif
 	// Determine whether subclass of the class defining this
 	// method overrides the method.
-#if 1
 	if ( matchingFunctions(method,
 			       memberFunctionDeclaration) ) {
 #ifdef DEBUG    
@@ -1124,15 +874,6 @@ int main(int argc, char **argv)
 	    numResolutionsForMethod++;
 	  }
 	}
-#else
-	if ( methodOverridesVirtualMethod(method, 
-					  memberFunctionDeclaration) ) {
-#ifdef DEBUG    
-	  std::cout << "overries" << std::endl;
-#endif
-	  numResolutionsForMethod++;
-	}
-#endif
       }
 
       // Now look within the sub classes.
@@ -1176,7 +917,6 @@ int main(int argc, char **argv)
 #endif
 	  // Determine whether subclass of the class defining this
 	  // method overrides the method.
-#if 1
 	  if ( matchingFunctions(method,
 				       memberFunctionDeclaration) ) {
 #ifdef DEBUG    
@@ -1188,18 +928,10 @@ int main(int argc, char **argv)
 	      numResolutionsForMethod++;
 	    }
 	  }
-#else
-	  if ( methodOverridesVirtualMethod(method, 
-					    memberFunctionDeclaration) ) {
-#ifdef DEBUG    
-	    std::cout << "overries" << std::endl;
-#endif
-	    numResolutionsForMethod++;
-	  }
-#endif
 	}
 
       }
+#endif
 
       if ( numResolutionsForMethod == 1 )
 	numMonomorphicCallSites++;
@@ -1259,8 +991,8 @@ int main(int argc, char **argv)
 	numAliasAnalysisMonomorphicCallSites++;
       numAliasAnalysisPossibleResolutions += numAliasAnalysisResolutionsForMethod;
 
-      if ( ( ( numResolutionsForMethod ) > 1 ) || 
-           ( ( numAliasAnalysisResolutionsForMethod ) > 1 ) ) {
+      if ( ( ( numResolutionsForMethod ) >= 1 ) || 
+           ( ( numAliasAnalysisResolutionsForMethod ) >= 1 ) ) {
 	ostr << "CHA:  Method invocation has " << numResolutionsForMethod << " possible resolutions " << std::endl;
 	ostr << "Alias analysis:  Method invocation has " << numAliasAnalysisResolutionsForMethod << " possible resolutions " << std::endl;
         ostr << "\tcaller:" << irInterface->toString(caller) << std::endl;
@@ -1269,8 +1001,11 @@ int main(int argc, char **argv)
     }
 
   }
-#endif
-#endif
+
+  ostr << "definedFunctions: " << definedFunctions << std::endl;
+  ostr << "definedVirtualFunctions: " << definedVirtualFunctions << std::endl;
+  ostr << "invokedVirtualFunctions: " << invokedVirtualFunctions << std::endl;
+
   ostr << "Summary CHA monomorphic call sites: " << numMonomorphicCallSites << std::endl;
   ostr << "Summary Alias analysis monomorphic call sites: " << numAliasAnalysisMonomorphicCallSites << std::endl;
   ostr << "Summary CHA total (virtual) resolutions: " << numPossibleResolutions << std::endl;

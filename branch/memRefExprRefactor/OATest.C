@@ -58,6 +58,10 @@
 using namespace std;
 #include <CommandOptions.h>
 
+#include <defaultFunctionGenerator.h>
+#include <shortCircuitingTransformation.h>
+#include <destructorCallAnnotator.h>
+
 // put in to help with g++ compiler bug
 /*
 #include <new>
@@ -192,6 +196,16 @@ main ( unsigned argc,  char * argv[] )
     //pdftest.generateInputFiles(sageProject);
     //AstDOTGeneration dottest;
     //dottest.generateInputFiles(sageProject);
+
+#if 1
+    // Perform the AST normalization.
+    //    DefaultFunctionGenerator dfg;
+    //    dfg.traverse(sageProject, preorder);
+    defaultFunctionGenerator(sageProject);
+    AstPostProcessing(sageProject);
+    shortCircuitingTransformation(sageProject);
+    //    destructorCallAnnotator(sageProject);
+#endif
 
     CmdOptions *cmds = CmdOptions::GetInstance();
     cmds->SetOptions(argc, argv);

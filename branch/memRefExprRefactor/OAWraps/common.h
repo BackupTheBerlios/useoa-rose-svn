@@ -93,6 +93,10 @@ SgType* getBaseType(SgType *type);
 
 //bool isNonconstReference(SgType *type);
 
+bool isArrowExp(SgExpression *function);
+
+bool hasDefinition(SgFunctionDeclaration *functionDeclaration);
+
 } // end of namespace UseOA
 
 #endif /* _USEOA_COMMON_H */

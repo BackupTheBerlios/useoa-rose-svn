@@ -64,14 +64,14 @@ int main ( unsigned argc,  char * argv[] )
     AstDOTGeneration dottest;
     dottest.generateInputFiles(sageProject);
     
-#if 0
+#if 1
     // Perform the AST normalization.
     //    DefaultFunctionGenerator dfg;
     //    dfg.traverse(sageProject, preorder);
     defaultFunctionGenerator(sageProject);
     AstPostProcessing(sageProject);
     shortCircuitingTransformation(sageProject);
-    destructorCallAnnotator(sageProject);
+    //    destructorCallAnnotator(sageProject);
 #endif
 
     // Loop over every file.   BW 4/13/06

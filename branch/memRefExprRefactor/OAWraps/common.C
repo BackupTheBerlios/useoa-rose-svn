@@ -991,6 +991,27 @@ bool isPureVirtual(SgFunctionDeclaration *functionDeclaration)
   return firstNondefiningFuncDeclaration->get_functionModifier().isPureVirtual();
 }
 
+bool hasDefinition(SgFunctionDeclaration *functionDeclaration)
+{
+  if ( functionDeclaration == NULL ) return false;
+
+  if ( functionDeclaration->get_definition() != NULL ) {
+      return true;
+  }
+
+  SgFunctionDeclaration *definingDecl =
+      getDefiningDeclaration(functionDeclaration);
+  if ( definingDecl == NULL ) {
+      return false;
+  }
+
+  if ( definingDecl->get_definition() != NULL ) {
+      return true;
+  }
+
+  return false;
+}
+
 /** \brief Return true if a class or any of its base classes 
  *         has a virtual method.
  *  \param classDefinition  a SgNode representing a class definition.
@@ -1583,5 +1604,43 @@ bool isNonconstReference(SgType *type)
 }
 #endif
 
+//! Returns true if function is a SgArrowExp or a SgDotExp
+//! whose operand is a SgPointerDerefExp or a SgDotExp
+//! whose lhs is a reference.  In this latter case
+//! we will convert the lhs to appear as a pointer.  
+//! i.e., returns true if function represents a->method() or (*a).method().
+bool isArrowExp(SgExpression *function)
+{
+  if ( isSgArrowExp(function) )
+    return true;
+
+  if ( isSgDotExp(function) ) {
+
+    SgBinaryOp *dotOrArrow = isSgBinaryOp(function);
+    ROSE_ASSERT(dotOrArrow != NULL);
+
+    SgExpression *lhs = dotOrArrow->get_lhs_operand();
+    ROSE_ASSERT(lhs != NULL);
+
+    SgDotExp *dotExp = isSgDotExp(function);
+    if ( dotExp != NULL ) {
+      
+      SgPointerDerefExp *pointerDerefExp =
+	isSgPointerDerefExp(lhs);
+
+      if ( pointerDerefExp != NULL ) {
+	return true;
+      }
+#if 0
+      if ( isSgReferenceType(lhs->get_type()) ) {
+	return true;
+      }
+#endif
+    }
+
+  }
+
+  return false;
+}
 
 } // end of namespace UseOA

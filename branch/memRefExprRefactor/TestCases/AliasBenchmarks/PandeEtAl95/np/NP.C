@@ -9,13 +9,17 @@ public:
  {
    return arg;
  }
-} trueObj;
+};
+True trueObj;
 
 class False : public True {
 public:
   False() {}
   True *And (True *arg);
-} falseObj;
+};
+False falseObj;
+
+//False falseObj;
 
 True *False::And (True *arg)
 {
