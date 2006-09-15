@@ -5,31 +5,31 @@
 class True {
 public:
  True() {}
- virtual True *and (True *arg)
+ virtual True *And (True *arg)
  {
    return arg;
  }
-} true;
+} trueObj;
 
 class False : public True {
 public:
   False() {}
-  True *and (True *arg);
-} false;
+  True *And (True *arg);
+} falseObj;
 
-True *False::and (True *arg)
+True *False::And (True *arg)
 {
-   return &false;
+   return &falseObj;
 }
 
 True *v1, *nv1, *v2, *nv2, *v3, *nv3;
 True *c;
 
 main () {
-   if (0) {v1 = &true; nv1 = &false;} else {v1 = &false; nv1= &true;}
-   if (0) {v2 = &true; nv2 = &false;} else {v2 = &false; nv2 = &true;}
-   if (0) {v3 = &true; nv3 = &false;} else {v3 = &false; nv3 = &true;}
+   if (0) {v1 = &trueObj; nv1 = &falseObj;} else {v1 = &falseObj; nv1= &trueObj;}
+   if (0) {v2 = &trueObj; nv2 = &falseObj;} else {v2 = &falseObj; nv2 = &trueObj;}
+   if (0) {v3 = &trueObj; nv3 = &falseObj;} else {v3 = &falseObj; nv3 = &trueObj;}
    if (0) c = nv2; else if (0) c = v1; else c = v2;
-   if (0) c = c->and(nv3); else if (0) c = c->and(nv2); else c = c->and(v1);
-   if (0) c = c->and(v2); else if (0) c = c->and(nv1); else c = c->and(v3);
+   if (0) c = c->And(nv3); else if (0) c = c->And(nv2); else c = c->And(v1);
+   if (0) c = c->And(v2); else if (0) c = c->And(nv1); else c = c->And(v3);
 }
