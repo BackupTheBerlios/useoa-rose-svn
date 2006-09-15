@@ -112,14 +112,14 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
             MemRefHandle("malloc") => 
                 NamedRef( USE, SymHandle("malloc"), F, full)
             MemRefHandle("(malloc(((sizeof(int )))))") => 
-                UnnamedRef( USE, StmtHandle("p =((int *)(malloc(((sizeof(int ))))));"), T, part)
+                UnnamedRef( USE, StmtHandle("(malloc(((sizeof(int )))))"), T, part)
             MemRefHandle("p =((int *)(malloc(((sizeof(int ))))))") => 
                 NamedRef( USE, SymHandle("p"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("p =((int *)(malloc(((sizeof(int ))))));") =>
         [
             < NamedRef( DEF, SymHandle("p"), F, full)
-            , UnnamedRef( USE, StmtHandle("p =((int *)(malloc(((sizeof(int ))))));"), T, part) >
+            , UnnamedRef( USE, StmtHandle("(malloc(((sizeof(int )))))"), T, part) >
         ] }
     CALLSITES = { StmtHandle("p =((int *)(malloc(((sizeof(int ))))));") =>
         [

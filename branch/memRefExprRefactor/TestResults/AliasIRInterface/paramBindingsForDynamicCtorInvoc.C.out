@@ -19,6 +19,9 @@ PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__
     LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class Foo {public: inline Foo(int x){}};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("int main(){int y;class Foo *f = new Foo(y);return 0;}") =>
         [
         ] }
@@ -33,18 +36,18 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("f") => 
                 NamedRef( DEF, SymHandle("f"), F, full)
             MemRefHandle("implicit actual this:y") => 
-                UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(y);"), T, part)
+                UnnamedRef( USE, StmtHandle("new Foo(y)"), T, part)
             MemRefHandle("y") => 
                 NamedRef( USE, SymHandle("y"), F, full)
             MemRefHandle("Foo(y)") => 
                 NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
             MemRefHandle("new Foo(y)") => 
-                UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(y);"), T, part)
+                UnnamedRef( USE, StmtHandle("new Foo(y)"), T, part)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class Foo *f = new Foo(y);") =>
         [
             < NamedRef( DEF, SymHandle("f"), F, full)
-            , UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(y);"), T, part) >
+            , UnnamedRef( USE, StmtHandle("new Foo(y)"), T, part) >
         ] }
     CALLSITES = { StmtHandle("class Foo *f = new Foo(y);") =>
         [
@@ -53,7 +56,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("new Foo(y)") =>
         [
-            < 0, UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(y);"), T, part) >
+            < 0, UnnamedRef( USE, StmtHandle("new Foo(y)"), T, part) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

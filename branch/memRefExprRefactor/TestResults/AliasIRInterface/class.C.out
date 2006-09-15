@@ -50,6 +50,12 @@ PROCEDURE = { < ProcHandle("A::foo"), SymHandle("method:A::foo__A__scope__foo___
     LOCATION = { < SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class B {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class A {private: class B &mB;public: inline A(class B &p) : mB(p){}inline void foo(){int x;}static int sInt;};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("int main(){class B b;class A a(b);a.foo();return A::sInt;}") =>
         [
         ] }

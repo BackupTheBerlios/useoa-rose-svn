@@ -36,6 +36,9 @@ PROCEDURE = { < ProcHandle("Foo::someMethod"), SymHandle("method:Foo::someMethod
     LOCATION = { < SymHandle("method:Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class Foo {public: inline Foo(){}inline void someMethod(int *x){}};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("int main(){class Foo *f = new Foo ;int x;f -> someMethod(&x);return 0;}") =>
         [
         ] }
@@ -47,16 +50,16 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("f") => 
                 NamedRef( DEF, SymHandle("f"), F, full)
             MemRefHandle("implicit actual this:") => 
-                UnnamedRef( USE, StmtHandle("class Foo *f = new Foo ;"), T, part)
+                UnnamedRef( USE, StmtHandle("new Foo"), T, part)
             MemRefHandle("Foo") => 
                 NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
             MemRefHandle("new Foo") => 
-                UnnamedRef( USE, StmtHandle("class Foo *f = new Foo ;"), T, part)
+                UnnamedRef( USE, StmtHandle("new Foo"), T, part)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class Foo *f = new Foo ;") =>
         [
             < NamedRef( DEF, SymHandle("f"), F, full)
-            , UnnamedRef( USE, StmtHandle("class Foo *f = new Foo ;"), T, part) >
+            , UnnamedRef( USE, StmtHandle("new Foo"), T, part) >
         ] }
     CALLSITES = { StmtHandle("class Foo *f = new Foo ;") =>
         [
@@ -65,7 +68,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("new Foo") =>
         [
-            < 0, UnnamedRef( USE, StmtHandle("class Foo *f = new Foo ;"), T, part) >
+            < 0, UnnamedRef( USE, StmtHandle("new Foo"), T, part) >
         ] }
     MEMREFEXPRS = { StmtHandle("int x;") =>
         [

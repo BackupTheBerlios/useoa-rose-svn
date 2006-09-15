@@ -103,6 +103,18 @@ PROCEDURE = { < ProcHandle("SubSubClass::SubSubClass"), SymHandle("method:SubSub
     LOCATION = { < SymHandle("method:SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class Base {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class SubClass : public Base{public: inline SubClass(class Base &parSubClass) : myParent(parSubClass){}class Base &myParent;};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class Foo {public: inline Foo(class Foo &f){}};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class SubSubClass : public SubClass{public: inline SubSubClass(class Base &par,int &aint,class Foo &f) : SubClass(par), mF(f){}class Foo mF;};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("int main(){return 0;}") =>
         [
         ] }

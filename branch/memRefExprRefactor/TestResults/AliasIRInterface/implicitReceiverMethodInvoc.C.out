@@ -70,6 +70,9 @@ PROCEDURE = { < ProcHandle("Foo::someMethod"), SymHandle("method:Foo::someMethod
     LOCATION = { < SymHandle("method:Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class Foo {public: inline Foo(){}inline void someOtherMethod(){}inline void someMethod(int *x){(this) -> someOtherMethod();}};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("int main(){return 0;}") =>
         [
         ] }

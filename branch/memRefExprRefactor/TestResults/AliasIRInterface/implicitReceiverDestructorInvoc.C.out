@@ -87,6 +87,12 @@ PROCEDURE = { < ProcHandle("Foo::~Foo"), SymHandle("method:Foo::~Foo__Foo__scope
     LOCATION = { < SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class Base {public: inline Base(){}inline ~Base(){}};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class Foo : public Base{public: inline Foo(int x){}inline ~Foo(){(this) -> Base::~Base();}};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("int main(){return 0;}") =>
         [
         ] }

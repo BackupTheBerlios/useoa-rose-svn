@@ -1,8 +1,3 @@
-"/s/parsons/c/fac/mstrout/OA/armstrong/UseOA-ROSE-memRefExprRefactor-ROSE089a/TestCases/AliasTests/referenceMemVerAccesses.C", line 20: warning: 
-          variable "x" is used before its value is set
-    Foo *f = new Foo(x);
-                     ^
-
 
 PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_") > }
     FORMALS = {
@@ -31,8 +26,8 @@ PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__
         [
         ] }
     LOCATION = { < SymHandle("x"), local > }
-    LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), not local > }
     LOCATION = { < SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), local > }
+    LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_") > }
     FORMALS = {
@@ -63,8 +58,8 @@ PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__
         [
         ] }
     LOCATION = { < SymHandle("f"), local > }
-    LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), not local > }
     LOCATION = { < SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("Foo::operator="), SymHandle("method:Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_") > }
     FORMALS = {
@@ -94,8 +89,8 @@ PROCEDURE = { < ProcHandle("Foo::operator="), SymHandle("method:Foo::operator=__
             , NamedRef( USE, SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), F, full) >
         ] }
     LOCATION = { < SymHandle("f"), local > }
-    LOCATION = { < SymHandle("method:Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), not local > }
     LOCATION = { < SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("method:Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("Foo::~Foo"), SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_") > }
     FORMALS = {
@@ -111,8 +106,8 @@ PROCEDURE = { < ProcHandle("Foo::~Foo"), SymHandle("method:Foo::~Foo__Foo__scope
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
     LOCATION = { < SymHandle("this::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), local > }
+    LOCATION = { < SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("class Foo {public: inline Foo(int x) : mX(x){}inline Foo(class Foo &f) : mX((f.mX)){}inline Foo &operator=(class Foo &f){return *(this);}inline ~Foo(){}int &mX;class Foo *mFooPtr;};") =>
@@ -134,16 +129,16 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("x") => 
                 NamedRef( USE, SymHandle("x"), F, full)
             MemRefHandle("implicit actual this:x") => 
-                UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(x);"), T, part)
+                UnnamedRef( USE, StmtHandle("new Foo(x)"), T, part)
             MemRefHandle("Foo(x)") => 
                 NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
             MemRefHandle("new Foo(x)") => 
-                UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(x);"), T, part)
+                UnnamedRef( USE, StmtHandle("new Foo(x)"), T, part)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class Foo *f = new Foo(x);") =>
         [
             < NamedRef( DEF, SymHandle("f"), F, full)
-            , UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(x);"), T, part) >
+            , UnnamedRef( USE, StmtHandle("new Foo(x)"), T, part) >
         ] }
     CALLSITES = { StmtHandle("class Foo *f = new Foo(x);") =>
         [
@@ -152,7 +147,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("new Foo(x)") =>
         [
-            < 0, UnnamedRef( USE, StmtHandle("class Foo *f = new Foo(x);"), T, part) >
+            < 0, UnnamedRef( USE, StmtHandle("new Foo(x)"), T, part) >
         ] }
     MEMREFEXPRS = { StmtHandle("f -> mFooPtr =(new Foo(x));") =>
         [
@@ -161,11 +156,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("x") => 
                 NamedRef( USE, SymHandle("x"), F, full)
             MemRefHandle("implicit actual this:x") => 
-                UnnamedRef( USE, StmtHandle("f -> mFooPtr =(new Foo(x));"), T, part)
+                UnnamedRef( USE, StmtHandle("(new Foo(x))"), T, part)
             MemRefHandle("Foo(x)") => 
                 NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
             MemRefHandle("(new Foo(x))") => 
-                UnnamedRef( USE, StmtHandle("f -> mFooPtr =(new Foo(x));"), T, part)
+                UnnamedRef( USE, StmtHandle("(new Foo(x))"), T, part)
             MemRefHandle("f -> mFooPtr") => 
                 FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full)
             MemRefHandle("f -> mFooPtr =(new Foo(x))") => 
@@ -174,7 +169,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     PTRASSIGNPAIRS = { StmtHandle("f -> mFooPtr =(new Foo(x));") =>
         [
             < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), mFooPtr, F, full)
-            , UnnamedRef( USE, StmtHandle("f -> mFooPtr =(new Foo(x));"), T, part) >
+            , UnnamedRef( USE, StmtHandle("(new Foo(x))"), T, part) >
         ] }
     CALLSITES = { StmtHandle("f -> mFooPtr =(new Foo(x));") =>
         [
@@ -183,7 +178,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("(new Foo(x))") =>
         [
-            < 0, UnnamedRef( USE, StmtHandle("f -> mFooPtr =(new Foo(x));"), T, part) >
+            < 0, UnnamedRef( USE, StmtHandle("(new Foo(x))"), T, part) >
         ] }
     MEMREFEXPRS = { StmtHandle("(( *(f -> mFooPtr)).mX) = x;") =>
         [
@@ -235,5 +230,5 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("obj"), local > }
-    LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), not local > }
     LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), not local > }

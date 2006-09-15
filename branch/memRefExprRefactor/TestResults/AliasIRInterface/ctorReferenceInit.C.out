@@ -40,8 +40,8 @@ PROCEDURE = { < ProcHandle("foo::foo"), SymHandle("method:foo::foo__foo__scope__
         [
         ] }
     LOCATION = { < SymHandle("x"), local > }
-    LOCATION = { < SymHandle("method:foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb_i_Fe_"), not local > }
     LOCATION = { < SymHandle("this::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb_i_Fe_"), local > }
+    LOCATION = { < SymHandle("method:foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb_i_Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("foo::~foo"), SymHandle("method:foo::~foo__foo__scope____dtfoo____MFb_foo__Fb_v_Gb__Fe_") > }
     FORMALS = {
@@ -57,8 +57,8 @@ PROCEDURE = { < ProcHandle("foo::~foo"), SymHandle("method:foo::~foo__foo__scope
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("method:foo::~foo__foo__scope____dtfoo____MFb_foo__Fb_v_Gb__Fe_"), not local > }
     LOCATION = { < SymHandle("this::foo::~foo__foo__scope____dtfoo____MFb_foo__Fb_v_Gb__Fe_"), local > }
+    LOCATION = { < SymHandle("method:foo::~foo__foo__scope____dtfoo____MFb_foo__Fb_v_Gb__Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("foo::operator="), SymHandle("method:foo::operator=__foo__scope__operator__as____MFb_foo__Fb___Rb__foo__Re___Gb___Rb__foo__Re___Fe_") > }
     FORMALS = {
@@ -88,10 +88,13 @@ PROCEDURE = { < ProcHandle("foo::operator="), SymHandle("method:foo::operator=__
             , NamedRef( USE, SymHandle("this::foo::operator=__foo__scope__operator__as____MFb_foo__Fb___Rb__foo__Re___Gb___Rb__foo__Re___Fe_"), F, full) >
         ] }
     LOCATION = { < SymHandle("f"), local > }
-    LOCATION = { < SymHandle("method:foo::operator=__foo__scope__operator__as____MFb_foo__Fb___Rb__foo__Re___Gb___Rb__foo__Re___Fe_"), not local > }
     LOCATION = { < SymHandle("this::foo::operator=__foo__scope__operator__as____MFb_foo__Fb___Rb__foo__Re___Gb___Rb__foo__Re___Fe_"), local > }
+    LOCATION = { < SymHandle("method:foo::operator=__foo__scope__operator__as____MFb_foo__Fb___Rb__foo__Re___Gb___Rb__foo__Re___Fe_"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class foo {public: inline foo(int x) : someRef(x), someOtherRef(((this) -> someRef)), constRef(5){}inline ~foo(){}inline foo &operator=(class foo &f){return *(this);}private: int &someRef;int &someOtherRef;const int &constRef;};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("int main(){return 0;}") =>
         [
         ] }
