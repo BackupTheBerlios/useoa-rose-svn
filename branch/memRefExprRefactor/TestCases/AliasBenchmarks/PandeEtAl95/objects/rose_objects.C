@@ -75,9 +75,8 @@ int Table::operator==(class Object &tblobj)
 // Count check
   if (tblptr -> Nelem() == ((this) -> nelem)) {
     class Object *b;
-    for (int i = 0; i < ((this) -> nelem); i++) 
+    for (int i = 0; i < ((this) -> nelem); i++) {
 // Elementwise check
-{
       if ((( *(b = tblptr -> Get(i)))!= *(this) -> Get(i))) {
         return 0;
       }
@@ -109,6 +108,7 @@ Array::Array(int sz,enum ::TblType t) : Table(t)
 
 Array::~Array()
 {
+  ((class Table *)(this)) -> ~Table();
   if ((((this) -> type)) == (VOLAT)) {
     for (int i = (((this) -> nelem) - 1); i >= 0; i--) {
       (this) -> Remove(i);
@@ -147,14 +147,32 @@ int Array::Append(class Object *o)
 
 int Array::Insert(class Object *obj,int pos)
 {
-  if (((pos > ((this) -> nelem)) || (pos < 0)) || (((this) -> nelem) >= ((this) -> size))) {
+  bool rose_sc_bool_0 = false;
+  if ((pos > ((this) -> nelem))) {{{
+        rose_sc_bool_0 = true;
+      }
+    }
+  }
+  else {
+    if ((pos < 0)) {{
+        rose_sc_bool_0 = true;
+      }
+    }
+    else {
+      if ((((this) -> nelem) >= ((this) -> size))) {
+        rose_sc_bool_0 = true;
+      }
+      else {
+      }
+    }
+  }
+  if (rose_sc_bool_0) {
     return 0;
   }
   else {
   }
-  for (int i = ((this) -> nelem); i > pos; i--) 
+  for (int i = ((this) -> nelem); i > pos; i--) {
 // Move objects right.
-{
     ((this) -> array)[i] = (((this) -> array)[i - 1]);
   }
   ((this) -> array)[pos] = obj;
@@ -168,14 +186,32 @@ int Array::Insert(class Object *obj,int pos)
 
 int Array::Assign(class Object *obj,int pos)
 {
-  if (((pos > ((this) -> nelem)) || (pos < 0)) || (((this) -> nelem) >= ((this) -> size))) {
+  bool rose_sc_bool_1 = false;
+  if ((pos > ((this) -> nelem))) {{{
+        rose_sc_bool_1 = true;
+      }
+    }
+  }
+  else {
+    if ((pos < 0)) {{
+        rose_sc_bool_1 = true;
+      }
+    }
+    else {
+      if ((((this) -> nelem) >= ((this) -> size))) {
+        rose_sc_bool_1 = true;
+      }
+      else {
+      }
+    }
+  }
+  if (rose_sc_bool_1) {
     return 0;
   }
   else {
   }
-  if (pos == ((this) -> nelem)) 
+  if (pos == ((this) -> nelem)) {
 // Adding new element
-{
     (this) -> nelem++;
   }
   else {
@@ -189,7 +225,19 @@ int Array::Assign(class Object *obj,int pos)
 
 Object *Array::Get(int idx)
 {
-  if ((idx >= ((this) -> nelem)) || (idx < 0)) {
+  bool rose_sc_bool_2 = false;
+  if ((idx >= ((this) -> nelem))) {{
+      rose_sc_bool_2 = true;
+    }
+  }
+  else {
+    if ((idx < 0)) {
+      rose_sc_bool_2 = true;
+    }
+    else {
+    }
+  }
+  if (rose_sc_bool_2) {
     return (0);
   }
   else {
@@ -204,7 +252,19 @@ Object *Array::Get(int idx)
 
 Object *Array::Fetch(int idx)
 {
-  if ((idx >= ((this) -> nelem)) || (idx < 0)) {
+  bool rose_sc_bool_3 = false;
+  if ((idx >= ((this) -> nelem))) {{
+      rose_sc_bool_3 = true;
+    }
+  }
+  else {
+    if ((idx < 0)) {
+      rose_sc_bool_3 = true;
+    }
+    else {
+    }
+  }
+  if (rose_sc_bool_3) {
     return (0);
   }
   else {
@@ -231,14 +291,25 @@ Object *Array::Fetch(int idx)
 
 int SpArray::Assign(class Object *o,int pos)
 {
-  if ((pos >= ((this) -> size)) || (pos < 0)) {
+  bool rose_sc_bool_4 = false;
+  if ((pos >= ((this) -> size))) {{
+      rose_sc_bool_4 = true;
+    }
+  }
+  else {
+    if ((pos < 0)) {
+      rose_sc_bool_4 = true;
+    }
+    else {
+    }
+  }
+  if (rose_sc_bool_4) {
     return 0;
   }
   else {
   }
-  if ((((this) -> array)[pos]) == ((0))) 
+  if ((((this) -> array)[pos]) == ((0))) {
 // increase element count
-{
     (this) -> nelem++;
   }
   else {
@@ -251,7 +322,19 @@ int SpArray::Assign(class Object *o,int pos)
 
 Object *SpArray::Get(int idx)
 {
-  if ((idx >= ((this) -> size)) || (idx < 0)) {
+  bool rose_sc_bool_5 = false;
+  if ((idx >= ((this) -> size))) {{
+      rose_sc_bool_5 = true;
+    }
+  }
+  else {
+    if ((idx < 0)) {
+      rose_sc_bool_5 = true;
+    }
+    else {
+    }
+  }
+  if (rose_sc_bool_5) {
     return (0);
   }
   else {
@@ -308,6 +391,7 @@ int SpArray::Search(class Object &o)
 
 SpArray::~SpArray()
 {
+  ((class Array *)(this)) -> ~Array();
   if ((((this) -> type)) == (VOLAT)) {
     for (int i = (((this) -> size) - 1); i >= 0; i--) {
       if ((((this) -> array)[i]) != ((0))) {
@@ -353,7 +437,7 @@ class A : public Object
 
   
 
-  inline A(int j=0) : i(j)
+  inline A(int j=0) : i(j), Object()
 {
   }
 
@@ -368,9 +452,30 @@ class A : public Object
 
   virtual inline ~A()
 {
+    ((class Object *)(this)) -> ~Object();
   }
 
   protected: int i;
+  
+
+  public: A(class A &rhs) : i(rhs.i), Object(rhs)
+{
+  }
+
+  
+
+  A &operator=(class A &rhs)
+{
+    (*((class Object *)(this)))=((class Object &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> i = rhs.i;
+    return  *(this);
+  }
+
 }
 
 ;
@@ -399,7 +504,7 @@ class B : public A
 
   
 
-  inline B(int j=0)
+  inline B(int j=0) : A()
 {
   }
 
@@ -414,9 +519,30 @@ class B : public A
 
   virtual inline ~B()
 {
+    ((class A *)(this)) -> ~A();
   }
 
   protected: int j;
+  
+
+  public: B(class B &rhs) : j(rhs.j), A(rhs)
+{
+  }
+
+  
+
+  B &operator=(class B &rhs)
+{
+    (*((class A *)(this)))=((class A &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> j = rhs.j;
+    return  *(this);
+  }
+
 }
 
 ;

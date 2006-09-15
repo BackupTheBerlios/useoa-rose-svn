@@ -192,7 +192,29 @@ void FindCallsitesPass::visit(SgNode* node)
     } 
 
   } else if ( isSgDeleteExp(exp) ) {
-    call_lst.push_back(exp);
+
+    // Do not mark a destructor as a call site
+    // if it destroys a basic type.
+    SgDeleteExp *deleteExp = isSgDeleteExp(exp);
+    ROSE_ASSERT(deleteExp != NULL);
+
+    SgExpression *receiver = deleteExp->get_variable();
+    ROSE_ASSERT(receiver != NULL);
+
+    SgType *type = receiver->get_type(); 
+    ROSE_ASSERT(type != NULL);
+
+    SgPointerType *ptrType = isSgPointerType(type);
+    ROSE_ASSERT(ptrType != NULL);
+    type = getBaseType(ptrType->get_base_type());
+
+    ROSE_ASSERT(type != NULL);
+
+    // If this is a base type, then do nothing more--
+    // i.e., not even a call handle.
+    if ( isSgClassType(type) ) {
+      call_lst.push_back(exp);
+    }
   }
 
   return;

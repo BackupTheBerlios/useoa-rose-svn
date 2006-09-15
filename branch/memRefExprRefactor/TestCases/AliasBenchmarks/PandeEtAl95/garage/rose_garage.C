@@ -35,6 +35,25 @@ class Vehicle
     printf("generic vehicle\n");
   }
 
+  
+
+  Vehicle(class Vehicle &rhs) : plate(rhs.plate)
+{
+  }
+
+  
+
+  Vehicle &operator=(class Vehicle &rhs)
+{
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> plate = rhs.plate;
+    return  *(this);
+  }
+
 }
 
 ;
@@ -58,6 +77,32 @@ class Car : public Vehicle
   virtual inline void identify()
 {
     printf("car with plate %s\n",((this) -> plate));
+  }
+
+  
+
+  ~Car()
+{
+    ((class Vehicle *)(this)) -> ~Vehicle();
+  }
+
+  
+
+  Car(class Car &rhs) : Vehicle(rhs)
+{
+  }
+
+  
+
+  Car &operator=(class Car &rhs)
+{
+    (*((class Vehicle *)(this)))=((class Vehicle &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    return  *(this);
   }
 
 }
@@ -85,6 +130,32 @@ class Truck : public Vehicle
     printf("truck with plate %s\n",((this) -> plate));
   }
 
+  
+
+  ~Truck()
+{
+    ((class Vehicle *)(this)) -> ~Vehicle();
+  }
+
+  
+
+  Truck(class Truck &rhs) : Vehicle(rhs)
+{
+  }
+
+  
+
+  Truck &operator=(class Truck &rhs)
+{
+    (*((class Vehicle *)(this)))=((class Vehicle &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    return  *(this);
+  }
+
 }
 
 ;
@@ -98,6 +169,32 @@ class Garage
   int accept(class Vehicle *);
   Vehicle *release(int bay);
   void listVehicles();
+  
+
+  Garage()
+{
+  }
+
+  
+
+  Garage(class Garage &rhs) : maxVehicles(rhs.maxVehicles), parked(rhs.parked)
+{
+  }
+
+  
+
+  Garage &operator=(class Garage &rhs)
+{
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> maxVehicles = rhs.maxVehicles;
+    (this) -> parked = rhs.parked;
+    return  *(this);
+  }
+
 }
 
 ;
@@ -135,7 +232,19 @@ int Garage::accept(class Vehicle *veh)
 
 Vehicle *Garage::release(int bay)
 {
-  if ((bay < 0) || (bay >= ((this) -> maxVehicles))) {
+  bool rose_sc_bool_0 = false;
+  if ((bay < 0)) {{
+      rose_sc_bool_0 = true;
+    }
+  }
+  else {
+    if ((bay >= ((this) -> maxVehicles))) {
+      rose_sc_bool_0 = true;
+    }
+    else {
+    }
+  }
+  if (rose_sc_bool_0) {
     return (0);
   }
   else {
@@ -188,3 +297,20 @@ int main()
   return 0;
 }
 
+// stubs
+
+extern "C" { char *strcpy(char *dest,const char *src) throw()
+{
+  char *strcpytemp = (char *)src;
+// check syntax
+  return strcpytemp;
+}
+
+ }
+
+extern "C" { int printf(const char *format,... )
+{
+  return 0;
+}
+
+ }

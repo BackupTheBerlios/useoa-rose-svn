@@ -33,6 +33,10 @@
 #include <OpenAnalysis/XAIF/AliasMapXAIF.hpp>
 #include<OpenAnalysis/XAIF/ManagerAliasMapXAIF.hpp>
 
+#include <defaultFunctionGenerator.h>
+#include <shortCircuitingTransformation.h>
+#include <destructorCallAnnotator.h>
+
 #include "CallGraph.h"
 
 // #define DEBUG
@@ -617,6 +621,16 @@ int main(int argc, char **argv)
                                                   modifiedArgv); 
    
   SgProject *project = frontend(modifiedArgc, modifiedArgv);
+
+#if 1
+    // Perform the AST normalization.
+    //    DefaultFunctionGenerator dfg;
+    //    dfg.traverse(project, preorder);
+    defaultFunctionGenerator(project);
+    AstPostProcessing(project);
+    shortCircuitingTransformation(project);
+    //    destructorCallAnnotator(project);
+#endif
 
   // Perform the alias analysis.
   OA::OA_ptr<SageIRInterface> irInterface;

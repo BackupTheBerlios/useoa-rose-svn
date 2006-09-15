@@ -30,6 +30,38 @@ class living
   virtual enum state who() = 0;
 // compute next
   virtual living *next(world w) = 0;
+  
+
+  living()
+{
+  }
+
+  
+
+  ~living()
+{
+  }
+
+  
+
+  living(class living &rhs) : row(rhs.row), column(rhs.column)
+{
+  }
+
+  
+
+  living &operator=(class living &rhs)
+{
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> row = rhs.row;
+    (this) -> column = rhs.column;
+    return  *(this);
+  }
+
 }
 
 ;
@@ -64,6 +96,39 @@ class fox : public living
   }
 
   virtual living *next(world w);
+  
+
+  fox() : living()
+{
+  }
+
+  
+
+  ~fox()
+{
+    ((class living *)(this)) -> ~living();
+  }
+
+  
+
+  fox(class fox &rhs) : age(rhs.age), living(rhs)
+{
+  }
+
+  
+
+  fox &operator=(class fox &rhs)
+{
+    (*((class living *)(this)))=((class living &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> age = rhs.age;
+    return  *(this);
+  }
+
 }
 
 ;
@@ -85,6 +150,39 @@ class rabbit : public living
   }
 
   virtual living *next(world w);
+  
+
+  rabbit() : living()
+{
+  }
+
+  
+
+  ~rabbit()
+{
+    ((class living *)(this)) -> ~living();
+  }
+
+  
+
+  rabbit(class rabbit &rhs) : age(rhs.age), living(rhs)
+{
+  }
+
+  
+
+  rabbit &operator=(class rabbit &rhs)
+{
+    (*((class living *)(this)))=((class living &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> age = rhs.age;
+    return  *(this);
+  }
+
 }
 
 ;
@@ -105,6 +203,38 @@ class grass : public living
   }
 
   virtual living *next(world w);
+  
+
+  grass() : living()
+{
+  }
+
+  
+
+  ~grass()
+{
+    ((class living *)(this)) -> ~living();
+  }
+
+  
+
+  grass(class grass &rhs) : living(rhs)
+{
+  }
+
+  
+
+  grass &operator=(class grass &rhs)
+{
+    (*((class living *)(this)))=((class living &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    return  *(this);
+  }
+
 }
 
 ;
@@ -125,6 +255,38 @@ class empty : public living
   }
 
   virtual living *next(world w);
+  
+
+  empty() : living()
+{
+  }
+
+  
+
+  ~empty()
+{
+    ((class living *)(this)) -> ~living();
+  }
+
+  
+
+  empty(class empty &rhs) : living(rhs)
+{
+  }
+
+  
+
+  empty &operator=(class empty &rhs)
+{
+    (*((class living *)(this)))=((class living &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    return  *(this);
+  }
+
 }
 
 ;
@@ -151,9 +313,8 @@ living *rabbit::next(class living *(*w)[40])
   if ((sum[FOX]) >= (sum[RABBIT])) {
     return (new empty (((this) -> row),((this) -> column)));
   }
-  else 
+  else {
 // rabbit too old
-{
     if (((this) -> age) > DRAB) {
       return (new empty (((this) -> row),((this) -> column)));
     }
@@ -172,9 +333,8 @@ living *fox::next(class living *(*w)[40])
   if ((sum[FOX]) > 5) {
     return (new empty (((this) -> row),((this) -> column)));
   }
-  else 
+  else {
 // fox too old
-{
     if (((this) -> age) > DFOX) {
       return (new empty (((this) -> row),((this) -> column)));
     }
@@ -192,9 +352,8 @@ living *empty::next(class living *(*w)[40])
   if ((sum[FOX]) > 1) {
     return (new fox (((this) -> row),((this) -> column)));
   }
-  else 
+  else {
 // fox too old
-{
     if ((sum[RABBIT]) > 1) {
       return (new rabbit (((this) -> row),((this) -> column)));
     }

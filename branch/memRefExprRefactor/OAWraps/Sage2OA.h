@@ -578,8 +578,28 @@ public:
       {
           if(h!=0)
           {
-          SgStatement * sgstmt=(SgStatement*)(getNodePtr(h));
-          return sgstmt->unparseToString();
+              SgNode *node = getNodePtr(h);
+              ROSE_ASSERT(node != NULL);
+
+              SgStatement * sgstmt= isSgStatement(node);
+              if ( sgstmt ) {
+                  return sgstmt->unparseToString();
+              }
+              // We stash new expression and mallocs
+              // into the statements of UnnamedRefs.
+              SgNewExp *newExp = isSgNewExp(node);
+              if ( newExp ) {
+                  return newExp->unparseToString();
+              }
+              SgFunctionCallExp *funcCall = isSgFunctionCallExp(node);
+              if ( funcCall ) {
+                  return funcCall->unparseToString();
+              }
+              SgStringVal *stringVal = isSgStringVal(node);
+              if ( stringVal ) {
+                  return stringVal->unparseToString();
+              }
+              ROSE_ABORT();
           }
           else return ("NULL stmt handle\n");
       }

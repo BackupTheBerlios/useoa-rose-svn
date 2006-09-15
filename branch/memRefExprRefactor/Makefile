@@ -91,6 +91,10 @@ nullTranslator_SOURCES = nullTranslator.cpp
 nullTranslator_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH) OAWraps/libSage2OA.so
 nullTranslator_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
 
+CHAandAliasVirtualMethodResolver_SOURCES = CHAandAliasVirtualMethodResolver.cpp
+CHAandAliasVirtualMethodResolver_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH) OAWraps/libSage2OA.so
+CHAandAliasVirtualMethodResolver_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
+
 OACFGTest_SOURCES = CFGTest.C
 OACFGTest_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH)
 OACFGTest_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
@@ -111,17 +115,15 @@ am_nullTranslator_OBJECTS = nullTranslator.$(OBJEXT)
 nullTranslator_OBJECTS = $(am_nullTranslator_OBJECTS)
 nullTranslator_LDFLAGS = 
 
+am_CHAandAliasVirtualMethodResolver_OBJECTS = CHAandAliasVirtualMethodResolver.$(OBJEXT)
+CHAandAliasVirtualMethodResolver_OBJECTS = $(am_CHAandAliasVirtualMethodResolver_OBJECTS)
+CHAandAliasVirtualMethodResolver_LDFLAGS = 
+
 am_staticVirtualMethodResolver_OBJECTS = staticVirtualMethodResolver.$(OBJEXT)
 staticVirtualMethodResolver_OBJECTS = $(am_staticVirtualMethodResolver_OBJECTS)
 staticVirtualMethodResolver_LDFLAGS = 
 staticVirtualMethodResolver_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH)
 staticVirtualMethodResolver_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
-
-am_CHAandAliasVirtualMethodResolver_OBJECTS = CHAandAliasVirtualMethodResolver.$(OBJEXT)
-CHAandAliasVirtualMethodResolver_OBJECTS = $(am_CHAandAliasVirtualMethodResolver_OBJECTS)
-CHAandAliasVirtualMethodResolver_LDFLAGS = 
-CHAandAliasVirtualMethodResolver_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH)
-CHAandAliasVirtualMethodResolver_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
 
 am_OACFGTest_OBJECTS = OACFGTest.$(OBJEXT)
 OACFGTest_OBJECTS = $(am_OACFGTest_OBJECTS)
@@ -143,6 +145,10 @@ nullTranslator$(EXEEXT): $(nullTranslator_OBJECTS) $(nullTranslator_DEPENDENCIES
 	@rm -f nullTranslator$(EXEEXT)
 	$(CXXLINK) $(nullTranslator_LDFLAGS) $(nullTranslator_OBJECTS) $(nullTranslator_LDADD)
 
+CHAandAliasVirtualMethodResolver$(EXEEXT): $(CHAandAliasVirtualMethodResolver_OBJECTS) $(CHAandAliasVirtualMethodResolver_DEPENDENCIES) 
+	@rm -f CHAandAliasVirtualMethodResolver$(EXEEXT)
+	$(CXXLINK) $(CHAandAliasVirtualMethodResolver_LDFLAGS) $(CHAandAliasVirtualMethodResolver_OBJECTS) $(CHAandAliasVirtualMethodResolver_LDADD)
+
 staticVirtualMethodResolver$(EXEEXT): $(staticVirtualMethodResolver_OBJECTS) $(staticVirtualMethodResolver_DEPENDENCIES) 
 	@rm -f staticVirtualMethodResolver$(EXEEXT)
 	$(CXXLINK) $(staticVirtualMethodResolver_LDFLAGS) $(staticVirtualMethodResolver_OBJECTS) $(staticVirtualMethodResolver_LDADD)
@@ -150,10 +156,6 @@ staticVirtualMethodResolver$(EXEEXT): $(staticVirtualMethodResolver_OBJECTS) $(s
 OACFGTest$(EXEEXT): $(OACFGTest_OBJECTS) $(OACFGTest_DEPENDENCIES) 
 	@rm -f OACFGTest$(EXEEXT)
 	$(CXXLINK) $(OACFGTest_LDFLAGS) $(OACFGTest_OBJECTS) $(OACFGTest_LDADD)
-
-CHAandAliasVirtualMethodResolver$(EXEEXT): $(CHAandAliasVirtualMethodResolver_OBJECTS) $(CHAandAliasVirtualMethodResolver_DEPENDENCIES) 
-	@rm -f CHAandAliasVirtualMethodResolver$(EXEEXT)
-	$(CXXLINK) $(CHAandAliasVirtualMethodResolver_LDFLAGS) $(CHAandAliasVirtualMethodResolver_OBJECTS) $(CHAandAliasVirtualMethodResolver_LDADD)
 
 OACFGTest$(EXEEXT): $(OACFGTest_OBJECTS) $(OACFGTest_DEPENDENCIES) 
 	@rm -f OACFGTest$(EXEEXT)

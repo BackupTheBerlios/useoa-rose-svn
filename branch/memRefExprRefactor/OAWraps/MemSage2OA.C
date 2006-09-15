@@ -762,7 +762,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 bool accuracy = false;
                 OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
                 OA::OA_ptr<OA::MemRefExpr> mre;
-                mre = new OA::UnnamedRef(addressTaken,accuracy, mrType, stmt);
+                OA::StmtHandle stmtHandle = getNodeNumber(funcCallExp);
+                mre = new OA::UnnamedRef(addressTaken,accuracy, mrType, stmtHandle);
  
                 // Record the type of the MRE (reference or non-reference).
                 mMre2TypeMap[mre] = other;
@@ -945,8 +946,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::OA_ptr<OA::MemRefExpr> mre;
             bool addressTaken = true;
             bool fullAccuracy = false;
+	    OA::StmtHandle stmtHandle = getNodeNumber(newExp);
+
             mre = new OA::UnnamedRef(addressTaken, fullAccuracy,
-                                     OA::MemRefExpr::USE, stmt);
+                                     OA::MemRefExpr::USE, stmtHandle);
 
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[mre] = other;
@@ -977,113 +980,115 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             SgPointerType *ptrType = isSgPointerType(type);
             ROSE_ASSERT(ptrType != NULL);
-            type = ptrType->get_base_type();
+            type = getBaseType(ptrType->get_base_type());
 
-            SgClassDefinition *classDefn = getClassDefinition(type);
-            ROSE_ASSERT(classDefn != NULL);
+            ROSE_ASSERT(type != NULL);
 
-            SgMemberFunctionDeclaration *methodDecl = 
-                lookupDestructorInClass(classDefn); 
-            ROSE_ASSERT(methodDecl != NULL); 
+            // If this is a base type, then do nothing more--
+            // i.e., not even a call handle.
+            if ( isSgClassType(type) ) {
 
-            // Create the MRE for the call handle.
-            OA::OA_ptr<OA::MemRefExpr> method;
-
-            // If the destructor is virtual, we need to create
-            // an invocation through a field access.
-            if ( isVirtual(methodDecl) ) {
-
-                // Notice that we first need to visit the receiver,
-                // so that we will have a MRE for the base of
-                // the field access.  
-
-                // clones MREs for lhs and wraps them in a Deref 
-                // and a FieldAccess
-                OA::MemRefHandle lhs_memref
-                    = findTopMemRefHandle(receiver);
-                std::string field_name 
-                    = toStringWithoutScope(methodDecl);
-                OA::OA_ptr<OA::MemRefExprIterator> mIter
-                    = getMemRefExprIterator(lhs_memref);
-                int numMREs = 0;
-                for ( ; mIter->isValid(); ++(*mIter) ) {
-                    OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
-                    OA::OA_ptr<OA::Deref> deref_mre;
-                    
-                    bool addressTaken = false;
-                    int numDerefs = 1;
-
-                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                    deref_mre = new OA::Deref(addressTaken, 
-                                              lhs_mre->hasFullAccuracy(),
-                                              OA::MemRefExpr::USE,
-                                              nullMRE,
-                                              numDerefs);
-
-                    // Record the type of the MRE (reference or non-reference).
-                    mMre2TypeMap[deref_mre] = other;
-
-                    OA::OA_ptr<OA::MemRefExpr> fieldAccess;
-                    addressTaken = false;
-
-		    OA::OA_ptr<OA::MemRefExpr> composedMre = deref_mre->composeWith(lhs_mre);
-                    // Transfer type to composed MRE
-                    mMre2TypeMap[composedMre] = mMre2TypeMap[deref_mre];
-
-                    fieldAccess = new OA::FieldAccess(false, 
-                                                      deref_mre->hasFullAccuracy(),
-                                                      OA::MemRefExpr::USE,
-                                                      composedMre,
-                                                      field_name);
-                    
-                    // Record the type of the MRE (reference or non-reference).
-                    mMre2TypeMap[fieldAccess] = other;
-
-                    // I do not think that there should be a general
-                    // MRE here.  Just a call handle.
-
-                    // mMemref2mreSetMap[memref].insert(fieldAccess);
-                    method = fieldAccess;
-
-                    ++numMREs;
-                }
-
-                // XXX:  Could we have multiple MREs here?  I don't
-                // think so.  Even if we could, mCallToMRE is
-                // not set up to handle it.  Abort if we see it.
-                ROSE_ASSERT( numMREs == 1 );
-
-            } else {
-
-                // Create a call handle for the delete expression.
-                bool addressTaken = false;
-                bool fullAccuracy = true;
-
-                OA::SymHandle symHandle = getProcSymHandle(methodDecl);
+                SgClassDefinition *classDefn = getClassDefinition(type);
+                ROSE_ASSERT(classDefn != NULL);
     
-                method = new OA::NamedRef(addressTaken, 
-                                          fullAccuracy,
-                                          OA::MemRefExpr::USE,
-                                          symHandle);
+                SgMemberFunctionDeclaration *methodDecl = 
+                    lookupDestructorInClass(classDefn); 
+                ROSE_ASSERT(methodDecl != NULL); 
+    
+                // Create the MRE for the call handle.
+                OA::OA_ptr<OA::MemRefExpr> method;
+    
+                // If the destructor is virtual, we need to create
+                // an invocation through a field access.
+                if ( isVirtual(methodDecl) ) {
+    
+                    // Notice that we first need to visit the receiver,
+                    // so that we will have a MRE for the base of
+                    // the field access.  
+    
+                    // clones MREs for lhs and wraps them in a Deref 
+                    // and a FieldAccess
+                    OA::MemRefHandle lhs_memref
+                        = findTopMemRefHandle(receiver);
+                    std::string field_name 
+                        = toStringWithoutScope(methodDecl);
+                    OA::OA_ptr<OA::MemRefExprIterator> mIter
+                        = getMemRefExprIterator(lhs_memref);
+                    int numMREs = 0;
+                    for ( ; mIter->isValid(); ++(*mIter) ) {
+                        OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
+                        OA::OA_ptr<OA::Deref> deref_mre;
+                        
+                        bool addressTaken = false;
+                        int numDerefs = 1;
+    
+                        OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                        deref_mre = new OA::Deref(addressTaken, 
+                                                  lhs_mre->hasFullAccuracy(),
+                                                  OA::MemRefExpr::USE,
+                                                  nullMRE,
+                                                  numDerefs);
+    
+                        OA::OA_ptr<OA::MemRefExpr> fieldAccess;
+                        addressTaken = false;
+    
+                        OA::OA_ptr<OA::MemRefExpr> composedMre = deref_mre->composeWith(lhs_mre);
+                        mMre2TypeMap[composedMre] = other;
+    
+                        fieldAccess = new OA::FieldAccess(false, 
+                                                          deref_mre->hasFullAccuracy(),
+                                                          OA::MemRefExpr::USE,
+                                                          composedMre,
+                                                          field_name);
+                        
+                        // Record the type of the MRE (reference or non-reference).
+                        mMre2TypeMap[fieldAccess] = other;
+    
+                        // I do not think that there should be a general
+                        // MRE here.  Just a call handle.
+    
+                        // mMemref2mreSetMap[memref].insert(fieldAccess);
+                        method = fieldAccess;
+    
+                        ++numMREs;
+                    }
 
-               // Record the type of the MRE (reference or non-reference).
-               mMre2TypeMap[method] = other;
-
+                    // XXX:  Could we have multiple MREs here?  I don't
+                    // think so.  Even if we could, mCallToMRE is
+                    // not set up to handle it.  Abort if we see it.
+                    ROSE_ASSERT( numMREs == 1 );
+    
+                } else {
+    
+                    // Create a call handle for the delete expression.
+                    bool addressTaken = false;
+                    bool fullAccuracy = true;
+    
+                    OA::SymHandle symHandle = getProcSymHandle(methodDecl);
+        
+                    method = new OA::NamedRef(addressTaken, 
+                                              fullAccuracy,
+                                              OA::MemRefExpr::USE,
+                                              symHandle);
+    
+                   // Record the type of the MRE (reference or non-reference).
+                   mMre2TypeMap[method] = other;
+    
+                }
+    	
+                OA::CallHandle call = getCallHandle(astNode);
+                mCallToMRE[call] = method;
+    
+                // We consider function/method invocations to be 
+                // uses, so add the call as a general MRE.
+                OA::MemRefHandle memref = getMemRefHandle(astNode);
+                mStmt2allMemRefsMap[stmt].insert(memref);
+                mMemref2mreSetMap[memref].insert(method);
+    
+                // Create parameter binding params arising from
+                // the receiver used to invoke the destructor.
+                createParamBindPtrAssignPairs(stmt, deleteExp);
             }
-	
-            OA::CallHandle call = getCallHandle(astNode);
-            mCallToMRE[call] = method;
-
-            // We consider function/method invocations to be 
-            // uses, so add the call as a general MRE.
-            OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
-            mMemref2mreSetMap[memref].insert(method);
-
-            // Create parameter binding params arising from
-            // the receiver used to invoke the destructor.
-            createParamBindPtrAssignPairs(stmt, deleteExp);
-
             break;
         }
     case V_SgThisExp:
@@ -1444,7 +1449,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             break;
         }
     case V_SgConstructorInitializer:
-        {
+        { 
             SgConstructorInitializer *ctorInit =
                 isSgConstructorInitializer(astNode);
             ROSE_ASSERT(ctorInit != NULL);
@@ -1452,53 +1457,64 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // Get the declaration of the function.
             SgFunctionDeclaration *functionDeclaration = 
                 ctorInit->get_declaration();
-            ROSE_ASSERT(functionDeclaration != NULL);
 
-            bool addressTaken = false;
-            bool fullAccuracy = true;
-	
-            OA::SymHandle symHandle = getProcSymHandle(functionDeclaration);
+            // The declaration of the constructor initializer
+            // may be NULL either if the constructor is
+            // implicitly defined (and we have not done
+            // AST normalization) or if this is a base type.
+            // Tolerate NULL for the latter reason.
+            if (functionDeclaration == NULL) {
+                // If the class declaration associated with this
+                // method is NULL, then it looks like a basic type.
+                ROSE_ASSERT(ctorInit->get_class_decl() == NULL);
+	    } else {
+
+                bool addressTaken = false;
+                bool fullAccuracy = true;
+    	
+                OA::SymHandle symHandle = getProcSymHandle(functionDeclaration);
+        
+                OA::OA_ptr<OA::MemRefExpr> method;
+                method = new OA::NamedRef(addressTaken, 
+                                          fullAccuracy,
+                                          OA::MemRefExpr::USE,
+                                          symHandle);
     
-            OA::OA_ptr<OA::MemRefExpr> method;
-            method = new OA::NamedRef(addressTaken, 
-                                      fullAccuracy,
-                                      OA::MemRefExpr::USE,
-                                      symHandle);
+                // Record the type of the MRE (reference or non-reference).
+                mMre2TypeMap[method] = other;
+    
+                OA::CallHandle call = getCallHandle(astNode);
+                mCallToMRE[call] = method;
+                OA::MemRefHandle memref = getMemRefHandle(astNode);
+                mStmt2allMemRefsMap[stmt].insert(memref);
+                mMemref2mreSetMap[memref].insert(method);
 
-            // Record the type of the MRE (reference or non-reference).
-            mMre2TypeMap[method] = other;
-
-            OA::CallHandle call = getCallHandle(astNode);
-            mCallToMRE[call] = method;
-            OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
-            mMemref2mreSetMap[memref].insert(method);
-
-            // Create MREs for the actuals passed to the constructor.
-
-            // Get the list of actual arguments from the constructor call.
-            SgExprListExp* exprListExp = ctorInit->get_args();  
-            ROSE_ASSERT (exprListExp != NULL);  
-
-            // Notice that since we visit the SgExprListExp and since 
-            // that case visits its sub-expressions, we do not 
-            // need to explicitly visit the actual args here.
-            findAllMemRefsAndPtrAssigns(exprListExp, stmt);
-            
-            // Note that we use the SgExprList of the constructor
-            // to model the actual 'this' argument.  
-            OA::MemRefHandle receiver_memref = getMemRefHandle(exprListExp);
-            mStmt2allMemRefsMap[stmt].insert(receiver_memref);
-            OA::OA_ptr<OA::MemRefExpr> receiver_mre
-                = createConstructorInitializerReceiverMRE(ctorInit);
-            mMemref2mreSetMap[receiver_memref].insert(receiver_mre);
-
-            // Create parameter binding params arising from
-            // the actual arguments and receiver (objected created)
-            // of the constructor invocation.
-            // This also applies reference conversion rules
-            // 2 and 4, as required.
-            createParamBindPtrAssignPairs(stmt, ctorInit);
+                // Create MREs for the actuals passed to the constructor.
+    
+                // Get the list of actual arguments from the constructor call.
+                SgExprListExp* exprListExp = ctorInit->get_args();  
+                ROSE_ASSERT (exprListExp != NULL);  
+    
+                // Notice that since we visit the SgExprListExp and since 
+                // that case visits its sub-expressions, we do not 
+                // need to explicitly visit the actual args here.
+                findAllMemRefsAndPtrAssigns(exprListExp, stmt);
+                
+                // Note that we use the SgExprList of the constructor
+                // to model the actual 'this' argument.  
+                OA::MemRefHandle receiver_memref = getMemRefHandle(exprListExp);
+                mStmt2allMemRefsMap[stmt].insert(receiver_memref);
+                OA::OA_ptr<OA::MemRefExpr> receiver_mre
+                    = createConstructorInitializerReceiverMRE(ctorInit);
+                mMemref2mreSetMap[receiver_memref].insert(receiver_mre);
+    
+                // Create parameter binding params arising from
+                // the actual arguments and receiver (objected created)
+                // of the constructor invocation.
+                // This also applies reference conversion rules
+                // 2 and 4, as required.
+                createParamBindPtrAssignPairs(stmt, ctorInit);
+            }
 
             break;
         }
@@ -2040,8 +2056,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                                numDerefs);
 
                     OA::OA_ptr<OA::MemRefExpr> mre = lhs_mre->clone();
-                    // Transfer type to cloned MRE
-                    mMre2TypeMap[mre] = mMre2TypeMap[lhs_mre];
                     mre = deref_mre->composeWith(mre);
                     
                     mre->setAccuracy(false);
@@ -2389,113 +2403,119 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         {
             SgReturnStmt *returnStmt = isSgReturnStmt(astNode);
             ROSE_ASSERT(returnStmt != NULL);
-            findAllMemRefsAndPtrAssigns(returnStmt->get_return_expr(), stmt);
 
-            //----------- Ptr Assigns
-            // if the method or function we are in has a ptr or 
-            // reference return type
-            // Make a pair with a NamedRef for the function being assigned
-            // the memory references for the top MemRefHandle of the return exp
-            SgFunctionDefinition *enclosingFunction =
-                getEnclosingFunction(returnStmt);
-            ROSE_ASSERT(enclosingFunction != NULL);
-            SgFunctionDeclaration *functionDeclaration =
-                enclosingFunction->get_declaration();
-            ROSE_ASSERT(functionDeclaration != NULL);
-        
-            SgType *return_type = functionDeclaration->get_orig_return_type();
-            if (isReferenceTypeRequiringModeling(return_type) || isSgPointerType(return_type)){
-  
-                // Create the lhs to represent the method declaration.
-                bool addressTaken = false;
-                bool fullAccuracy = true;
-                OA::SymHandle symHandle = getProcSymHandle(functionDeclaration);
+            if ( returnStmt->get_return_expr() != NULL ) {
+                findAllMemRefsAndPtrAssigns(returnStmt->get_return_expr(), stmt);
     
-                OA::OA_ptr<OA::MemRefExpr> function;
-                function = new OA::NamedRef(addressTaken, 
-                                            fullAccuracy,
-                                            OA::MemRefExpr::DEF,
-                                            symHandle);
-
-                // Record the type of the MRE (reference or non-reference).
-                mMre2TypeMap[function] = ( isSgReferenceType(return_type) ? reference : other );
-
-                // get the memory reference handle for the return exp
-                OA::MemRefHandle child_memref 
-                    = findTopMemRefHandle(returnStmt->get_return_expr());
-                SgExpression *child_node=NULL;
-                SgType *child_type;
-                if (child_memref!=OA::MemRefHandle(0)) {
-                    child_node = isSgExpression(getSgNode(child_memref));
-                    ROSE_ASSERT(child_node);
-                    child_type = getBaseType(child_node->get_type());
-                }
-
-
-                OA::OA_ptr<OA::MemRefExprIterator> mIter;
-                mIter = getMemRefExprIterator(child_memref);
-                for ( ; mIter->isValid(); ++(*mIter) ) {
-                    OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
-
-                    // if returning a reference then need to modify the MREs
-                    // for the return expression
-                    // FIXME: very similar to some code in SgInitializedName case
-                    if (isReferenceTypeRequiringModeling(return_type)) {
-
-                        // If the rhs has an lvalue, then set the 
-                        // addressOf flag for the MREs for the node under 
-                        // the SgInitializer node.  i.e., apply
-                        // reference conversion rule 4 to the rhs.
-                        // If the rhs does not have an lvalue, then
-                        // apply reference conversion 3 to the _lhs_.
-                        if ( is_lval(child_mre) ) {
-                            // Apply reference conversion rule 4-- 
-                            // take the address of the rhs.  
-                        
-                            // an address taken will cancel out a deref and
-                            // return the result
-                            mMemref2mreSetMap[child_memref].erase(child_mre);
-                            child_mre = child_mre->setAddressTaken();
-                            mMemref2mreSetMap[child_memref].insert(child_mre);
-
-                            // We also need to be careful to remove the
-                            // original reference base, lest we get two of
-                            // them.  This was inserted as the Sg_File_Info
-                            // of the deref'ed MRE.  XXX:  Ugly.  Encapsulate.
-                            SgNode *node = (SgNode*)(child_memref.hval());
-                            ROSE_ASSERT(node != NULL);
-                 
-                            Sg_File_Info *fileInfo = node->get_file_info();
-                            ROSE_ASSERT(fileInfo != NULL);
-
-			    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
-
-                            // Need to erase the mre w/o the deref.
-                            mMemref2mreSetMap[hiddenMemref].erase(child_mre);
-
-                            // Model the reference initialization as
-                            // a pointer assignment.
-                            makePtrAssignPair(stmt, function, child_mre);
+                //----------- Ptr Assigns
+                // if the method or function we are in has a ptr or 
+                // reference return type
+                // Make a pair with a NamedRef for the function being assigned
+                // the memory references for the top MemRefHandle of the return exp
+                SgFunctionDefinition *enclosingFunction =
+                    getEnclosingFunction(returnStmt);
+                ROSE_ASSERT(enclosingFunction != NULL);
+                SgFunctionDeclaration *functionDeclaration =
+                    enclosingFunction->get_declaration();
+                ROSE_ASSERT(functionDeclaration != NULL);
+            
+                SgType *return_type = functionDeclaration->get_orig_return_type();
+                if (isReferenceTypeRequiringModeling(return_type) || isSgPointerType(return_type)){
+      
+                    // Create the lhs to represent the method declaration.
+                    bool addressTaken = false;
+                    bool fullAccuracy = true;
+                    OA::SymHandle symHandle = getProcSymHandle(functionDeclaration);
+        
+                    OA::OA_ptr<OA::MemRefExpr> function;
+                    function = new OA::NamedRef(addressTaken, 
+                                                fullAccuracy,
+                                                OA::MemRefExpr::DEF,
+                                                symHandle);
+    
+                    // Record the type of the MRE (reference or non-reference).
+                    mMre2TypeMap[function] = ( isSgReferenceType(return_type) ? reference : other );
+    
+                    // get the memory reference handle for the return exp
+                    OA::MemRefHandle child_memref 
+                        = findTopMemRefHandle(returnStmt->get_return_expr());
+                    SgExpression *child_node=NULL;
+                    SgType *child_type;
+                    if (child_memref!=OA::MemRefHandle(0)) {
+                        child_node = isSgExpression(getSgNode(child_memref));
+                        ROSE_ASSERT(child_node);
+                        child_type = getBaseType(child_node->get_type());
+                    }
+    
+    
+                    OA::OA_ptr<OA::MemRefExprIterator> mIter;
+                    mIter = getMemRefExprIterator(child_memref);
+                    for ( ; mIter->isValid(); ++(*mIter) ) {
+                        OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
+    
+                        // if returning a reference then need to modify the MREs
+                        // for the return expression
+                        // FIXME: very similar to some code in SgInitializedName case
+                        if (isReferenceTypeRequiringModeling(return_type)) {
+    
+                            // If the rhs has an lvalue, then set the 
+                            // addressOf flag for the MREs for the node under 
+                            // the SgInitializer node.  i.e., apply
+                            // reference conversion rule 4 to the rhs.
+                            // If the rhs does not have an lvalue, then
+                            // apply reference conversion 3 to the _lhs_.
+                            if ( is_lval(child_mre) ) {
+                                // Apply reference conversion rule 4-- 
+                                // take the address of the rhs.  But only
+                                // do this in the context of the implicit
+                                // ptr assign.  i.e., do not modify it 
+                                // within the expression in the program.
+                            
+                                // an address taken will cancel out a deref and
+                                // return the result
+                                mMemref2mreSetMap[child_memref].erase(child_mre);
+                                child_mre = child_mre->setAddressTaken();
+                                mMemref2mreSetMap[child_memref].insert(child_mre);
+    
+                                // We also need to be careful to remove the
+                                // original reference base, lest we get two of
+                                // them.  This was inserted as the Sg_File_Info
+                                // of the deref'ed MRE.  XXX:  Ugly.  Encapsulate.
+                                SgNode *node = (SgNode*)(child_memref.hval());
+                                ROSE_ASSERT(node != NULL);
+                     
+                                Sg_File_Info *fileInfo = node->get_file_info();
+                                ROSE_ASSERT(fileInfo != NULL);
+    
+    			    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
+    
+                                // Need to erase the mre w/o the deref.
+                                mMemref2mreSetMap[hiddenMemref].erase(child_mre);
+    
+                                // Model the reference initialization as
+                                // a pointer assignment.
+                                makePtrAssignPair(stmt, function, child_mre);
+                            } else {
+                                // Apply reference conversion rules 2 and 4.
+                                OA::OA_ptr<OA::MemRefExpr> addr_of_lhs_tmp_mre;
+                                addr_of_lhs_tmp_mre =
+                                    applyReferenceConversionRules2And4(stmt,
+                                                                       return_type,
+                                                                       returnStmt,
+                                                                       child_node,
+                                                                       child_mre);
+    
+                                // Now model the reference initialization 
+                                //    t_l &lhs = lhsTmp;             
+                                // as the pointer assignment
+                                //    t_l *lhs = &lhsTmp;
+                                makePtrAssignPair(stmt, function, addr_of_lhs_tmp_mre);
+                            }
+                        // Else must be returning a SgPointerType.
                         } else {
-                            // Apply reference conversion rules 2 and 4.
-                            OA::OA_ptr<OA::MemRefExpr> addr_of_lhs_tmp_mre;
-                            addr_of_lhs_tmp_mre =
-                                applyReferenceConversionRules2And4(stmt,
-                                                                   return_type,
-                                                                   returnStmt,
-                                                                   child_node,
-                                                                   child_mre);
-
-                            // Now model the reference initialization 
-                            //    t_l &lhs = lhsTmp;             
-                            // as the pointer assignment
-                            //    t_l *lhs = &lhsTmp;
-                            makePtrAssignPair(stmt, function, addr_of_lhs_tmp_mre);
+                            ROSE_ASSERT(isSgPointerType(return_type));
+                            makePtrAssignPair(stmt, function, child_mre);
                         }
-                    // Else must be returning a SgPointerType.
-                    } else {
-                        ROSE_ASSERT(isSgPointerType(return_type));
-                        makePtrAssignPair(stmt, function, child_mre);
                     }
                 }
             }
@@ -2520,6 +2540,44 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 ROSE_ASSERT(lhs != NULL);
                 findAllMemRefsAndPtrAssigns(lhs,stmt);
 
+#if 1
+                SgConstructorInitializer *ctorInitializer =
+		  isSgConstructorInitializer(lhs->get_initptr());
+                if ( ctorInitializer != NULL ) { 
+                    // If a constructor is here, this is an object declaration.
+                    // We need to create implicit ptr assigns for
+                    // the virtual methods, which will involve a MRE
+                    // for the newly-declared object.
+
+                    // Get an MRE for it ..
+                    OA::OA_ptr<OA::MemRefExpr> receiver_mre =
+                        createConstructorInitializerReceiverMRE(ctorInitializer);
+                    // But that returns a receiver intended as an
+                    // implicit this-- i.e., with its address taken.
+                    // We just want the object, so deref it.
+                    ROSE_ASSERT(receiver_mre->hasAddressTaken());
+
+                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                    OA::OA_ptr<OA::Deref> deref_mre;
+                    bool addressTaken = false;
+                    bool accuracy = true;
+                    int numDerefs = 1;
+                    deref_mre = new OA::Deref(addressTaken, 
+                                              accuracy,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE,
+                                              numDerefs);
+
+		    receiver_mre = deref_mre->composeWith(receiver_mre);
+
+                    mMre2TypeMap[receiver_mre] = other;
+
+                    createImplicitPtrAssignPairsForObjectDeclaration(stmt,
+                                                                     receiver_mre,
+                                                                     lhs);
+
+                }
+#else
                 // Retrieve any MREs create for a variable declaration.
                 // Really, there should be at most one.  This should
                 // have been created by the above call to 
@@ -2530,6 +2588,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     = getMemRefExprIterator(var_memref);
 
 #if 1
+
+
                 // For each MRE, determine if there are
                 // implicit ptr assign pairs, which arise if this
                 // is an object declaration.
@@ -2539,6 +2599,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                                                      mre,
                                                                      lhs);
                 }
+#endif
 #endif
             }
             break;
@@ -2666,8 +2727,16 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         {
             SgClassDeclaration *classDecl = isSgClassDeclaration(astNode);
             ROSE_ASSERT(classDecl != NULL);
-
+#if 0
+	    classDecl = getDefiningDeclaration(classDecl);
+	    ROSE_ASSERT(classDecl != NULL);
             findAllMemRefsAndPtrAssigns( classDecl->get_definition(), stmt );
+#else
+            classDecl = getDefiningDeclaration(classDecl);
+            if ( ( classDecl ) && ( classDecl->get_definition() != NULL ) ) {
+                findAllMemRefsAndPtrAssigns( classDecl->get_definition(), stmt );
+            }
+#endif
             break;
         }
 
@@ -2758,6 +2827,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgGlobal:
     case V_SgBasicBlock:
     case V_SgFunctionDeclaration:
+    case V_SgNullExpression:
         break;
 
     case V_SgBoolValExp:
@@ -3250,7 +3320,7 @@ SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::Stmt
     // expected type.
     verifyStmtHandleType(stmt);
 
-    SgNode *node = getNodePtr(stmt);
+    SgNode *node = getNodePtr(rhs_stmt);
     ROSE_ASSERT(node != NULL);
 
     SgNewExp *newExp = isSgNewExp(node);
@@ -3263,6 +3333,12 @@ SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::Stmt
 
     // We only create implicit pointer assignment pairs
     // for classes/structs, not basic types.
+    SgPointerType *pointerType = isSgPointerType(type);
+    if ( pointerType ) {
+        type = getBaseType(pointerType->get_base_type());
+        ROSE_ASSERT(type != NULL);
+    }
+
     if ( !isSgNamedType(type) ) {
         return;
     }
@@ -3296,23 +3372,29 @@ SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::Stmt
     // to a new expression.  Therefore, dereference it
     // so that createImplicitPtrAssignPairsForVirtualMethods
     // may add a field access to it.
-    OA::OA_ptr<OA::MemRefExpr> derefedLhs;
+    OA::OA_ptr<OA::Deref> deref_mre;
 
-    // The MRE we are dereferencing represents a new expression.
-    // Since it produces an address, it better have its
-    // address taken.  Verify that and then dereference
-    // by setting addressTaken to false.
-    ROSE_ASSERT(lhs_mre->hasAddressTaken());
-  
-    derefedLhs = lhs_mre->clone();
+    bool addressTaken = false;
+    int numDerefs = 1;
 
-    derefedLhs->setAddressTaken(false);
+    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+    deref_mre = new OA::Deref(addressTaken, 
+                              lhs_mre->hasFullAccuracy(),
+                              OA::MemRefExpr::USE,
+                              nullMRE,
+                              numDerefs);
 
-    // Transfer type to cloned MRE
-    mMre2TypeMap[derefedLhs] = mMre2TypeMap[lhs_mre];
+    OA::OA_ptr<OA::MemRefExpr> base;
+    base = lhs_mre->clone();
+    base->setMemRefType(OA::MemRefExpr::USE);
+
+    OA::OA_ptr<OA::MemRefExpr> composedMre = deref_mre->composeWith(base);
+
+    // Record the type of the MRE (reference or non-reference).
+    mMre2TypeMap[composedMre] = other;
 
     createImplicitPtrAssignPairsForVirtualMethods(stmt,
-                                                  derefedLhs,
+                                                  composedMre,
                                                   classDefinition,
                                                   visitedVirtualMethods);
 }

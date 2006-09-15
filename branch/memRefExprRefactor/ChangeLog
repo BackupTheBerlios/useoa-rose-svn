@@ -17,8 +17,7 @@
 		OA::SideEffect::InterSideEffectIRInterfaceDefault,
 		OA::SideEffect::SideEffectIRInterface
           Of the above, the following were added:
-		OA::SSA::SSAIRInterface,
-		OA::DataFlow::ParamBindingsIRInterface,
+		OA::SSA::SSAIRInterface,		OA::DataFlow::ParamBindingsIRInterface,
 		OA::SideEffect::InterSideEffectIRInterfaceDefault,
 		OA::SideEffect::SideEffectIRInterface
 	  Made all inheritance of these interfaces virtual
@@ -2805,3 +2804,48 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - verified some of the AliasIRInterface.test things involving references.
       There are some diffs in there that seem new.  For example, comma.c
       now aborts.
+
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r218  Brian White	
+
+          - Modified creation of implicit ptr assigns for virtual
+            methods in SgVariableDeclaration case.  In particular,
+            we were not getting the proper lhs/object name to pass
+            to createImplicitPtrAssignPairsForObjectDeclaration, so
+            I explicitly created one.
+
+          - Changed the stmt handle in the unnamed ref of a new/malloc
+            to be the expression, rather than the statement.
+            This choice is potentially important:  using the statement
+            would limit our precision because multiple, distinct
+            expressions within the same statement would be mapped to 
+            the same MRE.  Further,
+            createImplicitPtrAssignPairsForDynamicObjectAllocation
+            assumes that the stmt handle is a SgNewExp.
+	
+          - Modified SgDeleteExp case to do nothing if the
+            destroyed object is a basic type.
+
+          - Modified SgConstructorInitializer to do nothing
+            if the involved type is a basic type.
+
+          - Modified SgClassDeclaration so that it does
+            recurse if its definition is NULL.
+
+          - Modified FindCallsitesPass::visit so that it
+            doesn't collect a SgDeleteExp if it destroys a 
+            basic type.
+	
+          - Modified SgReturnStmt so that it does nothing if the
+            expression returned is NULL.  e.g., 
+	
+            void foo() { 
+                if ( true ) { return; }
+            }
+
+          - In a few places where we were trying to get a class
+            definition from a class declaration, first found 
+            the defining class declaration.
+	
+	  - Passed the following tests:
+
+              - stackInitOfClassWithVirtualMethods.C

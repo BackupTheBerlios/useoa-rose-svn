@@ -22,7 +22,7 @@ static char sBuffer[4096];
 static void code(char *buffer,int size)
 {
   for (size--; size >= 0; size--) {
-    buffer[size] ^= 90;
+    buffer[size] ^= 0x5A;
   }
 }
 
@@ -105,7 +105,18 @@ void Greed::InsertHighScore(char *pszName)
 
 Score *Greed::GetHighScore(int Pos)
 {
-  return ((this) -> ScoreCard) + ((((Pos >= 0) && (Pos < MAX_SCORE))?Pos:0));
+  if ((Pos >= 0)) {
+    if ((Pos < MAX_SCORE)) {
+      return ((this) -> ScoreCard) + Pos;
+    }
+    else {
+      return ((this) -> ScoreCard) + 0;
+    }
+  }
+  else {{
+      return ((this) -> ScoreCard) + 0;
+    }
+  }
 // end of GetHighScore
 }
 
@@ -119,14 +130,38 @@ int Greed::AddScore(int nDeltaX,int nDeltaY)
   int nNewYPos;
   nNewXPos = ((((this) -> nXPos) + (nDeltaX)));
   nNewYPos = ((((this) -> nYPos) + (nDeltaY)));
+  bool rose_sc_bool_0 = false;
+  if ((nNewXPos < 0)) {{
+      rose_sc_bool_0 = true;
+    }
+  }
+  else {
+    if (((nNewXPos) >= ((this) -> nMaxX))) {
+      rose_sc_bool_0 = true;
+    }
+    else {
+    }
+  }
 // is X out of range
-  if ((nNewXPos < 0) || ((nNewXPos) >= ((this) -> nMaxX))) {
+  if (rose_sc_bool_0) {
     return 0;
   }
   else {
   }
+  bool rose_sc_bool_1 = false;
+  if ((nNewYPos < 0)) {{
+      rose_sc_bool_1 = true;
+    }
+  }
+  else {
+    if (((nNewYPos) >= ((this) -> nMaxY))) {
+      rose_sc_bool_1 = true;
+    }
+    else {
+    }
+  }
 // is Y out of range
-  if ((nNewYPos < 0) || ((nNewYPos) >= ((this) -> nMaxY))) {
+  if (rose_sc_bool_1) {
     return 0;
   }
   else {
@@ -162,14 +197,38 @@ int Greed::UpdateTable(int nDeltaX,int nDeltaY,int nNumber)
 // if out of range we should be at the same spot
     nNewXPos = ((((this) -> nXPos) + (nDeltaX)));
     nNewYPos = ((((this) -> nYPos) + (nDeltaY)));
+    bool rose_sc_bool_2 = false;
+    if ((nNewXPos < 0)) {{
+        rose_sc_bool_2 = true;
+      }
+    }
+    else {
+      if (((nNewXPos) >= ((this) -> nMaxX))) {
+        rose_sc_bool_2 = true;
+      }
+      else {
+      }
+    }
 // is X out of range
-    if ((nNewXPos < 0) || ((nNewXPos) >= ((this) -> nMaxX))) {
+    if (rose_sc_bool_2) {
       return (-1);
     }
     else {
     }
+    bool rose_sc_bool_3 = false;
+    if ((nNewYPos < 0)) {{
+        rose_sc_bool_3 = true;
+      }
+    }
+    else {
+      if (((nNewYPos) >= ((this) -> nMaxY))) {
+        rose_sc_bool_3 = true;
+      }
+      else {
+      }
+    }
 // is Y out of range
-    if ((nNewYPos < 0) || ((nNewYPos) >= ((this) -> nMaxY))) {
+    if (rose_sc_bool_3) {
       return (-1);
     }
     else {
@@ -284,17 +343,52 @@ int Greed::RestoreGame()
 
 Greed::Greed(uint nXmax,uint nYmax,char *pszScoreFile,char *pszSaveFile)
 {
+  if ((nXmax == (0))) {
 // checks validity of table size
-  (this) -> nMaxX = ((nXmax == (0))?(DEFAULT_X):nXmax);
-  (this) -> nMaxY = ((nYmax == (0))?(DEFAULT_Y):nYmax);
+    (this) -> nMaxX = (DEFAULT_X);
+  }
+  else {
+// checks validity of table size
+    (this) -> nMaxX = nXmax;
+  }
+  if ((nYmax == (0))) {
+    (this) -> nMaxY = (DEFAULT_Y);
+  }
+  else {
+    (this) -> nMaxY = nYmax;
+  }
   (this) -> cPlayTable = ((0));
-  if ((pszScoreFile == ((0))) || ((( *pszScoreFile)) == ('\0'))) {
+  bool rose_sc_bool_4 = false;
+  if ((pszScoreFile == ((0)))) {{
+      rose_sc_bool_4 = true;
+    }
+  }
+  else {
+    if (((( *pszScoreFile)) == ('\0'))) {
+      rose_sc_bool_4 = true;
+    }
+    else {
+    }
+  }
+  if (rose_sc_bool_4) {
     strcpy(((this) -> szScoreFile),("greed.sco"));
   }
   else {
     strcpy(((this) -> szScoreFile),pszScoreFile);
   }
-  if ((pszSaveFile == ((0))) || ((( *pszSaveFile)) == ('\0'))) {
+  bool rose_sc_bool_5 = false;
+  if ((pszSaveFile == ((0)))) {{
+      rose_sc_bool_5 = true;
+    }
+  }
+  else {
+    if (((( *pszSaveFile)) == ('\0'))) {
+      rose_sc_bool_5 = true;
+    }
+    else {
+    }
+  }
+  if (rose_sc_bool_5) {
     strcpy(((this) -> szSaveFile),("greed.sav"));
   }
   else {
@@ -609,9 +703,8 @@ void Dosgreed::PlayGame()
 {
 // tolower (getch ());
       ch1 = 'a';
-      if ((ch1) == 0) 
+      if ((ch1) == 0) {
 // getch ();
-{
         ch2 = 'b';
       }
       else {
@@ -658,9 +751,21 @@ void Dosgreed::PlayGame()
 {
 // toupper (getch ());
           ch1 = 'c';
+          rose_sc_label_0:
+          if (((ch1) != ('N'))) {
+            if (((ch1) != ('Y'))) {
+            }
+            else {
+              break; 
+            }
+          }
+          else {{
+              break; 
+            }
+          }
 //if (ch1 == 0) getch ();
         }
-while (((ch1) != ('N')) && ((ch1) != ('Y')));
+while (true);
         if ((ch1) == ('N')) {
         }
         else {
@@ -724,8 +829,14 @@ void MsgAtBot(char *msg)
   x = 0;
   y = 0;
   NewXPos = ((nLastCol - 0) >> 1);
+  if ((NewXPos > 12)) {
 // should spill into Score: 12345
-  NewXPos = ((NewXPos > 12)?NewXPos:15);
+    NewXPos = NewXPos;
+  }
+  else {
+// should spill into Score: 12345
+    NewXPos = 15;
+  }
 //gotoxy (NewXPos, nLastLine);
 //cputs (msg);
 //ch = getch (); if (ch == 0) getch ();	// flush extra keys

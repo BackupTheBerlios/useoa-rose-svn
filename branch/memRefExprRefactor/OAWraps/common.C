@@ -429,6 +429,10 @@ getFormalTypes(SgNode *node)
                 isSgClassDeclaration(classType->get_declaration()); 
             ROSE_ASSERT(classDeclaration != NULL); 
 
+            classDeclaration = 
+                isSgClassDeclaration(getDefiningDeclaration(classDeclaration));
+            ROSE_ASSERT(classDeclaration != NULL);
+
             SgClassDefinition *classDefn  =  
                 classDeclaration->get_definition();  
             ROSE_ASSERT(classDefn != NULL); 
@@ -836,8 +840,12 @@ isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration,
         SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
         ROSE_ASSERT(classDeclaration != NULL);
 
+        classDeclaration = isSgClassDeclaration(getDefiningDeclaration(classDeclaration));
+        ROSE_ASSERT(classDeclaration != NULL);
+
         SgClassDefinition  *parentClassDefinition  = 
             classDeclaration->get_definition(); 
+        ROSE_ASSERT(parentClassDefinition != NULL);
 
         // Visit all methods in the parent class.
         SgDeclarationStatementPtrList &members = 

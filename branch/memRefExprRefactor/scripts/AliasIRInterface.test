@@ -66,6 +66,9 @@ test::  paramBindingsForStackCtorInvoc.C,  checked by BSW 9/7/06
 test::  paramBindingsForDynamicCtorInvoc.C,  checked by BSW 9/7/06
 test::  paramBindingsForDestructorInvoc.C,  checked by BSW 9/7/06
 
+# Specifically for virtual methods
+test::  stackInitOfClassWithVirtualMethods.C,  checked by BSW 9/14/06
+
 # Specifically testing references
 test::  ctorReferenceInit.C,        checked by MMS 9/14/06
 test::  refPtrFormal.C,             checked by MMS 9/14/06

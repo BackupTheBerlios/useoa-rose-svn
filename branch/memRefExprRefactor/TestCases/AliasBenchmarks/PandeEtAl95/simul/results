@@ -1,29 +1,5 @@
 CHA:  Method invocation has 3 possible resolutions 
-Alias analysis:  Method invocation has 0 possible resolutions 
-	caller:simulation_unit::simulation_unit
-(this) -> simulation_unit::display()
-CHA:  Method invocation has 3 possible resolutions 
-Alias analysis:  Method invocation has 0 possible resolutions 
-	caller:simulation_unit::~simulation_unit
-(this) -> simulation_unit::erase()
-CHA:  Method invocation has 3 possible resolutions 
-Alias analysis:  Method invocation has 0 possible resolutions 
-	caller:simulation_unit::move
-(this) -> erase()
-CHA:  Method invocation has 3 possible resolutions 
-Alias analysis:  Method invocation has 0 possible resolutions 
-	caller:simulation_unit::move
-(this) -> display()
-CHA:  Method invocation has 3 possible resolutions 
-Alias analysis:  Method invocation has 1 possible resolutions 
-	caller:main
-( *((s_grid[x_location])[y_location])).cycle()
-Summary CHA monomorphic call sites: 2
-Summary Alias analysis monomorphic call sites: 1
-Summary CHA total (virtual) resolutions: 17
-Summary Alias analysis total (virtual) resolutions: 1
-CHA:  Method invocation has 3 possible resolutions 
-Alias analysis:  Method invocation has 0 possible resolutions 
+Alias analysis:  Method invocation has 2 possible resolutions 
 	caller:simulation_unit::simulation_unit
 	(this) -> simulation_unit::display()
 CHA:  Method invocation has 3 possible resolutions 
@@ -31,13 +7,21 @@ Alias analysis:  Method invocation has 0 possible resolutions
 	caller:simulation_unit::~simulation_unit
 	(this) -> simulation_unit::erase()
 CHA:  Method invocation has 3 possible resolutions 
-Alias analysis:  Method invocation has 0 possible resolutions 
+Alias analysis:  Method invocation has 2 possible resolutions 
 	caller:simulation_unit::move
 	(this) -> erase()
 CHA:  Method invocation has 3 possible resolutions 
-Alias analysis:  Method invocation has 0 possible resolutions 
+Alias analysis:  Method invocation has 2 possible resolutions 
 	caller:simulation_unit::move
 	(this) -> display()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 2 possible resolutions 
+	caller:pop_around::pop_around
+	(this) -> pop_around::display()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 2 possible resolutions 
+	caller:crawl_around::crawl_around
+	(this) -> crawl_around::display()
 CHA:  Method invocation has 3 possible resolutions 
 Alias analysis:  Method invocation has 1 possible resolutions 
 	caller:main
@@ -45,4 +29,4 @@ Alias analysis:  Method invocation has 1 possible resolutions
 Summary CHA monomorphic call sites: 2
 Summary Alias analysis monomorphic call sites: 1
 Summary CHA total (virtual) resolutions: 17
-Summary Alias analysis total (virtual) resolutions: 1
+Summary Alias analysis total (virtual) resolutions: 11
