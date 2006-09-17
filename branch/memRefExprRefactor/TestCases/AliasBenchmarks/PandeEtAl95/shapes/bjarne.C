@@ -410,11 +410,13 @@ void operator delete(void *obj, size_t size)
 {
 }
 
+#if 0
 _Atomic_word __exchange_and_add(volatile _Atomic_word* __mem, int __val)
 {
 	_Atomic_word __exchange_and_addtemp;
 	return __exchange_and_addtemp;
 }
+#endif
 
 int strcmp(const char *s1, const char *s2) __THROW
 {

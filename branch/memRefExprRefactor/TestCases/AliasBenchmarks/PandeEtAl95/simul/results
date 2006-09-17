@@ -36,7 +36,7 @@ Alias analysis:  Method invocation has 0 possible resolutions
 	((class simulation_unit *)(this)) -> ~simulation_unit()
 definedFunctions: 53
 definedVirtualFunctions: 8
-invokedVirtualFunctions: 7
+virtual method callsites: 7
 Summary CHA monomorphic call sites: 4
 Summary Alias analysis monomorphic call sites: 0
 Summary CHA total (virtual) resolutions: 19

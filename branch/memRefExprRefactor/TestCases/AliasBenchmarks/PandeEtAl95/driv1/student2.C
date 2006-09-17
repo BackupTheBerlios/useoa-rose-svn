@@ -309,7 +309,7 @@ void operator delete(void *obj, size_t size)
 // Missing         method: qualified name: std::locale::classic type
 // signature: public: static const std::locale &classic();
 // [referenced]
-
+#if 0
 void __atomic_add(volatile _Atomic_word* __mem, int __val)
 {
   // Not in man libray, got information at:
@@ -324,6 +324,7 @@ void __atomic_add(volatile _Atomic_word* __mem, int __val)
   // Not in man library, got information at:
   //http://www.nabble.com/notes-on-current-atomics-config-and-usage-t1902803.html
 }
+#endif
 
 int strcmp(const char *s1, const char *s2) __THROW
 {

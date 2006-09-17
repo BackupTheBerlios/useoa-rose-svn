@@ -1082,7 +1082,8 @@ bool classHasVirtualMethods(SgClassDefinition *classDefinition)
  */
 bool matchingFunctions(SgFunctionDeclaration *decl1, 
                        SgFunctionDeclaration *decl2)
-{
+{ 
+  //  std::cout << "Comparing decl1: " << decl1->unparseToString() << " and decl2: " << decl2->unparseToString() << std::endl;
   // Compare the names of the two methods.
   SgName name1 = decl1->get_name();
   SgName name2 = decl2->get_name();
@@ -1119,7 +1120,7 @@ bool matchingFunctions(SgFunctionDeclaration *decl1,
       return false;
     }
   }
-
+  //  std::cout << "Comparing decl1: " << decl1->unparseToString() << " and decl2: " << decl2->unparseToString() << " SAME" << std::endl;
   return true;
 }
 

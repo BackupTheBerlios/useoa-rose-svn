@@ -2919,3 +2919,9 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
             I have seen pure virtual methods with definitions!?
             Therefore, do not create implicit ptr assigns if the
             method is pure virtual _and_ does not have a definition.
+
+9/17/06     UseOA-Rose svn branch-memRefExprRefactor r228  Brian White
+
+          - This is the version I used for the resubmission to CGO
+            on 9/16 after the 1-day extension.  
+

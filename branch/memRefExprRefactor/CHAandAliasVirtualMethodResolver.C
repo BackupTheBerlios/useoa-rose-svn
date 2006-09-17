@@ -87,56 +87,6 @@ DoFIAliasAliasMap(OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
   return interAlias;
 }
 
-void countFunctions(int &definedFunctions, int &definedVirtualFunctions, 
-                    int &invokedVirtualFunctions,
-                    OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
-{
-  OA::OA_ptr<SageIRProcIterator> procIter;
-  bool excludeInputFiles = true;
-  // Don't pull in any procedures defined in input files.  For testing
-  // purposes only:  avoids unexpected/spurious results due to 
-  // stdlib.h, etc.
-  //  procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
-  procIter = new SageIRProcIterator(p, *irInterface, excludeInputFiles);
-  definedFunctions = 0;
-  definedVirtualFunctions = 0;
-  invokedVirtualFunctions = 0;
-  for (procIter->reset() ; procIter->isValid(); ++(*procIter)) {
-      OA::ProcHandle currProc = procIter->current();
-      ++definedFunctions;
-      SgFunctionDefinition *funcDefn = isSgFunctionDefinition(irInterface->getNodePtr(currProc));
-      ROSE_ASSERT(funcDefn != NULL);
-      SgFunctionDeclaration *funcDecl = 
-	isSgFunctionDeclaration(funcDefn->get_declaration());
-      ROSE_ASSERT(funcDecl != NULL);
-      if ( isVirtual(funcDecl) ) {
-        ++definedVirtualFunctions;
-      }
-
-      OA::OA_ptr<OA::IRStmtIterator> stmtIterPtr = irInterface->getStmtIterator(currProc);
-      // Iterate over the statements of this block adding procedure references
-      for ( ; stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
-
-	OA::StmtHandle stmt = stmtIterPtr->current();
-
-	OA::OA_ptr<OA::IRCallsiteIterator> callIter = irInterface->getCallsites(stmt);
-        for ( ; callIter->isValid(); (*callIter)++ ) {
-	  OA::CallHandle call = callIter->current();
-
-          SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(irInterface->getNodePtr(call));
-          if ( functionCallExp != NULL ) {
-              SgFunctionDeclaration *functionDeclaration = 
-                  getFunctionDeclaration(functionCallExp);
-              if ( isVirtual(functionDeclaration) ) {
-		++invokedVirtualFunctions;
-              }
-          }
-        }
-      }
-  }
-}
-
-
 bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRefOrPtr)
 {
   ROSE_ASSERT(functionCall != NULL);
@@ -168,7 +118,7 @@ bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRe
 	isDotExp = true;
       }
 
-      lhsIsRefOrPtr = isSgReferenceType(lhs->get_type());
+      lhsIsRefOrPtr = ( isSgReferenceType(lhs->get_type()) || isSgPointerDerefExp(lhs) );
 
       break;
     }
@@ -198,6 +148,65 @@ bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRe
   }
 
   return isMethod;
+}
+
+
+void countFunctions(int &definedFunctions, int &definedVirtualFunctions, 
+                    int &invokedVirtualFunctions,
+                    OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
+{
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  bool excludeInputFiles = true;
+  // Don't pull in any procedures defined in input files.  For testing
+  // purposes only:  avoids unexpected/spurious results due to 
+  // stdlib.h, etc.
+  //  procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
+  procIter = new SageIRProcIterator(p, *irInterface, excludeInputFiles);
+  definedFunctions = 0;
+  definedVirtualFunctions = 0;
+  invokedVirtualFunctions = 0;
+  for (procIter->reset() ; procIter->isValid(); ++(*procIter)) {
+      OA::ProcHandle currProc = procIter->current();
+      ++definedFunctions;
+      SgFunctionDefinition *funcDefn = isSgFunctionDefinition(irInterface->getNodePtr(currProc));
+      ROSE_ASSERT(funcDefn != NULL);
+      SgFunctionDeclaration *funcDecl = 
+	isSgFunctionDeclaration(funcDefn->get_declaration());
+      ROSE_ASSERT(funcDecl != NULL);
+
+      if ( isVirtual(funcDecl) ) {
+        ++definedVirtualFunctions;
+      }
+
+      OA::OA_ptr<OA::IRStmtIterator> stmtIterPtr = irInterface->getStmtIterator(currProc);
+      // Iterate over the statements of this block adding procedure references
+      for ( ; stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
+
+	OA::StmtHandle stmt = stmtIterPtr->current();
+
+	OA::OA_ptr<OA::IRCallsiteIterator> callIter = irInterface->getCallsites(stmt);
+        for ( ; callIter->isValid(); (*callIter)++ ) {
+	  OA::CallHandle call = callIter->current();
+
+          SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(irInterface->getNodePtr(call));
+          if ( functionCallExp != NULL ) {
+              SgFunctionDeclaration *functionDeclaration = 
+                  getFunctionDeclaration(functionCallExp);
+
+	      bool isDotExp = false;
+	      bool isLhsRefOrPtr = false;
+	      if ( isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr) ) {
+		if ( isVirtual(functionDeclaration) ) {
+		  if ( ( !isDotExp && isLhsRefOrPtr ) ) {
+		    std::cout << "virtual callsite: " << functionCallExp->unparseToString() << std::endl;
+		    ++invokedVirtualFunctions;
+		  }
+		}
+	      }
+          }
+        }
+      }
+  }
 }
 
 
@@ -870,7 +879,7 @@ int main(int argc, char **argv)
 #endif
 	  // Do not consider a pure virtual method to be an 
 	  // overriding method (since it can not be invoked).
-	  if ( !isPureVirtual(method) ) {
+	  if ( !isPureVirtual(method) || hasDefinition(method) ) {
 	    numResolutionsForMethod++;
 	  }
 	}
@@ -924,7 +933,7 @@ int main(int argc, char **argv)
 #endif
 	    // Do not consider a pure virtual method to be an 
 	    // overriding method (since it can not be invoked).
-	    if ( !isPureVirtual(method) ) {
+	    if ( !isPureVirtual(method) || hasDefinition(method) ) {
 	      numResolutionsForMethod++;
 	    }
 	  }
@@ -1004,7 +1013,7 @@ int main(int argc, char **argv)
 
   ostr << "definedFunctions: " << definedFunctions << std::endl;
   ostr << "definedVirtualFunctions: " << definedVirtualFunctions << std::endl;
-  ostr << "invokedVirtualFunctions: " << invokedVirtualFunctions << std::endl;
+  ostr << "virtual method callsites: " << invokedVirtualFunctions << std::endl;
 
   ostr << "Summary CHA monomorphic call sites: " << numMonomorphicCallSites << std::endl;
   ostr << "Summary Alias analysis monomorphic call sites: " << numAliasAnalysisMonomorphicCallSites << std::endl;
