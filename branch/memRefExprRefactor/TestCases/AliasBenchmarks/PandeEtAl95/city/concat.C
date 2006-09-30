@@ -7,14 +7,17 @@
 #include "roadlet.h"
 #include "check_functions.h"
 #include "intersection.h"
+#include <stdlib.h>
 
 using namespace std;
 
+#if 0
 extern "C" 
 {
     void *malloc();
     void srandom(int);
 }
+#endif
 
 
 // connect r1->d1 to r2->d2
@@ -316,7 +319,7 @@ main()
 // build_intersection.cc
 
 #include "intersection.h"
-extern "C" char *malloc();
+//extern "C" char *malloc();
 
 
 void intersection_4x4::connectNin (roadlet *leftlane, roadlet *rightlane)
@@ -481,6 +484,9 @@ void main()
 
 void roadlet::init(char *n)      
 {
+    occupant = NULL;
+    for(int i=0;i<8;i++) 
+        neighbors[i] = NULL;
     name = n; 
     for(int i=0;i<8;i++) 
 	the_moves[i] = return_null; 

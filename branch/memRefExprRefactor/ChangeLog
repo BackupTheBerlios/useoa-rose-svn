@@ -2925,3 +2925,16 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
           - This is the version I used for the resubmission to CGO
             on 9/16 after the 1-day extension.  
 
+9/25/06     UseOA-Rose svn branch-memRefExprRefactor r229  Brian White	
+
+          - Need to create implicit this actual for case in which 
+            a copy constructor is invoked to copy an actual object
+            parameter.  This affected createConstructorInitializerReceiverMRE.
+            I created an UnnamedRef whose statement is the
+            SgConstructorInitializer in case.
+        
+          - Implemented SgTryStmt and SgCatchStatementSeq for both
+            SageIRStmtIterator::FindAllStmts and findAllMemRefsAndMemRefExprs.
+ 
+          - Turned off AST normalization again in CtoOA.
+	

@@ -384,6 +384,8 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
   SgIfStmt *ifst=NULL;
 
   SgWhileStmt * whst=NULL;
+  SgTryStmt * tryStmt=NULL;
+  SgCatchStatementSeq *catchStmtSeq = NULL;
   SgClassDefinition * cldef=NULL;
   SgFunctionDefinition * fdef=NULL;
   SgGlobal *sggl=NULL;
@@ -434,6 +436,21 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
     else if( ( whst=isSgWhileStmt(node) ) != NULL )
     {
      FindAllStmts(whst->get_body(), lst);
+    }
+    else if( ( tryStmt=isSgTryStmt(node) ) != NULL )
+    {
+      FindAllStmts(tryStmt->get_catch_statement_seq_root(), lst);
+      FindAllStmts(tryStmt->get_body(), lst);
+    }
+    else if( ( catchStmtSeq=isSgCatchStatementSeq(node) ) != NULL )
+    {
+      SgStatementPtrList &stmts = catchStmtSeq->get_catch_statement_seq();
+      for(SgStatementPtrList::iterator iter=stmts.begin();
+                              iter!=stmts.end(); iter++)
+      {
+        SgStatement *st=*iter;
+        FindAllStmts(st, lst);
+      }
     }
     else if( ( cldef=isSgClassDefinition(node) ) != NULL )
     {

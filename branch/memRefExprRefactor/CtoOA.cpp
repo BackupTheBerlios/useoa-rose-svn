@@ -64,7 +64,7 @@ int main ( unsigned argc,  char * argv[] )
     AstDOTGeneration dottest;
     dottest.generateInputFiles(sageProject);
     
-#if 1
+#if 0
     // Perform the AST normalization.
     //    DefaultFunctionGenerator dfg;
     //    dfg.traverse(sageProject, preorder);
@@ -88,7 +88,7 @@ int main ( unsigned argc,  char * argv[] )
         irInterface = new SageIRInterface(sageProject, &nodeArray, p_h, useVtableOpt);
         OA::OA_ptr<SageIRProcIterator> procIter;
 	// Do not process include files, e.g., iostream.h.
-	bool excludeInputFiles = true;
+	bool excludeInputFiles = false;
         procIter = new SageIRProcIterator(sageProject, *irInterface, excludeInputFiles);
 
         for (; procIter->isValid(); ++(*procIter) ) 

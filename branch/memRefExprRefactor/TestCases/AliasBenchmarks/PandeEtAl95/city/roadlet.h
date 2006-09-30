@@ -19,8 +19,8 @@ private:
 
 protected:
     char *name;
-    vehicle *occupant = NULL;
-    roadlet *neighbors[8] = { NULL };
+    vehicle *occupant;
+    roadlet *neighbors[8];
     move_function the_moves[8];
 
 public:

@@ -76,12 +76,11 @@ DoFIAliasAliasMap(OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
-  //  bool excludeInputFiles = true;
+  bool excludeInputFiles = false;
   // Don't pull in any procedures defined in input files.  For testing
   // purposes only:  avoids unexpected/spurious results due to 
   // stdlib.h, etc.
-  //  procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
-  procIter = new SageIRProcIterator(p, *irInterface);
+  procIter = new SageIRProcIterator(p, *irInterface, excludeInputFiles);
   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
   interAlias = fialiasman->performAnalysis(procIter);
   return interAlias;
@@ -739,6 +738,12 @@ int main(int argc, char **argv)
     shortCircuitingTransformation(project);
     //    destructorCallAnnotator(project);
 #endif
+
+    // debug output
+    AstPDFGeneration pdftest;
+    pdftest.generateInputFiles(project);
+    AstDOTGeneration dottest;
+    dottest.generateInputFiles(project);
 
   // Perform the alias analysis.
   OA::OA_ptr<SageIRInterface> irInterface;

@@ -1689,7 +1689,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // is an object, rather than a reference.
                 SgType *type = binaryOp->get_lhs_operand()->get_type();
                 ROSE_ASSERT(type != NULL);
-		std::cout << "TYPE: " << type->sage_class_name() << std::endl;
                 if ( !isArrowExp(binaryOp) && !isSgReferenceType(type) ) {
                     isVirtualInvocation = false;
                 }
@@ -2128,7 +2127,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // is an object, rather than a reference.
                 SgType *type = dotExp->get_lhs_operand()->get_type();
                 ROSE_ASSERT(type != NULL);
-		std::cout << "TYPE: " << type->sage_class_name() << std::endl;
                 if ( !isSgReferenceType(type) ) {
                     isVirtualInvocation = false;
                 }
@@ -2792,11 +2790,16 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     //        ROSE_ASSERT(0);
     //        break;
     //    }
-    //case V_SgTryStatement:
-    //    {
-    //        ROSE_ASSERT(0);
-    //        break;
-    //    }
+    case V_SgTryStmt:
+        {
+            SgTryStmt *tryStmt = isSgTryStmt(astNode);
+            ROSE_ASSERT(tryStmt != NULL);
+            // Do not visit anything here.  The stmt iterator should 
+            // visit the body and catch statements.
+            // findAllMemRefsAndPtrAssigns(tryStmt->get_body(),stmt);
+            // findAllMemRefsAndPtrAssigns(tryStmt->get_catch_statement_seq_root(),stmt);
+            break;
+        }
     case V_SgReturnStmt:
         {
             SgReturnStmt *returnStmt = isSgReturnStmt(astNode);
@@ -3010,7 +3013,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgAsmStmt:
         {
-            ROSE_ASSERT(0);
+	  std::cout << "Got an ASM stmt!" << std::endl;
+          astNode->get_file_info()->display("ASM stmt:");
+	  std::cout << astNode->unparseToCompleteString();
+	  //            ROSE_ASSERT(0);
             break;
         }
     case V_SgFunctionParameterList:
@@ -3215,7 +3221,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgContinueStmt:
     case V_SgGotoStatement:
     case V_SgForInitStatement: //FIXME: not sure about this one ???
-    //case V_SgCatcheStatementSeq:  // not in enum?
+    case V_SgCatchStatementSeq:  
     case V_SgClinkageStartStatement:
     case V_SgEnumDeclaration:
     case V_SgTemplateDeclaration:
@@ -4300,6 +4306,16 @@ void SageIRInterface::createUseDefForVarArg(OA::MemRefHandle memref,
  *
  *   we return &(Foo::this->mBar).
  *
+ *   For cases involving the construction of an actual:
+ *  
+ *       void foo(char* op, Tree t) {
+ *           UnaryNode nodePtr(op,t);
+ *       }
+ *
+ *   (here, a copy constructor is called for t), we return the copy
+ *   constructor to represent the anonymous temporary-- i.e.,
+ *   &(SgConstructorInitializer(t)).
+ * 
  */
 OA::OA_ptr<OA::MemRefExpr> 
 SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializer *ctorInitializer)
@@ -4311,7 +4327,7 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
     // of an assignment or the SgInitializedName of a
     // SgAssignInitializer.  These handle a new expression.
     // If the parent of the constructor initializer is a 
-    // SgInitializedName, the figure out whether we have a base
+    // SgInitializedName, then figure out whether we have a base
     // class invocation, a member variable initialization, or a stack
     // declaration.
     // Stop the recursion and return
@@ -4400,6 +4416,34 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
       return mre;
     }
   
+    // If the parent is a SgExprListExp, whose parent is a 
+    // SgConstructorInitializer or a SgFunctionCallExp, then 
+    // this is an invocation of a copy constructor for an object
+    // passed as an actual argument.
+    //
+    // void foo(char* op, Tree t) {
+    //   UnaryNode *nodePtr = new UnaryNode(op,t);
+    // }
+    //
+    // return the address of an anonymous memory obj-- use
+    // the SgConstructorInitializer for t.
+    if ( isSgExprListExp(parent) ) {
+        SgNode *grandParent = parent->get_parent();
+        if ( isSgConstructorInitializer(grandParent) || 
+             isSgFunctionCallExp(grandParent) ) {
+
+          bool addressTaken = true;
+          bool accuracy = true;
+          OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+          OA::StmtHandle stmtHandle = getNodeNumber(ctorInitializer);
+          mre = new OA::UnnamedRef(addressTaken, accuracy, mrType, stmtHandle);
+
+          // Record the type of the MRE (reference or non-reference).
+          mMre2TypeMap[mre] = other;
+          return mre;
+        }
+    }
+
     // At this point we know that the immediate parent is not
     // a SgInitializedName, because we took care of that case
     // above and then returned.

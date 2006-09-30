@@ -21,7 +21,7 @@ Tree::Tree(float n)
 
 Tree::Tree(char *ch)
 {
-  (this) -> nodePtr = ((new RealNode ((0.00000000000000000000000),ch)));
+  (this) -> nodePtr = ((new RealNode ((0.0),ch)));
 }
 
 
@@ -81,7 +81,7 @@ float Tree::operator()(float x,float y,float z)
 // BinaryNode.cc
 #define LARGE 9999999.0
 
-BinaryNode::BinaryNode(char *a,class Tree b,class Tree c)
+BinaryNode::BinaryNode(char *a,class Tree b,class Tree c) : Node()
 {
   (this) -> left = (new Tree (b));
   (this) -> right = (new Tree (c));
@@ -100,13 +100,13 @@ float BinaryNode::nodeValue()
   else {
     num = ( *((this) -> left)).value();
     den = ( *((this) -> right)).value();
-    return (9999999.00000000000000000);
+    return (9999999.0);
   }
 }
 
 // UnaryNode.cc
 
-UnaryNode::UnaryNode(char *a,class Tree b)
+UnaryNode::UnaryNode(char *a,class Tree b) : Node()
 {
   (this) -> opnd = (new Tree (b));
   strlen(a) , (this) -> op = (new char );
@@ -130,7 +130,7 @@ float UnaryNode::nodeValue()
 
 // RealNode.cc
 
-RealNode::RealNode(float k,char *ch)
+RealNode::RealNode(float k,char *ch) : Node()
 {
   (this) -> n = k;
   if (ch) {
@@ -171,10 +171,10 @@ int main()
   class Tree t3((5));
   class Tree t4((t1),("*"),(t2));
   class Tree t5(("-"),(t3));
-  t4((12.0000000000000000000000),(0),(0));
+  t4((12.0),(0),(0));
   t5.value();
   class Tree t6((t1),("/"),(t3));
-  t6((12.1199999999999992184030),(0),(0));
+  t6((12.12),(0),(0));
   class Tree t7((t1),("+"),(t5));
   t7.value();
 }

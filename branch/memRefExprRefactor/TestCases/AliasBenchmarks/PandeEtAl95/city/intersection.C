@@ -1,7 +1,7 @@
 // build_intersection.cc
 
 #include "intersection.h"
-extern "C" char *malloc();
+//extern "C" char *malloc();
 
 
 void intersection_4x4::connectNin (roadlet *leftlane, roadlet *rightlane)
