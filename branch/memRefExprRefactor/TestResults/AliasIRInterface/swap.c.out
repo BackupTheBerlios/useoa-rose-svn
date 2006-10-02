@@ -71,9 +71,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("struct __gconv_step_data ;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct __gconv_loaded_object ;") =>
-        [
-        ] }
     MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data ;") =>
         [
         ] }
@@ -86,9 +83,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("struct __gconv_step_data {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct _IO_jump_t ;") =>
-        [
-        ] }
     MEMREFEXPRS = { StmtHandle("struct _IO_FILE ;") =>
         [
         ] }
@@ -98,9 +92,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("struct _IO_FILE {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct _IO_FILE_plus ;") =>
-        [
-        ] }
     MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stdin_;") =>
         [
         ] }
@@ -108,12 +99,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
         ] }
     MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stderr_;") =>
-        [
-        ] }
-    MEMREFEXPRS = { StmtHandle("struct _IO_cookie_file ;") =>
-        [
-        ] }
-    MEMREFEXPRS = { StmtHandle("struct obstack ;") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int main(){int a[5];int i;int j;for(i = 0;i < 4;i++) {swap(a,i,(i + 1));}return 0;}") =>

@@ -1743,7 +1743,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 }
 
                 if ( ( mUseVtableOpt && isVirtualInvocation ) ||
-                     ( !isMethodInvocation && isArrowExp(binaryOp) ) ) {
+                     ( !isMethodInvocation && isSgArrowExp(binaryOp) ) ) {
 
 #if 1
 		    lhs_mre = derefMre(lhs_mre, false, lhs_mre->hasFullAccuracy(), OA::MemRefExpr::USE, 1);
@@ -1851,10 +1851,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 mMemref2mreSetMap[memref].insert(memberAccess);
             }
 
-            if ( !isMethodInvocation && !isArrowExp(binaryOp) ) {
+            if ( !isMethodInvocation && !isSgArrowExp(binaryOp) ) {
                 mMemref2mreSetMap[lhs_memref].clear();
                 mStmt2allMemRefsMap[stmt].erase(lhs_memref);
-            } else if ( !isArrowExp(binaryOp) ) {
+            } else if ( !isSgArrowExp(binaryOp) ) {
                 // For a method invocation, we use the child/lhs receiver 
                 // MRE as the implicit actual.  Therefore, not only do we
                 // not remove it, but we need to take its address.

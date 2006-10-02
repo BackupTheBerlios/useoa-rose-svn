@@ -2937,4 +2937,18 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
             SageIRStmtIterator::FindAllStmts and findAllMemRefsAndMemRefExprs.
  
           - Turned off AST normalization again in CtoOA.
-	
+
+10/02/06     UseOA-Rose svn branch-memRefExprRefactor r230  Brian White
+
+          - Changed SgArrowExp/SgDotExp case, which was calling isArrowExp
+            (i.e., -> or *.) in places where it should have been invoking 
+            isSgArrowExp (i.e., -> only).  Note:  still invoking isArrowExp
+            to determine whether the invocation may be virtual (. can not
+            be).
+
+          - All regression tests pass.  However, I noticed that strange
+            MemRefExprs like struct __gconv_loaded_object are appearing.
+            These seem to appear regardless of whether we visit header
+            files.  Unfortunately, they are probably platform dependent,
+            so that regression tests may be different on different
+            platforms.

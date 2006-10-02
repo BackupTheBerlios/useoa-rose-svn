@@ -88,7 +88,7 @@ int main ( unsigned argc,  char * argv[] )
         irInterface = new SageIRInterface(sageProject, &nodeArray, p_h, useVtableOpt);
         OA::OA_ptr<SageIRProcIterator> procIter;
 	// Do not process include files, e.g., iostream.h.
-	bool excludeInputFiles = false;
+	bool excludeInputFiles = true;
         procIter = new SageIRProcIterator(sageProject, *irInterface, excludeInputFiles);
 
         for (; procIter->isValid(); ++(*procIter) ) 
