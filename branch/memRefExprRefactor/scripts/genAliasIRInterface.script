@@ -132,3 +132,11 @@ echo "Generating TestResults/AliasIRInterface/refPtrFormal.C.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/refPtrFormal.C >& TestResults/AliasIRInterface/refPtrFormal.C.out
 echo "Generating TestResults/AliasIRInterface/referenceMemVarAccesses.C.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceMemVarAccesses.C >& TestResults/AliasIRInterface/referenceMemVarAccesses.C.out
+echo "Generating TestResults/AliasIRInterface/referenceInit.C.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceInit.C >& TestResults/AliasIRInterface/referenceInit.C.out
+echo "Generating TestResults/AliasIRInterface/returnReference.C.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/returnReference.C >& TestResults/AliasIRInterface/returnReference.C.out
+echo "Generating TestResults/AliasIRInterface/referenceFormal.C.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceFormal.C >& TestResults/AliasIRInterface/referenceFormal.C.out
+echo "Generating TestResults/AliasIRInterface/refCall.C.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/refCall.C >& TestResults/AliasIRInterface/refCall.C.out

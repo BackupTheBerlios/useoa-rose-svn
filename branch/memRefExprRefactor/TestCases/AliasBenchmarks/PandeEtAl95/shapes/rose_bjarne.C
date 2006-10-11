@@ -3,7 +3,7 @@
 #include <iostream>
 #include "bjarne.h"
 using namespace std;
-enum color {black=42,white=32};
+enum color {black='*',white=' '};
 char screen[40][24];
 
 void screen_init()
@@ -24,7 +24,25 @@ void screen_destroy()
 
 inline int on_screen(int a,int b)
 {
-  return ((((0 <= a) && (a < XMAX)) && (0 <= b)) && (b < YMAX));
+  if ((0 <= a)) {
+    if ((a < XMAX)) {
+      if ((0 <= b)) {
+        return (b < YMAX);
+      }
+      else {
+        return false;
+      }
+    }
+    else {{
+        return false;
+      }
+    }
+  }
+  else {{{
+        return false;
+      }
+    }
+  }
 }
 
 
@@ -60,7 +78,18 @@ void put_line(int x0,int y0,int x1,int y1)
   int eps = 0;
   for (; ; ) {
     put_point(x0,y0);
-    if ((x0 == x1) && (y0 == y1)) {
+    bool rose_sc_bool_2 = false;
+    if ((x0 == x1)) {
+      if ((y0 == y1)) {
+        rose_sc_bool_2 = true;
+      }
+      else {
+      }
+    }
+    else {{
+      }
+    }
+    if (rose_sc_bool_2) {
       break; 
     }
     else {
@@ -70,7 +99,18 @@ void put_line(int x0,int y0,int x1,int y1)
     }
     else {
     }
-    if ((eps >= a) && (a <= b)) {
+    bool rose_sc_bool_3 = false;
+    if ((eps >= a)) {
+      if ((a <= b)) {
+        rose_sc_bool_3 = true;
+      }
+      else {
+      }
+    }
+    else {{
+      }
+    }
+    if (rose_sc_bool_3) {
       (y0 += dy) , eps -= two_a;
     }
     else {
@@ -120,6 +160,30 @@ struct shape
   virtual point *swest() const = 0;
   virtual void draw() = 0;
   virtual void move(int ,int ) = 0;
+  
+
+  ~shape()
+{
+  }
+
+  
+
+  shape(struct shape &rhs)
+{
+  }
+
+  
+
+  shape &operator=(struct shape &rhs)
+{
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    return  *(this);
+  }
+
 }
 
 ;
@@ -132,7 +196,13 @@ class line : public shape
 
   public: virtual inline point *north() const
 {
-    struct point *ret = new point ((((( *((this) -> w)).x) + (( *((this) -> e)).x)) / 2),((( *((this) -> e)).y) < (( *((this) -> w)).y))?(( *((this) -> w)).y):(( *((this) -> e)).y));
+    struct point *ret;
+    if (((( *((this) -> e)).y) < (( *((this) -> w)).y))) {
+      ret = (new point ((((( *((this) -> w)).x) + (( *((this) -> e)).x)) / 2),(( *((this) -> w)).y)));
+    }
+    else {
+      ret = (new point ((((( *((this) -> w)).x) + (( *((this) -> e)).x)) / 2),(( *((this) -> e)).y)));
+    }
     return ret;
   }
 
@@ -140,7 +210,13 @@ class line : public shape
 
   virtual inline point *south() const
 {
-    struct point *ret = new point ((((( *((this) -> w)).x) + (( *((this) -> e)).x)) / 2),((( *((this) -> e)).y) < (( *((this) -> w)).y))?(( *((this) -> e)).y):(( *((this) -> w)).y));
+    struct point *ret;
+    if (((( *((this) -> e)).y) < (( *((this) -> w)).y))) {
+      ret = (new point ((((( *((this) -> w)).x) + (( *((this) -> e)).x)) / 2),(( *((this) -> e)).y)));
+    }
+    else {
+      ret = (new point ((((( *((this) -> w)).x) + (( *((this) -> e)).x)) / 2),(( *((this) -> w)).y)));
+    }
     return ret;
   }
 
@@ -199,7 +275,7 @@ class line : public shape
 
   
 
-  inline line(struct point *a,struct point *b)
+  inline line(struct point *a,struct point *b) : shape()
 {
     (this) -> w = a;
     (this) -> e = b;
@@ -207,10 +283,44 @@ class line : public shape
 
   
 
-  inline line(struct point *a,int l)
+  inline line(struct point *a,int l) : shape()
 {
     (this) -> w = (new point ((((a -> x) + l) - 1),(a -> y)));
     (this) -> e = a;
+  }
+
+  
+
+  line() : shape()
+{
+  }
+
+  
+
+  ~line()
+{
+    ((struct shape *)(this)) -> ~shape();
+  }
+
+  
+
+  line(class line &rhs) : w(rhs.w), e(rhs.e), shape(rhs)
+{
+  }
+
+  
+
+  line &operator=(class line &rhs)
+{
+    (*((struct shape *)(this)))=((struct shape &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> w = rhs.w;
+    (this) -> e = rhs.e;
+    return  *(this);
   }
 
 }
@@ -287,11 +397,45 @@ class rectangle : public shape
 
   virtual void draw();
   rectangle(struct point *,struct point *);
+  
+
+  rectangle() : shape()
+{
+  }
+
+  
+
+  ~rectangle()
+{
+    ((struct shape *)(this)) -> ~shape();
+  }
+
+  
+
+  rectangle(class rectangle &rhs) : sw(rhs.sw), ne(rhs.ne), shape(rhs)
+{
+  }
+
+  
+
+  rectangle &operator=(class rectangle &rhs)
+{
+    (*((struct shape *)(this)))=((struct shape &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> sw = rhs.sw;
+    (this) -> ne = rhs.ne;
+    return  *(this);
+  }
+
 }
 
 ;
 
-rectangle::rectangle(struct point *a,struct point *b)
+rectangle::rectangle(struct point *a,struct point *b) : shape()
 {
   if ((a -> x) <= (b -> x)) {
     if ((a -> y) <= (b -> y)) {
@@ -368,6 +512,41 @@ class myshape : public rectangle
 
   virtual void draw();
   virtual void move(int ,int );
+  
+
+  myshape() : rectangle()
+{
+  }
+
+  
+
+  ~myshape()
+{
+    ((class rectangle *)(this)) -> ~rectangle();
+  }
+
+  
+
+  myshape(class myshape &rhs) : l_eye(rhs.l_eye), r_eye(rhs.r_eye), mouth(rhs.mouth), rectangle(rhs)
+{
+  }
+
+  
+
+  myshape &operator=(class myshape &rhs)
+{
+    (*((class rectangle *)(this)))=((class rectangle &)rhs);
+    if ((this) == &rhs) {
+      return  *(this);
+    }
+    else {
+    }
+    (this) -> l_eye = rhs.l_eye;
+    (this) -> r_eye = rhs.r_eye;
+    (this) -> mouth = rhs.mouth;
+    return  *(this);
+  }
+
 }
 
 ;
@@ -410,3 +589,607 @@ int main()
   return 0;
 }
 
+// stubs
+
+extern "C" { int pthread_once(pthread_once_t *once_control,void (*init_routine)()) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { int pthread_key_create(pthread_key_t *key,void (*destr_function)(void *)) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { int pthread_setspecific(pthread_key_t key,const void *pointer) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { int pthread_key_delete(pthread_key_t key) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { void *pthread_getspecific(pthread_key_t key) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { int pthread_mutex_lock(pthread_mutex_t *mutex) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { int pthread_mutex_trylock(pthread_mutex_t *mutex) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { int pthread_mutex_unlock(pthread_mutex_t *mutex) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { wchar_t *wcschr(const wchar_t *wcs,wchar_t wc) throw()
+{
+  wchar_t *wcshrtemp;
+  return wcshrtemp;
+}
+
+ }
+
+extern "C" { wchar_t *wcspbrk(const wchar_t *wcs,const wchar_t *accept) throw()
+{
+  wchar_t *wcspbrktemp;
+  return wcspbrktemp;
+}
+
+ }
+
+extern "C" { wchar_t *wcsrchr(const wchar_t *wcs,wchar_t wc) throw()
+{
+  wchar_t *wcsrchrtemp;
+  return wcsrchrtemp;
+}
+
+ }
+
+extern "C" { wchar_t *wcsstr(const wchar_t *haystack,const wchar_t *needle) throw()
+{
+  wchar_t *wcsstrtemp;
+  return wcsstrtemp;
+// Returning value before it is set, giving warning, problem?
+}
+
+ }
+
+extern "C" { wchar_t *wmemchr(const wchar_t *s,wchar_t c,size_t n) throw()
+{
+  wchar_t *wmemchrtemp;
+  return wmemchrtemp;
+}
+
+ }
+
+extern "C" { void *memchr(const void *s,int c,size_t n) throw()
+{
+  return (0);
+}
+
+ }
+
+char *__builtin_strchr(const char *str,int ch)
+{
+  char *__builtin_strchrtemp;
+  return __builtin_strchrtemp;
+// http://www.cs.berkeley.edu/~smcpeak/elkhound/sources/elsa/gnu.cc
+}
+
+
+char *__builtin_strpbrk(const char *str,const char *accept)
+{
+  char *__builtin_strpbrktemp;
+  return __builtin_strpbrktemp;
+}
+
+
+char *__builtin_strrchr(const char *str,int ch)
+{
+  char *__builtin_strrchrtemp;
+  return __builtin_strrchrtemp;
+}
+
+
+char *__builtin_strstr(const char *haystack,const char *needle)
+{
+  char *__builtin_strstrtemp;
+  return __builtin_strstrtemp;
+}
+
+
+extern "C" { int memcmp(const void *s1,const void *s2,size_t n) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { size_t strlen(const char *s) throw()
+{
+  size_t strlentemp;
+  return strlentemp;
+}
+
+ }
+
+extern "C" { void *memmove(void *dest,const void *src,size_t n) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { void *memcpy(void *dest,const void *src,size_t n) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { void *memset(void *s,int c,size_t n) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { int wmemcmp(const wchar_t *s1,const wchar_t *s2,size_t n) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { size_t wcslen(const wchar_t *s) throw()
+{
+  size_t wcslentemp;
+  return wcslentemp;
+}
+
+ }
+
+extern "C" { wchar_t *wmemmove(wchar_t *dest,const wchar_t *src,size_t n) throw()
+{
+  wchar_t *wmemmovetemp;
+  return wmemmovetemp;
+}
+
+ }
+
+extern "C" { wchar_t *wmemcpy(wchar_t *dest,const wchar_t *src,size_t n) throw()
+{
+  wchar_t *wmemcpy;
+  return wmemcpy;
+}
+
+ }
+
+extern "C" { wchar_t *wmemset(wchar_t *wcs,wchar_t wc,size_t n) throw()
+{
+  wchar_t *wmemset;
+  return wmemset;
+}
+
+ }
+
+extern "C" { long labs(long j) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { ldiv_t ldiv(long numer,long denom) throw()
+{
+  ldiv_t ldivtemp;
+  return ldivtemp;
+}
+
+ }
+
+void *operator new(size_t size) throw(std::bad_alloc )
+{
+}
+
+
+void operator delete(void *obj,size_t size)
+{
+}
+
+#if 0
+#endif
+
+extern "C" { int strcmp(const char *s1,const char *s2) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { char *strncpy(char *dest,const char *src,size_t n) throw()
+{
+  char *strncpytemp;
+  return strncpytemp;
+}
+
+ }
+
+extern "C" { int iconv_close(iconv_t cd)
+{
+  return 0;
+}
+
+ }
+
+extern "C" { iconv_t iconv_open(const char *tocode,const char *fromcode)
+{
+  iconv_t iconv_opentemp;
+  return iconv_opentemp;
+}
+
+ }
+
+void __throw_runtime_error(const char *)
+{
+}
+
+
+double __builtin_fabs(double x)
+{
+  return (0);
+}
+
+
+float __builtin_fabsf(float x)
+{
+  return (0);
+}
+
+
+long double __builtin_fabs1(long double x)
+{
+  return (0);
+}
+
+
+extern "C" { float acosf(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double acosl(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float asinf(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double asinl(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float atanf(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double atanl(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float atan2f(float y,float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double atan2l(long double y,long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float ceilf(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double ceill(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+float __builtin_cosf(float x)
+{
+  return (0);
+}
+
+
+long double __builtin_cosl(long double x)
+{
+  return (0);
+}
+
+
+extern "C" { float coshf(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double coshl(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float expf(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double expl(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float floorf(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double floorl(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float fmodf(float x,float y) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double fmodl(long double x,long double y) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float frexpf(float num,int *exp) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double frexpl(long double num,int *exp) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float ldexpf(float x,int exp) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double ldexpl(long double x,int exp) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float logf(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double logl(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float log10f(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double log10l(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float modff(float value,float *iptr) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double modfl(long double value,long double *iptr) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float powf(float x,float y) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double powl(long double x,long double y) throw()
+{
+  return (0);
+}
+
+ }
+
+float __builtin_sinf(float x)
+{
+  return (0);
+}
+
+
+long double __builtin_sinl(long double x)
+{
+  return (0);
+}
+
+
+extern "C" { float sinhf(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double sinhl(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+float __builtin_sqrtf(float x)
+{
+  return (0);
+}
+
+
+long double __builtin_sqrtl(long double x)
+{
+  return (0);
+}
+
+
+extern "C" { float tanf(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double tanl(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { float tanhf(float x) throw()
+{
+  return (0);
+}
+
+ }
+
+extern "C" { long double tanhl(long double x) throw()
+{
+  return (0);
+}
+
+ }
+
+float __builtin_nansf(const char *str)
+{
+  return (0);
+}
+
+
+double __builtin_nans(const char *str)
+{
+  return (0);
+}
+
+
+long double __builtin_nansl(const char *str)
+{
+  return (0);
+}
+
+
+extern "C" { char *strcpy(char *dest,const char *src) throw()
+{
+  char *strcpytemp;
+  return strcpytemp;
+}
+
+ }
+// Missing SgTemplateInstantiationFunctionDecl [referenced]

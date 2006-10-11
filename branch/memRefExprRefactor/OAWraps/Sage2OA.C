@@ -19,10 +19,12 @@ static bool debug = false;
 SageIRInterface::SageIRInterface(SgNode *root, 
                                  std::vector<SgNode*> *na, 
                                  bool use_persistent_handles,
-                                 bool useVtableOpt)
+                                 bool useVtableOpt,
+                                 bool excludeInputFiles)
   : nodeArrayPtr(na), wholeProject(root), 
     persistent_handles(use_persistent_handles),
-    mUseVtableOpt(useVtableOpt)
+    mUseVtableOpt(useVtableOpt),
+    mExcludeInputFiles(excludeInputFiles)
 { 
   if ( !mUseVtableOpt ) {
     std::cout << "Using per-method virtual table model" << std::endl;
@@ -437,21 +439,6 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
     {
      FindAllStmts(whst->get_body(), lst);
     }
-    else if( ( tryStmt=isSgTryStmt(node) ) != NULL )
-    {
-      FindAllStmts(tryStmt->get_catch_statement_seq_root(), lst);
-      FindAllStmts(tryStmt->get_body(), lst);
-    }
-    else if( ( catchStmtSeq=isSgCatchStatementSeq(node) ) != NULL )
-    {
-      SgStatementPtrList &stmts = catchStmtSeq->get_catch_statement_seq();
-      for(SgStatementPtrList::iterator iter=stmts.begin();
-                              iter!=stmts.end(); iter++)
-      {
-        SgStatement *st=*iter;
-        FindAllStmts(st, lst);
-      }
-    }
     else if( ( cldef=isSgClassDefinition(node) ) != NULL )
     {
       //     get_members returns an SgDeclarationStatementPtrList
@@ -507,6 +494,20 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
       FindAllStmts(caseOptionStmt->get_body(), lst);
     } else if( ( defaultOptionStmt = isSgDefaultOptionStmt(node) ) != NULL )  {
       FindAllStmts(defaultOptionStmt->get_body(), lst);
+    } else if( ( tryStmt=isSgTryStmt(node) ) != NULL )
+    {
+      FindAllStmts(tryStmt->get_catch_statement_seq_root(), lst);
+      FindAllStmts(tryStmt->get_body(), lst);
+    }
+    else if( ( catchStmtSeq=isSgCatchStatementSeq(node) ) != NULL )
+    {
+      SgStatementPtrList &stmts = catchStmtSeq->get_catch_statement_seq();
+      for(SgStatementPtrList::iterator iter=stmts.begin();
+                              iter!=stmts.end(); iter++)
+      {
+        SgStatement *st=*iter;
+        FindAllStmts(st, lst);
+      }
     } else {
 #ifdef UNRELEASED_ROSE
       if ( !isSgNullStatement(node) ) {
@@ -3054,6 +3055,26 @@ OA::SymHandle SageIRInterface::getFormalSym(OA::ProcHandle procHandle,
 //! a NamedRef.  A call involving a function ptr is a Deref. 
 OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
 {
+    if ( mCallToMRE[h].ptrEqual(0) ) {
+        SgNode *node = getNodePtr(h);
+        ROSE_ASSERT(node != NULL);
+	std::cout << "node (h: " << (int)(h.hval()) << " type: " << node->sage_class_name()
+                  << ") " << node->unparseToString() 
+                  << " has NULL call MRE" 
+                  << std::endl;
+        node->get_file_info()->display("NULL call MRE: ");
+        SgDeleteExp *deleteExp = isSgDeleteExp(node);
+        if ( deleteExp != NULL ) {
+          SgType *type = deleteExp->get_variable()->get_type();
+	  std::cerr << "type of expr deleted: " << deleteExp->get_variable()->get_type()->sage_class_name() << std::endl;
+
+          SgPointerType *ptrType = isSgPointerType(type);
+          ROSE_ASSERT(ptrType != NULL);
+          type = getBaseType(ptrType->get_base_type());
+	  std::cerr << "ptr type: " << type->sage_class_name() << std::endl;
+        }
+        ROSE_ABORT();
+    }
     return mCallToMRE[h];
 }
 
@@ -3974,6 +3995,34 @@ void SageIRInterface::dump(OA::OA_ptr<OA::Deref> memRefExp,
   os << ")";
 }
 
+void SageIRInterface::dump(OA::OA_ptr<OA::FieldAccess> memRefExp, 
+                               std::ostream& os) 
+{
+  OA::OA_ptr<OA::MemRefExpr> baseMemRefExpr = memRefExp->getMemRefExpr();
+
+  // Only print addressTaken and fullAccuracy if they
+  // don't have the default values.
+  // Default values for Deref: addressTaken = F, fullAccuracy = partial.
+  bool addressTaken = memRefExp->hasAddressTaken();
+  bool fullAccuracy = memRefExp->hasFullAccuracy();
+
+  os << "FieldAccess(";
+  os << refTypeToString(memRefExp) << ", ";
+  dump(baseMemRefExpr, os);
+  if ( ( addressTaken != false ) || ( fullAccuracy != false ) ) {
+    if ( addressTaken == true ) 
+      os << ", T";
+    else
+      os << ", F";
+    if ( fullAccuracy == true ) 
+      os << ", full";
+    else
+      os << ", partial";
+  }
+  os << ", " << memRefExp->getFieldName();
+  os << ")";
+}
+
 void SageIRInterface::dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, 
                                std::ostream &os)
 {
@@ -4012,13 +4061,32 @@ void SageIRInterface::dump(OA::OA_ptr<OA::MemRefExpr> memRefExp,
 
       dump(deref, os);
 
+    } else if ( refOp->isaSubSetRef() ) {
+
+      OA::OA_ptr<OA::SubSetRef> subSetRef = refOp.convert<OA::SubSetRef>();
+      ROSE_ASSERT(!subSetRef.ptrEqual(0));
+
+      if ( subSetRef->isaFieldAccess() ) {
+
+        OA::OA_ptr<OA::FieldAccess> fieldAccess = subSetRef.convert<OA::FieldAccess>();
+        ROSE_ASSERT(!fieldAccess.ptrEqual(0));
+
+        dump(fieldAccess, os);
+
+      } else {
+
+        cerr << "Unknown memRefExp type!" << endl;
+        ROSE_ABORT();
+
+      }
+
     } else {
 
       cerr << "Unknown memRefExp type!" << endl;
       ROSE_ABORT();
 
     }
-
+      
   } else {
 
     cerr << "Unknown memRefExp type!" << endl;
@@ -4148,9 +4216,8 @@ void SageIRInterface::initPointerAssignMaps()
   }
 
   // iterate over all procedures
-  bool excludeInputFiles = false;  // FIXME: should this be true?
   OA::OA_ptr<OA::IRProcIterator> procIter;
-  procIter = new SageIRProcIterator(wholeProject, *this, excludeInputFiles);
+  procIter = new SageIRProcIterator(wholeProject, *this);
   for (procIter->reset() ; procIter->isValid(); ++(*procIter)) {
       OA::ProcHandle currProc = procIter->current();
 

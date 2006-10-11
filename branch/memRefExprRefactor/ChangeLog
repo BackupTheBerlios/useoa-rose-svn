@@ -2952,3 +2952,58 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
             files.  Unfortunately, they are probably platform dependent,
             so that regression tests may be different on different
             platforms.
+
+10/02/06     UseOA-Rose svn branch-memRefExprRefactor r231  Brian White
+
+          - Need to create implicit this actual for case in which 
+            a copy constructor is invoked to copy an object in a return
+            expression.  This affected createConstructorInitializerReceiverMRE.
+            I created an UnnamedRef whose statement is the
+            SgConstructorInitializer in case.	
+
+          - Moved flag excludeInputFiles from an optional param to
+            SageIRProcIterator constructor to an optional param of
+            SageIRInterface constructor.  Now, we use this consistently.
+            Previously, whenever SageIRInterface created a SageIRProcIterator
+            it was passing excludeInputFiles = false to SageIRProcIterator.
+            However, another part of our analysis, external to SageIRInterface,
+            might have directly created a SageIRProcIterator with
+            excludeInputFiles = true.  This might have lead to 
+            inconsistencies.
+
+          - For each alias analysis benchmark in 
+            AliasTests/AliasBenchmarks/PandeEtAl95, created a file
+            singleFile.C which should be used for analysis.  This file
+            is a concatentation of not only all of the .C files (as was
+            put in concat.C), but also of all of the user header files.
+            Therefore, we can analyze these files without visiting
+            any header files (i.e., excludeInputFiles = true), 
+            which should be more efficient.
+
+10/09/06     UseOA-Rose svn branch-memRefExprRefactor r232  Brian White
+
+          - Was not properly visiting SgTryStmt and SgCatchStatementSeq,
+            because I had them under the SgScopeStatement clause of
+            SageIRStmtIterator::FindAllStmts rather than the SgStatement
+            clause.
+
+          - Invocation of qualified methods (i.e., Parent::methodName)
+            may be statically resolved and should not be marked as
+            virtual.  Such SgMemberFunctionRefExp have
+            get_need_qualifier() == true.
+
+          - Modified CHAandAliasVirtualMethodResolver.C to account
+            for the above-mentioned qualified method names, which
+            are statically resolvable (not virtual).
+
+          - CHAandAliasVirtualMethodResolver.C was recursing down the
+            class hierarchy, invoked getSubClasses on each class.
+            This is both unecessary and incorrect since getSubClasses(cls)
+            returns all subclasses (direct and indirect) of cls.
+
+          - Finished checking reference regression tests, by
+            verifying output for
+              - referenceInit.C
+              - referenceFormal.C
+              - returnReference.C
+              - refCall.C	

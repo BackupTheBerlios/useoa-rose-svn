@@ -1,0 +1,438 @@
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::eval
+	( *((this) -> first)).eval(numb)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::eval
+	( *((this) -> second)).eval(numb)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::eval
+	( *((this) -> first)).eval(numb)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::eval
+	( *((this) -> second)).eval(numb)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::eval
+	( *((this) -> first)).eval(numb)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::eval
+	( *((this) -> second)).eval(numb)
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:bin_op_expr::print_me
+	( *((this) -> first)).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:bin_op_expr::print_me
+	( *((this) -> second)).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:sum_expr::deriv
+	(dvfirst -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::deriv
+	dvfirst -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:sum_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvfirst -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvfirst -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvfirst -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvfirst -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvfirst -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvfirst -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	( *((this) -> first)).eval((0))
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	( *((this) -> first)).eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvfirst -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvfirst -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *c.const_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *x.var_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *simple.prod_expr::deriv(("y"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *simple.prod_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:sum_expr::~sum_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:prod_expr::~prod_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:quotient_expr::~quotient_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+definedFunctions: 137
+definedVirtualFunctions: 22
+virtual method callsites: 59
+Summary CHA monomorphic call sites: 3
+Summary Alias analysis monomorphic call sites: 0
+Summary CHA total (virtual) resolutions: 283
+Summary Alias analysis total (virtual) resolutions: 202
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::eval
+	( *((this) -> first)).eval(numb)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::eval
+	( *((this) -> second)).eval(numb)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::eval
+	( *((this) -> first)).eval(numb)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::eval
+	( *((this) -> second)).eval(numb)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::eval
+	( *((this) -> first)).eval(numb)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::eval
+	( *((this) -> second)).eval(numb)
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:bin_op_expr::print_me
+	( *((this) -> first)).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:bin_op_expr::print_me
+	( *((this) -> second)).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:sum_expr::deriv
+	(dvfirst -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::deriv
+	dvfirst -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:sum_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvfirst -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvfirst -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvfirst -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvfirst -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:prod_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvfirst -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvfirst -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	( *((this) -> first)).eval((0))
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	( *((this) -> first)).eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvfirst -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvfirst -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:quotient_expr::deriv
+	(dvsecond -> isconst())
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::deriv
+	dvsecond -> eval((0))
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *c.const_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *x.var_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *simple.prod_expr::deriv(("y"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *simple.prod_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:sum_expr::~sum_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:prod_expr::~prod_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:quotient_expr::~quotient_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+definedFunctions: 1105
+definedVirtualFunctions: 23
+virtual method callsites: 59
+Summary CHA monomorphic call sites: 3
+Summary Alias analysis monomorphic call sites: 0
+Summary CHA total (virtual) resolutions: 283
+Summary Alias analysis total (virtual) resolutions: 202

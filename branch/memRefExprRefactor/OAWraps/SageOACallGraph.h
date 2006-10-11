@@ -45,8 +45,7 @@ public:
 class SageIRProcIterator: public OA::IRProcIterator 
 {
  public:
-  SageIRProcIterator (SgNode *node, SageIRInterface& in,
-                      bool excludeInputFiles = false); 
+  SageIRProcIterator (SgNode *node, SageIRInterface& in);
   // MMS, can't take an OA_ptr to SageIRInterface because need to
   // construct one of these within a SageIRInterface and can't pass this to
   // an OA_ptr

@@ -55,11 +55,6 @@ DoFIAliasEquivSets(OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
   OA::OA_ptr<OA::Alias::ManagerFIAliasEquivSets> fialiasman;
   fialiasman= new OA::Alias::ManagerFIAliasEquivSets(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
-  //  bool excludeInputFiles = true;
-  // Don't pull in any procedures defined in input files.  For testing
-  // purposes only:  avoids unexpected/spurious results due to 
-  // stdlib.h, etc.
-  //  procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
   procIter = new SageIRProcIterator(p, *irInterface);
   OA::OA_ptr<OA::Alias::EquivSets> alias = 
     fialiasman->performAnalysis(procIter);
@@ -76,17 +71,16 @@ DoFIAliasAliasMap(OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
-  bool excludeInputFiles = false;
-  // Don't pull in any procedures defined in input files.  For testing
-  // purposes only:  avoids unexpected/spurious results due to 
-  // stdlib.h, etc.
-  procIter = new SageIRProcIterator(p, *irInterface, excludeInputFiles);
+  procIter = new SageIRProcIterator(p, *irInterface);
   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
   interAlias = fialiasman->performAnalysis(procIter);
+  //  interAlias->output(*irInterface);
+
   return interAlias;
 }
 
-bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRefOrPtr)
+SgMemberFunctionRefExp *
+isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRefOrPtr)
 {
   ROSE_ASSERT(functionCall != NULL);
 
@@ -96,6 +90,8 @@ bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRe
   bool isMethod = false;
   isDotExp = false;
   lhsIsRefOrPtr = false;
+
+  SgMemberFunctionRefExp *functionRef = NULL;
 
   switch(expression->variantT()) {
   case V_SgDotExp:
@@ -119,17 +115,24 @@ bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRe
 
       lhsIsRefOrPtr = ( isSgReferenceType(lhs->get_type()) || isSgPointerDerefExp(lhs) );
 
+      functionRef = isSgMemberFunctionRefExp(isSgBinaryOp(expression)->get_rhs_operand());
+      ROSE_ASSERT(functionRef != NULL);
+
       break;
     }
   case V_SgArrowExp:
     {
       isMethod = true;
       lhsIsRefOrPtr = true;
+      functionRef = isSgMemberFunctionRefExp(isSgBinaryOp(expression)->get_rhs_operand());
+      ROSE_ASSERT(functionRef != NULL);
       break;
     }
   case V_SgMemberFunctionRefExp:
     {
       isMethod = true;
+      functionRef = isSgMemberFunctionRefExp(expression);
+      ROSE_ASSERT(functionRef != NULL);
       break;
     }
   case V_SgFunctionRefExp:
@@ -146,7 +149,7 @@ bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRe
     }
   }
 
-  return isMethod;
+  return functionRef;
 }
 
 
@@ -155,12 +158,7 @@ void countFunctions(int &definedFunctions, int &definedVirtualFunctions,
                     OA::OA_ptr<SageIRInterface> irInterface, SgProject * p)
 {
   OA::OA_ptr<SageIRProcIterator> procIter;
-  bool excludeInputFiles = true;
-  // Don't pull in any procedures defined in input files.  For testing
-  // purposes only:  avoids unexpected/spurious results due to 
-  // stdlib.h, etc.
-  //  procIter = new SageIRProcIterator(p, irInterface, excludeInputFiles);
-  procIter = new SageIRProcIterator(p, *irInterface, excludeInputFiles);
+  procIter = new SageIRProcIterator(p, *irInterface);
   definedFunctions = 0;
   definedVirtualFunctions = 0;
   invokedVirtualFunctions = 0;
@@ -174,6 +172,7 @@ void countFunctions(int &definedFunctions, int &definedVirtualFunctions,
       ROSE_ASSERT(funcDecl != NULL);
 
       if ( isVirtual(funcDecl) ) {
+	std::cout << "virtual function defn: " << funcDecl->unparseToString() << std::endl;
         ++definedVirtualFunctions;
       }
 
@@ -194,9 +193,12 @@ void countFunctions(int &definedFunctions, int &definedVirtualFunctions,
 
 	      bool isDotExp = false;
 	      bool isLhsRefOrPtr = false;
-	      if ( isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr) ) {
-		if ( isVirtual(functionDeclaration) ) {
-		  if ( ( !isDotExp && isLhsRefOrPtr ) ) {
+	      SgMemberFunctionRefExp *functionRefExp = NULL;
+	      if ( ( functionRefExp = isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr) ) != NULL ) {
+		// If this is a qualified method (e.g., Parent::answerName),
+                // then it is not virtual.
+		if ( !functionRefExp->get_need_qualifier() && isVirtual(functionDeclaration) ) {
+		  if ( ( !isDotExp || isLhsRefOrPtr ) ) {
 		    std::cout << "virtual callsite: " << functionCallExp->unparseToString() << std::endl;
 		    ++invokedVirtualFunctions;
 		  }
@@ -798,8 +800,11 @@ int main(int argc, char **argv)
     std::cout << "method?: " << functionCallExp->unparseToCompleteString() << std::endl;
 #endif
 
-    if ( !isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr) )
+    SgMemberFunctionRefExp *functionRefExp = NULL;
+    if ( ( functionRefExp = isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr) ) == NULL )
       continue;
+
+
     
 #ifdef DEBUG    
     std::cout << "method: " << functionCallExp->unparseToCompleteString() << std::endl;
@@ -831,7 +836,7 @@ int main(int argc, char **argv)
 
     unsigned int numResolutionsForMethod = 0;
 
-    if ( ( isVirtual(functionDeclaration) ) ) {
+    if ( ( !functionRefExp->get_need_qualifier() && isVirtual(functionDeclaration) ) ) {
 #ifdef DEBUG    
       std::cout << "tracking: " << functionDeclaration->unparseToString() << std::endl;
 #endif
@@ -853,9 +858,14 @@ int main(int argc, char **argv)
       ROSE_ASSERT(classDefinition != NULL);
       
 
-#if 1
+#if 0
       numResolutionsForMethod = findResolutionsForMethodInTypeHierarchy(memberFunctionDeclaration, classDefinition, classHierarchy);
 #else
+      // We do not have to recurse through the class hierarchy
+      // (as findResolutionsForMethodInTypeHierarchy
+      // does).  In fact, we _should_ not since getSubClasses(cls)
+      // returns _all_ of the subclasses of cls, not just its
+      // immediate subclasses.
       // First examine the class itself.
       // Iterate over all of the methods defined in this class.
       SgDeclarationStatementPtrList &decls =
@@ -984,8 +994,9 @@ int main(int argc, char **argv)
 
       // How many locations has the alias analysis assigned to this
       // callMRE?
-      OA::OA_ptr<OA::Alias::Interface> alias 
+      OA::OA_ptr<OA::Alias::AliasMap> alias 
           = interAlias->getAliasMapResults(caller);
+      //      alias->output(*irInterface);
       OA::OA_ptr<OA::LocIterator> locIter =
         alias->getMayLocs(*callMRE, caller);
       unsigned int numAliasAnalysisResolutionsForMethod = 0;
@@ -997,6 +1008,10 @@ int main(int argc, char **argv)
 	  std::cout << "Visible Location: " << std::endl;
         } else {
 	  std::cout << "Invisible Location: " << std::endl;
+	  std::cout << "with respect to caller: " << irInterface->toString(caller) << std::endl;
+	  std::cout << "call site: ";
+	  irInterface->dump(callMRE, std::cout);
+	  std::cout << std::endl;
         }
         loc->output(*irInterface);
       }

@@ -418,9 +418,8 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
 void SageIRInterface::initMemRefAndPtrAssignMaps()
 {
   // iterate over all procedures
-  bool excludeInputFiles = false;  // FIXME: should this be true?
   OA::OA_ptr<OA::IRProcIterator> procIter;
-  procIter = new SageIRProcIterator(wholeProject, *this, excludeInputFiles);
+  procIter = new SageIRProcIterator(wholeProject, *this);
   for (procIter->reset() ; procIter->isValid(); ++(*procIter)) {
       OA::ProcHandle currProc = procIter->current();
 
@@ -895,6 +894,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 }
 
 
+#if 0
+		//		std::cout << "Adding call handle for " << (int)(call.hval()) << std::endl;
+		SgNode *node = getNodePtr(call);
+		ROSE_ASSERT(node != NULL);
+		std::cout << "call handle node (h: " << (int)(call.hval()) << " type: " << node->sage_class_name()
+                  << ") " << node->unparseToString() 
+                  << std::endl;
+		node->get_file_info()->display("call handle: ");
+#endif
                 mCallToMRE[call] = call_mre;
 
                 if (returnsAddress(funcCallExp) 
@@ -1193,6 +1201,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 }
     	
                 OA::CallHandle call = getCallHandle(astNode);
+		//		std::cout << "Adding call handle for " << (int)(call.hval()) << std::endl;
+#if 0
+		SgNode *node = getNodePtr(call);
+		ROSE_ASSERT(node != NULL);
+		std::cout << "call handle node (h: " << (int)(call.hval()) << " type: " << node->sage_class_name()
+                  << ") " << node->unparseToString() 
+                  << std::endl;
+		node->get_file_info()->display("call handle: ");
+#endif
                 mCallToMRE[call] = method;
     
                 // We consider function/method invocations to be 
@@ -1606,6 +1623,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 mMre2TypeMap[method] = other;
     
                 OA::CallHandle call = getCallHandle(astNode);
+#if 0
+		//		std::cout << "Adding call handle for " << (int)(call.hval()) << std::endl;
+		SgNode *node = getNodePtr(call);
+		ROSE_ASSERT(node != NULL);
+		std::cout << "call handle node (h: " << (int)(call.hval()) << " type: " << node->sage_class_name()
+                  << ") " << node->unparseToString() 
+                  << std::endl;
+		node->get_file_info()->display("call handle: ");
+#endif
                 mCallToMRE[call] = method;
                 OA::MemRefHandle memref = getMemRefHandle(astNode);
                 mStmt2allMemRefsMap[stmt].insert(memref);
@@ -1682,8 +1708,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 SgMemberFunctionDeclaration *methodDecl =
                     getInvokedMethod(memberFunctionRefExp);
                 ROSE_ASSERT(methodDecl != NULL);
-
-                isVirtualInvocation = isVirtual(methodDecl);
+		
+                isVirtualInvocation = !memberFunctionRefExp->get_need_qualifier() && isVirtual(methodDecl);
+		
+		//		std::cout << "isVirtual: " << isVirtualInvocation << " qualify: " << memberFunctionRefExp->get_need_qualifier() << " get_virt: " << memberFunctionRefExp->get_virtual_call() << " " << binaryOp->unparseToString() << std::endl;
                 // Even if we invoke a virtual method, it is 
                 // statically resolvable if the receiver
                 // is an object, rather than a reference.
@@ -3016,6 +3044,22 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 	  std::cout << "Got an ASM stmt!" << std::endl;
           astNode->get_file_info()->display("ASM stmt:");
 	  std::cout << astNode->unparseToCompleteString();
+          SgAsmStmt *asmStmt = isSgAsmStmt(astNode);
+          ROSE_ASSERT(asmStmt != NULL);
+          SgExpressionPtrList &expressions = asmStmt->get_operands();
+          for (SgExpressionPtrList::iterator it = expressions.begin();
+               it != expressions.end(); ++it) {
+            SgExpression *expr = *it;
+            ROSE_ASSERT(expr != NULL);
+	    std::cout << "expr: " << expr->unparseToString() << std::endl;
+          }
+	  SgAsmStmt::AsmRegisterNameList &clobberList = asmStmt->get_clobberRegisterList();
+          for (SgAsmStmt::AsmRegisterNameList::iterator it = clobberList.begin();
+               it != clobberList.end(); ++it) {
+	    SgInitializedName::asm_register_name_enum name = *it;
+	    std::cout << "name: " << name << std::endl;
+          }
+
 	  //            ROSE_ASSERT(0);
             break;
         }
@@ -4315,6 +4359,26 @@ void SageIRInterface::createUseDefForVarArg(OA::MemRefHandle memref,
  *   (here, a copy constructor is called for t), we return the copy
  *   constructor to represent the anonymous temporary-- i.e.,
  *   &(SgConstructorInitializer(t)).
+ *
+ *   For cases involving the construction of a return expr:
+ *
+ *       A a;
+ *       ...
+ *       return a;
+ *
+ *   we return the copy constructor to represent the anonymous temporary--
+ *   i.e., &(SgConstructorInitializer(a)).
+ *
+ *   For cases involving the construction of a rhs:
+ *
+ *   A lhs;
+ *   A rhs;
+ *   lhs = rhs;
+ *
+ *   we return &(SgConstructorInitializer(rhs)).  Note that
+ *   we could return &(lhs), but there might be multiple lhs:
+ *     ( cond ? lhs1 : lhs2 ) = rhs;
+ *   such that we would have to return a list of MREs.
  * 
  */
 OA::OA_ptr<OA::MemRefExpr> 
@@ -4444,6 +4508,41 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
         }
     }
 
+    // If the parent is an expression root, and its parent is
+    // a return statement, then a copy constructor is invoked
+    // because we are returning an object.
+    if ( isSgExpressionRoot(parent) ) {
+        SgNode *grandParent = parent->get_parent();
+        if ( isSgReturnStmt(grandParent) ) {
+
+          bool addressTaken = true;
+          bool accuracy = true;
+          OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+          OA::StmtHandle stmtHandle = getNodeNumber(ctorInitializer);
+          mre = new OA::UnnamedRef(addressTaken, accuracy, mrType, stmtHandle);
+
+          // Record the type of the MRE (reference or non-reference).
+          mMre2TypeMap[mre] = other;
+          return mre;
+
+        }
+    }
+
+    // It looks like the parent could be an assign op as well.
+    // In that case, return the address of the lhs.
+    if ( isSgAssignOp(parent) ) {
+        
+        bool addressTaken = true;
+        bool accuracy = true;
+        OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+        OA::StmtHandle stmtHandle = getNodeNumber(ctorInitializer);
+        mre = new OA::UnnamedRef(addressTaken, accuracy, mrType, stmtHandle);
+  
+        // Record the type of the MRE (reference or non-reference).
+        mMre2TypeMap[mre] = other;
+        return mre;
+    }
+
     // At this point we know that the immediate parent is not
     // a SgInitializedName, because we took care of that case
     // above and then returned.
@@ -4474,6 +4573,9 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
         // one of the anonymous memory object cases named above.
         // In that case, our parent had better be a SgNewExp.
         lhs = isSgNewExp(ctorInitializer->get_parent());
+    }
+    if ( lhs == NULL ) {
+      std::cout << "lhs NULL: " << ctorInitializer->get_parent()->get_parent()->unparseToString() << std::endl;
     }
     ROSE_ASSERT(lhs != NULL);
 

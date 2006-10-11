@@ -1,5 +1,6 @@
 /* this is file class-defs.h provided to students */
 
+#include <string.h>
 //extern "C" {
 //char *strcpy(char *nam, char *str);
 //}

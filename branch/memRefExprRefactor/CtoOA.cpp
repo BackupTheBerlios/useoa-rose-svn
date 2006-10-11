@@ -85,11 +85,10 @@ int main ( unsigned argc,  char * argv[] )
         // Loop through every function in the file of this project.
         std::vector<SgNode*> nodeArray;
         OA::OA_ptr<SageIRInterface> irInterface; 
-        irInterface = new SageIRInterface(sageProject, &nodeArray, p_h, useVtableOpt);
+        bool excludeInputFiles = true;
+        irInterface = new SageIRInterface(sageProject, &nodeArray, p_h, useVtableOpt, excludeInputFiles);
         OA::OA_ptr<SageIRProcIterator> procIter;
-	// Do not process include files, e.g., iostream.h.
-	bool excludeInputFiles = true;
-        procIter = new SageIRProcIterator(sageProject, *irInterface, excludeInputFiles);
+        procIter = new SageIRProcIterator(sageProject, *irInterface);
 
         for (; procIter->isValid(); ++(*procIter) ) 
 	{

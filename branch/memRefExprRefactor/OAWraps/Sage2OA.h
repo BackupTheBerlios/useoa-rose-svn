@@ -378,7 +378,8 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   SageIRInterface(SgNode *root, 
                   std::vector<SgNode*> *na, 
                   bool use_persistent_handles = FALSE,
-                  bool useVtableOpt = TRUE);
+                  bool useVtableOpt = TRUE,
+                  bool excludeInputFiles = FALSE);
   ~SageIRInterface();
 
     
@@ -742,6 +743,7 @@ public:
   void dump(OA::OA_ptr<OA::UnnamedRef> memRefExp, std::ostream& os);
   void dump(OA::OA_ptr<OA::UnknownRef> memRefExp, std::ostream& os);
   void dump(OA::OA_ptr<OA::Deref> memRefExp, std::ostream& os);
+  void dump(OA::OA_ptr<OA::FieldAccess> memRefExp, std::ostream& os);
   void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, std::ostream &os);
 
   string SageIRInterface::refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
@@ -790,12 +792,15 @@ public:
   void verifyCallHandleType(OA::CallHandle call);
   void verifyStmtHandleType(OA::StmtHandle stmt);
 
+  bool excludeInputFiles() { return mExcludeInputFiles; }
+
  protected:
 
   //! Return the attribute associated with a Sage node.
   AstAttributeMechanism &getAttribute(SgNode *n);
 
  private:
+  bool mExcludeInputFiles;
   //-------------------------------------------------------------------------
   // Memory References
   //-------------------------------------------------------------------------

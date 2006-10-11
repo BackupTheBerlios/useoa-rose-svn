@@ -91,4 +91,8 @@ test::  assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C, checked by BSW
 test::  ctorReferenceInit.C,        checked by MMS 9/14/06
 test::  refPtrFormal.C,             checked by MMS 9/14/06
 test::  referenceMemVarAccesses.C,  checked by MMS 9/14/06
-#test::  referenceInit.C,            waiting on fixes
+test::  referenceInit.C,            checked by BSW 10/10/06
+test::  returnReference.C,          checked by BSW 10/10/06
+test::  referenceFormal.C,          checked by BSW 10/10/06
+test::  refCall.C,                  checked by BSW 10/10/06
+

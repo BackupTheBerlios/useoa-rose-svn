@@ -101,6 +101,7 @@ void SageIRCallsiteIterator::reset()
 void SageIRProcIterator::FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst)
 {
   if ( mExcludeInputFiles ) {
+    //    std::cout << "Exclude = true" << std::endl;
     // Only visit those AST nodes defined within the same file as node.
     // i.e., ignore AST nodes pulled in from input files.
     SgProject *project = isSgProject(node);
@@ -110,14 +111,14 @@ void SageIRProcIterator::FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst
       FindProcsPass(lst).traverseWithinFile(node, preorder);
     }
   } else {
+    //    std::cout << "Exclude = false" << std::endl;
     FindProcsPass(lst).traverse(node, preorder);
   }
 }
 
 SageIRProcIterator::SageIRProcIterator(SgNode *node, 
-                                       SageIRInterface& in,
-                                       bool excludeInputFiles)
-  : ir(in), mExcludeInputFiles(excludeInputFiles)
+                                       SageIRInterface& in)
+  : ir(in), mExcludeInputFiles(in.excludeInputFiles())
 {
  //given an sgstmt put all call expressions in calls_in_stmt
    FindProcsInSgTree(node, procs_in_proj);

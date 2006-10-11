@@ -1387,7 +1387,11 @@ SgNode *getThisExpNode(SgNode *node)
             functionDeclaration = isSgFunctionDeclaration(node);
             break;
         }
-
+    case V_SgTemplateInstantiationMemberFunctionDecl:
+        {
+            functionDeclaration = isSgFunctionDeclaration(node);
+            break;
+        }
     case V_SgThisExp:
         {
             SgThisExp *thisExp = isSgThisExp(node);

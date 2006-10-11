@@ -266,3 +266,19 @@ echo "Testing TestCases/AliasTests/referenceMemVarAccesses.C, TestResults/AliasI
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceMemVarAccesses.C >& t
 diff t TestResults/AliasIRInterface/referenceMemVarAccesses.C.out
 
+echo "Testing TestCases/AliasTests/referenceInit.C, TestResults/AliasIRInterface/referenceInit.C.out checked by BSW 10/10/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceInit.C >& t
+diff t TestResults/AliasIRInterface/referenceInit.C.out
+
+echo "Testing TestCases/AliasTests/returnReference.C, TestResults/AliasIRInterface/returnReference.C.out checked by BSW 10/10/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/returnReference.C >& t
+diff t TestResults/AliasIRInterface/returnReference.C.out
+
+echo "Testing TestCases/AliasTests/referenceFormal.C, TestResults/AliasIRInterface/referenceFormal.C.out checked by BSW 10/10/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceFormal.C >& t
+diff t TestResults/AliasIRInterface/referenceFormal.C.out
+
+echo "Testing TestCases/AliasTests/refCall.C, TestResults/AliasIRInterface/refCall.C.out checked by BSW 10/10/06"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/refCall.C >& t
+diff t TestResults/AliasIRInterface/refCall.C.out
+

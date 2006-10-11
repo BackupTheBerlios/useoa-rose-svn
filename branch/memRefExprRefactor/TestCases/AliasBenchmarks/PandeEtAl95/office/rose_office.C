@@ -5,7 +5,7 @@ using namespace std;
 // In all cases, init_data assigns values to the class variables and
 //  display outputs the values to the monitor for inspection.
 
-supervisor::supervisor(char *in_name,int in_salary,char *in_title)
+supervisor::supervisor(char *in_name,int in_salary,char *in_title) : person()
 {
   (this) -> name = in_name;
   (this) -> salary = in_salary;
@@ -19,7 +19,7 @@ void supervisor::display()
 }
 
 
-programmer::programmer(char *in_name,int in_salary,char *in_title,char *in_language)
+programmer::programmer(char *in_name,int in_salary,char *in_title,char *in_language) : person()
 {
   (this) -> name = in_name;
   (this) -> salary = in_salary;
@@ -35,7 +35,7 @@ void programmer::display()
 }
 
 
-secretary::secretary(char *in_name,int in_salary,int in_shorthand,int in_typing_speed)
+secretary::secretary(char *in_name,int in_salary,int in_shorthand,int in_typing_speed) : person()
 {
   (this) -> name = in_name;
   (this) -> salary = in_salary;
@@ -57,7 +57,7 @@ void secretary::display()
 }
 
 
-consultant::consultant(char *in_name,int in_salary,char *in_specialty,int in_contract_length)
+consultant::consultant(char *in_name,int in_salary,char *in_specialty,int in_contract_length) : person()
 {
   (this) -> name = in_name;
   (this) -> salary = in_salary;
@@ -117,3 +117,154 @@ int main()
 //                Dave Debugger's specialty is assembly language.
 //
 // End of employee list.
+// stubs
+pthread_once_t once_control = (0);
+
+extern "C" { int pthread_once(pthread_once_t *once_control,void (*init_routine)()) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { int pthread_key_create(pthread_key_t *key,void (*destr_function)(void *)) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { int pthread_setspecific(pthread_key_t key,const void *pointer) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { int pthread_key_delete(pthread_key_t key) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { void *pthread_getspecific(pthread_key_t key) throw()
+{
+// more semantic
+  return (0);
+}
+
+ }
+
+extern "C" { int pthread_mutex_lock(pthread_mutex_t *mutex) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { int pthread_mutex_trylock(pthread_mutex_t *mutex) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { int pthread_mutex_unlock(pthread_mutex_t *mutex) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { wchar_t *wcschr(const wchar_t *wcs,wchar_t wc) throw()
+{
+  wchar_t *wcshrtemp;
+  return wcshrtemp;
+}
+
+ }
+
+extern "C" { wchar_t *wcspbrk(const wchar_t *wcs,const wchar_t *accept) throw()
+{
+  wchar_t *wcspbrktemp;
+  return wcspbrktemp;
+}
+
+ }
+
+extern "C" { wchar_t *wcsrchr(const wchar_t *wcs,wchar_t wc) throw()
+{
+  wchar_t *wcsrchrtemp;
+  return wcsrchrtemp;
+}
+
+ }
+
+extern "C" { wchar_t *wcsstr(const wchar_t *haystack,const wchar_t *needle) throw()
+{
+  wchar_t *wcsstrtemp;
+  return wcsstrtemp;
+// Returning value before it is set, giving warning, problem?
+}
+
+ }
+
+extern "C" { wchar_t *wmemchr(const wchar_t *s,wchar_t c,size_t n) throw()
+{
+  wchar_t *wmemchrtemp;
+  return wmemchrtemp;
+}
+
+ }
+
+extern "C" { void *memchr(const void *s,int c,size_t n) throw()
+{
+  return (0);
+}
+
+ }
+
+char *__builtin_strchr(const char *str,int ch)
+{
+  char *__builtin_strchrtemp;
+  return __builtin_strchrtemp;
+// http://www.cs.berkeley.edu/~smcpeak/elkhound/sources/elsa/gnu.cc
+}
+
+
+char *__builtin_strpbrk(const char *str,const char *accept)
+{
+  char *__builtin_strpbrktemp;
+  return __builtin_strpbrktemp;
+}
+
+
+char *__builtin_strrchr(const char *str,int ch)
+{
+  char *__builtin_strrchrtemp;
+  return __builtin_strrchrtemp;
+}
+
+
+char *__builtin_strstr(const char *haystack,const char *needle)
+{
+  char *__builtin_strstrtemp;
+  return __builtin_strstrtemp;
+}
+
+
+extern "C" { int memcmp(const void *s1,const void *s2,size_t n) throw()
+{
+  return 0;
+}
+
+ }
+
+extern "C" { size_t strlen(const char *s) throw()
+{
+  size_t strlentemp;
+  return strlentemp;
+}
+
+ }
