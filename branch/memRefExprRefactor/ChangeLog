@@ -3050,3 +3050,172 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
           generated within dir: TestCases/AliasBenchmarks/PandeEtAl95/bmk via
           
 	  rm cha.results ; ../../../../CHAandAliasVirtualMethodResolver -out:cha.results family.C > & cha.out  		
+
+10/10/06     UseOA-Rose svn branch-memRefExprRefactor r234  Brian White
+
+        - In CHAandAliasVirtualMethodResolver I was forgetting to add
+          non-virtual methods/functions to the worklist.
+
+        - Verified results for the following Pande benchmarks:
+            - vcirc
+            - garage
+            - tree
+            - objects
+            - ocean
+
+        - "Discussion" of fine-grained differences.  Fewer resolutions are
+          better/more precise (assuming correctness, which has been manually
+          verified).
+
+            - vcirc:   FIAlias 4 resolutions vs CHA 6
+
+                       CHA believes that the virtual methods Hide and Show
+                       in
+
+                           void Point::MoveTo(int NewX, int NewY) {
+                             Hide();         // make current point invisible
+                             X = NewX;       // change X and Y coordinates to new location
+                             Y = NewY;
+                             Show();         // show point at new location
+                           }
+
+                       may be invoked on either Point or its subclass Circle.
+                       FIAlias knows that the implicit this actual of Point::MoveTo
+                       is never bound to a Circle; therefore only 1 resolution
+                       is possible for each of Hide and Show.
+
+                       Because of this, FIAlias recognizes 4 monomorphic sites
+                       as opposed to 2 for CHA.
+
+                       RTA would return the same results as FIAlias, since
+                       a Point is never allocated in the program.  However,
+                       we could instantiate a Point object; FIAlias would still
+                       do the proper thing, but RTA would not.  Actually,
+	               I don't think this is true:  if we allocate a Point
+                       than through the common Point constructor, its 'this'
+                       will be aliased with the 'this' of a Circle.
+                       Therefore, this->Hide() above will resolve to both
+                       Circle::Hide and Point::Hide.  Yes; I have just verified
+                       this.  SIGNIFICANTLY:  this is a shortcoming of 
+                       FIAlias (namely the symmetric nature of assignment),
+                       rather than our approach-- i.e., no precision is
+                       lost by our modeling.
+
+            - garage:  FIAlias 2 vs CHA 3.
+
+                       FIAlias (correctly) believes that
+
+                           parked[bay]->identify()
+
+                       resolves to Car::identify and Truck::identify, while
+                       CHA also thinks that Vehicle::identify is possible, since
+                       Vehicle * is the static type of parked[bay].
+
+                       As above, no Vehicle is instantiated.  Therefore, RTA
+                       would again give us the correct results.  And, as 
+                       argued above, were we to instantiate a Vehicle object,
+                       FIAlias would return imprecise results because of
+                       param binding at the (base) constructor, which leads to
+                       aliasing of a Car, Truck, and Vehicle.  Again,
+                       a failing of FIAlias, not our approach.               
+
+            - tree:  FIAlias 3 vs CHA 4
+
+                     Just like the above 2 cases.  The base class, Node, of
+                     3 other classes-- UnaryNode, BinaryNode, and RealNode,
+                     is never instantiated.  Therefore, FIAlias correctly
+                     determines that 
+
+                        nodePtr->nodeValue()
+
+                     invoked from Tree::value() can never invoke a Node.
+                     Same caveats as above wrt RTA and imprecision due
+                     to FIAlias, rather than modeling.
+
+            - objects:  FIAlias 13 vs CHA 11
+
+                        There are differences in two call sites:  the invocation
+                        of Type in main and of Get from SpArray::Fetch.
+
+                        Invocaton of a3->Type() in main.
+
+                        Precise result:  only A::Type may be invoked.
+
+                        CHA result:  A::Type and B::Type may be invoked.  This
+                        occurs because the static type of a3 is A and B is a 
+                        subclass of A.  Since no B's are allocated, RTA
+                        would have determined the precise result.
+
+                        FIAlias result:  A::Type, Array::Type, and SpArray::Type
+                        may be invoked.  The problem is that A, Array, and SpArray
+                        share a common base class, Object.  As described above,
+                        a3 is aliased through its constructor implicit arg.
+
+                        Specifically:
+
+                            // invokes Object ctor and binds a1 (as implicit this
+                            // actual to Object::this).
+                            A *a1 = new A(1);   
+                            // invokes Object ctor and binds a2 (as implicit this
+                            // actual to Object::this).	 Implies a1 and a2 bound.
+                            A *a2 = new A(2);   
+                            A *a3;
+                            // invokes Object ctor and binds ar (as implicit this
+                            // actual to Object::this).	 Implies a1, a2, ar bound.
+                            Array *ar = new Array(3,VOLAT);
+                            // invokes Object ctor and binds sar (as implicit this
+                            // actual to Object::this).	 Implies a1, a2, ar, sar bound.	
+                            SpArray *sar = new SpArray(3,VOLAT);
+
+                            Array *a;
+                            if (0)
+                                a = ar;
+                            else
+                                a = sar;
+                            a->Assign(a1);
+                            a->Assign(a2, 2);
+                            // Because of the two above Assigns, Fetch may
+                            // return a1 or a2.  Therefore, we expect a3 to
+                            // be a1 or a2.  Unfortunately, a1 and a2 are
+                            // bound above to ar and sar.  Therefore,
+                            // we have the alias set {a1, a2, a3, ar, sar}.
+                            a3 = (A *)a->Fetch(2);
+                            // Therefore, a3->Type() may invoke A::Type,
+                            // Array::Type, or SpArray::Type.
+                            a3->Type();
+
+                        Invocaton of Get() in SpArray::Fetch.
+
+                        CHA result:  SpArray::Get only possible invocation,
+                        since it only looks in SpArray and its subclasses.
+                        Array::Get is defined, but Array is a _super_class of SpArray.
+
+                        FIAlias result:  Array::Get or SpArray::Get.  Just
+                        as above, binding occurs through implicit this actual.
+                        Therefore, we get every class that defines Get.
+
+            - ocean:  FIAlias 6 vs CHA 5	
+
+                      Difference is at the invocation of reproduce within
+                      Prey::MoveTo.  reproduce is implemented by Cell, Predator, and
+                      Prey, where inheritance dag (base -> child): 
+                      Cell -> Prey -> Predator.
+
+                      CHA result:  since reproduce is invoked from Prey::MoveTo,
+                      CHA only looks for reproduce in Prey and Predator (i.e, the 
+                      class defining the caller and any of its subclasses), not in the
+                      base class Cell.
+
+                      FIAlias result:  as usual, since Cell is a shared base class
+                      of Prey and Predator, wherever we believe we have a Prey or
+                      Predator, we also think we may have a Cell.  Same caveats/issues
+                      as above.  Failing of FIAlias, not our approach.
+
+                      Note that the other call site cells[row][col]->process();
+                      in Ocean::run, is truly polymorphic and definitely can
+                      invoke all three of Cell::process, Prey::process, and
+                      Predator::process.  cells[row][col] is populated with
+                      objects of each of these types in Ocean::initCells, 
+                      via invocations of addEmptyCells(), addPrey(), and addPredators(),
+                      respectively.  i.e., the precision result for this
+                      call site has 3 resolutions.

@@ -201,7 +201,7 @@ void countFunctions(int &definedFunctions, int &definedVirtualFunctions,
                 // then it is not virtual.
 		if ( !functionRefExp->get_need_qualifier() && isVirtual(functionDeclaration) ) {
 		  if ( ( !isDotExp || isLhsRefOrPtr ) ) {
-		    std::cout << "virtual callsite: " << functionCallExp->unparseToString() << std::endl;
+		    //		    std::cout << "virtual callsite: " << functionCallExp->unparseToString() << std::endl;
 		    ++invokedVirtualFunctions;
 		  }
 		}
@@ -435,6 +435,8 @@ int main(int argc, char **argv)
         SgFunctionDefinition *defn = worklist[i];
         ROSE_ASSERT(defn != NULL);
 
+	std::cout << "CHA examining: " << defn->get_mangled_name().str() << std::endl;
+
         // Visit each call site in this function.
         std::list<SgNode *> callsites;
         callsites = NodeQuery::querySubTree(defn,
@@ -463,6 +465,23 @@ int main(int argc, char **argv)
             SgMemberFunctionRefExp *functionRefExp = 
                 isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr);
             if ( functionRefExp == NULL ) {
+                // This is not a method call, but we still need to 
+                // visit it.  Add to the worklist.
+	        SgFunctionDeclaration *decl = getFunctionDeclaration(functionCallExp);
+                decl = getDefiningDeclaration(decl);
+                if ( decl == NULL ) {
+		  std::cout << "NULL decl for " << functionCallExp->unparseToString() << std::endl;
+                  continue;
+                } 
+
+                SgFunctionDefinition *defn = decl->get_definition();
+                ROSE_ASSERT(defn != NULL);
+
+                if ( processedFunctions.find(defn) ==
+                     processedFunctions.end() ) {
+                    worklist.push_back(defn);
+                    processedFunctions.insert(defn);
+                }
                 continue;
             }
     
@@ -481,6 +500,23 @@ int main(int argc, char **argv)
                           << functionCallExp->unparseToCompleteString() 
                           << std::endl;
 #endif
+                // This is not a method call, but we still need to 
+                // visit it.  Add to the worklist.
+	        SgFunctionDeclaration *decl = getFunctionDeclaration(functionCallExp);
+                decl = getDefiningDeclaration(decl);
+                if ( decl == NULL ) {
+		  std::cout << "NULL decl for " << functionCallExp->unparseToString() << std::endl;
+                  continue;
+                } 
+                SgFunctionDefinition *defn = decl->get_definition();
+                ROSE_ASSERT(defn != NULL);
+
+                if ( processedFunctions.find(defn) ==
+                     processedFunctions.end() ) {
+                    worklist.push_back(defn);
+                    processedFunctions.insert(defn);
+                }
+
                 continue;
             }
             numCHACallSites++;
@@ -557,7 +593,7 @@ int main(int argc, char **argv)
                     if ( matchingFunctions(method,
                                            memberFunctionDeclaration) ) {
 #ifdef DEBUG    
-                        std::cout << "overries" << std::endl;
+                        std::cout << "overrides" << std::endl;
 #endif
                         // Do not consider a pure virtual method to be an 
                         // overriding method (since it can not be invoked).
@@ -568,6 +604,11 @@ int main(int argc, char **argv)
                             method = isSgMemberFunctionDeclaration(getDefiningDeclaration(method));
                             ROSE_ASSERT(method != NULL);  
 
+			    std::cout << "CHA resolution for call site: "
+                                      << functionCallExp->unparseToString() 
+                                      << " " 
+                                      << method->unparseToString()
+                                      << std::endl;
                             SgFunctionDefinition *defn = 
                                 method->get_definition();
                             ROSE_ASSERT(defn != NULL);
@@ -577,7 +618,7 @@ int main(int argc, char **argv)
                                 worklist.push_back(defn);
                                 processedFunctions.insert(defn);
                             }
-                         }
+                        }
 	            }
                 }
 
@@ -650,6 +691,12 @@ int main(int argc, char **argv)
                                 method = isSgMemberFunctionDeclaration(getDefiningDeclaration(method));
                                 ROSE_ASSERT(method != NULL);  
 
+ 			        std::cout << "CHA resolution for call site: "
+                                          << functionCallExp->unparseToString() 
+                                          << " " 
+                                          << method->unparseToString()
+                                          << std::endl;
+
                                 SgFunctionDefinition *defn = 
                                     method->get_definition();
                                 ROSE_ASSERT(defn != NULL);
@@ -670,15 +717,37 @@ int main(int argc, char **argv)
                 numCHAPossibleResolutions += numCHAResolutionsForMethod;
 
                 if ( numCHAResolutionsForMethod >= 1 ) {
+                    SgFunctionDefinition *enclosingFuncDefn =
+                        getEnclosingFunction(functionCallExp);
+                    ROSE_ASSERT(enclosingFuncDefn != NULL);
                     ostr << "CHA virtual call site: " 
                          << functionCallExp->unparseToCompleteString() 
+                         << " from caller: " 
+                         << enclosingFuncDefn->get_mangled_name().str()
                          << std::endl;
                     ostr << "\t CHA:  Method invocation has " 
                          << numCHAResolutionsForMethod 
                          << " possible resolutions " 
+                         << std::endl
                          << std::endl;
                 }
-            }
+            } else {
+	        SgFunctionDeclaration *decl = getFunctionDeclaration(functionCallExp);
+                decl = getDefiningDeclaration(decl);
+                if ( decl == NULL ) {
+		  std::cout << "NULL decl for " << functionCallExp->unparseToString() << std::endl;
+                  continue;
+                } 
+
+                SgFunctionDefinition *defn = decl->get_definition();
+                ROSE_ASSERT(defn != NULL);
+
+                if ( processedFunctions.find(defn) ==
+                     processedFunctions.end() ) {
+                    worklist.push_back(defn);
+                    processedFunctions.insert(defn);
+                }
+	    }
         }
     }
 
@@ -720,6 +789,8 @@ int main(int argc, char **argv)
         SgFunctionDefinition *defn = worklist[i];
         ROSE_ASSERT(defn != NULL);
 
+	std::cout << "Alias analysis examining: " << defn->get_mangled_name().str() << std::endl;
+
         // Visit each call site in this function.
         std::list<SgNode *> callsites;
         callsites = NodeQuery::querySubTree(defn,
@@ -748,6 +819,25 @@ int main(int argc, char **argv)
             SgMemberFunctionRefExp *functionRefExp = 
                 isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr);
             if ( functionRefExp == NULL ) {
+                // This is not a method call, but we still need to 
+                // visit it.  Add to the worklist.
+	        SgFunctionDeclaration *decl = getFunctionDeclaration(functionCallExp);
+                decl = getDefiningDeclaration(decl);
+                if ( decl == NULL ) {
+		  std::cout << "NULL decl for " << functionCallExp->unparseToString() << std::endl;
+                  continue;
+                } 
+                ROSE_ASSERT(decl != NULL);  
+
+                SgFunctionDefinition *defn = decl->get_definition();
+                ROSE_ASSERT(defn != NULL);
+
+                if ( processedFunctions.find(defn) ==
+                     processedFunctions.end() ) {
+                    worklist.push_back(defn);
+                    processedFunctions.insert(defn);
+                }
+
                 continue;
             }
     
@@ -766,6 +856,25 @@ int main(int argc, char **argv)
                           << functionCallExp->unparseToCompleteString() 
                           << std::endl;
 #endif
+                // This is not a method call, but we still need to 
+                // visit it.  Add to the worklist.
+	        SgFunctionDeclaration *decl = getFunctionDeclaration(functionCallExp);
+                decl = getDefiningDeclaration(decl);
+                if ( decl == NULL ) {
+		  std::cout << "NULL decl for " << functionCallExp->unparseToString() << std::endl;
+                  continue;
+                } 
+                ROSE_ASSERT(decl != NULL);  
+
+                SgFunctionDefinition *defn = decl->get_definition();
+                ROSE_ASSERT(defn != NULL);
+
+                if ( processedFunctions.find(defn) ==
+                     processedFunctions.end() ) {
+                    worklist.push_back(defn);
+                    processedFunctions.insert(defn);
+                }
+
                 continue;
             }
             numAliasAnalysisCallSites++;
@@ -835,8 +944,9 @@ int main(int argc, char **argv)
                     OA::OA_ptr<OA::Location> loc = locIter->current();
                     if ( !loc->isaInvisible() ) {
                         ++numAliasAnalysisResolutionsForMethod;
-                        std::cout << "Visible Location: " << std::endl;
-
+                        std::cout << "Alias analysis resolution for call site " 
+                                  << functionCallExp->unparseToString() 
+                                  << " "; 
                         // Need to convert this OA visible location
                         // to a Sage function definition, so that
                         // we may add it to the work list.
@@ -882,14 +992,33 @@ int main(int argc, char **argv)
                 if ( numAliasAnalysisResolutionsForMethod >= 1 ) {
                     ostr << "Alias analysis virtual call site: " 
                          << functionCallExp->unparseToCompleteString() 
+                         << " from caller: " 
+                         << enclosingFuncDefn->get_mangled_name().str()
                          << std::endl;
                     ostr << "\t Alias analysis:  Method invocation has " 
                          << numAliasAnalysisResolutionsForMethod 
                          << " possible resolutions " 
+                         << std::endl
                          << std::endl;
                 }
 
-            }
+            } else {
+	        SgFunctionDeclaration *decl = getFunctionDeclaration(functionCallExp);
+                decl = getDefiningDeclaration(decl);
+                if ( decl == NULL ) {
+		  std::cout << "NULL decl for " << functionCallExp->unparseToString() << std::endl;
+                  continue;
+                } 
+
+                SgFunctionDefinition *defn = decl->get_definition();
+                ROSE_ASSERT(defn != NULL);
+
+                if ( processedFunctions.find(defn) ==
+                     processedFunctions.end() ) {
+                    worklist.push_back(defn);
+                    processedFunctions.insert(defn);
+                }
+	    }
         }
     }
 

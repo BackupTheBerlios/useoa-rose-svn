@@ -97,6 +97,13 @@ float values0, values1, values2;
 void strcpy(char *nam1, char *nam2) {*nam1 = *nam2;}
 int strlen(char *nam) {return 0;}
 
+  Tree t1(1), t2("u"), t3(5);
+  Tree t4(t1,"*",t2);
+  Tree t5("-",t3);
+
+  Tree t6(t1,"/",t3);
+  Tree t7(t1,"+",t5);
+
 Tree::Tree(float n) {
   nodePtr = new RealNode(n);
 }

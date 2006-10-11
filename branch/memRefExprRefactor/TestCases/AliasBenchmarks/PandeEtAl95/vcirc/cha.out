@@ -1,0 +1,574 @@
+"/fusion/scratch2/bwhite/alias-analysis-project/UseOA-memRefExprRefactor/TestCases/AliasBenchmarks/PandeEtAl95/vcirc/singleFile.C", line 108: warning: 
+          variable "TempColor" was declared but never referenced
+     unsigned int TempColor;    // to save current color
+                  ^
+
+Generating constructor for Location
+func_name = Location
+inserting Location = 0x42dd7108
+Generating destructor for Location
+func_name = ~Location
+inserting ~Location = 0x42dd7268
+Generating copy constructor for Location
+func_name = Location
+inserting Location = 0x42dd73c8
+func_name = operator=
+inserting operator= = 0x42dd7528
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Visiting memberFunctionDecl: public: Location(){}
+Visiting memberFunctionDecl: public: ~Location(){}
+Visiting memberFunctionDecl: public: Location(class Location &rhs) : X(rhs.X), Y(rhs.Y){}
+Visiting memberFunctionDecl: public: Location &operator=(class Location &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> X = rhs.X;(this) -> Y = rhs.Y;return *(this);}
+Generating constructor for Point
+func_name = Point
+inserting Point = 0x42dd7688
+uninvoked base class: class Location {protected: int X;int Y;public: Location(int InitX,int InitY);int GetX();int GetY();Location(){}~Location(){}Location(class Location &rhs) : X(rhs.X), Y(rhs.Y){}Location &operator=(class Location &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> X = rhs.X;(this) -> Y = rhs.Y;return *(this);}}
+Generating constructor call for Location within method: public: Point(){}
+parent class def: class Location {protected: int X;int Y;public: Location(int InitX,int InitY);int GetX();int GetY();Location(){}~Location(){}Location(class Location &rhs) : X(rhs.X), Y(rhs.Y){}Location &operator=(class Location &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> X = rhs.X;(this) -> Y = rhs.Y;return *(this);}}
+Generating destructor for Point
+func_name = ~Point
+inserting ~Point = 0x42dd77e8
+uninvoked base class: class Location {protected: int X;int Y;public: Location(int InitX,int InitY);int GetX();int GetY();Location(){}~Location(){}Location(class Location &rhs) : X(rhs.X), Y(rhs.Y){}Location &operator=(class Location &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> X = rhs.X;(this) -> Y = rhs.Y;return *(this);}}
+Generating destructor call for Location
+Generating copy constructor for Point
+func_name = Point
+inserting Point = 0x42dd7948
+uninvoked base class: class Location {protected: int X;int Y;public: Location(int InitX,int InitY);int GetX();int GetY();Location(){}~Location(){}Location(class Location &rhs) : X(rhs.X), Y(rhs.Y){}Location &operator=(class Location &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> X = rhs.X;(this) -> Y = rhs.Y;return *(this);}}
+Generating copy constructor call for Location
+parent class def: class Location {protected: int X;int Y;public: Location(int InitX,int InitY);int GetX();int GetY();Location(){}~Location(){}Location(class Location &rhs) : X(rhs.X), Y(rhs.Y){}Location &operator=(class Location &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> X = rhs.X;(this) -> Y = rhs.Y;return *(this);}}
+func_name = operator=
+inserting operator= = 0x42dd7aa8
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+uninvoked base class: class Location {protected: int X;int Y;public: Location(int InitX,int InitY);int GetX();int GetY();Location(){}~Location(){}Location(class Location &rhs) : X(rhs.X), Y(rhs.Y){}Location &operator=(class Location &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> X = rhs.X;(this) -> Y = rhs.Y;return *(this);}}
+Visiting memberFunctionDecl: public: inline Point(int InitX,int InitY) : Location(InitX,InitY){(this) -> Visible = False;}
+invoked base class: Location
+Visiting memberFunctionDecl: public: Point() : Location(){}
+invoked base class: Location
+Visiting memberFunctionDecl: public: ~Point(){((class Location *)(this)) -> ~Location();}
+invoked base class: Location
+Visiting memberFunctionDecl: public: Point(class Point &rhs) : Visible(rhs.Visible), Location(rhs){}
+invoked base class: Location
+Visiting memberFunctionDecl: public: Point &operator=(class Point &rhs){(*((class Location *)(this)))=((class Location &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> Visible = rhs.Visible;return *(this);}
+Visiting memberFunctionDecl: Location::Location(int InitX,int InitY){(this) -> X = InitX;(this) -> Y = InitY;}
+Visiting memberFunctionDecl: int Location::GetX(){return(this) -> X;}
+Visiting memberFunctionDecl: int Location::GetY(){return(this) -> Y;}
+Visiting memberFunctionDecl: void Point::Show(){(this) -> Visible = True;}
+Visiting memberFunctionDecl: void Point::Hide(){(this) -> Visible = False;}
+Visiting memberFunctionDecl: enum Boolean Point::IsVisible(){return(this) -> Visible;}
+Visiting memberFunctionDecl: void Point::MoveTo(int NewX,int NewY){(this) -> Hide();(this) -> X = NewX;(this) -> Y = NewY;(this) -> Show();}
+Generating constructor for Circle
+func_name = Circle
+inserting Circle = 0x42dd7c08
+uninvoked base class: class Point : public Location{protected: enum Boolean Visible;public: inline Point(int InitX,int InitY) : Location(InitX,InitY){(this) -> Visible = False;}virtual void Show();virtual void Hide();enum Boolean IsVisible();void MoveTo(int NewX,int NewY);Point() : Location(){}~Point(){((class Location *)(this)) -> ~Location();}Point(class Point &rhs) : Visible(rhs.Visible), Location(rhs){}Point &operator=(class Point &rhs){(*((class Location *)(this)))=((class Location &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> Visible = rhs.Visible;return *(this);}}
+Generating constructor call for Point within method: public: Circle(){}
+parent class def: class Point : public Location{protected: enum Boolean Visible;public: inline Point(int InitX,int InitY) : Location(InitX,InitY){(this) -> Visible = False;}virtual void Show();virtual void Hide();enum Boolean IsVisible();void MoveTo(int NewX,int NewY);Point() : Location(){}~Point(){((class Location *)(this)) -> ~Location();}Point(class Point &rhs) : Visible(rhs.Visible), Location(rhs){}Point &operator=(class Point &rhs){(*((class Location *)(this)))=((class Location &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> Visible = rhs.Visible;return *(this);}}
+Generating destructor for Circle
+func_name = ~Circle
+inserting ~Circle = 0x42dd7d68
+uninvoked base class: class Point : public Location{protected: enum Boolean Visible;public: inline Point(int InitX,int InitY) : Location(InitX,InitY){(this) -> Visible = False;}virtual void Show();virtual void Hide();enum Boolean IsVisible();void MoveTo(int NewX,int NewY);Point() : Location(){}~Point(){((class Location *)(this)) -> ~Location();}Point(class Point &rhs) : Visible(rhs.Visible), Location(rhs){}Point &operator=(class Point &rhs){(*((class Location *)(this)))=((class Location &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> Visible = rhs.Visible;return *(this);}}
+Generating destructor call for Point
+Generating copy constructor for Circle
+func_name = Circle
+inserting Circle = 0x42dd7ec8
+uninvoked base class: class Point : public Location{protected: enum Boolean Visible;public: inline Point(int InitX,int InitY) : Location(InitX,InitY){(this) -> Visible = False;}virtual void Show();virtual void Hide();enum Boolean IsVisible();void MoveTo(int NewX,int NewY);Point() : Location(){}~Point(){((class Location *)(this)) -> ~Location();}Point(class Point &rhs) : Visible(rhs.Visible), Location(rhs){}Point &operator=(class Point &rhs){(*((class Location *)(this)))=((class Location &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> Visible = rhs.Visible;return *(this);}}
+Generating copy constructor call for Point
+parent class def: class Point : public Location{protected: enum Boolean Visible;public: inline Point(int InitX,int InitY) : Location(InitX,InitY){(this) -> Visible = False;}virtual void Show();virtual void Hide();enum Boolean IsVisible();void MoveTo(int NewX,int NewY);Point() : Location(){}~Point(){((class Location *)(this)) -> ~Location();}Point(class Point &rhs) : Visible(rhs.Visible), Location(rhs){}Point &operator=(class Point &rhs){(*((class Location *)(this)))=((class Location &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> Visible = rhs.Visible;return *(this);}}
+func_name = operator=
+inserting operator= = 0x42dd8028
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+uninvoked base class: class Point : public Location{protected: enum Boolean Visible;public: inline Point(int InitX,int InitY) : Location(InitX,InitY){(this) -> Visible = False;}virtual void Show();virtual void Hide();enum Boolean IsVisible();void MoveTo(int NewX,int NewY);Point() : Location(){}~Point(){((class Location *)(this)) -> ~Location();}Point(class Point &rhs) : Visible(rhs.Visible), Location(rhs){}Point &operator=(class Point &rhs){(*((class Location *)(this)))=((class Location &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> Visible = rhs.Visible;return *(this);}}
+Visiting memberFunctionDecl: public: inline Circle(int InitX,int InitY,int InitRadius) : Point(InitX,InitY){(this) -> Radius = InitRadius;}
+invoked base class: Point
+Visiting memberFunctionDecl: public: Circle() : Point(){}
+invoked base class: Point
+Visiting memberFunctionDecl: public: ~Circle(){((class Point *)(this)) -> ~Point();}
+invoked base class: Point
+Visiting memberFunctionDecl: public: Circle(class Circle &rhs) : Radius(rhs.Radius), Point(rhs){}
+invoked base class: Point
+Visiting memberFunctionDecl: public: Circle &operator=(class Circle &rhs){(*((class Point *)(this)))=((class Point &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> Radius = rhs.Radius;return *(this);}
+Visiting memberFunctionDecl: void Circle::Show(){(this) -> Visible = True;}
+Visiting memberFunctionDecl: void Circle::Hide(){if(!(((this) -> Visible))) {return ;}else {}unsigned int TempColor;(this) -> Visible = False;}
+Visiting memberFunctionDecl: void Circle::Expand(int ExpandBy){enum Boolean vis =((this) -> Visible);if(vis) {(this) -> Hide();}else {}(this) -> Radius += ExpandBy;if(((this) -> Radius) < 0) {(this) -> Radius = 0;}else {}if(vis) {(this) -> Show();}else {}}
+Visiting memberFunctionDecl: inline void Circle::Contract(int ContractBy){(this) -> Expand((-ContractBy));}
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+in varDecl loop0x42d5f008
+in varDecl loop0x42d5f0fc
+in varDecl loop0x42d5f1f0
+in varDecl loop0x42d5f2e4
+in varDecl loop0x42d5f3d8
+in varDecl loop0x42d5f4cc
+in varDecl loop0x42d5f5c0
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+virtual function defn: void Point::Show(){(this) -> Visible = True;}
+virtual function defn: void Point::Hide(){(this) -> Visible = False;}
+virtual function defn: public: ~Circle(){((class Point *)(this)) -> ~Point();}
+virtual function defn: void Circle::Show(){(this) -> Visible = True;}
+virtual function defn: void Circle::Hide(){if(!(((this) -> Visible))) {return ;}else {}unsigned int TempColor;(this) -> Visible = False;}
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgEnumType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+CHA examining: main___Fb_i_Gb__Fe_
+method?: MyCircle.Circle::Show()
+method: MyCircle.Circle::Show()
+dot: MyCircle.Circle::Show()
+method?: MyCircle.MoveTo(100,125)
+method: MyCircle.MoveTo(100,125)
+dot: MyCircle.MoveTo(100,125)
+method?: MyCircle.Expand(25)
+method: MyCircle.Expand(25)
+dot: MyCircle.Expand(25)
+method?: MyCircle.Contract(35)
+method: MyCircle.Contract(35)
+dot: MyCircle.Contract(35)
+CHA examining: Circle__scope__Show____MFb_Circle__Fb_v_Gb__Fe_
+CHA examining: Point__scope__MoveTo____MFb_Point__Fb_v_Gb_i__sep__i_Fe_
+method?: (this) -> Hide()
+method: (this) -> Hide()
+methodPtr: (this) -> Hide()
+tracking: void Point::Hide(){(this) -> Visible = False;}
+checking overrides
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: (this) -> Hide() void Point::Hide(){(this) -> Visible = False;}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+Looking up subclasses of 0x82a66f8 Point
+subclass of Point got: Circle
+checking overrides
+checking overrides
+checking overrides
+overries
+CHA resolution for call site: (this) -> Hide() void Circle::Hide(){if(!(((this) -> Visible))) {return ;}else {}unsigned int TempColor;(this) -> Visible = False;}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+method?: (this) -> Show()
+method: (this) -> Show()
+methodPtr: (this) -> Show()
+tracking: void Point::Show(){(this) -> Visible = True;}
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: (this) -> Show() void Point::Show(){(this) -> Visible = True;}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+Looking up subclasses of 0x82a66f8 Point
+subclass of Point got: Circle
+checking overrides
+checking overrides
+overries
+CHA resolution for call site: (this) -> Show() void Circle::Show(){(this) -> Visible = True;}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+CHA examining: Circle__scope__Expand____MFb_Circle__Fb_v_Gb_i_Fe_
+method?: (this) -> Hide()
+method: (this) -> Hide()
+methodPtr: (this) -> Hide()
+tracking: void Circle::Hide(){if(!(((this) -> Visible))) {return ;}else {}unsigned int TempColor;(this) -> Visible = False;}
+checking overrides
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: (this) -> Hide() void Circle::Hide(){if(!(((this) -> Visible))) {return ;}else {}unsigned int TempColor;(this) -> Visible = False;}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+Looking up subclasses of 0x82a6728 Circle
+method?: (this) -> Show()
+method: (this) -> Show()
+methodPtr: (this) -> Show()
+tracking: void Circle::Show(){(this) -> Visible = True;}
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: (this) -> Show() void Circle::Show(){(this) -> Visible = True;}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+Looking up subclasses of 0x82a6728 Circle
+CHA examining: Circle__scope__Contract____MFb_Circle__Fb_v_Gb_i_Fe_
+method?: (this) -> Expand((-ContractBy))
+method: (this) -> Expand((-ContractBy))
+methodPtr: (this) -> Expand((-ContractBy))
+CHA examining: Point__scope__Hide____MFb_Point__Fb_v_Gb__Fe_
+CHA examining: Circle__scope__Hide____MFb_Circle__Fb_v_Gb__Fe_
+CHA examining: Point__scope__Show____MFb_Point__Fb_v_Gb__Fe_
+Alias analysis examining: main___Fb_i_Gb__Fe_
+method?: MyCircle.Circle::Show()
+method: MyCircle.Circle::Show()
+dot: MyCircle.Circle::Show()
+method?: MyCircle.MoveTo(100,125)
+method: MyCircle.MoveTo(100,125)
+dot: MyCircle.MoveTo(100,125)
+method?: MyCircle.Expand(25)
+method: MyCircle.Expand(25)
+dot: MyCircle.Expand(25)
+method?: MyCircle.Contract(35)
+method: MyCircle.Contract(35)
+dot: MyCircle.Contract(35)
+Alias analysis examining: Circle__scope__Show____MFb_Circle__Fb_v_Gb__Fe_
+Alias analysis examining: Point__scope__MoveTo____MFb_Point__Fb_v_Gb_i__sep__i_Fe_
+method?: (this) -> Hide()
+method: (this) -> Hide()
+methodPtr: (this) -> Hide()
+tracking: void Point::Hide(){(this) -> Visible = False;}
+Alias analysis resolution for call site (this) -> Hide() 
+NamedLoc(
+    mSymHandle: SymHandle(method:Circle::Hide__Circle__scope__Hide____MFb_Circle__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+method?: (this) -> Show()
+method: (this) -> Show()
+methodPtr: (this) -> Show()
+tracking: void Point::Show(){(this) -> Visible = True;}
+Alias analysis resolution for call site (this) -> Show() 
+NamedLoc(
+    mSymHandle: SymHandle(method:Circle::Show__Circle__scope__Show____MFb_Circle__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Alias analysis examining: Circle__scope__Expand____MFb_Circle__Fb_v_Gb_i_Fe_
+method?: (this) -> Hide()
+method: (this) -> Hide()
+methodPtr: (this) -> Hide()
+tracking: void Circle::Hide(){if(!(((this) -> Visible))) {return ;}else {}unsigned int TempColor;(this) -> Visible = False;}
+Alias analysis resolution for call site (this) -> Hide() 
+NamedLoc(
+    mSymHandle: SymHandle(method:Circle::Hide__Circle__scope__Hide____MFb_Circle__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+method?: (this) -> Show()
+method: (this) -> Show()
+methodPtr: (this) -> Show()
+tracking: void Circle::Show(){(this) -> Visible = True;}
+Alias analysis resolution for call site (this) -> Show() 
+NamedLoc(
+    mSymHandle: SymHandle(method:Circle::Show__Circle__scope__Show____MFb_Circle__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Alias analysis examining: Circle__scope__Contract____MFb_Circle__Fb_v_Gb_i_Fe_
+method?: (this) -> Expand((-ContractBy))
+method: (this) -> Expand((-ContractBy))
+methodPtr: (this) -> Expand((-ContractBy))
+Alias analysis examining: Circle__scope__Hide____MFb_Circle__Fb_v_Gb__Fe_
+Inside of ~CallGraphCreate() 
