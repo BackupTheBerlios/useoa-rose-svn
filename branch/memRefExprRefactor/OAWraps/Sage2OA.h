@@ -784,6 +784,8 @@ public:
       return retval;
   }
   OA::ProcHandle getProcHandle(SgFunctionDefinition *astNode);
+  SgFunctionDefinition *getSgNode(OA::ProcHandle h);
+
   OA::CallHandle getProcExprHandle(SgNode *astNode);
   //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
   SgNode *getSgNode(OA::IRHandle h) { return getNodePtr(h); }

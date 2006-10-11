@@ -4638,6 +4638,14 @@ OA::ProcHandle SageIRInterface::getProcHandle(SgFunctionDefinition *node)
         return procHandle;
 }
 
+SgFunctionDefinition *SageIRInterface::getSgNode(OA::ProcHandle h)
+{
+    SgNode *node = getNodePtr(h);
+    ROSE_ASSERT(node != NULL);
+
+    return isSgFunctionDefinition(node);
+}
+
 /*!
    Verify that a call handle is actually a node
    of the expected type.

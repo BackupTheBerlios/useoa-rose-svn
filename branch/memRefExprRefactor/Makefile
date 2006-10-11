@@ -71,7 +71,7 @@ clean-recursive:
 
 #LD_LIBRARY_PATH += /soft/apps/packages/gcc-3.1/lib
 
-bin_PROGRAMS = OATest CtoOA
+bin_PROGRAMS = OATest CtoOA CHAandAliasVirtualMethodResolver
 
 # recursive
 
@@ -94,6 +94,10 @@ OACFGTest_SOURCES = CFGTest.C
 OACFGTest_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH)
 OACFGTest_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
 
+CHAandAliasVirtualMethodResolver_SOURCES = CHAandAliasVirtualMethodResolver.cpp
+CHAandAliasVirtualMethodResolver_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH) OAWraps/libSage2OA.so
+CHAandAliasVirtualMethodResolver_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
+
 am_OATest_OBJECTS = OATest.$(OBJEXT)
 OATest_OBJECTS = $(am_OATest_OBJECTS)
 OATest_LDFLAGS = 
@@ -112,6 +116,10 @@ am_OACFGTest_OBJECTS = OACFGTest.$(OBJEXT)
 OACFGTest_OBJECTS = $(am_OACFGTest_OBJECTS)
 OACFGTest_LDFLAGS =
 
+am_CHAandAliasVirtualMethodResolver_OBJECTS = CHAandAliasVirtualMethodResolver.$(OBJEXT)
+CHAandAliasVirtualMethodResolver_OBJECTS = $(am_CHAandAliasVirtualMethodResolver_OBJECTS)
+CHAandAliasVirtualMethodResolver_LDFLAGS = 
+
 OATest$(EXEEXT): $(OATest_OBJECTS) $(OATest_DEPENDENCIES) 
 	@rm -f OATest$(EXEEXT)
 	$(CXXLINK) $(OATest_LDFLAGS) $(OATest_OBJECTS) $(OATest_LDADD)
@@ -129,6 +137,10 @@ OACFGTest$(EXEEXT): $(OACFGTest_OBJECTS) $(OACFGTest_DEPENDENCIES)
 	@rm -f OACFGTest$(EXEEXT)
 	$(CXXLINK) $(OACFGTest_LDFLAGS) $(OACFGTest_OBJECTS) $(OACFGTest_LDADD)
 
+
+CHAandAliasVirtualMethodResolver$(EXEEXT): $(CHAandAliasVirtualMethodResolver_OBJECTS) $(CHAandAliasVirtualMethodResolver_DEPENDENCIES) 
+	@rm -f CHAandAliasVirtualMethodResolver$(EXEEXT)
+	$(CXXLINK) $(CHAandAliasVirtualMethodResolver_LDFLAGS) $(CHAandAliasVirtualMethodResolver_OBJECTS) $(CHAandAliasVirtualMethodResolver_LDADD)
 
 .C.o: 
 	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<

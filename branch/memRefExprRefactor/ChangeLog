@@ -3007,3 +3007,46 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
               - referenceFormal.C
               - returnReference.C
               - refCall.C	
+
+10/09/06     UseOA-Rose svn branch-memRefExprRefactor r233  Brian White
+          - Added getSgNode : ProcHandle -> SgFunctionDefinition.
+            We should be creating such methods as we go along.  This allows
+            us to relate OA analysis results back to Sage/ROSE.
+
+          - Changed CHAandAliasVirtualMethodResolver so that it only
+            reports results for invoked functions.  Reporting results
+            for all functions/methods was causing a minor headache.  
+            Imagine that we have:
+
+                void foo(bar *b) { b->callMethod(); }
+
+            If foo is never called in the program, then b will never
+            be bound (via any param bindings occuring at a callsite).
+            Therefore, b->callMethod() would give us an invisible 
+            location (for alias analysis-based results).  For CHA
+            would we get some valid result.  Two problems here:
+            we were getting invisible location, which seemed wrong;
+            how do we compare 0 resolutions for alias analysis vs
+            whatever CHA was giving us.
+
+            Now, we should never get invisible locations.  I believe.
+            If we do, this is an error.
+
+            Implementation:  use a worklist to output results only
+            for invoked functions/methods.  Initialize the worklist
+            to hold only main.  Then for each function in the worklist,
+            append any function invocations within that function to
+            the worklist.
+
+            XXX:  There is a lot of redundancy in the CHA code.
+                  This should be merged.
+
+            XXX:  I am using a vector for the worklist.  Should
+                  have used a queue.
+
+        - Checked CHAandAliasVirtualMethodResolver results for family.
+          Henceforth, I will put results for a benchmark 'bmk' in
+          TestCases/AliasBenchmarks/PandeEtAl95/bmk/cha.{results, out}
+          generated within dir: TestCases/AliasBenchmarks/PandeEtAl95/bmk via
+          
+	  rm cha.results ; ../../../../CHAandAliasVirtualMethodResolver -out:cha.results family.C > & cha.out  		

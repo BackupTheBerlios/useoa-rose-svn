@@ -227,9 +227,9 @@ int main()
   class Parent p(("Jones"));
   class Child c(("Jones"),("Henry"));
   class GrandChild g(("Jones"),("Cynthia"),("Murray"));
-  class Parent &f0(p);
-  class Parent &f1(g);
-  class Parent &f2(c);
+  class Parent &f0 = p;
+  class Parent &f1 = g;
+  class Parent &f2 = c;
   f0.answerName();
   f1.answerName();
   f2.answerName();

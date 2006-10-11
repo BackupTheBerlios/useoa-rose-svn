@@ -1,0 +1,489 @@
+func_name = operator=
+inserting operator= = 0x42d95768
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Visiting memberFunctionDecl: public: inline Parent(){(this) -> lastName =(new char );strcpy(((this) -> lastName),("None"));}
+Visiting memberFunctionDecl: public: inline Parent(char *aLastName){strlen(aLastName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aLastName);}
+Visiting memberFunctionDecl: public: inline Parent(class Parent &aParent){strlen((aParent.lastName)) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),(aParent.lastName));}
+Visiting memberFunctionDecl: public: inline char *getLastName(){return(this) -> lastName;}
+Visiting memberFunctionDecl: public: inline void setLastName(char *aName){strlen(aName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aName);}
+Visiting memberFunctionDecl: public: virtual inline void answerName(){}
+Visiting memberFunctionDecl: public: inline ~Parent(){delete((this) -> lastName);}
+Visiting memberFunctionDecl: public: Parent &operator=(class Parent &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> lastName = rhs.lastName;return *(this);}
+func_name = operator=
+inserting operator= = 0x42d958c8
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+uninvoked base class: class Parent {protected: char *lastName;public: inline Parent(){(this) -> lastName =(new char );strcpy(((this) -> lastName),("None"));}inline Parent(char *aLastName){strlen(aLastName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aLastName);}inline Parent(class Parent &aParent){strlen((aParent.lastName)) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),(aParent.lastName));}inline char *getLastName(){return(this) -> lastName;}inline void setLastName(char *aName){strlen(aName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aName);}virtual inline void answerName(){}inline ~Parent(){delete((this) -> lastName);}Parent &operator=(class Parent &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> lastName = rhs.lastName;return *(this);}}
+Visiting memberFunctionDecl: public: inline Child(){(this) -> firstName =(new char );strcpy(((this) -> firstName),("None"));}
+uninvoked base class: class Parent {protected: char *lastName;public: inline Parent(){(this) -> lastName =(new char );strcpy(((this) -> lastName),("None"));}inline Parent(char *aLastName){strlen(aLastName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aLastName);}inline Parent(class Parent &aParent){strlen((aParent.lastName)) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),(aParent.lastName));}inline char *getLastName(){return(this) -> lastName;}inline void setLastName(char *aName){strlen(aName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aName);}virtual inline void answerName(){}inline ~Parent(){delete((this) -> lastName);}Parent &operator=(class Parent &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> lastName = rhs.lastName;return *(this);}}
+Generating constructor call for Parent within method: public: inline Child(){(this) -> firstName =(new char );strcpy(((this) -> firstName),("None"));}
+parent class def: class Parent {protected: char *lastName;public: inline Parent(){(this) -> lastName =(new char );strcpy(((this) -> lastName),("None"));}inline Parent(char *aLastName){strlen(aLastName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aLastName);}inline Parent(class Parent &aParent){strlen((aParent.lastName)) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),(aParent.lastName));}inline char *getLastName(){return(this) -> lastName;}inline void setLastName(char *aName){strlen(aName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aName);}virtual inline void answerName(){}inline ~Parent(){delete((this) -> lastName);}Parent &operator=(class Parent &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> lastName = rhs.lastName;return *(this);}}
+Visiting memberFunctionDecl: public: inline Child(char *aLastName,char *aFirstName) : Parent(aLastName){strlen(aFirstName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aFirstName);}
+invoked base class: Parent
+Visiting memberFunctionDecl: public: inline Child(class Child &aChild){(this) -> setLastName(aChild.getLastName());strlen((aChild.firstName)) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),(aChild.firstName));}
+uninvoked base class: class Parent {protected: char *lastName;public: inline Parent(){(this) -> lastName =(new char );strcpy(((this) -> lastName),("None"));}inline Parent(char *aLastName){strlen(aLastName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aLastName);}inline Parent(class Parent &aParent){strlen((aParent.lastName)) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),(aParent.lastName));}inline char *getLastName(){return(this) -> lastName;}inline void setLastName(char *aName){strlen(aName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aName);}virtual inline void answerName(){}inline ~Parent(){delete((this) -> lastName);}Parent &operator=(class Parent &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> lastName = rhs.lastName;return *(this);}}
+Generating constructor call for Parent within method: public: inline Child(class Child &aChild){(this) -> setLastName(aChild.getLastName());strlen((aChild.firstName)) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),(aChild.firstName));}
+parent class def: class Parent {protected: char *lastName;public: inline Parent(){(this) -> lastName =(new char );strcpy(((this) -> lastName),("None"));}inline Parent(char *aLastName){strlen(aLastName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aLastName);}inline Parent(class Parent &aParent){strlen((aParent.lastName)) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),(aParent.lastName));}inline char *getLastName(){return(this) -> lastName;}inline void setLastName(char *aName){strlen(aName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aName);}virtual inline void answerName(){}inline ~Parent(){delete((this) -> lastName);}Parent &operator=(class Parent &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> lastName = rhs.lastName;return *(this);}}
+Visiting memberFunctionDecl: public: inline char *getFirstName(){return(this) -> firstName;}
+Visiting memberFunctionDecl: public: inline void setFirstName(char *aName){strlen(aName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aName);}
+Visiting memberFunctionDecl: public: inline ~Child(){delete((this) -> firstName);}
+uninvoked base class: class Parent {protected: char *lastName;public: inline Parent(){(this) -> lastName =(new char );strcpy(((this) -> lastName),("None"));}inline Parent(char *aLastName){strlen(aLastName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aLastName);}inline Parent(class Parent &aParent){strlen((aParent.lastName)) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),(aParent.lastName));}inline char *getLastName(){return(this) -> lastName;}inline void setLastName(char *aName){strlen(aName) ,(this) -> lastName =(new char );strcpy(((this) -> lastName),aName);}virtual inline void answerName(){}inline ~Parent(){delete((this) -> lastName);}Parent &operator=(class Parent &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> lastName = rhs.lastName;return *(this);}}
+Generating destructor call for Parent
+Visiting memberFunctionDecl: public: virtual inline void answerName(){(this) -> Parent::answerName();}
+Visiting memberFunctionDecl: public: Child &operator=(class Child &rhs){(*((class Parent *)(this)))=((class Parent &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> firstName = rhs.firstName;return *(this);}
+Generating constructor for GrandChild
+func_name = GrandChild
+inserting GrandChild = 0x42d95a28
+uninvoked base class: class Child : public Parent{protected: char *firstName;public: inline Child() : Parent(){(this) -> firstName =(new char );strcpy(((this) -> firstName),("None"));}inline Child(char *aLastName,char *aFirstName) : Parent(aLastName){strlen(aFirstName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aFirstName);}inline Child(class Child &aChild) : Parent(){(this) -> setLastName(aChild.getLastName());strlen((aChild.firstName)) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),(aChild.firstName));}inline char *getFirstName(){return(this) -> firstName;}inline void setFirstName(char *aName){strlen(aName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aName);}inline ~Child(){((class Parent *)(this)) -> ~Parent();delete((this) -> firstName);}virtual inline void answerName(){(this) -> Parent::answerName();}Child &operator=(class Child &rhs){(*((class Parent *)(this)))=((class Parent &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> firstName = rhs.firstName;return *(this);}}
+Generating constructor call for Child within method: public: GrandChild(){}
+parent class def: class Child : public Parent{protected: char *firstName;public: inline Child() : Parent(){(this) -> firstName =(new char );strcpy(((this) -> firstName),("None"));}inline Child(char *aLastName,char *aFirstName) : Parent(aLastName){strlen(aFirstName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aFirstName);}inline Child(class Child &aChild) : Parent(){(this) -> setLastName(aChild.getLastName());strlen((aChild.firstName)) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),(aChild.firstName));}inline char *getFirstName(){return(this) -> firstName;}inline void setFirstName(char *aName){strlen(aName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aName);}inline ~Child(){((class Parent *)(this)) -> ~Parent();delete((this) -> firstName);}virtual inline void answerName(){(this) -> Parent::answerName();}Child &operator=(class Child &rhs){(*((class Parent *)(this)))=((class Parent &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> firstName = rhs.firstName;return *(this);}}
+Generating copy constructor for GrandChild
+func_name = GrandChild
+inserting GrandChild = 0x42d95b88
+uninvoked base class: class Child : public Parent{protected: char *firstName;public: inline Child() : Parent(){(this) -> firstName =(new char );strcpy(((this) -> firstName),("None"));}inline Child(char *aLastName,char *aFirstName) : Parent(aLastName){strlen(aFirstName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aFirstName);}inline Child(class Child &aChild) : Parent(){(this) -> setLastName(aChild.getLastName());strlen((aChild.firstName)) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),(aChild.firstName));}inline char *getFirstName(){return(this) -> firstName;}inline void setFirstName(char *aName){strlen(aName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aName);}inline ~Child(){((class Parent *)(this)) -> ~Parent();delete((this) -> firstName);}virtual inline void answerName(){(this) -> Parent::answerName();}Child &operator=(class Child &rhs){(*((class Parent *)(this)))=((class Parent &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> firstName = rhs.firstName;return *(this);}}
+Generating copy constructor call for Child
+parent class def: class Child : public Parent{protected: char *firstName;public: inline Child() : Parent(){(this) -> firstName =(new char );strcpy(((this) -> firstName),("None"));}inline Child(char *aLastName,char *aFirstName) : Parent(aLastName){strlen(aFirstName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aFirstName);}inline Child(class Child &aChild) : Parent(){(this) -> setLastName(aChild.getLastName());strlen((aChild.firstName)) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),(aChild.firstName));}inline char *getFirstName(){return(this) -> firstName;}inline void setFirstName(char *aName){strlen(aName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aName);}inline ~Child(){((class Parent *)(this)) -> ~Parent();delete((this) -> firstName);}virtual inline void answerName(){(this) -> Parent::answerName();}Child &operator=(class Child &rhs){(*((class Parent *)(this)))=((class Parent &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> firstName = rhs.firstName;return *(this);}}
+func_name = operator=
+inserting operator= = 0x42d95ce8
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+uninvoked base class: class Child : public Parent{protected: char *firstName;public: inline Child() : Parent(){(this) -> firstName =(new char );strcpy(((this) -> firstName),("None"));}inline Child(char *aLastName,char *aFirstName) : Parent(aLastName){strlen(aFirstName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aFirstName);}inline Child(class Child &aChild) : Parent(){(this) -> setLastName(aChild.getLastName());strlen((aChild.firstName)) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),(aChild.firstName));}inline char *getFirstName(){return(this) -> firstName;}inline void setFirstName(char *aName){strlen(aName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aName);}inline ~Child(){((class Parent *)(this)) -> ~Parent();delete((this) -> firstName);}virtual inline void answerName(){(this) -> Parent::answerName();}Child &operator=(class Child &rhs){(*((class Parent *)(this)))=((class Parent &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> firstName = rhs.firstName;return *(this);}}
+Visiting memberFunctionDecl: public: inline GrandChild(char *aLastName,char *aFirstName,char *aGrandFatherName) : Child(aLastName,aFirstName){strlen(aGrandFatherName) ,(this) -> grandFatherName =(new char );strcpy(((this) -> grandFatherName),aGrandFatherName);}
+invoked base class: Child
+Visiting memberFunctionDecl: public: inline ~GrandChild(){delete((this) -> grandFatherName);}
+uninvoked base class: class Child : public Parent{protected: char *firstName;public: inline Child() : Parent(){(this) -> firstName =(new char );strcpy(((this) -> firstName),("None"));}inline Child(char *aLastName,char *aFirstName) : Parent(aLastName){strlen(aFirstName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aFirstName);}inline Child(class Child &aChild) : Parent(){(this) -> setLastName(aChild.getLastName());strlen((aChild.firstName)) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),(aChild.firstName));}inline char *getFirstName(){return(this) -> firstName;}inline void setFirstName(char *aName){strlen(aName) ,(this) -> firstName =(new char );strcpy(((this) -> firstName),aName);}inline ~Child(){((class Parent *)(this)) -> ~Parent();delete((this) -> firstName);}virtual inline void answerName(){(this) -> Parent::answerName();}Child &operator=(class Child &rhs){(*((class Parent *)(this)))=((class Parent &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> firstName = rhs.firstName;return *(this);}}
+Generating destructor call for Child
+Visiting memberFunctionDecl: public: virtual inline void answerName(){(this) -> Child::answerName();}
+Visiting memberFunctionDecl: public: GrandChild() : Child(){}
+invoked base class: Child
+Visiting memberFunctionDecl: public: GrandChild(class GrandChild &rhs) : grandFatherName(rhs.grandFatherName), Child(rhs){}
+invoked base class: Child
+Visiting memberFunctionDecl: public: GrandChild &operator=(class GrandChild &rhs){(*((class Child *)(this)))=((class Child &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> grandFatherName = rhs.grandFatherName;return *(this);}
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+in varDecl loop0x42d1e008
+in varDecl loop0x42d1e0fc
+in varDecl loop0x42d1e1f0
+in varDecl loop0x42d1e2e4
+in varDecl loop0x42d1e3d8
+in varDecl loop0x42d1e4cc
+in varDecl loop0x42d1e5c0
+in varDecl loop0x42d1e6b4
+in varDecl loop0x42d1e7a8
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+virtual function defn: public: virtual inline void answerName(){}
+virtual function defn: public: inline ~Child(){((class Parent *)(this)) -> ~Parent();delete((this) -> firstName);}
+virtual function defn: public: virtual inline void answerName(){(this) -> Parent::answerName();}
+virtual function defn: public: inline ~GrandChild(){((class Child *)(this)) -> ~Child();delete((this) -> grandFatherName);}
+virtual callsite: ((class Child *)(this)) -> ~Child()
+virtual function defn: public: virtual inline void answerName(){(this) -> Child::answerName();}
+virtual callsite: f0.answerName()
+virtual callsite: f1.answerName()
+virtual callsite: f2.answerName()
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+method?: f0.answerName()
+method: f0.answerName()
+methodPtr: f0.answerName()
+tracking: public: virtual inline void answerName(){}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overries
+checking overrides
+checking overrides
+Looking up subclasses of 0x82f7a48 Parent
+subclass of Parent got: Child
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overries
+checking overrides
+subclass of Parent got: GrandChild
+checking overrides
+checking overrides
+checking overrides
+overries
+checking overrides
+checking overrides
+checking overrides
+method?: f1.answerName()
+method: f1.answerName()
+methodPtr: f1.answerName()
+tracking: public: virtual inline void answerName(){}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overries
+checking overrides
+checking overrides
+Looking up subclasses of 0x82f7a48 Parent
+subclass of Parent got: Child
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overries
+checking overrides
+subclass of Parent got: GrandChild
+checking overrides
+checking overrides
+checking overrides
+overries
+checking overrides
+checking overrides
+checking overrides
+method?: f2.answerName()
+method: f2.answerName()
+methodPtr: f2.answerName()
+tracking: public: virtual inline void answerName(){}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overries
+checking overrides
+checking overrides
+Looking up subclasses of 0x82f7a48 Parent
+subclass of Parent got: Child
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overries
+checking overrides
+subclass of Parent got: GrandChild
+checking overrides
+checking overrides
+checking overrides
+overries
+checking overrides
+checking overrides
+checking overrides
+method?: (this) -> Parent::answerName()
+method: (this) -> Parent::answerName()
+methodPtr: (this) -> Parent::answerName()
+method?: (this) -> Child::answerName()
+method: (this) -> Child::answerName()
+methodPtr: (this) -> Child::answerName()
+method?: f0.answerName()
+method: f0.answerName()
+methodPtr: f0.answerName()
+tracking: public: virtual inline void answerName(){}
+Visible Location: 
+
+NamedLoc(
+    mSymHandle: SymHandle(method:Parent::answerName__Parent__scope__answerName____MFb_Parent__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Visible Location: 
+
+NamedLoc(
+    mSymHandle: SymHandle(method:Child::answerName__Child__scope__answerName____MFb_Child__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Visible Location: 
+
+NamedLoc(
+    mSymHandle: SymHandle(method:GrandChild::answerName__GrandChild__scope__answerName____MFb_GrandChild__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+method?: f1.answerName()
+method: f1.answerName()
+methodPtr: f1.answerName()
+tracking: public: virtual inline void answerName(){}
+Visible Location: 
+
+NamedLoc(
+    mSymHandle: SymHandle(method:Parent::answerName__Parent__scope__answerName____MFb_Parent__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Visible Location: 
+
+NamedLoc(
+    mSymHandle: SymHandle(method:Child::answerName__Child__scope__answerName____MFb_Child__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Visible Location: 
+
+NamedLoc(
+    mSymHandle: SymHandle(method:GrandChild::answerName__GrandChild__scope__answerName____MFb_GrandChild__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+method?: f2.answerName()
+method: f2.answerName()
+methodPtr: f2.answerName()
+tracking: public: virtual inline void answerName(){}
+Visible Location: 
+
+NamedLoc(
+    mSymHandle: SymHandle(method:Parent::answerName__Parent__scope__answerName____MFb_Parent__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Visible Location: 
+
+NamedLoc(
+    mSymHandle: SymHandle(method:Child::answerName__Child__scope__answerName____MFb_Child__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Visible Location: 
+
+NamedLoc(
+    mSymHandle: SymHandle(method:GrandChild::answerName__GrandChild__scope__answerName____MFb_GrandChild__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+method?: (this) -> Parent::answerName()
+method: (this) -> Parent::answerName()
+methodPtr: (this) -> Parent::answerName()
+method?: (this) -> Child::answerName()
+method: (this) -> Child::answerName()
+methodPtr: (this) -> Child::answerName()
+Inside of ~CallGraphCreate() 

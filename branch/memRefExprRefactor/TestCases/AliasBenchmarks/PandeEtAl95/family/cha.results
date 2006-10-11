@@ -1,0 +1,20 @@
+CHA virtual call site: f0.answerName()
+	 CHA:  Method invocation has 3 possible resolutions 
+CHA virtual call site: f1.answerName()
+	 CHA:  Method invocation has 3 possible resolutions 
+CHA virtual call site: f2.answerName()
+	 CHA:  Method invocation has 3 possible resolutions 
+Alias analysis virtual call site: f0.answerName()
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+Alias analysis virtual call site: f1.answerName()
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+Alias analysis virtual call site: f2.answerName()
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+definedFunctions: 25
+definedVirtualFunctions: 5
+CHA virtual method callsites: 3
+Alias analysis virtual method callsites: 3
+Summary CHA monomorphic call sites: 0
+Summary Alias analysis monomorphic call sites: 0
+Summary CHA total (virtual) resolutions: 9
+Summary Alias analysis total (virtual) resolutions: 9

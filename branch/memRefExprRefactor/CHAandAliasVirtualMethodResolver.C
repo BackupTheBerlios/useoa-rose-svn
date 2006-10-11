@@ -40,6 +40,8 @@
 #include "CallGraph.h"
 #include "common.h"
 
+#include <ext/hash_set>
+
 #define DEBUG
 
 using namespace UseOA;
@@ -210,526 +212,150 @@ void countFunctions(int &definedFunctions, int &definedVirtualFunctions,
   }
 }
 
-
-#if 0
-// Return the function in which node occurs.
-// Taken, slightly modified, from getEnclosingMethod in SageOA.C.
-static 
-SgFunctionDefinition *getEnclosingFunction(SgNode *node)
-{
-  if ( node == NULL ) return NULL;
-
-  if ( isSgGlobal(node) ) return NULL;
-
-  SgFunctionDefinition *functionDefinition =
-    isSgFunctionDefinition(node);
-  
-  if ( functionDefinition != NULL )
-    return functionDefinition;
-
-  SgFunctionDeclaration *functionDeclaration =
-    isSgFunctionDeclaration(node);
-
-  if ( functionDeclaration != NULL )
-    return getEnclosingFunction(functionDeclaration->get_definition());
-  
-  return getEnclosingFunction(node->get_parent());
-}
-
-/** \brief Strip the "const" keyword from a string.
- *  \param name  A string (intending to represent a formal parameter
- *               type).
- *  \returns  A string holding name stripped of the "const" prefix.
- *
- *  This was copied from 
- *  .../ROSE/src/midend/astUtil/astInterface/AstInterface.C
- *
- *  To do:  move this to a generally-accessible utilities file
- *          or make it accessible from AstInterface (by adding
- *          its declaration to AstInterface.h).
- */
-static std::string StripParameterType( const std::string& name)
-{
-  char *const_start = strstr( name.c_str(), "const");
-  std::string r = (const_start == 0)? name : std::string(const_start + 5);
-  int end = r.size()-1;
-  if (r[end] == '&') {
-       r[end] = ' ';
-  }
-  std::string result = "";
-  for (unsigned int i = 0; i < r.size(); ++i) {
-    if (r[i] != ' ')
-      result.push_back(r[i]);
-  }
-  return result; 
-} 
-
-/** \brief Return a type's name and size.
- *  \param t  A Sage type.
- *  \param tname  On output, holds the string name of the type.
- *  \param stripname  On output, holds the string name of the type,
- *                    stripped of any "const" prefix.
- *  \param size  On output, holds the size?  I don't know what
- *               this size corresponds to.  Certainly not the size
- *               of the type (which needn't be a word) or string.
- *
- *  This was copied from 
- *  .../ROSE/src/midend/astUtil/astInterface/AstInterface.C
- *
- *  To do:  move this to a generally-accessible utilities file
- *          or make it accessible from AstInterface (by adding
- *          its declaration to AstInterface.h).
- */
-static void GetTypeInfo(SgType *t, std::string *tname, 
-			std::string* stripname, int* size = 0)
-{
-  std::string r1 = get_type_name(t);
-  std::string result = "";
-  for (unsigned int i = 0; i < r1.size(); ++i) {
-    if (r1[i] != ' ')
-      result.push_back(r1[i]);
-  }
-  if (tname != 0)
-    *tname = result;
-  if (stripname != 0)
-    *stripname = StripParameterType(result);
-  if (size != 0)
-    *size = 4;
-}
-
-bool matchingMemberFunctions(SgMemberFunctionDeclaration *methodDecl1, 
-			     SgMemberFunctionDeclaration *methodDecl2)
-{
-  // Compare the names of the two methods.
-  SgName name1 = methodDecl1->get_name();
-  SgName name2 = methodDecl2->get_name();
-  //  std::cout << name1 << " " << name2 << std::endl;
-  if ( name1 != name2 )
-    return false;
-
-  // Compare the return types of the two methods.
-  SgType *method1Type = methodDecl1->get_orig_return_type();
-  SgType *method2Type = methodDecl2->get_orig_return_type();
-
-  std::string ret1Type, ret2Type;
-  GetTypeInfo(method1Type, 0, &ret1Type);
-  GetTypeInfo(method2Type, 0, &ret2Type);
-  if ( ret1Type != ret2Type )
-    return false;
-
-
-  // Compare the number and types of the formal arguments
-  SgInitializedNamePtrList &method1Params = methodDecl1->get_args();
-  SgInitializedNamePtrList &method2Params = methodDecl2->get_args();
-  if ( method1Params.size() != method2Params.size() )
-    return false;
-
-  SgInitializedNamePtrList::iterator p1 = method1Params.begin();
-  SgInitializedNamePtrList::iterator p2 = method2Params.begin();
-  for ( ; p1 != method1Params.end(); ++p1, ++p2) {
-    SgType* t1 = (*p1)->get_type();
-    SgType* t2 = (*p2)->get_type();
-    
-    std::string param1Type, param2Type;
-    GetTypeInfo(t1, 0, &param1Type);
-    GetTypeInfo(t2, 0, &param2Type);
-    if (param1Type != param2Type) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-
-SgFunctionDeclaration * 
-getFunctionDeclaration(SgFunctionCallExp *functionCall) 
-{ 
-  SgFunctionDeclaration *funcDec = NULL; 
-
-  SgExpression *expression = functionCall->get_function();
-  ROSE_ASSERT(expression != NULL);
-
-  switch(expression->variantT()) {
-  case V_SgMemberFunctionRefExp:
-    {
-      SgMemberFunctionRefExp *memberFunctionRefExp =
-	isSgMemberFunctionRefExp(expression);
-      ROSE_ASSERT(memberFunctionRefExp != NULL);
-
-      funcDec = memberFunctionRefExp->get_symbol_i()->get_declaration(); 
-
-      ROSE_ASSERT(funcDec != NULL);
-
-      break;
-    }
-  case V_SgDotExp:
-    {
-      SgDotExp *dotExp = isSgDotExp(expression);
-      ROSE_ASSERT(dotExp != NULL);
-
-      if(dotExp->get_traversalSuccessorContainer().size()>=2) { 
-
-	SgMemberFunctionRefExp *memberFunctionRefExp = 
-	  isSgMemberFunctionRefExp(dotExp->get_traversalSuccessorContainer()[1]); 
-	funcDec = memberFunctionRefExp->get_symbol_i()->get_declaration(); 
-      } 
-
-      ROSE_ASSERT(funcDec != NULL);
-
-      break;
-    }
-  case V_SgArrowExp:
-    {
-      SgArrowExp *arrowExp = isSgArrowExp(expression);
-      ROSE_ASSERT(arrowExp != NULL);
-
-      if(arrowExp->get_traversalSuccessorContainer().size()>=2) { 
-
-	SgMemberFunctionRefExp *memberFunctionRefExp = 
-	  isSgMemberFunctionRefExp(arrowExp->get_traversalSuccessorContainer()[1]); 
-	funcDec = memberFunctionRefExp->get_symbol_i()->get_declaration(); 
-      } 
-
-      ROSE_ASSERT(funcDec != NULL);
-
-      break;
-    }
-  case V_SgFunctionRefExp:
-    {
-      SgFunctionRefExp *functionRefExp = 
-	isSgFunctionRefExp(expression);
-      ROSE_ASSERT(functionRefExp != NULL);
-
-      // found a standard function reference  
-      funcDec = functionRefExp->get_symbol_i()->get_declaration(); 
-
-      ROSE_ASSERT(funcDec != NULL);
-
-      break;
-    }
-  case V_SgPointerDerefExp:
-    {
-      ROSE_ABORT();
-      break;
-    }
-  default:
-    {
-      ROSE_ABORT();
-    }
-  }
-
-  return funcDec; 
-} 
-
-bool isVirtual(SgFunctionDeclaration *functionDeclaration)
-{
-  if ( functionDeclaration == NULL ) return false;
-
-  if ( functionDeclaration->get_functionModifier().isVirtual() ) 
-    return true;
-
-  SgDeclarationStatement *firstNondefiningDeclaration =
-    functionDeclaration->get_firstNondefiningDeclaration();
-
-  if ( firstNondefiningDeclaration == NULL )
-    return false;
-
-  SgFunctionDeclaration *firstNondefiningFuncDeclaration =
-    isSgFunctionDeclaration(firstNondefiningDeclaration);
-  ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
-
-  return firstNondefiningFuncDeclaration->get_functionModifier().isVirtual();
-}
-
-bool isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration, SgClassDefinition *classDefinition)
-{
-  SgType *functionType =
-    functionDeclaration->get_type();
-  ROSE_ASSERT(functionType != NULL);
-
-  // Look in each of the class' parent classes.
-  SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances(); 
-  for (SgBaseClassPtrList::iterator i = baseClassList.begin(); 
-       i != baseClassList.end(); ++i) {
- 
-    SgBaseClass *baseClass = *i;
-    ROSE_ASSERT(baseClass != NULL);
-
-    SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
-    ROSE_ASSERT(classDeclaration != NULL);
-
-    SgDeclarationStatement *definingDecl =
-      classDeclaration->get_definingDeclaration();
-    if ( definingDecl == NULL )
-      continue;
-    
-    SgClassDeclaration *definingClassDeclaration =
-      isSgClassDeclaration(definingDecl);
-    ROSE_ASSERT(classDeclaration != NULL);
-
-    SgClassDefinition *parentClassDefinition =
-      definingClassDeclaration->get_definition();
-
-    if ( parentClassDefinition == NULL )
-      continue;
-
-    // Visit all methods in the parent class.
-    SgDeclarationStatementPtrList &members = 
-      parentClassDefinition->get_members(); 
-
-    bool isDeclaredVirtual = false;
-
-    for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
-	 it != members.end(); ++it) { 
-    
-      SgDeclarationStatement *declarationStatement = *it; 
-      ROSE_ASSERT(declarationStatement != NULL);
-      
-      switch(declarationStatement->variantT()) {
-      
-      case V_SgMemberFunctionDeclaration:
-	{
-	  SgMemberFunctionDeclaration *memberFunctionDeclaration =  
-	    isSgMemberFunctionDeclaration(declarationStatement); 
-
-	  if ( isVirtual(memberFunctionDeclaration) ) {
-
-	    SgType *parentMemberFunctionType =
-	      memberFunctionDeclaration->get_type();
-	    ROSE_ASSERT(parentMemberFunctionType != NULL);
-
-	    if ( parentMemberFunctionType == functionType ) {
-	      return true;
-	    }
-
-	  }
-	  break;
-
-	}
-      default:
-	{
-	  break;
-	}
-
-      }
-
-    }
-
-    if ( isDeclaredVirtualWithinClassAncestry(functionDeclaration, 
-					      parentClassDefinition) ) {
-      return true;
-    }
-
-  }
-
-  return false;
-}
-
-// Returns true if the function declaration is declared virtual in
-// some parent class, regardless of whether it is declared virtual
-// in its own class.
-bool isDeclaredVirtualWithinAncestor(SgFunctionDeclaration *functionDeclaration)
-{
-  SgMemberFunctionDeclaration *memberFunctionDeclaration =
-    isSgMemberFunctionDeclaration(functionDeclaration);
-  if ( memberFunctionDeclaration == NULL )
-    return false;
-
-  SgClassDefinition *classDefinition = 
-    isSgClassDefinition(memberFunctionDeclaration->get_scope());
-  ROSE_ASSERT(classDefinition != NULL);
-
-  return isDeclaredVirtualWithinClassAncestry(functionDeclaration,
-					      classDefinition);
-}
-
-/**
- * \brief Return true if methodDecl overrides virtualMethodDecl.
- * \param methodDecl  a method declaration.
- * \param virtualMethodDecl a method declaration.
- * \return Returns true if virtualMethodDecl is declared as a virtual
- *         method and methodDecl has the same type signature and name
- *         as virtualMethodDecl.  
- * 
- * NB:  It is assumed that the class defining virtualMethodDecl is a base
- *      class of the class defining methodDecl.
- */
-bool
-methodOverridesVirtualMethod(SgMemberFunctionDeclaration *methodDecl, 
-			     SgMemberFunctionDeclaration *virtualMethodDecl)
-{
-  if ( !isVirtual(virtualMethodDecl) )
-    return false;
-
-  //  std::cout << "looks virtual" << std::endl;
-
-#if 0
-  // Hmmm ... couldn't we just compare mangled names?
-  // No, we can't because this includes the scope info, which will
-  // differ between classes.
-  std::cout << "methodDecl: " << methodDecl->get_mangled_name().str() << std::endl;
-  std::cout << "virtualMethodDecl: " << virtualMethodDecl->get_mangled_name().str() << std::endl;
-  return ( methodDecl->get_mangled_name() == virtualMethodDecl->get_mangled_name() );
-
-#else
-  if ( methodDecl->get_name() != virtualMethodDecl->get_name() )
-    return false;
-  
-  SgType *methodReturnType = methodDecl->get_orig_return_type();
-  SgType *virtualMethodReturnType = virtualMethodDecl->get_orig_return_type();
-
-  if ( methodReturnType != virtualMethodReturnType )
-    return false;
-
-  int numMethodParams = 0;
-  int numVirtualMethodParams = 0;
-
-  SgFunctionParameterList *methodParameterList = 
-    methodDecl->get_parameterList(); 
-
-  if (methodParameterList != NULL) {
-    numMethodParams = methodParameterList->get_args().size();
-  }
-
-  SgFunctionParameterList *virtualMethodParameterList = 
-    virtualMethodDecl->get_parameterList(); 
-
-  if (virtualMethodParameterList != NULL) {
-    numVirtualMethodParams = virtualMethodParameterList->get_args().size();
-  }
-
-  if ( numMethodParams != numVirtualMethodParams )
-    return false;
-
-  if ( numMethodParams == 0 )
-    return true;
-
-  const SgInitializedNamePtrList &methodFormalParams = 
-    methodParameterList->get_args(); 
-  const SgInitializedNamePtrList &virtualMethodFormalParams = 
-    virtualMethodParameterList->get_args(); 
-  SgInitializedNamePtrList::const_iterator methodIt;
-  SgInitializedNamePtrList::const_iterator virtualMethodIt;
-  for(methodIt = methodFormalParams.begin(), 
-	virtualMethodIt = virtualMethodFormalParams.begin();
-      methodIt != methodFormalParams.end(); ++methodIt, ++virtualMethodIt) { 
-      
-      SgInitializedName* methodFormalParam = *methodIt;  
-      ROSE_ASSERT(methodFormalParam != NULL); 
-
-      SgInitializedName* virtualMethodFormalParam = *virtualMethodIt;  
-      ROSE_ASSERT(virtualMethodFormalParam != NULL); 
-      
-      if ( methodFormalParam->get_type() != 
-	   virtualMethodFormalParam->get_type() )
-	return false;
-
-  }
-
-  return true;
-#endif
-}
-#endif
-
 void usage(char **argv)
 {
   std::cerr << "usage: " << argv[0] << " -out:outputFile < compiler command line > " << std::endl;
   exit(-1);
 }
 
-      
-int
-findResolutionsForMethodInTypeHierarchy(SgMemberFunctionDeclaration *memberFunctionDeclaration, SgClassDefinition *classDefinition, ClassHierarchyWrapper &classHierarchy)
+
+/** \brief  Hash a SgNode to a number.
+ *  \param  node  A Sage node.
+ *  \return  A hash value derived from the node.
+ *
+ *  hashSgNode is used by abstractionToImplementationSurjection.
+ *  In theory, node could be any type of SgNode.  In practice,
+ *  an abstractionToImplementationSurjection only currently
+ *  allows procedure abstractions.  Thus, node represents
+ *  a procedure abstraction and is a SgFunctionDeclaration.
+ */
+class hashSgNode
 {
-  int numResolutionsForMethod = 0;
-  // First examine the class itself.
-  // Iterate over all of the methods defined in this class.
-  SgDeclarationStatementPtrList &decls =
-    classDefinition->get_members();
-  for (SgDeclarationStatementPtrList::iterator declIter = decls.begin();
-       declIter != decls.end(); ++declIter) {
-    
-    SgDeclarationStatement *declStmt = *declIter;
-    ROSE_ASSERT(declStmt != NULL);
-    
-    SgMemberFunctionDeclaration *method =
-      isSgMemberFunctionDeclaration(declStmt);
-    if ( method == NULL ) {
-      continue;
+  public:
+  size_t operator()(SgNode *node) const;
+};
+
+/** \brief  Determine whether two Sage nodes are "equal."
+ *  \param  node1  A Sage node.
+ *  \param  node2  Anoter Sage node.
+ *  \return  Boolean indicating whether node1 and node2 are "equal."
+ *
+ *  Equal does not mean address-equality!  Equality has semantic
+ *  connotations-- that is, it is defined on a per-SgNode type basis.
+ *  In theory, node1 and node2 could have any type.
+ *  However, eqSgNodes is intended for use by 
+ *  abstractionToImplementationSurjection. In practice,
+ *  an abstractionToImplementationSurjection only currently
+ *  allows procedure abstractions.  Thus, node1 and node2 represent
+ *  a procedure abstraction and is a SgFunctionDeclaration.
+ *  SgFunctionDeclaration equality means that the functions/methods
+ *  have the same name and have the same type signature.
+ */
+class eqSgNodes
+{
+ public:
+  bool operator()(const SgNode *node1, const SgNode *node2) const;
+};
+
+size_t hashSgNode::operator()(SgNode *node) const
+{
+  hash<char*> hasher;
+  
+  ROSE_ASSERT(node != NULL);
+  std::string str = node->unparseToString();
+  
+  //  std::cout << "str in hash is: " << str << std::endl;
+
+  return hasher(str.c_str());
+};
+
+bool eqSgNodes::operator()(const SgNode *node1, const SgNode *node2) const
+{
+  if ( node1->variantT() != node2->variantT() )
+    return false;
+
+  switch(node1->variantT()) {
+  case V_SgFunctionDefinition:
+    {
+      const SgFunctionDefinition *defn1 = isSgFunctionDefinition(node1);
+      ROSE_ASSERT(defn1 != NULL);
+
+      Sg_File_Info *fileInfo1 = defn1->get_file_info();
+      ROSE_ASSERT(fileInfo1 != NULL);
+
+      const SgFunctionDefinition *defn2 = isSgFunctionDefinition(node2);
+      ROSE_ASSERT(defn2 != NULL);
+
+      Sg_File_Info *fileInfo2 = defn2->get_file_info();
+      ROSE_ASSERT(fileInfo2 != NULL);
+
+      if ( *fileInfo1 == *fileInfo2 )
+        return true;           
+
+      break;
     }
-    
-#ifdef DEBUG    
-    std::cout << "checking overrides" << std::endl;
-#endif
-    // Determine whether subclass of the class defining this
-    // method overrides the method.
-    if ( matchingFunctions(method,
-			   memberFunctionDeclaration) ) {
-#ifdef DEBUG    
-      std::cout << "overries" << std::endl;
-#endif
-      // Do not consider a pure virtual method to be an 
-      // overriding method (since it can not be invoked).
-      if ( !isPureVirtual(method) ) {
-	numResolutionsForMethod++;
-      }
+  default:
+    {
+      ROSE_ABORT();
+      break;
     }
   }
 
-  // Now look within the sub classes.
-  SgClassDefinitionPtrList subclasses = 
-    classHierarchy.getSubclasses(classDefinition);
-  
-#ifdef DEBUG
-  if ( classDefinition != NULL )
-    std::cout << "Looking up subclasses of " << classDefinition << " " << classDefinition->get_qualified_name().str() << std::endl;
-#endif
-
-  // Iterate over all subclasses.
-  for (SgClassDefinitionPtrList::iterator subclassIt = subclasses.begin();
-       subclassIt != subclasses.end(); ++subclassIt) {
-    
-    SgClassDefinition *subclass = *subclassIt;
-    ROSE_ASSERT(subclass != NULL);
-    
-#ifdef DEBUG    
-    std::cout << "subclass of " << classDefinition->get_qualified_name().str() << " got: " << subclass->get_qualified_name().str() << std::endl;
-#endif
-    
-
-    numResolutionsForMethod += findResolutionsForMethodInTypeHierarchy(memberFunctionDeclaration, subclass, classHierarchy);
-  }    
-  return numResolutionsForMethod;
+  return false;
 }
 
+/** Find main within a program. */
+SgFunctionDeclaration *findMain(SgProject *project)
+{
+    ROSE_ASSERT(project != NULL);
+    std::list<SgNode *> nodes = NodeQuery::querySubTree(project,
+                                                        V_SgFunctionDeclaration);
 
+    SgFunctionDeclaration *mainFunc = NULL;
+    for (std::list<SgNode *>::iterator it = nodes.begin();
+         it != nodes.end(); ++it ) {
+        SgFunctionDeclaration *decl = isSgFunctionDeclaration(*it);      
+        ROSE_ASSERT(decl != NULL);
+
+        SgName name = decl->get_name();
+        if ( !strcmp("main", name.str() ) ) {
+            mainFunc = decl;
+            break;
+        }
+    }
+    return mainFunc;
+}
+      
 int main(int argc, char **argv)
 {
-  int modifiedArgc; 
-  char **modifiedArgv = NULL; 
+    int modifiedArgc; 
+    char **modifiedArgv = NULL; 
 
-  std::list<std::string> argList =  
-    CommandlineProcessing::generateArgListFromArgcArgv(argc, argv); 
+    std::list<std::string> argList =  
+        CommandlineProcessing::generateArgListFromArgcArgv(argc, argv); 
 
-  const std::string outputFilePrefix = std::string("-out:"); 
-  std::list<std::string> tmp; 
-  // Get the path to the code templates. 
-  tmp = CommandlineProcessing::generateOptionList(argList, 
-                                                  outputFilePrefix); 
-  if (tmp.size() != 1) { 
-    usage(argv);
-  }
-  std::string outputFile = *(tmp.begin());
+    // Get the path to the output file. 
+    const std::string outputFilePrefix = std::string("-out:"); 
+    std::list<std::string> tmp; 
 
-  std::ofstream ostr(outputFile.c_str(), std::ios::out | std::ios::app); 
-  ROSE_ASSERT(ostr.is_open()); 
+    tmp = CommandlineProcessing::generateOptionList(argList, 
+                                                    outputFilePrefix); 
+    if (tmp.size() != 1) { 
+        usage(argv);
+    }
+    std::string outputFile = *(tmp.begin());
 
-  CommandlineProcessing::generateArgcArgvFromList(argList,  
-                                                  modifiedArgc, 
-                                                  modifiedArgv); 
+    std::ofstream ostr(outputFile.c_str(), std::ios::out | std::ios::app); 
+    ROSE_ASSERT(ostr.is_open()); 
+
+    // Generate a command line to pass to ROSE, stripped of the
+    // output file name specified via -out:.
+    CommandlineProcessing::generateArgcArgvFromList(argList,  
+                                                    modifiedArgc, 
+                                                    modifiedArgv); 
    
-  SgProject *project = frontend(modifiedArgc, modifiedArgv);
+    // Parse the input files.
+    SgProject *project = frontend(modifiedArgc, modifiedArgv);
 
 #if 1
     // Perform the AST normalization.
@@ -747,298 +373,558 @@ int main(int argc, char **argv)
     AstDOTGeneration dottest;
     dottest.generateInputFiles(project);
 
-  // Perform the alias analysis.
-  OA::OA_ptr<SageIRInterface> irInterface;
-  std::vector<SgNode*> nodeArray;
-  bool p_h=FALSE; //for debugging only switch between persistent and "pointer" handles (pointers are faster, persistent are easier to debug
-
-  irInterface = new SageIRInterface(project, &nodeArray, p_h);
-
-  int definedFunctions = 0;
-  int definedVirtualFunctions = 0;
-  int invokedVirtualFunctions = 0;
+    int definedFunctions = 0;
+    int definedVirtualFunctions = 0;
+    int invokedVirtualFunctions = 0;
   
-  countFunctions(definedFunctions, definedVirtualFunctions, 
-                 invokedVirtualFunctions,
-		 irInterface, project);
+    OA::OA_ptr<SageIRInterface> irInterface;
+    std::vector<SgNode*> nodeArray;
+    bool p_h=FALSE; //for debugging only switch between persistent and "pointer" handles (pointers are faster, persistent are easier to debug
 
-  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias 
-      = DoFIAliasAliasMap(irInterface, project);
+    irInterface = new SageIRInterface(project, &nodeArray, p_h);
 
-  SgNode *root = project;
+    countFunctions(definedFunctions, definedVirtualFunctions, 
+                   invokedVirtualFunctions,
+                   irInterface, project);
+    // Do not _statically_ count virtual function invocations,
+    // instead do so through a proper call graph analysis.
+    // Further we need to do this for each analysis, as they
+    // leave of conservatism may yield different results.
+    invokedVirtualFunctions = 0;
 
-  // Instantiate a class hierarchy wrapper.
-  ClassHierarchyWrapper classHierarchy( project );
+    // The worklist holds those functions that need to be processed.
+    std::vector<SgFunctionDefinition *> worklist;
+  
+    // processedFunctions holds those functions that have already been
+    // processed.
+    hash_set<SgFunctionDefinition *, hashSgNode, eqSgNodes> processedFunctions;
 
+    // Get the main function.
+    SgFunctionDeclaration *mainFunc = findMain(project);
+    ROSE_ASSERT(mainFunc != NULL);  
 
-  // Collect all function/method invocations.
-  std::list<SgNode *> nodes = NodeQuery::querySubTree(project,
-						      V_SgFunctionCallExp);
+    mainFunc = getDefiningDeclaration(mainFunc);
+    ROSE_ASSERT(mainFunc != NULL);  
 
-  unsigned int numCallSites = 0;
-  unsigned int numMonomorphicCallSites = 0;
-  unsigned int numPossibleResolutions = 0;
-  unsigned int numAliasAnalysisMonomorphicCallSites = 0;
-  unsigned int numAliasAnalysisPossibleResolutions = 0;
+    SgFunctionDefinition *mainDefn = mainFunc->get_definition();
+    ROSE_ASSERT(mainDefn != NULL);
 
-  // Visit each call site.
-  for (std::list<SgNode *>::iterator it = nodes.begin();
-       it != nodes.end(); ++it ) {
+    worklist.push_back(mainDefn);
+    processedFunctions.insert(mainDefn);
 
-    SgNode *n = *it;
-    ROSE_ASSERT(n != NULL);
+    // First, perform CHA.
+    unsigned int numCHACallSites = 0;
+    unsigned int numCHAMonomorphicCallSites = 0;
+    unsigned int numCHAPossibleResolutions = 0;
+    unsigned int numCHAInvokedVirtualFunctions = 0;
 
-    SgFunctionCallExp *functionCallExp =
-      isSgFunctionCallExp(n);
-    ROSE_ASSERT(functionCallExp != NULL);
+    // Instantiate a class hierarchy wrapper.
+    ClassHierarchyWrapper classHierarchy( project );
 
-    // We are only interested in examining method invocations.
-    bool isDotExp = false;
-    bool isLhsRefOrPtr = false;
+    // We will only report results for those functions that are
+    // actually invoked-- i.e., are reachable.  To do this, we keep
+    // a worklist and initialize it with main.  Since CHA and
+    // alias analysis could potentially reach different functions,
+    // we will need to do a separate pass for each of them.
+
+    // Iterate over the worklist until it is empty.
+    // Note that worklist.size() is modified within this loop.  Do not
+    // remove worklist.size() from conditional.
+    for (int i = 0; i < worklist.size(); ++i) {
+
+        SgFunctionDefinition *defn = worklist[i];
+        ROSE_ASSERT(defn != NULL);
+
+        // Visit each call site in this function.
+        std::list<SgNode *> callsites;
+        callsites = NodeQuery::querySubTree(defn,
+                                            V_SgFunctionCallExp);
+
+        for (std::list<SgNode *>::iterator funcCallIt = callsites.begin();
+             funcCallIt != callsites.end(); ++funcCallIt ) {
+
+            SgNode *n = *funcCallIt;
+            ROSE_ASSERT(n != NULL);
+
+            SgFunctionCallExp *functionCallExp =
+                isSgFunctionCallExp(n);
+            ROSE_ASSERT(functionCallExp != NULL);
+
+            // We are only interested in examining method invocations.
+            bool isDotExp = false;
+            bool isLhsRefOrPtr = false;
 
 #ifdef DEBUG    
-    std::cout << "method?: " << functionCallExp->unparseToCompleteString() << std::endl;
+            std::cout << "method?: " 
+                      << functionCallExp->unparseToCompleteString() 
+                      << std::endl;
 #endif
 
-    SgMemberFunctionRefExp *functionRefExp = NULL;
-    if ( ( functionRefExp = isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr) ) == NULL )
-      continue;
-
-
+            SgMemberFunctionRefExp *functionRefExp = 
+                isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr);
+            if ( functionRefExp == NULL ) {
+                continue;
+            }
     
 #ifdef DEBUG    
-    std::cout << "method: " << functionCallExp->unparseToCompleteString() << std::endl;
+            std::cout << "method: " 
+                      << functionCallExp->unparseToCompleteString() 
+                      << std::endl;
 #endif
 
-    if ( isDotExp && !isLhsRefOrPtr ) {
-      // If this is a dot expression (i.e., a.foo()), we can
-      // statically determine its type-- unless the left-hand
-      // side is a reference type.
+            if ( isDotExp && !isLhsRefOrPtr ) {
+                // If this is a dot expression (i.e., a.foo()), we can
+                // statically determine its type-- unless the left-hand
+                // side is a reference type.
 #ifdef DEBUG    
-      std::cout << "dot: " << functionCallExp->unparseToCompleteString() << std::endl;
+                std::cout << "dot: " 
+                          << functionCallExp->unparseToCompleteString() 
+                          << std::endl;
 #endif
-      continue;
-    }
-    numCallSites++;
+                continue;
+            }
+            numCHACallSites++;
 
 #ifdef DEBUG    
-    std::cout << "methodPtr: " << functionCallExp->unparseToCompleteString() << std::endl;
+            std::cout << "methodPtr: " 
+                      << functionCallExp->unparseToCompleteString() 
+                      << std::endl;
 #endif
 
-    // Retrieve the static function declaration.
-    SgFunctionDeclaration *functionDeclaration = 
-      getFunctionDeclaration(functionCallExp);
+            // Retrieve the static function declaration.
+            SgFunctionDeclaration *functionDeclaration = 
+                getFunctionDeclaration(functionCallExp);
 
-    // Ensure it is actually a method declaration.
-    SgMemberFunctionDeclaration *memberFunctionDeclaration =
-      isSgMemberFunctionDeclaration(functionDeclaration);
-    ROSE_ASSERT(memberFunctionDeclaration != NULL);
+            // Ensure it is actually a method declaration.
+            SgMemberFunctionDeclaration *memberFunctionDeclaration =
+                isSgMemberFunctionDeclaration(functionDeclaration);
+            ROSE_ASSERT(memberFunctionDeclaration != NULL);
 
-    unsigned int numResolutionsForMethod = 0;
+            unsigned int numCHAResolutionsForMethod = 0;
 
-    if ( ( !functionRefExp->get_need_qualifier() && isVirtual(functionDeclaration) ) ) {
+            if ( ( !functionRefExp->get_need_qualifier() && 
+                   isVirtual(functionDeclaration) ) ) {
 #ifdef DEBUG    
-      std::cout << "tracking: " << functionDeclaration->unparseToString() << std::endl;
+                std::cout << "tracking: " 
+                          << functionDeclaration->unparseToString() 
+                          << std::endl;
 #endif
+                            
+                numCHAInvokedVirtualFunctions++;
 
-      SgClassDefinition *classDefn = 
-	isSgClassDefinition(memberFunctionDeclaration->get_scope());
-      ROSE_ASSERT(classDefn != NULL);
+                SgClassDefinition *classDefn = 
+                    isSgClassDefinition(memberFunctionDeclaration->get_scope());
+                ROSE_ASSERT(classDefn != NULL);
       
-      SgClassDeclaration *classDecl =
-	classDefn->get_declaration();
-      ROSE_ASSERT(classDecl != NULL);
+                SgClassDeclaration *classDecl =
+                    classDefn->get_declaration();
+                ROSE_ASSERT(classDecl != NULL);
 
-      SgClassDeclaration *definingClassDecl =
-	isSgClassDeclaration(classDecl->get_definingDeclaration());
-      ROSE_ASSERT(definingClassDecl != NULL);
+                SgClassDeclaration *definingClassDecl =
+                    isSgClassDeclaration(classDecl->get_definingDeclaration());
+                ROSE_ASSERT(definingClassDecl != NULL);
 
-      SgClassDefinition *classDefinition =
-	definingClassDecl->get_definition();
-      ROSE_ASSERT(classDefinition != NULL);
+                SgClassDefinition *classDefinition =
+                    definingClassDecl->get_definition();
+                ROSE_ASSERT(classDefinition != NULL);
       
-
-#if 0
-      numResolutionsForMethod = findResolutionsForMethodInTypeHierarchy(memberFunctionDeclaration, classDefinition, classHierarchy);
-#else
-      // We do not have to recurse through the class hierarchy
-      // (as findResolutionsForMethodInTypeHierarchy
-      // does).  In fact, we _should_ not since getSubClasses(cls)
-      // returns _all_ of the subclasses of cls, not just its
-      // immediate subclasses.
-      // First examine the class itself.
-      // Iterate over all of the methods defined in this class.
-      SgDeclarationStatementPtrList &decls =
-	classDefinition->get_members();
-      for (SgDeclarationStatementPtrList::iterator declIter = decls.begin();
-	   declIter != decls.end(); ++declIter) {
+                // We do not have to recurse through the class hierarchy
+                // (as findResolutionsForMethodInTypeHierarchy
+                // does).  In fact, we _should_ not since getSubClasses(cls)
+                // returns _all_ of the subclasses of cls, not just its
+                // immediate subclasses.
+                // First examine the class itself.
+                // Iterate over all of the methods defined in this class.
+                SgDeclarationStatementPtrList &decls =
+                    classDefinition->get_members();
+                for (SgDeclarationStatementPtrList::iterator declIter = decls.begin();
+                     declIter != decls.end(); ++declIter) {
 	
-	SgDeclarationStatement *declStmt = *declIter;
-	ROSE_ASSERT(declStmt != NULL);
+                    SgDeclarationStatement *declStmt = *declIter;
+                    ROSE_ASSERT(declStmt != NULL);
 	
-	SgMemberFunctionDeclaration *method =
-	  isSgMemberFunctionDeclaration(declStmt);
-	if ( method == NULL ) {
-	  continue;
-	}
+                    SgMemberFunctionDeclaration *method =
+                        isSgMemberFunctionDeclaration(declStmt);
+                    if ( method == NULL ) {
+                        continue;
+                    }
 	
 #ifdef DEBUG    
-	std::cout << "checking overrides" << std::endl;
+                    std::cout << "checking overrides" << std::endl;
 #endif
-	// Determine whether subclass of the class defining this
-	// method overrides the method.
-	if ( matchingFunctions(method,
-			       memberFunctionDeclaration) ) {
+                    // Determine whether subclass of the class defining this
+                    // method overrides the method.
+                    if ( matchingFunctions(method,
+                                           memberFunctionDeclaration) ) {
 #ifdef DEBUG    
-	  std::cout << "overries" << std::endl;
+                        std::cout << "overries" << std::endl;
 #endif
-	  // Do not consider a pure virtual method to be an 
-	  // overriding method (since it can not be invoked).
-	  if ( !isPureVirtual(method) || hasDefinition(method) ) {
-	    numResolutionsForMethod++;
-	  }
-	}
-      }
+                        // Do not consider a pure virtual method to be an 
+                        // overriding method (since it can not be invoked).
+                        if ( !isPureVirtual(method) || hasDefinition(method) ) {
+                            numCHAResolutionsForMethod++;
+                            // CHA believes this method may be invoked
+                            // so add it to the work list.
+                            method = isSgMemberFunctionDeclaration(getDefiningDeclaration(method));
+                            ROSE_ASSERT(method != NULL);  
 
-      // Now look within the sub classes.
-      SgClassDefinitionPtrList subclasses = 
-	classHierarchy.getSubclasses(classDefinition);
+                            SgFunctionDefinition *defn = 
+                                method->get_definition();
+                            ROSE_ASSERT(defn != NULL);
+
+                            if ( processedFunctions.find(defn) ==
+                                 processedFunctions.end() ) {
+                                worklist.push_back(defn);
+                                processedFunctions.insert(defn);
+                            }
+                         }
+	            }
+                }
+
+                // Now look within the sub classes.
+                SgClassDefinitionPtrList subclasses = 
+                    classHierarchy.getSubclasses(classDefinition);
 
 #ifdef DEBUG
-      if ( classDefinition != NULL )
-	std::cout << "Looking up subclasses of " << classDefinition << " " << classDefinition->get_qualified_name().str() << std::endl;
+                if ( classDefinition != NULL ) {
+                    std::cout << "Looking up subclasses of " 
+                              << classDefinition << " " 
+                              << classDefinition->get_qualified_name().str() 
+                              << std::endl;
+                }
 #endif
 
-      // Iterate over all subclasses.
-      for (SgClassDefinitionPtrList::iterator subclassIt = subclasses.begin();
-	   subclassIt != subclasses.end(); ++subclassIt) {
+                // XXX: this is very repetitive with the above.
+                // We should just throw the original class and its
+                // subclasses into a list and then iterate over all of them
+                // to avoid redundant code.
+                // Iterate over all subclasses.
+                for (SgClassDefinitionPtrList::iterator subclassIt = subclasses.begin();
+                     subclassIt != subclasses.end(); ++subclassIt) {
 
-	SgClassDefinition *subclass = *subclassIt;
-	ROSE_ASSERT(subclass != NULL);
+                    SgClassDefinition *subclass = *subclassIt;
+                    ROSE_ASSERT(subclass != NULL);
 
 #ifdef DEBUG    
-	std::cout << "subclass of " << classDefinition->get_qualified_name().str() << " got: " << subclass->get_qualified_name().str() << std::endl;
+                    std::cout << "subclass of " 
+                              << classDefinition->get_qualified_name().str() 
+                              << " got: " 
+                              << subclass->get_qualified_name().str() 
+                              << std::endl;
 #endif
 
+                    // Iterate over all of the methods defined in the subclass.
+                    SgDeclarationStatementPtrList &decls =
+                        subclass->get_members();
+                    for (SgDeclarationStatementPtrList::iterator declIter = decls.begin();
+                         declIter != decls.end(); ++declIter) {
 
-	// Iterate over all of the methods defined in this subclass.
-	SgDeclarationStatementPtrList &decls =
-	  subclass->get_members();
-	for (SgDeclarationStatementPtrList::iterator declIter = decls.begin();
-	     declIter != decls.end(); ++declIter) {
+                        SgDeclarationStatement *declStmt = *declIter;
+                        ROSE_ASSERT(declStmt != NULL);
 
-	  SgDeclarationStatement *declStmt = *declIter;
-	  ROSE_ASSERT(declStmt != NULL);
-
-	  SgMemberFunctionDeclaration *method =
-	    isSgMemberFunctionDeclaration(declStmt);
-	  if ( method == NULL ) {
-	    continue;
-	  }
+                        SgMemberFunctionDeclaration *method =
+                            isSgMemberFunctionDeclaration(declStmt);
+                        if ( method == NULL ) {
+                            continue;
+                        }
 
 #ifdef DEBUG    
-	  std::cout << "checking overrides" << std::endl;
+                        std::cout << "checking overrides" << std::endl;
 #endif
-	  // Determine whether subclass of the class defining this
-	  // method overrides the method.
-	  if ( matchingFunctions(method,
-				       memberFunctionDeclaration) ) {
+                        // Determine whether subclass of the class defining 
+                        // this method overrides the method.
+                        if ( matchingFunctions(method,
+                                               memberFunctionDeclaration) ) {
 #ifdef DEBUG    
-	    std::cout << "overries" << std::endl;
+                            std::cout << "overries" << std::endl;
 #endif
-	    // Do not consider a pure virtual method to be an 
-	    // overriding method (since it can not be invoked).
-	    if ( !isPureVirtual(method) || hasDefinition(method) ) {
-	      numResolutionsForMethod++;
-	    }
-	  }
-	}
+                            // Do not consider a pure virtual method to be an 
+                            // overriding method (since it can not be invoked).
+                            if ( !isPureVirtual(method) || 
+                                 hasDefinition(method) ) {
+ 
+                                numCHAResolutionsForMethod++;
 
-      }
-#endif
+                                // CHA believes this method may be invoked
+                                // so add it to the work list.
+                                method = isSgMemberFunctionDeclaration(getDefiningDeclaration(method));
+                                ROSE_ASSERT(method != NULL);  
 
-      if ( numResolutionsForMethod == 1 )
-	numMonomorphicCallSites++;
-      numPossibleResolutions += numResolutionsForMethod;
+                                SgFunctionDefinition *defn = 
+                                    method->get_definition();
+                                ROSE_ASSERT(defn != NULL);
 
-      // Now perform the alias-based virtual method resolution.
-      // Logically, this looks like:
-      // for all procs proc in SageIRProcIterator
-      //   for all statements stmt in getStmtIterator(proc)
-      //     for all call sites cs in getCallsites(stmt)
-      //       for all call MREs callmre in getCAllMemRefExp(cs)
-      //         OA_ptr<LocIterator> locIter =
-      //           alias->getMayLocs(callmre, proc)
-      //         cout << "callsite has " << locIter.size << "resolutions"
+                                if ( processedFunctions.find(defn) ==
+                                     processedFunctions.end() ) {
+                                    worklist.push_back(defn);
+                                    processedFunctions.insert(defn);
+	                        }
+                            }
+                        }
+                    }
+                }
+	    
+                if ( numCHAResolutionsForMethod == 1 ) {
+                    numCHAMonomorphicCallSites++;
+                }
+                numCHAPossibleResolutions += numCHAResolutionsForMethod;
 
-      // We already have a Sage handle to a callsite (and no handle
-      // to the enclosing procedure, proc).
-      // First, find the enclosing function for the call site.
-      // Then convert the Sage handles for callsites and the
-      // enclosing function definition to OA CallHandles and ProcHandles.
-      SgFunctionDefinition *enclosingFuncDefn =
-        getEnclosingFunction(functionCallExp);
-      ROSE_ASSERT(enclosingFuncDefn != NULL);
-
-      // Get an OA CallHandle.
-      OA::CallHandle callHandle = irInterface->getProcExprHandle(functionCallExp);
-
-      // Get an OA ProcHandle.
-      OA::ProcHandle caller = irInterface->getProcHandle(enclosingFuncDefn);
-
-      // Get all of the Call MemRefExprs at the callsite.  I think 
-      // we are expecting only one?  Whoops ... interface only
-      // allows one.
-      OA::OA_ptr<OA::MemRefExpr> callMRE = irInterface->getCallMemRefExpr(callHandle);
-      ROSE_ASSERT(!callMRE.ptrEqual(0));
-
-      // How many locations has the alias analysis assigned to this
-      // callMRE?
-      OA::OA_ptr<OA::Alias::AliasMap> alias 
-          = interAlias->getAliasMapResults(caller);
-      //      alias->output(*irInterface);
-      OA::OA_ptr<OA::LocIterator> locIter =
-        alias->getMayLocs(*callMRE, caller);
-      unsigned int numAliasAnalysisResolutionsForMethod = 0;
-      for (locIter->reset(); locIter->isValid(); (*locIter)++) {
-        // Don't count invisible locations:
-	OA::OA_ptr<OA::Location> loc = locIter->current();
-        if ( !loc->isaInvisible() ) {
-          ++numAliasAnalysisResolutionsForMethod;
-	  std::cout << "Visible Location: " << std::endl;
-        } else {
-	  std::cout << "Invisible Location: " << std::endl;
-	  std::cout << "with respect to caller: " << irInterface->toString(caller) << std::endl;
-	  std::cout << "call site: ";
-	  irInterface->dump(callMRE, std::cout);
-	  std::cout << std::endl;
+                if ( numCHAResolutionsForMethod >= 1 ) {
+                    ostr << "CHA virtual call site: " 
+                         << functionCallExp->unparseToCompleteString() 
+                         << std::endl;
+                    ostr << "\t CHA:  Method invocation has " 
+                         << numCHAResolutionsForMethod 
+                         << " possible resolutions " 
+                         << std::endl;
+                }
+            }
         }
-        loc->output(*irInterface);
-      }
-
-      if ( numAliasAnalysisResolutionsForMethod == 1 )
-	numAliasAnalysisMonomorphicCallSites++;
-      numAliasAnalysisPossibleResolutions += numAliasAnalysisResolutionsForMethod;
-
-      if ( ( ( numResolutionsForMethod ) >= 1 ) || 
-           ( ( numAliasAnalysisResolutionsForMethod ) >= 1 ) ) {
-	ostr << "CHA:  Method invocation has " << numResolutionsForMethod << " possible resolutions " << std::endl;
-	ostr << "Alias analysis:  Method invocation has " << numAliasAnalysisResolutionsForMethod << " possible resolutions " << std::endl;
-        ostr << "\tcaller:" << irInterface->toString(caller) << std::endl;
-	ostr << "\t" << functionCallExp->unparseToCompleteString() << std::endl;
-      }
     }
 
-  }
+    // Perform the alias analysis.
+    OA::OA_ptr<OA::Alias::InterAliasMap> interAlias =
+        DoFIAliasAliasMap(irInterface, project);
 
-  ostr << "definedFunctions: " << definedFunctions << std::endl;
-  ostr << "definedVirtualFunctions: " << definedVirtualFunctions << std::endl;
-  ostr << "virtual method callsites: " << invokedVirtualFunctions << std::endl;
+    SgNode *root = project;
 
-  ostr << "Summary CHA monomorphic call sites: " << numMonomorphicCallSites << std::endl;
-  ostr << "Summary Alias analysis monomorphic call sites: " << numAliasAnalysisMonomorphicCallSites << std::endl;
-  ostr << "Summary CHA total (virtual) resolutions: " << numPossibleResolutions << std::endl;
-  ostr << "Summary Alias analysis total (virtual) resolutions: " << numAliasAnalysisPossibleResolutions << std::endl;
-  //  return 0;
-  return backend(project);
+    // Reset the worklist and set of processed functions.
+    worklist.clear();
+    processedFunctions.clear();
+
+    // Initialize the worklist.
+    worklist.push_back(mainDefn);
+    processedFunctions.insert(mainDefn);
+
+    unsigned int numAliasAnalysisCallSites = 0;
+    unsigned int numAliasAnalysisMonomorphicCallSites = 0;
+    unsigned int numAliasAnalysisPossibleResolutions = 0;
+    unsigned int numAliasAnalysisInvokedVirtualFunctions = 0;
+
+
+    // Now perform the alias-based virtual method resolution.
+    // Logically, this looks like:
+    // for all procs proc in SageIRProcIterator
+    //   for all statements stmt in getStmtIterator(proc)
+    //     for all call sites cs in getCallsites(stmt)
+    //       for all call MREs callmre in getCAllMemRefExp(cs)
+    //         OA_ptr<LocIterator> locIter =
+    //           alias->getMayLocs(callmre, proc)
+    //         cout << "callsite has " << locIter.size << "resolutions"
+
+    // Iterate over the worklist until it is empty.
+    // Note that worklist.size() is modified within this loop.  Do not
+    // remove worklist.size() from conditional.
+    for (int i = 0; i < worklist.size(); ++i) {
+
+        SgFunctionDefinition *defn = worklist[i];
+        ROSE_ASSERT(defn != NULL);
+
+        // Visit each call site in this function.
+        std::list<SgNode *> callsites;
+        callsites = NodeQuery::querySubTree(defn,
+                                            V_SgFunctionCallExp);
+
+        for (std::list<SgNode *>::iterator funcCallIt = callsites.begin();
+             funcCallIt != callsites.end(); ++funcCallIt ) {
+
+            SgNode *n = *funcCallIt;
+            ROSE_ASSERT(n != NULL);
+
+            SgFunctionCallExp *functionCallExp =
+                isSgFunctionCallExp(n);
+            ROSE_ASSERT(functionCallExp != NULL);
+
+            // We are only interested in examining method invocations.
+            bool isDotExp = false;
+            bool isLhsRefOrPtr = false;
+
+#ifdef DEBUG    
+            std::cout << "method?: " 
+                      << functionCallExp->unparseToCompleteString() 
+                      << std::endl;
+#endif
+
+            SgMemberFunctionRefExp *functionRefExp = 
+                isMethodCall(functionCallExp, isDotExp, isLhsRefOrPtr);
+            if ( functionRefExp == NULL ) {
+                continue;
+            }
+    
+#ifdef DEBUG    
+            std::cout << "method: " 
+                      << functionCallExp->unparseToCompleteString() 
+                      << std::endl;
+#endif
+
+            if ( isDotExp && !isLhsRefOrPtr ) {
+                // If this is a dot expression (i.e., a.foo()), we can
+                // statically determine its type-- unless the left-hand
+                // side is a reference type.
+#ifdef DEBUG    
+                std::cout << "dot: " 
+                          << functionCallExp->unparseToCompleteString() 
+                          << std::endl;
+#endif
+                continue;
+            }
+            numAliasAnalysisCallSites++;
+
+#ifdef DEBUG    
+            std::cout << "methodPtr: " 
+                      << functionCallExp->unparseToCompleteString() 
+                      << std::endl;
+#endif
+
+            // Retrieve the static function declaration.
+            SgFunctionDeclaration *functionDeclaration = 
+                getFunctionDeclaration(functionCallExp);
+
+            // Ensure it is actually a method declaration.
+            SgMemberFunctionDeclaration *memberFunctionDeclaration =
+                isSgMemberFunctionDeclaration(functionDeclaration);
+            ROSE_ASSERT(memberFunctionDeclaration != NULL);
+
+            unsigned int numAliasAnalysisResolutionsForMethod = 0;
+
+            if ( ( !functionRefExp->get_need_qualifier() && 
+                   isVirtual(functionDeclaration) ) ) {
+#ifdef DEBUG    
+                std::cout << "tracking: " 
+                          << functionDeclaration->unparseToString() 
+                          << std::endl;
+#endif
+                            
+                numAliasAnalysisInvokedVirtualFunctions++;
+
+
+                // We already have a Sage handle to a callsite (and no handle
+                // to the enclosing procedure, proc).
+                // First, find the enclosing function for the call site.
+                // Then convert the Sage handles for callsites and the
+                // enclosing function definition to OA CallHandles 
+                // and ProcHandles.
+                SgFunctionDefinition *enclosingFuncDefn =
+                    getEnclosingFunction(functionCallExp);
+                ROSE_ASSERT(enclosingFuncDefn != NULL);
+
+                // Get an OA CallHandle.
+                OA::CallHandle callHandle = 
+                    irInterface->getProcExprHandle(functionCallExp);
+
+                // Get an OA ProcHandle.
+                OA::ProcHandle caller = 
+                    irInterface->getProcHandle(enclosingFuncDefn);
+
+                // Get all of the Call MemRefExprs at the callsite.  I think 
+                // we are expecting only one?  Whoops ... interface only
+                // allows one.
+                OA::OA_ptr<OA::MemRefExpr> callMRE = 
+                    irInterface->getCallMemRefExpr(callHandle);
+                ROSE_ASSERT(!callMRE.ptrEqual(0));
+
+                // How many locations has the alias analysis assigned to this
+                // callMRE?
+                OA::OA_ptr<OA::Alias::AliasMap> alias =
+                    interAlias->getAliasMapResults(caller);
+                OA::OA_ptr<OA::LocIterator> locIter =
+                    alias->getMayLocs(*callMRE, caller);
+                unsigned int numAliasAnalysisResolutionsForMethod = 0;
+                for (locIter->reset(); locIter->isValid(); (*locIter)++) {
+                    // Don't count invisible locations:
+                    OA::OA_ptr<OA::Location> loc = locIter->current();
+                    if ( !loc->isaInvisible() ) {
+                        ++numAliasAnalysisResolutionsForMethod;
+                        std::cout << "Visible Location: " << std::endl;
+
+                        // Need to convert this OA visible location
+                        // to a Sage function definition, so that
+                        // we may add it to the work list.
+
+                        ROSE_ASSERT(loc->isaNamed());
+ 
+                        OA::OA_ptr<OA::NamedLoc> namedLoc = 
+                            loc.convert<OA::NamedLoc>();
+                        ROSE_ASSERT(!namedLoc.ptrEqual(0));
+
+                        OA::SymHandle symHandle = namedLoc->getSymHandle();
+			OA::ProcHandle procHandle = 
+                            irInterface->getProcHandle(symHandle);
+
+                        SgFunctionDefinition *defn = 
+                            irInterface->getSgNode(procHandle);
+                        ROSE_ASSERT(defn != NULL);
+
+                        if ( processedFunctions.find(defn) ==
+                             processedFunctions.end() ) {
+                            worklist.push_back(defn);
+                            processedFunctions.insert(defn);
+                        }
+
+                    } else {
+                        std::cout << "Invisible Location: " << std::endl;
+                        std::cout << "with respect to caller: " 
+                                  << irInterface->toString(caller) 
+                                  << std::endl;
+                        std::cout << "call site: ";
+                        irInterface->dump(callMRE, std::cout);
+                        std::cout << std::endl;
+                    }
+                    loc->output(*irInterface);
+                }
+
+                if ( numAliasAnalysisResolutionsForMethod == 1 ) {
+                    numAliasAnalysisMonomorphicCallSites++;
+                }
+                numAliasAnalysisPossibleResolutions += 
+                    numAliasAnalysisResolutionsForMethod;
+
+                if ( numAliasAnalysisResolutionsForMethod >= 1 ) {
+                    ostr << "Alias analysis virtual call site: " 
+                         << functionCallExp->unparseToCompleteString() 
+                         << std::endl;
+                    ostr << "\t Alias analysis:  Method invocation has " 
+                         << numAliasAnalysisResolutionsForMethod 
+                         << " possible resolutions " 
+                         << std::endl;
+                }
+
+            }
+        }
+    }
+
+    ostr << "definedFunctions: " 
+         << definedFunctions 
+         << std::endl;
+
+    ostr << "definedVirtualFunctions: " 
+         << definedVirtualFunctions 
+         << std::endl;
+
+    ostr << "CHA virtual method callsites: " 
+         << numCHAInvokedVirtualFunctions 
+         << std::endl;
+
+    ostr << "Alias analysis virtual method callsites: " 
+         << numAliasAnalysisInvokedVirtualFunctions 
+         << std::endl;
+
+    ostr << "Summary CHA monomorphic call sites: " 
+         << numCHAMonomorphicCallSites 
+         << std::endl;
+
+    ostr << "Summary Alias analysis monomorphic call sites: " 
+         << numAliasAnalysisMonomorphicCallSites 
+         << std::endl;
+
+    ostr << "Summary CHA total (virtual) resolutions: " 
+         << numCHAPossibleResolutions 
+         << std::endl;
+
+    ostr << "Summary Alias analysis total (virtual) resolutions: " 
+         << numAliasAnalysisPossibleResolutions 
+         << std::endl;
+  
+    //  return 0;
+    return backend(project);
 }
