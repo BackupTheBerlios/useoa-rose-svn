@@ -1093,7 +1093,19 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     
                 // If the destructor is virtual, we need to create
                 // an invocation through a field access.
-                if ( isVirtual(methodDecl) ) {
+                // However, according to section r.12.7 of 
+                // Stroustrup 2nd edition, calls to virtual methods
+                // within a constructor or destructor may be
+                // statically resolved.
+                SgFunctionDefinition *funcDefn =
+                    getEnclosingFunction(astNode);
+                SgMemberFunctionDeclaration *decl =
+                    isSgMemberFunctionDeclaration(funcDefn->get_declaration());
+                bool invokedFromCtorOrDtor = 
+                    ( ( decl != NULL ) &&
+                      ( isConstructor(decl) || isDestructor(decl) ) );
+
+                if ( isVirtual(methodDecl) && !invokedFromCtorOrDtor ) {
     
                     // Notice that we first need to visit the receiver,
                     // so that we will have a MRE for the base of
@@ -1677,7 +1689,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
 
     // ---------------------------------------- Binary Op cases
-#if 1
     case V_SgArrowExp:
     case V_SgDotExp:
         {
@@ -1711,6 +1722,22 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 		
                 isVirtualInvocation = !memberFunctionRefExp->get_need_qualifier() && isVirtual(methodDecl);
 		
+                if ( isVirtualInvocation ) {
+                    // According to section r.12.7 of 
+                    // Stroustrup 2nd edition, calls to virtual methods
+                    // within a constructor or destructor may be
+                    // statically resolved.
+                    SgFunctionDefinition *funcDefn =
+                        getEnclosingFunction(astNode);
+                    SgMemberFunctionDeclaration *decl =
+                        isSgMemberFunctionDeclaration(funcDefn->get_declaration());
+                
+                    if ( ( decl != NULL ) &&
+                         ( isConstructor(decl) || isDestructor(decl) ) ) {
+                        isVirtualInvocation = false;
+                    }
+                }
+
 		//		std::cout << "isVirtual: " << isVirtualInvocation << " qualify: " << memberFunctionRefExp->get_need_qualifier() << " get_virt: " << memberFunctionRefExp->get_virtual_call() << " " << binaryOp->unparseToString() << std::endl;
                 // Even if we invoke a virtual method, it is 
                 // statically resolvable if the receiver
@@ -1920,418 +1947,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             break;
         }
 
-#else
-    case V_SgArrowExp:
-        {
-            SgArrowExp *arrowExp = isSgArrowExp(astNode);
-            ROSE_ASSERT(arrowExp != NULL);
-            
-            // recurse on lhs and rhs
-            findAllMemRefsAndPtrAssigns(arrowExp->get_lhs_operand(),stmt);
-            findAllMemRefsAndPtrAssigns(arrowExp->get_rhs_operand(),stmt);
-            
-            // is a MemRefHandle
-            OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
-
-            // clones MREs for lhs and wraps them in a Deref and a FieldAccess
-            OA::MemRefHandle lhs_memref 
-                = findTopMemRefHandle(arrowExp->get_lhs_operand());
-            OA::MemRefHandle rhs_memref 
-                = findTopMemRefHandle(arrowExp->get_rhs_operand());
-	    //            std::string field_name = findFieldName(rhs_memref);
-	    std::string field_name = toStringWithoutScope(arrowExp->get_rhs_operand());
-
-            bool isVirtualInvocation = false;
-            bool isMethodInvocation = false;
-            SgMemberFunctionRefExp *memberFunctionRefExp =
-                isSgMemberFunctionRefExp(arrowExp->get_rhs_operand());
-            if (memberFunctionRefExp != NULL) {
-                SgMemberFunctionDeclaration *methodDecl =
-                    getInvokedMethod(memberFunctionRefExp);
-                ROSE_ASSERT(methodDecl != NULL);
-
-                isVirtualInvocation = isVirtual(methodDecl);
-                isMethodInvocation = true;
-            }
-
-            OA::OA_ptr<OA::MemRefExprIterator> mIter
-                = getMemRefExprIterator(lhs_memref);
-            OA::OA_ptr<OA::MemRefExprIterator> mRhsIter
-                = getMemRefExprIterator(rhs_memref);
-            for ( ; mIter->isValid(); ++(*mIter) ) {
-                OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
-                bool addressTaken = false;
-
-                OA::OA_ptr<OA::MemRefExpr> memberAccess;
-                if ( mUseVtableOpt && isVirtualInvocation ) {
-
-                    // If we are using the vtable optimization, we don't
-                    // return receiver->"method" for a virtual method 
-                    // invocation, but
-                    // (*(*receiver).FieldHandle(OA_VTABLE_STR))."method".
-#if 1 
-		    lhs_mre = derefMre(lhs_mre, false, lhs_mre->hasFullAccuracy(), OA::MemRefExpr::USE, 1);
-#else 
-                    lhs_mre = new OA::Deref(false,
-                                            lhs_mre->hasFullAccuracy(),
-                                            OA::MemRefExpr::USE,
-                                            lhs_mre,
-                                            1);
-#endif
-                    // Record the type of the MRE (reference or non-reference).
-                    mMre2TypeMap[lhs_mre] = other;
-
-                    OA::OA_ptr<OA::FieldAccess> fieldAccess;
-                    fieldAccess = new OA::FieldAccess(false, 
-                                                      lhs_mre->hasFullAccuracy(),
-                                                      OA::MemRefExpr::USE,
-                                                      lhs_mre,
-                                                      OA_VTABLE_STR);
-
-                    // Record the type of the MRE (reference or non-reference).
-                    mMre2TypeMap[fieldAccess] = other;
-
-                    lhs_mre = fieldAccess;
-
-                }
-
-                
-                if ( isVirtualInvocation || !isMethodInvocation ) {
-
-#if 1
-		    lhs_mre = derefMre(lhs_mre, false, lhs_mre->hasFullAccuracy(), OA::MemRefExpr::USE, 1);
-#else
-                    lhs_mre = new OA::Deref(false,
-                                            lhs_mre->hasFullAccuracy(),
-                                            OA::MemRefExpr::USE,
-                                            lhs_mre,
-                                            1);
-#endif
-                    // Record the type of the MRE (reference or non-reference).
-                    mMre2TypeMap[lhs_mre] = other;
-
-                    // Virtual method invocations need to be represented
-                    // via a FieldAccess, as do member variable accesses.
-                    OA::OA_ptr<OA::MemRefExpr> fieldAccess;
-                    fieldAccess = new OA::FieldAccess(false, 
-                                                      lhs_mre->hasFullAccuracy(),
-                                                      OA::MemRefExpr::USE,
-                                                      lhs_mre,
-                                                      field_name);
-
-                    // Record the type of the MRE (reference or non-reference).
-                    mMre2TypeMap[fieldAccess] = other;
-
-                    memberAccess = fieldAccess;
-
-                    // if the rhs is a variable with reference type then 
-                    // Reference conversion rule 3.
-                    if ( !isMethodInvocation ) {
-                        int numRhses = 0;
-                        OA::OA_ptr<OA::MemRefExpr> rhs_mre;
-                        for ( ; mRhsIter->isValid(); ++(*mRhsIter) ) {
-                            rhs_mre = mRhsIter->current();
-                            ++numRhses;
-                        }
-                        ROSE_ASSERT(numRhses != 0);
-                        ROSE_ASSERT(numRhses == 1);
-			//			std::cout << "HERE" << std::endl;
-                        if ( ( mMre2TypeMap.find(rhs_mre) != mMre2TypeMap.end() ) &&
-                             ( mMre2TypeMap[rhs_mre] == reference ) ) {
-			  //			std::cout << "THERE" << std::endl;
-                            // Change the type of the field access to a 
-                            // reference.
-                            // No, see below.
-			    //                            mMre2TypeMap[fieldAccess] = reference;
-
-                            // wrap the NamedRef in a Deref, but before doing so also
-                            // create a MemRefHandle/MRE pair for the reference itself.
-                            // Use the Sg_File_Info as the MemRefHandle.  This should
-                            // effectively hide the MRE from anyone calling findTopMemRefHandle,
-                            // e.g., to create ptr assign pairs.  That's good, because the
-                            // deref should be the top memrefhandle.
-                            Sg_File_Info *fileInfo = astNode->get_file_info();
-                            ROSE_ASSERT(fileInfo != NULL);
-	                    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
-                            mStmt2allMemRefsMap[stmt].insert(hiddenMemref);
-                            mMemref2mreSetMap[hiddenMemref].insert(fieldAccess);
-
-                            // wrap the NamedRef in a Deref
-                            int numderefs = 1;
-#if 1
-                            memberAccess = derefMre(fieldAccess, false, fieldAccess->hasFullAccuracy(), OA::MemRefExpr::USE, numderefs);
-#else
-                            memberAccess = 
-                                new OA::Deref(false,
-                                              fieldAccess->hasFullAccuracy(),
-                                              OA::MemRefExpr::USE,
-                                              fieldAccess,
-                                              numderefs);
-#endif
-
- 	  	            // It is the deref that we will see as the top mem ref handle
-                            // and ask whether the access it reprsents is to a reference.
-                            mMre2TypeMap[memberAccess] = reference;
-                        }
-                    }
-                } else {
-
-                    // Non-virtual method invocations are represented 
-                    // by the NamedRef create for the rhs.  Clone it
-                    // here, erase it below.  We only expect there to 
-                    // be one rhs MRE.
-                    int numRhses = 0;
-
-                    for ( ; mRhsIter->isValid(); ++(*mRhsIter) ) {
-                        OA::OA_ptr<OA::MemRefExpr> rhs_mre = mRhsIter->current();
-                        memberAccess = rhs_mre->clone();
-                        // Transfer type to cloned MRE
-                        mMre2TypeMap[memberAccess] = mMre2TypeMap[rhs_mre];
-                        ++numRhses;
-                    }
-                    ROSE_ASSERT(numRhses != 0);
-                    ROSE_ASSERT(numRhses == 1);
-
-                }
-
-                mMemref2mreSetMap[memref].insert(memberAccess);
-            }
-
-            // make rhs not a MemRefHandle
-            // Note that lhs continues to be a MemRefHandle.
-
-            mMemref2mreSetMap[rhs_memref].clear();
-            mStmt2allMemRefsMap[stmt].erase(rhs_memref);
-
-            // We also need to be careful to remove the
-            // original reference base at the rhs, if one exists.
-            // If it does, it will be the Sg_File_Info of the rhs_memref.
-            SgNode *node = (SgNode*)(rhs_memref.hval());
-            ROSE_ASSERT(node != NULL);
-                 
-            Sg_File_Info *fileInfo = node->get_file_info();
-            ROSE_ASSERT(fileInfo != NULL);
-
-	    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
-            mMemref2mreSetMap[hiddenMemref].clear();
-            mStmt2allMemRefsMap[stmt].erase(hiddenMemref);
-
-            break;
-        }
-    case V_SgDotExp:
-        {
-            SgDotExp *dotExp = isSgDotExp(astNode);
-            ROSE_ASSERT(dotExp != NULL);
-            
-            // recurse on lhs and rhs
-            findAllMemRefsAndPtrAssigns(dotExp->get_lhs_operand(),stmt);
-            findAllMemRefsAndPtrAssigns(dotExp->get_rhs_operand(),stmt);
-            
-            // is a MemRefHandle
-            OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
-
-            // takes MREs from lhs and wraps them in a FieldAccess
-            OA::MemRefHandle lhs_memref 
-                = findTopMemRefHandle(dotExp->get_lhs_operand());
-            OA::MemRefHandle rhs_memref 
-                = findTopMemRefHandle(dotExp->get_rhs_operand());
-	    //            std::string field_name = findFieldName(rhs_memref);
-	    std::string field_name = toStringWithoutScope(dotExp->get_rhs_operand());
-
-            bool isVirtualInvocation = false;
-            bool isMethodInvocation = false;
-            SgMemberFunctionRefExp *memberFunctionRefExp =
-                isSgMemberFunctionRefExp(dotExp->get_rhs_operand());
-            if (memberFunctionRefExp != NULL) {
-                SgMemberFunctionDeclaration *methodDecl =
-                    getInvokedMethod(memberFunctionRefExp);
-                ROSE_ASSERT(methodDecl != NULL);
-
-                isVirtualInvocation = isVirtual(methodDecl);
-                // Even if we invoke a virtual method, it is 
-                // statically resolvable if the receiver
-                // is an object, rather than a reference.
-                SgType *type = dotExp->get_lhs_operand()->get_type();
-                ROSE_ASSERT(type != NULL);
-                if ( !isSgReferenceType(type) ) {
-                    isVirtualInvocation = false;
-                }
-                isMethodInvocation = true;
-            }
-
-
-            OA::OA_ptr<OA::MemRefExprIterator> mIter
-                = getMemRefExprIterator(lhs_memref);
-            OA::OA_ptr<OA::MemRefExprIterator> mRhsIter
-                = getMemRefExprIterator(rhs_memref);
-            for ( ; mIter->isValid(); ++(*mIter) ) {
-                OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
-                bool addressTaken = false;
-
-                OA::OA_ptr<OA::MemRefExpr> memberAccess;
-                if ( mUseVtableOpt && isVirtualInvocation ) {
-
-                    // If we are using the vtable optimization, we don't
-                    // return receiver."method" for a virtual method 
-                    // invocation, but
-                    // (*receiver.FieldHandle(OA_VTABLE_STR))."method".
-
-                    OA::OA_ptr<OA::FieldAccess> fieldAccess;
-                    fieldAccess = new OA::FieldAccess(false, 
-                                                      lhs_mre->hasFullAccuracy(),
-                                                      OA::MemRefExpr::USE,
-                                                      lhs_mre,
-                                                      OA_VTABLE_STR);
-
-                    // Record the type of the MRE (reference or non-reference).
-                    mMre2TypeMap[fieldAccess] = other;
-
-#if 1
-                    lhs_mre = derefMre(fieldAccess, false, fieldAccess->hasFullAccuracy(), OA::MemRefExpr::USE, 1);
-#else
-                    lhs_mre = new OA::Deref(false,
-                                            fieldAccess->hasFullAccuracy(),
-                                            OA::MemRefExpr::USE,
-                                            fieldAccess,
-                                            1);
-#endif
-
-                    // Record the type of the MRE (reference or non-reference).
-                    mMre2TypeMap[lhs_mre] = other;
-                }
-
-                
-                if ( isVirtualInvocation || !isMethodInvocation ) {
-
-                    // Virtual method invocations need to be represented
-                    // via a FieldAccess, as do member variable accesses.
-                    OA::OA_ptr<OA::MemRefExpr> fieldAccess;
-                    fieldAccess = new OA::FieldAccess(false, 
-                                                      lhs_mre->hasFullAccuracy(),
-                                                      OA::MemRefExpr::USE,
-                                                      lhs_mre,
-                                                      field_name);
-
-                    // Record the type of the MRE (reference or non-reference).
-                    mMre2TypeMap[fieldAccess] = other;
-
-                    memberAccess = fieldAccess;
-
-                    // if the rhs is a variable with reference type then 
-                    // Reference conversion rule 3.
-                    if ( !isMethodInvocation ) {
-                        int numRhses = 0;
-                        OA::OA_ptr<OA::MemRefExpr> rhs_mre;
-                        for ( ; mRhsIter->isValid(); ++(*mRhsIter) ) {
-                            rhs_mre = mRhsIter->current();
-                            ++numRhses;
-                        }
-                        ROSE_ASSERT(numRhses != 0);
-                        ROSE_ASSERT(numRhses == 1);
-
-                        if ( ( mMre2TypeMap.find(rhs_mre) != mMre2TypeMap.end() ) &&
-                             ( mMre2TypeMap[rhs_mre] == reference ) ) {
-
-                            // Change the type of the field access to a 
-                            // reference.
-                            // No, see below.
-                            //     mMre2TypeMap[fieldAccess] = reference;
-
-                            // wrap the NamedRef in a Deref, but before doing so also
-                            // create a MemRefHandle/MRE pair for the reference itself.
-                            // Use the Sg_File_Info as the MemRefHandle.  This should
-                            // effectively hide the MRE from anyone calling findTopMemRefHandle,
-                            // e.g., to create ptr assign pairs.  That's good, because the
-                            // deref should be the top memrefhandle.
-                            Sg_File_Info *fileInfo = astNode->get_file_info();
-                            ROSE_ASSERT(fileInfo != NULL);
-	                    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
-                            mStmt2allMemRefsMap[stmt].insert(hiddenMemref);
-                            mMemref2mreSetMap[hiddenMemref].insert(fieldAccess);
-
-                            // wrap the NamedRef in a Deref
-                            int numderefs = 1;
-#if 1
-                            memberAccess = derefMre(fieldAccess, false, fieldAccess->hasFullAccuracy(), OA::MemRefExpr::USE, numderefs);
-#else
-                            memberAccess = 
-                                new OA::Deref(false,
-                                              fieldAccess->hasFullAccuracy(),
-                                              OA::MemRefExpr::USE,
-                                              fieldAccess,
-                                              numderefs);
-#endif
-
- 	  	            // It is the deref that we will see as the top mem ref handle
-                            // and ask whether the access it reprsents is to a reference.
-                            mMre2TypeMap[memberAccess] = reference;
-                        }
-                    }
-
-                } else {
-
-                    // Non-virtual method invocations are represented 
-                    // by the NamedRef create for the rhs.  Clone it
-                    // here, erase it below.  We only expect there to 
-                    // be one rhs MRE.
-                    int numRhses = 0;
-
-                    for ( ; mRhsIter->isValid(); ++(*mRhsIter) ) {
-                        OA::OA_ptr<OA::MemRefExpr> rhs_mre = mRhsIter->current();
-                        memberAccess = rhs_mre->clone();
-                        // Transfer type to cloned MRE
-                        mMre2TypeMap[memberAccess] = mMre2TypeMap[rhs_mre];
-                        ++numRhses;
-                    }
-                    ROSE_ASSERT(numRhses != 0);
-                    ROSE_ASSERT(numRhses == 1);
-
-                }
-
-                mMemref2mreSetMap[memref].insert(memberAccess);
-            }
-
-            // make lhs and rhs not a MemRefHandle
-            // No!  We need the lhs_memref for the actual.  BW 8/31/06
-            // Only remove it if this is not a method invocation.
-            if ( !isMethodInvocation ) {
-                mMemref2mreSetMap[lhs_memref].clear();
-                mStmt2allMemRefsMap[stmt].erase(lhs_memref);
-            } else {
-                // For a method invocation, we use the child/lhs receiver 
-                // MRE as the implicit actual.  Therefore, not only do we
-                // not remove it, but we need to take its address.
-                OA::OA_ptr<OA::MemRefExprIterator> mLhsIter
-                    = getMemRefExprIterator(lhs_memref);
-                for ( ; mLhsIter->isValid(); ++(*mLhsIter) ) {
-                    OA::OA_ptr<OA::MemRefExpr> lhs_mre = mLhsIter->current();
-                    mMemref2mreSetMap[lhs_memref].erase(lhs_mre);
-                    lhs_mre = lhs_mre->setAddressTaken();
-                    mMemref2mreSetMap[lhs_memref].insert(lhs_mre);
-		    //                    lhs_mre->setAddressTaken(true);
-                }
-            }
-            mMemref2mreSetMap[rhs_memref].clear();
-            mStmt2allMemRefsMap[stmt].erase(rhs_memref);
-
-            // We also need to be careful to remove the
-            // original reference base at the rhs, if one exists.
-            // If it does, it will be the Sg_File_Info of the rhs_memref.
-            SgNode *node = (SgNode*)(rhs_memref.hval());
-            ROSE_ASSERT(node != NULL);
-                 
-            Sg_File_Info *fileInfo = node->get_file_info();
-            ROSE_ASSERT(fileInfo != NULL);
-
-	    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
-            mMemref2mreSetMap[hiddenMemref].clear();
-            mStmt2allMemRefsMap[stmt].erase(hiddenMemref);
-
-            break;
-        }
-#endif
     case V_SgDotStarOp:
         {
             ROSE_ASSERT(0);
@@ -3130,6 +2745,28 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             }
             break;
         }
+
+    case V_SgForInitStatement: 
+        {
+            SgForInitStatement *initStmt = isSgForInitStatement(astNode);
+            ROSE_ASSERT(initStmt != NULL);
+
+            SgStatementPtrList &stmtList = initStmt->get_init_stmt();
+            for (SgStatementPtrList::iterator it = stmtList.begin();
+                 it != stmtList.end(); ++it) {
+                SgStatement *statement = *it;
+                ROSE_ASSERT(statement != NULL);
+
+                // FIXME:  BSW, although init statements are statements
+                // in their own right, I am associating them with
+                // stmt, which corresponds to the SgForStatement.
+                // Should be OK?
+                findAllMemRefsAndPtrAssigns( statement, stmt );
+            }
+
+            break;
+        }
+
     case V_SgWhileStmt:
         {
             SgWhileStmt *whileStmt = isSgWhileStmt(astNode);
@@ -3264,7 +2901,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgBreakStmt:
     case V_SgContinueStmt:
     case V_SgGotoStatement:
-    case V_SgForInitStatement: //FIXME: not sure about this one ???
     case V_SgCatchStatementSeq:  
     case V_SgClinkageStartStatement:
     case V_SgEnumDeclaration:

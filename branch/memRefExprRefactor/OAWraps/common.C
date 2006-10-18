@@ -466,8 +466,7 @@ getFormalTypes(SgNode *node)
  *  \returns  Boolean indicating whether methodFunctionDeclaration is
  *            a destructor.
  */
-static bool 
-isDestructor(SgMemberFunctionDeclaration *memberFunctionDeclaration)
+bool isDestructor(SgMemberFunctionDeclaration *memberFunctionDeclaration)
 {
     ROSE_ASSERT(memberFunctionDeclaration != NULL);
 
@@ -923,7 +922,6 @@ isDeclaredVirtualWithinAncestor(SgFunctionDeclaration *functionDeclaration)
  *  \returns  Boolean indicating whether methodFunctionDeclaration is
  *            a constructor.
  */
-static
 bool isConstructor(SgMemberFunctionDeclaration *memberFunctionDeclaration)
 {
   ROSE_ASSERT(memberFunctionDeclaration != NULL);
@@ -1091,8 +1089,8 @@ bool matchingFunctions(SgFunctionDeclaration *decl1,
     return false;
 
   // Compare the return types of the two funcs.
-  SgType *func1Type = decl1->get_orig_return_type();
-  SgType *func2Type = decl2->get_orig_return_type();
+  SgType *func1Type = getBaseType(decl1->get_orig_return_type());
+  SgType *func2Type = getBaseType(decl2->get_orig_return_type());
 
   std::string ret1Type, ret2Type;
   getTypeInfo(func1Type, 0, &ret1Type);
@@ -1110,8 +1108,8 @@ bool matchingFunctions(SgFunctionDeclaration *decl1,
   SgInitializedNamePtrList::iterator p1 = func1Params.begin();
   SgInitializedNamePtrList::iterator p2 = func2Params.begin();
   for ( ; p1 != func1Params.end(); ++p1, ++p2) {
-    SgType* t1 = (*p1)->get_type();
-    SgType* t2 = (*p2)->get_type();
+    SgType* t1 = getBaseType((*p1)->get_type());
+    SgType* t2 = getBaseType((*p2)->get_type());
     
     std::string param1Type, param2Type;
     getTypeInfo(t1, 0, &param1Type);
@@ -1146,7 +1144,7 @@ std::string mangleFunctionName(SgFunctionDeclaration *functionDeclaration)
  
     mangled = functionDeclaration->get_name().str();
 
-    SgType *funcType = functionDeclaration->get_orig_return_type();
+    SgType *funcType = getBaseType(functionDeclaration->get_orig_return_type());
   
     // Include the function's return type.
     std::string retType;
@@ -1157,7 +1155,7 @@ std::string mangleFunctionName(SgFunctionDeclaration *functionDeclaration)
     SgInitializedNamePtrList &funcParams = functionDeclaration->get_args();
     SgInitializedNamePtrList::iterator p = funcParams.begin();
     for ( ; p != funcParams.end(); ++p) {
-        SgType* t = (*p)->get_type();
+        SgType* t = getBaseType((*p)->get_type());
         ROSE_ASSERT(t != NULL);
         std::string paramType;
         getTypeInfo(t, 0, &paramType);

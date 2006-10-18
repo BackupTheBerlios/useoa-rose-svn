@@ -3219,3 +3219,159 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
                       via invocations of addEmptyCells(), addPrey(), and addPredators(),
                       respectively.  i.e., the precision result for this
                       call site has 3 resolutions.
+
+
+10/10/06     UseOA-Rose svn branch-memRefExprRefactor r235  Brian White
+
+        - Changed matchingFunctions (a predicate returning true if
+          two functions have the same type signature) to call getBaseType
+          before comparing types.  The driv1 benchmark defines a
+          pure virtual method with a char * arg, while implementations of
+          that virtual method use a typedef to a char *.  Before
+          calling getBaseType, UseOA thought these were different methods.
+
+        - Also need to change mangleFunctionName to invoke getBaseType
+          on types.  Otherwise, the field access (mangled name) above to 
+          the pure virtual method would not match any of the derived
+          methods, which use the typedef for their args.
+	
+        - Implemented SgForInitStatement case in findAllMemRefsAndMemRefExprs.
+          Remarkably, this hadn't been done!
+	
+        - CHAandAliasVirtualMethodResolver was not visiting destructors
+          or constructors.  Fixed that.
+
+        - According to Stroustrup 2nd edition section r.12.7, 
+          invocations of virtual methods within destructors or
+          constructors may be statically resolved.  Therefore,
+          do not create FieldAccesses for them.
+
+        - Fixed CHAandAliasVirtualMethodResolver so that it does
+          not consider any methods invoked from a constructor
+          or destructor to be virtual.
+
+        - Added indirectcalltrace.C to repository.  This is implemented
+          within the PIN framework (rogue.colorado.edu/pin/) for
+          instrumentation.  Specifically, I implemented this using
+          pin-2.0.  I have included the makefile, which was in 
+          the SimpleExamples subdirectory.  indirectcalltrace can not
+          be built here, as it requires pin.  I am adding it
+          because I almost lost it.
+
+          It is invoked on a _binary_.  e.g.,
+
+          ~/pin-2.0-3077-gcc.3.2-ia32-linux/Bin/pin -t ~/pin-2.0-3077-gcc.3.2-ia32-linux/SimpleExamples/indirectcalltrace -- ./singleFileSansStubs > pin.out
+
+          By default, it writes to the output file indirectcalltrace.out.  
+          This output file contains an entry for dynamic indirect call.
+          Therefore, it provides the most precise virtual method
+          resolution that an alias analysis could hope to achieve.
+
+          For each of the benchmarks, I am providing a singleFileSansStubs.C
+          file, which is singleFile.C, without the stubs.  Removing
+          the stubs is necessary for compilation.  Now, just compile
+          and link singleFileSansStubs.C to create a binary, using
+          your favorite backend compiler.  Then, run it through
+          pin/indirectcalltrace, as shown above.
+
+          The names in the output file are mangled, so you will probably
+          want to run through c++filt:
+
+          more indirectcalltrace.out | grep Resolution | c++filt | sort -u | more	
+
+        - For each benchmark, we should have the following files:
+              singleFile.C           // includes all user-defined headers and
+                                     // source files and intended for analysis
+                                     // i.e., has stubs.
+              singleFileSansStubs.C  // singleFile.C, but without stubs.
+                                     // rather than being intended for
+                                     // analysis, is intended to be built
+                                     // and run through pin/indirectcalltrace.
+              cha.results            // CHA and FIAlias analysis results
+                                     // collected from 
+                                     // CHAandAliasVirtualMethodResolver
+              cha.out                // output spewed from
+                                     // CHAandAliasVirtualMethodResolver
+              pin.results            // Dynamic resolutions from
+                                     // indirectcalltrace-- i.e.,
+                                     // the output that is put in 
+                                     // indirectcalltrace.out by default.
+              README                 // discusses and compares results
+                                     // from CHA, FIAlias, and pin.
+          I will no longer be putting discussion of results in this
+          ChangeLog; those will instead go in the per-benchmark READMEs.
+	
+        - Verified results for the following Pande benchmarks:
+            - chess
+            - simul
+            - shapes
+
+
+        - "Discussion" of fine-grained differences.  Fewer resolutions are
+          better/more precise (assuming correctness, which has been manually
+          verified).
+
+            - chess:   FIAlias 6 resolutions vs CHA 6 (precise: 6)
+
+                       These are the most precise results possible.
+                       There is only 1 virtual call site and it is 
+                       6-way polymorphic.  The call is
+
+                           config[i][j]->Rep ()
+
+                       from Board::Dump.  Rep() is implemented
+                       by each of the 6 pieces of the chess board.
+                       It is also implemented as a pure virtual
+                       method in Piece, but we do not consider
+                       pure virtual methods as potential resolutions
+                       (since they can not be invoked).
+
+                       We see from the constructor Board::Board
+                       that this call is truly 6-way polymorphic.
+                       There we see that config[i][j] is set to
+                       each of the 6 type of pieces (for some i,j).
+
+            - simul:   FIAlias 6 resolutions vs CHA 9 (precise: 6)
+
+                       Class hierarchy (base -> child):
+                       simulation_unit -> pop_around
+                       simulation_unit -> crawl_around
+
+                       There are 3 virtual invocations:
+                           display from simulation_unit::move
+                           erase   from simulation_unit::move
+                           cycle   from main
+
+                       Note that display is invoked from each of the
+                       3 constructors, but although display is
+                       virtual, it may only be resolved within the
+                       current class or one of its base classes _NOT_
+                       within a subclass.  See section r.12.7 of
+                       Stroustrup Edition 2-- '... virtual functions
+                       may be called (directly or indirectly) [in a
+                       constructor or destructor].  The function called
+                       will be the one defined in the constructor's 
+                       (or destructor's) own class or its bases, but _not_
+                       any function overriding it in a derived class.
+                       This ensures that unconstructed objects will not
+                       be accessed during construction or destruction.'
+
+                       In each of the above 3 cases, simulation_unit,
+                       pop_around, and crawl_around define the virtual
+                       method.
+
+                       CHA result:  because the static type of the
+                       receiver is simulation_unit for each of the 3
+                       invocations, it infers that the type of 
+                       the receiver is simulation_unit or either of
+                       its two subclasses.
+
+                       FIAlias result:  since no simulation_unit
+                       object is created, no varible is assigned its
+                       virtual ptr table.  Therefore, none of the
+                       simulation_unit virtual methods will be 
+                       invoked.  RTA would also give the precise
+                       results (assuming that RTA does not consider
+                       an object of a class base to be instantiated during
+                       the creation of an object of its subclass).
+

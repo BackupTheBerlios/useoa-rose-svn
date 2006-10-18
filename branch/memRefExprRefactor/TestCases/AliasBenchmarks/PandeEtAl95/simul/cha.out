@@ -1,0 +1,813 @@
+Generating constructor for simulation_unit
+func_name = simulation_unit
+inserting simulation_unit = 0x42d9ab48
+Generating copy constructor for simulation_unit
+func_name = simulation_unit
+inserting simulation_unit = 0x42d9aca8
+func_name = operator=
+inserting operator= = 0x42d9ae08
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Visiting memberFunctionDecl: public: virtual inline void display(){}
+Visiting memberFunctionDecl: public: virtual inline void erase(){}
+Visiting memberFunctionDecl: public: inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}
+Visiting memberFunctionDecl: public: virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}
+Visiting memberFunctionDecl: public: virtual inline void cycle(){}
+Visiting memberFunctionDecl: public: simulation_unit(){}
+Visiting memberFunctionDecl: public: simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}
+Visiting memberFunctionDecl: public: simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}
+Generating constructor for cursor_controller
+func_name = cursor_controller
+inserting cursor_controller = 0x42d9af68
+Generating destructor for cursor_controller
+func_name = ~cursor_controller
+inserting ~cursor_controller = 0x42d9b0c8
+Generating copy constructor for cursor_controller
+func_name = cursor_controller
+inserting cursor_controller = 0x42d9b228
+func_name = operator=
+inserting operator= = 0x42d9b388
+Visiting memberFunctionDecl: public: inline void home(){(this) -> move(1,1);}
+Visiting memberFunctionDecl: public: cursor_controller(){}
+Visiting memberFunctionDecl: public: ~cursor_controller(){}
+Visiting memberFunctionDecl: public: cursor_controller(class cursor_controller &rhs){}
+Visiting memberFunctionDecl: public: cursor_controller &operator=(class cursor_controller &rhs){if((this) == &rhs) {return *(this);}else {}return *(this);}
+Generating constructor for cursor_controller2
+func_name = cursor_controller2
+inserting cursor_controller2 = 0x42d9b4e8
+uninvoked base class: class cursor_controller {public: void up(int rows=1);void down(int rows=1);void right(int cols=1);void left(int cols=1);void move(int row,int col);inline void home(){(this) -> move(1,1);}void clear_screen();void clear_eol();void save();void restore();cursor_controller(){}~cursor_controller(){}cursor_controller(class cursor_controller &rhs){}cursor_controller &operator=(class cursor_controller &rhs){if((this) == &rhs) {return *(this);}else {}return *(this);}}
+Generating constructor call for cursor_controller within method: public: cursor_controller2(){}
+parent class def: class cursor_controller {public: void up(int rows=1);void down(int rows=1);void right(int cols=1);void left(int cols=1);void move(int row,int col);inline void home(){(this) -> move(1,1);}void clear_screen();void clear_eol();void save();void restore();cursor_controller(){}~cursor_controller(){}cursor_controller(class cursor_controller &rhs){}cursor_controller &operator=(class cursor_controller &rhs){if((this) == &rhs) {return *(this);}else {}return *(this);}}
+Generating destructor for cursor_controller2
+func_name = ~cursor_controller2
+inserting ~cursor_controller2 = 0x42d9b648
+uninvoked base class: class cursor_controller {public: void up(int rows=1);void down(int rows=1);void right(int cols=1);void left(int cols=1);void move(int row,int col);inline void home(){(this) -> move(1,1);}void clear_screen();void clear_eol();void save();void restore();cursor_controller(){}~cursor_controller(){}cursor_controller(class cursor_controller &rhs){}cursor_controller &operator=(class cursor_controller &rhs){if((this) == &rhs) {return *(this);}else {}return *(this);}}
+Generating destructor call for cursor_controller
+Generating copy constructor for cursor_controller2
+func_name = cursor_controller2
+inserting cursor_controller2 = 0x42d9b7a8
+uninvoked base class: class cursor_controller {public: void up(int rows=1);void down(int rows=1);void right(int cols=1);void left(int cols=1);void move(int row,int col);inline void home(){(this) -> move(1,1);}void clear_screen();void clear_eol();void save();void restore();cursor_controller(){}~cursor_controller(){}cursor_controller(class cursor_controller &rhs){}cursor_controller &operator=(class cursor_controller &rhs){if((this) == &rhs) {return *(this);}else {}return *(this);}}
+Generating copy constructor call for cursor_controller
+parent class def: class cursor_controller {public: void up(int rows=1);void down(int rows=1);void right(int cols=1);void left(int cols=1);void move(int row,int col);inline void home(){(this) -> move(1,1);}void clear_screen();void clear_eol();void save();void restore();cursor_controller(){}~cursor_controller(){}cursor_controller(class cursor_controller &rhs){}cursor_controller &operator=(class cursor_controller &rhs){if((this) == &rhs) {return *(this);}else {}return *(this);}}
+func_name = operator=
+inserting operator= = 0x42d9b908
+uninvoked base class: class cursor_controller {public: void up(int rows=1);void down(int rows=1);void right(int cols=1);void left(int cols=1);void move(int row,int col);inline void home(){(this) -> move(1,1);}void clear_screen();void clear_eol();void save();void restore();cursor_controller(){}~cursor_controller(){}cursor_controller(class cursor_controller &rhs){}cursor_controller &operator=(class cursor_controller &rhs){if((this) == &rhs) {return *(this);}else {}return *(this);}}
+Visiting memberFunctionDecl: public: cursor_controller2() : cursor_controller(){}
+invoked base class: cursor_controller
+Visiting memberFunctionDecl: public: ~cursor_controller2(){((class cursor_controller *)(this)) -> ~cursor_controller();}
+invoked base class: cursor_controller
+Visiting memberFunctionDecl: public: cursor_controller2(class cursor_controller2 &rhs) : cursor_controller(rhs){}
+invoked base class: cursor_controller
+Visiting memberFunctionDecl: public: cursor_controller2 &operator=(class cursor_controller2 &rhs){(*((class cursor_controller *)(this)))=((class cursor_controller &)rhs);if((this) == &rhs) {return *(this);}else {}return *(this);}
+Generating copy constructor for screen_controller
+func_name = screen_controller
+inserting screen_controller = 0x42d9ba68
+uninvoked base class: class cursor_controller2 : public cursor_controller{public: void normal();void high_intensity();void blink();void reverse();void invisible();cursor_controller2() : cursor_controller(){}~cursor_controller2(){((class cursor_controller *)(this)) -> ~cursor_controller();}cursor_controller2(class cursor_controller2 &rhs) : cursor_controller(rhs){}cursor_controller2 &operator=(class cursor_controller2 &rhs){(*((class cursor_controller *)(this)))=((class cursor_controller &)rhs);if((this) == &rhs) {return *(this);}else {}return *(this);}}
+Generating copy constructor call for cursor_controller2
+parent class def: class cursor_controller2 : public cursor_controller{public: void normal();void high_intensity();void blink();void reverse();void invisible();cursor_controller2() : cursor_controller(){}~cursor_controller2(){((class cursor_controller *)(this)) -> ~cursor_controller();}cursor_controller2(class cursor_controller2 &rhs) : cursor_controller(rhs){}cursor_controller2 &operator=(class cursor_controller2 &rhs){(*((class cursor_controller *)(this)))=((class cursor_controller &)rhs);if((this) == &rhs) {return *(this);}else {}return *(this);}}
+func_name = operator=
+inserting operator= = 0x42d9bbc8
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+uninvoked base class: class cursor_controller2 : public cursor_controller{public: void normal();void high_intensity();void blink();void reverse();void invisible();cursor_controller2() : cursor_controller(){}~cursor_controller2(){((class cursor_controller *)(this)) -> ~cursor_controller();}cursor_controller2(class cursor_controller2 &rhs) : cursor_controller(rhs){}cursor_controller2 &operator=(class cursor_controller2 &rhs){(*((class cursor_controller *)(this)))=((class cursor_controller &)rhs);if((this) == &rhs) {return *(this);}else {}return *(this);}}
+Visiting memberFunctionDecl: public: inline int maxrow(){return(this) -> rowmax;}
+Visiting memberFunctionDecl: public: inline int maxcol(){return(this) -> colmax;}
+Visiting memberFunctionDecl: public: screen_controller(class screen_controller &rhs) : rowmax(rhs.rowmax), colmax(rhs.colmax), cursor_controller2(rhs){}
+invoked base class: cursor_controller2
+Visiting memberFunctionDecl: public: screen_controller &operator=(class screen_controller &rhs){(*((class cursor_controller2 *)(this)))=((class cursor_controller2 &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> rowmax = rhs.rowmax;(this) -> colmax = rhs.colmax;return *(this);}
+Visiting memberFunctionDecl: void cursor_controller::up(int rows){printf(("%dA"),rows,0);}
+Visiting memberFunctionDecl: void cursor_controller::down(int rows){printf(("%dB"),rows,0);}
+Visiting memberFunctionDecl: void cursor_controller::right(int cols){printf(("%dC"),cols,0);}
+Visiting memberFunctionDecl: void cursor_controller::left(int cols){printf(("%dD"),cols,0);}
+Visiting memberFunctionDecl: void cursor_controller::move(int row,int col){printf(("%d;%dH"),row,col);}
+Visiting memberFunctionDecl: void cursor_controller::clear_screen(){printf(("2J"),0,0);}
+Visiting memberFunctionDecl: void cursor_controller::clear_eol(){printf(("K"),0,0);}
+Visiting memberFunctionDecl: void cursor_controller::save(){printf(("s"),0,0);}
+Visiting memberFunctionDecl: void cursor_controller::restore(){printf(("u"),0,0);}
+Visiting memberFunctionDecl: void cursor_controller2::normal(){printf(("0"),0,0);}
+Visiting memberFunctionDecl: void cursor_controller2::high_intensity(){printf(("1"),0,0);}
+Visiting memberFunctionDecl: void cursor_controller2::blink(){printf(("5"),0,0);}
+Visiting memberFunctionDecl: void cursor_controller2::reverse(){printf(("7"),0,0);}
+Visiting memberFunctionDecl: void cursor_controller2::invisible(){printf(("8"),0,0);}
+Visiting memberFunctionDecl: screen_controller::screen_controller(int rows,int cols) : rowmax(rows), colmax(cols){if(object_count) {error(("only one instance allowed"));}else {object_count = 1;}printf(("turn off wrap"),0,0);}
+uninvoked base class: class cursor_controller2 : public cursor_controller{public: void normal();void high_intensity();void blink();void reverse();void invisible();cursor_controller2() : cursor_controller(){}~cursor_controller2(){((class cursor_controller *)(this)) -> ~cursor_controller();}cursor_controller2(class cursor_controller2 &rhs) : cursor_controller(rhs){}cursor_controller2 &operator=(class cursor_controller2 &rhs){(*((class cursor_controller *)(this)))=((class cursor_controller &)rhs);if((this) == &rhs) {return *(this);}else {}return *(this);}}
+Generating constructor call for cursor_controller2 within method: screen_controller::screen_controller(int rows,int cols) : rowmax(rows), colmax(cols){if(object_count) {error(("only one instance allowed"));}else {object_count = 1;}printf(("turn off wrap"),0,0);}
+parent class def: class cursor_controller2 : public cursor_controller{public: void normal();void high_intensity();void blink();void reverse();void invisible();cursor_controller2() : cursor_controller(){}~cursor_controller2(){((class cursor_controller *)(this)) -> ~cursor_controller();}cursor_controller2(class cursor_controller2 &rhs) : cursor_controller(rhs){}cursor_controller2 &operator=(class cursor_controller2 &rhs){(*((class cursor_controller *)(this)))=((class cursor_controller &)rhs);if((this) == &rhs) {return *(this);}else {}return *(this);}}
+Visiting memberFunctionDecl: void screen_controller::setrows(int rows){(this) -> rowmax = rows;}
+Visiting memberFunctionDecl: void screen_controller::setcols(int cols){(this) -> colmax = cols;}
+Visiting memberFunctionDecl: screen_controller::~screen_controller(){(this) -> normal();printf(("turn on line wrap"),0,0);}
+uninvoked base class: class cursor_controller2 : public cursor_controller{public: void normal();void high_intensity();void blink();void reverse();void invisible();cursor_controller2() : cursor_controller(){}~cursor_controller2(){((class cursor_controller *)(this)) -> ~cursor_controller();}cursor_controller2(class cursor_controller2 &rhs) : cursor_controller(rhs){}cursor_controller2 &operator=(class cursor_controller2 &rhs){(*((class cursor_controller *)(this)))=((class cursor_controller &)rhs);if((this) == &rhs) {return *(this);}else {}return *(this);}}
+Generating destructor call for cursor_controller2
+Visiting memberFunctionDecl: void screen_controller::upper_left(){(this) -> move(1,1);}
+Visiting memberFunctionDecl: void screen_controller::lower_left(){(this) -> move(((this) -> rowmax),1);}
+Visiting memberFunctionDecl: void screen_controller::upper_right(){(this) -> move(1,((this) -> colmax));}
+Visiting memberFunctionDecl: void screen_controller::lower_right(){(this) -> move(((this) -> rowmax),((this) -> colmax));}
+Visiting memberFunctionDecl: void screen_controller::draw_vertical(int row,int col,int length,char l_char){if((row >((this) -> rowmax)) ||((row + length) >((this) -> rowmax))) {error(("draw_vertical: row index out of bounds"));}else {}if(col >((this) -> colmax)) {error(("draw_vertical: col index out of bounds"));}else {}for(int rrow = row;rrow <=(row + length);rrow++) {(this) -> cursor_controller::move(rrow,col);printf(("%c"),((int )l_char),0);}}
+Visiting memberFunctionDecl: void screen_controller::draw_horizontal(int row,int col,int length,char l_char){if((col >((this) -> colmax)) ||((col + length) >((this) -> colmax))) {error(("draw_horizontal: row index out of bounds"));}else {}if(row >((this) -> rowmax)) {error(("draw_horizontal: col index out of bounds"));}else {}for(int ccol = col;ccol <=(col + length);ccol++) {(this) -> cursor_controller::move(row,ccol);printf(("%c"),((int )l_char),0);}}
+Visiting memberFunctionDecl: void screen_controller::center(int row,char *text){(this) -> move(row,((((this) -> colmax) - strlen(text)) / 2));printf(("%c"),((int )( *text)),0);}
+Visiting memberFunctionDecl: void screen_controller::move(int row,int col){if(row >((this) -> rowmax)) {error(("move: row index out of bounds"));}else {}if(col >((this) -> colmax)) {error(("move: col index out of bounds"));}else {}(this) -> cursor_controller::move(row,col);}
+Visiting memberFunctionDecl: void screen_controller::pause(int seconds){}
+Visiting memberFunctionDecl: void screen_controller::drawbox(int hor,int ver,int ul,int ur,int ll,int lr){(this) -> draw_vertical(0,0,((this) -> maxrow() - 1),(ver));(this) -> draw_vertical(0,(this) -> maxcol(),((this) -> maxrow() - 1),(ver));(this) -> draw_horizontal(0,0,((this) -> maxcol() - 1),(hor));(this) -> draw_horizontal((this) -> maxrow(),0,((this) -> maxcol() - 1),(hor));(this) -> upper_left();printf(("%d"),ul,0);(this) -> lower_left();printf(("%d"),ll,0);(this) -> upper_right();printf(("%d"),ur,0);(this) -> lower_right();printf(("%d"),lr,0);}
+Generating destructor for init_grid
+func_name = ~init_grid
+inserting ~init_grid = 0x42d9bd28
+Generating copy constructor for init_grid
+func_name = init_grid
+inserting init_grid = 0x42d9be88
+func_name = operator=
+inserting operator= = 0x42d9bfe8
+Visiting memberFunctionDecl: public: ~init_grid(){}
+Visiting memberFunctionDecl: public: init_grid(class init_grid &rhs){}
+Visiting memberFunctionDecl: public: init_grid &operator=(class init_grid &rhs){if((this) == &rhs) {return *(this);}else {}return *(this);}
+Visiting memberFunctionDecl: init_grid::init_grid(){for(int i = 0;i < 25;i++) {for(int j = 0;j < 80;j++) {(s_grid[i])[j] =((0));}}}
+Visiting memberFunctionDecl: void simulation_unit::move(int x_steps,int y_steps){int x_new =(((this) -> x) + x_steps);int y_new =(((this) -> y) + y_steps);if((x_new < 0) ||(x_new >= 25)) {error(("move: x coord out of bounds"));}else {}if((y_new < 0) ||(y_new >= 80)) {error(("move: y coord out of bounds"));}else {}if(((s_grid[x_new])[y_new]) ==((0))) {(s_grid[(this) -> x])[(this) -> y] =((0));(this) -> erase();(s_grid[(this) -> x = x_new])[(this) -> y = y_new] =(this);(this) -> display();}else {}}
+Generating constructor for pop_around
+func_name = pop_around
+inserting pop_around = 0x42d9c148
+uninvoked base class: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+Generating constructor call for simulation_unit within method: public: pop_around(){}
+parent class def: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+Generating copy constructor for pop_around
+func_name = pop_around
+inserting pop_around = 0x42d9c2a8
+uninvoked base class: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+Generating copy constructor call for simulation_unit
+parent class def: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+func_name = operator=
+inserting operator= = 0x42d9c408
+uninvoked base class: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+Visiting memberFunctionDecl: public: virtual inline void display(){screen.move(((this) -> x),((this) -> y));printf(("@"),0,0);}
+Visiting memberFunctionDecl: public: virtual inline void erase(){screen.move(((this) -> x),((this) -> y));printf((""),0,0);}
+Visiting memberFunctionDecl: public: inline pop_around(int xi,int yi) : simulation_unit(xi,yi){(this) -> pop_around::display();}
+invoked base class: simulation_unit
+Visiting memberFunctionDecl: public: virtual inline ~pop_around(){}
+uninvoked base class: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+Generating destructor call for simulation_unit
+Visiting memberFunctionDecl: public: virtual inline void cycle(){int x_direction;int y_direction;if(((this) -> x) == 0) {x_direction = 0;}else {if(((this) -> x) ==(25 - 1)) {x_direction = 1;}else {x_direction = 2;}}if(((this) -> y) == 0) {y_direction = 0;}else {if(((this) -> y) ==(80 - 1)) {y_direction = 1;}else {y_direction = 2;}}int x_jump =(x_direction)?(-1):1;int y_jump =(y_direction)?(-1):1;(this) -> move(x_jump,y_jump);}
+Visiting memberFunctionDecl: public: pop_around() : simulation_unit(){}
+invoked base class: simulation_unit
+Visiting memberFunctionDecl: public: pop_around(class pop_around &rhs) : simulation_unit(rhs){}
+invoked base class: simulation_unit
+Visiting memberFunctionDecl: public: pop_around &operator=(class pop_around &rhs){(*((class simulation_unit *)(this)))=((class simulation_unit &)rhs);if((this) == &rhs) {return *(this);}else {}return *(this);}
+Generating constructor for crawl_around
+func_name = crawl_around
+inserting crawl_around = 0x42d9c568
+uninvoked base class: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+Generating constructor call for simulation_unit within method: public: crawl_around(){}
+parent class def: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+Generating copy constructor for crawl_around
+func_name = crawl_around
+inserting crawl_around = 0x42d9c6c8
+uninvoked base class: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+Generating copy constructor call for simulation_unit
+parent class def: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+func_name = operator=
+inserting operator= = 0x42d9c828
+uninvoked base class: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+Visiting memberFunctionDecl: public: virtual inline void display(){screen.move(((this) -> x),((this) -> y));printf(("*"),0,0);}
+Visiting memberFunctionDecl: public: virtual inline void erase(){screen.move(((this) -> x),((this) -> y));printf((""),0,0);}
+Visiting memberFunctionDecl: public: inline crawl_around(int xi,int yi) : simulation_unit(xi,yi){(this) -> crawl_around::display();}
+invoked base class: simulation_unit
+Visiting memberFunctionDecl: public: virtual inline ~crawl_around(){}
+uninvoked base class: class simulation_unit {protected: int x;int y;public: virtual inline void display(){}virtual inline void erase(){}inline simulation_unit(int x_loc,int y_loc) : x(x_loc), y(y_loc){(this) -> simulation_unit::display();}virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}virtual inline void cycle(){}void move(int x_steps,int y_steps);simulation_unit(){}simulation_unit(class simulation_unit &rhs) : x(rhs.x), y(rhs.y){}simulation_unit &operator=(class simulation_unit &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> x = rhs.x;(this) -> y = rhs.y;return *(this);}}
+Generating destructor call for simulation_unit
+Visiting memberFunctionDecl: public: virtual inline void cycle(){int x_step =((0)?(-1):1);if((((this) -> x) + x_step) < 0) {x_step =(-x_step);}else {}if((((this) -> x) + x_step) >= 25) {x_step =(-x_step);}else {}int y_step =((0)?(-1):1);if((((this) -> y) + y_step) < 0) {y_step =(-y_step);}else {}if((((this) -> y) + y_step) >= 80) {y_step =(-y_step);}else {}(this) -> move(x_step,y_step);}
+Visiting memberFunctionDecl: public: crawl_around() : simulation_unit(){}
+invoked base class: simulation_unit
+Visiting memberFunctionDecl: public: crawl_around(class crawl_around &rhs) : simulation_unit(rhs){}
+invoked base class: simulation_unit
+Visiting memberFunctionDecl: public: crawl_around &operator=(class crawl_around &rhs){(*((class simulation_unit *)(this)))=((class simulation_unit &)rhs);if((this) == &rhs) {return *(this);}else {}return *(this);}
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+parent is a SgExpressionRoot, replace_expression= 1
+parent is a SgExpressionRoot, replace_expression= 1
+parent is a SgExpressionRoot, replace_expression= 1
+parent is a SgExpressionRoot, replace_expression= 1
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+hasSC(cond)
+hasSC(cond)
+hasSC(cond)
+hasSC(cond)
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+in varDecl loop0x42d1e008
+in varDecl loop0x42d1e0fc
+in varDecl loop0x42d1e1f0
+in varDecl loop0x42d1e2e4
+in varDecl loop0x42d1e3d8
+in varDecl loop0x42d1e4cc
+in varDecl loop0x42d1e5c0
+in varDecl loop0x42d1e6b4
+in varDecl loop0x42d1e7a8
+in varDecl loop0x42d1e89c
+in varDecl loop0x42d1e990
+in varDecl loop0x42d1ea84
+in varDecl loop0x42d1eb78
+in varDecl loop0x42d1ec6c
+in varDecl loop0x42d1ed60
+in varDecl loop0x42d1ee54
+in varDecl loop0x42d1ef48
+in varDecl loop0x42d1f03c
+in varDecl loop0x42d1f130
+doing varDecl
+in varDecl loop0x42d1f224
+doing varDecl
+in varDecl loop0x42d1f318
+in varDecl loop0x42d1f40c
+in varDecl loop0x42d1f500
+in varDecl loop0x42d1f5f4
+in varDecl loop0x42d1f6e8
+in varDecl loop0x42d1f7dc
+in varDecl loop0x42d1f8d0
+in varDecl loop0x42d1f9c4
+in varDecl loop0x42d1fab8
+in varDecl loop0x42d1fbac
+in varDecl loop0x42d1fca0
+in varDecl loop0x42d1fd94
+in varDecl loop0x42d1fe88
+in varDecl loop0x42d1ff7c
+reduceIfStmtsWithSCchild: doing 0x850fb00 iter 1
+replacementStmt is now 0x83fa9e0 SgIfStmt
+replacementStmtParent is now 0x82f8f80 SgBasicBlock
+reduceIfStmtsWithSCchild: doing 0x850fb38 iter 1
+replacementStmt is now 0x83faa40 SgIfStmt
+replacementStmtParent is now 0x82f8ff8 SgBasicBlock
+reduceIfStmtsWithSCchild: doing 0x850fb70 iter 1
+replacementStmt is now 0x83faaa0 SgIfStmt
+replacementStmtParent is now 0x82f9070 SgBasicBlock
+reduceIfStmtsWithSCchild: doing 0x850fba8 iter 1
+replacementStmt is now 0x83fab00 SgIfStmt
+replacementStmtParent is now 0x82f90e8 SgBasicBlock
+reduceIfStmtsWithSCchild: doing 0x850fa20 iter 1
+reduceIfStmtsWithSCchild: doing 0x850fa58 iter 1
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+virtual function defn: public: virtual inline void display(){}
+virtual function defn: public: virtual inline void erase(){}
+virtual function defn: public: virtual inline ~simulation_unit(){(this) -> simulation_unit::erase();}
+virtual function defn: public: virtual inline void cycle(){}
+virtual function defn: public: virtual inline void display(){screen.move(((this) -> x),((this) -> y));printf(("@"),0,0);}
+virtual function defn: public: virtual inline void erase(){screen.move(((this) -> x),((this) -> y));printf((""),0,0);}
+virtual function defn: public: virtual inline ~pop_around(){((class simulation_unit *)(this)) -> ~simulation_unit();}
+virtual function defn: public: virtual inline void cycle(){int x_direction;int y_direction;if(((this) -> x) == 0) {x_direction = 0;}else {if(((this) -> x) ==(25 - 1)) {x_direction = 1;}else {x_direction = 2;}}if(((this) -> y) == 0) {y_direction = 0;}else {if(((this) -> y) ==(80 - 1)) {y_direction = 1;}else {y_direction = 2;}}int x_jump;if(x_direction) {x_jump =(-1);}else {x_jump = 1;}int y_jump;if(y_direction) {y_jump =(-1);}else {y_jump = 1;}(this) -> move(x_jump,y_jump);}
+virtual function defn: public: virtual inline void display(){screen.move(((this) -> x),((this) -> y));printf(("*"),0,0);}
+virtual function defn: public: virtual inline void erase(){screen.move(((this) -> x),((this) -> y));printf((""),0,0);}
+virtual function defn: public: virtual inline ~crawl_around(){((class simulation_unit *)(this)) -> ~simulation_unit();}
+virtual function defn: public: virtual inline void cycle(){int x_step =((0)?(-1):1);if((((this) -> x) + x_step) < 0) {x_step =(-x_step);}else {}if((((this) -> x) + x_step) >= 25) {x_step =(-x_step);}else {}int y_step =((0)?(-1):1);if((((this) -> y) + y_step) < 0) {y_step =(-y_step);}else {}if((((this) -> y) + y_step) >= 80) {y_step =(-y_step);}else {}(this) -> move(x_step,y_step);}
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+CHA examining: main___Fb_i_Gb__Fe_
+method?: screen.clear_screen()
+method: screen.clear_screen()
+dot: screen.clear_screen()
+method?: ( *((s_grid[x_location])[y_location])).cycle()
+method: ( *((s_grid[x_location])[y_location])).cycle()
+methodPtr: ( *((s_grid[x_location])[y_location])).cycle()
+tracking: public: virtual inline void cycle(){}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: ( *((s_grid[x_location])[y_location])).cycle() public: virtual inline void cycle(){}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+Looking up subclasses of 0x82c0708 simulation_unit
+subclass of simulation_unit got: pop_around
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: ( *((s_grid[x_location])[y_location])).cycle() public: virtual inline void cycle(){int x_direction;int y_direction;if(((this) -> x) == 0) {x_direction = 0;}else {if(((this) -> x) ==(25 - 1)) {x_direction = 1;}else {x_direction = 2;}}if(((this) -> y) == 0) {y_direction = 0;}else {if(((this) -> y) ==(80 - 1)) {y_direction = 1;}else {y_direction = 2;}}int x_jump;if(x_direction) {x_jump =(-1);}else {x_jump = 1;}int y_jump;if(y_direction) {y_jump =(-1);}else {y_jump = 1;}(this) -> move(x_jump,y_jump);}
+checking overrides
+checking overrides
+checking overrides
+subclass of simulation_unit got: crawl_around
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: ( *((s_grid[x_location])[y_location])).cycle() public: virtual inline void cycle(){int x_step =((0)?(-1):1);if((((this) -> x) + x_step) < 0) {x_step =(-x_step);}else {}if((((this) -> x) + x_step) >= 25) {x_step =(-x_step);}else {}int y_step =((0)?(-1):1);if((((this) -> y) + y_step) < 0) {y_step =(-y_step);}else {}if((((this) -> y) + y_step) >= 80) {y_step =(-y_step);}else {}(this) -> move(x_step,y_step);}
+checking overrides
+checking overrides
+checking overrides
+CHA examining: cursor_controller__scope__clear_screen____MFb_cursor_controller__Fb_v_Gb__Fe_
+method?: printf(("2J"),0,0)
+CHA examining: simulation_unit__scope__cycle____MFb_simulation_unit__Fb_v_Gb__Fe_
+CHA examining: pop_around__scope__cycle____MFb_pop_around__Fb_v_Gb__Fe_
+method?: (this) -> move(x_jump,y_jump)
+method: (this) -> move(x_jump,y_jump)
+CHA examining: crawl_around__scope__cycle____MFb_crawl_around__Fb_v_Gb__Fe_
+method?: (this) -> move(x_step,y_step)
+method: (this) -> move(x_step,y_step)
+CHA examining: pop_around__scope__pop_around____MFb_pop_around__Fb_v_Gb_i__sep__i_Fe_
+method?: (this) -> pop_around::display()
+method: (this) -> pop_around::display()
+CHA examining: crawl_around__scope__crawl_around____MFb_crawl_around__Fb_v_Gb_i__sep__i_Fe_
+method?: (this) -> crawl_around::display()
+method: (this) -> crawl_around::display()
+CHA examining: printf___Fb_v_Gb___Pb__c__Pe____sep__i__sep__i_Fe_
+CHA examining: simulation_unit__scope__move____MFb_simulation_unit__Fb_v_Gb_i__sep__i_Fe_
+method?: error(("move: x coord out of bounds"))
+method?: error(("move: y coord out of bounds"))
+method?: (this) -> erase()
+method: (this) -> erase()
+methodPtr: (this) -> erase()
+tracking: public: virtual inline void erase(){}
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: (this) -> erase() public: virtual inline void erase(){}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+Looking up subclasses of 0x82c0708 simulation_unit
+subclass of simulation_unit got: pop_around
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: (this) -> erase() public: virtual inline void erase(){screen.move(((this) -> x),((this) -> y));printf((""),0,0);}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+subclass of simulation_unit got: crawl_around
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: (this) -> erase() public: virtual inline void erase(){screen.move(((this) -> x),((this) -> y));printf((""),0,0);}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+method?: (this) -> display()
+method: (this) -> display()
+methodPtr: (this) -> display()
+tracking: public: virtual inline void display(){}
+checking overrides
+overrides
+CHA resolution for call site: (this) -> display() public: virtual inline void display(){}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+Looking up subclasses of 0x82c0708 simulation_unit
+subclass of simulation_unit got: pop_around
+checking overrides
+overrides
+CHA resolution for call site: (this) -> display() public: virtual inline void display(){screen.move(((this) -> x),((this) -> y));printf(("@"),0,0);}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+subclass of simulation_unit got: crawl_around
+checking overrides
+overrides
+CHA resolution for call site: (this) -> display() public: virtual inline void display(){screen.move(((this) -> x),((this) -> y));printf(("*"),0,0);}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+CHA examining: pop_around__scope__display____MFb_pop_around__Fb_v_Gb__Fe_
+method?: screen.move(((this) -> x),((this) -> y))
+method: screen.move(((this) -> x),((this) -> y))
+dot: screen.move(((this) -> x),((this) -> y))
+method?: printf(("@"),0,0)
+CHA examining: crawl_around__scope__display____MFb_crawl_around__Fb_v_Gb__Fe_
+method?: screen.move(((this) -> x),((this) -> y))
+method: screen.move(((this) -> x),((this) -> y))
+dot: screen.move(((this) -> x),((this) -> y))
+method?: printf(("*"),0,0)
+CHA examining: error___Fb_v_Gb___Pb__c__Pe___Fe_
+CHA examining: simulation_unit__scope__erase____MFb_simulation_unit__Fb_v_Gb__Fe_
+CHA examining: pop_around__scope__erase____MFb_pop_around__Fb_v_Gb__Fe_
+method?: screen.move(((this) -> x),((this) -> y))
+method: screen.move(((this) -> x),((this) -> y))
+dot: screen.move(((this) -> x),((this) -> y))
+method?: printf((""),0,0)
+CHA examining: crawl_around__scope__erase____MFb_crawl_around__Fb_v_Gb__Fe_
+method?: screen.move(((this) -> x),((this) -> y))
+method: screen.move(((this) -> x),((this) -> y))
+dot: screen.move(((this) -> x),((this) -> y))
+method?: printf((""),0,0)
+CHA examining: simulation_unit__scope__display____MFb_simulation_unit__Fb_v_Gb__Fe_
+CHA examining: screen_controller__scope__move____MFb_screen_controller__Fb_v_Gb_i__sep__i_Fe_
+method?: error(("move: row index out of bounds"))
+method?: error(("move: col index out of bounds"))
+method?: (this) -> cursor_controller::move(row,col)
+method: (this) -> cursor_controller::move(row,col)
+CHA examining: cursor_controller__scope__move____MFb_cursor_controller__Fb_v_Gb_i__sep__i_Fe_
+method?: printf(("%d;%dH"),row,col)
+CHA examining: main___Fb_i_Gb__Fe_
+method?: screen.clear_screen()
+method: screen.clear_screen()
+dot: screen.clear_screen()
+method?: ( *((s_grid[x_location])[y_location])).cycle()
+method: ( *((s_grid[x_location])[y_location])).cycle()
+methodPtr: ( *((s_grid[x_location])[y_location])).cycle()
+tracking: public: virtual inline void cycle(){}
+Alias analysis resolution for call site ( *((s_grid[x_location])[y_location])).cycle() 
+NamedLoc(
+    mSymHandle: SymHandle(method:pop_around::cycle__pop_around__scope__cycle____MFb_pop_around__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Alias analysis resolution for call site ( *((s_grid[x_location])[y_location])).cycle() 
+NamedLoc(
+    mSymHandle: SymHandle(method:crawl_around::cycle__crawl_around__scope__cycle____MFb_crawl_around__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+CHA examining: cursor_controller__scope__clear_screen____MFb_cursor_controller__Fb_v_Gb__Fe_
+method?: printf(("2J"),0,0)
+CHA examining: pop_around__scope__cycle____MFb_pop_around__Fb_v_Gb__Fe_
+method?: (this) -> move(x_jump,y_jump)
+method: (this) -> move(x_jump,y_jump)
+CHA examining: crawl_around__scope__cycle____MFb_crawl_around__Fb_v_Gb__Fe_
+method?: (this) -> move(x_step,y_step)
+method: (this) -> move(x_step,y_step)
+CHA examining: pop_around__scope__pop_around____MFb_pop_around__Fb_v_Gb_i__sep__i_Fe_
+method?: (this) -> pop_around::display()
+method: (this) -> pop_around::display()
+CHA examining: crawl_around__scope__crawl_around____MFb_crawl_around__Fb_v_Gb_i__sep__i_Fe_
+method?: (this) -> crawl_around::display()
+method: (this) -> crawl_around::display()
+CHA examining: printf___Fb_v_Gb___Pb__c__Pe____sep__i__sep__i_Fe_
+CHA examining: simulation_unit__scope__move____MFb_simulation_unit__Fb_v_Gb_i__sep__i_Fe_
+method?: error(("move: x coord out of bounds"))
+method?: error(("move: y coord out of bounds"))
+method?: (this) -> erase()
+method: (this) -> erase()
+methodPtr: (this) -> erase()
+tracking: public: virtual inline void erase(){}
+Alias analysis resolution for call site (this) -> erase() 
+NamedLoc(
+    mSymHandle: SymHandle(method:pop_around::erase__pop_around__scope__erase____MFb_pop_around__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Alias analysis resolution for call site (this) -> erase() 
+NamedLoc(
+    mSymHandle: SymHandle(method:crawl_around::erase__crawl_around__scope__erase____MFb_crawl_around__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+method?: (this) -> display()
+method: (this) -> display()
+methodPtr: (this) -> display()
+tracking: public: virtual inline void display(){}
+Alias analysis resolution for call site (this) -> display() 
+NamedLoc(
+    mSymHandle: SymHandle(method:pop_around::display__pop_around__scope__display____MFb_pop_around__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Alias analysis resolution for call site (this) -> display() 
+NamedLoc(
+    mSymHandle: SymHandle(method:crawl_around::display__crawl_around__scope__display____MFb_crawl_around__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+CHA examining: pop_around__scope__display____MFb_pop_around__Fb_v_Gb__Fe_
+method?: screen.move(((this) -> x),((this) -> y))
+method: screen.move(((this) -> x),((this) -> y))
+dot: screen.move(((this) -> x),((this) -> y))
+method?: printf(("@"),0,0)
+CHA examining: crawl_around__scope__display____MFb_crawl_around__Fb_v_Gb__Fe_
+method?: screen.move(((this) -> x),((this) -> y))
+method: screen.move(((this) -> x),((this) -> y))
+dot: screen.move(((this) -> x),((this) -> y))
+method?: printf(("*"),0,0)
+CHA examining: error___Fb_v_Gb___Pb__c__Pe___Fe_
+CHA examining: pop_around__scope__erase____MFb_pop_around__Fb_v_Gb__Fe_
+method?: screen.move(((this) -> x),((this) -> y))
+method: screen.move(((this) -> x),((this) -> y))
+dot: screen.move(((this) -> x),((this) -> y))
+method?: printf((""),0,0)
+CHA examining: crawl_around__scope__erase____MFb_crawl_around__Fb_v_Gb__Fe_
+method?: screen.move(((this) -> x),((this) -> y))
+method: screen.move(((this) -> x),((this) -> y))
+dot: screen.move(((this) -> x),((this) -> y))
+method?: printf((""),0,0)
+CHA examining: screen_controller__scope__move____MFb_screen_controller__Fb_v_Gb_i__sep__i_Fe_
+method?: error(("move: row index out of bounds"))
+method?: error(("move: col index out of bounds"))
+method?: (this) -> cursor_controller::move(row,col)
+method: (this) -> cursor_controller::move(row,col)
+CHA examining: cursor_controller__scope__move____MFb_cursor_controller__Fb_v_Gb_i__sep__i_Fe_
+method?: printf(("%d;%dH"),row,col)
+Inside of ~CallGraphCreate() 

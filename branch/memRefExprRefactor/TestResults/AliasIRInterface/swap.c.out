@@ -119,9 +119,13 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("for(i = 0;i < 4;i++) {swap(a,i,(i + 1));}") =>
         [
             MemRefHandle("i") => 
+                NamedRef( DEF, SymHandle("i"), F, full)
+            MemRefHandle("i") => 
                 NamedRef( USE, SymHandle("i"), F, full)
             MemRefHandle("i") => 
                 NamedRef( USEDEF, SymHandle("i"), F, full)
+            MemRefHandle("i = 0") => 
+                NamedRef( USE, SymHandle("i"), F, full)
             MemRefHandle("i++") => 
                 NamedRef( USE, SymHandle("i"), F, full)
         ] }

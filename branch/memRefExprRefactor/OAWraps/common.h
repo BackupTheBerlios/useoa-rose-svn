@@ -97,6 +97,10 @@ bool isArrowExp(SgExpression *function);
 
 bool hasDefinition(SgFunctionDeclaration *functionDeclaration);
 
+bool isConstructor(SgMemberFunctionDeclaration *memberFunctionDeclaration);
+
+bool isDestructor(SgMemberFunctionDeclaration *memberFunctionDeclaration);
+
 } // end of namespace UseOA
 
 #endif /* _USEOA_COMMON_H */
