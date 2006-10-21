@@ -1,0 +1,10 @@
+# comment in file.test
+# Regression tests for AliasIRInterface generation
+testname::AliasIRInterfacePerMethodModel
+inputdir::TestCases/AliasTests
+outputdir::TestResults/AliasIRInterfacePerMethodModel
+driverexec::./CtoOA --usePerMethodVirtualModel
+
+# list of tests
+#       input file,    			 status
+#test::  parambinds-formals.C,	 error email sent 4/19/06 MMS

@@ -16,6 +16,8 @@ echo "Generating TestResults/FIAliasAliasMap/utke.c.out"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/utke.c >& TestResults/FIAliasAliasMap/utke.c.out
 echo "Generating TestResults/FIAliasAliasMap/OAWikiEx.c.out"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/OAWikiEx.c >& TestResults/FIAliasAliasMap/OAWikiEx.c.out
+echo "Generating TestResults/FIAliasAliasMap/funCall.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/funCall.c >& TestResults/FIAliasAliasMap/funCall.c.out
 echo "Generating TestResults/FIAliasAliasMap/functionPtr.c.out"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr.c >& TestResults/FIAliasAliasMap/functionPtr.c.out
 echo "Generating TestResults/FIAliasAliasMap/functionPtr2.c.out"
@@ -32,3 +34,9 @@ echo "Generating TestResults/FIAliasAliasMap/swap.c.out"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/swap.c >& TestResults/FIAliasAliasMap/swap.c.out
 echo "Generating TestResults/FIAliasAliasMap/invLoc.c.out"
 ./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/invLoc.c >& TestResults/FIAliasAliasMap/invLoc.c.out
+echo "Generating TestResults/FIAliasAliasMap/RyderEtAlFig11.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig11.c >& TestResults/FIAliasAliasMap/RyderEtAlFig11.c.out
+echo "Generating TestResults/FIAliasAliasMap/RyderEtAlFig14.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig14.c >& TestResults/FIAliasAliasMap/RyderEtAlFig14.c.out
+echo "Generating TestResults/FIAliasAliasMap/RyderEtAlFig15.c.out"
+./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig15.c >& TestResults/FIAliasAliasMap/RyderEtAlFig15.c.out

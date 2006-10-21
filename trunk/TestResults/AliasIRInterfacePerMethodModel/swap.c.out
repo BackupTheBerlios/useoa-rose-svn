@@ -1,0 +1,17 @@
+"TestCases/AliasTests/swap.c", line 22: warning: variable "j" was declared but
+          never referenced
+    int i,j;
+          ^
+
+Using per-method virtual table model
+
+PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("v") >
+            < 1, SymHandle("i") >
+            < 2, SymHandle("j") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("void swap(int *v,int i,int j){int temp;temp =(v[i]);v[i] =(v[j]);v[j] = temp;}") =>
+CtoOA: MemSage2OA.C:1032: void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle): Assertion `0' failed.
+        [

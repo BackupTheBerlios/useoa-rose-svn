@@ -1,8 +1,3 @@
-"TestCases/AliasTests/swap.c", line 22: warning: variable "j" was declared but
-          never referenced
-    int i,j;
-          ^
-
 
 PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
     FORMALS = {
@@ -30,6 +25,8 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
                 NamedRef( USE, SymHandle("i"), F, full)
             MemRefHandle("(v[i])") => 
                 Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+            MemRefHandle("temp =(v[i])") => 
+                NamedRef( USE, SymHandle("temp"), F, full)
         ] }
     MEMREFEXPRS = { StmtHandle("v[i] =(v[j]);") =>
         [
@@ -45,6 +42,8 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
                 Deref( DEF, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
             MemRefHandle("(v[j])") => 
                 Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+            MemRefHandle("v[i] =(v[j])") => 
+                Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
         ] }
     MEMREFEXPRS = { StmtHandle("v[j] = temp;") =>
         [
@@ -56,6 +55,8 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
                 NamedRef( USE, SymHandle("temp"), F, full)
             MemRefHandle("v[j]") => 
                 Deref( DEF, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+            MemRefHandle("v[j] = temp") => 
+                Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
         ] }
     LOCATION = { < SymHandle("v"), local > }
     LOCATION = { < SymHandle("i"), local > }
@@ -64,6 +65,33 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
     LOCATION = { < SymHandle("swap"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step_data ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step_data {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct _IO_FILE ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct _IO_marker {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct _IO_FILE {};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stdin_;") =>
         [
         ] }
@@ -95,7 +123,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("i") => 
                 NamedRef( USE, SymHandle("i"), F, full)
             MemRefHandle("i") => 
-                NamedRef( DEF, SymHandle("i"), F, full)
+                NamedRef( USEDEF, SymHandle("i"), F, full)
+            MemRefHandle("i = 0") => 
+                NamedRef( USE, SymHandle("i"), F, full)
+            MemRefHandle("i++") => 
+                NamedRef( USE, SymHandle("i"), F, full)
         ] }
     MEMREFEXPRS = { StmtHandle("{swap(a,i,(i + 1));}") =>
         [
@@ -108,6 +140,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("i"), F, full)
             MemRefHandle("i") => 
                 NamedRef( USE, SymHandle("i"), F, full)
+            MemRefHandle("swap") => 
+                NamedRef( USE, SymHandle("swap"), F, full)
         ] }
     CALLSITES = { StmtHandle("swap(a,i,(i + 1));") =>
         [

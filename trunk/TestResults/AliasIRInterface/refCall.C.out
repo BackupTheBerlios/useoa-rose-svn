@@ -1,0 +1,64 @@
+
+PROCEDURE = { < ProcHandle("foo"), SymHandle("foo") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("a") >
+            < 1, SymHandle("b") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("void foo(int &a,int *b){a = c;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{a = c;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("a = c;") =>
+        [
+            MemRefHandle("refRelatedBaseOrTmp") => 
+                NamedRef( USE, SymHandle("a"), F, full)
+            MemRefHandle("a") => 
+                Deref( DEF, NamedRef( USE, SymHandle("a"), F, full), 1, F, full)
+            MemRefHandle("c") => 
+                NamedRef( USE, SymHandle("c"), F, full)
+            MemRefHandle("a = c") => 
+                Deref( USE, NamedRef( USE, SymHandle("a"), F, full), 1, F, full)
+        ] }
+    LOCATION = { < SymHandle("c"), not local > }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("b"), local > }
+    LOCATION = { < SymHandle("foo"), not local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int x;foo(x,&x);return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int x;foo(x,&x);return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int x;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("foo(x,&x);") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("foo") => 
+                NamedRef( USE, SymHandle("foo"), F, full)
+            MemRefHandle("&x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("foo(x,&x);") =>
+        [
+            CallHandle("foo(x,&x)") => 
+                NamedRef( USE, SymHandle("foo"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("foo(x,&x)") =>
+        [
+            < 0, NamedRef( USE, SymHandle("x"), T, full) >
+            < 1, NamedRef( USE, SymHandle("x"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("foo"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }

@@ -1,0 +1,165 @@
+AddVariable(v: Variable, initialValue: ÇanyÈ)
+	v.value := initialValue.
+	v.constraints := EMPTYSET.
+	v.determinedBy := none.
+	v.walkStrength := absoluteWeakest.
+	v.mark := 0.
+	v.stay := true.
+	Add v to allVariables.
+
+RemoveVariable(v: Variable)
+	For each constraint c in v.constraints do
+		RemoveConstraint(c).
+	Remove v from allVariables.
+
+AddConstraint(c: Constraint)
+	For each variable v in c.variables do
+		Add c to v.constraints.
+	c.whichMethod := none.
+	IncrementalAdd(c).
+
+RemoveConstraint(c: Constraint)
+	If Satisfied(c) then IncrementalRemove(c).
+	For each variable v in c.variables do
+		Remove c from v.constraints.
+
+ExtractPlan(): Ordered List of Constraints
+	sources := EMPTYSET.
+	For all variables v in allVariables do
+		For all constraints c in v.constraints do
+			If c.inputFlag and Satisfied(c) then add c to sources.
+	Return MakePlan(sources).
+
+ExtractPlanFrom(constraints: Set of Constraints): Ordered List of Constraints
+	sources := EMPTYSET.
+	For all constraints c in constraints do
+		If c.inputFlag and Satisfied(c) then add c to sources.
+	Return MakePlan(sources).
+
+IncrementalAdd(c: Constraint)
+	NewMark().
+	overridden := Satisfy(c).
+	While overridden ­ none do
+		overridden := Satisfy(overridden).
+
+Satisfy(c: Constraint) : (Constraint | none)
+	c.whichMethod := ChooseMethod(c).
+	If Satisfied(c) then
+		For all variables i in Inputs(c) do
+			i.mark = currentMark.
+		overridden := c.whichMethod.output.determinedBy.
+		If overridden ­ none then overridden.whichMethod := none.
+		c.whichMethod.output.determinedBy := c.
+		If ÂAddPropagate(c) then
+			Error: "Cycle encountered".
+			Return none.
+		c.whichMethod.output.mark := currentMark.
+		Return overridden.
+	Else
+		If c.strength = required then
+			Error: ÒFailed to satisfy a required constraint.Ó
+		Return none.
+
+ChooseMethod(c: Constraint) : (Method | none)
+	best := none.
+	bestOutStrength := c.strength.
+	For all methods m in c.methods do
+		If m.output.mark ­ currentMark and
+		   Weaker(m.output.walkStrength, bestOutStrength) then
+				best := m.
+				bestOutStrength := m.output.walkStrength.
+	Return best.
+
+AddPropagate(c: Constraint) : Boolean
+	todo := {c}.
+	While todo ­ EMPTYSET do
+		Remove a constraint d from todo.
+		If d.whichMethod.output = currentMark then
+			IncrementalRemove(c).
+			Return false.
+		Recalculate(d).
+		Add all ConsumingConstraints(d.whichMethod.output) to todo.
+	Return true.
+
+IncrementalRemove(c: Constraint)
+	out := c.whichMethod.output.
+	c.whichMethod := none.
+	For each variable v in c.variables do
+		Remove c from v.constraints.
+	unsatisfied := RemovePropagateFrom(out).
+	For all constraints d in unsatisfied in order of decreasing strength do
+		IncrementalAdd(d).
+
+RemovePropagateFrom(out: Variable) : Set of Constraints
+	unsatisfied := EMPTYSET.
+	out.determinedBy := none.
+	out.walkStrength := absoluteWeakest.
+	out.stay := true.
+	todo := {out}.
+	While todo ­ EMPTYSET do
+		Remove a variable v from todo.
+		For all constraints c in v.constraints do
+			If ÂSatisfied(c) then add c to unsatisfied.
+		For all constraints c in ConsumingConstraints(v) do
+			Recalculate(c).
+			Add c.whichMethod.output to todo.
+	Return unsatisfied.
+
+MakePlan(sources: Set of Constraints): Ordered List of Constraints
+	NewMark().
+	plan := EMPTYSET.
+	todo := sources.
+	While todo ­ EMPTYSET do
+		Remove a constraint c from todo.
+		If c.whichMethod.output.mark ­ currentMark and InputsKnown(c) then
+			Append c to plan.
+			c.whichMethod.output.mark := currentMark.
+			Add all ConsumingConstraints(c.whichMethod.output) to todo.
+	Return plan.
+
+InputsKnown(c: Constraint) : Boolean
+	For all variables v in Inputs(c) do
+		If Â(v.mark = currentMark or
+			 v.stay or
+			 v.determinedBy = none) then
+				Return false.
+	Return true.
+
+Recalculate(c: Constraint)
+	c.whichMethod.output.walkStrength := OutputWalkStrength(c).
+	c.whichMethod.output.stay := ConstantOutput(c).
+	If c.whichMethod.output.stay then
+		c.whichMethod.output.value := Execute m.code.
+
+OutputWalkStrength(c: Constraint) : Strength
+	minStrength := c.strength.
+	For all methods m in c.methods do
+		If m.output ­ c.whichMethod.output and
+		   Weaker(m.output.walkStrength, minStrength) then
+				minStrength := m.output.walkStrength.
+	Return minStrength.
+
+ConstantOutput(c: Constraint) : Boolean
+	If c.inputFlag then return false.
+	For all variables v in Inputs(c) do
+		If Âv.stay then return false.
+	Return true.
+
+ConsumingConstraints(v: Variable) : Set of Constraints
+	consumers := EMPTYSET.
+	For all constraints c in v.constraints do
+		If Satisfied(c) and c ­ v.determinedBy then
+			Add c to consumers.
+	Return consumers.
+
+Inputs(c: Constraint) : Set of Variables
+	Return all variables v in c.variables such that
+		v ­ c.whichMethod.output.
+
+NewMark()
+	currentMark := currentMark + 1.
+
+Satisfied(c: Constraint) : Boolean
+	Return c.whichMethod ­ none.
+
+Weaker(s1, s2: Strength) : Boolean

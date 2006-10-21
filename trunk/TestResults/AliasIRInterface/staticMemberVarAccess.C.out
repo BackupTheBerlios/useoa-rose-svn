@@ -1,0 +1,23 @@
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class Foo {public: static int sX;};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int main(){Foo::sX = 0;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{Foo::sX = 0;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("Foo::sX = 0;") =>
+        [
+            MemRefHandle("Foo::sX") => 
+                NamedRef( DEF, SymHandle("sX"), F, full)
+            MemRefHandle("Foo::sX = 0") => 
+                NamedRef( USE, SymHandle("sX"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("sX"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }

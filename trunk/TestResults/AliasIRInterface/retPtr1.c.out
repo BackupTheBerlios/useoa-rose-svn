@@ -1,8 +1,3 @@
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
 PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
     FORMALS = {
@@ -41,13 +36,19 @@ PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
     MEMREFEXPRS = { StmtHandle("*(p++) = *(source++);") =>
         [
             MemRefHandle("p") => 
-                NamedRef( DEF, SymHandle("p"), F, full)
+                NamedRef( USEDEF, SymHandle("p"), F, full)
             MemRefHandle("source") => 
-                NamedRef( DEF, SymHandle("source"), F, full)
+                NamedRef( USEDEF, SymHandle("source"), F, full)
             MemRefHandle("*(p++)") => 
-                Deref( DEF, NamedRef( DEF, SymHandle("p"), F, full), 1, F, full)
+                Deref( DEF, NamedRef( USE, SymHandle("p"), F, full), 1, F, full)
             MemRefHandle("*(source++)") => 
-                Deref( USE, NamedRef( DEF, SymHandle("source"), F, full), 1, F, full)
+                Deref( USE, NamedRef( USE, SymHandle("source"), F, full), 1, F, full)
+            MemRefHandle("(p++)") => 
+                NamedRef( USE, SymHandle("p"), F, full)
+            MemRefHandle("(source++)") => 
+                NamedRef( USE, SymHandle("source"), F, full)
+            MemRefHandle("*(p++) = *(source++)") => 
+                Deref( USE, NamedRef( USE, SymHandle("p"), F, full), 1, F, full)
         ] }
     MEMREFEXPRS = { StmtHandle("*p = '\0';") =>
         [
@@ -55,6 +56,8 @@ PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
                 NamedRef( USE, SymHandle("p"), F, full)
             MemRefHandle("*p") => 
                 Deref( DEF, NamedRef( USE, SymHandle("p"), F, full), 1, F, full)
+            MemRefHandle("*p = '\0'") => 
+                Deref( USE, NamedRef( USE, SymHandle("p"), F, full), 1, F, full)
         ] }
     MEMREFEXPRS = { StmtHandle("return destination;") =>
         [
@@ -72,6 +75,33 @@ PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
     LOCATION = { < SymHandle("my_strcpy"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step_data ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step_data {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct _IO_FILE ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct _IO_marker {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct _IO_FILE {};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stdin_;") =>
         [
         ] }
@@ -92,24 +122,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("strA") => 
                 NamedRef( DEF, SymHandle("strA"), F, full)
             MemRefHandle(""Laurel"") => 
-                UnnamedRef( USE, StmtHandle(""Laurel""), T, part)
-        ] }
-    PTRASSIGNPAIRS = { StmtHandle("char strA[] = "Laurel";") =>
-        [
-            < NamedRef( DEF, SymHandle("strA"), F, full)
-            , UnnamedRef( USE, StmtHandle(""Laurel""), T, part) >
+                UnnamedRef( USE, StmtHandle(""Laurel""), F, part)
         ] }
     MEMREFEXPRS = { StmtHandle("char strB[] = "Hardy";") =>
         [
             MemRefHandle("strB") => 
                 NamedRef( DEF, SymHandle("strB"), F, full)
             MemRefHandle(""Hardy"") => 
-                UnnamedRef( USE, StmtHandle(""Hardy""), T, part)
-        ] }
-    PTRASSIGNPAIRS = { StmtHandle("char strB[] = "Hardy";") =>
-        [
-            < NamedRef( DEF, SymHandle("strB"), F, full)
-            , UnnamedRef( USE, StmtHandle(""Hardy""), T, part) >
+                UnnamedRef( USE, StmtHandle(""Hardy""), F, part)
         ] }
     MEMREFEXPRS = { StmtHandle("char *cptr = my_strcpy(strB,strA);") =>
         [
@@ -119,6 +139,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("strB"), T, full)
             MemRefHandle("strA") => 
                 NamedRef( USE, SymHandle("strA"), T, full)
+            MemRefHandle("my_strcpy") => 
+                NamedRef( USE, SymHandle("my_strcpy"), F, full)
             MemRefHandle("my_strcpy(strB,strA)") => 
                 NamedRef( USE, SymHandle("my_strcpy"), F, full)
         ] }
@@ -140,7 +162,9 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("puts((strB));") =>
         [
             MemRefHandle("strB") => 
-                NamedRef( USE, SymHandle("strB"), F, full)
+                NamedRef( USE, SymHandle("strB"), T, full)
+            MemRefHandle("puts") => 
+                NamedRef( USE, SymHandle("puts"), F, full)
         ] }
     CALLSITES = { StmtHandle("puts((strB));") =>
         [
@@ -149,7 +173,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("puts((strB))") =>
         [
-            < 0, NamedRef( USE, SymHandle("strB"), F, full) >
+            < 0, NamedRef( USE, SymHandle("strB"), T, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

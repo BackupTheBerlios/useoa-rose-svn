@@ -15,11 +15,11 @@
 class FindCallsitesPass : public SgSimpleProcessing {
 private:
  SgExpressionPtrList & call_lst;
- OA::OA_ptr<SageIRInterface> mIR;
+ SageIRInterface & mIR;
 protected:
   void visit(SgNode* node);
 public:
-  FindCallsitesPass(OA::OA_ptr<SageIRInterface> ir, SgExpressionPtrList& p) 
+  FindCallsitesPass(SageIRInterface &ir, SgExpressionPtrList& p) 
     : mIR(ir), call_lst(p) {}
 };
 
@@ -36,7 +36,7 @@ public:
 
 
 
-//	ProcHAndle corresponds to SgFunctionDefinition
+//      ProcHAndle corresponds to SgFunctionDefinition
 
 /*!
  * Enumerate over all procedures in the IR.
@@ -45,16 +45,10 @@ public:
 class SageIRProcIterator: public OA::IRProcIterator 
 {
  public:
-  // This should take a SgNode *, not a SgProject *.  The former
-  // is more general.  bwhite
-  //  SageIRProcIterator (SgProject * sageproject, SageIRInterface * in); 
-  SageIRProcIterator (SgNode *node, OA::OA_ptr<SageIRInterface> in,
-		      bool excludeInputFiles = false); 
-  // MMS, must take OA_ptr to SageIRInterface because can't have raw ptrs
-  // and OA_ptrs to the same object
-  //should really be a list of SgFunctionDefinition pointers? or maybe just SgProject ptr?
-                                                 //maybe both and SgFile too?
-  SageIRProcIterator () { valid=FALSE;}
+  SageIRProcIterator (SgNode *node, SageIRInterface& in);
+  // MMS, can't take an OA_ptr to SageIRInterface because need to
+  // construct one of these within a SageIRInterface and can't pass this to
+  // an OA_ptr
   ~SageIRProcIterator () {}
 
   OA::ProcHandle current () const;
@@ -62,7 +56,7 @@ class SageIRProcIterator: public OA::IRProcIterator
   void operator++ (); 
 
   void reset();
-  OA::OA_ptr<SageIRInterface> ir;
+  SageIRInterface& ir;
  private:
   SgStatementPtrList procs_in_proj; 
   SgStatementPtrList::iterator st_iter;
@@ -83,8 +77,8 @@ class SageIRProcIterator: public OA::IRProcIterator
 class SageIRCallsiteIterator: public OA::IRCallsiteIterator
 {
  public:
-  SageIRCallsiteIterator(SgStatement * sgstmt, OA::OA_ptr<SageIRInterface> in); 
-  SageIRCallsiteIterator() { valid=FALSE;}
+  SageIRCallsiteIterator(SgStatement * sgstmt, SageIRInterface &in); 
+//  SageIRCallsiteIterator() : { valid=FALSE; }
   ~SageIRCallsiteIterator() { }
 
   OA::CallHandle current() const;  // Returns the current item.
@@ -94,7 +88,7 @@ class SageIRCallsiteIterator: public OA::IRCallsiteIterator
   void operator++(int) { ++*this; } ;
 
   void reset();
-  OA::OA_ptr<SageIRInterface> ir;
+  SageIRInterface &ir;
  private:
   SgExpressionPtrList calls_in_stmt; 
   SgExpressionPtrList::iterator st_iter;

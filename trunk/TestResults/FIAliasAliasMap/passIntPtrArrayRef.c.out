@@ -1,5 +1,3 @@
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
 InterAliasMap(
     AliasMap(
@@ -224,6 +222,7 @@ InterAliasMap(
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 2	 => [ MemRefHandle(x) ] 
+                3	 => [ MemRefHandle(blah) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 

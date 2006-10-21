@@ -6,110 +6,9 @@
 #include <iostream>
 #include "CallGraph.h"
 
-/** \brief Strip the "const" keyword from a string.
- *  \param name  A string (intending to represent a formal parameter
- *               type).
- *  \returns  A string holding name stripped of the "const" prefix.
- *
- *  This was copied from 
- *  .../ROSE/src/midend/astUtil/astInterface/AstInterface.C
- *
- *  To do:  move this to a generally-accessible utilities file
- *          or make it accessible from AstInterface (by adding
- *          its declaration to AstInterface.h).
- */
-static std::string StripParameterType( const std::string& name)
-{
-  char *const_start = strstr( name.c_str(), "const");
-  std::string r = (const_start == 0)? name : std::string(const_start + 5);
-  int end = r.size()-1;
-  if (r[end] == '&') {
-       r[end] = ' ';
-  }
-  std::string result = "";
-  for (unsigned int i = 0; i < r.size(); ++i) {
-    if (r[i] != ' ')
-      result.push_back(r[i]);
-  }
-  return result; 
-} 
+#include "common.h"
 
-/** \brief Return a type's name and size.
- *  \param t  A Sage type.
- *  \param tname  On output, holds the string name of the type.
- *  \param stripname  On output, holds the string name of the type,
- *                    stripped of any "const" prefix.
- *  \param size  On output, holds the size?  I don't know what
- *               this size corresponds to.  Certainly not the size
- *               of the type (which needn't be a word) or string.
- *
- *  This was copied from 
- *  .../ROSE/src/midend/astUtil/astInterface/AstInterface.C
- *
- *  To do:  move this to a generally-accessible utilities file
- *          or make it accessible from AstInterface (by adding
- *          its declaration to AstInterface.h).
- */
-static void GetTypeInfo(SgType *t, std::string *tname, 
-			std::string* stripname, int* size = 0)
-{
-  std::string r1 = get_type_name(t);
-  std::string result = "";
-  for (unsigned int i = 0; i < r1.size(); ++i) {
-    if (r1[i] != ' ')
-      result.push_back(r1[i]);
-  }
-  if (tname != 0)
-    *tname = result;
-  if (stripname != 0)
-    *stripname = StripParameterType(result);
-  if (size != 0)
-    *size = 4;
-}
-
-bool matchingMemberFunctions(SgMemberFunctionDeclaration *methodDecl1, 
-			     SgMemberFunctionDeclaration *methodDecl2)
-{
-  // Compare the names of the two methods.
-  SgName name1 = methodDecl1->get_name();
-  SgName name2 = methodDecl2->get_name();
-  //  std::cout << name1 << " " << name2 << std::endl;
-  if ( name1 != name2 )
-    return false;
-
-  // Compare the return types of the two methods.
-  SgType *method1Type = methodDecl1->get_orig_return_type();
-  SgType *method2Type = methodDecl2->get_orig_return_type();
-
-  std::string ret1Type, ret2Type;
-  GetTypeInfo(method1Type, 0, &ret1Type);
-  GetTypeInfo(method2Type, 0, &ret2Type);
-  if ( ret1Type != ret2Type )
-    return false;
-
-
-  // Compare the number and types of the formal arguments
-  SgInitializedNamePtrList &method1Params = methodDecl1->get_args();
-  SgInitializedNamePtrList &method2Params = methodDecl2->get_args();
-  if ( method1Params.size() != method2Params.size() )
-    return false;
-
-  SgInitializedNamePtrList::iterator p1 = method1Params.begin();
-  SgInitializedNamePtrList::iterator p2 = method2Params.begin();
-  for ( ; p1 != method1Params.end(); ++p1, ++p2) {
-    SgType* t1 = (*p1)->get_type();
-    SgType* t2 = (*p2)->get_type();
-    
-    std::string param1Type, param2Type;
-    GetTypeInfo(t1, 0, &param1Type);
-    GetTypeInfo(t2, 0, &param2Type);
-    if (param1Type != param2Type) {
-      return false;
-    }
-  }
-
-  return true;
-}
+using namespace UseOA;
 
 bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRefOrPtr)
 {
@@ -174,6 +73,32 @@ bool isMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp, bool &lhsIsRe
   return isMethod;
 }
 
+/** \brief  Returns true if method is a pure virtual method.
+ *  \param  functionDeclaration  A method declaration.
+ *  \returns  Boolean indicating whether method is a pure virtual
+ *            method.
+ */
+bool isPureVirtual(SgFunctionDeclaration *functionDeclaration)
+{
+  if ( functionDeclaration == NULL ) return false;
+
+  if ( functionDeclaration->get_functionModifier().isPureVirtual() ) 
+    return true;
+
+  SgDeclarationStatement *firstNondefiningDeclaration =
+    functionDeclaration->get_firstNondefiningDeclaration();
+
+  if ( firstNondefiningDeclaration == NULL )
+    return false;
+
+  SgFunctionDeclaration *firstNondefiningFuncDeclaration =
+    isSgFunctionDeclaration(firstNondefiningDeclaration);
+  ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
+
+  return firstNondefiningFuncDeclaration->get_functionModifier().isPureVirtual();
+}
+
+#if 0
 SgFunctionDeclaration * 
 getFunctionDeclaration(SgFunctionCallExp *functionCall) 
 { 
@@ -272,31 +197,6 @@ bool isVirtual(SgFunctionDeclaration *functionDeclaration)
   ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
 
   return firstNondefiningFuncDeclaration->get_functionModifier().isVirtual();
-}
-
-/** \brief  Returns true if method is a pure virtual method.
- *  \param  functionDeclaration  A method declaration.
- *  \returns  Boolean indicating whether method is a pure virtual
- *            method.
- */
-bool isPureVirtual(SgFunctionDeclaration *functionDeclaration)
-{
-  if ( functionDeclaration == NULL ) return false;
-
-  if ( functionDeclaration->get_functionModifier().isPureVirtual() ) 
-    return true;
-
-  SgDeclarationStatement *firstNondefiningDeclaration =
-    functionDeclaration->get_firstNondefiningDeclaration();
-
-  if ( firstNondefiningDeclaration == NULL )
-    return false;
-
-  SgFunctionDeclaration *firstNondefiningFuncDeclaration =
-    isSgFunctionDeclaration(firstNondefiningDeclaration);
-  ROSE_ASSERT(firstNondefiningFuncDeclaration != NULL);
-
-  return firstNondefiningFuncDeclaration->get_functionModifier().isPureVirtual();
 }
 
 bool isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration, SgClassDefinition *classDefinition)
@@ -487,6 +387,7 @@ methodOverridesVirtualMethod(SgMemberFunctionDeclaration *methodDecl,
   return true;
 #endif
 }
+#endif
 
 int main(int argc, char **argv)
 {
@@ -704,9 +605,12 @@ int main(int argc, char **argv)
       numResolutionsForMethod++;
     }
 
+#if 0
     if ( ( isVirtual(functionDeclaration) ) ||
 	 ( isDeclaredVirtualWithinAncestor(functionDeclaration) ) ) {
-      
+#else
+      if ( isVirtual(functionDeclaration) ) {
+#endif      
       //      std::cout << "tracking: " << functionDeclaration->unparseToString() << std::endl;
 
       SgClassDefinition *classDefinition = 
@@ -744,7 +648,7 @@ int main(int argc, char **argv)
 	  // Determine whether subclass of the class defining this
 	  // method overrides the method.
 #if 1
-	  if ( matchingMemberFunctions(method,
+	  if ( matchingFunctions(method,
 				       memberFunctionDeclaration) ) {
 	    //	    std::cout << "overries" << std::endl;
 	    // Do not consider a pure virtual method to be an 

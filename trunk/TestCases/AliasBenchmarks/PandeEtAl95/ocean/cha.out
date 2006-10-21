@@ -1,0 +1,1917 @@
+Generating constructor for Random
+func_name = Random
+inserting Random = 0x42d9ba68
+Generating destructor for Random
+func_name = ~Random
+inserting ~Random = 0x42d9bbc8
+Generating copy constructor for Random
+func_name = Random
+inserting Random = 0x42d9bd28
+func_name = operator=
+inserting operator= = 0x42d9be88
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Visiting memberFunctionDecl: public: inline void initialize(){(this) -> seed1 = 3797;(this) -> seed2 = 2117;}
+Visiting memberFunctionDecl: public: inline void init(int s1,int s2){(this) -> seed1 = s1;(this) -> seed2 = s2;}
+Visiting memberFunctionDecl: public: Random(){}
+Visiting memberFunctionDecl: public: ~Random(){}
+Visiting memberFunctionDecl: public: Random(class Random &rhs) : seed1(rhs.seed1), seed2(rhs.seed2){}
+Visiting memberFunctionDecl: public: Random &operator=(class Random &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> seed1 = rhs.seed1;(this) -> seed2 = rhs.seed2;return *(this);}
+Visiting memberFunctionDecl: public: inline Coordinate(unsigned int anX,unsigned int aY) : x(anX), y(aY){}
+Visiting memberFunctionDecl: public: inline Coordinate(const class Coordinate &aCoord){(this) -> x =(aCoord.x);(this) -> y =(aCoord.y);}
+Visiting memberFunctionDecl: public: inline Coordinate(){}
+Visiting memberFunctionDecl: public: inline ~Coordinate(){}
+Visiting memberFunctionDecl: public: inline unsigned int getX(){return(this) -> x;}
+Visiting memberFunctionDecl: public: inline unsigned int getY(){return(this) -> y;}
+Visiting memberFunctionDecl: public: inline void setX(unsigned int anX){(this) -> x = anX;}
+Visiting memberFunctionDecl: public: inline void setY(unsigned int aY){(this) -> y = aY;}
+Visiting memberFunctionDecl: public: inline Coordinate &operator=(const class Coordinate &aCoord){if(&aCoord !=((this))) {(this) -> x =(aCoord.x);(this) -> y =(aCoord.y);}else {}return *(this);}
+Visiting memberFunctionDecl: public: inline int operator==(class Coordinate &c){return((((this) -> x) ==(c.x)) &&(((this) -> y) ==(c.y)));}
+Visiting memberFunctionDecl: public: inline int operator!=(class Coordinate &c){return((((this) -> x) !=(c.x)) &&(((this) -> y) !=(c.y)));}
+Generating copy constructor for Ocean
+func_name = Ocean
+inserting Ocean = 0x42d9bfe8
+func_name = operator=
+inserting operator= = 0x42d9c148
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Visiting memberFunctionDecl: public: inline unsigned int getNumPrey(){return(this) -> numPrey;}
+Visiting memberFunctionDecl: public: inline unsigned int getNumPredators(){return(this) -> numPredators;}
+Visiting memberFunctionDecl: public: inline void setNumPrey(unsigned int aNumber){(this) -> numPrey = aNumber;}
+Visiting memberFunctionDecl: public: inline void setNumPredators(unsigned int aNumber){(this) -> numPredators = aNumber;}
+Visiting memberFunctionDecl: public: inline Ocean(){}
+Visiting memberFunctionDecl: public: inline ~Ocean(){:: delete((this) -> random);}
+Visiting memberFunctionDecl: public: Ocean(class Ocean &rhs) : numRows(rhs.numRows), numCols(rhs.numCols), size(rhs.size), numPrey(rhs.numPrey), numPredators(rhs.numPredators), numObstacles(rhs.numObstacles), random(rhs.random){}
+Visiting memberFunctionDecl: public: Ocean &operator=(class Ocean &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> numRows = rhs.numRows;(this) -> numCols = rhs.numCols;(this) -> size = rhs.size;(this) -> numPrey = rhs.numPrey;(this) -> numPredators = rhs.numPredators;(this) -> numObstacles = rhs.numObstacles;(this) -> random = rhs.random;return *(this);}
+Generating copy constructor for Cell
+func_name = Cell
+inserting Cell = 0x42d9c2a8
+func_name = operator=
+inserting operator= = 0x42d9c408
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Visiting memberFunctionDecl: public: inline Cell(const class Coordinate &aCoord){(this) -> offset =(new Coordinate(aCoord));(this) -> image = '-';}
+Visiting memberFunctionDecl: public: inline Cell(){}
+Visiting memberFunctionDecl: public: virtual inline ~Cell(){delete((this) -> offset);}
+Visiting memberFunctionDecl: public: inline Coordinate &getOffset(){return *((this) -> offset);}
+Visiting memberFunctionDecl: public: inline void setOffset(class Coordinate &anOffset){(this) -> offset =(new Coordinate(anOffset));}
+Visiting memberFunctionDecl: public: inline char getImage(){return(this) -> image;}
+Visiting memberFunctionDecl: public: virtual inline void process(){}
+Visiting memberFunctionDecl: public: Cell(class Cell &rhs) : offset(rhs.offset), image(rhs.image){}
+Visiting memberFunctionDecl: public: Cell &operator=(class Cell &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> offset = rhs.offset;(this) -> image = rhs.image;return *(this);}
+Generating constructor for Prey
+func_name = Prey
+inserting Prey = 0x42d9c568
+uninvoked base class: class Cell {private: friend class Ocean ;protected: class Coordinate *offset;char image;Cell *getCellAt(class Coordinate aCoord);void assignCellAt(class Coordinate aCoord,class Cell *aCell);Cell *getNeighborWithImage(char anImage);Coordinate getEmptyNeighborCoord();Coordinate getPreyNeighborCoord();Cell *north();Cell *south();Cell *east();Cell *west();virtual Cell *reproduce(class Coordinate anOffset);public: inline Cell(const class Coordinate &aCoord){(this) -> offset =(new Coordinate(aCoord));(this) -> image = '-';}inline Cell(){}virtual inline ~Cell(){delete((this) -> offset);}inline Coordinate &getOffset(){return *((this) -> offset);}inline void setOffset(class Coordinate &anOffset){(this) -> offset =(new Coordinate(anOffset));}inline char getImage(){return(this) -> image;}void display();virtual inline void process(){}Cell(class Cell &rhs) : offset(rhs.offset), image(rhs.image){}Cell &operator=(class Cell &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> offset = rhs.offset;(this) -> image = rhs.image;return *(this);}}
+Generating constructor call for Cell within method: public: Prey(){}
+parent class def: class Cell {private: friend class Ocean ;protected: class Coordinate *offset;char image;Cell *getCellAt(class Coordinate aCoord);void assignCellAt(class Coordinate aCoord,class Cell *aCell);Cell *getNeighborWithImage(char anImage);Coordinate getEmptyNeighborCoord();Coordinate getPreyNeighborCoord();Cell *north();Cell *south();Cell *east();Cell *west();virtual Cell *reproduce(class Coordinate anOffset);public: inline Cell(const class Coordinate &aCoord){(this) -> offset =(new Coordinate(aCoord));(this) -> image = '-';}inline Cell(){}virtual inline ~Cell(){delete((this) -> offset);}inline Coordinate &getOffset(){return *((this) -> offset);}inline void setOffset(class Coordinate &anOffset){(this) -> offset =(new Coordinate(anOffset));}inline char getImage(){return(this) -> image;}void display();virtual inline void process(){}Cell(class Cell &rhs) : offset(rhs.offset), image(rhs.image){}Cell &operator=(class Cell &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> offset = rhs.offset;(this) -> image = rhs.image;return *(this);}}
+Generating copy constructor for Prey
+func_name = Prey
+inserting Prey = 0x42d9c6c8
+uninvoked base class: class Cell {private: friend class Ocean ;protected: class Coordinate *offset;char image;Cell *getCellAt(class Coordinate aCoord);void assignCellAt(class Coordinate aCoord,class Cell *aCell);Cell *getNeighborWithImage(char anImage);Coordinate getEmptyNeighborCoord();Coordinate getPreyNeighborCoord();Cell *north();Cell *south();Cell *east();Cell *west();virtual Cell *reproduce(class Coordinate anOffset);public: inline Cell(const class Coordinate &aCoord){(this) -> offset =(new Coordinate(aCoord));(this) -> image = '-';}inline Cell(){}virtual inline ~Cell(){delete((this) -> offset);}inline Coordinate &getOffset(){return *((this) -> offset);}inline void setOffset(class Coordinate &anOffset){(this) -> offset =(new Coordinate(anOffset));}inline char getImage(){return(this) -> image;}void display();virtual inline void process(){}Cell(class Cell &rhs) : offset(rhs.offset), image(rhs.image){}Cell &operator=(class Cell &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> offset = rhs.offset;(this) -> image = rhs.image;return *(this);}}
+Generating copy constructor call for Cell
+parent class def: class Cell {private: friend class Ocean ;protected: class Coordinate *offset;char image;Cell *getCellAt(class Coordinate aCoord);void assignCellAt(class Coordinate aCoord,class Cell *aCell);Cell *getNeighborWithImage(char anImage);Coordinate getEmptyNeighborCoord();Coordinate getPreyNeighborCoord();Cell *north();Cell *south();Cell *east();Cell *west();virtual Cell *reproduce(class Coordinate anOffset);public: inline Cell(const class Coordinate &aCoord){(this) -> offset =(new Coordinate(aCoord));(this) -> image = '-';}inline Cell(){}virtual inline ~Cell(){delete((this) -> offset);}inline Coordinate &getOffset(){return *((this) -> offset);}inline void setOffset(class Coordinate &anOffset){(this) -> offset =(new Coordinate(anOffset));}inline char getImage(){return(this) -> image;}void display();virtual inline void process(){}Cell(class Cell &rhs) : offset(rhs.offset), image(rhs.image){}Cell &operator=(class Cell &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> offset = rhs.offset;(this) -> image = rhs.image;return *(this);}}
+func_name = operator=
+inserting operator= = 0x42d9c828
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+uninvoked base class: class Cell {private: friend class Ocean ;protected: class Coordinate *offset;char image;Cell *getCellAt(class Coordinate aCoord);void assignCellAt(class Coordinate aCoord,class Cell *aCell);Cell *getNeighborWithImage(char anImage);Coordinate getEmptyNeighborCoord();Coordinate getPreyNeighborCoord();Cell *north();Cell *south();Cell *east();Cell *west();virtual Cell *reproduce(class Coordinate anOffset);public: inline Cell(const class Coordinate &aCoord){(this) -> offset =(new Coordinate(aCoord));(this) -> image = '-';}inline Cell(){}virtual inline ~Cell(){delete((this) -> offset);}inline Coordinate &getOffset(){return *((this) -> offset);}inline void setOffset(class Coordinate &anOffset){(this) -> offset =(new Coordinate(anOffset));}inline char getImage(){return(this) -> image;}void display();virtual inline void process(){}Cell(class Cell &rhs) : offset(rhs.offset), image(rhs.image){}Cell &operator=(class Cell &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> offset = rhs.offset;(this) -> image = rhs.image;return *(this);}}
+Visiting memberFunctionDecl: public: inline Prey(class Coordinate &aCoord) : Cell(aCoord){(this) -> timeToReproduce = 6;(this) -> image = 'f';}
+invoked base class: Cell
+Visiting memberFunctionDecl: public: virtual inline ~Prey(){(this) -> Cell::~Cell();}
+invoked base class: Cell
+Visiting memberFunctionDecl: public: virtual inline void process(){class Coordinate toCoord;toCoord=(this) -> getEmptyNeighborCoord();(this) -> moveFrom(( *((this) -> offset)),(toCoord));}
+Visiting memberFunctionDecl: public: Prey() : Cell(){}
+invoked base class: Cell
+Visiting memberFunctionDecl: public: Prey(class Prey &rhs) : timeToReproduce(rhs.timeToReproduce), Cell(rhs){}
+invoked base class: Cell
+Visiting memberFunctionDecl: public: Prey &operator=(class Prey &rhs){(*((class Cell *)(this)))=((class Cell &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> timeToReproduce = rhs.timeToReproduce;return *(this);}
+Generating constructor for Predator
+func_name = Predator
+inserting Predator = 0x42d9c988
+uninvoked base class: class Prey : public Cell{protected: int timeToReproduce;void moveFrom(class Coordinate from,class Coordinate to);virtual Cell *reproduce(class Coordinate anOffset);public: inline Prey(class Coordinate &aCoord) : Cell(aCoord){(this) -> timeToReproduce = 6;(this) -> image = 'f';}virtual inline ~Prey(){(this) -> Cell::~Cell();}virtual inline void process(){class Coordinate toCoord;toCoord=(this) -> getEmptyNeighborCoord();(this) -> moveFrom(( *((this) -> offset)),(toCoord));}Prey() : Cell(){}Prey(class Prey &rhs) : timeToReproduce(rhs.timeToReproduce), Cell(rhs){}Prey &operator=(class Prey &rhs){(*((class Cell *)(this)))=((class Cell &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> timeToReproduce = rhs.timeToReproduce;return *(this);}}
+Generating constructor call for Prey within method: public: Predator(){}
+parent class def: class Prey : public Cell{protected: int timeToReproduce;void moveFrom(class Coordinate from,class Coordinate to);virtual Cell *reproduce(class Coordinate anOffset);public: inline Prey(class Coordinate &aCoord) : Cell(aCoord){(this) -> timeToReproduce = 6;(this) -> image = 'f';}virtual inline ~Prey(){(this) -> Cell::~Cell();}virtual inline void process(){class Coordinate toCoord;toCoord=(this) -> getEmptyNeighborCoord();(this) -> moveFrom(( *((this) -> offset)),(toCoord));}Prey() : Cell(){}Prey(class Prey &rhs) : timeToReproduce(rhs.timeToReproduce), Cell(rhs){}Prey &operator=(class Prey &rhs){(*((class Cell *)(this)))=((class Cell &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> timeToReproduce = rhs.timeToReproduce;return *(this);}}
+Generating copy constructor for Predator
+func_name = Predator
+inserting Predator = 0x42d9cae8
+uninvoked base class: class Prey : public Cell{protected: int timeToReproduce;void moveFrom(class Coordinate from,class Coordinate to);virtual Cell *reproduce(class Coordinate anOffset);public: inline Prey(class Coordinate &aCoord) : Cell(aCoord){(this) -> timeToReproduce = 6;(this) -> image = 'f';}virtual inline ~Prey(){(this) -> Cell::~Cell();}virtual inline void process(){class Coordinate toCoord;toCoord=(this) -> getEmptyNeighborCoord();(this) -> moveFrom(( *((this) -> offset)),(toCoord));}Prey() : Cell(){}Prey(class Prey &rhs) : timeToReproduce(rhs.timeToReproduce), Cell(rhs){}Prey &operator=(class Prey &rhs){(*((class Cell *)(this)))=((class Cell &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> timeToReproduce = rhs.timeToReproduce;return *(this);}}
+Generating copy constructor call for Prey
+parent class def: class Prey : public Cell{protected: int timeToReproduce;void moveFrom(class Coordinate from,class Coordinate to);virtual Cell *reproduce(class Coordinate anOffset);public: inline Prey(class Coordinate &aCoord) : Cell(aCoord){(this) -> timeToReproduce = 6;(this) -> image = 'f';}virtual inline ~Prey(){(this) -> Cell::~Cell();}virtual inline void process(){class Coordinate toCoord;toCoord=(this) -> getEmptyNeighborCoord();(this) -> moveFrom(( *((this) -> offset)),(toCoord));}Prey() : Cell(){}Prey(class Prey &rhs) : timeToReproduce(rhs.timeToReproduce), Cell(rhs){}Prey &operator=(class Prey &rhs){(*((class Cell *)(this)))=((class Cell &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> timeToReproduce = rhs.timeToReproduce;return *(this);}}
+func_name = operator=
+inserting operator= = 0x42d9cc48
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+uninvoked base class: class Prey : public Cell{protected: int timeToReproduce;void moveFrom(class Coordinate from,class Coordinate to);virtual Cell *reproduce(class Coordinate anOffset);public: inline Prey(class Coordinate &aCoord) : Cell(aCoord){(this) -> timeToReproduce = 6;(this) -> image = 'f';}virtual inline ~Prey(){(this) -> Cell::~Cell();}virtual inline void process(){class Coordinate toCoord;toCoord=(this) -> getEmptyNeighborCoord();(this) -> moveFrom(( *((this) -> offset)),(toCoord));}Prey() : Cell(){}Prey(class Prey &rhs) : timeToReproduce(rhs.timeToReproduce), Cell(rhs){}Prey &operator=(class Prey &rhs){(*((class Cell *)(this)))=((class Cell &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> timeToReproduce = rhs.timeToReproduce;return *(this);}}
+Visiting memberFunctionDecl: public: inline Predator(class Coordinate aCoord) : Prey(aCoord){(this) -> timeToFeed =(6);(this) -> image = 'S';}
+invoked base class: Prey
+Visiting memberFunctionDecl: public: virtual inline ~Predator(){(this) -> Prey::~Prey();}
+invoked base class: Prey
+Visiting memberFunctionDecl: public: Predator() : Prey(){}
+invoked base class: Prey
+Visiting memberFunctionDecl: public: Predator(class Predator &rhs) : timeToFeed(rhs.timeToFeed), Prey(rhs){}
+invoked base class: Prey
+Visiting memberFunctionDecl: public: Predator &operator=(class Predator &rhs){(*((class Prey *)(this)))=((class Prey &)rhs);if((this) == &rhs) {return *(this);}else {}(this) -> timeToFeed = rhs.timeToFeed;return *(this);}
+Generating constructor for Obstacle
+func_name = Obstacle
+inserting Obstacle = 0x42d9cda8
+uninvoked base class: class Cell {private: friend class Ocean ;protected: class Coordinate *offset;char image;Cell *getCellAt(class Coordinate aCoord);void assignCellAt(class Coordinate aCoord,class Cell *aCell);Cell *getNeighborWithImage(char anImage);Coordinate getEmptyNeighborCoord();Coordinate getPreyNeighborCoord();Cell *north();Cell *south();Cell *east();Cell *west();virtual Cell *reproduce(class Coordinate anOffset);public: inline Cell(const class Coordinate &aCoord){(this) -> offset =(new Coordinate(aCoord));(this) -> image = '-';}inline Cell(){}virtual inline ~Cell(){delete((this) -> offset);}inline Coordinate &getOffset(){return *((this) -> offset);}inline void setOffset(class Coordinate &anOffset){(this) -> offset =(new Coordinate(anOffset));}inline char getImage(){return(this) -> image;}void display();virtual inline void process(){}Cell(class Cell &rhs) : offset(rhs.offset), image(rhs.image){}Cell &operator=(class Cell &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> offset = rhs.offset;(this) -> image = rhs.image;return *(this);}}
+Generating constructor call for Cell within method: public: Obstacle(){}
+parent class def: class Cell {private: friend class Ocean ;protected: class Coordinate *offset;char image;Cell *getCellAt(class Coordinate aCoord);void assignCellAt(class Coordinate aCoord,class Cell *aCell);Cell *getNeighborWithImage(char anImage);Coordinate getEmptyNeighborCoord();Coordinate getPreyNeighborCoord();Cell *north();Cell *south();Cell *east();Cell *west();virtual Cell *reproduce(class Coordinate anOffset);public: inline Cell(const class Coordinate &aCoord){(this) -> offset =(new Coordinate(aCoord));(this) -> image = '-';}inline Cell(){}virtual inline ~Cell(){delete((this) -> offset);}inline Coordinate &getOffset(){return *((this) -> offset);}inline void setOffset(class Coordinate &anOffset){(this) -> offset =(new Coordinate(anOffset));}inline char getImage(){return(this) -> image;}void display();virtual inline void process(){}Cell(class Cell &rhs) : offset(rhs.offset), image(rhs.image){}Cell &operator=(class Cell &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> offset = rhs.offset;(this) -> image = rhs.image;return *(this);}}
+Generating copy constructor for Obstacle
+func_name = Obstacle
+inserting Obstacle = 0x42d9cf08
+uninvoked base class: class Cell {private: friend class Ocean ;protected: class Coordinate *offset;char image;Cell *getCellAt(class Coordinate aCoord);void assignCellAt(class Coordinate aCoord,class Cell *aCell);Cell *getNeighborWithImage(char anImage);Coordinate getEmptyNeighborCoord();Coordinate getPreyNeighborCoord();Cell *north();Cell *south();Cell *east();Cell *west();virtual Cell *reproduce(class Coordinate anOffset);public: inline Cell(const class Coordinate &aCoord){(this) -> offset =(new Coordinate(aCoord));(this) -> image = '-';}inline Cell(){}virtual inline ~Cell(){delete((this) -> offset);}inline Coordinate &getOffset(){return *((this) -> offset);}inline void setOffset(class Coordinate &anOffset){(this) -> offset =(new Coordinate(anOffset));}inline char getImage(){return(this) -> image;}void display();virtual inline void process(){}Cell(class Cell &rhs) : offset(rhs.offset), image(rhs.image){}Cell &operator=(class Cell &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> offset = rhs.offset;(this) -> image = rhs.image;return *(this);}}
+Generating copy constructor call for Cell
+parent class def: class Cell {private: friend class Ocean ;protected: class Coordinate *offset;char image;Cell *getCellAt(class Coordinate aCoord);void assignCellAt(class Coordinate aCoord,class Cell *aCell);Cell *getNeighborWithImage(char anImage);Coordinate getEmptyNeighborCoord();Coordinate getPreyNeighborCoord();Cell *north();Cell *south();Cell *east();Cell *west();virtual Cell *reproduce(class Coordinate anOffset);public: inline Cell(const class Coordinate &aCoord){(this) -> offset =(new Coordinate(aCoord));(this) -> image = '-';}inline Cell(){}virtual inline ~Cell(){delete((this) -> offset);}inline Coordinate &getOffset(){return *((this) -> offset);}inline void setOffset(class Coordinate &anOffset){(this) -> offset =(new Coordinate(anOffset));}inline char getImage(){return(this) -> image;}void display();virtual inline void process(){}Cell(class Cell &rhs) : offset(rhs.offset), image(rhs.image){}Cell &operator=(class Cell &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> offset = rhs.offset;(this) -> image = rhs.image;return *(this);}}
+func_name = operator=
+inserting operator= = 0x42d9d068
+uninvoked base class: class Cell {private: friend class Ocean ;protected: class Coordinate *offset;char image;Cell *getCellAt(class Coordinate aCoord);void assignCellAt(class Coordinate aCoord,class Cell *aCell);Cell *getNeighborWithImage(char anImage);Coordinate getEmptyNeighborCoord();Coordinate getPreyNeighborCoord();Cell *north();Cell *south();Cell *east();Cell *west();virtual Cell *reproduce(class Coordinate anOffset);public: inline Cell(const class Coordinate &aCoord){(this) -> offset =(new Coordinate(aCoord));(this) -> image = '-';}inline Cell(){}virtual inline ~Cell(){delete((this) -> offset);}inline Coordinate &getOffset(){return *((this) -> offset);}inline void setOffset(class Coordinate &anOffset){(this) -> offset =(new Coordinate(anOffset));}inline char getImage(){return(this) -> image;}void display();virtual inline void process(){}Cell(class Cell &rhs) : offset(rhs.offset), image(rhs.image){}Cell &operator=(class Cell &rhs){if((this) == &rhs) {return *(this);}else {}(this) -> offset = rhs.offset;(this) -> image = rhs.image;return *(this);}}
+Visiting memberFunctionDecl: public: inline Obstacle(class Coordinate &aCoord) : Cell(aCoord){(this) -> image = '#';}
+invoked base class: Cell
+Visiting memberFunctionDecl: public: virtual inline ~Obstacle(){(this) -> Cell::~Cell();}
+invoked base class: Cell
+Visiting memberFunctionDecl: public: Obstacle() : Cell(){}
+invoked base class: Cell
+Visiting memberFunctionDecl: public: Obstacle(class Obstacle &rhs) : Cell(rhs){}
+invoked base class: Cell
+Visiting memberFunctionDecl: public: Obstacle &operator=(class Obstacle &rhs){(*((class Cell *)(this)))=((class Cell &)rhs);if((this) == &rhs) {return *(this);}else {}return *(this);}
+Visiting memberFunctionDecl: Cell *Cell::getCellAt(class Coordinate aCoord){return(cells[aCoord.getY()])[aCoord.getX()];}
+Visiting memberFunctionDecl: void Cell::assignCellAt(class Coordinate aCoord,class Cell *aCell){(cells[aCoord.getY()])[aCoord.getX()] = aCell;}
+Visiting memberFunctionDecl: Cell *Cell::getNeighborWithImage(char anImage){class Cell *neighbors[4];unsigned int count =(0);if(((( *(this) -> north()).getImage())) ==(anImage)) {neighbors[count++] =(this) -> north();}else {}if(((( *(this) -> south()).getImage())) ==(anImage)) {neighbors[count++] =(this) -> south();}else {}if(((( *(this) -> east()).getImage())) ==(anImage)) {neighbors[count++] =(this) -> east();}else {}if(((( *(this) -> west()).getImage())) ==(anImage)) {neighbors[count++] =(this) -> west();}else {}if(!(count)) {return this;}else {return neighbors[( *(Ocean1 -> random)).nextIntBetween(0,((count -(1))))];}}
+Visiting memberFunctionDecl: Coordinate Cell::getEmptyNeighborCoord(){return(( *(this) -> getNeighborWithImage('-')).getOffset());}
+Visiting memberFunctionDecl: Coordinate Cell::getPreyNeighborCoord(){return(( *(this) -> getNeighborWithImage('f')).getOffset());}
+Visiting memberFunctionDecl: Cell *Cell::north(){unsigned int yvalue;yvalue =((( *((this) -> offset)).getY() >(0))?(( *((this) -> offset)).getY() -(1)):((Ocean1 -> numRows) -(1)));return(cells[yvalue])[( *((this) -> offset)).getX()];}
+Visiting memberFunctionDecl: Cell *Cell::south(){unsigned int yvalue;yvalue =((( *((this) -> offset)).getY() +(1)) %(Ocean1 -> numRows));return(cells[yvalue])[( *((this) -> offset)).getX()];}
+Visiting memberFunctionDecl: Cell *Cell::east(){unsigned int xvalue;xvalue =((( *((this) -> offset)).getX() +(1)) %(Ocean1 -> numCols));return(cells[( *((this) -> offset)).getY()])[xvalue];}
+Visiting memberFunctionDecl: Cell *Cell::west(){unsigned int xvalue;xvalue =((( *((this) -> offset)).getX() >(0))?(( *((this) -> offset)).getX() -(1)):((Ocean1 -> numCols) -(1)));return(cells[( *((this) -> offset)).getY()])[xvalue];}
+Visiting memberFunctionDecl: Cell *Cell::reproduce(class Coordinate anOffset){class Cell *temp = new Cell(anOffset);return temp;}
+Visiting memberFunctionDecl: void Cell::display(){}
+Visiting memberFunctionDecl: void Prey::moveFrom(class Coordinate from,class Coordinate to){class Cell *toCell;--(this) -> timeToReproduce;if((to!=from)) {toCell =(this) -> getCellAt((to));delete toCell;(this) -> setOffset(to);(this) -> assignCellAt((to),((this)));if(((this) -> timeToReproduce) <= 0) {(this) -> timeToReproduce = 6;(this) -> assignCellAt((from),(this) -> reproduce((from)));}else {(this) -> assignCellAt((from),(new Cell(from)));}}else {}}
+Visiting memberFunctionDecl: Cell *Prey::reproduce(class Coordinate anOffset){class Prey *temp = new Prey(anOffset);Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() +(1)));return(class Cell *)temp;}
+Visiting memberFunctionDecl: void Predator::process(){class Coordinate toCoord;if(--(this) -> timeToFeed <=(0)) {(this) -> assignCellAt(( *((this) -> offset)),(new Cell( *((this) -> offset))));Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() -(1)));delete(this);}else {toCoord=(this) -> getPreyNeighborCoord();if((toCoord!= *((this) -> offset))) {Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() -(1)));(this) -> timeToFeed =(6);(this) -> moveFrom(( *((this) -> offset)),(toCoord));}else {(this) -> Prey::process();}}}
+Visiting memberFunctionDecl: Cell *Predator::reproduce(class Coordinate anOffset){class Predator *temp = new Predator((anOffset));Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() +(1)));return(class Cell *)((class Prey *)temp);}
+Visiting memberFunctionDecl: float Random::randReal(){return(0.0);}
+Visiting memberFunctionDecl: unsigned int Random::nextIntBetween(int low,int high){return(0);}
+Visiting memberFunctionDecl: void Ocean::initialize(){(this) -> random =(::new Random );( *((this) -> random)).initialize();(this) -> numRows =(25);(this) -> numCols =(70);(this) -> numObstacles =(75);(this) -> numPredators =(20);(this) -> numPrey =(150);(this) -> initCells();}
+Visiting memberFunctionDecl: void Ocean::initCells(){(this) -> addEmptyCells();if(((this) -> numPredators) ==(((this) -> size) -((this) -> numObstacles))) {(this) -> numPredators =(((this) -> size) -((this) -> numObstacles));}else {}if(((this) -> numPrey) ==((((this) -> size) -((this) -> numObstacles)) -((this) -> numPredators))) {(this) -> numPrey =((((this) -> size) -((this) -> numObstacles)) -((this) -> numPredators));}else {}(this) -> addObstacles();(this) -> addPredators();(this) -> addPrey();(this) -> displayStats((-1));(this) -> displayBorder();Ocean1 =(this);}
+Visiting memberFunctionDecl: void Ocean::addEmptyCells(){for(unsigned int row =(0);row <((this) -> numRows);row++) {for(unsigned int col =(0);col <((this) -> numCols);col++) {(cells[row])[col] =(new Cell(Coordinate::Coordinate(col,row)));}}}
+Visiting memberFunctionDecl: void Ocean::addObstacles(){class Coordinate empty;for(unsigned int count =(0);count <((this) -> numObstacles);count++) {empty=(this) -> getEmptyCellCoord();(cells[empty.getY()])[empty.getX()] =((new Obstacle(empty)));}}
+Visiting memberFunctionDecl: void Ocean::addPredators(){class Coordinate empty;for(unsigned int count =(0);count <((this) -> numPredators);count++) {empty=(this) -> getEmptyCellCoord();(cells[empty.getY()])[empty.getX()] =(((new Predator((empty)))));}}
+Visiting memberFunctionDecl: void Ocean::addPrey(){class Coordinate empty;for(unsigned int count =(0);count <((this) -> numPredators);count++) {empty=(this) -> getEmptyCellCoord();(cells[empty.getY()])[empty.getX()] =((new Prey(empty)));}}
+Visiting memberFunctionDecl: Coordinate Ocean::getEmptyCellCoord(){unsigned int x;unsigned int y;class Coordinate empty;do {x =( *((this) -> random)).nextIntBetween(0,((((this) -> numCols) -(1))));y =( *((this) -> random)).nextIntBetween(0,((((this) -> numRows) -(1))));}while(((( *((cells[y])[x])).getImage())) !=('-'));empty=( *((cells[y])[x])).getOffset();delete((cells[y])[x]);return(empty);}
+Visiting memberFunctionDecl: void Ocean::displayBorder(){for(unsigned int col =(0);col <((this) -> numCols);col++) {}}
+Visiting memberFunctionDecl: void Ocean::displayCells(){for(unsigned int row =(0);row <((this) -> numRows);row++) {for(unsigned int col =(0);col <((this) -> numCols);col++) {( *((cells[row])[col])).display();}}}
+Visiting memberFunctionDecl: void Ocean::displayStats(int iteration){(this) -> displayBorder();}
+Visiting memberFunctionDecl: void Ocean::run(){unsigned int numIterations =(1000);if(numIterations >(1000)) {numIterations =(1000);}else {}for(unsigned int iteration =(0);iteration < numIterations;iteration++) {if((((this) -> numPredators) >(0)) &&(((this) -> numPrey) >(0))) {for(unsigned int row =(0);row <((this) -> numRows);row++) {for(unsigned int col =(0);col <((this) -> numCols);col++) {( *((cells[row])[col])).process();}}(this) -> displayStats((iteration));(this) -> displayCells();(this) -> displayBorder();}else {}}}
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+parent is a SgCastExp, replace_expression= 1
+parent is a SgCastExp, replace_expression= 1
+parent is a SgExpressionRoot, replace_expression= 1
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+hasSC(cond)
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+in varDecl loop0x42d1e008
+in varDecl loop0x42d1e0fc
+in varDecl loop0x42d1e1f0
+in varDecl loop0x42d1e2e4
+in varDecl loop0x42d1e3d8
+in varDecl loop0x42d1e4cc
+in varDecl loop0x42d1e5c0
+in varDecl loop0x42d1e6b4
+in varDecl loop0x42d1e7a8
+in varDecl loop0x42d1e89c
+in varDecl loop0x42d1e990
+in varDecl loop0x42d1ea84
+in varDecl loop0x42d1eb78
+in varDecl loop0x42d1ec6c
+in varDecl loop0x42d1ed60
+in varDecl loop0x42d1ee54
+in varDecl loop0x42d1ef48
+in varDecl loop0x42d1f03c
+in varDecl loop0x42d1f130
+in varDecl loop0x42d1f224
+in varDecl loop0x42d1f318
+in varDecl loop0x42d1f40c
+in varDecl loop0x42d1f500
+in varDecl loop0x42d1f5f4
+in varDecl loop0x42d1f6e8
+in varDecl loop0x42d1f7dc
+in varDecl loop0x42d1f8d0
+in varDecl loop0x42d1f9c4
+in varDecl loop0x42d1fab8
+in varDecl loop0x42d1fbac
+in varDecl loop0x42d1fca0
+in varDecl loop0x42d1fd94
+in varDecl loop0x42d1fe88
+in varDecl loop0x42d1ff7c
+in varDecl loop0x42d20070
+in varDecl loop0x42d20164
+in varDecl loop0x42d20258
+in varDecl loop0x42d2034c
+in varDecl loop0x42d20440
+in varDecl loop0x42d20534
+in varDecl loop0x42d20628
+in varDecl loop0x42d2071c
+in varDecl loop0x42d20810
+in varDecl loop0x42d20904
+in varDecl loop0x42d209f8
+in varDecl loop0x42d20aec
+in varDecl loop0x42d20be0
+in varDecl loop0x42d20cd4
+in varDecl loop0x42d20dc8
+reduceIfStmtsWithSCchild: doing 0x84f0ff0 iter 1
+reduceIfStmtsWithSCchild: doing 0x84f1028 iter 1
+reduceIfStmtsWithSCchild: doing 0x84f0f80 iter 1
+reduceIfStmtsWithSCchild: doing 0x84f0fb8 iter 1
+reduceIfStmtsWithSCchild: doing 0x84f1060 iter 1
+replacementStmt is now 0x838de78 SgIfStmt
+replacementStmtParent is now 0x82f7570 SgBasicBlock
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+virtual function defn: public: virtual inline ~Cell(){delete((this) -> offset);}
+virtual function defn: public: virtual inline void process(){}
+virtual function defn: public: virtual inline ~Prey(){(this) -> Cell::~Cell();}
+virtual function defn: public: virtual inline void process(){class Coordinate toCoord;toCoord=(this) -> getEmptyNeighborCoord();(this) -> moveFrom(( *((this) -> offset)),(toCoord));}
+virtual function defn: public: virtual inline ~Predator(){(this) -> Prey::~Prey();}
+virtual function defn: public: virtual inline ~Obstacle(){(this) -> Cell::~Cell();}
+virtual function defn: Cell *Cell::reproduce(class Coordinate anOffset){class Cell *temp = new Cell(anOffset);return temp;}
+virtual function defn: Cell *Prey::reproduce(class Coordinate anOffset){class Prey *temp = new Prey(anOffset);Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() +(1)));return(class Cell *)temp;}
+virtual function defn: void Predator::process(){class Coordinate toCoord;if(--(this) -> timeToFeed <=(0)) {(this) -> assignCellAt(( *((this) -> offset)),(new Cell( *((this) -> offset))));Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() -(1)));delete(this);}else {toCoord=(this) -> getPreyNeighborCoord();if((toCoord!= *((this) -> offset))) {Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() -(1)));(this) -> timeToFeed =(6);(this) -> moveFrom(( *((this) -> offset)),(toCoord));}else {(this) -> Prey::process();}}}
+virtual function defn: Cell *Predator::reproduce(class Coordinate anOffset){class Predator *temp = new Predator((anOffset));Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() +(1)));return(class Cell *)((class Prey *)temp);}
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgPointerType 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeChar 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+Found an case where SgBinaryOp::p_expression_type != NULL on SgAssignOp expression_type_name = SgTypeUnsignedInt 
+CHA examining: main___Fb_i_Gb__Fe_
+method?: myOcean -> initialize()
+method: myOcean -> initialize()
+methodPtr: myOcean -> initialize()
+method?: myOcean -> run()
+method: myOcean -> run()
+methodPtr: myOcean -> run()
+CHA examining: Ocean__scope__initialize____MFb_Ocean__Fb_v_Gb__Fe_
+method?: ( *((this) -> random)).initialize()
+method: ( *((this) -> random)).initialize()
+methodPtr: ( *((this) -> random)).initialize()
+method?: (this) -> initCells()
+method: (this) -> initCells()
+methodPtr: (this) -> initCells()
+CHA examining: Ocean__scope__run____MFb_Ocean__Fb_v_Gb__Fe_
+method?: ( *((cells[row])[col])).process()
+method: ( *((cells[row])[col])).process()
+methodPtr: ( *((cells[row])[col])).process()
+tracking: public: virtual inline void process(){}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: ( *((cells[row])[col])).process() public: virtual inline void process(){}
+checking overrides
+checking overrides
+Looking up subclasses of 0x82beff0 Cell
+subclass of Cell got: Prey
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overries
+CHA resolution for call site: ( *((cells[row])[col])).process() public: virtual inline void process(){class Coordinate toCoord;toCoord=(this) -> getEmptyNeighborCoord();(this) -> moveFrom(( *((this) -> offset)),(toCoord));}
+checking overrides
+checking overrides
+checking overrides
+subclass of Cell got: Predator
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+overries
+CHA resolution for call site: ( *((cells[row])[col])).process() void Predator::process(){class Coordinate toCoord;if(--(this) -> timeToFeed <=(0)) {(this) -> assignCellAt(( *((this) -> offset)),(new Cell( *((this) -> offset))));Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() -(1)));delete(this);}else {toCoord=(this) -> getPreyNeighborCoord();if((toCoord!= *((this) -> offset))) {Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() -(1)));(this) -> timeToFeed =(6);(this) -> moveFrom(( *((this) -> offset)),(toCoord));}else {(this) -> Prey::process();}}}
+checking overrides
+checking overrides
+checking overrides
+subclass of Cell got: Obstacle
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+method?: (this) -> displayStats((iteration))
+method: (this) -> displayStats((iteration))
+methodPtr: (this) -> displayStats((iteration))
+method?: (this) -> displayCells()
+method: (this) -> displayCells()
+methodPtr: (this) -> displayCells()
+method?: (this) -> displayBorder()
+method: (this) -> displayBorder()
+methodPtr: (this) -> displayBorder()
+CHA examining: Random__scope__initialize____MFb_Random__Fb_v_Gb__Fe_
+CHA examining: Ocean__scope__initCells____MFb_Ocean__Fb_v_Gb__Fe_
+method?: (this) -> addEmptyCells()
+method: (this) -> addEmptyCells()
+methodPtr: (this) -> addEmptyCells()
+method?: (this) -> addObstacles()
+method: (this) -> addObstacles()
+methodPtr: (this) -> addObstacles()
+method?: (this) -> addPredators()
+method: (this) -> addPredators()
+methodPtr: (this) -> addPredators()
+method?: (this) -> addPrey()
+method: (this) -> addPrey()
+methodPtr: (this) -> addPrey()
+method?: (this) -> displayStats((-1))
+method: (this) -> displayStats((-1))
+methodPtr: (this) -> displayStats((-1))
+method?: (this) -> displayBorder()
+method: (this) -> displayBorder()
+methodPtr: (this) -> displayBorder()
+CHA examining: Cell__scope__process____MFb_Cell__Fb_v_Gb__Fe_
+CHA examining: Prey__scope__process____MFb_Prey__Fb_v_Gb__Fe_
+method?: toCoord=(this) -> getEmptyNeighborCoord()
+method: toCoord=(this) -> getEmptyNeighborCoord()
+dot: toCoord=(this) -> getEmptyNeighborCoord()
+method?: (this) -> getEmptyNeighborCoord()
+method: (this) -> getEmptyNeighborCoord()
+methodPtr: (this) -> getEmptyNeighborCoord()
+method?: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+method: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+methodPtr: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+CHA examining: Predator__scope__process____MFb_Predator__Fb_v_Gb__Fe_
+method?: (this) -> assignCellAt(( *((this) -> offset)),(new Cell ( *((this) -> offset))))
+method: (this) -> assignCellAt(( *((this) -> offset)),(new Cell ( *((this) -> offset))))
+methodPtr: (this) -> assignCellAt(( *((this) -> offset)),(new Cell ( *((this) -> offset))))
+method?: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() - (1)))
+method: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() - (1)))
+methodPtr: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() - (1)))
+method?: Ocean1 -> getNumPredators()
+method: Ocean1 -> getNumPredators()
+methodPtr: Ocean1 -> getNumPredators()
+method?: toCoord=(this) -> getPreyNeighborCoord()
+method: toCoord=(this) -> getPreyNeighborCoord()
+dot: toCoord=(this) -> getPreyNeighborCoord()
+method?: (this) -> getPreyNeighborCoord()
+method: (this) -> getPreyNeighborCoord()
+methodPtr: (this) -> getPreyNeighborCoord()
+method?: (toCoord!= *((this) -> offset))
+method: (toCoord!= *((this) -> offset))
+dot: (toCoord!= *((this) -> offset))
+method?: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() - (1)))
+method: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() - (1)))
+methodPtr: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() - (1)))
+method?: Ocean1 -> getNumPrey()
+method: Ocean1 -> getNumPrey()
+methodPtr: Ocean1 -> getNumPrey()
+method?: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+method: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+methodPtr: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+method?: (this) -> Prey::process()
+method: (this) -> Prey::process()
+methodPtr: (this) -> Prey::process()
+CHA examining: Ocean__scope__displayStats____MFb_Ocean__Fb_v_Gb_i_Fe_
+method?: (this) -> displayBorder()
+method: (this) -> displayBorder()
+methodPtr: (this) -> displayBorder()
+CHA examining: Ocean__scope__displayCells____MFb_Ocean__Fb_v_Gb__Fe_
+method?: ( *((cells[row])[col])).display()
+method: ( *((cells[row])[col])).display()
+methodPtr: ( *((cells[row])[col])).display()
+CHA examining: Ocean__scope__displayBorder____MFb_Ocean__Fb_v_Gb__Fe_
+CHA examining: Ocean__scope__addEmptyCells____MFb_Ocean__Fb_v_Gb__Fe_
+CHA examining: Ocean__scope__addObstacles____MFb_Ocean__Fb_v_Gb__Fe_
+method?: empty=(this) -> getEmptyCellCoord()
+method: empty=(this) -> getEmptyCellCoord()
+dot: empty=(this) -> getEmptyCellCoord()
+method?: (this) -> getEmptyCellCoord()
+method: (this) -> getEmptyCellCoord()
+methodPtr: (this) -> getEmptyCellCoord()
+method?: empty.getY()
+method: empty.getY()
+dot: empty.getY()
+method?: empty.getX()
+method: empty.getX()
+dot: empty.getX()
+CHA examining: Ocean__scope__addPredators____MFb_Ocean__Fb_v_Gb__Fe_
+method?: empty=(this) -> getEmptyCellCoord()
+method: empty=(this) -> getEmptyCellCoord()
+dot: empty=(this) -> getEmptyCellCoord()
+method?: (this) -> getEmptyCellCoord()
+method: (this) -> getEmptyCellCoord()
+methodPtr: (this) -> getEmptyCellCoord()
+method?: empty.getY()
+method: empty.getY()
+dot: empty.getY()
+method?: empty.getX()
+method: empty.getX()
+dot: empty.getX()
+CHA examining: Ocean__scope__addPrey____MFb_Ocean__Fb_v_Gb__Fe_
+method?: empty=(this) -> getEmptyCellCoord()
+method: empty=(this) -> getEmptyCellCoord()
+dot: empty=(this) -> getEmptyCellCoord()
+method?: (this) -> getEmptyCellCoord()
+method: (this) -> getEmptyCellCoord()
+methodPtr: (this) -> getEmptyCellCoord()
+method?: empty.getY()
+method: empty.getY()
+dot: empty.getY()
+method?: empty.getX()
+method: empty.getX()
+dot: empty.getX()
+CHA examining: Coordinate__scope__operator__as____MFb_Coordinate__Fb___Rb__Coordinate__Re___Gb___Rb__CCoordinate__Re___Fe_
+CHA examining: Cell__scope__getEmptyNeighborCoord____MFb_Cell__Fb_Coordinate_Gb__Fe_
+method?: (this) -> getNeighborWithImage('-')
+method: (this) -> getNeighborWithImage('-')
+methodPtr: (this) -> getNeighborWithImage('-')
+method?: ( *(this) -> getNeighborWithImage('-')).getOffset()
+method: ( *(this) -> getNeighborWithImage('-')).getOffset()
+methodPtr: ( *(this) -> getNeighborWithImage('-')).getOffset()
+CHA examining: Prey__scope__moveFrom____MFb_Prey__Fb_v_Gb_Coordinate__sep__Coordinate_Fe_
+method?: (to!=from)
+method: (to!=from)
+dot: (to!=from)
+method?: (this) -> getCellAt((to))
+method: (this) -> getCellAt((to))
+methodPtr: (this) -> getCellAt((to))
+method?: (this) -> setOffset(to)
+method: (this) -> setOffset(to)
+methodPtr: (this) -> setOffset(to)
+method?: (this) -> assignCellAt((to),((this)))
+method: (this) -> assignCellAt((to),((this)))
+methodPtr: (this) -> assignCellAt((to),((this)))
+method?: (this) -> assignCellAt((from),(this) -> reproduce((from)))
+method: (this) -> assignCellAt((from),(this) -> reproduce((from)))
+methodPtr: (this) -> assignCellAt((from),(this) -> reproduce((from)))
+method?: (this) -> reproduce((from))
+method: (this) -> reproduce((from))
+methodPtr: (this) -> reproduce((from))
+tracking: Cell *Prey::reproduce(class Coordinate anOffset){class Prey *temp = new Prey(anOffset);Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() +(1)));return(class Cell *)temp;}
+checking overrides
+checking overrides
+overrides
+CHA resolution for call site: (this) -> reproduce((from)) Cell *Prey::reproduce(class Coordinate anOffset){class Prey *temp = new Prey(anOffset);Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() +(1)));return(class Cell *)temp;}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+Looking up subclasses of 0x82bf050 Prey
+subclass of Prey got: Predator
+checking overrides
+overries
+CHA resolution for call site: (this) -> reproduce((from)) Cell *Predator::reproduce(class Coordinate anOffset){class Predator *temp = new Predator((anOffset));Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() +(1)));return(class Cell *)((class Prey *)temp);}
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+checking overrides
+method?: (this) -> assignCellAt((from),(new Cell (from)))
+method: (this) -> assignCellAt((from),(new Cell (from)))
+methodPtr: (this) -> assignCellAt((from),(new Cell (from)))
+CHA examining: Cell__scope__assignCellAt____MFb_Cell__Fb_v_Gb_Coordinate__sep____Pb__Cell__Pe___Fe_
+method?: aCoord.getY()
+method: aCoord.getY()
+dot: aCoord.getY()
+method?: aCoord.getX()
+method: aCoord.getX()
+dot: aCoord.getX()
+CHA examining: Ocean__scope__setNumPredators____MFb_Ocean__Fb_v_Gb_Ui_Fe_
+CHA examining: Ocean__scope__getNumPredators____MFb_Ocean__Fb_Ui_Gb__Fe_
+CHA examining: Cell__scope__getPreyNeighborCoord____MFb_Cell__Fb_Coordinate_Gb__Fe_
+method?: (this) -> getNeighborWithImage('f')
+method: (this) -> getNeighborWithImage('f')
+methodPtr: (this) -> getNeighborWithImage('f')
+method?: ( *(this) -> getNeighborWithImage('f')).getOffset()
+method: ( *(this) -> getNeighborWithImage('f')).getOffset()
+methodPtr: ( *(this) -> getNeighborWithImage('f')).getOffset()
+CHA examining: Coordinate__scope__operator__ne____MFb_Coordinate__Fb_i_Gb___Rb__Coordinate__Re___Fe_
+CHA examining: Ocean__scope__setNumPrey____MFb_Ocean__Fb_v_Gb_Ui_Fe_
+CHA examining: Ocean__scope__getNumPrey____MFb_Ocean__Fb_Ui_Gb__Fe_
+CHA examining: Cell__scope__display____MFb_Cell__Fb_v_Gb__Fe_
+CHA examining: Ocean__scope__getEmptyCellCoord____MFb_Ocean__Fb_Coordinate_Gb__Fe_
+method?: ( *((this) -> random)).nextIntBetween(0,((((this) -> numCols) - (1))))
+method: ( *((this) -> random)).nextIntBetween(0,((((this) -> numCols) - (1))))
+methodPtr: ( *((this) -> random)).nextIntBetween(0,((((this) -> numCols) - (1))))
+method?: ( *((this) -> random)).nextIntBetween(0,((((this) -> numRows) - (1))))
+method: ( *((this) -> random)).nextIntBetween(0,((((this) -> numRows) - (1))))
+methodPtr: ( *((this) -> random)).nextIntBetween(0,((((this) -> numRows) - (1))))
+method?: (( *((cells[y])[x])).getImage())
+method: (( *((cells[y])[x])).getImage())
+methodPtr: (( *((cells[y])[x])).getImage())
+method?: empty=( *((cells[y])[x])).getOffset()
+method: empty=( *((cells[y])[x])).getOffset()
+dot: empty=( *((cells[y])[x])).getOffset()
+method?: ( *((cells[y])[x])).getOffset()
+method: ( *((cells[y])[x])).getOffset()
+methodPtr: ( *((cells[y])[x])).getOffset()
+CHA examining: Coordinate__scope__getY____MFb_Coordinate__Fb_Ui_Gb__Fe_
+CHA examining: Coordinate__scope__getX____MFb_Coordinate__Fb_Ui_Gb__Fe_
+CHA examining: Cell__scope__getNeighborWithImage____MFb_Cell__Fb___Pb__Cell__Pe___Gb_c_Fe_
+method?: (this) -> north()
+method: (this) -> north()
+methodPtr: (this) -> north()
+method?: (( *(this) -> north()).getImage())
+method: (( *(this) -> north()).getImage())
+methodPtr: (( *(this) -> north()).getImage())
+method?: (this) -> north()
+method: (this) -> north()
+methodPtr: (this) -> north()
+method?: (this) -> south()
+method: (this) -> south()
+methodPtr: (this) -> south()
+method?: (( *(this) -> south()).getImage())
+method: (( *(this) -> south()).getImage())
+methodPtr: (( *(this) -> south()).getImage())
+method?: (this) -> south()
+method: (this) -> south()
+methodPtr: (this) -> south()
+method?: (this) -> east()
+method: (this) -> east()
+methodPtr: (this) -> east()
+method?: (( *(this) -> east()).getImage())
+method: (( *(this) -> east()).getImage())
+methodPtr: (( *(this) -> east()).getImage())
+method?: (this) -> east()
+method: (this) -> east()
+methodPtr: (this) -> east()
+method?: (this) -> west()
+method: (this) -> west()
+methodPtr: (this) -> west()
+method?: (( *(this) -> west()).getImage())
+method: (( *(this) -> west()).getImage())
+methodPtr: (( *(this) -> west()).getImage())
+method?: (this) -> west()
+method: (this) -> west()
+methodPtr: (this) -> west()
+method?: ( *(Ocean1 -> random)).nextIntBetween(0,((count - (1))))
+method: ( *(Ocean1 -> random)).nextIntBetween(0,((count - (1))))
+methodPtr: ( *(Ocean1 -> random)).nextIntBetween(0,((count - (1))))
+CHA examining: Cell__scope__getOffset____MFb_Cell__Fb___Rb__Coordinate__Re___Gb__Fe_
+CHA examining: Cell__scope__getCellAt____MFb_Cell__Fb___Pb__Cell__Pe___Gb_Coordinate_Fe_
+method?: aCoord.getY()
+method: aCoord.getY()
+dot: aCoord.getY()
+method?: aCoord.getX()
+method: aCoord.getX()
+dot: aCoord.getX()
+CHA examining: Cell__scope__setOffset____MFb_Cell__Fb_v_Gb___Rb__Coordinate__Re___Fe_
+CHA examining: Prey__scope__reproduce____MFb_Prey__Fb___Pb__Cell__Pe___Gb_Coordinate_Fe_
+method?: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() + (1)))
+method: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() + (1)))
+methodPtr: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() + (1)))
+method?: Ocean1 -> getNumPrey()
+method: Ocean1 -> getNumPrey()
+methodPtr: Ocean1 -> getNumPrey()
+CHA examining: Predator__scope__reproduce____MFb_Predator__Fb___Pb__Cell__Pe___Gb_Coordinate_Fe_
+method?: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() + (1)))
+method: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() + (1)))
+methodPtr: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() + (1)))
+method?: Ocean1 -> getNumPredators()
+method: Ocean1 -> getNumPredators()
+methodPtr: Ocean1 -> getNumPredators()
+CHA examining: Random__scope__nextIntBetween____MFb_Random__Fb_Ui_Gb_i__sep__i_Fe_
+CHA examining: Cell__scope__getImage____MFb_Cell__Fb_c_Gb__Fe_
+CHA examining: Cell__scope__north____MFb_Cell__Fb___Pb__Cell__Pe___Gb__Fe_
+method?: ( *((this) -> offset)).getY()
+method: ( *((this) -> offset)).getY()
+methodPtr: ( *((this) -> offset)).getY()
+method?: ( *((this) -> offset)).getY()
+method: ( *((this) -> offset)).getY()
+methodPtr: ( *((this) -> offset)).getY()
+method?: ( *((this) -> offset)).getX()
+method: ( *((this) -> offset)).getX()
+methodPtr: ( *((this) -> offset)).getX()
+CHA examining: Cell__scope__south____MFb_Cell__Fb___Pb__Cell__Pe___Gb__Fe_
+method?: ( *((this) -> offset)).getY()
+method: ( *((this) -> offset)).getY()
+methodPtr: ( *((this) -> offset)).getY()
+method?: ( *((this) -> offset)).getX()
+method: ( *((this) -> offset)).getX()
+methodPtr: ( *((this) -> offset)).getX()
+CHA examining: Cell__scope__east____MFb_Cell__Fb___Pb__Cell__Pe___Gb__Fe_
+method?: ( *((this) -> offset)).getX()
+method: ( *((this) -> offset)).getX()
+methodPtr: ( *((this) -> offset)).getX()
+method?: ( *((this) -> offset)).getY()
+method: ( *((this) -> offset)).getY()
+methodPtr: ( *((this) -> offset)).getY()
+CHA examining: Cell__scope__west____MFb_Cell__Fb___Pb__Cell__Pe___Gb__Fe_
+method?: ( *((this) -> offset)).getX()
+method: ( *((this) -> offset)).getX()
+methodPtr: ( *((this) -> offset)).getX()
+method?: ( *((this) -> offset)).getX()
+method: ( *((this) -> offset)).getX()
+methodPtr: ( *((this) -> offset)).getX()
+method?: ( *((this) -> offset)).getY()
+method: ( *((this) -> offset)).getY()
+methodPtr: ( *((this) -> offset)).getY()
+Alias analysis examining: main___Fb_i_Gb__Fe_
+method?: myOcean -> initialize()
+method: myOcean -> initialize()
+methodPtr: myOcean -> initialize()
+method?: myOcean -> run()
+method: myOcean -> run()
+methodPtr: myOcean -> run()
+Alias analysis examining: Ocean__scope__initialize____MFb_Ocean__Fb_v_Gb__Fe_
+method?: ( *((this) -> random)).initialize()
+method: ( *((this) -> random)).initialize()
+methodPtr: ( *((this) -> random)).initialize()
+method?: (this) -> initCells()
+method: (this) -> initCells()
+methodPtr: (this) -> initCells()
+Alias analysis examining: Ocean__scope__run____MFb_Ocean__Fb_v_Gb__Fe_
+method?: ( *((cells[row])[col])).process()
+method: ( *((cells[row])[col])).process()
+methodPtr: ( *((cells[row])[col])).process()
+tracking: public: virtual inline void process(){}
+Alias analysis resolution for call site ( *((cells[row])[col])).process() 
+NamedLoc(
+    mSymHandle: SymHandle(method:Cell::process__Cell__scope__process____MFb_Cell__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Alias analysis resolution for call site ( *((cells[row])[col])).process() 
+NamedLoc(
+    mSymHandle: SymHandle(method:Prey::process__Prey__scope__process____MFb_Prey__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Alias analysis resolution for call site ( *((cells[row])[col])).process() 
+NamedLoc(
+    mSymHandle: SymHandle(method:Predator::process__Predator__scope__process____MFb_Predator__Fb_v_Gb__Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+method?: (this) -> displayStats((iteration))
+method: (this) -> displayStats((iteration))
+methodPtr: (this) -> displayStats((iteration))
+method?: (this) -> displayCells()
+method: (this) -> displayCells()
+methodPtr: (this) -> displayCells()
+method?: (this) -> displayBorder()
+method: (this) -> displayBorder()
+methodPtr: (this) -> displayBorder()
+Alias analysis examining: Random__scope__initialize____MFb_Random__Fb_v_Gb__Fe_
+Alias analysis examining: Ocean__scope__initCells____MFb_Ocean__Fb_v_Gb__Fe_
+method?: (this) -> addEmptyCells()
+method: (this) -> addEmptyCells()
+methodPtr: (this) -> addEmptyCells()
+method?: (this) -> addObstacles()
+method: (this) -> addObstacles()
+methodPtr: (this) -> addObstacles()
+method?: (this) -> addPredators()
+method: (this) -> addPredators()
+methodPtr: (this) -> addPredators()
+method?: (this) -> addPrey()
+method: (this) -> addPrey()
+methodPtr: (this) -> addPrey()
+method?: (this) -> displayStats((-1))
+method: (this) -> displayStats((-1))
+methodPtr: (this) -> displayStats((-1))
+method?: (this) -> displayBorder()
+method: (this) -> displayBorder()
+methodPtr: (this) -> displayBorder()
+Alias analysis examining: Cell__scope__process____MFb_Cell__Fb_v_Gb__Fe_
+Alias analysis examining: Prey__scope__process____MFb_Prey__Fb_v_Gb__Fe_
+method?: toCoord=(this) -> getEmptyNeighborCoord()
+method: toCoord=(this) -> getEmptyNeighborCoord()
+dot: toCoord=(this) -> getEmptyNeighborCoord()
+method?: (this) -> getEmptyNeighborCoord()
+method: (this) -> getEmptyNeighborCoord()
+methodPtr: (this) -> getEmptyNeighborCoord()
+method?: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+method: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+methodPtr: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+Alias analysis examining: Predator__scope__process____MFb_Predator__Fb_v_Gb__Fe_
+method?: (this) -> assignCellAt(( *((this) -> offset)),(new Cell ( *((this) -> offset))))
+method: (this) -> assignCellAt(( *((this) -> offset)),(new Cell ( *((this) -> offset))))
+methodPtr: (this) -> assignCellAt(( *((this) -> offset)),(new Cell ( *((this) -> offset))))
+method?: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() - (1)))
+method: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() - (1)))
+methodPtr: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() - (1)))
+method?: Ocean1 -> getNumPredators()
+method: Ocean1 -> getNumPredators()
+methodPtr: Ocean1 -> getNumPredators()
+method?: toCoord=(this) -> getPreyNeighborCoord()
+method: toCoord=(this) -> getPreyNeighborCoord()
+dot: toCoord=(this) -> getPreyNeighborCoord()
+method?: (this) -> getPreyNeighborCoord()
+method: (this) -> getPreyNeighborCoord()
+methodPtr: (this) -> getPreyNeighborCoord()
+method?: (toCoord!= *((this) -> offset))
+method: (toCoord!= *((this) -> offset))
+dot: (toCoord!= *((this) -> offset))
+method?: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() - (1)))
+method: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() - (1)))
+methodPtr: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() - (1)))
+method?: Ocean1 -> getNumPrey()
+method: Ocean1 -> getNumPrey()
+methodPtr: Ocean1 -> getNumPrey()
+method?: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+method: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+methodPtr: (this) -> moveFrom(( *((this) -> offset)),(toCoord))
+method?: (this) -> Prey::process()
+method: (this) -> Prey::process()
+methodPtr: (this) -> Prey::process()
+Alias analysis examining: Ocean__scope__displayStats____MFb_Ocean__Fb_v_Gb_i_Fe_
+method?: (this) -> displayBorder()
+method: (this) -> displayBorder()
+methodPtr: (this) -> displayBorder()
+Alias analysis examining: Ocean__scope__displayCells____MFb_Ocean__Fb_v_Gb__Fe_
+method?: ( *((cells[row])[col])).display()
+method: ( *((cells[row])[col])).display()
+methodPtr: ( *((cells[row])[col])).display()
+Alias analysis examining: Ocean__scope__displayBorder____MFb_Ocean__Fb_v_Gb__Fe_
+Alias analysis examining: Ocean__scope__addEmptyCells____MFb_Ocean__Fb_v_Gb__Fe_
+Alias analysis examining: Ocean__scope__addObstacles____MFb_Ocean__Fb_v_Gb__Fe_
+method?: empty=(this) -> getEmptyCellCoord()
+method: empty=(this) -> getEmptyCellCoord()
+dot: empty=(this) -> getEmptyCellCoord()
+method?: (this) -> getEmptyCellCoord()
+method: (this) -> getEmptyCellCoord()
+methodPtr: (this) -> getEmptyCellCoord()
+method?: empty.getY()
+method: empty.getY()
+dot: empty.getY()
+method?: empty.getX()
+method: empty.getX()
+dot: empty.getX()
+Alias analysis examining: Ocean__scope__addPredators____MFb_Ocean__Fb_v_Gb__Fe_
+method?: empty=(this) -> getEmptyCellCoord()
+method: empty=(this) -> getEmptyCellCoord()
+dot: empty=(this) -> getEmptyCellCoord()
+method?: (this) -> getEmptyCellCoord()
+method: (this) -> getEmptyCellCoord()
+methodPtr: (this) -> getEmptyCellCoord()
+method?: empty.getY()
+method: empty.getY()
+dot: empty.getY()
+method?: empty.getX()
+method: empty.getX()
+dot: empty.getX()
+Alias analysis examining: Ocean__scope__addPrey____MFb_Ocean__Fb_v_Gb__Fe_
+method?: empty=(this) -> getEmptyCellCoord()
+method: empty=(this) -> getEmptyCellCoord()
+dot: empty=(this) -> getEmptyCellCoord()
+method?: (this) -> getEmptyCellCoord()
+method: (this) -> getEmptyCellCoord()
+methodPtr: (this) -> getEmptyCellCoord()
+method?: empty.getY()
+method: empty.getY()
+dot: empty.getY()
+method?: empty.getX()
+method: empty.getX()
+dot: empty.getX()
+Alias analysis examining: Coordinate__scope__operator__as____MFb_Coordinate__Fb___Rb__Coordinate__Re___Gb___Rb__CCoordinate__Re___Fe_
+Alias analysis examining: Cell__scope__getEmptyNeighborCoord____MFb_Cell__Fb_Coordinate_Gb__Fe_
+method?: (this) -> getNeighborWithImage('-')
+method: (this) -> getNeighborWithImage('-')
+methodPtr: (this) -> getNeighborWithImage('-')
+method?: ( *(this) -> getNeighborWithImage('-')).getOffset()
+method: ( *(this) -> getNeighborWithImage('-')).getOffset()
+methodPtr: ( *(this) -> getNeighborWithImage('-')).getOffset()
+Alias analysis examining: Prey__scope__moveFrom____MFb_Prey__Fb_v_Gb_Coordinate__sep__Coordinate_Fe_
+method?: (to!=from)
+method: (to!=from)
+dot: (to!=from)
+method?: (this) -> getCellAt((to))
+method: (this) -> getCellAt((to))
+methodPtr: (this) -> getCellAt((to))
+method?: (this) -> setOffset(to)
+method: (this) -> setOffset(to)
+methodPtr: (this) -> setOffset(to)
+method?: (this) -> assignCellAt((to),((this)))
+method: (this) -> assignCellAt((to),((this)))
+methodPtr: (this) -> assignCellAt((to),((this)))
+method?: (this) -> assignCellAt((from),(this) -> reproduce((from)))
+method: (this) -> assignCellAt((from),(this) -> reproduce((from)))
+methodPtr: (this) -> assignCellAt((from),(this) -> reproduce((from)))
+method?: (this) -> reproduce((from))
+method: (this) -> reproduce((from))
+methodPtr: (this) -> reproduce((from))
+tracking: Cell *Prey::reproduce(class Coordinate anOffset){class Prey *temp = new Prey(anOffset);Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() +(1)));return(class Cell *)temp;}
+Alias analysis resolution for call site (this) -> reproduce((from)) 
+NamedLoc(
+    mSymHandle: SymHandle(method:Cell::reproduce__Cell__scope__reproduce____MFb_Cell__Fb___Pb__Cell__Pe___Gb_Coordinate_Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Alias analysis resolution for call site (this) -> reproduce((from)) 
+NamedLoc(
+    mSymHandle: SymHandle(method:Prey::reproduce__Prey__scope__reproduce____MFb_Prey__Fb___Pb__Cell__Pe___Gb_Coordinate_Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+Alias analysis resolution for call site (this) -> reproduce((from)) 
+NamedLoc(
+    mSymHandle: SymHandle(method:Predator::reproduce__Predator__scope__reproduce____MFb_Predator__Fb___Pb__Cell__Pe___Gb_Coordinate_Fe_)
+    mLocal: 0
+    mFullOverlap: [  ] 
+    mPartOverlap: [  ] 
+)
+method?: (this) -> assignCellAt((from),(new Cell (from)))
+method: (this) -> assignCellAt((from),(new Cell (from)))
+methodPtr: (this) -> assignCellAt((from),(new Cell (from)))
+Alias analysis examining: Cell__scope__assignCellAt____MFb_Cell__Fb_v_Gb_Coordinate__sep____Pb__Cell__Pe___Fe_
+method?: aCoord.getY()
+method: aCoord.getY()
+dot: aCoord.getY()
+method?: aCoord.getX()
+method: aCoord.getX()
+dot: aCoord.getX()
+Alias analysis examining: Ocean__scope__setNumPredators____MFb_Ocean__Fb_v_Gb_Ui_Fe_
+Alias analysis examining: Ocean__scope__getNumPredators____MFb_Ocean__Fb_Ui_Gb__Fe_
+Alias analysis examining: Cell__scope__getPreyNeighborCoord____MFb_Cell__Fb_Coordinate_Gb__Fe_
+method?: (this) -> getNeighborWithImage('f')
+method: (this) -> getNeighborWithImage('f')
+methodPtr: (this) -> getNeighborWithImage('f')
+method?: ( *(this) -> getNeighborWithImage('f')).getOffset()
+method: ( *(this) -> getNeighborWithImage('f')).getOffset()
+methodPtr: ( *(this) -> getNeighborWithImage('f')).getOffset()
+Alias analysis examining: Coordinate__scope__operator__ne____MFb_Coordinate__Fb_i_Gb___Rb__Coordinate__Re___Fe_
+Alias analysis examining: Ocean__scope__setNumPrey____MFb_Ocean__Fb_v_Gb_Ui_Fe_
+Alias analysis examining: Ocean__scope__getNumPrey____MFb_Ocean__Fb_Ui_Gb__Fe_
+Alias analysis examining: Cell__scope__display____MFb_Cell__Fb_v_Gb__Fe_
+Alias analysis examining: Ocean__scope__getEmptyCellCoord____MFb_Ocean__Fb_Coordinate_Gb__Fe_
+method?: ( *((this) -> random)).nextIntBetween(0,((((this) -> numCols) - (1))))
+method: ( *((this) -> random)).nextIntBetween(0,((((this) -> numCols) - (1))))
+methodPtr: ( *((this) -> random)).nextIntBetween(0,((((this) -> numCols) - (1))))
+method?: ( *((this) -> random)).nextIntBetween(0,((((this) -> numRows) - (1))))
+method: ( *((this) -> random)).nextIntBetween(0,((((this) -> numRows) - (1))))
+methodPtr: ( *((this) -> random)).nextIntBetween(0,((((this) -> numRows) - (1))))
+method?: (( *((cells[y])[x])).getImage())
+method: (( *((cells[y])[x])).getImage())
+methodPtr: (( *((cells[y])[x])).getImage())
+method?: empty=( *((cells[y])[x])).getOffset()
+method: empty=( *((cells[y])[x])).getOffset()
+dot: empty=( *((cells[y])[x])).getOffset()
+method?: ( *((cells[y])[x])).getOffset()
+method: ( *((cells[y])[x])).getOffset()
+methodPtr: ( *((cells[y])[x])).getOffset()
+Alias analysis examining: Coordinate__scope__getY____MFb_Coordinate__Fb_Ui_Gb__Fe_
+Alias analysis examining: Coordinate__scope__getX____MFb_Coordinate__Fb_Ui_Gb__Fe_
+Alias analysis examining: Cell__scope__getNeighborWithImage____MFb_Cell__Fb___Pb__Cell__Pe___Gb_c_Fe_
+method?: (this) -> north()
+method: (this) -> north()
+methodPtr: (this) -> north()
+method?: (( *(this) -> north()).getImage())
+method: (( *(this) -> north()).getImage())
+methodPtr: (( *(this) -> north()).getImage())
+method?: (this) -> north()
+method: (this) -> north()
+methodPtr: (this) -> north()
+method?: (this) -> south()
+method: (this) -> south()
+methodPtr: (this) -> south()
+method?: (( *(this) -> south()).getImage())
+method: (( *(this) -> south()).getImage())
+methodPtr: (( *(this) -> south()).getImage())
+method?: (this) -> south()
+method: (this) -> south()
+methodPtr: (this) -> south()
+method?: (this) -> east()
+method: (this) -> east()
+methodPtr: (this) -> east()
+method?: (( *(this) -> east()).getImage())
+method: (( *(this) -> east()).getImage())
+methodPtr: (( *(this) -> east()).getImage())
+method?: (this) -> east()
+method: (this) -> east()
+methodPtr: (this) -> east()
+method?: (this) -> west()
+method: (this) -> west()
+methodPtr: (this) -> west()
+method?: (( *(this) -> west()).getImage())
+method: (( *(this) -> west()).getImage())
+methodPtr: (( *(this) -> west()).getImage())
+method?: (this) -> west()
+method: (this) -> west()
+methodPtr: (this) -> west()
+method?: ( *(Ocean1 -> random)).nextIntBetween(0,((count - (1))))
+method: ( *(Ocean1 -> random)).nextIntBetween(0,((count - (1))))
+methodPtr: ( *(Ocean1 -> random)).nextIntBetween(0,((count - (1))))
+Alias analysis examining: Cell__scope__getOffset____MFb_Cell__Fb___Rb__Coordinate__Re___Gb__Fe_
+Alias analysis examining: Cell__scope__getCellAt____MFb_Cell__Fb___Pb__Cell__Pe___Gb_Coordinate_Fe_
+method?: aCoord.getY()
+method: aCoord.getY()
+dot: aCoord.getY()
+method?: aCoord.getX()
+method: aCoord.getX()
+dot: aCoord.getX()
+Alias analysis examining: Cell__scope__setOffset____MFb_Cell__Fb_v_Gb___Rb__Coordinate__Re___Fe_
+Alias analysis examining: Cell__scope__reproduce____MFb_Cell__Fb___Pb__Cell__Pe___Gb_Coordinate_Fe_
+Alias analysis examining: Prey__scope__reproduce____MFb_Prey__Fb___Pb__Cell__Pe___Gb_Coordinate_Fe_
+method?: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() + (1)))
+method: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() + (1)))
+methodPtr: Ocean1 -> setNumPrey((Ocean1 -> getNumPrey() + (1)))
+method?: Ocean1 -> getNumPrey()
+method: Ocean1 -> getNumPrey()
+methodPtr: Ocean1 -> getNumPrey()
+Alias analysis examining: Predator__scope__reproduce____MFb_Predator__Fb___Pb__Cell__Pe___Gb_Coordinate_Fe_
+method?: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() + (1)))
+method: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() + (1)))
+methodPtr: Ocean1 -> setNumPredators((Ocean1 -> getNumPredators() + (1)))
+method?: Ocean1 -> getNumPredators()
+method: Ocean1 -> getNumPredators()
+methodPtr: Ocean1 -> getNumPredators()
+Alias analysis examining: Random__scope__nextIntBetween____MFb_Random__Fb_Ui_Gb_i__sep__i_Fe_
+Alias analysis examining: Cell__scope__getImage____MFb_Cell__Fb_c_Gb__Fe_
+Alias analysis examining: Cell__scope__north____MFb_Cell__Fb___Pb__Cell__Pe___Gb__Fe_
+method?: ( *((this) -> offset)).getY()
+method: ( *((this) -> offset)).getY()
+methodPtr: ( *((this) -> offset)).getY()
+method?: ( *((this) -> offset)).getY()
+method: ( *((this) -> offset)).getY()
+methodPtr: ( *((this) -> offset)).getY()
+method?: ( *((this) -> offset)).getX()
+method: ( *((this) -> offset)).getX()
+methodPtr: ( *((this) -> offset)).getX()
+Alias analysis examining: Cell__scope__south____MFb_Cell__Fb___Pb__Cell__Pe___Gb__Fe_
+method?: ( *((this) -> offset)).getY()
+method: ( *((this) -> offset)).getY()
+methodPtr: ( *((this) -> offset)).getY()
+method?: ( *((this) -> offset)).getX()
+method: ( *((this) -> offset)).getX()
+methodPtr: ( *((this) -> offset)).getX()
+Alias analysis examining: Cell__scope__east____MFb_Cell__Fb___Pb__Cell__Pe___Gb__Fe_
+method?: ( *((this) -> offset)).getX()
+method: ( *((this) -> offset)).getX()
+methodPtr: ( *((this) -> offset)).getX()
+method?: ( *((this) -> offset)).getY()
+method: ( *((this) -> offset)).getY()
+methodPtr: ( *((this) -> offset)).getY()
+Alias analysis examining: Cell__scope__west____MFb_Cell__Fb___Pb__Cell__Pe___Gb__Fe_
+method?: ( *((this) -> offset)).getX()
+method: ( *((this) -> offset)).getX()
+methodPtr: ( *((this) -> offset)).getX()
+method?: ( *((this) -> offset)).getX()
+method: ( *((this) -> offset)).getX()
+methodPtr: ( *((this) -> offset)).getX()
+method?: ( *((this) -> offset)).getY()
+method: ( *((this) -> offset)).getY()
+methodPtr: ( *((this) -> offset)).getY()
+Inside of ~CallGraphCreate() 

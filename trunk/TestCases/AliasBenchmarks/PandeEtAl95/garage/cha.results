@@ -1,0 +1,14 @@
+CHA virtual call site: ( *(((this) -> parked)[bay])).identify() from caller: Garage__scope__listVehicles____MFb_Garage__Fb_v_Gb__Fe_
+	 CHA:  Method invocation has 3 possible resolutions 
+
+Alias analysis virtual call site: ( *(((this) -> parked)[bay])).identify() from caller: Garage__scope__listVehicles____MFb_Garage__Fb_v_Gb__Fe_
+	 Alias analysis:  Method invocation has 2 possible resolutions 
+
+definedFunctions: 49
+definedVirtualFunctions: 5
+CHA virtual method callsites: 1
+Alias analysis virtual method callsites: 1
+Summary CHA monomorphic call sites: 0
+Summary Alias analysis monomorphic call sites: 0
+Summary CHA total (virtual) resolutions: 3
+Summary Alias analysis total (virtual) resolutions: 2

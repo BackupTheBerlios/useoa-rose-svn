@@ -1,0 +1,20 @@
+CHA virtual call site: ( *((cells[row])[col])).process() from caller: Ocean__scope__run____MFb_Ocean__Fb_v_Gb__Fe_
+	 CHA:  Method invocation has 3 possible resolutions 
+
+CHA virtual call site: (this) -> reproduce((from)) from caller: Prey__scope__moveFrom____MFb_Prey__Fb_v_Gb_Coordinate__sep__Coordinate_Fe_
+	 CHA:  Method invocation has 2 possible resolutions 
+
+Alias analysis virtual call site: ( *((cells[row])[col])).process() from caller: Ocean__scope__run____MFb_Ocean__Fb_v_Gb__Fe_
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+
+Alias analysis virtual call site: (this) -> reproduce((from)) from caller: Prey__scope__moveFrom____MFb_Prey__Fb_v_Gb_Coordinate__sep__Coordinate_Fe_
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+
+definedFunctions: 79
+definedVirtualFunctions: 10
+CHA virtual method callsites: 2
+Alias analysis virtual method callsites: 2
+Summary CHA monomorphic call sites: 0
+Summary Alias analysis monomorphic call sites: 0
+Summary CHA total (virtual) resolutions: 5
+Summary Alias analysis total (virtual) resolutions: 6

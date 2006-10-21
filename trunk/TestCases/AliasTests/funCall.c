@@ -1,6 +1,6 @@
 /* funCall.c */
 /*
-  *i and a end up in the same equiv set during FIAlias.
+  *a and *b end up in the same equiv set during FIAlias.
 */
 
 void makeAlias(int **i, int **j)

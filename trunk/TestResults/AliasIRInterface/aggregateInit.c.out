@@ -1,8 +1,3 @@
-"TestCases/AliasTests/aggregateInit.c", line 7: warning: variable "a" was
-          declared but never referenced
-      int a[] = { 0, 1, 2, 3, 4};
-          ^
-
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){int a[] = {(0),(1),(2),(3),(4)};return 0;}") =>
@@ -15,9 +10,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("a") => 
                 NamedRef( DEF, SymHandle("a"), F, full)
-        ] }
-    PTRASSIGNPAIRS = { StmtHandle("int a[] = {(0),(1),(2),(3),(4)};") =>
-        [
+            MemRefHandle("assign_or_agg_initializer:{(0),(1),(2),(3),(4)}") => 
+                UnnamedRef( USE, StmtHandle("int a[] = {(0),(1),(2),(3),(4)};"), F, part)
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

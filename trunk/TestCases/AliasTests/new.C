@@ -3,9 +3,12 @@
 // The first parameter must be size_t (but size_t is unsigned int, so this works
 // DQ (7/21/2006): at least on 32 bit systems, but use __SIZE_TYPE__ instead for portablity).
 // inline void* operator new(unsigned int, void* __p)  { return __p; }
-inline void* operator new(__SIZE_TYPE__, void* __p)  { return __p; }
+
+//inline void* operator new(__SIZE_TYPE__, void* __p)  { return __p; }
 
 class MotionItem{
+    public:
+        MotionItem() {}
 };
 
 void foo()
@@ -16,7 +19,7 @@ void foo()
      MotionItem* item1 = new MotionItem();
 
   // This is a call to new with "placement" arguments
-     MotionItem* item2 = new (x) MotionItem();
+//     MotionItem* item2 = new (x) MotionItem();
 
   // Allocates 100 int and returns a pointer to an int (SgTypeInt)
      int *array1 = new int(100);

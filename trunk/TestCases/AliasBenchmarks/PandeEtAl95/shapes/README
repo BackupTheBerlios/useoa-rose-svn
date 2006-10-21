@@ -1,0 +1,228 @@
+Contents of this directory
+--------------------------
+singleFile.C           // Includes all user-defined headers and
+                       // source files and is intended for analysis,
+                       // i.e., has stubs.
+                       // e.g., ../../../../CHAandAliasVirtualMethodResolver -out:cha.results ./singleFile.C > & cha.out
+singleFileSansStubs.C  // singleFile.C, but without stubs.
+                       // rather than being intended for
+                       // analysis, is intended to be built
+                       // and run through pin/indirectcalltrace.
+                       // e.g., ~/pin-2.0-3077-gcc.3.2-ia32-linux/Bin/pin -t ~/pin-2.0-3077-gcc.3.2-ia32-linux/SimpleExamples/indirectcalltrace -- ./singleFileSansStubs > pin.out
+cha.results            // CHA and FIAlias analysis results
+                       // collected from 
+                       // CHAandAliasVirtualMethodResolver
+cha.out                // Output spewed from
+                       // CHAandAliasVirtualMethodResolver
+pin.results            // Dynamic resolutions from
+                       // indirectcalltrace-- i.e.,
+                       // the output that is put in 
+                       // indirectcalltrace.out by default.
+README                 // This file.  Discusses and compares results
+                       // from CHA, FIAlias, and pin.
+
+Benchmark: shapes
+Source:  Data-flow-based virtual function resolution.
+         Pande and Ryder
+         SAS 1996
+LOC (in singleFileSansStubs.C, as returned by SLOCCOUNT):  207
+Defined functions (in singleFileSansStubs.C, excluding those defined in system includes):  41
+Defined virtual functions (in singleFileSansStubs.C, but excluding those defined in system includes): 22
+Virtual callsites (possibly from system header files):  12
+CHA resolutions:                20
+FIAlias resolutions:            30
+pin resolutions:                17
+CHA monomorphic callsites:       7
+FIAlias monomorphic callsites:   0
+pin monomorphic callsites:       9
+
+Execution times collected on ithaca07.csl.cornell.edu.
+
+virtual call site: p3 -> move((-10),(-10)) from caller: main at line singleFile.C:240
+	 CHA:  Method invocation has 3 possible resolutions 
+		line::move
+		rectangle::move
+		myshape::move
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+		line::move
+		rectangle::move
+		myshape::move
+         pin: Method invocation has 1 possible resolutions
+                myshape::move(int, int)
+
+         The class hierarchy ( base -> child ) is shape -> line
+                                                  shape -> rectangle
+                                                  myshape -> rectangle
+
+         FIAlias loses precision because the receiver, p3, of
+         dynamic type myshape, is bound to p1 (type rectangle)
+         and p2 (type line) through the implicit this parameter
+         of the shared base class constructor, shape.  This is 
+         a shortcoming of FIAlias, rather than modeling in UseOA.
+
+         CHA loses precision because static type of p3 is shape.
+
+virtual call site: p -> draw() from caller: shape_refresh at line singleFile.C:185
+	 CHA:  Method invocation has 3 possible resolutions 
+		line::draw
+		rectangle::draw
+		myshape::draw
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+		line::draw
+		rectangle::draw
+		myshape::draw
+         pin: Method invocation has 3 possible resolutions
+                line::draw()
+                myshape::draw()
+                rectangle::draw()
+
+         FIAlias loses precision due to binding of the implicit this 
+         parameter through a shared base constructor, as described above.
+
+virtual call site: ( *((this) -> l_eye)).move(a,b) from caller: myshape::move at line singleFile.C:224
+	 CHA:  Method invocation has 1 possible resolutions 
+		line::move
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+		line::move
+		rectangle::move
+		myshape::move
+         pin: Method invocation has 1 possible resolutions
+                line::move(int, int)
+
+         FIAlias loses precision due to binding of the implicit this 
+         parameter through a shared base constructor, as described above.
+
+virtual call site: ( *((this) -> r_eye)).move(a,b) from caller: myshape::move at line singleFile.C:225
+	 CHA:  Method invocation has 1 possible resolutions 
+		line::move
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+		line::move
+		rectangle::move
+		myshape::move
+         pin: Method invocation has 1 possible resolutions
+                line::move(int, int)
+
+         FIAlias loses precision due to binding of the implicit this 
+         parameter through a shared base constructor, as described above.
+
+virtual call site: ( *((this) -> mouth)).move(a,b) from caller: myshape::move at line singleFile.C:226
+	 CHA:  Method invocation has 1 possible resolutions 
+		line::move
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+		line::move
+		rectangle::move
+		myshape::move
+         pin: Method invocation has 1 possible resolutions
+                line::move(int, int)
+
+         FIAlias loses precision due to binding of the implicit this 
+         parameter through a shared base constructor, as described above.
+
+virtual call site: q -> north() from caller: stack at line singleFile.C:190
+	 CHA:  Method invocation has 2 possible resolutions 
+		line::north
+		rectangle::north
+	 Alias analysis:  Method invocation has 2 possible resolutions 
+		line::north
+		rectangle::north
+         pin: Method invocation has 2 possible resolutions
+                line::north() const
+                rectangle::north() const
+
+virtual call site: p -> south() from caller: stack at line singleFile.C:191
+	 CHA:  Method invocation has 2 possible resolutions 
+		line::south
+		rectangle::south
+	 Alias analysis:  Method invocation has 2 possible resolutions 
+		line::south
+		rectangle::south
+         pin: Method invocation has 2 possible resolutions
+                line::south() const
+                rectangle::south() const
+
+virtual call site: p -> move(((n -> x) - (s -> x)),(((n -> y) - (s -> y)) + 1)) from caller: stack at line singleFile.C:192
+	 CHA:  Method invocation has 3 possible resolutions 
+		line::move
+		rectangle::move
+		myshape::move
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+		line::move
+		rectangle::move
+		myshape::move
+         pin: Method invocation has 2 possible resolutions
+                line::move(int, int)
+                rectangle::move(int, int)
+
+         FIAlias loses precision due to binding of the implicit this 
+         parameter through a shared base constructor, as described above.
+
+         CHA loses precision because the static type of the receiver
+         is shape, though it is only bound to a line or a rectangle.
+
+virtual call site: (this) -> swest() from caller: myshape::draw at line singleFile.C:217
+	 CHA:  Method invocation has 1 possible resolutions 
+		rectangle::swest
+	 Alias analysis:  Method invocation has 2 possible resolutions 
+		line::swest
+		rectangle::swest
+         pin: Method invocation has 1 possible resolutions
+                rectangle::neast() const
+
+         FIAlias loses precision due to binding of the implicit this 
+         parameter through a shared base constructor, as described above.
+
+         CHA does not lose any precision, because the static type
+         coincides with the dynamic type.
+
+virtual call site: (this) -> neast() from caller: myshape::draw at line singleFile.C:217
+	 CHA:  Method invocation has 1 possible resolutions 
+		rectangle::neast
+	 Alias analysis:  Method invocation has 2 possible resolutions 
+		line::neast
+		rectangle::neast
+         pin: Method invocation has 1 possible resolutions
+                rectangle::swest() const
+
+         FIAlias loses precision due to binding of the implicit this 
+         parameter through a shared base constructor, as described above.
+
+         CHA does not lose any precision, because the static type
+         coincides with the dynamic type.
+
+virtual call site: (this) -> swest() from caller: myshape::draw at line singleFile.C:218
+	 CHA:  Method invocation has 1 possible resolutions 
+		rectangle::swest
+	 Alias analysis:  Method invocation has 2 possible resolutions 
+		line::swest
+		rectangle::swest
+         pin: Method invocation has 1 possible resolutions
+                rectangle::swest() const
+
+         FIAlias loses precision due to binding of the implicit this 
+         parameter through a shared base constructor, as described above.
+
+         CHA does not lose any precision, because the static type
+         coincides with the dynamic type.
+
+virtual call site: (this) -> neast() from caller: myshape::draw at line singleFile.C:218
+	 CHA:  Method invocation has 1 possible resolutions 
+		rectangle::neast
+	 Alias analysis:  Method invocation has 2 possible resolutions 
+		line::neast
+		rectangle::neast
+         pin: Method invocation has 1 possible resolutions
+                rectangle::neast() const
+
+         FIAlias loses precision due to binding of the implicit this 
+         parameter through a shared base constructor, as described above.
+
+         CHA does not lose any precision, because the static type
+         coincides with the dynamic type.
+
+Execution times in seconds (avg of 1 run; all times mutually exclusive)
+Frontend time: 11.9813
+Normalization time: 179.808
+CHA time: 1.73856
+FIAlias time: 1478.33
+FIAlias resolution time: 2.51309
+

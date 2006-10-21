@@ -1,18 +1,3 @@
-"TestCases/AliasTests/passArrayPtr.c", line 6: warning: missing return
-          statement at end of non-void function "strcmp"
-  }
-  ^
-
-"TestCases/AliasTests/passArrayPtr.c", line 13: warning: variable "v" was
-          declared but never referenced
-      char v = a[2];
-           ^
-
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
 PROCEDURE = { < ProcHandle("strcmp"), SymHandle("strcmp") > }
     FORMALS = {
@@ -59,12 +44,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("a") => 
                 NamedRef( DEF, SymHandle("a"), F, full)
             MemRefHandle(""testing"") => 
-                UnnamedRef( USE, StmtHandle(""testing""), T, part)
-        ] }
-    PTRASSIGNPAIRS = { StmtHandle("char a[] = "testing";") =>
-        [
-            < NamedRef( DEF, SymHandle("a"), F, full)
-            , UnnamedRef( USE, StmtHandle(""testing""), T, part) >
+                UnnamedRef( USE, StmtHandle(""testing""), F, part)
         ] }
     MEMREFEXPRS = { StmtHandle("int x = strcmp(a,a);") =>
         [
@@ -74,6 +54,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("a"), T, full)
             MemRefHandle("a") => 
                 NamedRef( USE, SymHandle("a"), T, full)
+            MemRefHandle("strcmp") => 
+                NamedRef( USE, SymHandle("strcmp"), F, full)
         ] }
     CALLSITES = { StmtHandle("int x = strcmp(a,a);") =>
         [
@@ -89,6 +71,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("a[3]") => 
                 NamedRef( DEF, SymHandle("a"), F, part)
+            MemRefHandle("a[3] = 'b'") => 
+                NamedRef( USE, SymHandle("a"), F, part)
         ] }
     MEMREFEXPRS = { StmtHandle("char v =(a[2]);") =>
         [

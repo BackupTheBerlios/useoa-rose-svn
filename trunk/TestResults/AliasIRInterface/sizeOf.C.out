@@ -1,26 +1,8 @@
-"TestCases/AliasTests/sizeOf.C", line 18: warning: expression has no effect
-      sizeof(int);
-      ^
-
-"TestCases/AliasTests/sizeOf.C", line 19: warning: expression has no effect
-      sizeof x;
-      ^
-
-"TestCases/AliasTests/sizeOf.C", line 20: warning: expression has no effect
-      sizeof c;
-      ^
-
-"TestCases/AliasTests/sizeOf.C", line 21: warning: expression has no effect
-      sizeof b;
-      ^
-
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class blah {private: int x;char c;int *y;};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("int main(){int x;char c;class blah b;(sizeof(int ));(sizeof(x));(sizeof(c));(sizeof(b));}") =>
         [
         ] }

@@ -15,6 +15,11 @@
 #include <string>
 #include <iostream>
 #include <OpenAnalysis/Alias/NotationGenerator.hpp>
+#include <CommandOptions.h>
+
+#include <defaultFunctionGenerator.h>
+#include <shortCircuitingTransformation.h>
+#include <destructorCallAnnotator.h>
 
 //! print usage information to stdout
 void usage(char *programName);
@@ -37,6 +42,11 @@ int main ( unsigned argc,  char * argv[] )
     bool p_h=FALSE; 
     //    p_h = TRUE;
 
+    CmdOptions *cmds = CmdOptions::GetInstance();
+    cmds->SetOptions(argc, argv);
+    bool useVtableOpt = true;
+    if ( cmds->HasOption("--usePerMethodVirtualModel") ) { useVtableOpt = false; }
+
     // read in command line arguments
     // usage: CtoOA inputFile
     if(argc < 2) { usage(argv[0]); return 1; }
@@ -54,6 +64,16 @@ int main ( unsigned argc,  char * argv[] )
     AstDOTGeneration dottest;
     dottest.generateInputFiles(sageProject);
     
+#if 0
+    // Perform the AST normalization.
+    //    DefaultFunctionGenerator dfg;
+    //    dfg.traverse(sageProject, preorder);
+    defaultFunctionGenerator(sageProject);
+    AstPostProcessing(sageProject);
+    shortCircuitingTransformation(sageProject);
+    //    destructorCallAnnotator(sageProject);
+#endif
+
     // Loop over every file.   BW 4/13/06
     int filenum = sageProject->numberOfFiles();
     for (int i = 0; i < filenum; ++i) 
@@ -65,11 +85,10 @@ int main ( unsigned argc,  char * argv[] )
         // Loop through every function in the file of this project.
         std::vector<SgNode*> nodeArray;
         OA::OA_ptr<SageIRInterface> irInterface; 
-        irInterface = new SageIRInterface(sageProject, &nodeArray, p_h);
+        bool excludeInputFiles = true;
+        irInterface = new SageIRInterface(sageProject, &nodeArray, p_h, useVtableOpt, excludeInputFiles);
         OA::OA_ptr<SageIRProcIterator> procIter;
-	// Do not process include files, e.g., iostream.h.
-	bool excludeInputFiles = true;
-        procIter = new SageIRProcIterator(sageProject, irInterface, excludeInputFiles);
+        procIter = new SageIRProcIterator(sageProject, *irInterface);
 
         for (; procIter->isValid(); ++(*procIter) ) 
 	{
@@ -84,7 +103,7 @@ int main ( unsigned argc,  char * argv[] )
 void usage(char *programName)
 {
     cout << programName << ": missing operand" << endl;
-    cout << "Usage: CtoOA source target" << endl;
+    cout << "Usage: CtoOA [--usePerMethodVirtualModel] source target" << endl;
 }
 
 void outputNotation(OA::ProcHandle proc,

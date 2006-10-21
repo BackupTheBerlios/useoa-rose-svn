@@ -15,14 +15,14 @@ srcdir = $(topsrcdir)/OAWraps/
 DEFINES = -DHAVE_CONFIG_H -DOA_IRHANDLETYPE_UL $(GLOBAL_DEFINES) #-DOA_OPEN64 
 INCLUDES = -I. -I.. $(ROSE_INCLUDES) $(OPENANALYSIS_INC)
 LIBS= $(ROSE_LIBS) -lm -lfl -lrt -lpthread $(OPENANALYSIS_LIB)
-CXXFLAGS = -fPIC -ftemplate-depth-50 $(PROFILE_OPTIONS) #$(DEFINES) $(INCLUDES) $(DEBUGFLAGS)
+CXXFLAGS_2 = $(CXXFLAGS) -fPIC -ftemplate-depth-50 
 LDFLAGS = -fPIC $(PROFILE_OPTIONS)
 AR = ar
 CXX_SHARED_LIB_UPDATE = ${CXX} -shared -o 
 CXX_STATIC_LIB_UPDATE = ${AR} cru
 
-CXXCOMPILE = $(CXX) $(DEFINES) $(INCLUDES) $(CXXFLAGS)
-CXXLINK = $(CXXLD) $(CXXFLAGS) $(LDFLAGS) -o $@
+CXXCOMPILE = $(CXX) $(DEFINES) $(INCLUDES) $(CXXFLAGS_2)
+CXXLINK = $(CXXLD) $(CXXFLAGS_2) $(LDFLAGS) -o $@
 
 #LD_LIBRARY_PATH += /soft/apps/packages/gcc-3.1/lib
 
@@ -31,7 +31,7 @@ bin_PROGRAMS =
 OBJEXT = o
 EXEEXT = 
 
-libSage2OASources = Sage2OA.C SageOACallGraph.C MemSage2OA.C
+libSage2OASources = Sage2OA.C MemSage2OA.C SageOACallGraph.C common.C
 
 
 #lib_LIBRARIES = libSage2OA.a
@@ -39,7 +39,7 @@ lib_LIBRARIES = libSage2OA.so
 LIBRARIES = $(lib_LIBRARIES)
 
 libSage2OA_so_SOURCES = $(libSage2OASources)
-am__objects_1 = Sage2OA.$(OBJEXT) SageOACallGraph.$(OBJEXT) MemSage2OA.$(OBJEXT)
+am__objects_1 = Sage2OA.$(OBJEXT) SageOACallGraph.$(OBJEXT) MemSage2OA.$(OBJEXT) common.$(OBJEXT)
 am_libSage2OA_so_OBJECTS = $(am__objects_1)
 libSage2OA_so_OBJECTS = $(am_libSage2OA_so_OBJECTS)
 

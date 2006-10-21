@@ -1,8 +1,3 @@
-"TestCases/AliasTests/functionPtr.c", line 8: warning: return type of function
-          "main" must be "int"
-    void main() { 
-         ^
-
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("void main(){int x = read();if(x) {fp = foo;}else {fp = bar;}( *fp)();}") =>
@@ -15,6 +10,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("x") => 
                 NamedRef( DEF, SymHandle("x"), F, full)
+            MemRefHandle("read") => 
+                NamedRef( USE, SymHandle("read"), F, full)
         ] }
     CALLSITES = { StmtHandle("int x = read();") =>
         [
@@ -35,6 +32,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("foo"), T, full)
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"), F, full)
+            MemRefHandle("fp = foo") => 
+                NamedRef( USE, SymHandle("fp"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("fp = foo;") =>
         [
@@ -50,6 +49,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("bar"), T, full)
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"), F, full)
+            MemRefHandle("fp = bar") => 
+                NamedRef( USE, SymHandle("fp"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("fp = bar;") =>
         [

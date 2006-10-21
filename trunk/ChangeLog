@@ -17,8 +17,7 @@
 		OA::SideEffect::InterSideEffectIRInterfaceDefault,
 		OA::SideEffect::SideEffectIRInterface
           Of the above, the following were added:
-		OA::SSA::SSAIRInterface,
-		OA::DataFlow::ParamBindingsIRInterface,
+		OA::SSA::SSAIRInterface,		OA::DataFlow::ParamBindingsIRInterface,
 		OA::SideEffect::InterSideEffectIRInterfaceDefault,
 		OA::SideEffect::SideEffectIRInterface
 	  Made all inheritance of these interfaces virtual
@@ -1945,4 +1944,1495 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       DoOpenAnalysis() of OATest.C.
     - Passes regressAll with OpenAnalysis trunk r229 compiled on Okapi with
       gcc-3.2 and rose-0.8.7a/compile-gcc-3.2
+
+8/17/06     UseOA-Rose svn branch-memRefExprRefactor r156   Brian White
+   - Began work to incorporate parameter bindings from trunk:
+       - These will be created by createParamBindPtrAssignPairs,
+         which will be invoked by the SgFunctionCallExp, 
+         SgConstructorInitializer, and SgDeleteExp cases of
+         findAllMemRefsAndPtrAssigns.
+       - Paramter bindings are registered with makeParamPtrPair,
+         which puts parameter binding pairs in mCallToParamPtrPairs.
+         I suspect, though, that makeParamPtrPair needs to take
+         an MRE rather than a MemRefHandle.
+       - SgParamBindPtrAssignIterator::create was updated to
+         look at mCallToParamPtrPairs.
+       - Am making an effort to handle SgDeleteExp, something we
+         weren't doing previously.
+   - Created a common.C file to hold Rose related utilities.
+     Most of these are imported from the trunk.  I am using
+     spaces not tabs :)  Let's try not to junk up SageIRInterface,
+     as I had been doing, with general routines that can go 
+     in common.C.  Possibly needs a name change.
+   - Began experimenting with functions that encapsulate the
+     mapping from OA::MemRefHandle to Sage nodes.  e.g.,
+     changed Michelle's getCallHandle (SgNode -> CallHandle)
+     to verify that it is being passed a SgFunctionCallExp,
+     a SgConstructorInitializer, or a SgDeleteExp.  This should
+     help avoid logical mistakes and also provide a single/few
+     places which explicitly codify the mapping between the
+     two domains.  Two other related functions/methods are:
+     verifyCallHandleType(OA::CallHandle call), which asserts
+     that call may be cast to a SgNode that is one of the
+     three above types, and verifyCallHandleNodeType(SgNode *node),
+     which verifies that node is one of the above three types.
+     The idea is that any function/method manipulating
+     CallHandles, or SgNodes it expects to be represented by 
+     CallHandles, should invoke one of the verify routines
+     and should perform conversions only through the getCallHandle
+     routine.
+
+8/17/06     UseOA-Rose svn branch-memRefExprRefactor r158   Brian White	
+    - Completed SageIRInterface::getCallsiteParams by implementing
+      getActuals(SgNode*) in common.C.  
+      NB:  getCallsiteParams returns an expression for the
+      receiver, which might be unnamed (e.g., new Foo), as the
+      first actual.
+    - Added the invocation of createParamBindPtrAssignPairs to
+      the SgFunctionCallExp, SgConstructorInitialiazer, and
+      SgDeleteExp cases of findAllMemRefsAndPtrAssigns.
+    - Updated SageIRInterface::createParamBindPtrAssignPairs.
+      That logic is essentially unchanged from the trunk.
+    - Changed makeParamPtr to take a MRE rather than a MemRefHandle.
+      This is necessary for the handling of the receiver, wherein
+      we may take the address of the MRE returned from the
+      relevant MemRefHandle.
+
+8/20/06     UseOA-Rose svn branch-memRefExprRefactor r160   Michelle Strout
+    - moving MRH to + of v+2 when v is a pointer or an array reference type
+      this also affects -. 
+      Andy these are places you will need to work with to get more precise
+      array references.
+    - changed the prefix and postfix code to indicate that in the 
+      memory reference
+      to a in ++a and a++, a is always used before it is defined.  Whether the
+      update occurs before or after the use of ++a or a++ is something that
+      we will specify when there is someway to indicate ordering between
+      MemRefHandles.
+    - Added code for creating a pointer assignment at a return statement if
+      the return type is a pointer type or a reference type.
+    - Implemented MemRefExpr creation for SgArrowExp.
+
+8/21/06     UseOA-Rose svn branch-memRefExprRefactor r165   Michelle Strout
+    - added functionality for ifs, whiles, switchs, etc.
+    - fixed bug where I was incorrectly removing MemRefHandle associations
+      from StmtHandles
+    - Got three more regression tests checked
+
+8/22/06     UseOA-Rose svn branch-memRefExprRefactor r166   Brian White
+    - Copied getThisExpSymHandle from branch, with some cleanup.
+      getThisExpSymHandle uses a SgFunctionParameterList from the 
+      enclosing method to represent a 'this' expression.
+    - Renamed getEnclosingMethod to getEnclosingFunction and moved
+      to common.C.
+    - Copied StringVal case from branch to findAllMemRefsAndPtrAssigns.
+    - Changed default case of findAllMemRefsAndPtrAssigns to ABORT.
+      If you see a case there which is really a no-op, add it 
+      to the no-op case.  
+
+8/22/06     UseOA-Rose svn branch-memRefExprRefactor r167   Brian White	
+    - Fixed assertion failure in getFormalTypes.  Evidently, a 
+      the base type of a SgPointerDerefExp need not be a SgPointerType,
+      but may also be a SgFunctionType.
+    - Created SageIRInterface::convertReferenceActuals(SgNode *node)
+      to take the address of any actual whose formal is a reference,
+      i.e., apply our reference conversion rules which model 
+      references as formals.  Invoke for SgFunctionCallExp and
+      SgConstructorInitializer.  SgDeleteExp has no actuals,
+      aside from the implicit reference, which can not be a reference.
+
+8/22/06     UseOA-Rose svn branch-memRefExprRefactor r168   Michelle Strout
+    - functionPtr.c, not indicating addressOf when a function name is on
+      the rhs of an assignment.  In SgAssignOp, if rhs is SgFunctionRefExpr
+      make all of its MREs have addressOf set.
+
+8/23/06     UseOA-Rose svn branch-memRefExprRefactor r171   Michelle Strout
+    - SgCtorInitializer list asserting in class.C.out
+      Implemented SgCtorInitializer node in findAllMemRefsAndPtrAssigns.
+    - SgMemberFunctionRef asserting in class.C.out
+      Implemented SgMemberFunctionRefExp node in findAllMemRefsAndPtrAssigns.
+    - comma.C, changed SgCommaOpExp so that it is a MemRefHandle and 
+      it  gets its MREs from its rhs.
+
+    NOT sure if the UnnamedRefs generated by strings in the printfs is the
+    way to go or not.
+
+8/22/06     UseOA-Rose svn branch-memRefExprRefactor r172   Brian White
+    - This checkin incorporates the virtual method handling code
+      from the trunk, with significant changes.  
+
+      None of this has been tested, but it does not perturb previous
+      results.
+	
+      Major methods are:
+      createImplicitPtrAssignPairsForVirtualMethods (modeled after
+      createImplicitPtrAssignForMethods from the trunk), 
+      createImplicitPtrAssignPairsForDynamicObjectAllocation,
+      createImplicitPtrAssignPairsForObjectDeclaration (modeled after
+      isObjectDeclaration from trunk),
+      createImplicitPtrAssignPairsForClassDefinition (modeled after
+      createImplicitVTablePtrAssignFromDefinition from trunk).
+	
+      createImplicitPtrAssignPairsForVirtualMethods is a utility
+      function invoked by 
+      createImplicitPtrAssignPairsForDynamicObjectAllocation and
+      createImplicitPtrAssignPairsForObjectDeclaration
+      For the per-method model, it creates implicit assignments
+      for each method given a lhs of a declaration or a dynamic
+      allocation.  For the virtual function table model,
+      it creates a single assignment from the lhs' "vptr" field
+      to a representation of the virtual function ptr table.
+
+      createImplicitPtrAssignPairsForDynamicObjectAllocation is 
+      invoked from within makePtrAssignPair; it only acts
+      when the rhs of an explicit ptr assignment pair 
+      corresponds to a new expression.
+
+      createImplicitPtrAssignPairsForObjectDeclaration is
+      invoked from findAllMemRefsAndPtrAssigns in the
+      SgVariableDeclaration case.
+
+      createImplicitVTablePtrAssignFromDefinition create the
+      virtual function table in that model.  It is 
+      invoked in the SgClassDefinition case of findAllMemRefsAndPtrAssigns.
+
+    - Replaced the old #define VTABLE_OPT from the trunk, with
+      the boolean member variable mUseVtableOpt.  This is set
+      via an optional argument to the constructor, SageIRInterface,
+      which defaults to false.
+      
+      This flag is controlled by the --usePerMethodVirtualModel
+      to CtoOA and OATest.
+
+    - created new scripts for NON-virtual method model in
+      AliasIRInterfacePerMethodModel.test, etc.
+
+    - Added some new methods to convert between OA handles and
+      Sage nodes:
+
+      SageIRInterface::verifyStmtHandleType(OA::StmtHandle stmt);
+      verifyStmtHandleNodeType(SgNode *node)
+
+      verifySymHandleNodeType(SgNode *node);
+      SageIRInterface::getSymHandle : SgNode -> OA::SymHandle
+
+      getVTableSymHandle(SgClassDefinition *classDefn)
+	
+    - The proper way to compare types is to stringify them
+      and compare, not by pointer comparison on SgTypes.
+      Well, this may work, but I don't know that there is
+      a single unique SgType for each type.
+      Types can be compared via eqTypes class.
+      Types may be stringified via getTypeInfo.
+
+    - To mangle function names uses mangleFunctionName.
+
+    - Some utility functions on virtual methods and to 
+      determine if two functions/methods "match"-- i.e.,
+      have the same type signature and name.
+
+      classHasVirtualMethods
+      SageIRInterface::isVirtual
+      SageIRInterface::isVirtualWithinDefiningClass
+      SageIRInterface::isDeclaredVirtualWithinAncestor
+      SageIRInterface::isDeclaredVirtualWithinClassAncestry
+
+      NB:  isVirtual only returns true if the function in question
+           is declared virtual in its immediate class.
+	
+      matchingFunctions(SgFunctionDeclaration *decl1, 
+	                SgFunctionDeclaration *decl2)	
+
+    - Some random utility functions:
+       
+      SgClassDeclaration *getClassDeclaration(SgType *type);
+      SgFunctionDeclaration *getDefiningDeclaration
+
+
+8/24/06     UseOA-Rose svn branch-memRefExprRefactor r176   Michelle Strout
+    - fixed bug in SgAssignOp where the lhs was having its addressTaken but
+      not having the result set to DEF.  Now refParam.C works in 
+      AliasIRInterface.test
+    - verified retPtr1.c
+    - implemented SgConditionalExp
+    - implemented SgSizeOfOp
+
+8/25/06     UseOA-Rose svn branch-memRefExprRefactor r177  Brian White
+    - Updated AliasIRInterfacePerMethodModel.test to reflect
+      above changes to AliasIRInterface.test.
+	
+    - Fixed bug:  we were getting a NULL location for static
+      member variables.  Changed logic in getLocation to 
+      reflect this from Michelle 
+      (8/24/06 Subject: Re: missing Location for static class variable)
+
+      All member variables are "not local" in OA terminology.  The definition
+      of local in OA means that a variable is ONLY visible within that one
+      procedure.  That is not the case for member variables since even if they
+      are private they are visible in all member methods.
+
+      Now we get a location for 'sInt' in class.C
+	
+    - Fixed assertion failure on line MemSage2OA.C:225 occuring
+      in func_call.c as noted by Michelle on 8/24/06
+      Subject: Some issues in the refactor
+
+      Simply removed this assertion in favor of a conditional.
+      It had been asserting that the SgNode derived from
+      a MemRefHandle for an actual was non-NULL.  However,
+      if an actual does not reference memory (e.g., 5, sizeof(Foo)),
+      then there will be no MemRefHandle and hence no
+      SgNode *actual.
+
+8/25/06     UseOA-Rose svn branch-memRefExprRefactor r178  Brian White	
+    - Implemented SgConstructorInitializer.
+
+    - Implemented SgNewExp.
+
+    - Implemented SgThisExp.
+
+    - Deprecated findFieldName.  Convert ROSE ast node to string
+      using toStringWithoutScope instead.
+
+    - Uncommented handling of SgConstructorInitializer in 
+      FindCallsitesPass::visit.  This isn't correct, but will
+      work for the majority of cases.  The problem is that
+      createsBaseType, which should be called createsBasicType,
+      is lame.  It assumes that any SgConstructorInitializer
+      not backed by a method/constructor declaration creates
+      a basic type.  We know that this also occurs when a
+      constructor is not explicitly defined.
+
+      This problem should go away once we have AST normalization
+      implemented.  
+
+      Then again, even if createsBaseType were implemented
+      correctly, later code (such as getFormalTypes) would
+      die since it expects a method declaration for each
+      SgConstructorInitializer.
+
+8/26/06     UseOA-Rose svn branch-memRefExprRefactor r179  Andy Stone
+    - Implemented SgPntrArrRefExp
+
+8/28/06     UseOA-Rose svn branch-memRefExprRefactor r181  Michelle Strout
+    - Finished implementing MRE creation at SgFunctionCallExp.
+    - Rechecked the CtoOA output for assignReturn.c
+
+8/29/06     UseOA-Rose svn branch-memRefExprRefactor r182  Michelle Strout
+    - Rechecked and generated ./CtoOA TestCases/AliasTests/retPtr1.c    
+    - Implemented the va_start, va_arg, and va_end.  
+      Treating va_start as if      
+      it is NOT a function call.  This logic ends up in      
+      findAllMemRefsAndPtrAssigns and SageOACallGraph.C:FindCallsitesPass. 
+      I don't like that it is spread out like this.
+      Also right now I just have it do a USEDEF on a Deref to the va_list
+      parameter, but I should introduce a new MemRefExprType in OpenAnalysis
+      to indicate no known ordering between the USE and the DEF.
+    - use getBaseType everywhere when I get type
+    - Made it so that when pass an array variable its address is taken.
+      This is due to the fact that we are modeling array variables
+      as one location versus a constant pointer to a separate location.
+    - Array initializers such as strings should not have its address 
+      taken when being used to initialize and array variable.
+      Fixed that in the SgInitializedNamed node.
+    - Verified these fixes on a number of test cases in AliasIRInterface.test.
+
+8/31/06     UseOA-Rose svn branch-memRefExprRefactor r183  Brian White
+    - Fixed toStringWithoutScope to properly handle SgFunctionRefExp/
+      SgMemberFunctionRefExp cases.  We get the field_name by asking
+      toStringWithoutScope for the string of one of these guys.
+
+    - getLocation was returning isLocal for the 'this' ptr.
+      Changed isLocal = false for this case, as per the comment
+      above on 8/25.
+
+    - Fixed getLocation so that myParent is not considered local in
+      this example:
+
+        class SubClass : public Base {
+          public:
+          SubClass(Base & parSubClass) : myParent(parSubClass) {}
+          Base &myParent;
+        };
+
+      The problem was that the declaration stmt for myParent is
+      the SgCtorInitializerList, rather than a SgVariableDeclaration
+      (in the class definition).  Therefore, because the declaration
+      was 'enclosing in' a function, I was calling it local.
+      We know check for this SgCtorInitializerList case.
+
+    - Changed SgInitializedName case so that it first creates and
+      stores its MRE and then recurses.  A problem occurred when
+      the child of a SgInitializedName was a SgConstructorInitializer,
+      for which we had to get the lhs for the implicit this actual.
+      i.e., this case:
+	 Foo() : mF(f)
+      We would attempt to make &mF the 'this' actual, where mF
+      is the SgInitializedName.  Unfortunately, as this MRE
+      hadn't been registered, findTopMemRefHandle was instead
+      returning f.
+
+    - Implemented SgDeleteExp:  created call handle MRE for SgDeleteExp,
+      which may be a FieldAccess if the destructor is virtual.
+	
+    - A slew of things regarding handling of 'this'
+
+        - SymHandle associated with the 'this' formal is _always_
+          a SgFunctionParameterList.  The MRE for 'this' formal is
+          NamedRef(SymHandle(SgFunctionParmaterList)).  See
+          SageIRInterface::getThisExpSymHandle and getThisExpNode.
+
+        - Created MemRefHandle/MRE for 'this' in SgExprListExp
+          case whenever it would be used to model 'this'.
+          i.e., when 
+	     getConstructorInitializerLhs(ctorInitializer) == exprListExp
+          This should occur only for invocations of a base constructor
+          in the constructor initializer list.
+
+          It may have been cleaner to create this MRE elsewhere
+          (e.g., at the ctorInitializer), however I wanted to maintain
+          the invariant that an MRE/MemRefHandle is created in the
+          case for that MemRefHandle.  Though I violate this below ...
+
+        - Notice that not all SgInitializedNames correspond to
+          variable initializations.  e.g., in the SgInitializedName
+          case I no longer create an MRE here:
+
+	  // class Foo : public Bar { Foo(Foo &f) : Bar(f) { } }
+          //
+          // Bar in Bar(f) in the initializer is represented 
+          // by a SgInitializedName, whose name is 'Bar'.  
+          // i.e., though it appears to be so, this is not
+          // a variable initialization.  Therefore, do 
+          // not create an MRE for it.  Instead,
+          // just visit the constructor initializer,
+          // which will create the required call MRE.
+
+        - Handle implicit this for member variable initialization
+          in constructor initialization list (in SgInitializedName case)
+
+              class Foo { Foo(Bar &b) : mBar(b) };
+          
+          In the above example we model mBar(b) as this->mBar = b.
+          Therefore, need to conjure up a MemRefHandle for 'this'.
+          
+          If mBar(b) would invoke a copy constructor, then it will
+          have a SgConstructorInitializer, whose args are held
+          in a SgExprListExp.  In these case, we may use the
+          SgExprListExp for 'this's MemRefHandle, as above.
+
+          If mBar had a basic type, we would not have an SgExprListExp
+          since the initializer would not be a SgConstructorInitializer.
+          Instead we would have a SgAssignInitializer.  Since we don't
+          use this for anything else, we may return it as the MemRefHandle.
+
+        - Therefore, the following may be used as MemRefHandles for
+          a 'this' expression:  SgThisExp (when present), SgExprListExp,
+          or SgAssignInitializer/SgAggregateInitializer.
+     
+8/31/06     UseOA-Rose svn branch-memRefExprRefactor r185  Michelle Strout
+    - Copied changes over from the UseOA-ROSE trunk that enable
+      the memRefExprRefactor branch to compile with OpenAnalysis r220.
+    - Made it so that a parameter binding is created if the formal
+      parameter is an array type because we have to model those as
+      pointers.
+    - Verified swap.c, comma.c, passIntPtrArrayRef*.c, and some others.
+
+9/1/06     UseOA-Rose svn branch-memRefExprRefactor r186  Michelle Strout
+    - Fixed member variable inializers somewhat.  Now the ptr assignment
+      is correct, but still missing an MRE.
+
+9/5/06     UseOA-Rose svn branch-memRefExprRefactor r188  Michelle Strout
+    - Fixed bug where the MemRefExpr for the field being initialized
+      was not being listed.
+    - Rechecked everything in FIAliasAliasMap.test.  Only found one
+      problem in constQualified.c.  Need to fix that pointer
+      arithmetic node.
+
+9/06/06     UseOA-Rose svn branch-memRefExprRefactor r189  Brian White	
+
+        - Some fixes to SgDotExp case:
+
+            - Only create a FieldAccess for member variable accesses and
+              virtual methods.  For non-virtual methods instead create
+              a NamedRef.  
+
+            - Do not erase the lhs_memref, as we need the lhs MRE
+              as the receiver for a method invocation.  _Do_ 
+              remove it for non-method invocations.
+     
+        - Changed getLocation so that 'this' is considered local.
+          Remember, it is modeled as a parameter.
+        
+        - Was not visiting the SgExprListExp from a SgConstructorInitializer.
+          Visiting the SgExprListExp is necessary because we 
+          use it to model the implicit this.  Changed this.
+          Since the SgExprListExp case visits its children, we 
+          no longer need to explicitly visit the actuals/children of a
+          SgConstructorInitializer.
+
+        - When using the child/lhs MRE as the implicit actual of a
+          SgDotExp (method invocation), we need to take its address.
+
+        - I was seeing initMemRefAndPtrAssignMaps being invoked twice
+          on the same SageIRInterface object.  Here's why.  Evidently,
+          my benchmark was so simple that it did not create any
+          pointer assignment pairs.
+
+          Therefore, this check in getAliasStmtType was failing.
+	
+          if (mStmtToPtrPairs.empty() ) {
+              initMemRefAndPtrAssignMaps();
+          }
+
+          To fix this, I have changed all guards to
+
+          if (mStmt2allMemRefsMap.empty() ) {
+              initMemRefAndPtrAssignMaps();
+          }
+
+          This may be slightly counter-intuitive in getAliasStmtType,
+          for example, where a statement to mem ref map doesn't
+          seem relevant.  Nevertheless, this is a consistent
+          and safe guard for initMemRefAndPtrAssignMaps-- if a
+          program does anything at all it will have a non-empty map.
+
+        - Multipe, redundant MemRefHandles were showing up aggregateInit.c
+          and passArrayPtr.c, evidently because of the redundant
+          calls to initMemRefAndPtrAssignMaps fixed above.  Updated
+          their regression results.
+
+9/06/06     UseOA-Rose svn branch-memRefExprRefactor r191  Brian White
+        - Changed SgInitializedName case so that we take the address
+          of a NamedRef representing a variable declaration, if
+          the declaration involves a constructor invocation since
+          the variable will be passed as the implicit this actual
+          (a pointer).
+
+        - I was forgetting to add the created MRE for the SgNewExp case.
+
+        - The SgInitializedName case of findAllMemRefsAndPtrAssigns was
+          previously getting the right-hand side (of the assignment)
+          MemRefHandle by visiting the initializer of the SgInitializedName.
+          Unfortunately, this initializer is sometimes used to 
+          generate the implicit this occuring on the lhs.  As such,
+          calling getTopMemRefHandle on the initializer, to get the
+          MemRefHandle for the rhs, would return the same MemRefHandle
+          as used on the lhs.  So, instead we look past the initializer
+          whenever we use it on the lhs.
+
+          Michelle had previously fixed this problem by simply 
+          visiting the child first, before the initializer was
+          recorded as a MemRefHandle.  Unfortunately, this does not
+          work because the child of the SgInitializedName might be
+          a SgConstructorInitializer, for which we need to model
+          an implicit this.  Such an implicit this might well be
+          the SgInitializedName itself.  Therefore, we need the MRE
+          for the SgInitializedName to exist before visiting the child.
+	
+        - Added the following tests to AliasIRInterface.test
+
+            - paramBindgsForDotMethodInvoc
+
+9/7/06     UseOA-Rose svn branch-memRefExprRefactor r192  Brian White	
+
+        - Updated SgArrowExp case to reflect SgDotExp.  In particular,
+          do not create FieldAccesses for non-virtual method invocations.
+          Instead, just return the NamedRef for the invoked method.
+
+        - Added the following tests to AliasIRInterface.test
+
+            - paramBindgsForArrowMethodInvoc	
+
+9/7/06     UseOA-Rose svn branch-memRefExprRefactor r193  Brian White
+
+        - Fixed getFormalParamIterator so that it does not retrun
+          an implicit 'this' formal for a static method.
+
+        - Fixed SgDeleteExp case so that when it asks for the
+          delete'd variables type, it recognizes that the variable
+          has type SgPointerType.
+
+        - Added SgDeleteExp call handle in FindCallsitesPass::visit.
+
+        - Added SgDeleteExp case to toString.
+	
+        - Added the following tests to AliasIRInterface.test
+
+            - paramBindgsForStaticMethodInvoc	
+            - staticMemberVarAccess
+            - paramBindingsForStackCtorInvoc
+            - paramBindingsForDynamicCtorInvoc
+            - paramBindingsForDestructorInvoc
+            - implicitReceiverMethodInvoc
+            - implicitReceiverDestructorInvoc
+            - implicitReceiverCtorInvoc
+            - implicitMemberVarAccess
+            - implicitMemberVarAccessInCtorList
+            - implicitMemberVarRefDefnInCtorList
+            - implicitMemberVarObjDefnInCtorList
+            - invokeBaseCtorInCtorList
+
+9/7/06     UseOA-Rose svn branch-memRefExprRefactor r198  Brian White	
+
+        - Just got regressAliasIRInterface.test synced up.  
+          Revision r193 had some diffs in the regression tests.
+
+9/7/06     UseOA-Rose svn branch-memRefExprRefactor r199  Brian White
+
+        - Created the following tests in TestCases/AliasTests.
+          These are designed to test implicit assignments arising
+          from virtual method declarations.  They have not
+          been tested and have not been added to regressAliasIRInterface.test.
+
+            - dynamicInitOfClassWhoseBaseClassHasVirtualMethods.C
+            - assignOfObjPtrWhoseBaseClassHasVirtualMethods.C
+            - stackInitOfClassThatOverloadsBaseClassPureVirtualMethods.C
+            - virtualDotBaseMethodInvocation.C
+            - virtualDotOverloadedBaseMethodInvocation.C
+            - stackInitOfClassWithVirtualMethods.C
+            - assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C
+            - assignOfObjectPtrWithVirtualMethods.C
+            - virtualArrowMethodInvocation.C
+            - dynamicInitOfClassThatOverloadsBaseClassVirtualMethods.C
+            - assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C
+            - dynamicInitOfClassWithVirtualMethods.C
+            - stackInitOfClassThatOverloadsBaseClassVirtualMethods.C
+            - stackInitOfClassWhoseBaseClassHasVirtualMethods.C
+            - virtualArrowBaseMethodInvocation.C
+            - virtualDotMethodInvocation.C
+            - dynamicInitOfClassThatOverloadsBaseClassPureVirtualMethods.C
+            - virtualArrowOverloadedBaseMethodInvocation.C
+
+9/8/06     UseOA-Rose svn branch-memRefExprRefactor r200  Michelle Strout
+    - Fixed MRE creation at pointer arithmetic node: SgAddOp.
+      If have a pointer then need to take the address of a
+      partial deref to the pointer.
+    - Yanked logic for creating the implicit actual this for constructors
+      out of getActuals and put it in the SgConstructorInitializer
+      node in findMemRefsAndPtrAssigns code.  Now the implicit actual this
+      is created there and put at SgExprListExp for SgConstructorInitializer.
+      All further code assumes that.  We should do the same for
+      method calls, but that has not been done yet.
+    - Worked through most of the tests in AliasIRInterface.test, but
+      there are still some where the results need reverified.
+
+9/8/06     UseOA-Rose svn branch-memRefExprRefactor r201  Brian White
+
+        - Created the following tests in TestCases/AliasTests.
+          These are designed to test Peter Collingbourne's
+          (along with Chunhua Liao) AST normalization in ROSE,
+          checked into version ROSE-0.8.9a.  Much thanks to 
+          Peter for helping me with baroque C++ syntax.
+
+            - varInIfConditionalGoingOutOfScope.C
+            - varInForInitializerGoingOutOfScope.C
+            - inheritanceExample.C
+            - implicitInvocationOfBaseSpecialMethods.C
+            - varGoingOutOfScope.C
+            - tmpGoingOutOfScope.C
+            - inputDefaultFunctions.C
+            - destructingAroundControlFlow.C
+            - invokeUndefinedSpecialMethods.C
+            - multipleInheritance.C
+            - undefinedSpecialMethods.C
+            - implicitInvocationOfUndefinedBaseSpecialMethods.C
+            - varInForIncrGoingOutOfScope.C
+            - varInReturnGoingOutOfScope.C
+            - varInLoopConditionalGoingOutOfScope.C
+            - inputCode_implicitCodeGenerationTest.C
+
+9/8/06     UseOA-Rose svn branch-memRefExprRefactor r202  Brian White	
+
+        - This version requires ROSE-0.8.9a!
+
+        - I have added the invocation of the AST normalization to OATest.
+          This could potentially be placed in the SageIRInterface
+          constructor.  It seems to me that this should eventually
+          be migrated to the ROSE frontend.
+
+          I have not tested this, only compiled it.  If it gives you
+          trouble, or if you are using an earlier version of ROSE,
+          comment out the following from OATest.
+
+          #include <defaultFunctionGenerator.h>
+          #include <shortCircuitingTransformation.h>
+          #include <destructorCallAnnotator.h>
+
+          // Perform the AST normalization.
+          DefaultFunctionGenerator dfg;
+          dfg.traverse(sageProject, preorder);
+          AstPostProcessing(sageProject);
+          shortCircuitingTransformation(sageProject);
+          destructorCallAnnotator(sageProject);
+	
+        - Two minor changes to make this compile with ROSE-0.8.9a.
+
+9/8/06     UseOA-Rose svn branch-memRefExprRefactor r203  Brian White	
+
+        - Fixed an assertion failure I created in r202.
+          By default, this version uses ROSE-0.8.9a.  If you
+          would like to use an earlier version, comment out
+          the following in MemSage2OA.C.
+
+          #define ROSE_0_8_9a      
+
+        - I have removed the AST normalization above from OATest.
+          I originally intended to put it in CtoOA, which we are all
+          currently using.  For now, I have removed it altogether--
+          it seems that we should get the regression tests working
+          with the new version of ROSE before adding one more
+          factor.
+
+9/9/06     UseOA-Rose svn branch-memRefExprRefactor r204  Brian White
+
+        - We consider function/method invocations to be uses, hence
+          they need to have MREs (as well as call MREs).  This has
+          already been done for methods, functions, and constructors,
+          but not destructors.  Modified SgDeleteExp case to 
+          create a MRE here as well.
+
+        - Something above affected the order of Locations in the
+          regression test output.  Re-created regression results
+          to reflect this new ordering.
+
+        - Suppressed warning messages by adding --edg:no_warnings -w
+          flag to CtoOA.  This is important because ROSE 0.8.9a
+          outputs absolute paths (in warnings) whereas our regression
+          results had relative paths.  Not that re-creating the
+          regression tests with absolute paths will not suffice
+          because each developer would have a different absolute path.
+          Re-created regression tests without warnings.
+
+        - This version works with ROSE 0.8.7a.
+	
+9/10/06     UseOA-Rose svn branch-memRefExprRefactor r205  Brian White	
+
+        - Switched to ROSE 0.8.9a.
+
+        - Adapted findTopMemRefHandle to cope with (constant) folded
+          expression, which show up in SgValueExp and SgCastExp.
+          In particular, a SgCastExp now has two children-- its
+          operand and the "original" expression tree, which is non-NULL
+          (presumably) if the operand holds a folded value.  
+          The presence of two children caused findTopMemRefHandle 
+          to return 0, since there is no top in the presence of
+          multiple children.  However, though there are two apparent 
+          child here, there is only one actual child.  We should
+          always visit the operand-- be the original, unfolded
+          expression or the folded expression.
+
+        - Fixed recognition of va_start to look for "__builtin_va_start"
+          as well as "va_start".  Evidently, the former is being
+          used in ROSE-0.8.9a.
+
+        - All AliasIRInterface regression tests pass, except refClass2.
+          However, to avoid an abort in parambinds-formals-intPtrs.C, you
+          will need to patch ROSE-0.8.9a according to this e-mail:
+          [I believe this problem actually arose in ROSE-0.8.8a]
+
+          Date: Sun, 10 Sep 2006 15:11:13 -0400 (EDT)
+          From: Brian White <bwhite@csl.cornell.edu>
+          To: michelle strout <mstrout@CS.ColoState.EDU>, andy stone <aistone@gmail.com>
+          Subject: null parent in va_start/va_arg & bug fix [was Re: null
+                   (grand)parent bug in ROSE-0.8.8a]
+
+9/11/06     UseOA-Rose svn branch-memRefExprRefactor r206  Brian White
+
+        - Put common.C in namespace UseOA.  Sage2OA.C and MemSage2OA.C use
+          namespace UseOA.
+	
+        - Some changes for handling reference conversion:
+
+            - Don't use isSgReferenceType to determine if a type is a
+              reference type in need of modeling, but rather use
+              isReferenceTypeRequiringModeling.
+	
+            - Added mMRE2TypeMap : mre -> typeEnum that indicates
+              whether an MRE has a reference or non-reference type.
+
+              NOTE!  When you create/clone/composeWith a new MRE,
+              you need to set its type.
+
+            - Modified SgArrowExp/SgDotExp so that if rhs in a->rhs or a.rhs
+              is a reference, then we deref *(a->rhs) and *(a.rhs).
+              That is, we apply reference conversion rule 3. 
+              Wrote referenceMemVarAccesses.C to test this.
+
+            - Modified SgFunctionCallExp so that we dereference the
+              return slot if it represents the return value of
+              reference type.  This is an application of reference
+              conversion rule 3.  Test:  returnReference.C.
+
+            - Now whenever we apply reference conversion rule 3 (to deref)
+              in SgVarRefExp, SgFunctionCallExp, SgArrowExp/SgDotExp,
+              we also leave behind, rather than replace, the original
+              expression.  Further, if we later take the address of
+              this deref, effectively to recover the original
+              base reference, we should remove the one that we left
+              behind, lest they be redundant.  
+
+              These base references (before the deref) have a
+              Sg_File_Info MemRefHandle!  Ugly!
+	
+            - Changed reference conversion rule 2.  
+
+              Previously:
+
+              If the rhs does not have an lvalue, e.g., 3+5, &y, etc.,
+              then replace lhs with *lhs.
+
+              Please see the thread between Michelle and Brian on
+              Sept 12 and 13 entitled 'formal references' for
+              the deficiencies with this approach.
+
+              Current approach (as implemented in 
+              applyReferenceConversionRule2):
+
+              For a reference initialization: 
+                  t_l &lhs = rhs.             (1)
+              If the rhs does not have an lval, the stmt must actually
+              be of the form:  
+                  t_l const &lhs = rhs;
+              Model this as:
+                  t_l tmpLhs = rhs;           (2a)
+                  t_l const &lhs = tmpLhs;    (2b)
+
+              Create ptr assigns for (2a) if necessary.
+              Apply reference conversion rule 4 to (2b) by ignoring
+              the const and noting that the rhs not has an lvalue.
+              Create ptr assign for (2b).
+
+              The tmp MREs created above use a 
+              Sg_File_Info MemRefHandle!  Ugly!	
+        
+	    - Modified SgInitializedName to apply reference conversion
+              rule 2, as well as reference conversion rule 4 (as 
+              previously implemented).  If the rhs of the initialization
+              has an lval, we take its address (rule 4), if it does not,
+              we apply rule 2 (above).  Tests:  referenceInit.C and
+              ctorReferenceInit.C, as well as the existing refClass.C
+              and refClass2.C.
+
+            - Removed the reference handling code from SgAssignOp.
+              Formerly, in the case where a variable with an lval
+              was assigned to a reference variable, we were removing
+              the derefence to the lval and taking the address of
+              the rhs.  Briefly, this is the correct behavior
+              for an initialization, which affects the location of
+              the reference, but not for a reference _assignment_,
+              which only affects the location that the reference
+              refers to.  Please see this thread:
+
+              Date: Tue, 12 Sep 2006 20:47:10 -0600
+              From: Michelle Strout <mstrout@CS.ColoState.EDU>
+              To: Brian White <bwhite@csl.cornell.edu>
+              Subject: Re: more reference logic
+
+            - Modified SgReturnStmt case to apply rules 2 (if the rhs
+              does not have an lval) and rule 4 (either after 2 or if
+              the rhs does have an lval).  This bit looks very (too?)
+              similar to the SgInitializedName case.  See the test
+              returnReference.C.
+        
+            - Modified convertReferenceActuals so that it applies
+              reference conversion rules 4 (as done previously, if the
+              actual has an lvalue) and 2 (if it does not), as appropriate.
+
+            - Merged convertReferenceActuals into 
+              createParamBindPtrAssignPairs, which now applies both
+              reference conversion rule 4 (as it did previously) and
+              reference conversion rule 2.
+
+            - After all of this work, what do we get?  Changed
+              the regression results for refParam.C, refClass.C.
+
+9/13/06     UseOA-Rose svn branch-memRefExprRefactor r208  Michelle Strout
+    - Fixed a bug in getStmtIterator(), FindAllStmts().  We were not recursing
+      down into a SgDefaultOptionStmt.
+
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r213  Brian White
+	
+            - Copied CHAandAliasVirtualMethodResolver from trunk, 
+              which performs virtual call site resolution using both 
+              static class hierarchy analysis (a la 
+              staticVirtualMethodResolver, with which it
+              should be merged) and using FIAlias.
+
+            - Checked in Benchmarks from the paper 
+              "Static Type Determination and Aliasing for C++",  
+              Hemant Pande and Barbara G. Ryder, 
+              Laboratory of Computer Science Research Technical Report,  
+              Number LCSR-TR-250-A, October, 1995.
+
+              Located in TestCases/AliasBenchmarks/PandeEtAl95.
+
+              This is the complete benchmark suite from that paper, 
+              including:
+
+              chess
+              city
+              driv1
+              driv2
+              employ
+              family
+              fsm
+              garage
+              greed
+              life
+              np
+              objects
+              ocean
+              office
+	      primes
+              shapes
+              simul
+              tree
+              vcirc
+
+              According to BIBLIO file, these were found at 
+              http://www.cis.udel.edu/~hiper/C++benches/
+              by Cornell undergrads James Juwon Lee (primarily)
+              and David Drew.  In principle, they have annotated these
+              with (empty) stubs-- i.e., they do not account for
+              aliasing or side effects, though I expect there to be none. 
+
+              For example, in primes.C, we see a stub section that
+              begins with the comment // stubs
+
+              // stubs
+
+              int printf(const char *format, ...)
+              {
+                  return 0;
+              }
+
+              Stubs for some benchmarks may be missing, as James and David
+              were unable to get all benchmarks to compile.  There are
+              no makefiles, but everything should be a single file.  Where
+              everything was not in a single file, they should have
+              been concated into a single concat.C file.
+
+	      James said he was unable to compile: city, employ, ocean,
+              and np.
+
+              To run, e.g., in TestCases/AliasBenchmarks/PandeEtAl95/simul:
+
+              ../../../../CHAandAliasVirtualMethodResolver -out:results -I. simulate.C
+
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r214  Brian White	
+
+          - Changed getBaseType to look through SgModifierTypes, as
+            well as SgTypedefTypes.  See type-related methods in
+            src/midend/astInlining/typeTraits.C.
+
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r216  Brian White	
+
+          - Made virtual function table optimization the default,
+            by setting default value for parameter useVtableOpt
+            of SageIRInterface constructor to true.  This option
+            is controlled by the member variable mUseVtableOpt.
+
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r217  Brian White	
+
+          - Fixed findAllMemRefsAndMemRefExprs to visit global
+            class declarations.  This was not happening because
+            the method responsible for collecting global declarations,
+            getGlobalObjectDeclarationsAndClassDefinitions, was
+            incorrectly looking for a SgClassDefinition under SgGlobal,
+            instead of a SgClassDeclaration.
+
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r218  Michelle Strout
+    - Fixed CHAandAliasVirtualMethodResolver.C by having it call 
+      ManagerFIAliasAliasMap instead of the one that generate EquivSets.
+    - verified some of the AliasIRInterface.test things involving references.
+      There are some diffs in there that seem new.  For example, comma.c
+      now aborts.
+
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r218  Brian White	
+
+          - Modified creation of implicit ptr assigns for virtual
+            methods in SgVariableDeclaration case.  In particular,
+            we were not getting the proper lhs/object name to pass
+            to createImplicitPtrAssignPairsForObjectDeclaration, so
+            I explicitly created one.
+
+          - Changed the stmt handle in the unnamed ref of a new/malloc
+            to be the expression, rather than the statement.
+            This choice is potentially important:  using the statement
+            would limit our precision because multiple, distinct
+            expressions within the same statement would be mapped to 
+            the same MRE.  Further,
+            createImplicitPtrAssignPairsForDynamicObjectAllocation
+            assumes that the stmt handle is a SgNewExp.
+	
+          - Modified SgDeleteExp case to do nothing if the
+            destroyed object is a basic type.
+
+          - Modified SgConstructorInitializer to do nothing
+            if the involved type is a basic type.
+
+          - Modified SgClassDeclaration so that it does
+            recurse if its definition is NULL.
+
+          - Modified FindCallsitesPass::visit so that it
+            doesn't collect a SgDeleteExp if it destroys a 
+            basic type.
+	
+          - Modified SgReturnStmt so that it does nothing if the
+            expression returned is NULL.  e.g., 
+	
+            void foo() { 
+                if ( true ) { return; }
+            }
+
+          - In a few places where we were trying to get a class
+            definition from a class declaration, first found 
+            the defining class declaration.
+	
+	  - Passed the following tests:
+
+              - stackInitOfClassWithVirtualMethods.C
+
+
+9/14/06     UseOA-Rose svn branch-memRefExprRefactor r225  Brian White	
+
+          - Modified SgDotExp case so that it only creates
+            a FieldAccess for a virtual method if the 
+            receiver is a reference, an not an object.
+
+          - Weren't creating a deref'ed fieldaccess call
+            mre for virtual methods-- changed SgDeleteExp
+            and SgFunctionCallExp cases to do this.
+
+          - Modified isVirtual to detect when it is called
+            on a constructor and to return false.
+            For some reason, constructors are sometimes
+            annotated as virtual by ROSE.
+
+          - When we created virtual method implicit
+            assignments at a class definition (vtable approach),
+            we need to always use the SgClassDefinition
+            of the top-level class we are visiting
+            as the virtual function table pointer base,
+            as opposed to the SgClassDefinition of a
+            derived class that may be defining a virtual
+            method.  Changed 
+            createImplicitPtrAssignPairsForClassDefinition
+            to take this topClass as an argument.
+
+          - Changed nearly all derefs to use derefMre, which
+            uses composeWith.
+	
+	  - Passed the following tests:
+
+              - dynamicInitOfClassWithVirtualMethods.C
+              - virtualDotMethodInvocation.C
+              - virtualArrowMethodInvocation.C
+              - assignOfObjectPtrWithVirtualMethods.C
+              - stackInitOfClassWhoseBaseClassHasVirtualMethods.C
+              - dynamicInitOfClassWhoseBaseClassHasVirtualMethods.C
+              - virtualDotBaseMethodInvocation.C
+              - virtualDotRefBaseMethodInvocation.C
+              - virtualArrowBaseMethodInvocation.C
+              - assignOfObjPtrWhoseBaseClassHasVirtualMethods.C
+
+9/15/06     UseOA-Rose svn branch-memRefExprRefactor r226  Brian White	
+
+          - No longer generate implicit ptr assign pairs for _pure_
+            virtual methods.  These can not be invoked, so including
+            them would be correct, but imprecise.
+	
+	  - "Completed" testing of virtual methods by passing the following tests:
+
+              - stackInitOfClassThatOverloadsBaseClassVirtualMethods.C	
+              - stackInitOfClassThatOverloadsBaseClassPureVirtualMethods.C
+              - dynamicInitOfClassThatOverloadsBaseClassVirtualMethods.C
+              - dynamicInitOfClassThatOverloadsBaseClassPureVirtualMethods.C
+              - virtualDotOverloadedBaseMethodInvocation.C
+              - virtualArrowOverloadedBaseMethodInvocation.C
+              - assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C
+              - assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C
+
+9/15/06     UseOA-Rose svn branch-memRefExprRefactor r227  Brian White	
+
+          - This is the version I used for the CGO submission.  Though
+            I did not run with the following change:
+
+          - Modified above re: handling of pure virtual methods.  
+            I have seen pure virtual methods with definitions!?
+            Therefore, do not create implicit ptr assigns if the
+            method is pure virtual _and_ does not have a definition.
+
+9/17/06     UseOA-Rose svn branch-memRefExprRefactor r228  Brian White
+
+          - This is the version I used for the resubmission to CGO
+            on 9/16 after the 1-day extension.  
+
+9/25/06     UseOA-Rose svn branch-memRefExprRefactor r229  Brian White	
+
+          - Need to create implicit this actual for case in which 
+            a copy constructor is invoked to copy an actual object
+            parameter.  This affected createConstructorInitializerReceiverMRE.
+            I created an UnnamedRef whose statement is the
+            SgConstructorInitializer in case.
+        
+          - Implemented SgTryStmt and SgCatchStatementSeq for both
+            SageIRStmtIterator::FindAllStmts and findAllMemRefsAndMemRefExprs.
+ 
+          - Turned off AST normalization again in CtoOA.
+
+10/02/06     UseOA-Rose svn branch-memRefExprRefactor r230  Brian White
+
+          - Changed SgArrowExp/SgDotExp case, which was calling isArrowExp
+            (i.e., -> or *.) in places where it should have been invoking 
+            isSgArrowExp (i.e., -> only).  Note:  still invoking isArrowExp
+            to determine whether the invocation may be virtual (. can not
+            be).
+
+          - All regression tests pass.  However, I noticed that strange
+            MemRefExprs like struct __gconv_loaded_object are appearing.
+            These seem to appear regardless of whether we visit header
+            files.  Unfortunately, they are probably platform dependent,
+            so that regression tests may be different on different
+            platforms.
+
+10/02/06     UseOA-Rose svn branch-memRefExprRefactor r231  Brian White
+
+          - Need to create implicit this actual for case in which 
+            a copy constructor is invoked to copy an object in a return
+            expression.  This affected createConstructorInitializerReceiverMRE.
+            I created an UnnamedRef whose statement is the
+            SgConstructorInitializer in case.	
+
+          - Moved flag excludeInputFiles from an optional param to
+            SageIRProcIterator constructor to an optional param of
+            SageIRInterface constructor.  Now, we use this consistently.
+            Previously, whenever SageIRInterface created a SageIRProcIterator
+            it was passing excludeInputFiles = false to SageIRProcIterator.
+            However, another part of our analysis, external to SageIRInterface,
+            might have directly created a SageIRProcIterator with
+            excludeInputFiles = true.  This might have lead to 
+            inconsistencies.
+
+          - For each alias analysis benchmark in 
+            AliasTests/AliasBenchmarks/PandeEtAl95, created a file
+            singleFile.C which should be used for analysis.  This file
+            is a concatentation of not only all of the .C files (as was
+            put in concat.C), but also of all of the user header files.
+            Therefore, we can analyze these files without visiting
+            any header files (i.e., excludeInputFiles = true), 
+            which should be more efficient.
+
+10/09/06     UseOA-Rose svn branch-memRefExprRefactor r232  Brian White
+
+          - Was not properly visiting SgTryStmt and SgCatchStatementSeq,
+            because I had them under the SgScopeStatement clause of
+            SageIRStmtIterator::FindAllStmts rather than the SgStatement
+            clause.
+
+          - Invocation of qualified methods (i.e., Parent::methodName)
+            may be statically resolved and should not be marked as
+            virtual.  Such SgMemberFunctionRefExp have
+            get_need_qualifier() == true.
+
+          - Modified CHAandAliasVirtualMethodResolver.C to account
+            for the above-mentioned qualified method names, which
+            are statically resolvable (not virtual).
+
+          - CHAandAliasVirtualMethodResolver.C was recursing down the
+            class hierarchy, invoked getSubClasses on each class.
+            This is both unecessary and incorrect since getSubClasses(cls)
+            returns all subclasses (direct and indirect) of cls.
+
+          - Finished checking reference regression tests, by
+            verifying output for
+              - referenceInit.C
+              - referenceFormal.C
+              - returnReference.C
+              - refCall.C	
+
+10/09/06     UseOA-Rose svn branch-memRefExprRefactor r233  Brian White
+          - Added getSgNode : ProcHandle -> SgFunctionDefinition.
+            We should be creating such methods as we go along.  This allows
+            us to relate OA analysis results back to Sage/ROSE.
+
+          - Changed CHAandAliasVirtualMethodResolver so that it only
+            reports results for invoked functions.  Reporting results
+            for all functions/methods was causing a minor headache.  
+            Imagine that we have:
+
+                void foo(bar *b) { b->callMethod(); }
+
+            If foo is never called in the program, then b will never
+            be bound (via any param bindings occuring at a callsite).
+            Therefore, b->callMethod() would give us an invisible 
+            location (for alias analysis-based results).  For CHA
+            would we get some valid result.  Two problems here:
+            we were getting invisible location, which seemed wrong;
+            how do we compare 0 resolutions for alias analysis vs
+            whatever CHA was giving us.
+
+            Now, we should never get invisible locations.  I believe.
+            If we do, this is an error.
+
+            Implementation:  use a worklist to output results only
+            for invoked functions/methods.  Initialize the worklist
+            to hold only main.  Then for each function in the worklist,
+            append any function invocations within that function to
+            the worklist.
+
+            XXX:  There is a lot of redundancy in the CHA code.
+                  This should be merged.
+
+            XXX:  I am using a vector for the worklist.  Should
+                  have used a queue.
+
+        - Checked CHAandAliasVirtualMethodResolver results for family.
+          Henceforth, I will put results for a benchmark 'bmk' in
+          TestCases/AliasBenchmarks/PandeEtAl95/bmk/cha.{results, out}
+          generated within dir: TestCases/AliasBenchmarks/PandeEtAl95/bmk via
+          
+	  rm cha.results ; ../../../../CHAandAliasVirtualMethodResolver -out:cha.results family.C > & cha.out  		
+
+10/10/06     UseOA-Rose svn branch-memRefExprRefactor r234  Brian White
+
+        - In CHAandAliasVirtualMethodResolver I was forgetting to add
+          non-virtual methods/functions to the worklist.
+
+        - Verified results for the following Pande benchmarks:
+            - vcirc
+            - garage
+            - tree
+            - objects
+            - ocean
+
+        - "Discussion" of fine-grained differences.  Fewer resolutions are
+          better/more precise (assuming correctness, which has been manually
+          verified).
+
+            - vcirc:   FIAlias 4 resolutions vs CHA 6
+
+                       CHA believes that the virtual methods Hide and Show
+                       in
+
+                           void Point::MoveTo(int NewX, int NewY) {
+                             Hide();         // make current point invisible
+                             X = NewX;       // change X and Y coordinates to new location
+                             Y = NewY;
+                             Show();         // show point at new location
+                           }
+
+                       may be invoked on either Point or its subclass Circle.
+                       FIAlias knows that the implicit this actual of Point::MoveTo
+                       is never bound to a Circle; therefore only 1 resolution
+                       is possible for each of Hide and Show.
+
+                       Because of this, FIAlias recognizes 4 monomorphic sites
+                       as opposed to 2 for CHA.
+
+                       RTA would return the same results as FIAlias, since
+                       a Point is never allocated in the program.  However,
+                       we could instantiate a Point object; FIAlias would still
+                       do the proper thing, but RTA would not.  Actually,
+	               I don't think this is true:  if we allocate a Point
+                       than through the common Point constructor, its 'this'
+                       will be aliased with the 'this' of a Circle.
+                       Therefore, this->Hide() above will resolve to both
+                       Circle::Hide and Point::Hide.  Yes; I have just verified
+                       this.  SIGNIFICANTLY:  this is a shortcoming of 
+                       FIAlias (namely the symmetric nature of assignment),
+                       rather than our approach-- i.e., no precision is
+                       lost by our modeling.
+
+            - garage:  FIAlias 2 vs CHA 3.
+
+                       FIAlias (correctly) believes that
+
+                           parked[bay]->identify()
+
+                       resolves to Car::identify and Truck::identify, while
+                       CHA also thinks that Vehicle::identify is possible, since
+                       Vehicle * is the static type of parked[bay].
+
+                       As above, no Vehicle is instantiated.  Therefore, RTA
+                       would again give us the correct results.  And, as 
+                       argued above, were we to instantiate a Vehicle object,
+                       FIAlias would return imprecise results because of
+                       param binding at the (base) constructor, which leads to
+                       aliasing of a Car, Truck, and Vehicle.  Again,
+                       a failing of FIAlias, not our approach.               
+
+            - tree:  FIAlias 3 vs CHA 4
+
+                     Just like the above 2 cases.  The base class, Node, of
+                     3 other classes-- UnaryNode, BinaryNode, and RealNode,
+                     is never instantiated.  Therefore, FIAlias correctly
+                     determines that 
+
+                        nodePtr->nodeValue()
+
+                     invoked from Tree::value() can never invoke a Node.
+                     Same caveats as above wrt RTA and imprecision due
+                     to FIAlias, rather than modeling.
+
+            - objects:  FIAlias 13 vs CHA 11
+
+                        There are differences in two call sites:  the invocation
+                        of Type in main and of Get from SpArray::Fetch.
+
+                        Invocaton of a3->Type() in main.
+
+                        Precise result:  only A::Type may be invoked.
+
+                        CHA result:  A::Type and B::Type may be invoked.  This
+                        occurs because the static type of a3 is A and B is a 
+                        subclass of A.  Since no B's are allocated, RTA
+                        would have determined the precise result.
+
+                        FIAlias result:  A::Type, Array::Type, and SpArray::Type
+                        may be invoked.  The problem is that A, Array, and SpArray
+                        share a common base class, Object.  As described above,
+                        a3 is aliased through its constructor implicit arg.
+
+                        Specifically:
+
+                            // invokes Object ctor and binds a1 (as implicit this
+                            // actual to Object::this).
+                            A *a1 = new A(1);   
+                            // invokes Object ctor and binds a2 (as implicit this
+                            // actual to Object::this).	 Implies a1 and a2 bound.
+                            A *a2 = new A(2);   
+                            A *a3;
+                            // invokes Object ctor and binds ar (as implicit this
+                            // actual to Object::this).	 Implies a1, a2, ar bound.
+                            Array *ar = new Array(3,VOLAT);
+                            // invokes Object ctor and binds sar (as implicit this
+                            // actual to Object::this).	 Implies a1, a2, ar, sar bound.	
+                            SpArray *sar = new SpArray(3,VOLAT);
+
+                            Array *a;
+                            if (0)
+                                a = ar;
+                            else
+                                a = sar;
+                            a->Assign(a1);
+                            a->Assign(a2, 2);
+                            // Because of the two above Assigns, Fetch may
+                            // return a1 or a2.  Therefore, we expect a3 to
+                            // be a1 or a2.  Unfortunately, a1 and a2 are
+                            // bound above to ar and sar.  Therefore,
+                            // we have the alias set {a1, a2, a3, ar, sar}.
+                            a3 = (A *)a->Fetch(2);
+                            // Therefore, a3->Type() may invoke A::Type,
+                            // Array::Type, or SpArray::Type.
+                            a3->Type();
+
+                        Invocaton of Get() in SpArray::Fetch.
+
+                        CHA result:  SpArray::Get only possible invocation,
+                        since it only looks in SpArray and its subclasses.
+                        Array::Get is defined, but Array is a _super_class of SpArray.
+
+                        FIAlias result:  Array::Get or SpArray::Get.  Just
+                        as above, binding occurs through implicit this actual.
+                        Therefore, we get every class that defines Get.
+
+            - ocean:  FIAlias 6 vs CHA 5	
+
+                      Difference is at the invocation of reproduce within
+                      Prey::MoveTo.  reproduce is implemented by Cell, Predator, and
+                      Prey, where inheritance dag (base -> child): 
+                      Cell -> Prey -> Predator.
+
+                      CHA result:  since reproduce is invoked from Prey::MoveTo,
+                      CHA only looks for reproduce in Prey and Predator (i.e, the 
+                      class defining the caller and any of its subclasses), not in the
+                      base class Cell.
+
+                      FIAlias result:  as usual, since Cell is a shared base class
+                      of Prey and Predator, wherever we believe we have a Prey or
+                      Predator, we also think we may have a Cell.  Same caveats/issues
+                      as above.  Failing of FIAlias, not our approach.
+
+                      Note that the other call site cells[row][col]->process();
+                      in Ocean::run, is truly polymorphic and definitely can
+                      invoke all three of Cell::process, Prey::process, and
+                      Predator::process.  cells[row][col] is populated with
+                      objects of each of these types in Ocean::initCells, 
+                      via invocations of addEmptyCells(), addPrey(), and addPredators(),
+                      respectively.  i.e., the precision result for this
+                      call site has 3 resolutions.
+
+
+10/10/06     UseOA-Rose svn branch-memRefExprRefactor r235  Brian White
+
+        - Changed matchingFunctions (a predicate returning true if
+          two functions have the same type signature) to call getBaseType
+          before comparing types.  The driv1 benchmark defines a
+          pure virtual method with a char * arg, while implementations of
+          that virtual method use a typedef to a char *.  Before
+          calling getBaseType, UseOA thought these were different methods.
+
+        - Also need to change mangleFunctionName to invoke getBaseType
+          on types.  Otherwise, the field access (mangled name) above to 
+          the pure virtual method would not match any of the derived
+          methods, which use the typedef for their args.
+	
+        - Implemented SgForInitStatement case in findAllMemRefsAndMemRefExprs.
+          Remarkably, this hadn't been done!
+	
+        - CHAandAliasVirtualMethodResolver was not visiting destructors
+          or constructors.  Fixed that.
+
+        - According to Stroustrup 2nd edition section r.12.7, 
+          invocations of virtual methods within destructors or
+          constructors may be statically resolved.  Therefore,
+          do not create FieldAccesses for them.
+
+        - Fixed CHAandAliasVirtualMethodResolver so that it does
+          not consider any methods invoked from a constructor
+          or destructor to be virtual.
+
+        - Added indirectcalltrace.C to repository.  This is implemented
+          within the PIN framework (rogue.colorado.edu/pin/) for
+          instrumentation.  Specifically, I implemented this using
+          pin-2.0.  I have included the makefile, which was in 
+          the SimpleExamples subdirectory.  indirectcalltrace can not
+          be built here, as it requires pin.  I am adding it
+          because I almost lost it.
+
+          It is invoked on a _binary_.  e.g.,
+
+          ~/pin-2.0-3077-gcc.3.2-ia32-linux/Bin/pin -t ~/pin-2.0-3077-gcc.3.2-ia32-linux/SimpleExamples/indirectcalltrace -- ./singleFileSansStubs > pin.out
+
+          By default, it writes to the output file indirectcalltrace.out.  
+          This output file contains an entry for dynamic indirect call.
+          Therefore, it provides the most precise virtual method
+          resolution that an alias analysis could hope to achieve.
+
+          For each of the benchmarks, I am providing a singleFileSansStubs.C
+          file, which is singleFile.C, without the stubs.  Removing
+          the stubs is necessary for compilation.  Now, just compile
+          and link singleFileSansStubs.C to create a binary, using
+          your favorite backend compiler.  Then, run it through
+          pin/indirectcalltrace, as shown above.
+
+          The names in the output file are mangled, so you will probably
+          want to run through c++filt:
+
+          more indirectcalltrace.out | grep Resolution | c++filt | sort -u | more	
+
+        - For each benchmark, we should have the following files:
+              singleFile.C           // includes all user-defined headers and
+                                     // source files and intended for analysis
+                                     // i.e., has stubs.
+              singleFileSansStubs.C  // singleFile.C, but without stubs.
+                                     // rather than being intended for
+                                     // analysis, is intended to be built
+                                     // and run through pin/indirectcalltrace.
+              cha.results            // CHA and FIAlias analysis results
+                                     // collected from 
+                                     // CHAandAliasVirtualMethodResolver
+              cha.out                // output spewed from
+                                     // CHAandAliasVirtualMethodResolver
+              pin.results            // Dynamic resolutions from
+                                     // indirectcalltrace-- i.e.,
+                                     // the output that is put in 
+                                     // indirectcalltrace.out by default.
+              README                 // discusses and compares results
+                                     // from CHA, FIAlias, and pin.
+          I will no longer be putting discussion of results in this
+          ChangeLog; those will instead go in the per-benchmark READMEs.
+	
+        - Verified results for the following Pande benchmarks:
+            - chess
+            - simul
+            - shapes
+
+
+        - "Discussion" of fine-grained differences.  Fewer resolutions are
+          better/more precise (assuming correctness, which has been manually
+          verified).
+
+            - chess:   FIAlias 6 resolutions vs CHA 6 (precise: 6)
+
+                       These are the most precise results possible.
+                       There is only 1 virtual call site and it is 
+                       6-way polymorphic.  The call is
+
+                           config[i][j]->Rep ()
+
+                       from Board::Dump.  Rep() is implemented
+                       by each of the 6 pieces of the chess board.
+                       It is also implemented as a pure virtual
+                       method in Piece, but we do not consider
+                       pure virtual methods as potential resolutions
+                       (since they can not be invoked).
+
+                       We see from the constructor Board::Board
+                       that this call is truly 6-way polymorphic.
+                       There we see that config[i][j] is set to
+                       each of the 6 type of pieces (for some i,j).
+
+            - simul:   FIAlias 6 resolutions vs CHA 9 (precise: 6)
+
+                       Class hierarchy (base -> child):
+                       simulation_unit -> pop_around
+                       simulation_unit -> crawl_around
+
+                       There are 3 virtual invocations:
+                           display from simulation_unit::move
+                           erase   from simulation_unit::move
+                           cycle   from main
+
+                       Note that display is invoked from each of the
+                       3 constructors, but although display is
+                       virtual, it may only be resolved within the
+                       current class or one of its base classes _NOT_
+                       within a subclass.  See section r.12.7 of
+                       Stroustrup Edition 2-- '... virtual functions
+                       may be called (directly or indirectly) [in a
+                       constructor or destructor].  The function called
+                       will be the one defined in the constructor's 
+                       (or destructor's) own class or its bases, but _not_
+                       any function overriding it in a derived class.
+                       This ensures that unconstructed objects will not
+                       be accessed during construction or destruction.'
+
+                       In each of the above 3 cases, simulation_unit,
+                       pop_around, and crawl_around define the virtual
+                       method.
+
+                       CHA result:  because the static type of the
+                       receiver is simulation_unit for each of the 3
+                       invocations, it infers that the type of 
+                       the receiver is simulation_unit or either of
+                       its two subclasses.
+
+                       FIAlias result:  since no simulation_unit
+                       object is created, no varible is assigned its
+                       virtual ptr table.  Therefore, none of the
+                       simulation_unit virtual methods will be 
+                       invoked.  RTA would also give the precise
+                       results (assuming that RTA does not consider
+                       an object of a class base to be instantiated during
+                       the creation of an object of its subclass).
+
+10/20/06     UseOA-ROSE svn trunk r239   Michelle Strout
+	Merging the memRefExprRefactor branch into the trunk.
+	svn merge -r 143:238
+	svn+ssh://svn.berlios.de/svnroot/repos/useoa-rose/branch/memRefExprRefactor
+
+	regressAll with OA r246 has the following problems
+    -There is some different header output on okapi than on Brian's machine,
+     gnu_dev_major, struct __sched_param, etc.  For now ignore those.
+    - In AliasIRInterface.test there are some tests that output debug
+      information that they shouldn't.
+        Eg. [In unparseType
+    - Some core dumping in the ParamBindings.
+    - Some core dumping in the ICFG.
+      ICFG needs completely rechecked.
+    - SideEffects need rechecked.
+    - ReachDefs need rechecked.
 

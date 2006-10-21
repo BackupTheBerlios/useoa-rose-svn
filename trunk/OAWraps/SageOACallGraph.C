@@ -1,14 +1,24 @@
 #include "SageOACallGraph.h"
+#include "common.h"
 
+using namespace UseOA;
 
 //SageIRCallsiteIterator implementation
 
 SageIRCallsiteIterator::SageIRCallsiteIterator(SgStatement * sgstmt, 
-                                               OA::OA_ptr<SageIRInterface> in)
+                                               SageIRInterface &in)
+    : ir(in)
 {
  //given an sgstmt put all call expressions in calls_in_stmt
-  ir=in;
-  FindCallsitesInSgStmt(sgstmt, calls_in_stmt);
+  // Do not look for call sites within a SgClassDefinition.  We
+  // return this as a statement so we can create implicit
+  // virtual method ptr assign pairs from it.
+  // Its procedures will be passed explicitly as statements.
+  // If we recurse through the class definition, we will
+  // visit them twice.
+  if ( !isSgClassDefinition(sgstmt) && !isSgClassDeclaration(sgstmt) ) {
+      FindCallsitesInSgStmt(sgstmt, calls_in_stmt);
+  }
   begin = calls_in_stmt.begin();
   st_iter = calls_in_stmt.begin();
   end = calls_in_stmt.end();
@@ -66,7 +76,7 @@ OA::CallHandle SageIRCallsiteIterator::current() const
 
   if (isValid()) {
     //cerr << "cur expr: " << cur->unparseToString() << endl;
-    h = (OA::irhandle_t)(ir->getNodeNumber(cur));    
+    h = (OA::irhandle_t)(ir.getNodeNumber(cur));    
     //cerr << "handle : " << h.hval() << endl;
   }
   return h;
@@ -91,6 +101,7 @@ void SageIRCallsiteIterator::reset()
 void SageIRProcIterator::FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst)
 {
   if ( mExcludeInputFiles ) {
+    //    std::cout << "Exclude = true" << std::endl;
     // Only visit those AST nodes defined within the same file as node.
     // i.e., ignore AST nodes pulled in from input files.
     SgProject *project = isSgProject(node);
@@ -100,14 +111,14 @@ void SageIRProcIterator::FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst
       FindProcsPass(lst).traverseWithinFile(node, preorder);
     }
   } else {
+    //    std::cout << "Exclude = false" << std::endl;
     FindProcsPass(lst).traverse(node, preorder);
   }
 }
 
 SageIRProcIterator::SageIRProcIterator(SgNode *node, 
-                                       OA::OA_ptr<SageIRInterface> in,
-				       bool excludeInputFiles)
-  : mExcludeInputFiles(excludeInputFiles)
+                                       SageIRInterface& in)
+  : ir(in), mExcludeInputFiles(in.excludeInputFiles())
 {
  //given an sgstmt put all call expressions in calls_in_stmt
    FindProcsInSgTree(node, procs_in_proj);
@@ -115,7 +126,6 @@ SageIRProcIterator::SageIRProcIterator(SgNode *node,
   st_iter = procs_in_proj.begin();
   end = procs_in_proj.end();
   valid=TRUE;
-  ir=in;
 }
 
 
@@ -127,7 +137,7 @@ OA::ProcHandle SageIRProcIterator::current() const
 
   if (isValid()) {
     //cerr << "cur stmt: " << cur->unparseToString() << endl;
-    h = (OA::irhandle_t)(ir->getNodeNumber(cur));    
+    h = (OA::irhandle_t)(ir.getNodeNumber(cur));    
     //cerr << "handle : " << h.hval() << endl;
   }
   return h;
@@ -163,23 +173,21 @@ void FindCallsitesPass::visit(SgNode* node)
   // new, also need to get those involved in a stack allocation.
   // Both can be captured by looking at SgConstructorInitializers instead.
 
-  // For malloc, return the cast expression as the call site.
-  // BW 4/6/06.
-  if ( isSgCastExp(exp) ) {
-    SgCastExp *castExp = isSgCastExp(exp);
-    ROSE_ASSERT(castExp != NULL);
-    
-    SgNode *node = castExp->get_operand();
-    SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
-    
-    if ( ( functionCallExp != NULL ) && ( mIR->isMalloc(functionCallExp) ) ) {
-      call_lst.push_back(exp);
-    }
-  } else if( isSgFunctionCallExp(exp) ) {
-    if ( !mIR->isMalloc(isSgFunctionCallExp(exp)) ) {
-      call_lst.push_back(exp);
-    }
+  if( isSgFunctionCallExp(exp) ) {
+      if (!isVaStart(isSgFunctionCallExp(exp))) {
+        call_lst.push_back(exp);
+      }
+
   } else if ( isSgConstructorInitializer(exp) ) {
+    //    ROSE_ASSERT(0); // MMS, not sure how we handle these yet
+
+    // I don't like this ... I suspect this problem will go
+    // away after the AST is properly normalized.  Until then,
+    // this ugly (and probably incorrect) approach will suffice
+    // to effectively ignore constructor invocations on base
+    // types (as well as any other type which does not define
+    // constructors explicitly).  BW
+
     // 2/1/06 BW:  Only consider this a function call if it creates
     // a named type.  Otherwise we get problems (e.g., in getFormalTypes)
     // when we expect that a basic type has a constructor with a 
@@ -188,9 +196,34 @@ void FindCallsitesPass::visit(SgNode* node)
       isSgConstructorInitializer(exp);
     ROSE_ASSERT(ctorInitializer != NULL);
 
-    if ( !mIR->createsBaseType(ctorInitializer) ) {
+    if ( !mIR.createsBaseType(ctorInitializer) ) {
       call_lst.push_back(exp);
     } 
+
+  } else if ( isSgDeleteExp(exp) ) {
+
+    // Do not mark a destructor as a call site
+    // if it destroys a basic type.
+    SgDeleteExp *deleteExp = isSgDeleteExp(exp);
+    ROSE_ASSERT(deleteExp != NULL);
+
+    SgExpression *receiver = deleteExp->get_variable();
+    ROSE_ASSERT(receiver != NULL);
+
+    SgType *type = receiver->get_type(); 
+    ROSE_ASSERT(type != NULL);
+
+    SgPointerType *ptrType = isSgPointerType(type);
+    ROSE_ASSERT(ptrType != NULL);
+    type = getBaseType(ptrType->get_base_type());
+
+    ROSE_ASSERT(type != NULL);
+
+    // If this is a base type, then do nothing more--
+    // i.e., not even a call handle.
+    if ( isSgClassType(type) ) {
+      call_lst.push_back(exp);
+    }
   }
 
   return;
@@ -201,7 +234,7 @@ void FindCallsitesPass::visit(SgNode* node)
 void FindProcsPass::visit(SgNode* node)
 {
   if(!node) { printf("visited with 0-Node!\n"); return; }
-	
+        
 #if 1
   if(isSgFunctionDefinition(node))
 #else

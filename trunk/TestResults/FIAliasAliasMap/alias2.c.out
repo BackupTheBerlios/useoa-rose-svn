@@ -46,9 +46,9 @@ InterAliasMap(
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(*a)    MemRefHandle(*b) ] 
-                2	 => [ MemRefHandle(locPtr)    MemRefHandle(locPtr)    MemRefHandle(locPtr) ] 
-                3	 => [ MemRefHandle(a)    MemRefHandle(a) ] 
-                4	 => [ MemRefHandle(b)    MemRefHandle(b) ] 
+                2	 => [ MemRefHandle(locPtr)    MemRefHandle(locPtr)    MemRefHandle(locPtr)    MemRefHandle(locPtr = &loc) ] 
+                3	 => [ MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a = locPtr) ] 
+                4	 => [ MemRefHandle(b)    MemRefHandle(b)    MemRefHandle(b = locPtr) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 

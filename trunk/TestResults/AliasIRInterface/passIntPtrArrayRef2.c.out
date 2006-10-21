@@ -1,8 +1,6 @@
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
 PROCEDURE = { < ProcHandle("blah"), SymHandle("blah") > }
     FORMALS = {
@@ -41,6 +39,21 @@ PROCEDURE = { < ProcHandle("blah"), SymHandle("blah") > }
     LOCATION = { < SymHandle("blah"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("union wait {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct timespec {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct timeval {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct random_data {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct drand48_data {};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("int main(){int a[4];int x = blah(a,a);}") =>
         [
         ] }
@@ -58,6 +71,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("a"), T, full)
             MemRefHandle("a") => 
                 NamedRef( USE, SymHandle("a"), T, full)
+            MemRefHandle("blah") => 
+                NamedRef( USE, SymHandle("blah"), F, full)
         ] }
     CALLSITES = { StmtHandle("int x = blah(a,a);") =>
         [

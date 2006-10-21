@@ -1,0 +1,909 @@
+
+InterAliasMap(
+    AliasMap(
+        mProcHandle: ProcHandle(p)
+        mNumSets: 11
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s1)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s2)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s3)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(r)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                7	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s2)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: a
+                    ) ] 
+                8	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: a
+                    ) ] 
+                9	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: b
+                    ) ] 
+                10	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: c
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+                4	 => 2
+                5	 => 2
+                6	 => 2
+                7	 => 1
+                8	 => 1
+                9	 => 1
+                10	 => 1
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                1	 => [ MemRefHandle(s1)    MemRefHandle(s1 = s2) ] 
+                2	 => [ MemRefHandle(s2) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s1)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s2)
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s3)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
+                    ) ] 
+                7	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s2)
+                        )
+                        mFieldName: a
+                    ) ] 
+                8	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: a
+                    ) ] 
+                9	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: b
+                    ) ] 
+                10	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: c
+                    ) ] 
+
+    )
+    AliasMap(
+        mProcHandle: ProcHandle(q)
+        mNumSets: 11
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s1)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s2)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s3)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(r)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                7	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s2)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: a
+                    ) ] 
+                8	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: a
+                    ) ] 
+                9	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: b
+                    ) ] 
+                10	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: c
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+                4	 => 2
+                5	 => 2
+                6	 => 2
+                7	 => 1
+                8	 => 1
+                9	 => 1
+                10	 => 1
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                1	 => [ MemRefHandle(s1) ] 
+                3	 => [ MemRefHandle(s3)    MemRefHandle(s3 = s1) ] 
+                7	 => [ MemRefHandle(s2.a = 4)    MemRefHandle(s2.a) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s1)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s2)
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s3)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
+                    ) ] 
+                7	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s2)
+                        )
+                        mFieldName: a
+                    ) ] 
+                8	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: a
+                    ) ] 
+                9	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: b
+                    ) ] 
+                10	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: c
+                    ) ] 
+
+    )
+    AliasMap(
+        mProcHandle: ProcHandle(r)
+        mNumSets: 11
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s1)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s2)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s3)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(r)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                7	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s2)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: a
+                    ) ] 
+                8	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: a
+                    ) ] 
+                9	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: b
+                    ) ] 
+                10	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: c
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+                4	 => 2
+                5	 => 2
+                6	 => 2
+                7	 => 1
+                8	 => 1
+                9	 => 1
+                10	 => 1
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                2	 => [ MemRefHandle(s2) ] 
+                3	 => [ MemRefHandle(s3)    MemRefHandle(s3 = s2) ] 
+                8	 => [ MemRefHandle(s3.a = 4)    MemRefHandle(s3.a) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s1)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s2)
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s3)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
+                    ) ] 
+                7	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s2)
+                        )
+                        mFieldName: a
+                    ) ] 
+                8	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: a
+                    ) ] 
+                9	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: b
+                    ) ] 
+                10	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: c
+                    ) ] 
+
+    )
+    AliasMap(
+        mProcHandle: ProcHandle(main)
+        mNumSets: 11
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s1)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s2)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(s3)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(r)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                7	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s2)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: a
+                    ) ] 
+                8	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: a
+                    ) ] 
+                9	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: b
+                    ) ] 
+                10	 => [ 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: c
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+                4	 => 2
+                5	 => 2
+                6	 => 2
+                7	 => 1
+                8	 => 1
+                9	 => 1
+                10	 => 1
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                4	 => [ MemRefHandle(p) ] 
+                5	 => [ MemRefHandle(q) ] 
+                6	 => [ MemRefHandle(r) ] 
+                8	 => [ MemRefHandle(s3.a = 2)    MemRefHandle(s3.a) ] 
+                9	 => [ MemRefHandle(s3.b = 3)    MemRefHandle(s3.b) ] 
+                10	 => [ MemRefHandle(s3.c = 4)    MemRefHandle(s3.c) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s1)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s2)
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s3)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
+                    ) ] 
+                7	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s2)
+                        )
+                        mFieldName: a
+                    ) ] 
+                8	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: a
+                    ) ] 
+                9	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: b
+                    ) ] 
+                10	 => [ 
+                    FieldAccess(
+                        mAddressOf: 0
+                        mFullAccuracy: 1
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mAddressOf: 0
+                            mFullAccuracy: 1
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s3)
+                        )
+                        mFieldName: c
+                    ) ] 
+
+    )
+)

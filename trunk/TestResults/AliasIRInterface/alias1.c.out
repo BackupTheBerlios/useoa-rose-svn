@@ -1,13 +1,3 @@
-"TestCases/AliasTests/alias1.c", line 5: warning: variable "a" was set but
-          never used
-    int *a;
-         ^
-
-"TestCases/AliasTests/alias1.c", line 6: warning: variable "b" was set but
-          never used
-    int *b;
-         ^
-
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){int loc;int *a;int *b;a = &loc;b = &loc;return 0;}") =>
@@ -31,6 +21,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("a"), F, full)
             MemRefHandle("&loc") => 
                 NamedRef( USE, SymHandle("loc"), T, full)
+            MemRefHandle("a = &loc") => 
+                NamedRef( USE, SymHandle("a"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("a = &loc;") =>
         [
@@ -43,6 +35,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("b"), F, full)
             MemRefHandle("&loc") => 
                 NamedRef( USE, SymHandle("loc"), T, full)
+            MemRefHandle("b = &loc") => 
+                NamedRef( USE, SymHandle("b"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("b = &loc;") =>
         [

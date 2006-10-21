@@ -1,0 +1,299 @@
+        pthread_once [referenced]
+        pthread_key_create [referenced]
+        pthread_setspecific [referenced]
+        pthread_key_delete [referenced]
+        pthread_getspecific [referenced]
+        pthread_mutex_lock [referenced]
+        pthread_mutex_trylock [referenced]
+        pthread_mutex_unlock [referenced]
+        wcschr [referenced]
+        wcspbrk [referenced]
+        wcsrchr [referenced]
+        wcsstr [referenced]
+        wmemchr [referenced]
+        memchr [referenced]
+        __builtin_strchr [referenced]
+        __builtin_strpbrk [referenced]
+        __builtin_strrchr [referenced]
+        __builtin_strstr [referenced]
+        memcmp [referenced]
+        strlen [referenced]
+        memmove [referenced]
+        memcpy [referenced]
+        memset [referenced]
+        wmemcmp [referenced]
+        wcslen [referenced]
+        wmemmove [referenced]
+        wmemcpy [referenced]
+        wmemset [referenced]
+        labs [referenced]
+        ldiv [referenced]
+        operator new [referenced]
+        operator delete [referenced]
+        method: qualified name: std::locale::operator== type signature: public: bool operator==(const class std::locale &__other) const throw(); [referenced]
+        method: qualified name: std::locale::classic type signature: public: static const std::locale &classic(); [referenced]
+        __atomic_add [referenced]
+        __exchange_and_add [referenced]
+        strcmp [referenced]
+        method: qualified name: std::locale::locale type signature: public: locale(const class std::locale &__other) throw(); [referenced]
+        method: qualified name: std::ios_base::_M_grow_words type signature: protected: std::ios_base::_Words &_M_grow_words(int __index); [referenced]
+        strncpy [referenced]
+        iconv_close [referenced]
+        iconv_open [referenced]
+        __throw_runtime_error [referenced]
+        __builtin_fabs [referenced]
+        __builtin_fabsf [referenced]
+        __builtin_fabsl [referenced]
+        acosf [referenced]
+        acosl [referenced]
+        asinf [referenced]
+        asinl [referenced]
+        atanf [referenced]
+        atanl [referenced]
+        atan2f [referenced]
+        atan2l [referenced]
+        ceilf [referenced]
+        ceill [referenced]
+        __builtin_cosf [referenced]
+        __builtin_cosl [referenced]
+        coshf [referenced]
+        coshl [referenced]
+        expf [referenced]
+        expl [referenced]
+        floorf [referenced]
+        floorl [referenced]
+        fmodf [referenced]
+        fmodl [referenced]
+        frexpf [referenced]
+        frexpl [referenced]
+        ldexpf [referenced]
+        ldexpl [referenced]
+        logf [referenced]
+        logl [referenced]
+        log10f [referenced]
+        log10l [referenced]
+        modff [referenced]
+        modfl [referenced]
+        powf [referenced]
+        powl [referenced]
+        __builtin_sinf [referenced]
+        __builtin_sinl [referenced]
+        sinhf [referenced]
+        sinhl [referenced]
+        __builtin_sqrtf [referenced]
+        __builtin_sqrtl [referenced]
+        tanf [referenced]
+        tanl [referenced]
+        tanhf [referenced]
+        tanhl [referenced]
+        __builtin_nansf [referenced]
+        __builtin_nans [referenced]
+        __builtin_nansl [referenced]
+        strcpy [referenced]
+        SgTemplateInstantiationFunctionDecl [referenced]
+        method: qualified name: expr::print_me type signature: public: virtual void print_me() = 0; [referenced]
+        SgTemplateInstantiationFunctionDecl [referenced]
+        method: qualified name: expr::eval type signature: public: virtual double eval(double at) = 0; [referenced]
+        method: qualified name: expr::deriv type signature: public: virtual expr *deriv(char *var) = 0; [referenced]
+        SgTemplateInstantiationMemberFunctionDecl [referenced]
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:bin_op_expr::print_me
+	( *((this) -> first)).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:bin_op_expr::print_me
+	( *((this) -> second)).print_me()
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::eval
+	( *((this) -> first)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::eval
+	( *((this) -> second)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::eval
+	( *((this) -> first)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::eval
+	( *((this) -> second)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::eval
+	( *((this) -> first)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::eval
+	( *((this) -> second)).eval(at)
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *c.const_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *x.var_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *simple.prod_expr::deriv(("y"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *simple.prod_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:sum_expr::~sum_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:prod_expr::~prod_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:quotient_expr::~quotient_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+definedFunctions: 86
+definedVirtualFunctions: 11
+virtual method callsites: 18
+Summary CHA monomorphic call sites: 3
+Summary Alias analysis monomorphic call sites: 0
+Summary CHA total (virtual) resolutions: 69
+Summary Alias analysis total (virtual) resolutions: 48
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:bin_op_expr::print_me
+	( *((this) -> first)).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:bin_op_expr::print_me
+	( *((this) -> second)).print_me()
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::eval
+	( *((this) -> first)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::eval
+	( *((this) -> second)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::eval
+	( *((this) -> first)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::eval
+	( *((this) -> second)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::eval
+	( *((this) -> first)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::eval
+	( *((this) -> second)).eval(at)
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *c.const_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *x.var_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *simple.prod_expr::deriv(("y"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *simple.prod_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:sum_expr::~sum_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:prod_expr::~prod_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:quotient_expr::~quotient_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+definedFunctions: 134
+definedVirtualFunctions: 19
+virtual method callsites: 21
+Summary CHA monomorphic call sites: 3
+Summary Alias analysis monomorphic call sites: 0
+Summary CHA total (virtual) resolutions: 69
+Summary Alias analysis total (virtual) resolutions: 48
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:bin_op_expr::print_me
+	( *((this) -> first)).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:bin_op_expr::print_me
+	( *((this) -> second)).print_me()
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::eval
+	( *((this) -> first)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:prod_expr::eval
+	( *((this) -> second)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::eval
+	( *((this) -> first)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:sum_expr::eval
+	( *((this) -> second)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::eval
+	( *((this) -> first)).eval(at)
+CHA:  Method invocation has 8 possible resolutions 
+Alias analysis:  Method invocation has 5 possible resolutions 
+	caller:quotient_expr::eval
+	( *((this) -> second)).eval(at)
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *c.const_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *x.var_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *simple.prod_expr::deriv(("y"))).print_me()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 3 possible resolutions 
+	caller:main
+	( *simple.prod_expr::deriv(("x"))).print_me()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:sum_expr::~sum_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:prod_expr::~prod_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:quotient_expr::~quotient_expr
+	((class bin_op_expr *)(this)) -> ~bin_op_expr()
+definedFunctions: 1102
+definedVirtualFunctions: 20
+virtual method callsites: 21
+Summary CHA monomorphic call sites: 3
+Summary Alias analysis monomorphic call sites: 0
+Summary CHA total (virtual) resolutions: 69
+Summary Alias analysis total (virtual) resolutions: 48

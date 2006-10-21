@@ -1,10 +1,32 @@
-"TestCases/AliasTests/comma.c", line 5: warning: variable "z" was declared but
-          never referenced
-      int x=1, y=2, z=3;
-                    ^
-
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step_data ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step_data {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct _IO_FILE ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct _IO_marker {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct _IO_FILE {};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stdin_;") =>
         [
         ] }
@@ -59,22 +81,30 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("p"), F, full)
             MemRefHandle("q") => 
                 NamedRef( DEF, SymHandle("q"), F, full)
-            MemRefHandle("r") => 
-                NamedRef( USE, SymHandle("r"), F, full)
             MemRefHandle("&x") => 
                 NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("(q = &x)") => 
+                NamedRef( USE, SymHandle("q"), F, full)
+            MemRefHandle("p =((q = &x) , r)") => 
+                NamedRef( USE, SymHandle("p"), F, full)
+            MemRefHandle("((q = &x) , r)") => 
+                NamedRef( USE, SymHandle("r"), F, full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("p =((q = &x) , r);") =>
         [
-            < NamedRef( DEF, SymHandle("q"), F, full)
-            , NamedRef( USE, SymHandle("x"), T, full) >
             < NamedRef( DEF, SymHandle("p"), F, full)
             , NamedRef( USE, SymHandle("r"), F, full) >
+            < NamedRef( DEF, SymHandle("q"), F, full)
+            , NamedRef( USE, SymHandle("x"), T, full) >
         ] }
     MEMREFEXPRS = { StmtHandle("printf("*p = %d\n", *p);") =>
         [
             MemRefHandle("p") => 
                 NamedRef( USE, SymHandle("p"), F, full)
+            MemRefHandle("printf") => 
+                NamedRef( USE, SymHandle("printf"), F, full)
+            MemRefHandle(""*p = %d\n"") => 
+                UnnamedRef( USE, StmtHandle(""*p = %d\n""), T, part)
             MemRefHandle("*p") => 
                 Deref( USE, NamedRef( USE, SymHandle("p"), F, full), 1, F, full)
         ] }
@@ -83,10 +113,18 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             CallHandle("printf("*p = %d\n", *p)") => 
                 NamedRef( USE, SymHandle("printf"), F, full)
         ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("printf("*p = %d\n", *p)") =>
+        [
+            < 0, UnnamedRef( USE, StmtHandle(""*p = %d\n""), T, part) >
+        ] }
     MEMREFEXPRS = { StmtHandle("printf("*q = %d\n", *q);") =>
         [
             MemRefHandle("q") => 
                 NamedRef( USE, SymHandle("q"), F, full)
+            MemRefHandle("printf") => 
+                NamedRef( USE, SymHandle("printf"), F, full)
+            MemRefHandle(""*q = %d\n"") => 
+                UnnamedRef( USE, StmtHandle(""*q = %d\n""), T, part)
             MemRefHandle("*q") => 
                 Deref( USE, NamedRef( USE, SymHandle("q"), F, full), 1, F, full)
         ] }
@@ -94,6 +132,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             CallHandle("printf("*q = %d\n", *q)") => 
                 NamedRef( USE, SymHandle("printf"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("printf("*q = %d\n", *q)") =>
+        [
+            < 0, UnnamedRef( USE, StmtHandle(""*q = %d\n""), T, part) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

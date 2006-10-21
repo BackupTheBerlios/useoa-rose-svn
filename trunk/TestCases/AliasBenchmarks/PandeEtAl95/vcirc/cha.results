@@ -1,0 +1,32 @@
+CHA virtual call site: (this) -> Hide() from caller: Point__scope__MoveTo____MFb_Point__Fb_v_Gb_i__sep__i_Fe_
+	 CHA:  Method invocation has 2 possible resolutions 
+
+CHA virtual call site: (this) -> Show() from caller: Point__scope__MoveTo____MFb_Point__Fb_v_Gb_i__sep__i_Fe_
+	 CHA:  Method invocation has 2 possible resolutions 
+
+CHA virtual call site: (this) -> Hide() from caller: Circle__scope__Expand____MFb_Circle__Fb_v_Gb_i_Fe_
+	 CHA:  Method invocation has 1 possible resolutions 
+
+CHA virtual call site: (this) -> Show() from caller: Circle__scope__Expand____MFb_Circle__Fb_v_Gb_i_Fe_
+	 CHA:  Method invocation has 1 possible resolutions 
+
+Alias analysis virtual call site: (this) -> Hide() from caller: Point__scope__MoveTo____MFb_Point__Fb_v_Gb_i__sep__i_Fe_
+	 Alias analysis:  Method invocation has 1 possible resolutions 
+
+Alias analysis virtual call site: (this) -> Show() from caller: Point__scope__MoveTo____MFb_Point__Fb_v_Gb_i__sep__i_Fe_
+	 Alias analysis:  Method invocation has 1 possible resolutions 
+
+Alias analysis virtual call site: (this) -> Hide() from caller: Circle__scope__Expand____MFb_Circle__Fb_v_Gb_i_Fe_
+	 Alias analysis:  Method invocation has 1 possible resolutions 
+
+Alias analysis virtual call site: (this) -> Show() from caller: Circle__scope__Expand____MFb_Circle__Fb_v_Gb_i_Fe_
+	 Alias analysis:  Method invocation has 1 possible resolutions 
+
+definedFunctions: 26
+definedVirtualFunctions: 5
+CHA virtual method callsites: 4
+Alias analysis virtual method callsites: 4
+Summary CHA monomorphic call sites: 2
+Summary Alias analysis monomorphic call sites: 4
+Summary CHA total (virtual) resolutions: 6
+Summary Alias analysis total (virtual) resolutions: 4

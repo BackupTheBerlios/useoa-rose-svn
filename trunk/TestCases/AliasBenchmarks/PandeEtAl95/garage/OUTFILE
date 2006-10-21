@@ -1,0 +1,2 @@
+Method invocation has 3 possible resolutions 
+( *(((this) -> parked)[bay])).identify()

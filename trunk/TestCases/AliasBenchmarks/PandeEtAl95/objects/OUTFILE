@@ -1,0 +1,50 @@
+Method invocation has 3 possible resolutions 
+((*(this))==o)
+Method invocation has 2 possible resolutions 
+(this) -> Insert(p,(this) -> Nelem())
+Method invocation has 3 possible resolutions 
+(this) -> Append(p)
+Method invocation has 2 possible resolutions 
+(this) -> Insert(o,pos)
+Method invocation has 2 possible resolutions 
+(this) -> Get((this) -> CurInd())
+Method invocation has 2 possible resolutions 
+(this) -> Get(0)
+Method invocation has 2 possible resolutions 
+(this) -> Get(((this) -> CurInd() + 1))
+Method invocation has 2 possible resolutions 
+(this) -> Get(((this) -> CurInd() - 1))
+Method invocation has 2 possible resolutions 
+(this) -> Get(((this) -> Nelem() - 1))
+Method invocation has 2 possible resolutions 
+(this) -> Get(pos)
+Method invocation has 3 possible resolutions 
+(obj== *(this) -> Get(i))
+Method invocation has 2 possible resolutions 
+(this) -> Get(i)
+Method invocation has 6 possible resolutions 
+tblobj.Type()
+Method invocation has 3 possible resolutions 
+(this) -> Type()
+Method invocation has 2 possible resolutions 
+tblptr -> Get(i)
+Method invocation has 2 possible resolutions 
+(this) -> Get(i)
+Method invocation has 2 possible resolutions 
+(this) -> Get(idx)
+Method invocation has 3 possible resolutions 
+((*p)==o)
+Method invocation has 6 possible resolutions 
+o.Type()
+Method invocation has 2 possible resolutions 
+(this) -> Type()
+Method invocation has 6 possible resolutions 
+o.Type()
+Method invocation has 2 possible resolutions 
+a -> Assign((a1))
+Method invocation has 2 possible resolutions 
+a -> Assign((a2),2)
+Method invocation has 2 possible resolutions 
+(a -> Fetch(2))
+Method invocation has 2 possible resolutions 
+a3 -> Type()
