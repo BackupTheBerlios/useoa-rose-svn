@@ -98,10 +98,6 @@ echo "Testing TestCases/AliasTests/passArrayPtr.c, TestResults/AliasIRInterface/
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/passArrayPtr.c >& t
 diff t TestResults/AliasIRInterface/passArrayPtr.c.out
 
-echo "Testing TestCases/AliasTests/parambinds-formals-intPtrs.C, TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out checked by MMS 8/29/06"
-./CtoOA --edg:no_warnings -w TestCases/AliasTests/parambinds-formals-intPtrs.C >& t
-diff t TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out
-
 echo "Testing TestCases/AliasTests/paramBindingsForArrowMethodInvoc.C, TestResults/AliasIRInterface/paramBindingsForArrowMethodInvoc.C.out checked by BSW 9/7/06 (rechecked MMS 9/8/06)"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/paramBindingsForArrowMethodInvoc.C >& t
 diff t TestResults/AliasIRInterface/paramBindingsForArrowMethodInvoc.C.out

@@ -48,8 +48,6 @@ echo "Generating TestResults/AliasIRInterface/invokeBaseCtorInCtorList.C.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/invokeBaseCtorInCtorList.C >& TestResults/AliasIRInterface/invokeBaseCtorInCtorList.C.out
 echo "Generating TestResults/AliasIRInterface/passArrayPtr.c.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/passArrayPtr.c >& TestResults/AliasIRInterface/passArrayPtr.c.out
-echo "Generating TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out"
-./CtoOA --edg:no_warnings -w TestCases/AliasTests/parambinds-formals-intPtrs.C >& TestResults/AliasIRInterface/parambinds-formals-intPtrs.C.out
 echo "Generating TestResults/AliasIRInterface/paramBindingsForArrowMethodInvoc.C.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/paramBindingsForArrowMethodInvoc.C >& TestResults/AliasIRInterface/paramBindingsForArrowMethodInvoc.C.out
 echo "Generating TestResults/AliasIRInterface/paramBindingsForDotMethodInvoc.C.out"
