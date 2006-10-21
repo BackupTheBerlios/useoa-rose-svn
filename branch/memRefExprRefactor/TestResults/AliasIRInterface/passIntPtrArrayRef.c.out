@@ -36,27 +36,6 @@ PROCEDURE = { < ProcHandle("blah"), SymHandle("blah") > }
     LOCATION = { < SymHandle("blah"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
-    MEMREFEXPRS = { StmtHandle("union wait {};") =>
-        [
-        ] }
-    MEMREFEXPRS = { StmtHandle("struct timespec {};") =>
-        [
-        ] }
-    MEMREFEXPRS = { StmtHandle("struct timeval {};") =>
-        [
-        ] }
-    MEMREFEXPRS = { StmtHandle("struct __sched_param {};") =>
-        [
-        ] }
-    MEMREFEXPRS = { StmtHandle("struct _pthread_fastlock {};") =>
-        [
-        ] }
-    MEMREFEXPRS = { StmtHandle("struct random_data {};") =>
-        [
-        ] }
-    MEMREFEXPRS = { StmtHandle("struct drand48_data {};") =>
-        [
-        ] }
     MEMREFEXPRS = { StmtHandle("int main(){int a;int x = blah(&a,&a);}") =>
         [
         ] }
