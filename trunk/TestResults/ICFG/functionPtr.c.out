@@ -18,17 +18,14 @@ if(x) {fp = foo;}else {fp = bar;}
 fp = foo;
 
 
-
         Node 14: 
             ==  ICFG CFLOW_NODE 14 ==
 fp = bar;
 
 
-
         Node 15: 
             ==  ICFG CFLOW_NODE 15 ==
 ( *fp)();
-
 
 
         Node 16: 
@@ -61,9 +58,9 @@ digraph ICFG {
         label="main_0"
         11 [ label="==  ICFG ENTRY_NODE 11 == (entry)\n" ];
         12 [ label="==  ICFG CFLOW_NODE 12 ==\nint x = read();\nif(x) {fp = foo;}else {fp = bar;}\n" ];
-        13 [ label="==  ICFG CFLOW_NODE 13 ==\nfp = foo;\n\n" ];
-        14 [ label="==  ICFG CFLOW_NODE 14 ==\nfp = bar;\n\n" ];
-        15 [ label="==  ICFG CFLOW_NODE 15 ==\n( *fp)();\n\n" ];
+        13 [ label="==  ICFG CFLOW_NODE 13 ==\nfp = foo;\n" ];
+        14 [ label="==  ICFG CFLOW_NODE 14 ==\nfp = bar;\n" ];
+        15 [ label="==  ICFG CFLOW_NODE 15 ==\n( *fp)();\n" ];
         16 [ label="==  ICFG EXIT_NODE 16 == (exit)\n" ];
         11 -> 12 [ label="" ];
         12 -> 13 [ label="" ];

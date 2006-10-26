@@ -581,6 +581,15 @@ public:
           {
               SgNode *node = getNodePtr(h);
               ROSE_ASSERT(node != NULL);
+ 
+              /*! Loop increments are SgExpression's, but 
+              they are given as a StmtHandle for CFGIRInterface
+              fix. 10/26/06 PLM 
+              */ 
+              SgExpression * sgExp= isSgExpression(node);
+              if( sgExp ) {
+                 return sgExp->unparseToString();
+              }
 
               SgStatement * sgstmt= isSgStatement(node);
               if ( sgstmt ) {

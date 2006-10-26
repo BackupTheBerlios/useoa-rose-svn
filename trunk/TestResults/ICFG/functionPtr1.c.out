@@ -19,7 +19,6 @@ if(x) {fp = foo;}else {}
 fp = foo;
 
 
-
         Node 16: 
             ==  ICFG CALL_NODE 16 ==
 ( *fp)();
@@ -30,19 +29,11 @@ fp = foo;
 
 
         Node 29: 
-            ==  ICFG CFLOW_NODE 29 ==
-
-
-
-        Node 30: 
-            ==  ICFG EXIT_NODE 30 == (exit)
+            ==  ICFG EXIT_NODE 29 == (exit)
 
 
         Edge: 16 => 18
             CALL_RETURN
-
-        Edge: 18 => 29
-            
 
         Edge: 11 => 12
             
@@ -56,7 +47,7 @@ fp = foo;
         Edge: 13 => 16
             
 
-        Edge: 29 => 30
+        Edge: 18 => 29
             
 
 
@@ -70,37 +61,35 @@ fp = foo;
             ==  ICFG EXIT_NODE 23 ==
 
 
-        Node 31: 
-            ==  ICFG CFLOW_NODE 31 ==
+        Node 30: 
+            ==  ICFG CFLOW_NODE 30 ==
 
 
-
-        Edge: 31 => 23
+        Edge: 30 => 23
             
 
-        Edge: 22 => 31
+        Edge: 22 => 30
             
 
 
     subgraph bar_2:
 
+        Node 34: 
+            ==  ICFG ENTRY_NODE 34 == (entry)
+
+
         Node 35: 
-            ==  ICFG ENTRY_NODE 35 == (entry)
+            ==  ICFG CFLOW_NODE 35 ==
 
 
         Node 36: 
-            ==  ICFG CFLOW_NODE 36 ==
+            ==  ICFG EXIT_NODE 36 == (exit)
 
 
-
-        Node 37: 
-            ==  ICFG EXIT_NODE 37 == (exit)
-
-
-        Edge: 35 => 36
+        Edge: 34 => 35
             
 
-        Edge: 36 => 37
+        Edge: 35 => 36
             
 
 
@@ -114,15 +103,14 @@ fp = foo;
             ==  ICFG EXIT_NODE 28 ==
 
 
-        Node 38: 
-            ==  ICFG CFLOW_NODE 38 ==
+        Node 37: 
+            ==  ICFG CFLOW_NODE 37 ==
 
 
-
-        Edge: 38 => 28
+        Edge: 37 => 28
             
 
-        Edge: 27 => 38
+        Edge: 27 => 37
             
 
 
@@ -145,42 +133,40 @@ digraph ICFG {
         label="main_0"
         11 [ label="==  ICFG ENTRY_NODE 11 == (entry)\n" ];
         12 [ label="==  ICFG CFLOW_NODE 12 ==\nint x = read();\nfp = zoo;\nif(x) {fp = foo;}else {}\n" ];
-        13 [ label="==  ICFG CFLOW_NODE 13 ==\nfp = foo;\n\n" ];
+        13 [ label="==  ICFG CFLOW_NODE 13 ==\nfp = foo;\n" ];
         16 [ label="==  ICFG CALL_NODE 16 ==\n( *fp)();\n" ];
         18 [ label="==  ICFG RETURN_NODE 18 ==\n" ];
-        29 [ label="==  ICFG CFLOW_NODE 29 ==\n\n" ];
-        30 [ label="==  ICFG EXIT_NODE 30 == (exit)\n" ];
+        29 [ label="==  ICFG EXIT_NODE 29 == (exit)\n" ];
         16 -> 18 [ label="CALL_RETURN" ];
-        18 -> 29 [ label="" ];
         11 -> 12 [ label="" ];
         12 -> 13 [ label="" ];
         12 -> 16 [ label="" ];
         13 -> 16 [ label="" ];
-        29 -> 30 [ label="" ];
+        18 -> 29 [ label="" ];
     }
     subgraph cluster_foo_1 {
         label="foo_1"
         22 [ label="==  ICFG ENTRY_NODE 22 ==\n" ];
         23 [ label="==  ICFG EXIT_NODE 23 ==\n" ];
-        31 [ label="==  ICFG CFLOW_NODE 31 ==\n\n" ];
-        31 -> 23 [ label="" ];
-        22 -> 31 [ label="" ];
+        30 [ label="==  ICFG CFLOW_NODE 30 ==\n" ];
+        30 -> 23 [ label="" ];
+        22 -> 30 [ label="" ];
     }
     subgraph cluster_bar_2 {
         label="bar_2"
-        35 [ label="==  ICFG ENTRY_NODE 35 == (entry)\n" ];
-        36 [ label="==  ICFG CFLOW_NODE 36 ==\n\n" ];
-        37 [ label="==  ICFG EXIT_NODE 37 == (exit)\n" ];
+        34 [ label="==  ICFG ENTRY_NODE 34 == (entry)\n" ];
+        35 [ label="==  ICFG CFLOW_NODE 35 ==\n" ];
+        36 [ label="==  ICFG EXIT_NODE 36 == (exit)\n" ];
+        34 -> 35 [ label="" ];
         35 -> 36 [ label="" ];
-        36 -> 37 [ label="" ];
     }
     subgraph cluster_zoo_3 {
         label="zoo_3"
         27 [ label="==  ICFG ENTRY_NODE 27 ==\n" ];
         28 [ label="==  ICFG EXIT_NODE 28 ==\n" ];
-        38 [ label="==  ICFG CFLOW_NODE 38 ==\n\n" ];
-        38 -> 28 [ label="" ];
-        27 -> 38 [ label="" ];
+        37 [ label="==  ICFG CFLOW_NODE 37 ==\n" ];
+        37 -> 28 [ label="" ];
+        27 -> 37 [ label="" ];
     }
     16 -> 22 [ label="CALL_(( *fp)())",style=dashed,color=red ];
     23 -> 18 [ label="RETURN_(( *fp)())",style=dashed,color=blue ];

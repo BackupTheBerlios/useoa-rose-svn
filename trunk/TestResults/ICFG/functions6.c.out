@@ -3,207 +3,172 @@ graph ICFG:
 
     subgraph bar_0:
 
+        Node 11: 
+            ==  ICFG ENTRY_NODE 11 ==
+
+
         Node 12: 
-            ==  ICFG ENTRY_NODE 12 ==
-
-
-        Node 13: 
-            ==  ICFG CFLOW_NODE 13 ==
+            ==  ICFG CFLOW_NODE 12 ==
 int res;
 if(n == 1) {res = 1;}else {res = foo(5);}
 
 
-        Node 14: 
-            ==  ICFG CFLOW_NODE 14 ==
+        Node 13: 
+            ==  ICFG CFLOW_NODE 13 ==
 res = 1;
 
 
-
-        Node 17: 
-            ==  ICFG CALL_NODE 17 ==
+        Node 16: 
+            ==  ICFG CALL_NODE 16 ==
 res = foo(5);
 
 
-        Node 19: 
-            ==  ICFG RETURN_NODE 19 ==
+        Node 18: 
+            ==  ICFG RETURN_NODE 18 ==
 
-
-        Node 28: 
-            ==  ICFG CFLOW_NODE 28 ==
-
-
-
-        Node 29: 
-            ==  ICFG CFLOW_NODE 29 ==
-return res;
-
-
-        Node 30: 
-            ==  ICFG CFLOW_NODE 30 == (entry)
-
-
-
-        Node 31: 
-            ==  ICFG EXIT_NODE 31 ==
-
-
-        Edge: 17 => 19
-            CALL_RETURN
-
-        Edge: 19 => 28
-            
-
-        Edge: 12 => 13
-            
-
-        Edge: 13 => 14
-            
-
-        Edge: 13 => 17
-            
-
-        Edge: 14 => 29
-            
-
-        Edge: 28 => 29
-            
-
-        Edge: 29 => 31
-            
-
-        Edge: 30 => 31
-            
-
-
-    subgraph foo_1:
 
         Node 26: 
-            ==  ICFG ENTRY_NODE 26 ==
+            ==  ICFG CFLOW_NODE 26 ==
+return res;
 
 
         Node 27: 
             ==  ICFG EXIT_NODE 27 ==
 
 
-        Node 32: 
-            ==  ICFG CFLOW_NODE 32 ==
+        Edge: 16 => 18
+            CALL_RETURN
+
+        Edge: 11 => 12
+            
+
+        Edge: 12 => 13
+            
+
+        Edge: 12 => 16
+            
+
+        Edge: 13 => 26
+            
+
+        Edge: 18 => 26
+            
+
+        Edge: 26 => 27
+            
+
+
+    subgraph foo_1:
+
+        Node 24: 
+            ==  ICFG ENTRY_NODE 24 ==
+
+
+        Node 25: 
+            ==  ICFG EXIT_NODE 25 ==
+
+
+        Node 28: 
+            ==  ICFG CFLOW_NODE 28 ==
 int res;
 if(n == 1) {res = bar(1);}else {res = 5;}
 
 
-        Node 35: 
-            ==  ICFG CALL_NODE 35 ==
+        Node 31: 
+            ==  ICFG CALL_NODE 31 ==
 res = bar(1);
 
 
-        Node 37: 
-            ==  ICFG RETURN_NODE 37 ==
+        Node 33: 
+            ==  ICFG RETURN_NODE 33 ==
 
 
-        Node 38: 
-            ==  ICFG CFLOW_NODE 38 ==
-
-
-
-        Node 39: 
-            ==  ICFG CFLOW_NODE 39 ==
+        Node 34: 
+            ==  ICFG CFLOW_NODE 34 ==
 res = 5;
 
 
-
-        Node 40: 
-            ==  ICFG CFLOW_NODE 40 ==
-
-
-
-        Edge: 35 => 37
+        Edge: 31 => 33
             CALL_RETURN
 
-        Edge: 37 => 38
+        Edge: 33 => 25
             
 
-        Edge: 40 => 27
+        Edge: 34 => 25
             
 
-        Edge: 26 => 32
+        Edge: 24 => 28
             
 
-        Edge: 32 => 35
+        Edge: 28 => 31
             
 
-        Edge: 32 => 39
-            
-
-        Edge: 38 => 40
-            
-
-        Edge: 39 => 40
+        Edge: 28 => 34
             
 
 
     subgraph functiontest_2:
 
-        Node 44: 
-            ==  ICFG ENTRY_NODE 44 == (entry)
+        Node 38: 
+            ==  ICFG ENTRY_NODE 38 == (entry)
 
 
-        Node 48: 
-            ==  ICFG CFLOW_NODE 48 ==
+        Node 42: 
+            ==  ICFG CFLOW_NODE 42 ==
 int n = 7;
-float x =(4.500000000000000);
+float x =(4.5);
 
 
-        Node 49: 
-            ==  ICFG CALL_NODE 49 ==
+        Node 43: 
+            ==  ICFG CALL_NODE 43 ==
 n = foo(n);
 
 
-        Node 51: 
-            ==  ICFG RETURN_NODE 51 ==
+        Node 45: 
+            ==  ICFG RETURN_NODE 45 ==
 
 
-        Node 52: 
-            ==  ICFG CFLOW_NODE 52 ==
+        Node 46: 
+            ==  ICFG CFLOW_NODE 46 ==
 x =((sin((x))));
 
 
+        Node 47: 
+            ==  ICFG EXIT_NODE 47 == (exit)
 
-        Node 53: 
-            ==  ICFG EXIT_NODE 53 == (exit)
 
-
-        Edge: 48 => 49
+        Edge: 42 => 43
             
 
-        Edge: 49 => 51
+        Edge: 43 => 45
             CALL_RETURN
 
-        Edge: 51 => 52
+        Edge: 45 => 46
             
 
-        Edge: 44 => 48
+        Edge: 38 => 42
             
 
-        Edge: 52 => 53
+        Edge: 46 => 47
             
 
 
-    Edge: 17 => 26
+    Edge: 16 => 24
         CALL_(foo(5)),style=dashed,color=red
 
-    Edge: 27 => 19
+    Edge: 25 => 18
         RETURN_(foo(5)),style=dashed,color=blue
 
-    Edge: 35 => 12
+    Edge: 31 => 11
         CALL_(bar(1)),style=dashed,color=red
 
-    Edge: 31 => 37
+    Edge: 27 => 33
         RETURN_(bar(1)),style=dashed,color=blue
 
-    Edge: 49 => 26
+    Edge: 43 => 24
         CALL_(foo(n)),style=dashed,color=red
 
-    Edge: 27 => 51
+    Edge: 25 => 45
         RETURN_(foo(n)),style=dashed,color=blue
 
 
@@ -211,64 +176,56 @@ digraph ICFG {
     node [shape=rectangle];
     subgraph cluster_bar_0 {
         label="bar_0"
-        12 [ label="==  ICFG ENTRY_NODE 12 ==\n" ];
-        13 [ label="==  ICFG CFLOW_NODE 13 ==\nint res;\nif(n == 1) {res = 1;}else {res = foo(5);}\n" ];
-        14 [ label="==  ICFG CFLOW_NODE 14 ==\nres = 1;\n\n" ];
-        17 [ label="==  ICFG CALL_NODE 17 ==\nres = foo(5);\n" ];
-        19 [ label="==  ICFG RETURN_NODE 19 ==\n" ];
-        28 [ label="==  ICFG CFLOW_NODE 28 ==\n\n" ];
-        29 [ label="==  ICFG CFLOW_NODE 29 ==\nreturn res;\n" ];
-        30 [ label="==  ICFG CFLOW_NODE 30 == (entry)\n\n" ];
-        31 [ label="==  ICFG EXIT_NODE 31 ==\n" ];
-        17 -> 19 [ label="CALL_RETURN" ];
-        19 -> 28 [ label="" ];
+        11 [ label="==  ICFG ENTRY_NODE 11 ==\n" ];
+        12 [ label="==  ICFG CFLOW_NODE 12 ==\nint res;\nif(n == 1) {res = 1;}else {res = foo(5);}\n" ];
+        13 [ label="==  ICFG CFLOW_NODE 13 ==\nres = 1;\n" ];
+        16 [ label="==  ICFG CALL_NODE 16 ==\nres = foo(5);\n" ];
+        18 [ label="==  ICFG RETURN_NODE 18 ==\n" ];
+        26 [ label="==  ICFG CFLOW_NODE 26 ==\nreturn res;\n" ];
+        27 [ label="==  ICFG EXIT_NODE 27 ==\n" ];
+        16 -> 18 [ label="CALL_RETURN" ];
+        11 -> 12 [ label="" ];
         12 -> 13 [ label="" ];
-        13 -> 14 [ label="" ];
-        13 -> 17 [ label="" ];
-        14 -> 29 [ label="" ];
-        28 -> 29 [ label="" ];
-        29 -> 31 [ label="" ];
-        30 -> 31 [ label="" ];
+        12 -> 16 [ label="" ];
+        13 -> 26 [ label="" ];
+        18 -> 26 [ label="" ];
+        26 -> 27 [ label="" ];
     }
     subgraph cluster_foo_1 {
         label="foo_1"
-        26 [ label="==  ICFG ENTRY_NODE 26 ==\n" ];
-        27 [ label="==  ICFG EXIT_NODE 27 ==\n" ];
-        32 [ label="==  ICFG CFLOW_NODE 32 ==\nint res;\nif(n == 1) {res = bar(1);}else {res = 5;}\n" ];
-        35 [ label="==  ICFG CALL_NODE 35 ==\nres = bar(1);\n" ];
-        37 [ label="==  ICFG RETURN_NODE 37 ==\n" ];
-        38 [ label="==  ICFG CFLOW_NODE 38 ==\n\n" ];
-        39 [ label="==  ICFG CFLOW_NODE 39 ==\nres = 5;\n\n" ];
-        40 [ label="==  ICFG CFLOW_NODE 40 ==\n\n" ];
-        35 -> 37 [ label="CALL_RETURN" ];
-        37 -> 38 [ label="" ];
-        40 -> 27 [ label="" ];
-        26 -> 32 [ label="" ];
-        32 -> 35 [ label="" ];
-        32 -> 39 [ label="" ];
-        38 -> 40 [ label="" ];
-        39 -> 40 [ label="" ];
+        24 [ label="==  ICFG ENTRY_NODE 24 ==\n" ];
+        25 [ label="==  ICFG EXIT_NODE 25 ==\n" ];
+        28 [ label="==  ICFG CFLOW_NODE 28 ==\nint res;\nif(n == 1) {res = bar(1);}else {res = 5;}\n" ];
+        31 [ label="==  ICFG CALL_NODE 31 ==\nres = bar(1);\n" ];
+        33 [ label="==  ICFG RETURN_NODE 33 ==\n" ];
+        34 [ label="==  ICFG CFLOW_NODE 34 ==\nres = 5;\n" ];
+        31 -> 33 [ label="CALL_RETURN" ];
+        33 -> 25 [ label="" ];
+        34 -> 25 [ label="" ];
+        24 -> 28 [ label="" ];
+        28 -> 31 [ label="" ];
+        28 -> 34 [ label="" ];
     }
     subgraph cluster_functiontest_2 {
         label="functiontest_2"
-        44 [ label="==  ICFG ENTRY_NODE 44 == (entry)\n" ];
-        48 [ label="==  ICFG CFLOW_NODE 48 ==\nint n = 7;\nfloat x =(4.500000000000000);\n" ];
-        49 [ label="==  ICFG CALL_NODE 49 ==\nn = foo(n);\n" ];
-        51 [ label="==  ICFG RETURN_NODE 51 ==\n" ];
-        52 [ label="==  ICFG CFLOW_NODE 52 ==\nx =((sin((x))));\n\n" ];
-        53 [ label="==  ICFG EXIT_NODE 53 == (exit)\n" ];
-        48 -> 49 [ label="" ];
-        49 -> 51 [ label="CALL_RETURN" ];
-        51 -> 52 [ label="" ];
-        44 -> 48 [ label="" ];
-        52 -> 53 [ label="" ];
+        38 [ label="==  ICFG ENTRY_NODE 38 == (entry)\n" ];
+        42 [ label="==  ICFG CFLOW_NODE 42 ==\nint n = 7;\nfloat x =(4.5);\n" ];
+        43 [ label="==  ICFG CALL_NODE 43 ==\nn = foo(n);\n" ];
+        45 [ label="==  ICFG RETURN_NODE 45 ==\n" ];
+        46 [ label="==  ICFG CFLOW_NODE 46 ==\nx =((sin((x))));\n" ];
+        47 [ label="==  ICFG EXIT_NODE 47 == (exit)\n" ];
+        42 -> 43 [ label="" ];
+        43 -> 45 [ label="CALL_RETURN" ];
+        45 -> 46 [ label="" ];
+        38 -> 42 [ label="" ];
+        46 -> 47 [ label="" ];
     }
-    17 -> 26 [ label="CALL_(foo(5))",style=dashed,color=red ];
-    27 -> 19 [ label="RETURN_(foo(5))",style=dashed,color=blue ];
-    35 -> 12 [ label="CALL_(bar(1))",style=dashed,color=red ];
-    31 -> 37 [ label="RETURN_(bar(1))",style=dashed,color=blue ];
-    49 -> 26 [ label="CALL_(foo(n))",style=dashed,color=red ];
-    27 -> 51 [ label="RETURN_(foo(n))",style=dashed,color=blue ];}
+    16 -> 24 [ label="CALL_(foo(5))",style=dashed,color=red ];
+    25 -> 18 [ label="RETURN_(foo(5))",style=dashed,color=blue ];
+    31 -> 11 [ label="CALL_(bar(1))",style=dashed,color=red ];
+    27 -> 33 [ label="RETURN_(bar(1))",style=dashed,color=blue ];
+    43 -> 24 [ label="CALL_(foo(n))",style=dashed,color=red ];
+    25 -> 45 [ label="RETURN_(foo(n))",style=dashed,color=blue ];}
 
 *******  end of DoICFG *********
 

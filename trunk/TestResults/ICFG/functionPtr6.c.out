@@ -20,12 +20,10 @@ fp1 = foo;
 fp2 = bar;
 
 
-
         Node 17: 
             ==  ICFG CFLOW_NODE 17 ==
 fp1 = foo;
 fp2 = bar;
-
 
 
         Node 21: 
@@ -37,35 +35,27 @@ car1(fp1);
             ==  ICFG RETURN_NODE 23 ==
 
 
-        Node 30: 
-            ==  ICFG CALL_NODE 30 ==
+        Node 29: 
+            ==  ICFG CALL_NODE 29 ==
 car2(fp2);
 
 
-        Node 32: 
-            ==  ICFG RETURN_NODE 32 ==
+        Node 31: 
+            ==  ICFG RETURN_NODE 31 ==
 
 
-        Node 39: 
-            ==  ICFG CFLOW_NODE 39 ==
-
-
-
-        Node 40: 
-            ==  ICFG EXIT_NODE 40 == (exit)
+        Node 37: 
+            ==  ICFG EXIT_NODE 37 == (exit)
 
 
         Edge: 21 => 23
             CALL_RETURN
 
-        Edge: 23 => 30
+        Edge: 23 => 29
             
 
-        Edge: 30 => 32
+        Edge: 29 => 31
             CALL_RETURN
-
-        Edge: 32 => 39
-            
 
         Edge: 14 => 15
             
@@ -82,210 +72,191 @@ car2(fp2);
         Edge: 17 => 21
             
 
-        Edge: 39 => 40
+        Edge: 31 => 37
             
 
 
     subgraph foo_1:
 
-        Node 44: 
-            ==  ICFG ENTRY_NODE 44 ==
+        Node 41: 
+            ==  ICFG ENTRY_NODE 41 ==
 
 
-        Node 45: 
-            ==  ICFG CFLOW_NODE 45 ==
+        Node 42: 
+            ==  ICFG CFLOW_NODE 42 ==
 
 
+        Node 43: 
+            ==  ICFG EXIT_NODE 43 ==
 
-        Node 46: 
-            ==  ICFG EXIT_NODE 46 ==
 
-
-        Edge: 44 => 45
+        Edge: 41 => 42
             
 
-        Edge: 45 => 46
+        Edge: 42 => 43
             
 
 
     subgraph bar_2:
 
-        Node 50: 
-            ==  ICFG ENTRY_NODE 50 ==
+        Node 47: 
+            ==  ICFG ENTRY_NODE 47 ==
 
 
-        Node 51: 
-            ==  ICFG CFLOW_NODE 51 ==
+        Node 48: 
+            ==  ICFG CFLOW_NODE 48 ==
 
 
+        Node 49: 
+            ==  ICFG EXIT_NODE 49 ==
 
-        Node 52: 
-            ==  ICFG EXIT_NODE 52 ==
 
-
-        Edge: 50 => 51
+        Edge: 47 => 48
             
 
-        Edge: 51 => 52
+        Edge: 48 => 49
             
 
 
     subgraph zoo_3:
 
-        Node 56: 
-            ==  ICFG ENTRY_NODE 56 ==
+        Node 53: 
+            ==  ICFG ENTRY_NODE 53 ==
 
 
-        Node 57: 
-            ==  ICFG CFLOW_NODE 57 ==
+        Node 54: 
+            ==  ICFG CFLOW_NODE 54 ==
 
 
+        Node 55: 
+            ==  ICFG EXIT_NODE 55 ==
 
-        Node 58: 
-            ==  ICFG EXIT_NODE 58 ==
 
-
-        Edge: 56 => 57
+        Edge: 53 => 54
             
 
-        Edge: 57 => 58
+        Edge: 54 => 55
             
 
 
     subgraph car1_4:
 
+        Node 27: 
+            ==  ICFG ENTRY_NODE 27 ==
+
+
         Node 28: 
-            ==  ICFG ENTRY_NODE 28 ==
+            ==  ICFG EXIT_NODE 28 ==
 
 
-        Node 29: 
-            ==  ICFG EXIT_NODE 29 ==
-
-
-        Node 62: 
-            ==  ICFG CFLOW_NODE 62 ==
+        Node 59: 
+            ==  ICFG CFLOW_NODE 59 ==
 int res;
 
 
-        Node 63: 
-            ==  ICFG CALL_NODE 63 ==
+        Node 60: 
+            ==  ICFG CALL_NODE 60 ==
 res =( *funcPtr)();
 
 
-        Node 65: 
-            ==  ICFG RETURN_NODE 65 ==
+        Node 62: 
+            ==  ICFG RETURN_NODE 62 ==
 
 
-        Node 66: 
-            ==  ICFG CFLOW_NODE 66 ==
+        Node 63: 
+            ==  ICFG CFLOW_NODE 63 ==
 return res;
 
 
-        Node 67: 
-            ==  ICFG CFLOW_NODE 67 == (entry)
+        Edge: 59 => 60
+            
 
-
+        Edge: 60 => 62
+            CALL_RETURN
 
         Edge: 62 => 63
             
 
-        Edge: 63 => 65
-            CALL_RETURN
-
-        Edge: 65 => 66
+        Edge: 63 => 28
             
 
-        Edge: 66 => 29
-            
-
-        Edge: 67 => 29
-            
-
-        Edge: 28 => 62
+        Edge: 27 => 59
             
 
 
     subgraph car2_5:
 
-        Node 37: 
-            ==  ICFG ENTRY_NODE 37 ==
+        Node 35: 
+            ==  ICFG ENTRY_NODE 35 ==
 
 
-        Node 38: 
-            ==  ICFG EXIT_NODE 38 ==
+        Node 36: 
+            ==  ICFG EXIT_NODE 36 ==
+
+
+        Node 67: 
+            ==  ICFG CFLOW_NODE 67 ==
+int res;
+
+
+        Node 68: 
+            ==  ICFG CALL_NODE 68 ==
+res =(2 *( *funcPtr)());
+
+
+        Node 70: 
+            ==  ICFG RETURN_NODE 70 ==
 
 
         Node 71: 
             ==  ICFG CFLOW_NODE 71 ==
-int res;
-
-
-        Node 72: 
-            ==  ICFG CALL_NODE 72 ==
-res =(2 *( *funcPtr)());
-
-
-        Node 74: 
-            ==  ICFG RETURN_NODE 74 ==
-
-
-        Node 75: 
-            ==  ICFG CFLOW_NODE 75 ==
 return res;
 
 
-        Node 76: 
-            ==  ICFG CFLOW_NODE 76 == (entry)
-
-
-
-        Edge: 71 => 72
+        Edge: 67 => 68
             
 
-        Edge: 72 => 74
+        Edge: 68 => 70
             CALL_RETURN
 
-        Edge: 74 => 75
+        Edge: 70 => 71
             
 
-        Edge: 75 => 38
+        Edge: 71 => 36
             
 
-        Edge: 76 => 38
-            
-
-        Edge: 37 => 71
+        Edge: 35 => 67
             
 
 
-    Edge: 21 => 28
+    Edge: 21 => 27
         CALL_(car1(fp1)),style=dashed,color=red
 
-    Edge: 29 => 23
+    Edge: 28 => 23
         RETURN_(car1(fp1)),style=dashed,color=blue
 
-    Edge: 30 => 37
+    Edge: 29 => 35
         CALL_(car2(fp2)),style=dashed,color=red
 
-    Edge: 38 => 32
+    Edge: 36 => 31
         RETURN_(car2(fp2)),style=dashed,color=blue
 
-    Edge: 63 => 44
+    Edge: 60 => 41
         CALL_(( *funcPtr)()),style=dashed,color=red
 
-    Edge: 46 => 65
+    Edge: 43 => 62
         RETURN_(( *funcPtr)()),style=dashed,color=blue
 
-    Edge: 63 => 56
+    Edge: 60 => 53
         CALL_(( *funcPtr)()),style=dashed,color=red
 
-    Edge: 58 => 65
+    Edge: 55 => 62
         RETURN_(( *funcPtr)()),style=dashed,color=blue
 
-    Edge: 72 => 50
+    Edge: 68 => 47
         CALL_(( *funcPtr)()),style=dashed,color=red
 
-    Edge: 52 => 74
+    Edge: 49 => 70
         RETURN_(( *funcPtr)()),style=dashed,color=blue
 
 
@@ -295,91 +266,85 @@ digraph ICFG {
         label="main_0"
         14 [ label="==  ICFG ENTRY_NODE 14 == (entry)\n" ];
         15 [ label="==  ICFG CFLOW_NODE 15 ==\nint x = read();\nfp1 = zoo;\nif(x) {fp1 = foo;fp2 = bar;}else {fp1 = foo;fp2 = bar;}\n" ];
-        16 [ label="==  ICFG CFLOW_NODE 16 ==\nfp1 = foo;\nfp2 = bar;\n\n" ];
-        17 [ label="==  ICFG CFLOW_NODE 17 ==\nfp1 = foo;\nfp2 = bar;\n\n" ];
+        16 [ label="==  ICFG CFLOW_NODE 16 ==\nfp1 = foo;\nfp2 = bar;\n" ];
+        17 [ label="==  ICFG CFLOW_NODE 17 ==\nfp1 = foo;\nfp2 = bar;\n" ];
         21 [ label="==  ICFG CALL_NODE 21 ==\ncar1(fp1);\n" ];
         23 [ label="==  ICFG RETURN_NODE 23 ==\n" ];
-        30 [ label="==  ICFG CALL_NODE 30 ==\ncar2(fp2);\n" ];
-        32 [ label="==  ICFG RETURN_NODE 32 ==\n" ];
-        39 [ label="==  ICFG CFLOW_NODE 39 ==\n\n" ];
-        40 [ label="==  ICFG EXIT_NODE 40 == (exit)\n" ];
+        29 [ label="==  ICFG CALL_NODE 29 ==\ncar2(fp2);\n" ];
+        31 [ label="==  ICFG RETURN_NODE 31 ==\n" ];
+        37 [ label="==  ICFG EXIT_NODE 37 == (exit)\n" ];
         21 -> 23 [ label="CALL_RETURN" ];
-        23 -> 30 [ label="" ];
-        30 -> 32 [ label="CALL_RETURN" ];
-        32 -> 39 [ label="" ];
+        23 -> 29 [ label="" ];
+        29 -> 31 [ label="CALL_RETURN" ];
         14 -> 15 [ label="" ];
         15 -> 16 [ label="" ];
         15 -> 17 [ label="" ];
         16 -> 21 [ label="" ];
         17 -> 21 [ label="" ];
-        39 -> 40 [ label="" ];
+        31 -> 37 [ label="" ];
     }
     subgraph cluster_foo_1 {
         label="foo_1"
-        44 [ label="==  ICFG ENTRY_NODE 44 ==\n" ];
-        45 [ label="==  ICFG CFLOW_NODE 45 ==\n\n" ];
-        46 [ label="==  ICFG EXIT_NODE 46 ==\n" ];
-        44 -> 45 [ label="" ];
-        45 -> 46 [ label="" ];
+        41 [ label="==  ICFG ENTRY_NODE 41 ==\n" ];
+        42 [ label="==  ICFG CFLOW_NODE 42 ==\n" ];
+        43 [ label="==  ICFG EXIT_NODE 43 ==\n" ];
+        41 -> 42 [ label="" ];
+        42 -> 43 [ label="" ];
     }
     subgraph cluster_bar_2 {
         label="bar_2"
-        50 [ label="==  ICFG ENTRY_NODE 50 ==\n" ];
-        51 [ label="==  ICFG CFLOW_NODE 51 ==\n\n" ];
-        52 [ label="==  ICFG EXIT_NODE 52 ==\n" ];
-        50 -> 51 [ label="" ];
-        51 -> 52 [ label="" ];
+        47 [ label="==  ICFG ENTRY_NODE 47 ==\n" ];
+        48 [ label="==  ICFG CFLOW_NODE 48 ==\n" ];
+        49 [ label="==  ICFG EXIT_NODE 49 ==\n" ];
+        47 -> 48 [ label="" ];
+        48 -> 49 [ label="" ];
     }
     subgraph cluster_zoo_3 {
         label="zoo_3"
-        56 [ label="==  ICFG ENTRY_NODE 56 ==\n" ];
-        57 [ label="==  ICFG CFLOW_NODE 57 ==\n\n" ];
-        58 [ label="==  ICFG EXIT_NODE 58 ==\n" ];
-        56 -> 57 [ label="" ];
-        57 -> 58 [ label="" ];
+        53 [ label="==  ICFG ENTRY_NODE 53 ==\n" ];
+        54 [ label="==  ICFG CFLOW_NODE 54 ==\n" ];
+        55 [ label="==  ICFG EXIT_NODE 55 ==\n" ];
+        53 -> 54 [ label="" ];
+        54 -> 55 [ label="" ];
     }
     subgraph cluster_car1_4 {
         label="car1_4"
-        28 [ label="==  ICFG ENTRY_NODE 28 ==\n" ];
-        29 [ label="==  ICFG EXIT_NODE 29 ==\n" ];
-        62 [ label="==  ICFG CFLOW_NODE 62 ==\nint res;\n" ];
-        63 [ label="==  ICFG CALL_NODE 63 ==\nres =( *funcPtr)();\n" ];
-        65 [ label="==  ICFG RETURN_NODE 65 ==\n" ];
-        66 [ label="==  ICFG CFLOW_NODE 66 ==\nreturn res;\n" ];
-        67 [ label="==  ICFG CFLOW_NODE 67 == (entry)\n\n" ];
+        27 [ label="==  ICFG ENTRY_NODE 27 ==\n" ];
+        28 [ label="==  ICFG EXIT_NODE 28 ==\n" ];
+        59 [ label="==  ICFG CFLOW_NODE 59 ==\nint res;\n" ];
+        60 [ label="==  ICFG CALL_NODE 60 ==\nres =( *funcPtr)();\n" ];
+        62 [ label="==  ICFG RETURN_NODE 62 ==\n" ];
+        63 [ label="==  ICFG CFLOW_NODE 63 ==\nreturn res;\n" ];
+        59 -> 60 [ label="" ];
+        60 -> 62 [ label="CALL_RETURN" ];
         62 -> 63 [ label="" ];
-        63 -> 65 [ label="CALL_RETURN" ];
-        65 -> 66 [ label="" ];
-        66 -> 29 [ label="" ];
-        67 -> 29 [ label="" ];
-        28 -> 62 [ label="" ];
+        63 -> 28 [ label="" ];
+        27 -> 59 [ label="" ];
     }
     subgraph cluster_car2_5 {
         label="car2_5"
-        37 [ label="==  ICFG ENTRY_NODE 37 ==\n" ];
-        38 [ label="==  ICFG EXIT_NODE 38 ==\n" ];
-        71 [ label="==  ICFG CFLOW_NODE 71 ==\nint res;\n" ];
-        72 [ label="==  ICFG CALL_NODE 72 ==\nres =(2 *( *funcPtr)());\n" ];
-        74 [ label="==  ICFG RETURN_NODE 74 ==\n" ];
-        75 [ label="==  ICFG CFLOW_NODE 75 ==\nreturn res;\n" ];
-        76 [ label="==  ICFG CFLOW_NODE 76 == (entry)\n\n" ];
-        71 -> 72 [ label="" ];
-        72 -> 74 [ label="CALL_RETURN" ];
-        74 -> 75 [ label="" ];
-        75 -> 38 [ label="" ];
-        76 -> 38 [ label="" ];
-        37 -> 71 [ label="" ];
+        35 [ label="==  ICFG ENTRY_NODE 35 ==\n" ];
+        36 [ label="==  ICFG EXIT_NODE 36 ==\n" ];
+        67 [ label="==  ICFG CFLOW_NODE 67 ==\nint res;\n" ];
+        68 [ label="==  ICFG CALL_NODE 68 ==\nres =(2 *( *funcPtr)());\n" ];
+        70 [ label="==  ICFG RETURN_NODE 70 ==\n" ];
+        71 [ label="==  ICFG CFLOW_NODE 71 ==\nreturn res;\n" ];
+        67 -> 68 [ label="" ];
+        68 -> 70 [ label="CALL_RETURN" ];
+        70 -> 71 [ label="" ];
+        71 -> 36 [ label="" ];
+        35 -> 67 [ label="" ];
     }
-    21 -> 28 [ label="CALL_(car1(fp1))",style=dashed,color=red ];
-    29 -> 23 [ label="RETURN_(car1(fp1))",style=dashed,color=blue ];
-    30 -> 37 [ label="CALL_(car2(fp2))",style=dashed,color=red ];
-    38 -> 32 [ label="RETURN_(car2(fp2))",style=dashed,color=blue ];
-    63 -> 44 [ label="CALL_(( *funcPtr)())",style=dashed,color=red ];
-    46 -> 65 [ label="RETURN_(( *funcPtr)())",style=dashed,color=blue ];
-    63 -> 56 [ label="CALL_(( *funcPtr)())",style=dashed,color=red ];
-    58 -> 65 [ label="RETURN_(( *funcPtr)())",style=dashed,color=blue ];
-    72 -> 50 [ label="CALL_(( *funcPtr)())",style=dashed,color=red ];
-    52 -> 74 [ label="RETURN_(( *funcPtr)())",style=dashed,color=blue ];}
+    21 -> 27 [ label="CALL_(car1(fp1))",style=dashed,color=red ];
+    28 -> 23 [ label="RETURN_(car1(fp1))",style=dashed,color=blue ];
+    29 -> 35 [ label="CALL_(car2(fp2))",style=dashed,color=red ];
+    36 -> 31 [ label="RETURN_(car2(fp2))",style=dashed,color=blue ];
+    60 -> 41 [ label="CALL_(( *funcPtr)())",style=dashed,color=red ];
+    43 -> 62 [ label="RETURN_(( *funcPtr)())",style=dashed,color=blue ];
+    60 -> 53 [ label="CALL_(( *funcPtr)())",style=dashed,color=red ];
+    55 -> 62 [ label="RETURN_(( *funcPtr)())",style=dashed,color=blue ];
+    68 -> 47 [ label="CALL_(( *funcPtr)())",style=dashed,color=red ];
+    49 -> 70 [ label="RETURN_(( *funcPtr)())",style=dashed,color=blue ];}
 
 *******  end of DoICFG *********
 

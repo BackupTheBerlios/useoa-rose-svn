@@ -3436,3 +3436,11 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - SideEffects need rechecked.
     - ReachDefs need rechecked.
 
+10/26/06     UseOA-ROSE svn trunk r240   Priyadarshini Malusare
+    - Added following in Sage2OA.h::toString(StmtHandle h)  
+      SgExpression * sgExp= isSgExpression(node);
+      if( sgExp ) {
+         return sgExp->unparseToString();
+      }
+    - ICFG tests are checked and regenerated for the new modification.
+     
