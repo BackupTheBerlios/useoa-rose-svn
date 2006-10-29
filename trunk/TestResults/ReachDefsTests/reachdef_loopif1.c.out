@@ -32,18 +32,15 @@ x =(y + y);
 y =(x *(5));
 
 
-
     Node 6: 
         ====== CFG node 6 ======
 y =(3);
-
 
 
     Node 7: 
         ====== CFG node 7 ======
 z = y;
 i++;
-
 
 
     Node 8: 
@@ -53,11 +50,6 @@ return 0;
 
     Node 9: 
         ====== CFG node 9 ======
-
-
-
-    Node 10: 
-        ====== CFG node 10 ======
 
 
     Edge: 1 => 2
@@ -87,27 +79,21 @@ return 0;
     Edge: 3 => 8
         { FALSE_EDGE 0 }
 
-    Edge: 9 => 10
-        { FALLTHROUGH_EDGE 0 }
-
-    Edge: 8 => 10
+    Edge: 8 => 9
         { RETURN_EDGE 0 }
 
 
 ReachDefsStandard(
     mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
-            StmtHandle(x =(2);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(y =(5);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(x =(y + y);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(y =(x *(5));)	 => [ StmtHandle(i = 1;)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(y =(3);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(x =(2);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(y =(5);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(x =(y + y);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(y =(x *(5));)	 => [ StmtHandle(i = 1;)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(y =(3);)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
             StmtHandle(z = y;)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
             StmtHandle(i++;)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
             StmtHandle(while(i != 10){x =(2);if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}z = y;i++;})	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle(if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);})	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle()	 => [ StmtHandle(i = 1;)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle()	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
-            StmtHandle()	 => [ StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
+            StmtHandle(if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);})	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
             StmtHandle(return 0;)	 => [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 
 
     mExitReachDefs: [ StmtHandle(i = 1;)    StmtHandle(x =(2);)    StmtHandle(x =(y + y);)    StmtHandle(y =(x *(5));)    StmtHandle(y =(3);)    StmtHandle(z = y;)    StmtHandle(i++;) ] 

@@ -20,11 +20,9 @@ y =(5);
 x =(y + y);
 
 
-
     Node 4: 
         ====== CFG node 4 ======
 y =(3);
-
 
 
     Node 5: 
@@ -35,11 +33,6 @@ return 0;
 
     Node 6: 
         ====== CFG node 6 ======
-
-
-
-    Node 7: 
-        ====== CFG node 7 ======
 
 
     Edge: 1 => 2
@@ -57,10 +50,7 @@ return 0;
     Edge: 4 => 5
         { FALLTHROUGH_EDGE 0 }
 
-    Edge: 6 => 7
-        { FALLTHROUGH_EDGE 0 }
-
-    Edge: 5 => 7
+    Edge: 5 => 6
         { RETURN_EDGE 0 }
 
 
@@ -71,8 +61,6 @@ ReachDefsStandard(
             StmtHandle(y =(3);)	 => [ StmtHandle(x =(2);) ] 
             StmtHandle(z = y;)	 => [ StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);) ] 
             StmtHandle(if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);})	 => [ StmtHandle(x =(2);) ] 
-            StmtHandle()	 => [ StmtHandle(y =(5);)    StmtHandle(x =(y + y);) ] 
-            StmtHandle()	 => [ StmtHandle(x =(2);)    StmtHandle(y =(3);) ] 
             StmtHandle(return 0;)	 => [ StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;) ] 
 
     mExitReachDefs: [ StmtHandle(x =(2);)    StmtHandle(y =(5);)    StmtHandle(x =(y + y);)    StmtHandle(y =(3);)    StmtHandle(z = y;) ] 

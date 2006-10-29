@@ -3443,4 +3443,9 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
          return sgExp->unparseToString();
       }
     - ICFG tests are checked and regenerated for the new modification.
-     
+    
+10/29/06     UseOA-ROSE svn trunk r241   Priyadarshini Malusare
+    - Modified ManagerReachDefsStandard::transfer, killed definitions 
+      are properly removed from the inRecast set.
+
+     Iterator will
