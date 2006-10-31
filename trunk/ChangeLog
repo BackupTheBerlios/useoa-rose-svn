@@ -3454,6 +3454,11 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - passes regressAll with OpenAnalysis trunk r247 compiled on Okapi
       with gcc-3.2.
 
+11/01/06     UseOA-ROSE svn trunk r243   Priyadarshini Malusare
+    - Added test script, genReachConsts script, regressReachConsts script
+    - Added TestCases and TestResults for ReachConsts.
+    - passes regressAll with OpenAnalysis trunk r247 compiled on Okapi
+      with gcc-3.2.
 
 
 

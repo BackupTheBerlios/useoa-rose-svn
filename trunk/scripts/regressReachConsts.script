@@ -1,0 +1,4 @@
+echo "Testing TestCases/ReachConstsTests/reachdef_if2.c, TestResults/ReachConstsTests/reachdef_if2.c.out Not Checked Yet"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/reachdef_if2.c >& t
+diff t TestResults/ReachConstsTests/reachdef_if2.c.out
+

@@ -1,0 +1,2 @@
+echo "Generating TestResults/ReachConstsTests/reachdef_if2.c.out"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/reachdef_if2.c >& TestResults/ReachConstsTests/reachdef_if2.c.out
