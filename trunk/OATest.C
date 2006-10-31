@@ -46,7 +46,7 @@
 #include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
 #include <OpenAnalysis/Utils/Util.hpp>
-// #include <OpenAnalysis/ReachConsts/ManagerReachConstsStandard.hpp>
+#include <OpenAnalysis/ReachConsts/ManagerReachConstsStandard.hpp>
 #include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/XAIF/UDDUChainsXAIF.hpp>
 #include <OpenAnalysis/XAIF/ManagerUDDUChainsXAIF.hpp>
@@ -434,7 +434,7 @@ main ( unsigned argc,  char * argv[] )
     {
         
     //  printf("TO DO, implement ReachConsts analysis\n");
-     /* for (int i = 0; i < filenum; ++i)
+     for (int i = 0; i < filenum; ++i)
        {
          SgFile &sageFile = sageProject->get_file(i);
          SgGlobal *root = sageFile.get_root();
@@ -450,7 +450,7 @@ main ( unsigned argc,  char * argv[] )
                                                                                              DoReachConsts(defn, sageProject, &nodeArray, p_h);
                                                                                            }
                                                                                         }
-       */
+     
         return 1;
     }
     else if( cmds->HasOption("--oa-AliasMapXAIF") )
@@ -1035,43 +1035,70 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 
 int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
-  /* int returnvalue=FALSE;
+   int returnvalue=FALSE;
    if ( debug ) printf("*******start of DoUDDUChains\n");
    OA::OA_ptr<SageIRInterface> irInterface;
    irInterface = new SageIRInterface(p, na, p_handle);
            
     
    //CFG
-   OA::OA_ptr<OA::CFG::ManagerStandard> cfgmanstd;
-   cfgmanstd = new OA::CFG::ManagerStandard(irInterface);
-   OA::OA_ptr<OA::CFG::CFGStandard> cfg=
+   OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
+   cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
+   OA::OA_ptr<OA::CFG::CFG> cfg=
    cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
 
    //Alias
    OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
    fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
    OA::OA_ptr<SageIRProcIterator> procIter;
-   procIter = new SageIRProcIterator(p,irInterface);
+   procIter = new SageIRProcIterator(p,*irInterface);
    OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
    interAlias = fialiasman->performAnalysis(procIter);
    OA::ProcHandle proc((OA::irhandle_t)(irInterface->getNodeNumber(f)));
    OA::OA_ptr<OA::Alias::Interface> alias = interAlias->getAliasResults(proc);
+  
+   // CallGraph
+  OA::OA_ptr<OA::CallGraph::ManagerCallGraphStandard> cgraphman;
+  cgraphman = new OA::CallGraph::ManagerCallGraphStandard(irInterface);
+  OA::OA_ptr<OA::CallGraph::CallGraph> cgraph =
+      cgraphman->performAnalysis(procIter, interAlias);
+   
+   // ParamBindings
+   OA::OA_ptr<OA::DataFlow::ManagerParamBindings> parambindman;
+   parambindman = new OA::DataFlow::ManagerParamBindings(irInterface);
+   OA::OA_ptr<OA::DataFlow::ParamBindings> parambind
+      = parambindman->performAnalysis(cgraph);
+
+
+   // Intra Side-Effect
+   OA::OA_ptr<OA::SideEffect::ManagerSideEffectStandard> sideeffectman;
+   sideeffectman = new OA::SideEffect::ManagerSideEffectStandard(irInterface);
+
+   // InterSideEffect
+   OA::OA_ptr<OA::SideEffect::ManagerInterSideEffectStandard> interSEman;
+   interSEman = new OA::SideEffect::ManagerInterSideEffectStandard(irInterface);
+
+   OA::OA_ptr<OA::SideEffect::InterSideEffectStandard> interSE;
+   interSE = interSEman->performAnalysis(cgraph, parambind,
+                                        interAlias, sideeffectman);
+  /*
 
    // Interprocedural Side-Effect Analysis
    // for now generate default conservative interprocedural side-effect results
    OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
    interSideEffect = new OA::SideEffect::InterSideEffectStandard;
-        
+  */       
    
    //ReachConsts        
-   OA::OA_ptr<OA::ReachConsts::ManagerStandard> rcman;
-   rcman = new OA::ReachConsts::ManagerStandard(irInterface);
+   OA::OA_ptr<OA::ReachConsts::ManagerReachConstsStandard> rcman;
+   rcman = new OA::ReachConsts::ManagerReachConstsStandard(irInterface);
    OA::OA_ptr<OA::ReachConsts::ReachConstsStandard> reachConsts=
-          rcman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect); 
-   
+          rcman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSE); 
+ 
+   reachConsts->output(*irInterface); 
    std::cout << "\n*******  end of DoUDDUChains *********\n\n";
    return returnvalue;
-    */  
+    
 }
 
 

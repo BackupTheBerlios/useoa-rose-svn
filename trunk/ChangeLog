@@ -3448,4 +3448,12 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - Modified ManagerReachDefsStandard::transfer, killed definitions 
       are properly removed from the inRecast set.
 
-     Iterator will
+11/01/06     UseOA-ROSE svn trunk r242   Priyadarshini Malusare
+    - Added SageIRInterface::getConstValBasic(OA::ConstValHandle c)
+      to get ReachConsts working on UseOA-ROSE side.
+    - passes regressAll with OpenAnalysis trunk r247 compiled on Okapi
+      with gcc-3.2.
+
+
+
+

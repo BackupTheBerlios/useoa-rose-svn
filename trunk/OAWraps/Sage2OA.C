@@ -4691,3 +4691,299 @@ OA::CallHandle SageIRInterface::getProcExprHandle(SgNode *astNode)
   OA::CallHandle callHandle = getNodeNumber(astNode);
   return callHandle;
 }
+
+
+
+// ReachConstsInterface
+OA::OA_ptr<OA::ConstValBasicInterface>
+SageConstVal::eval(OA::OpHandle opr, 
+        const OA::OA_ptr<OA::ConstValBasicInterface> op2) const
+{
+   OA::OA_ptr<OA::ConstValBasicInterface> retval;
+   retval = NULL;
+
+  // Cannot eval without a specific type; 
+  // return an opaque const object
+  // return new Open64ConstVal();
+  // returning NULL  -  NULL is recognizable,
+  //                    whereas new Open64ConstVal() is not
+
+  return retval;
+}
+
+
+OA::OA_ptr<OA::ConstValBasicInterface>
+SageIRInterface::evalOp(OA::OpHandle op,
+              OA::OA_ptr<OA::ConstValBasicInterface> operand1,
+              OA::OA_ptr<OA::ConstValBasicInterface> operand2)
+{
+  if (operand1.ptrEqual(NULL)) 
+  { OA::OA_ptr<OA::ConstValBasicInterface> retval;
+    retval = NULL; 
+    return retval; 
+  }
+
+  const OA::OA_ptr<SageConstVal> op1 = 
+       operand1.convert<SageConstVal>();
+  return op1->eval(getNodeNumber((SgNode*)op.hval()), 
+                   operand2);
+}
+
+
+//! Given a statement, return its Activity::IRStmtType
+OA::ReachConsts::IRStmtType
+SageIRInterface::getReachConstsStmtType(OA::StmtHandle h)
+{
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // FIXME
+  // PLM: this routine is incomplete.
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  SgNode *node = getNodePtr(h);
+  ROSE_ASSERT(node != NULL);
+
+  OA::ReachConsts::IRStmtType stmtType = OA::ReachConsts::ANY_STMT;
+
+  bool collectPtrAssigns = false;
+
+  switch(node->variantT()) {
+
+  case V_SgExprStatement:
+    {
+      SgExprStatement *exprStatement = isSgExprStatement(node);
+      ROSE_ASSERT(exprStatement != NULL);
+
+      SgExpression *expression = exprStatement->get_the_expr();
+      SgType *lhsType = NULL;
+
+      switch(expression->variantT()) {
+      case V_SgAssignOp:
+        {
+          // A subset of this case is a new expression.
+          SgBinaryOp *assignOp = isSgBinaryOp(expression);
+          ROSE_ASSERT(assignOp != NULL);
+
+          SgExpression *lhs = assignOp->get_lhs_operand();
+          ROSE_ASSERT(lhs != NULL);
+
+          SgExpression *rhs = assignOp->get_rhs_operand();
+          ROSE_ASSERT(rhs != NULL);
+
+          lhsType = lhs->get_type();
+          ROSE_ASSERT(lhsType != NULL);
+
+          if (!isSgFunctionCallExp(rhs)) {
+            // somehow, cannot handle y = foo() as an EXPR_STMT
+            // FIXME ??
+            stmtType = OA::ReachConsts::EXPR_STMT;
+          }
+          /* don't care about this for Activity::StmtType
+             if ( lhsType != NULL ) {
+             SgType *baseType = getBaseType(lhsType);
+             ROSE_ASSERT(baseType != NULL);
+             if ( isSgPointerType(baseType) || isSgReferenceType(baseType) )
+             {
+             stmtType = OA::Alias::PTR_ASSIGN_STMT;
+             }
+             }
+          */
+          break;
+        } // end of case V_SgAssignOp:
+
+        // BK:  I am sure that I am missing some stmts that should be
+        // flagged as an OA::Activity::EXPR_STMT, but this will get us
+        // started
+
+      default:
+        {
+          break;
+        }
+      }
+      break;
+    } // end of case V_SgExprStatement:
+
+  default:
+    {
+      break;
+    }
+  }
+
+  return stmtType;
+}
+
+
+
+
+//! Temporary routine for testing MPICFG
+// given a ConstValBasicInterface, print out value if any
+std::string
+SageIRInterface::toString(OA::OA_ptr<OA::ConstValBasicInterface> cvPtr)
+{
+  std::ostringstream oss;
+  if (cvPtr.ptrEqual(NULL)) {
+    oss << "no value, null ConstValBasicInterface*";
+  } else {
+    const OA::OA_ptr<SageConstVal> op1 = cvPtr.convert<SageConstVal>();
+    if (op1->isaInteger()) {
+      oss << op1->getIntegerVal();
+    } else {
+      oss << "not an integer value";
+    }
+  }
+  return oss.str();
+}
+
+
+
+
+OA::OA_ptr<OA::ConstValBasicInterface>
+SageIRInterface::getConstValBasic(OA::ConstValHandle c)
+{
+   // Need to modify this function. 
+   // It is not properly written
+   // PLM 10/30/06
+
+   OA::OA_ptr<OA::ConstValBasicInterface> cvb; cvb = NULL;
+   SgNode* sn = (SgNode*)c.hval();
+   if(!sn) { return cvb; }
+
+   // This is SgValueExpression
+   // Following are the 16 different types that 
+   // SageIRInterface can handle. but OpenAnalysis
+   // only want to deal with Integers, and therfore
+   // some of the foolowing possible types are mapped 
+   // to integers explicitely using typecast.
+   // FIXME: in future for different constant types.  
+   /* 
+   if( isSgBoolValExp(sn) ) {
+      std::cout << "Boolean Expression" << std::endl;
+   } else if ( isSgStringVal(sn) ) {
+      std::cout << "String Val" << std::endl;
+   } else if ( isSgShortVal(sn) ) {
+      std::cout << "Short Val" << std::endl;
+   } else if ( isSgCharVal(sn) ) {
+      std::cout << "Char Val" << std::endl;
+   } else if ( isSgUnsignedCharVal(sn) ) {
+      std::cout << "Unsigned Char Val" << std::endl;
+   } else if ( isSgWcharVal(sn) ) {
+      std::cout << "WChar Val" << std::endl;
+   } else if ( isSgUnsignedShortVal(sn) ) {
+      std::cout << "Unsinged Short Val" << std::endl;
+   } else if ( isSgIntVal(sn) ) {
+      std::cout << "SgInt Val" << std::endl;
+   } else if ( isSgEnumVal(sn) ) {
+      std::cout << "Enum Val" << std::endl;
+   } else if ( isSgUnsignedIntVal(sn) ) {
+      std::cout << "Unsigned Int Val" << std::endl;
+   } else if ( isSgLongIntVal(sn) ) {
+      std::cout << "Sg Long Int Val" << std::endl;
+   } else if ( isSgLongLongIntVal(sn) ) {
+      std::cout << "Sg Long Long Int Val" << std::endl;
+   } else if ( isSgUnsignedLongVal(sn) ) {
+      std::cout << "Sg Unsigned Long Val" << std::endl;
+   } else if ( isSgFloatVal(sn) ) {
+      std::cout << "Sg Float Val" << std::endl;
+   } else if ( isSgDoubleVal(sn) ) {
+      std::cout << "Sg Double Val" << std::endl;
+   } else if ( isSgLongDoubleVal(sn) ) {
+      std::cout << "Sg Long Double Val" << std::endl;
+   }
+   */
+
+   if( isSgBoolValExp(sn) ) 
+   {
+       SgBoolValExp *boolsg = isSgBoolValExp(sn);
+       int val = boolsg->get_value();
+       cvb = new SageIntegerConstVal((int)val);
+
+   } else if ( isSgShortVal(sn) ) 
+   {
+       SgShortVal *shortsg = isSgShortVal(sn);
+       int val = shortsg->get_value();
+       cvb = new SageIntegerConstVal((int)val);
+
+   } else if ( isSgCharVal(sn) )
+   {
+       SgCharVal *charsg = isSgCharVal(sn);
+       int val = charsg->get_value();
+       cvb = new SageIntegerConstVal((int)val);
+       
+   } else if ( isSgUnsignedCharVal(sn) ) 
+   {
+       SgUnsignedCharVal *unsignedcharsg
+                    = isSgUnsignedCharVal(sn);
+       int val = unsignedcharsg->get_value();
+       cvb = new SageIntegerConstVal((int)val);
+
+   } else if ( isSgWcharVal(sn) ) 
+   {
+       SgWcharVal *wcharsg = isSgWcharVal(sn);
+       int val = wcharsg->get_value();
+       cvb = new SageIntegerConstVal((int)val);
+
+   } else if ( isSgUnsignedShortVal(sn) ) 
+   {
+       SgUnsignedShortVal *unsignedshortvalsg
+                     = isSgUnsignedShortVal(sn);
+       int val = unsignedshortvalsg->get_value();
+       cvb = new SageIntegerConstVal((int)val);
+
+   } else if ( isSgIntVal(sn) )
+   { 
+       SgIntVal *intsg = isSgIntVal(sn);
+       int val = intsg->get_value();
+       cvb = new SageIntegerConstVal((int)val);
+
+   } else if ( isSgEnumVal(sn) ) {
+
+       SgEnumVal *enumvalsg = isSgEnumVal(sn);
+       int val = enumvalsg->get_value();
+       cvb = new SageIntegerConstVal((int)val);
+
+   } else if ( isSgUnsignedIntVal(sn) ) {
+
+       // FIXME 
+       // Need to check for Overflow issues with Unsigned Int Val 
+       SgUnsignedIntVal *unsignedintvalsg 
+                      = isSgUnsignedIntVal(sn);
+       int val = unsignedintvalsg->get_value();
+       cvb = new SageIntegerConstVal((int)val);
+
+   } else if ( isSgFloatVal(sn) ) {
+
+       SgFloatVal *floatvalsg = isSgFloatVal(sn);
+       int val = floatvalsg->get_value();
+       cvb = new SageIntegerConstVal((int)val);
+
+   } else if( isSgDoubleVal(sn) )
+   { 
+       SgDoubleVal *doublesg = isSgDoubleVal(sn);
+       int val = doublesg->get_value();
+       cvb = new SageIntegerConstVal((int)val);
+
+   } 
+   
+   return cvb; 
+}
+
+
+
+//! Temporary routine for testing ReachConsts
+// Given an unsigned int, return a ConstValBAsicInterface for it
+OA::OA_ptr<OA::ConstValBasicInterface>
+SageIRInterface::getConstValBasic (unsigned int val) {
+  OA::OA_ptr<OA::ConstValBasicInterface>  retval;
+  retval = new SageIntegerConstVal((int)val);
+  return retval;
+}
+
+
+OA::OA_ptr<OA::ConstValBasicInterface> 
+SageIRInterface::getConstValBasic(OA::ConstSymHandle c)
+{
+}
+
+int 
+SageIRInterface::returnOpEnumValInt(OA::OpHandle op) 
+{
+}

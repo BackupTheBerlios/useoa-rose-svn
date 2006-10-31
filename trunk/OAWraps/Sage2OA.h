@@ -21,6 +21,12 @@
 #include <OpenAnalysis/Alias/ManagerFIAlias.hpp>
 #include <OpenAnalysis/ExprTree/ExprTree.hpp>
 
+// ReachConsts
+#include <OpenAnalysis/IRInterface/ConstValBasicInterface.hpp>
+#include <OpenAnalysis/IRInterface/ConstValIntInterface.hpp>
+#include <OpenAnalysis/IRInterface/ReachConstsIRInterface.hpp>
+
+
 class SageIRInterface;
 
 class NumberTraversal
@@ -351,6 +357,106 @@ class SageIRExprStmtPairIterator
 
 enum typeEnum { reference, other };
 
+
+class SageConstVal : public virtual OA::ConstValBasicInterface {
+  public:
+    SageConstVal() {}
+    virtual ~SageConstVal() {}
+
+    // Methods needed by OA, default behavior
+    virtual bool operator==(OA::ConstValBasicInterface& x)
+    { return false; }
+
+    //virtual bool operator!=(OA::ConstValBasicInterface& x)
+    //{ return false; }
+
+    virtual bool operator!=(OA::ConstValBasicInterface& x)
+    { return true; }
+
+    virtual std::string toString() { return ""; }
+
+    // Methods used by source IR, default behavior
+    virtual bool isaInteger() const { return false; }
+
+    virtual int getIntegerVal() const { return 0; }
+    // FIXME: THROW EXCEPTION?
+
+    virtual bool isaDouble() const { return false; }
+
+    virtual double getDoubleVal() const { return 0.0; }
+    // FIXME: EXCEPTION?
+
+    virtual bool isaChar() const { return false; }
+    virtual char getCharVal() const { return '0'; }
+    // FIXME: THROW EXCEPTION?
+
+    // bool isaComplex() { return false; }
+    // ...
+
+    /*
+    // eval: Given an operator and two operands
+       (one being the current
+
+    // object), return a new object representing the result.
+    virtual OA::OA_ptr<ConstValBasicInterface>
+    eval(OPERATOR opr,
+        const OA::OA_ptr<OA::ConstValBasicInterface> op2) const;
+    */
+
+    virtual OA::OA_ptr<OA::ConstValBasicInterface>
+    eval(OA::OpHandle opr,
+        const OA::OA_ptr<OA::ConstValBasicInterface> op2) const;
+};
+
+
+
+class SageIntegerConstVal
+  : public SageConstVal,
+    public virtual OA::ConstValIntInterface {
+  public:
+    SageIntegerConstVal() {}
+    SageIntegerConstVal(int aVal) : SageConstVal(), mVal(aVal) {}
+    ~SageIntegerConstVal() {}
+
+    // Methods used by OpenAnalysis
+    bool operator==(OA::ConstValBasicInterface& other)
+        { SageConstVal& otherRecast = dynamic_cast<SageConstVal&>(other);
+          if (otherRecast.isaInteger()) {
+              return (otherRecast.getIntegerVal() == mVal);
+          }
+          return false;
+        }
+    bool operator!=(OA::ConstValBasicInterface& other)
+        { SageConstVal& otherRecast = dynamic_cast<SageConstVal&>(other);
+          if (otherRecast.isaInteger()) {
+              return (otherRecast.getIntegerVal() != mVal);
+          }
+          return true;
+        }
+
+    std::string toString()
+        { std::ostringstream oss; oss << mVal; return oss.str(); }
+
+
+    // Methods used by source IR specific to this data type
+    bool isaInteger() const { return true; }
+    int getIntegerVal() const { return mVal; }
+
+    
+    /*! PLM 10/30/06 Not Implemented yet.
+    // eval: Given an operator and two operands (one being the current
+    // object), return a new object representing the result.
+    virtual OA::OA_ptr<ConstValBasicInterface>
+    eval(OPERATOR opr, const OA::OA_ptr<OA::ConstValBasicInterface> op2) const;
+    */
+
+  private:
+    int mVal;
+};
+
+
+
+
 class 
 SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   public virtual OA::CFG::CFGIRInterfaceDefault,  
@@ -364,7 +470,8 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   public virtual OA::DataFlow::ParamBindingsIRInterface,
   public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
   public virtual OA::SideEffect::SideEffectIRInterface,
-  public virtual OA::SideEffect::InterSideEffectIRInterface 
+  public virtual OA::SideEffect::InterSideEffectIRInterface,
+  public virtual OA::ReachConsts::ReachConstsIRInterface
 {
   friend class SageIRMemRefIterator;
   friend class FindCallsitesPass;
@@ -739,7 +846,37 @@ public:
 
   //! given a symbol return the size in bytes of that symbol
   int getSizeInBytes(OA::SymHandle h);
-  
+
+
+  //-------------------------------------------------------------------------
+  // ReachConstsInterface 
+  //-------------------------------------------------------------------------
+  //! Given an OpHandle and two operands (unary ops will just
+  //! use the first operand and the second operand should be NULL)
+  //! return a ConstValBasicInterface
+  OA::OA_ptr<OA::ConstValBasicInterface> evalOp(OA::OpHandle op,
+      OA::OA_ptr<OA::ConstValBasicInterface> operand1,
+      OA::OA_ptr<OA::ConstValBasicInterface> operand2);
+
+  //! Given a statement, return its ReachConsts::IRStmtType
+  OA::ReachConsts::IRStmtType getReachConstsStmtType(OA::StmtHandle h);
+
+  std::string
+    toString(OA::OA_ptr<OA::ConstValBasicInterface> cvPtr);
+
+  //! Given a ConstValHandle return an abstraction representing the
+  //! constant value
+  //! User must free the ConstValBasicInterface
+  OA::OA_ptr<OA::ConstValBasicInterface> 
+    getConstValBasic(OA::ConstValHandle c);
+
+  OA::OA_ptr<OA::ConstValBasicInterface>
+    getConstValBasic (unsigned int val); 
+
+  OA::OA_ptr<OA::ConstValBasicInterface> 
+      getConstValBasic(OA::ConstSymHandle c);
+
+  int returnOpEnumValInt(OA::OpHandle op);
   //-------------------------------------------------------------------------
   // output methods
   //-------------------------------------------------------------------------
