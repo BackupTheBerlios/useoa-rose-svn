@@ -404,7 +404,7 @@ class SageConstVal : public virtual OA::ConstValBasicInterface {
     */
 
     virtual OA::OA_ptr<OA::ConstValBasicInterface>
-    eval(OA::OpHandle opr,
+    eval( SgBinaryOp * oper, 
         const OA::OA_ptr<OA::ConstValBasicInterface> op2) const;
 };
 
@@ -449,6 +449,9 @@ class SageIntegerConstVal
     virtual OA::OA_ptr<ConstValBasicInterface>
     eval(OPERATOR opr, const OA::OA_ptr<OA::ConstValBasicInterface> op2) const;
     */
+    OA::OA_ptr<OA::ConstValBasicInterface>
+        eval( SgBinaryOp *oper, 
+                const OA::OA_ptr<OA::ConstValBasicInterface> op2) const;
 
   private:
     int mVal;

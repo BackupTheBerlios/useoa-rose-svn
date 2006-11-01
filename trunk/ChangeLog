@@ -3460,5 +3460,13 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - passes regressAll with OpenAnalysis trunk r247 compiled on Okapi
       with gcc-3.2.
 
+11/02/06     UseOA-ROSE svn trunk r244   Priyadarshini Malusare
+     - SageIntegerConstVal::eval()
+     - Added test script, genICFGReachConsts script, 
+       regressICFGReachConsts script
+     - Added TestCases and TestResults for ICFGReachConsts.
+     - passes regressAll with OpenAnalysis trunk r247 compiled on okapi
+       with gcc-3.2.
+
 
 

@@ -57,6 +57,15 @@
 #include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/XAIF/UDDUChainsXAIF.hpp>
 #include <OpenAnalysis/XAIF/ManagerUDDUChainsXAIF.hpp>
+#include <OpenAnalysis/ReachConsts/ManagerICFGReachConsts.hpp>
+#include <OpenAnalysis/Activity/ManagerActiveStandard.hpp>
+#include <OpenAnalysis/Activity/ManagerEachActive.hpp>
+#include <OpenAnalysis/Activity/ManagerInterDep.hpp>
+#include <OpenAnalysis/Activity/ManagerICFGActive.hpp>
+#include <OpenAnalysis/Activity/ManagerICFGDep.hpp>
+#include <OpenAnalysis/Activity/ManagerICFGUseful.hpp>
+#include <OpenAnalysis/Activity/ManagerICFGVaryActive.hpp>
+
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
 
 #include <string>
@@ -113,7 +122,11 @@ void prettyPrintMemRefExp(OA::OA_ptr<OA::MemRefExpr> memRefExp,
 			  std::ostream &os);
 
 int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
-    
+   
+int DoICFGReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>* na, bool p_handle);
+
+int DoICFGActivity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>* na, bool p_handle);
+
 
 /* Debug flags:
 
@@ -175,6 +188,7 @@ void usage(char **argv)
   cerr << "          --oa-AliasMapXAIF" << endl;
   cerr << "          --oa-SideEffect" << endl;
   cerr << "          --oa-Linearity" << endl;
+  cerr << "          --oa-ICFGReachConsts" << endl;
   exit(-1);
 }
 
@@ -439,7 +453,8 @@ main ( unsigned argc,  char * argv[] )
          SgFile &sageFile = sageProject->get_file(i);
          SgGlobal *root = sageFile.get_root();
          SgDeclarationStatementPtrList& declList = root->get_declarations ();
-         for (SgDeclarationStatementPtrList::iterator p = declList.begin(); p != declList.end(); ++p)
+         for (SgDeclarationStatementPtrList::iterator p = declList.begin();
+                  p != declList.end(); ++p)
          {
              SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
              if (func == 0)
@@ -452,7 +467,29 @@ main ( unsigned argc,  char * argv[] )
                                                                                         }
      
         return 1;
-    }
+    } 
+    else if( cmds->HasOption("--oa-ICFGReachConsts") )
+    {
+        for (int i = 0; i < filenum; ++i)
+       {
+         SgFile &sageFile = sageProject->get_file(i);
+         SgGlobal *root = sageFile.get_root();
+         SgDeclarationStatementPtrList& declList = root->get_declarations ();
+         for (SgDeclarationStatementPtrList::iterator p = declList.begin(); 
+                   p != declList.end(); ++p)
+         {
+             SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
+             if (func == 0)
+                    continue;
+             SgFunctionDefinition *defn = func->get_definition();
+             if (defn == 0)
+                    continue;
+             DoICFGReachConsts(defn, sageProject, &nodeArray, p_h);
+           }
+        }
+
+        return 1;
+    }    
     else if( cmds->HasOption("--oa-AliasMapXAIF") )
     {
       for (int i = 0; i < filenum; ++i)
@@ -1099,6 +1136,163 @@ int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> 
    std::cout << "\n*******  end of DoUDDUChains *********\n\n";
    return returnvalue;
     
+}
+
+
+
+int DoICFGActivity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>* na, bool p_handle)
+{
+    /*
+   int returnvalue=FALSE;
+   if ( debug ) printf("*******start of DoUDDUChains\n");
+   OA::OA_ptr<SageIRInterface> irInterface;
+   irInterface = new SageIRInterface(p, na, p_handle);
+
+
+   //CFG
+   OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
+   cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
+   OA::OA_ptr<OA::CFG::CFG> cfg=
+   cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+
+   //Alias
+   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+   OA::OA_ptr<SageIRProcIterator> procIter;
+   procIter = new SageIRProcIterator(p,*irInterface);
+   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+   interAlias = fialiasman->performAnalysis(procIter);
+   OA::ProcHandle proc((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+   OA::OA_ptr<OA::Alias::Interface> alias = interAlias->getAliasResults(proc);
+
+   // CallGraph
+   OA::OA_ptr<OA::CallGraph::ManagerCallGraphStandard> cgraphman;
+   cgraphman = new OA::CallGraph::ManagerCallGraphStandard(irInterface);
+   OA::OA_ptr<OA::CallGraph::CallGraph> cgraph =
+      cgraphman->performAnalysis(procIter, interAlias);
+
+   // ParamBindings
+   OA::OA_ptr<OA::DataFlow::ManagerParamBindings> parambindman;
+   parambindman = new OA::DataFlow::ManagerParamBindings(irInterface);
+   OA::OA_ptr<OA::DataFlow::ParamBindings> parambind
+      = parambindman->performAnalysis(cgraph);
+
+   // Intra Side-Effect
+   OA::OA_ptr<OA::SideEffect::ManagerSideEffectStandard> sideeffectman;
+   sideeffectman = new OA::SideEffect::ManagerSideEffectStandard(irInterface);
+
+   // InterSideEffect
+   OA::OA_ptr<OA::SideEffect::ManagerInterSideEffectStandard> interSEman;
+   interSEman = new OA::SideEffect::ManagerInterSideEffectStandard(irInterface);
+
+   OA::OA_ptr<OA::SideEffect::InterSideEffectStandard> interSE;
+   interSE = interSEman->performAnalysis(cgraph, parambind,
+                                        interAlias, sideeffectman);
+
+   // ICFG
+   OA::OA_ptr<OA::ICFG::ManagerICFGStandard> icfgman;
+   icfgman = new OA::ICFG::ManagerICFGStandard(irInterface);
+   OA::OA_ptr<OA::ICFG::ICFG> icfg;
+   icfg = icfgman->performAnalysis(procIter,cfg,cgraph);
+
+   // ICFGActive
+   OA::OA_ptr<OA::Activity::ManagerICFGActive> activeman;
+   activeman = new OA::Activity::ManagerICFGActive(irInterface);
+   OA::OA_ptr<OA::Activity::InterActive> active;
+   active = activeman->performAnalysis(icfg, parambind,
+                                        interAlias, interSE);
+
+   active->output(*irInterface);
+
+   int numIterDep = 1;
+   int numIterActive = 1;
+   int numTotal = numIterDep + active->getNumIterUseful()
+     + active->getNumIterVary() + numIterActive;
+   std::cout << "\n\nTotal Iters: " << numTotal << std::endl;
+*/
+   return 0;
+}
+
+
+
+
+int DoICFGReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>* na, bool p_handle)
+{
+   int returnvalue=FALSE;
+   if ( debug )
+   printf("*******start of DoICFG\n");
+   OA::OA_ptr<SageIRInterface> irInterface;
+   irInterface = new SageIRInterface(p, na, p_handle);
+   //irInterface->createNodeArray(sgproject); //what about global vars?
+
+   // eachCFG
+   OA::OA_ptr<OA::CFG::EachCFGInterface> eachCFG;
+   OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgman;
+   cfgman = new OA::CFG::ManagerCFGStandard(irInterface);
+   eachCFG = new OA::CFG::EachCFGStandard(cfgman);
+
+   //FIAlias
+   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+   OA::OA_ptr<SageIRProcIterator> procIter;
+   procIter = new SageIRProcIterator(p, *irInterface);
+   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+   interAlias = fialiasman->performAnalysis(procIter);
+
+   // create CallGraph Manager and then Call Graph
+   OA::OA_ptr<OA::CallGraph::ManagerCallGraphStandard> callgraphmanstd;
+   callgraphmanstd= new OA::CallGraph::ManagerCallGraphStandard(irInterface);
+   //    OA::OA_ptr<SageIRProcIterator> procIter;
+   //    procIter = new SageIRProcIterator(sgproject, irInterface);
+
+   OA::OA_ptr<OA::CallGraph::CallGraph> callgraph;
+   callgraph = callgraphmanstd->performAnalysis(procIter,interAlias);
+
+   // create ICFG Manager and then ICFG
+   OA::OA_ptr<OA::ICFG::ICFG> icfg;
+   icfg = new OA::ICFG::ICFG();
+   OA::OA_ptr<OA::ICFG::ManagerICFGStandard> icfgman;
+   icfgman = new OA::ICFG::ManagerICFGStandard(irInterface);
+   icfg = icfgman->performAnalysis(procIter,eachCFG,callgraph);
+
+   // output ICFG
+   icfg->output(*irInterface);
+   // dot output
+   OA::OA_ptr<OA::OutputBuilder> outBuild;
+   outBuild = new OA::OutputBuilderDOT;
+   icfg->configOutput(outBuild);
+   icfg->output(*irInterface);
+
+
+   // ParamBindings
+   OA::OA_ptr<OA::DataFlow::ManagerParamBindings> parambindman;
+   parambindman = new OA::DataFlow::ManagerParamBindings(irInterface);
+   OA::OA_ptr<OA::DataFlow::ParamBindings> parambind
+      = parambindman->performAnalysis(callgraph);
+
+
+   // Intra Side-Effect
+   OA::OA_ptr<OA::SideEffect::ManagerSideEffectStandard> sideeffectman;
+   sideeffectman = new OA::SideEffect::ManagerSideEffectStandard(irInterface);
+
+   // InterSideEffect
+   OA::OA_ptr<OA::SideEffect::ManagerInterSideEffectStandard> interSEman;
+   interSEman = new OA::SideEffect::ManagerInterSideEffectStandard(irInterface);
+
+   OA::OA_ptr<OA::SideEffect::InterSideEffectStandard> interSE;
+   interSE = interSEman->performAnalysis(callgraph, parambind,
+                                        interAlias, sideeffectman);
+ 
+   // ICFGReachConsts
+   OA::OA_ptr<OA::ReachConsts::ManagerICFGReachConsts> ircsman;
+   ircsman = new OA::ReachConsts::ManagerICFGReachConsts(irInterface);
+   OA::OA_ptr<OA::ReachConsts::InterReachConsts> ircs
+      = ircsman->performAnalysis(icfg,parambind,interAlias,interSE);
+
+   ircs->output(*irInterface);
+ 
+   std::cout << "\n*******  end of DoICFGReachConsts *********\n\n";
+   return returnvalue;
 }
 
 

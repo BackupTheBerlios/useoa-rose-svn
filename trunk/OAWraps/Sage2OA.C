@@ -4695,8 +4695,78 @@ OA::CallHandle SageIRInterface::getProcExprHandle(SgNode *astNode)
 
 
 // ReachConstsInterface
+
 OA::OA_ptr<OA::ConstValBasicInterface>
-SageConstVal::eval(OA::OpHandle opr, 
+         SageIntegerConstVal::eval( SgBinaryOp *oper,
+                OA::OA_ptr<OA::ConstValBasicInterface> op2) const
+{
+
+  int val = 0;
+  OA::OA_ptr<OA::ConstValBasicInterface> retval;
+
+  // if opr is a unary op, op2_ will be NULL
+  if (op2.ptrEqual(NULL)) {
+    // right now, only works for opr==OPR_PARM
+  // *****  switch (opr) {
+  // *****  case OPR_PARM:
+      /*
+  // *****  val = this->getIntegerVal();
+  // *****  retval = new Open64IntegerConstVal(val);
+      */
+      // shouldn't get here anymore
+
+  // ***** std::cout << "In OPR_PARM of eval in Open64IRInterface.cpp (error)\n";
+  // *****    std::cout.flush();
+  // *****    exit(555);
+
+
+  // *****    break;
+  // *****  default:
+  // *****    retval = NULL;
+  // *****  }
+   return retval;
+
+  }
+
+  const OA::OA_ptr<SageConstVal> operand2 =
+        op2.convert<SageConstVal>();
+
+  assert(operand2->isaInteger());
+
+  switch (oper->variantT()) {
+  case V_SgAddOp :
+      
+    val = this->getIntegerVal() + operand2->getIntegerVal();
+    
+    retval = new SageIntegerConstVal(val);
+    break;
+  case V_SgSubtractOp:
+    val = this->getIntegerVal() - operand2->getIntegerVal();
+    retval = new SageIntegerConstVal(val);
+    break;
+  case V_SgMultiplyOp:
+    val = this->getIntegerVal() * operand2->getIntegerVal();
+    retval = new SageIntegerConstVal(val);
+    break;
+  case V_SgDivideOp:
+  case V_SgIntegerDivideOp:
+    retval = new SageIntegerConstVal(val);
+    break;
+
+  default:
+    //    return new Open64ConstVal();
+
+    // NULL is recognizable, new Open64ConstVal() is not
+    retval = NULL;
+  }
+
+  return retval;
+
+}
+
+
+OA::OA_ptr<OA::ConstValBasicInterface>
+SageConstVal::eval(SgBinaryOp * oper, 
         const OA::OA_ptr<OA::ConstValBasicInterface> op2) const
 {
    OA::OA_ptr<OA::ConstValBasicInterface> retval;
@@ -4723,10 +4793,17 @@ SageIRInterface::evalOp(OA::OpHandle op,
     return retval; 
   }
 
+  SgNode* opnode = (SgNode*)op.hval();
+
+  SgBinaryOp *oper = isSgBinaryOp(opnode);
+  ROSE_ASSERT(oper != NULL);
+
   const OA::OA_ptr<SageConstVal> op1 = 
        operand1.convert<SageConstVal>();
+  /*
   return op1->eval(getNodeNumber((SgNode*)op.hval()), 
-                   operand2);
+                   operand2); */
+  return op1->eval(oper, operand2);
 }
 
 
