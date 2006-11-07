@@ -25,8 +25,11 @@ ParamBindings(
             CallHandle(f(x))	 => [ ExprHandle(x) ] 
 
     mExprToTreeMap: ExprHandle	 => OA_ptr<ExprTree>
-            ExprHandle(x)	 => [ 
-                ET MemRefNode ( x ) ] 
+            ExprHandle(x)	 => 
+            graph EXPRESSION TREE:
+
+                Node 0: ET MemRefNode ( x )
+
 
     mCallToFormalToActualMap: CallHandle	 => SymToExprHandleMap
             CallHandle(f(x))	 => 

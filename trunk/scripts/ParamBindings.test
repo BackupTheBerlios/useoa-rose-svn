@@ -7,11 +7,11 @@ driverexec::./OATest -edg:w --oa-ParamBindings -c
 
 # list of tests
 #       input file,             status
-test::  test.c,             checked by BK 7/27/06
+test::  test.c,             checked by LMR 10/30/06
 #
 # OAWraps does not provide output for OpHandle or ConstValHandle, so output
 # from ParamBindings on swap.c below is OK with blanks for OpNode: and
 # ConstValNode:
-test::  swap.c,             checked by BK 7/27/06
+test::  swap.c,             checked by LMR 10/30/06
 #
 

@@ -27,11 +27,16 @@ ParamBindings(
             CallHandle(f(x,&c))	 => [ ExprHandle(x)    ExprHandle(&c) ] 
 
     mExprToTreeMap: ExprHandle	 => OA_ptr<ExprTree>
-            ExprHandle(x)	 => [ 
-                ET MemRefNode ( x ) ] 
-            ExprHandle(&c)	 => [ 
-                ET MemRefNode ( &c )
-                ET MemRefNode ( c ) ] 
+            ExprHandle(x)	 => 
+            graph EXPRESSION TREE:
+
+                Node 0: ET MemRefNode ( x )
+
+            ExprHandle(&c)	 => 
+            graph EXPRESSION TREE:
+
+                Node 0: ET MemRefNode ( &c )
+
 
     mCallToFormalToActualMap: CallHandle	 => SymToExprHandleMap
             CallHandle(f(x,&c))	 => 
@@ -111,6 +116,12 @@ InterSideEffectStandard(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
@@ -136,6 +147,12 @@ InterSideEffectStandard(
                     )    
                     NamedLoc(
                         mSymHandle: SymHandle(q)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
@@ -169,6 +186,12 @@ InterSideEffectStandard(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
@@ -194,6 +217,12 @@ InterSideEffectStandard(
                     )    
                     NamedLoc(
                         mSymHandle: SymHandle(q)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
@@ -229,6 +258,12 @@ InterSideEffectStandard(
                             mLocal: 1
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
                         ) ] 
                     mUSESet: [ 
                         NamedLoc(
@@ -242,11 +277,23 @@ InterSideEffectStandard(
                             mLocal: 1
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
                         ) ] 
                     mLREFSet: [ 
                         NamedLoc(
                             mSymHandle: SymHandle(x)
                             mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         ) ] 
@@ -260,6 +307,12 @@ InterSideEffectStandard(
                         NamedLoc(
                             mSymHandle: SymHandle(c)
                             mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         ) ] 

@@ -3443,7 +3443,7 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
          return sgExp->unparseToString();
       }
     - ICFG tests are checked and regenerated for the new modification.
-    
+
 10/29/06     UseOA-ROSE svn trunk r241   Priyadarshini Malusare
     - Modified ManagerReachDefsStandard::transfer, killed definitions 
       are properly removed from the inRecast set.
@@ -3468,5 +3468,7 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
      - passes regressAll with OpenAnalysis trunk r247 compiled on okapi
        with gcc-3.2.
 
-
+11/07/06     UseOA-ROSE svn trunk r245   Luis Ramos
+    - Regenerated ParamBindings and SideEffect in order to represent the
+      changes done on ExprTree in OA
 

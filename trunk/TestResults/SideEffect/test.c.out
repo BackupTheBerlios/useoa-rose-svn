@@ -25,8 +25,11 @@ ParamBindings(
             CallHandle(f(x))	 => [ ExprHandle(x) ] 
 
     mExprToTreeMap: ExprHandle	 => OA_ptr<ExprTree>
-            ExprHandle(x)	 => [ 
-                ET MemRefNode ( x ) ] 
+            ExprHandle(x)	 => 
+            graph EXPRESSION TREE:
+
+                Node 0: ET MemRefNode ( x )
+
 
     mCallToFormalToActualMap: CallHandle	 => SymToExprHandleMap
             CallHandle(f(x))	 => 
@@ -135,11 +138,23 @@ InterSideEffectStandard(
                             mLocal: 1
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
                         ) ] 
                     mUSESet: [ 
                         NamedLoc(
                             mSymHandle: SymHandle(x)
                             mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         ) ] 
@@ -149,11 +164,23 @@ InterSideEffectStandard(
                             mLocal: 1
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
                         ) ] 
                     mREFSet: [ 
                         NamedLoc(
                             mSymHandle: SymHandle(x)
                             mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )    
+                        NamedLoc(
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         ) ] 
