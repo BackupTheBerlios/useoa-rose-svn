@@ -21,7 +21,7 @@ DEFINES = -DHAVE_CONFIG_H -DOA_IRHANDLETYPE_UL $(GLOBAL_DEFINES) #-DOA_OPEN64
 INCLUDES = -I. -I.. -I./OAWraps/ $(ROSE_INCLUDES) $(OPENANALYSIS_INC)
 #LIBS= -L$(srcdir)/OAWraps/ -lSage2OA $(OPENANALYSIS_LIB) $(ROSE_LIBS) -lm -lfl -lrt -lpthread
 LIBS= -lSage2OA $(OPENANALYSIS_LIB)
-LDFLAGS = -Wl,-rpath $(srcdir)/OAWraps -L$(srcdir)/OAWraps
+LDFLAGS = -Wl,-rpath $(USEOAROSEDIR)/OAWraps -L$(USEOAROSEDIR)/OAWraps
 
 CXXCOMPILE = $(CXX) $(DEFINES) $(INCLUDES) $(CXXFLAGS) -fPIC -ftemplate-depth-50
 CXXLINK = $(CXXLD) $(LDFLAGS) -o $@
@@ -143,10 +143,10 @@ CHAandAliasVirtualMethodResolver$(EXEEXT): $(CHAandAliasVirtualMethodResolver_OB
 	$(CXXLINK) $(CHAandAliasVirtualMethodResolver_LDFLAGS) $(CHAandAliasVirtualMethodResolver_OBJECTS) $(CHAandAliasVirtualMethodResolver_LDADD)
 
 .C.o: 
-	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(USEOAROSEDIR)/'`$<
 
 .cpp.o: 
-	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(USEOAROSEDIR)/'`$<
 
 clean-am:
 	-rm -f *.$(OBJEXT) core *.core $(bin_PROGRAMS)
@@ -159,13 +159,19 @@ clean: clean-recursive clean_log
 .PHONY : build_log mark_compile_successful clean_log
 # added by AIS (06/25/06)
 build_log:
-	@echo -e "\033[32mOutputing flags to build.log\033[0m"
-	@date +"Compiling UseOA-ROSE on %D at %r %Z" > build.log
-	@echo "Compile started by" `whoami` >> build.log
-	@echo "OADIR='$(OADIR)'"        >> build.log
-	@echo "ROSEDIR='$(ROSEDIR)'"   >> build.log
-	@echo "CXXFLAGS='$(CXXFLAGS)'"  >> build.log
-	@echo "ARCH='$(ARCH)'"          >> build.log
+	@echo -e "\033[32mOutputing flags to build.log\033[0m" 
+	@date +"Compiling UseOA-ROSE on %D at %r %Z" > build.log 
+	@echo "Compile started by" `whoami` >> build.log 
+	@echo "OADIR:='$(USEOA_ROSE_OADIR)'"  >> build.log 
+	@echo "ROSEDIR:='$(USEOA_ROSE_ROSEDIR)'"  >> build.log 
+	@echo "USEOAROSEDIR:='$(USEOA_ROSE_USEOAROSEDIR)'"  >> build.log 
+	@echo "CXXFLAGS:='$(USEOA_ROSE_CXXFLAGS)'"  >> build.log 
+	@echo "CCFLAGS:='$(USEOA_ROSE_CCFLAGS)'"  >> build.log 
+	@echo "ARCH:='$(USEOA_ROSE_ARCH)'"  >> build.log 
+	@echo "CXX:='$(USEOA_ROSE_CXX)'"  >> build.log 
+	@echo "CC:='$(USEOA_ROSE_CC)'"  >> build.log 
+	@echo "CXXLD:='$(USEOA_ROSE_CXXLD)'"  >> build.log 
+	@echo "CCLD:='$(USEOA_ROSE_CCLD)'"  >> build.log               
 
 mark_compile_successful:
 	@echo "COMPILE_SUCCESFUL='yes'" >> build.log

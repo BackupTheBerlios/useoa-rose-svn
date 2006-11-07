@@ -10,7 +10,7 @@
 # Common variable settings (ROSE, etc)
 include ../config/Makefile.inc
 
-srcdir = $(topsrcdir)/OAWraps/
+srcdir = $(USEOAROSEDIR)/OAWraps/
 
 DEFINES = -DHAVE_CONFIG_H -DOA_IRHANDLETYPE_UL $(GLOBAL_DEFINES) #-DOA_OPEN64 
 INCLUDES = -I. -I.. $(ROSE_INCLUDES) $(OPENANALYSIS_INC)
@@ -71,5 +71,4 @@ clean:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
-
 
