@@ -3472,3 +3472,6 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - Regenerated ParamBindings and SideEffect in order to represent the
       changes done on ExprTree in OA
 
+11/08/06     UseOA-ROSE svn trunk r247   Andy Stone
+    - Fixed the OATest driver so that it doesn't output the "did not find any
+      valid oa option on the command line" error when passed --skipAnalysis.

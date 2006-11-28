@@ -522,7 +522,7 @@ main ( unsigned argc,  char * argv[] )
       printf("TO DO, implement Linearity analysis\n");
       return 1;
     }
-    else
+    else if(skipAnalysis == false)
     {
       printf("did not find any valid oa option on the command line\n");
       return 1;
