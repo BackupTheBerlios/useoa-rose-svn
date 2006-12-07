@@ -3509,16 +3509,16 @@ OA::OA_ptr<OA::ExprTree> SageIRInterface::getExprTree(OA::ExprHandle h)
 //! Given a statement return a list to the pairs of 
 //! target MemRefHandle, ExprHandle where
 //! target = expr
-OA::OA_ptr<OA::ExprStmtPairIterator> 
-  SageIRInterface::getExprStmtPairIterator(OA::StmtHandle h)
+OA::OA_ptr<OA::AssignPairIterator> 
+  SageIRInterface::getAssignPairIterator(OA::StmtHandle h)
 {
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // FIXME
   // BK: this routine is incomplete.
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  OA::OA_ptr<ExprStmtPairList> exprStmtPairList;
-  exprStmtPairList = new ExprStmtPairList;
+  OA::OA_ptr<AssignPairList> assignPairList;
+  assignPairList = new AssignPairList;
   
   if (getActivityStmtType(h)==OA::Activity::EXPR_STMT) {
     SgNode *node = getNodePtr(h);
@@ -3554,7 +3554,7 @@ OA::OA_ptr<OA::ExprStmtPairIterator>
             
             OA::ExprHandle rhsHandle = getNodeNumber(rhs);
             OA::MemRefHandle lhsHandle = getNodeNumber(lhs);
-            exprStmtPairList->push_back(ExprStmtPair(lhsHandle, rhsHandle));
+            assignPairList->push_back(AssignPair(lhsHandle, rhsHandle));
             
             
             break;
@@ -3578,8 +3578,8 @@ OA::OA_ptr<OA::ExprStmtPairIterator>
       }
     }
   } // end of if (OA::Activity::EXPR_STMT)
-  OA::OA_ptr<OA::ExprStmtPairIterator> espIter;
-  espIter = new SageIRExprStmtPairIterator(exprStmtPairList);
+  OA::OA_ptr<OA::AssignPairIterator> espIter;
+  espIter = new SageIRAssignPairIterator(assignPairList);
   return espIter;
 }
 

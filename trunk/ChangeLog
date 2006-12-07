@@ -3475,3 +3475,9 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 11/08/06     UseOA-ROSE svn trunk r247   Andy Stone
     - Fixed the OATest driver so that it doesn't output the "did not find any
       valid oa option on the command line" error when passed --skipAnalysis.
+
+12/06/06     UseOA-ROSE svn trunk r248   Priyadarshini Malusare
+   - Modifications to SageIRInterface because ExprStmtPair is renamed as 
+     AssignPair.
+  
+

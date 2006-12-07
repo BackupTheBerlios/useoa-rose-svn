@@ -326,14 +326,14 @@ class SgPtrAssignPairStmtIterator
   SageIRInterface *mIR;
 };
 
-typedef std::pair<OA::MemRefHandle,OA::ExprHandle> ExprStmtPair;
-typedef std::list<ExprStmtPair> ExprStmtPairList;
-class SageIRExprStmtPairIterator 
-    : public OA::ExprStmtPairIterator {
+typedef std::pair<OA::MemRefHandle,OA::ExprHandle>AssignPair;
+typedef std::list<AssignPair> AssignPairList;
+class SageIRAssignPairIterator 
+    : public OA::AssignPairIterator {
   public:
-    SageIRExprStmtPairIterator(OA::OA_ptr<ExprStmtPairList> pExprStmtList) 
-        : mExprStmtList(pExprStmtList) { reset(); }
-    virtual ~SageIRExprStmtPairIterator() {}
+    SageIRAssignPairIterator(OA::OA_ptr<AssignPairList> pAssignList) 
+        : mAssignList(pAssignList) { reset(); }
+    virtual ~SageIRAssignPairIterator() {}
 
     //! left hand side
     OA::MemRefHandle currentTarget() const 
@@ -344,15 +344,15 @@ class SageIRExprStmtPairIterator
       { if (isValid()) { return mIter->second; } 
         else { return OA::ExprHandle(0); } }
 
-    bool isValid() const { return mIter!=mExprStmtList->end(); }
+    bool isValid() const { return mIter!=mAssignList->end(); }
                     
     void operator++() { if (isValid()) mIter++; }
     void operator++(int) { ++*this; }
 
-    void reset() { mIter = mExprStmtList->begin(); }
+    void reset() { mIter = mAssignList->begin(); }
   private:
-    OA::OA_ptr<ExprStmtPairList> mExprStmtList;
-    ExprStmtPairList::iterator mIter;
+    OA::OA_ptr<AssignPairList> mAssignList;
+    AssignPairList::iterator mIter;
 };
 
 enum typeEnum { reference, other };
@@ -835,8 +835,8 @@ public:
   //! Given a statement return a list to the pairs of 
   //! target MemRefHandle, ExprHandle where
   //! target = expr
-  OA::OA_ptr<OA::ExprStmtPairIterator> 
-    getExprStmtPairIterator(OA::StmtHandle h);
+  OA::OA_ptr<OA::AssignPairIterator> 
+    getAssignPairIterator(OA::StmtHandle h);
 
   //! Return an iterator over all independent MemRefExpr for given proc
   OA::OA_ptr<OA::MemRefExprIterator> getIndepMemRefExprIter(OA::ProcHandle h);
