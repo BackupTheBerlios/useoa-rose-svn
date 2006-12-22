@@ -1,6 +1,4 @@
-// NOTE: although tecnically *a and *b will alias each other the location they
-// refer to is unknown and as such the FIAlias algorithm won't recognize the
-// alias.
+// NOTE: *a and *b will alias each other but they do not map to any locations
 
 int main()
 {
