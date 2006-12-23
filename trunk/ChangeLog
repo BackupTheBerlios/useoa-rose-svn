@@ -3480,4 +3480,15 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
    - Modifications to SageIRInterface because ExprStmtPair is renamed as 
      AssignPair.
   
+12/22/06     UseOA-ROSE svn trunk r250   Michelle Strout
+    Modified the build process so that you can use the developer script
+    but you do not have to.  UseOA-ROSE needs OADIR and ROSEDIR defined
+    if the developer script is not used.  You can
+    set the environment variables that the developer script uses or
+    the typical ones like CXXFLAGS, CXX, etc.  Made this change to make
+    it easier for people just starting to use OpenAnalysis, but I still
+    wanted to maintain the ability to use Andy's cool developer script.
+    Also added some more information to the build.log that is generated.
+    It now keeps track of which version of g++ was used to do the build.
+    Tested with OpenAnalysis rev 276.
 

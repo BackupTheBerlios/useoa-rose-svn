@@ -509,13 +509,9 @@ void SageIRStmtIterator::FindAllStmts(SgNode * node, SgStatementPtrList& lst)
         FindAllStmts(st, lst);
       }
     } else {
-#ifdef UNRELEASED_ROSE
       if ( !isSgNullStatement(node) ) {
         lst.push_back(stmt);
       }
-#else
-      lst.push_back(stmt);
-#endif
       //      appendNonASTStmts(stmt, lst);
     }
   }
@@ -4181,22 +4177,6 @@ SageIRInterface::getDefs(OA::StmtHandle h)
 // newer versions in which attributes are accessible via a method call.
 AstAttributeMechanism &SageIRInterface::getAttribute(SgNode *n)
 {
-/* AIS - this code works on an earlier version of ROSE.  The code to
-         handle the newest version is written below:
-
-  ROSE_ASSERT(n);
-#ifdef UNRELEASED_ROSE
-  if ( n->get_attribute() == NULL ) {
-    AstAttributeMechanism *attr = new AstAttributeMechanism();
-    ROSE_ASSERT(attr != NULL);
-    n->set_attribute(attr);
-  }
-  return n->attribute();
-#else
-  return n->attribute;
-#endif
-*/
-
     ROSE_ASSERT(n);
     if ( n->get_attributeMechanism() == NULL ) {
         AstAttributeMechanism *attr = new AstAttributeMechanism();

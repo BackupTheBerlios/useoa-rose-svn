@@ -162,16 +162,17 @@ build_log:
 	@echo -e "\033[32mOutputing flags to build.log\033[0m" 
 	@date +"Compiling UseOA-ROSE on %D at %r %Z" > build.log 
 	@echo "Compile started by" `whoami` >> build.log 
-	@echo "OADIR:='$(USEOA_ROSE_OADIR)'"  >> build.log 
-	@echo "ROSEDIR:='$(USEOA_ROSE_ROSEDIR)'"  >> build.log 
-	@echo "USEOAROSEDIR:='$(USEOA_ROSE_USEOAROSEDIR)'"  >> build.log 
-	@echo "CXXFLAGS:='$(USEOA_ROSE_CXXFLAGS)'"  >> build.log 
-	@echo "CCFLAGS:='$(USEOA_ROSE_CCFLAGS)'"  >> build.log 
-	@echo "ARCH:='$(USEOA_ROSE_ARCH)'"  >> build.log 
-	@echo "CXX:='$(USEOA_ROSE_CXX)'"  >> build.log 
-	@echo "CC:='$(USEOA_ROSE_CC)'"  >> build.log 
-	@echo "CXXLD:='$(USEOA_ROSE_CXXLD)'"  >> build.log 
-	@echo "CCLD:='$(USEOA_ROSE_CCLD)'"  >> build.log               
+	@echo "OADIR:='$(OADIR)'"  >> build.log 
+	@echo "ROSEDIR:='$(ROSEDIR)'"  >> build.log 
+	@echo "USEOAROSEDIR:='$(USEOAROSEDIR)'"  >> build.log 
+	@echo "CXXFLAGS:='$(CXXFLAGS)'"  >> build.log 
+	@echo "CCFLAGS:='$(CCFLAGS)'"  >> build.log 
+	@echo "ARCH:='$(ARCH)'"  >> build.log 
+	@echo "CXX:='$(CXX)'"  >> build.log 
+	@echo "CC:='$(CC)'"  >> build.log 
+	@echo "CXXLD:='$(CXXLD)'"  >> build.log 
+	@echo "CCLD:='$(CCLD)'"  >> build.log               
+	@echo "CXX version => '$(shell $(CXX) --version)'"  >> build.log               
 
 mark_compile_successful:
 	@echo "COMPILE_SUCCESFUL='yes'" >> build.log

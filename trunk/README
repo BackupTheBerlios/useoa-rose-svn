@@ -4,23 +4,7 @@ UseOA-ROSE Readme:
 
 Building UseOA-ROSE:
 --------------------
-
-    Works with OpenAnalysis trunk, svn revision 116, and rose-0.8.7a.
-
-    Everything was compiled with g++3.3.3
-
-    To build:
-    - edit Makefile.inc, set variables as needed
-    - type make 
-
-    Variables you'll likely have to edit in Makefile.inc
-    - GLOBAL_DEFINES
-    - PROFILE_OPTIONS 
-    - topsrcdir
-    - ROSE_INST_ROOT
-    - OPENANALYSIS_DIR
-    - OPENANALYSIS_ARCH
-
+    See INSTALL for installation instructions.
 
 Regression testing system:
 --------------------------
@@ -39,10 +23,10 @@ Regression testing system:
 
 
     To run all tests:
-        - source scripts/regressAll.script.
+        % source scripts/regressAll.script.
 
     To run a specific regression test script:
-        - source scripts/regress<NameOrTest>.script
+        % source scripts/regress<NameOrTest>.script
 
     To add a new test case to an existing test script:
         All regression tests have a .test file that specifies what files the
@@ -52,19 +36,19 @@ Regression testing system:
         new test case one need only add the case to the .test file and
         reprocess the file with createRegScripts.py:
 
-        - edit scripts/<NameOfTest>.test
-        - append to file "test:: <name of input file>, checked by ???
+        1) edit scripts/<NameOfTest>.test
+        2) append to file "test:: <name of input file>, checked by ???
             - the three question marks specify that the test hasn't been
               verified yet.
-        - cd scripts
-        - ./genScripts.py <NameOfTest>.test
+        3) % cd scripts
+        4) % ./genScripts.py <NameOfTest>.test
             - regress<NameOfTest>.script and gen<NameOftest>.script should now
               have been generated.
-        - generate the test output by running the gen script (cd..; source
-          scripts/gen<NameOfTest>.script)
-        - look at the output files generated in TestResults/ for the test case
-          added.  Manually verify that this is the correct output.  If you get
-          correct output:
+        5) generate the test output by running the gen script (cd..; source
+           scripts/gen<NameOfTest>.script)
+        6) look at the output files generated in TestResults/ for the test case
+           added.  Manually verify that this is the correct output.  If you get
+           correct output:
             - edit the .test file and replace '???' with your initials for the
               correct test case.
             - ./genScripts.py <NameOfTest>.test
@@ -72,11 +56,11 @@ Regression testing system:
               repository
 
     To create a completly new test script:
-        - cd scripts
-        - cp template.test <NameOfTest>.test
-        - edit <NameOfTest>.test and fill in blanks
-        - add test cases to the script as described by the above section "To
-          add a new test case to an existing test script".
+        1) % cd scripts
+        2) % cp template.test <NameOfTest>.test
+        3) edit <NameOfTest>.test and fill in blanks
+        4) add test cases to the script as described by the above section "To
+           add a new test case to an existing test script".
 
     
     For additional information about the regression testing system consult the
@@ -86,18 +70,17 @@ Regression testing system:
 
 How to run a benchmark:
 -----------------------
-    - If you want profile information from OpenAnalysis, which most likely
-      you do:
-        - change directories to your openanalysis directory
-        - export CXX_FLAGS="-O3 -g -pg"
-        - make -f Makefile.quick configure
-        - make -f Makefile.quick install
-    - Next recompile UseOA-ROSE for profiling
-        - export PROFILE_OPTIONS "-pg -g -O3"
-        - make clean
-        - make
-    - Run your benchmarks
-        - ./OABenmark.py [filesFile] [algorithm]
+    1) If you want profile information from OpenAnalysis, which most likely
+       you do:
+        change directories to your openanalysis directory
+        % export CXX_FLAGS="-O3 -g -pg"
+        % make -f Makefile.quick all
+    2) Next recompile UseOA-ROSE for profiling
+        % export PROFILE_OPTIONS "-pg -g -O3"
+        % make clean
+        % make
+    3) Run your benchmarks
+        % ./OABenmark.py [filesFile] [algorithm]
             - Ex. ./OABenchmark small.files --oa-FIAliasAliasMap
         - Now wait for a looooong time
         - Look at the produced .profile files.
