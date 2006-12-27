@@ -10,3 +10,23 @@ echo "Testing TestCases/ReachDefsTests/reachdef_loopif1.c, TestResults/ReachDefs
 ./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/reachdef_loopif1.c >& t
 diff t TestResults/ReachDefsTests/reachdef_loopif1.c.out
 
+echo "Testing TestCases/ReachDefsTests/alias2.c, TestResults/ReachDefsTests/alias2.c.out Checked by PLM 12/27/06"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/alias2.c >& t
+diff t TestResults/ReachDefsTests/alias2.c.out
+
+echo "Testing TestCases/ReachDefsTests/assignOps.c, TestResults/ReachDefsTests/assignOps.c.out Checked by PLM 12/27/06"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/assignOps.c >& t
+diff t TestResults/ReachDefsTests/assignOps.c.out
+
+echo "Testing TestCases/ReachDefsTests/assignReturn.c, TestResults/ReachDefsTests/assignReturn.c.out Checked by PLM 12/27/06"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/assignReturn.c >& t
+diff t TestResults/ReachDefsTests/assignReturn.c.out
+
+echo "Testing TestCases/ReachDefsTests/comma.c, TestResults/ReachDefsTests/comma.c.out Checked by PLM 12/27/06"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/comma.c >& t
+diff t TestResults/ReachDefsTests/comma.c.out
+
+echo "Testing TestCases/ReachDefsTests/diffTypes.c, TestResults/ReachDefsTests/diffTypes.c.out Checked by PLM 12/27/06"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/diffTypes.c >& t
+diff t TestResults/ReachDefsTests/diffTypes.c.out
+

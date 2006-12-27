@@ -4,3 +4,13 @@ echo "Generating TestResults/ReachDefsTests/reachdef_if2.c.out"
 ./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/reachdef_if2.c >& TestResults/ReachDefsTests/reachdef_if2.c.out
 echo "Generating TestResults/ReachDefsTests/reachdef_loopif1.c.out"
 ./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/reachdef_loopif1.c >& TestResults/ReachDefsTests/reachdef_loopif1.c.out
+echo "Generating TestResults/ReachDefsTests/alias2.c.out"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/alias2.c >& TestResults/ReachDefsTests/alias2.c.out
+echo "Generating TestResults/ReachDefsTests/assignOps.c.out"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/assignOps.c >& TestResults/ReachDefsTests/assignOps.c.out
+echo "Generating TestResults/ReachDefsTests/assignReturn.c.out"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/assignReturn.c >& TestResults/ReachDefsTests/assignReturn.c.out
+echo "Generating TestResults/ReachDefsTests/comma.c.out"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/comma.c >& TestResults/ReachDefsTests/comma.c.out
+echo "Generating TestResults/ReachDefsTests/diffTypes.c.out"
+./OATest -edg:w --oa-ReachDefs -c TestCases/ReachDefsTests/diffTypes.c >& TestResults/ReachDefsTests/diffTypes.c.out

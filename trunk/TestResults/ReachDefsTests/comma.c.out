@@ -1,0 +1,49 @@
+
+graph DGraph:
+
+    Node 1: 
+        ====== CFG node 1 ======
+
+
+    Node 2: 
+        ====== CFG node 2 ======
+int x = 1;
+int y = 2;
+int z = 3;
+int *p;
+int *q;
+int *r = &y;
+p =((q = &x) , r);
+printf("*p = %d\n", *p);
+printf("*q = %d\n", *q);
+return 0;
+
+
+    Node 3: 
+        ====== CFG node 3 ======
+
+
+    Edge: 1 => 2
+        { FALLTHROUGH_EDGE 0 }
+
+    Edge: 2 => 3
+        { RETURN_EDGE 0 }
+
+
+ReachDefsStandard(
+    mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
+            StmtHandle(p =((q = &x) , r);)	 => [ StmtHandle(int x = 1;)    StmtHandle(int y = 2;)    StmtHandle(int z = 3;)    StmtHandle(int *r = &y;) ] 
+            StmtHandle(printf("*p = %d\n", *p);)	 => [ StmtHandle(p =((q = &x) , r);)    StmtHandle(int x = 1;)    StmtHandle(int y = 2;)    StmtHandle(int z = 3;)    StmtHandle(int *r = &y;) ] 
+            StmtHandle(printf("*q = %d\n", *q);)	 => [ StmtHandle(p =((q = &x) , r);)    StmtHandle(printf("*p = %d\n", *p);)    StmtHandle(int x = 1;)    StmtHandle(int y = 2;)    StmtHandle(int z = 3;)    StmtHandle(int *r = &y;) ] 
+            StmtHandle(return 0;)	 => [ StmtHandle(p =((q = &x) , r);)    StmtHandle(printf("*p = %d\n", *p);)    StmtHandle(printf("*q = %d\n", *q);)    StmtHandle(int x = 1;)    StmtHandle(int y = 2;)    StmtHandle(int z = 3;)    StmtHandle(int *r = &y;) ] 
+            StmtHandle(int y = 2;)	 => [ StmtHandle(int x = 1;) ] 
+            StmtHandle(int z = 3;)	 => [ StmtHandle(int x = 1;)    StmtHandle(int y = 2;) ] 
+            StmtHandle(int *p;)	 => [ StmtHandle(int x = 1;)    StmtHandle(int y = 2;)    StmtHandle(int z = 3;) ] 
+            StmtHandle(int *q;)	 => [ StmtHandle(int x = 1;)    StmtHandle(int y = 2;)    StmtHandle(int z = 3;) ] 
+            StmtHandle(int *r = &y;)	 => [ StmtHandle(int x = 1;)    StmtHandle(int y = 2;)    StmtHandle(int z = 3;) ] 
+
+    mExitReachDefs: [ StmtHandle(p =((q = &x) , r);)    StmtHandle(printf("*p = %d\n", *p);)    StmtHandle(printf("*q = %d\n", *q);)    StmtHandle(int x = 1;)    StmtHandle(int y = 2;)    StmtHandle(int z = 3;)    StmtHandle(int *r = &y;) ] 
+)
+
+*******  end of DoReachDef *********
+

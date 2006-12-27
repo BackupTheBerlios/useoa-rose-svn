@@ -1,0 +1,48 @@
+
+graph DGraph:
+
+    Node 1: 
+        ====== CFG node 1 ======
+
+
+    Node 2: 
+        ====== CFG node 2 ======
+int loc;
+int loc2;
+int *locPtr;
+int *a;
+int *b;
+locPtr = &loc;
+a = locPtr;
+locPtr = &loc2;
+b = locPtr;
+*a;
+*b;
+return 0;
+
+
+    Node 3: 
+        ====== CFG node 3 ======
+
+
+    Edge: 1 => 2
+        { FALLTHROUGH_EDGE 0 }
+
+    Edge: 2 => 3
+        { RETURN_EDGE 0 }
+
+
+ReachDefsStandard(
+    mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
+            StmtHandle(a = locPtr;)	 => [ StmtHandle(locPtr = &loc;) ] 
+            StmtHandle(locPtr = &loc2;)	 => [ StmtHandle(locPtr = &loc;)    StmtHandle(a = locPtr;) ] 
+            StmtHandle(b = locPtr;)	 => [ StmtHandle(a = locPtr;)    StmtHandle(locPtr = &loc2;) ] 
+            StmtHandle(*a;)	 => [ StmtHandle(a = locPtr;)    StmtHandle(locPtr = &loc2;)    StmtHandle(b = locPtr;) ] 
+            StmtHandle(*b;)	 => [ StmtHandle(a = locPtr;)    StmtHandle(locPtr = &loc2;)    StmtHandle(b = locPtr;) ] 
+            StmtHandle(return 0;)	 => [ StmtHandle(a = locPtr;)    StmtHandle(locPtr = &loc2;)    StmtHandle(b = locPtr;) ] 
+
+    mExitReachDefs: [ StmtHandle(a = locPtr;)    StmtHandle(locPtr = &loc2;)    StmtHandle(b = locPtr;) ] 
+)
+
+*******  end of DoReachDef *********
+

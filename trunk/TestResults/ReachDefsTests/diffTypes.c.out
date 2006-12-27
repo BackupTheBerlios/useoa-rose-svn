@@ -1,0 +1,50 @@
+
+graph DGraph:
+
+    Node 1: 
+        ====== CFG node 1 ======
+
+
+    Node 2: 
+        ====== CFG node 2 ======
+double *ps;
+double x;
+int *pi;
+int i;
+int j;
+pi = &j;
+ps = &x;
+i = *pi;
+*pi = 4;
+*ps =(3);
+j =(( *ps));
+g(i,j);
+return 0;
+
+
+    Node 3: 
+        ====== CFG node 3 ======
+
+
+    Edge: 1 => 2
+        { FALLTHROUGH_EDGE 0 }
+
+    Edge: 2 => 3
+        { RETURN_EDGE 0 }
+
+
+ReachDefsStandard(
+    mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
+            StmtHandle(ps = &x;)	 => [ StmtHandle(pi = &j;) ] 
+            StmtHandle(i = *pi;)	 => [ StmtHandle(pi = &j;)    StmtHandle(ps = &x;) ] 
+            StmtHandle(*pi = 4;)	 => [ StmtHandle(pi = &j;)    StmtHandle(ps = &x;)    StmtHandle(i = *pi;) ] 
+            StmtHandle(*ps =(3);)	 => [ StmtHandle(pi = &j;)    StmtHandle(ps = &x;)    StmtHandle(i = *pi;)    StmtHandle(*pi = 4;) ] 
+            StmtHandle(j =(( *ps));)	 => [ StmtHandle(pi = &j;)    StmtHandle(ps = &x;)    StmtHandle(i = *pi;)    StmtHandle(*pi = 4;)    StmtHandle(*ps =(3);) ] 
+            StmtHandle(g(i,j);)	 => [ StmtHandle(pi = &j;)    StmtHandle(ps = &x;)    StmtHandle(i = *pi;)    StmtHandle(*ps =(3);)    StmtHandle(j =(( *ps));) ] 
+            StmtHandle(return 0;)	 => [ StmtHandle(pi = &j;)    StmtHandle(ps = &x;)    StmtHandle(i = *pi;)    StmtHandle(*ps =(3);)    StmtHandle(j =(( *ps));)    StmtHandle(g(i,j);) ] 
+
+    mExitReachDefs: [ StmtHandle(pi = &j;)    StmtHandle(ps = &x;)    StmtHandle(i = *pi;)    StmtHandle(*ps =(3);)    StmtHandle(j =(( *ps));)    StmtHandle(g(i,j);) ] 
+)
+
+*******  end of DoReachDef *********
+
