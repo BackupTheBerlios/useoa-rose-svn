@@ -3492,3 +3492,11 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     It now keeps track of which version of g++ was used to do the build.
     Tested with OpenAnalysis rev 276.
 
+12/26/06     UseOA-ROSE svn trunk r251   Priyadarshini Malusare
+    -Removed Sage2OA.C::getCallsiteParams::findTopMemRefHandle().
+    - Michelle's reply:   
+      "C/C++ is pass by value.  Therefore, the contortions we had to do
+       for UseOA-Open64 are not relevant.  You should not be using 
+       getTopMemRefHandle to get an ExprHandle in Sage2OA."
+	
+

@@ -3754,16 +3754,31 @@ SageIRInterface::getCallsiteParams(OA::CallHandle h)
     // SgExpressions.  Convert them to OA::ExprHandle and put
     // them in the list of handles.
     for(std::list<SgNode *>::iterator actualIt = actuals.begin(); 
-        actualIt != actuals.end(); ++actualIt) { 
-
+        actualIt != actuals.end(); ++actualIt) {
+ 
         SgNode *actual = *actualIt;
         ROSE_ASSERT(actual != NULL);
-
-        OA::MemRefHandle actual_memref 
+        
+        /*
+        OA::MemRefHandle actual_memref
             = findTopMemRefHandle(actual);
         exprHandleList->push_back(actual_memref);
-
         SgNode *memNode = (SgNode *)(actual_memref.hval());
+        */
+
+        /* Michelle's reply for the above commented out code 
+           12/26/06.
+
+           C/C++ is pass by value.  Therefore, the contortions we 
+           had to do for UseOA-Open64 are not relevant.  You should 
+           not be using getTopMemRefHandle to get an ExprHandle 
+           in Sage2OA.
+        */ 
+
+        SgExpression * exp=isSgExpression(actual);
+        ROSE_ASSERT(exp != NULL);
+        OA::ExprHandle exprHandle = getNodeNumber(exp);
+        exprHandleList->push_back(exprHandle);
     }
 
     OA::OA_ptr<OA::IRCallsiteParamIterator> retIter;
