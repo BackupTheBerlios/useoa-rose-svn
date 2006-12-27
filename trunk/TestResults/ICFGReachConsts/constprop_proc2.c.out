@@ -1,0 +1,270 @@
+
+mProcToReachConstsMap: ProcHandle	 => ReachConsts
+        ProcHandle(main)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(head(&x,&f);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(return 0;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int x;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int f;)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+        ProcHandle(head)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(m = 2;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(p = 5;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(bar(&m,&p,&v,x);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(m = 5;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(p = 2;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(bar(&p,&m,&v,x);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(*f =(((m + p) + v) + *x);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int m;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int p;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int v;)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+        ProcHandle(bar)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(*c =( *a * *b);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(*b =( *c - *d);)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+
+*******  end of DoICFGReachConsts *********
+
+
+mProcToReachConstsMap: ProcHandle	 => ReachConsts
+        ProcHandle(main)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(head(&x,&f);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(return 0;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int x;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int f;)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+        ProcHandle(head)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(m = 2;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(p = 5;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(bar(&m,&p,&v,x);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(m = 5;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(p = 2;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(bar(&p,&m,&v,x);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(*f =(((m + p) + v) + *x);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int m;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int p;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int v;)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+        ProcHandle(bar)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(*c =( *a * *b);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(*b =( *c - *d);)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+
+*******  end of DoICFGReachConsts *********
+
+
+mProcToReachConstsMap: ProcHandle	 => ReachConsts
+        ProcHandle(main)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(head(&x,&f);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(return 0;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int x;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int f;)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+        ProcHandle(head)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(m = 2;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(p = 5;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(bar(&m,&p,&v,x);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(m = 5;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(p = 2;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(bar(&p,&m,&v,x);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(*f =(((m + p) + v) + *x);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int m;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int p;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int v;)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+        ProcHandle(bar)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(*c =( *a * *b);)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(*b =( *c - *d);)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+
+*******  end of DoICFGReachConsts *********
+

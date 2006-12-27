@@ -1,0 +1,8 @@
+echo "Testing TestCases/ReachConstsTests/constprop_proc1.c, TestResults/ICFGReachConsts/constprop_proc1.c.out Not Checked Yet"
+./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_proc1.c >& t
+diff t TestResults/ICFGReachConsts/constprop_proc1.c.out
+
+echo "Testing TestCases/ReachConstsTests/constprop_proc2.c, TestResults/ICFGReachConsts/constprop_proc2.c.out Not Checked Yet"
+./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_proc2.c >& t
+diff t TestResults/ICFGReachConsts/constprop_proc2.c.out
+

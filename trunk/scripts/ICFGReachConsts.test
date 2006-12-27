@@ -1,0 +1,13 @@
+# comment in file.test
+# Regression tests for ICFG generation
+# Regenreated after GraphRefactor for new Node Numbers PLM 08/24/06
+testname::ICFGReachConsts
+inputdir::TestCases/ReachConstsTests
+outputdir::TestResults/ICFGReachConsts
+driverexec::./OATest -edg:w --oa-ICFGReachConsts -c
+
+# list of tests
+#       input file,     status
+test::constprop_proc1.c, Not Checked Yet
+test::constprop_proc2.c, Not Checked Yet
+

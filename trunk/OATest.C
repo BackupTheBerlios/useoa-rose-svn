@@ -1256,12 +1256,12 @@ int DoICFGReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNod
    icfg = icfgman->performAnalysis(procIter,eachCFG,callgraph);
 
    // output ICFG
-   icfg->output(*irInterface);
+   //icfg->output(*irInterface);
    // dot output
-   OA::OA_ptr<OA::OutputBuilder> outBuild;
-   outBuild = new OA::OutputBuilderDOT;
-   icfg->configOutput(outBuild);
-   icfg->output(*irInterface);
+   //OA::OA_ptr<OA::OutputBuilder> outBuild;
+   //outBuild = new OA::OutputBuilderDOT;
+   //icfg->configOutput(outBuild);
+   //icfg->output(*irInterface);
 
 
    // ParamBindings

@@ -1,0 +1,454 @@
+
+mProcToReachConstsMap: ProcHandle	 => ReachConsts
+        ProcHandle(main)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(m = 2;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(p = 5;)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(bar(&m,&p,&v,&x);)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            )    
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(p)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(f =(((m + p) + v) + x);)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(return 0;)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(int x;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int f;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int m;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int p;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int v;)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+        ProcHandle(bar)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(*c =( *a * *b);)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                InvisibleLoc(
+                                    mMRE: 
+                                    Deref(
+                                        mAddressOf: 0
+                                        mFullAccuracy: 1
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mAddressOf: 0
+                                            mFullAccuracy: 1
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(a)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                )
+                                mCDType: ,VALUE=2>
+                            )    
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                InvisibleLoc(
+                                    mMRE: 
+                                    Deref(
+                                        mAddressOf: 0
+                                        mFullAccuracy: 1
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mAddressOf: 0
+                                            mFullAccuracy: 1
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(b)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(*b =( *c - *d);)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                InvisibleLoc(
+                                    mMRE: 
+                                    Deref(
+                                        mAddressOf: 0
+                                        mFullAccuracy: 1
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mAddressOf: 0
+                                            mFullAccuracy: 1
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(a)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                )
+                                mCDType: ,VALUE=2>
+                            )    
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                InvisibleLoc(
+                                    mMRE: 
+                                    Deref(
+                                        mAddressOf: 0
+                                        mFullAccuracy: 1
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mAddressOf: 0
+                                            mFullAccuracy: 1
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(b)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                )
+                                mCDType: ,VALUE=5>
+                            )    
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                InvisibleLoc(
+                                    mMRE: 
+                                    Deref(
+                                        mAddressOf: 0
+                                        mFullAccuracy: 1
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mAddressOf: 0
+                                            mFullAccuracy: 1
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(c)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                )
+                                mCDType: ,VALUE=10>
+                            ) ] 
+                    )
+
+        )
+
+
+*******  end of DoICFGReachConsts *********
+
+
+mProcToReachConstsMap: ProcHandle	 => ReachConsts
+        ProcHandle(main)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(m = 2;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(p = 5;)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(bar(&m,&p,&v,&x);)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            )    
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(p)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(f =(((m + p) + v) + x);)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(return 0;)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(int x;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int f;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int m;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int p;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int v;)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+        ProcHandle(bar)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(*c =( *a * *b);)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                InvisibleLoc(
+                                    mMRE: 
+                                    Deref(
+                                        mAddressOf: 0
+                                        mFullAccuracy: 1
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mAddressOf: 0
+                                            mFullAccuracy: 1
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(a)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                )
+                                mCDType: ,VALUE=2>
+                            )    
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                InvisibleLoc(
+                                    mMRE: 
+                                    Deref(
+                                        mAddressOf: 0
+                                        mFullAccuracy: 1
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mAddressOf: 0
+                                            mFullAccuracy: 1
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(b)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(*b =( *c - *d);)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                InvisibleLoc(
+                                    mMRE: 
+                                    Deref(
+                                        mAddressOf: 0
+                                        mFullAccuracy: 1
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mAddressOf: 0
+                                            mFullAccuracy: 1
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(a)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                )
+                                mCDType: ,VALUE=2>
+                            )    
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                InvisibleLoc(
+                                    mMRE: 
+                                    Deref(
+                                        mAddressOf: 0
+                                        mFullAccuracy: 1
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mAddressOf: 0
+                                            mFullAccuracy: 1
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(b)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                )
+                                mCDType: ,VALUE=5>
+                            )    
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                InvisibleLoc(
+                                    mMRE: 
+                                    Deref(
+                                        mAddressOf: 0
+                                        mFullAccuracy: 1
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mAddressOf: 0
+                                            mFullAccuracy: 1
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(c)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                )
+                                mCDType: ,VALUE=10>
+                            ) ] 
+                    )
+
+        )
+
+
+*******  end of DoICFGReachConsts *********
+

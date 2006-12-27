@@ -3499,4 +3499,8 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
        for UseOA-Open64 are not relevant.  You should not be using 
        getTopMemRefHandle to get an ExprHandle in Sage2OA."
 	
+12/27/06     UseOA-ROSE svn trunk r252   Priyadarshini Malusare
+    - Added genICFGReachConsts.script, regressICFGReacgConsts.script,
+      TestCases and TestResults.
+
 
