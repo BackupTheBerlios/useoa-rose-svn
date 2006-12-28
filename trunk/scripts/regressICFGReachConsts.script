@@ -1,3 +1,23 @@
+echo "Testing TestCases/ReachConstsTests/constprop_if1a.c, TestResults/ICFGReachConsts/constprop_if1a.c.out Not Checked Yet"
+./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_if1a.c >& t
+diff t TestResults/ICFGReachConsts/constprop_if1a.c.out
+
+echo "Testing TestCases/ReachConstsTests/constprop_if1b.c, TestResults/ICFGReachConsts/constprop_if1b.c.out Not Checked Yet"
+./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_if1b.c >& t
+diff t TestResults/ICFGReachConsts/constprop_if1b.c.out
+
+echo "Testing TestCases/ReachConstsTests/constprop_if1c.c, TestResults/ICFGReachConsts/constprop_if1c.c.out Not Checked Yet"
+./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_if1c.c >& t
+diff t TestResults/ICFGReachConsts/constprop_if1c.c.out
+
+echo "Testing TestCases/ReachConstsTests/constprop_loop1.c, TestResults/ICFGReachConsts/constprop_loop1.c.out Not Checked Yet"
+./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_loop1.c >& t
+diff t TestResults/ICFGReachConsts/constprop_loop1.c.out
+
+echo "Testing TestCases/ReachConstsTests/constprop_loop2.c, TestResults/ICFGReachConsts/constprop_loop2.c.out Not Checked Yet"
+./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_loop2.c >& t
+diff t TestResults/ICFGReachConsts/constprop_loop2.c.out
+
 echo "Testing TestCases/ReachConstsTests/constprop_proc1.c, TestResults/ICFGReachConsts/constprop_proc1.c.out Not Checked Yet"
 ./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_proc1.c >& t
 diff t TestResults/ICFGReachConsts/constprop_proc1.c.out

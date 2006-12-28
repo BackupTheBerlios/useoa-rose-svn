@@ -1,0 +1,55 @@
+Array Type found
+reference type not foundx
+
+InterActive(
+    Procedure( main ): 
+    ActiveLocSet([ 
+            NamedLoc(
+                mSymHandle: SymHandle(x)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
+            NamedLoc(
+                mSymHandle: SymHandle(y)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
+            LocSubSet(
+                mLoc: 
+                NamedLoc(
+                    mSymHandle: SymHandle(x)
+                    mLocal: 1
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
+                )
+                mFull: 0
+            )    
+            LocSubSet(
+                mLoc: 
+                NamedLoc(
+                    mSymHandle: SymHandle(y)
+                    mLocal: 1
+                    mFullOverlap: [  ] 
+                    mPartOverlap: [  ] 
+                )
+                mFull: 0
+            ) ] 
+    )
+    ActiveStmtSet([ 
+            StmtHandle(y[1] =((x[1]) *(x[2]));) ] 
+    )
+    ActiveMemRefSet([ 
+            MemRefHandle(y[1])
+                MemRefHandle((x[1]))
+                MemRefHandle((x[2]))
+                MemRefHandle(y[1] =((x[1]) *(x[2]))) ] 
+    )
+    ActiveSymSet: [  ] 
+    mNumIterUseful: 2
+    mNumIterVary: 2
+)
+
+
+Total Iters: 6

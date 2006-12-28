@@ -3583,36 +3583,242 @@ OA::OA_ptr<OA::AssignPairIterator>
 OA::OA_ptr<OA::MemRefExprIterator> 
 SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
 { 
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // FIXME  // BK: this routine is incomplete.
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  
+
   // Get independent variables
   OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > indepList;
-  indepList = new std::list<OA::OA_ptr<OA::MemRefExpr> >;  
-  assert(0);
+  indepList = new std::list<OA::OA_ptr<OA::MemRefExpr> >;
+  //assert(0);
   // not implemented yet
-  
+
+  SgPragmaDeclaration * pragmadecl=NULL;
+
+  OA::OA_ptr<OA::IRStmtIterator> stmtIterPtr = getStmtIterator(h);
+  for ( ; stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
+
+     OA::StmtHandle stmt = stmtIterPtr->current();
+     SgNode *node = getNodePtr(stmt);
+
+     if (pragmadecl = isSgPragmaDeclaration(node)) {
+
+      std::string pragma = std::string(pragmadecl->get_pragma()->get_pragma());
+
+      char buf[1000];
+
+      // Parse the pragma, currently allowed syntax is either
+      // #pragma $adic_dep var1, var2, var3
+      // or
+      // #pragma $adic_indep var1, var2, var3
+
+      std::list<std::string> depVarNames, indepVarNames, *current;
+      if (pragma.find("$adic_indep",0) != std::string::npos) {
+        current = &indepVarNames;
+
+      strcpy(buf,pragma.c_str());
+      char* p = strtok(buf, " ,");
+      while (p && *p) {
+        if (p[0] != '$') {
+          //debugMsg(3,"Found indep or dependent variable pragma: %s", p);
+          current->push_back(std::string(p));
+        }
+        p = strtok(0, ", ");
+      }
+
+
+      SgStatement * sgstmt=isSgStatement(node);
+      if(!sgstmt)
+      {
+        continue;
+      }
+
+      SgStatement * parentStmt = isSgStatement(sgstmt->get_parent());
+      SgScopeStatement *scopeStmt = NULL;
+      while (parentStmt != NULL) {
+        if(scopeStmt = isSgScopeStatement(parentStmt)) {
+          // Look for var decls corresponding to pragma symbols
+          SgVariableSymbol *varSymbol = scopeStmt->first_variable_symbol();
+          while (varSymbol != NULL) {
+            std::string varName =
+               std::string(varSymbol->get_declaration()->get_name().str());
+
+               if (find(indepVarNames.begin(), indepVarNames.end(), varName)
+                   != indepVarNames.end()) {
+
+                   ROSE_ASSERT(varSymbol != NULL);
+                   SgInitializedName *initName = varSymbol->get_declaration();
+                   ROSE_ASSERT(initName != NULL);
+                   OA::SymHandle sym = getNodeNumber(initName);
+                   bool isAddrOf, fullAccuracy;
+                   OA::MemRefExpr::MemRefType hty;
+                   isAddrOf = false;
+                   hty = OA::MemRefExpr::USE;
+
+                   /*
+                   SgVariableDeclaration * vard =   varSymbol->get_declaration();
+                   SgType * tp=(vd->get_variables()).front()->get_type();
+                   */
+
+                   SgType *type = initName->get_type();
+
+                   SgArrayType * at=isSgArrayType(type);
+
+                   if(at) {
+                       std::cout << "Array Type found" << std::endl;
+                     fullAccuracy = false;
+                   } else {
+
+                       std::cout << "Array Type not Found" << std::endl;
+                     fullAccuracy = true;
+                   }
+
+
+                   OA::OA_ptr<OA::MemRefExpr> mre;
+                   // if the symbol is a reference parameter, then the MemRefExpr
+                   // for an access to the symbol needs a deref
+                   if (isSgReferenceType(type)) {
+                       std::cout << "reference type found" << toString(sym) << std::endl;
+                       mre = new OA::NamedRef(false,true,OA::MemRefExpr::USE,sym);
+                       mre = new OA::Deref(false, fullAccuracy, OA::MemRefExpr::USE, mre, 1);
+                   } else {
+                       // one case where we end up here is when passing an array as a parameter
+                       // another is if we are just accessing a scalar that is not a
+                       // reference parameter
+
+                       std::cout << "reference type not found" << toString(sym) << std::endl;
+                       mre = new OA::NamedRef(isAddrOf, fullAccuracy, hty, sym);
+                   }
+
+                   indepList->push_back(mre);
+               }
+               varSymbol = scopeStmt->next_variable_symbol();
+           }
+        }
+        // Next parent up
+        parentStmt = isSgStatement(parentStmt->get_parent());
+      }
+     }
+    }
+  }
+
   OA::OA_ptr<OA::MemRefExprIterator> indepIter;
   indepIter = new SageMemRefExprIterator(indepList,this);
   return indepIter;
+
+    
 }
 
 //! Return an iterator over all dependent MemRefExpr for given proc
 OA::OA_ptr<OA::MemRefExprIterator>
 SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
 {
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // FIXME
-  // BK: this routine is incomplete.
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   // Get dependent variables
   OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > depList;
   depList = new std::list<OA::OA_ptr<OA::MemRefExpr> >;
 
-  assert(0);
+  //assert(0);
   // not implemented yet
+
+  SgPragmaDeclaration * pragmadecl=NULL;
+
+  OA::OA_ptr<OA::IRStmtIterator> stmtIterPtr = getStmtIterator(h);
+  for ( ; stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
+
+     OA::StmtHandle stmt = stmtIterPtr->current();
+     SgNode *node = getNodePtr(stmt);
+
+     if (pragmadecl = isSgPragmaDeclaration(node)) {
+
+      std::string pragma = std::string(pragmadecl->get_pragma()->get_pragma());
+
+      char buf[1000];
+
+      // Parse the pragma, currently allowed syntax is either
+      // #pragma $adic_dep var1, var2, var3
+      // or
+      // #pragma $adic_indep var1, var2, var3
+      std::list<std::string> depVarNames, indepVarNames, *current;
+      if (pragma.find("$adic_dep",0) != std::string::npos) {
+        current = &depVarNames;
+
+      strcpy(buf,pragma.c_str());
+      char* p = strtok(buf, " ,");
+      while (p && *p) {
+        if (p[0] != '$') {
+          //debugMsg(3,"Found indep or dependent variable pragma: %s", p);
+          current->push_back(std::string(p));
+        }
+        p = strtok(0, ", ");
+      }
+
+      SgStatement * sgstmt=isSgStatement(node);
+      if(!sgstmt)
+      {
+        continue;
+      }
+
+      SgStatement * parentStmt = isSgStatement(sgstmt->get_parent());
+      SgScopeStatement *scopeStmt = NULL;
+      while (parentStmt != NULL) {
+        if(scopeStmt = isSgScopeStatement(parentStmt)) {
+          // Look for var decls corresponding to pragma symbols
+          SgVariableSymbol *varSymbol = scopeStmt->first_variable_symbol();
+          while (varSymbol != NULL) {
+            std::string varName =
+               std::string(varSymbol->get_declaration()->get_name().str());
+
+               if (find(depVarNames.begin(), depVarNames.end(), varName)
+                   != depVarNames.end()) {
+
+                   ROSE_ASSERT(varSymbol != NULL);
+                   SgInitializedName *initName = varSymbol->get_declaration();
+                   ROSE_ASSERT(initName != NULL);
+                   OA::SymHandle sym = getNodeNumber(initName);
+
+                   bool isAddrOf, fullAccuracy;
+                   OA::MemRefExpr::MemRefType hty;
+                   isAddrOf = false;
+                   hty = OA::MemRefExpr::USE;
+
+                   /*
+                   SgVariableDeclaration * vard =   varSymbol->get_declaration();
+                   SgType * tp=(vd->get_variables()).front()->get_type();
+                   */
+
+                   SgType *type = initName->get_type();
+                   SgArrayType * at=isSgArrayType(type);
+
+                   if(at) {
+                     fullAccuracy = false;
+                   } else {
+                     fullAccuracy = true;
+                   }
+                   OA::OA_ptr<OA::MemRefExpr> mre;
+                   // if the symbol is a reference parameter, then the MemRefExpr
+                   // for an access to the symbol needs a deref
+                   if (isSgReferenceType(type)) {
+                       mre = new OA::NamedRef(false,true,OA::MemRefExpr::USE,sym);
+                       mre = new OA::Deref(false, fullAccuracy, OA::MemRefExpr::USE, mre, 1);
+                   } else {
+                       // one case where we end up here is when passing an array as a parameter
+                       // another is if we are just accessing a scalar that is not a
+                       // reference parameter
+                       mre = new OA::NamedRef(isAddrOf, fullAccuracy, hty, sym);
+                   }
+
+
+                   depList->push_back(mre);
+               }
+               varSymbol = scopeStmt->next_variable_symbol();
+           }
+        }
+        // Next parent up
+        parentStmt = isSgStatement(parentStmt->get_parent());
+      }
+    }
+
+    }
+  }
+
 
   OA::OA_ptr<OA::MemRefExprIterator> depIter;
   depIter = new SageMemRefExprIterator(depList,this);

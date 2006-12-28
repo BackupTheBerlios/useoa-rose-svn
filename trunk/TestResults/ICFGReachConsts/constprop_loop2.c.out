@@ -1,0 +1,138 @@
+
+mProcToReachConstsMap: ProcHandle	 => ReachConsts
+        ProcHandle(main)	 => 
+        ReachConstStandard: 
+        ReachConstsStandard(
+            mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+                    
+                    Statement: StmtHandle(y = 5;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(i = 1;)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(y)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(x = 2;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(y = 5;)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(x)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(x =(y + y);)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(x)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            )    
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(y)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(y = 3;)	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(x)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(z = y;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(for(i = 1;i < 10;i++) {x = 2;if(x >= 0) {y = 5;x =(y + y);}else {y = 3;}z = y;})	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(i++)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(if(x >= 0) {y = 5;x =(y + y);}else {y = 3;})	 => 
+                    ConstDefSet([ 
+                            ConstDefSet: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(x)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
+                    )
+                    
+                    Statement: StmtHandle(return 0;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int x;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int y;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int z;)	 => 
+                    ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(int i;)	 => 
+                    ConstDefSet([  ] 
+                    )
+
+        )
+
+
+*******  end of DoICFGReachConsts *********
+

@@ -125,7 +125,7 @@ int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> 
    
 int DoICFGReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>* na, bool p_handle);
 
-int DoICFGActivity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>* na, bool p_handle);
+int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle);
 
 
 /* Debug flags:
@@ -189,6 +189,8 @@ void usage(char **argv)
   cerr << "          --oa-SideEffect" << endl;
   cerr << "          --oa-Linearity" << endl;
   cerr << "          --oa-ICFGReachConsts" << endl;
+  cerr << "          --oa-ICFGActivity" << endl;
+
   exit(-1);
 }
 
@@ -363,6 +365,11 @@ main ( unsigned argc,  char * argv[] )
     else if( cmds->HasOption("--oa-ICFGDep") )
     {
        DoICFGDep(sageProject, &nodeArray, p_h);
+      return 1;
+    }
+    else if( cmds->HasOption("--oa-ICFGActivity") )
+    {
+       DoICFGActivity(sageProject, &nodeArray, p_h);
       return 1;
     }
     else if( cmds->HasOption("--oa-ParamBindings") )
@@ -1139,32 +1146,38 @@ int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> 
 }
 
 
-
-int DoICFGActivity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>* na, bool p_handle)
+int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle)
 {
-    /*
    int returnvalue=FALSE;
    if ( debug ) printf("*******start of DoUDDUChains\n");
    OA::OA_ptr<SageIRInterface> irInterface;
    irInterface = new SageIRInterface(p, na, p_handle);
 
 
+   /*
    //CFG
    OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
    cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
    OA::OA_ptr<OA::CFG::CFG> cfg=
    cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+   */
 
-   //Alias
+   // eachCFG
+   OA::OA_ptr<OA::CFG::EachCFGInterface> eachCFG;
+   OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgman;
+   cfgman = new OA::CFG::ManagerCFGStandard(irInterface);
+   eachCFG = new OA::CFG::EachCFGStandard(cfgman);
+
+
+   //FIAlias
    OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
    fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
    OA::OA_ptr<SageIRProcIterator> procIter;
-   procIter = new SageIRProcIterator(p,*irInterface);
+   procIter = new SageIRProcIterator(p, *irInterface);
    OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
    interAlias = fialiasman->performAnalysis(procIter);
-   OA::ProcHandle proc((OA::irhandle_t)(irInterface->getNodeNumber(f)));
-   OA::OA_ptr<OA::Alias::Interface> alias = interAlias->getAliasResults(proc);
 
+   
    // CallGraph
    OA::OA_ptr<OA::CallGraph::ManagerCallGraphStandard> cgraphman;
    cgraphman = new OA::CallGraph::ManagerCallGraphStandard(irInterface);
@@ -1193,7 +1206,7 @@ int DoICFGActivity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>
    OA::OA_ptr<OA::ICFG::ManagerICFGStandard> icfgman;
    icfgman = new OA::ICFG::ManagerICFGStandard(irInterface);
    OA::OA_ptr<OA::ICFG::ICFG> icfg;
-   icfg = icfgman->performAnalysis(procIter,cfg,cgraph);
+   icfg = icfgman->performAnalysis(procIter,eachCFG,cgraph);
 
    // ICFGActive
    OA::OA_ptr<OA::Activity::ManagerICFGActive> activeman;
@@ -1209,7 +1222,6 @@ int DoICFGActivity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>
    int numTotal = numIterDep + active->getNumIterUseful()
      + active->getNumIterVary() + numIterActive;
    std::cout << "\n\nTotal Iters: " << numTotal << std::endl;
-*/
    return 0;
 }
 

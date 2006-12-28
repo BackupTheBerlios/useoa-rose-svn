@@ -1,4 +1,24 @@
-echo "Testing TestCases/ReachConstsTests/reachdef_if2.c, TestResults/ReachConstsTests/reachdef_if2.c.out Not Checked Yet"
-./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/reachdef_if2.c >& t
-diff t TestResults/ReachConstsTests/reachdef_if2.c.out
+echo "Testing TestCases/ReachConstsTests/constprop_if1a.c, TestResults/ReachConstsTests/constprop_if1a.c.out Not Checked Yet"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_if1a.c >& t
+diff t TestResults/ReachConstsTests/constprop_if1a.c.out
+
+echo "Testing TestCases/ReachConstsTests/constprop_if1b.c, TestResults/ReachConstsTests/constprop_if1b.c.out Not Checked Yet"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_if1b.c >& t
+diff t TestResults/ReachConstsTests/constprop_if1b.c.out
+
+echo "Testing TestCases/ReachConstsTests/constprop_if1c.c, TestResults/ReachConstsTests/constprop_if1c.c.out Not Checked Yet"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_if1c.c >& t
+diff t TestResults/ReachConstsTests/constprop_if1c.c.out
+
+echo "Testing TestCases/ReachConstsTests/constprop_loop1.c, TestResults/ReachConstsTests/constprop_loop1.c.out Not Checked Yet"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_loop1.c >& t
+diff t TestResults/ReachConstsTests/constprop_loop1.c.out
+
+echo "Testing TestCases/ReachConstsTests/constprop_loop2.c, TestResults/ReachConstsTests/constprop_loop2.c.out Not Checked Yet"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_loop2.c >& t
+diff t TestResults/ReachConstsTests/constprop_loop2.c.out
+
+echo "Testing TestCases/ReachConstsTests/constprop_loop3.c, TestResults/ReachConstsTests/constprop_loop3.c.out Not Checked Yet"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_loop3.c >& t
+diff t TestResults/ReachConstsTests/constprop_loop3.c.out
 

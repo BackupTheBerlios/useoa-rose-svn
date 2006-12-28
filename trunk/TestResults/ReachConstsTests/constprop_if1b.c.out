@@ -1,0 +1,415 @@
+
+ReachConstsStandard(
+    mReachConsts: StmtHandle	 => OA::OA_ptr<ConstDefSet> 
+            
+            Statement: StmtHandle(x = 2;)	 => 
+            ConstDefSet([ 
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(z)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    ) ] 
+            )
+            
+            Statement: StmtHandle(y = 5;)	 => 
+            ConstDefSet([ 
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,VALUE=2>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(z)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    ) ] 
+            )
+            
+            Statement: StmtHandle(x =(y + y);)	 => 
+            ConstDefSet([ 
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,VALUE=2>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,VALUE=5>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(z)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    ) ] 
+            )
+            
+            Statement: StmtHandle(y = 3;)	 => 
+            ConstDefSet([ 
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,VALUE=2>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(z)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    ) ] 
+            )
+            
+            Statement: StmtHandle(x = 10;)	 => 
+            ConstDefSet([ 
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,VALUE=2>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,VALUE=3>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(z)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    ) ] 
+            )
+            
+            Statement: StmtHandle(z = y;)	 => 
+            ConstDefSet([ 
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,VALUE=10>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(z)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    ) ] 
+            )
+            
+            Statement: StmtHandle(if(x > 0) {y = 5;x =(y + y);}else {y = 3;x = 10;})	 => 
+            ConstDefSet([ 
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,VALUE=2>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(z)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    ) ] 
+            )
+            
+            Statement: StmtHandle(return 0;)	 => 
+            ConstDefSet([ 
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,VALUE=10>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(z)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    ) ] 
+            )
+            
+            Statement: StmtHandle(int x;)	 => 
+            ConstDefSet([ 
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(z)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    ) ] 
+            )
+            
+            Statement: StmtHandle(int y;)	 => 
+            ConstDefSet([ 
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(z)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    ) ] 
+            )
+            
+            Statement: StmtHandle(int z;)	 => 
+            ConstDefSet([ 
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    )    
+                    ConstDefSet: 
+                    ConstDef(
+                        Location: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(z)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mCDType: ,BOTTOM>
+                    ) ] 
+            )
+
+)
+
+*******  end of DoUDDUChains *********
+

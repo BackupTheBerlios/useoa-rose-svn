@@ -1,0 +1,2 @@
+echo "Generating TestResults/ICFGActive/simple0.c.out"
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/simple0.c >& TestResults/ICFGActive/simple0.c.out

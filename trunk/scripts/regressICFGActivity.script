@@ -1,0 +1,4 @@
+echo "Testing TestCases/ICFGActive/simple0.c, TestResults/ICFGActive/simple0.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/simple0.c >& t
+diff t TestResults/ICFGActive/simple0.c.out
+

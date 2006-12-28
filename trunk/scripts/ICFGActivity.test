@@ -1,0 +1,11 @@
+# comment in file.test
+# Regression tests for ICFGActivity generation
+testname::ICFGActivity
+inputdir::TestCases/ICFGActive
+outputdir::TestResults/ICFGActive
+driverexec::./OATest -edg:w --oa-ICFGActivity -c
+
+# list of tests
+#       input file,     status
+test::   simple0.c,
+

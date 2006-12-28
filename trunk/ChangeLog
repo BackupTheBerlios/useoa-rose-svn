@@ -3506,4 +3506,9 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 12/27/06     UseOA-ROSE svn trunk r253   Priyadarshini Malusare
     - Added TestCases for ReachDefs
 
+12/27/06     UseOA-ROSE svn trunk r254   Priyadarshini Malusare
+    - Added driver, TestCase, TestResult for ICFGActive
+    - Added TestCases for ReachConsts, ICFGReachConsts
+    - Regenerated ParameterBinding::swap.c, it was giving core-dump before.
+     
 
