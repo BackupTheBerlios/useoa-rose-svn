@@ -22,5 +22,20 @@ source scripts/regressReachDefs.script
 echo "########################### running regressUDDUChains.script"
 source scripts/regressUDDUChains.script
 
+#echo "########################### running regressUDDUChains.script"
+#source scripts/regressICFGDep.script
+
+#echo "########################### running regressUDDUChains.script"
+#source scripts/regressICFGActive.script
+
+#echo "########################### running regressReachConsts.script"
+#source scripts/regressReachConsts.script
+
+#echo "########################### running regressICFGReachConsts.script"
+#source scripts/regressICFGReachConsts.script
+
+
+
+
 
 

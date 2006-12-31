@@ -2203,7 +2203,7 @@ std::string getFileNameByTraversalBackToFileNode ( SgNode* astNode )
             // printf ("In getFileNameByTraversalBackToFileNode(): parent = %s \n",parent->sage_class_name());
                parent = parent->get_parent();
                if ( parent != NULL ) {
-		 std::cout << "parent node type is: " << parent->sage_class_name() << std::endl;
+	         	 std::cout << "parent node type is: " << parent->sage_class_name() << std::endl;
                }
              }
 
@@ -3584,6 +3584,7 @@ OA::OA_ptr<OA::MemRefExprIterator>
 SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
 { 
 
+    
   // Get independent variables
   OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > indepList;
   indepList = new std::list<OA::OA_ptr<OA::MemRefExpr> >;
@@ -3597,6 +3598,7 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
 
      OA::StmtHandle stmt = stmtIterPtr->current();
      SgNode *node = getNodePtr(stmt);
+
 
      if (pragmadecl = isSgPragmaDeclaration(node)) {
 
@@ -3637,6 +3639,7 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
           // Look for var decls corresponding to pragma symbols
           SgVariableSymbol *varSymbol = scopeStmt->first_variable_symbol();
           while (varSymbol != NULL) {
+              
             std::string varName =
                std::string(varSymbol->get_declaration()->get_name().str());
 
@@ -3652,41 +3655,49 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
                    isAddrOf = false;
                    hty = OA::MemRefExpr::USE;
 
-                   /*
-                   SgVariableDeclaration * vard =   varSymbol->get_declaration();
-                   SgType * tp=(vd->get_variables()).front()->get_type();
-                   */
-
                    SgType *type = initName->get_type();
+                   //SgType *baseType = getBaseType(type);
 
-                   SgArrayType * at=isSgArrayType(type);
-
-                   if(at) {
-                       std::cout << "Array Type found" << std::endl;
+                   /*
+                   Dont know what to do with the following types
+                   ASK Michelle.
+                   PLM 12/29/06
+ 
+                   SgReferenceType
+                   SgPointerType
+                   SgFunctionType
+                   SgDescriptType
+                   SgDerivedType
+                   SgDerivedTemplateType
+                   SgDerivedCollectionType
+                   SgDerivedClassType
+                   SgClassType
+                   SgArrayType  
+                   */
+                   
+                   if(isSgPointerType(type)) {
+                     fullAccuracy = false;
+                   } else if(isSgReferenceType(type)) {
+                     fullAccuracy = false;
+                   } else if(isSgArrayType(type)) {
                      fullAccuracy = false;
                    } else {
-
-                       std::cout << "Array Type not Found" << std::endl;
                      fullAccuracy = true;
                    }
-
 
                    OA::OA_ptr<OA::MemRefExpr> mre;
                    // if the symbol is a reference parameter, then the MemRefExpr
                    // for an access to the symbol needs a deref
-                   if (isSgReferenceType(type)) {
-                       std::cout << "reference type found" << toString(sym) << std::endl;
+                   
+                   if (isSgPointerType(type)) {
                        mre = new OA::NamedRef(false,true,OA::MemRefExpr::USE,sym);
                        mre = new OA::Deref(false, fullAccuracy, OA::MemRefExpr::USE, mre, 1);
                    } else {
                        // one case where we end up here is when passing an array as a parameter
                        // another is if we are just accessing a scalar that is not a
                        // reference parameter
-
-                       std::cout << "reference type not found" << toString(sym) << std::endl;
                        mre = new OA::NamedRef(isAddrOf, fullAccuracy, hty, sym);
                    }
-
                    indepList->push_back(mre);
                }
                varSymbol = scopeStmt->next_variable_symbol();
@@ -3711,6 +3722,7 @@ OA::OA_ptr<OA::MemRefExprIterator>
 SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
 {
 
+    
   // Get dependent variables
   OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > depList;
   depList = new std::list<OA::OA_ptr<OA::MemRefExpr> >;
@@ -3777,7 +3789,7 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
                    bool isAddrOf, fullAccuracy;
                    OA::MemRefExpr::MemRefType hty;
                    isAddrOf = false;
-                   hty = OA::MemRefExpr::USE;
+                   hty = OA::MemRefExpr::DEF;
 
                    /*
                    SgVariableDeclaration * vard =   varSymbol->get_declaration();
@@ -3785,26 +3797,50 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
                    */
 
                    SgType *type = initName->get_type();
-                   SgArrayType * at=isSgArrayType(type);
+                   SgType *baseType = getBaseType(type);
 
-                   if(at) {
+                   /*
+                   Dont know what to do with the following types
+                   ASK Michelle.
+                   PLM 12/29/06
+
+                   SgReferenceType
+                   SgPointerType
+                   SgFunctionType
+                   SgDescriptType
+                   SgDerivedType
+                   SgDerivedTemplateType
+                   SgDerivedCollectionType
+                   SgDerivedClassType
+                   SgClassType
+                   SgArrayType
+                   */
+
+                   if(isSgPointerType(type)) {
+                     fullAccuracy = false;
+                   } else if(isSgReferenceType(type)) {
+                     fullAccuracy = false;
+                   } else if(isSgArrayType(type)) {
                      fullAccuracy = false;
                    } else {
                      fullAccuracy = true;
                    }
+
                    OA::OA_ptr<OA::MemRefExpr> mre;
                    // if the symbol is a reference parameter, then the MemRefExpr
                    // for an access to the symbol needs a deref
-                   if (isSgReferenceType(type)) {
+                   //if (isSgReferenceType(type)) {
+
+                   if(isSgPointerType(type)) {
                        mre = new OA::NamedRef(false,true,OA::MemRefExpr::USE,sym);
-                       mre = new OA::Deref(false, fullAccuracy, OA::MemRefExpr::USE, mre, 1);
+                       mre = new OA::Deref(false, fullAccuracy, OA::MemRefExpr::DEF, mre, 1);
                    } else {
                        // one case where we end up here is when passing an array as a parameter
                        // another is if we are just accessing a scalar that is not a
                        // reference parameter
-                       mre = new OA::NamedRef(isAddrOf, fullAccuracy, hty, sym);
+                       //mre = new OA::NamedRef(isAddrOf, fullAccuracy, hty, sym);
+                       mre = new OA::NamedRef(isAddrOf, fullAccuracy, OA::MemRefExpr::DEF, sym);
                    }
-
 
                    depList->push_back(mre);
                }

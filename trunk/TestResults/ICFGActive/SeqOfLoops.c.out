@@ -55,7 +55,7 @@ InterActive(
                 Deref(
                     mAddressOf: 0
                     mFullAccuracy: 0
-                    mMemRefType: DEF
+                    mMemRefType: USE
                     mMRE: 
                     NamedRef(
                         mAddressOf: 0
@@ -68,13 +68,17 @@ InterActive(
             ) ] 
     )
     ActiveStmtSet([ 
-            StmtHandle(y[1] =((x[1]) *(x[2]));) ] 
+            StmtHandle(y[i] =(x[i]);)
+                StmtHandle(y[i] =((y[i]) *(x[i]));) ] 
     )
     ActiveMemRefSet([ 
-            MemRefHandle(y[1])
-                MemRefHandle((x[1]))
-                MemRefHandle((x[2]))
-                MemRefHandle(y[1] =((x[1]) *(x[2]))) ] 
+            MemRefHandle(y[i] =(x[i]))
+                MemRefHandle(y[i] =((y[i]) *(x[i])))
+                MemRefHandle(y[i])
+                MemRefHandle((x[i]))
+                MemRefHandle(y[i])
+                MemRefHandle((y[i]))
+                MemRefHandle((x[i])) ] 
     )
     Procedure( main ): 
     ActiveLocSet([  ] 
@@ -84,9 +88,9 @@ InterActive(
     ActiveMemRefSet([  ] 
     )
     ActiveSymSet: [  ] 
-    mNumIterUseful: 2
-    mNumIterVary: 2
+    mNumIterUseful: 3
+    mNumIterVary: 3
 )
 
 
-Total Iters: 6
+Total Iters: 8

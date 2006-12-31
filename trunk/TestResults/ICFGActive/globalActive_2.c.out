@@ -2,6 +2,12 @@
 InterActive(
     Procedure( head ): 
     ActiveLocSet([ 
+            NamedLoc(
+                mSymHandle: SymHandle(aGlobal)
+                mLocal: 0
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
             InvisibleLoc(
                 mMRE: 
                 Deref(
@@ -55,7 +61,7 @@ InterActive(
                 Deref(
                     mAddressOf: 0
                     mFullAccuracy: 0
-                    mMemRefType: DEF
+                    mMemRefType: USE
                     mMRE: 
                     NamedRef(
                         mAddressOf: 0
@@ -68,13 +74,17 @@ InterActive(
             ) ] 
     )
     ActiveStmtSet([ 
-            StmtHandle(y[1] =((x[1]) *(x[2]));) ] 
+            StmtHandle(aGlobal =((x[1]) *(x[2]));)
+                StmtHandle(y[1] =(aGlobal * aPassiveGlobal);) ] 
     )
     ActiveMemRefSet([ 
-            MemRefHandle(y[1])
+            MemRefHandle(aGlobal)
+                MemRefHandle(aGlobal)
+                MemRefHandle(aGlobal =((x[1]) *(x[2])))
+                MemRefHandle(y[1] =(aGlobal * aPassiveGlobal))
                 MemRefHandle((x[1]))
                 MemRefHandle((x[2]))
-                MemRefHandle(y[1] =((x[1]) *(x[2]))) ] 
+                MemRefHandle(y[1]) ] 
     )
     Procedure( main ): 
     ActiveLocSet([  ] 

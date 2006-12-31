@@ -1,0 +1,79 @@
+
+InterActive(
+    Procedure( head ): 
+    ActiveLocSet([ 
+            NamedLoc(
+                mSymHandle: SymHandle(x1)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
+            NamedLoc(
+                mSymHandle: SymHandle(x2)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
+            NamedLoc(
+                mSymHandle: SymHandle(y1)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
+            NamedLoc(
+                mSymHandle: SymHandle(y2)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
+            NamedLoc(
+                mSymHandle: SymHandle(v3)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
+            NamedLoc(
+                mSymHandle: SymHandle(v4)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            ) ] 
+    )
+    ActiveStmtSet([ 
+            StmtHandle(v3 =(x1 * x2);)
+                StmtHandle(v4 =(x1 * v3);)
+                StmtHandle(y1 =((v3 * x2) * v4);)
+                StmtHandle(y2 = sin(v4);) ] 
+    )
+    ActiveMemRefSet([ 
+            MemRefHandle(v3)
+                MemRefHandle(x1)
+                MemRefHandle(x2)
+                MemRefHandle(v4)
+                MemRefHandle(x1)
+                MemRefHandle(v3)
+                MemRefHandle(y1)
+                MemRefHandle(v3)
+                MemRefHandle(x2)
+                MemRefHandle(v4)
+                MemRefHandle(y2)
+                MemRefHandle(v4)
+                MemRefHandle(v3 =(x1 * x2))
+                MemRefHandle(v4 =(x1 * v3))
+                MemRefHandle(y1 =((v3 * x2) * v4))
+                MemRefHandle(y2 = sin(v4)) ] 
+    )
+    Procedure( main ): 
+    ActiveLocSet([  ] 
+    )
+    ActiveStmtSet([  ] 
+    )
+    ActiveMemRefSet([  ] 
+    )
+    ActiveSymSet: [  ] 
+    mNumIterUseful: 2
+    mNumIterVary: 2
+)
+
+
+Total Iters: 6

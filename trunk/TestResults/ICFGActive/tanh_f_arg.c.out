@@ -68,13 +68,12 @@ InterActive(
             ) ] 
     )
     ActiveStmtSet([ 
-            StmtHandle(y[1] =((x[1]) *(x[2]));) ] 
+            StmtHandle(y[1] = tanh((x[1]));) ] 
     )
     ActiveMemRefSet([ 
             MemRefHandle(y[1])
                 MemRefHandle((x[1]))
-                MemRefHandle((x[2]))
-                MemRefHandle(y[1] =((x[1]) *(x[2]))) ] 
+                MemRefHandle(y[1] = tanh((x[1]))) ] 
     )
     Procedure( main ): 
     ActiveLocSet([  ] 

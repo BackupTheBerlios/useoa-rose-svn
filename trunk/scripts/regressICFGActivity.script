@@ -2,3 +2,131 @@ echo "Testing TestCases/ICFGActive/simple0.c, TestResults/ICFGActive/simple0.c.o
 ./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/simple0.c >& t
 diff t TestResults/ICFGActive/simple0.c.out
 
+echo "Testing TestCases/ICFGActive/simple1.c, TestResults/ICFGActive/simple1.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/simple1.c >& t
+diff t TestResults/ICFGActive/simple1.c.out
+
+echo "Testing TestCases/ICFGActive/simple3.c, TestResults/ICFGActive/simple3.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/simple3.c >& t
+diff t TestResults/ICFGActive/simple3.c.out
+
+echo "Testing TestCases/ICFGActive/argumentArrayIndex2.c, TestResults/ICFGActive/argumentArrayIndex2.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/argumentArrayIndex2.c >& t
+diff t TestResults/ICFGActive/argumentArrayIndex2.c.out
+
+echo "Testing TestCases/ICFGActive/bat.c, TestResults/ICFGActive/bat.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/bat.c >& t
+diff t TestResults/ICFGActive/bat.c.out
+
+echo "Testing TestCases/ICFGActive/ConstFoldSimp0.c, TestResults/ICFGActive/ConstFoldSimp0.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/ConstFoldSimp0.c >& t
+diff t TestResults/ICFGActive/ConstFoldSimp0.c.out
+
+echo "Testing TestCases/ICFGActive/directDependency1.c, TestResults/ICFGActive/directDependency1.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/directDependency1.c >& t
+diff t TestResults/ICFGActive/directDependency1.c.out
+
+echo "Testing TestCases/ICFGActive/directDependency3.c, TestResults/ICFGActive/directDependency3.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/directDependency3.c >& t
+diff t TestResults/ICFGActive/directDependency3.c.out
+
+echo "Testing TestCases/ICFGActive/globalActive_1.c, TestResults/ICFGActive/globalActive_1.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/globalActive_1.c >& t
+diff t TestResults/ICFGActive/globalActive_1.c.out
+
+echo "Testing TestCases/ICFGActive/globalActive_2.c, TestResults/ICFGActive/globalActive_2.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/globalActive_2.c >& t
+diff t TestResults/ICFGActive/globalActive_2.c.out
+
+echo "Testing TestCases/ICFGActive/If_Loop1.c, TestResults/ICFGActive/If_Loop1.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/If_Loop1.c >& t
+diff t TestResults/ICFGActive/If_Loop1.c.out
+
+echo "Testing TestCases/ICFGActive/If_Loop2.c, TestResults/ICFGActive/If_Loop2.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/If_Loop2.c >& t
+diff t TestResults/ICFGActive/If_Loop2.c.out
+
+echo "Testing TestCases/ICFGActive/If_Loop3.c, TestResults/ICFGActive/If_Loop3.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/If_Loop3.c >& t
+diff t TestResults/ICFGActive/If_Loop3.c.out
+
+echo "Testing TestCases/ICFGActive/IfStatement_1.c, TestResults/ICFGActive/IfStatement_1.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/IfStatement_1.c >& t
+diff t TestResults/ICFGActive/IfStatement_1.c.out
+
+echo "Testing TestCases/ICFGActive/IfStatement_2.c, TestResults/ICFGActive/IfStatement_2.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/IfStatement_2.c >& t
+diff t TestResults/ICFGActive/IfStatement_2.c.out
+
+echo "Testing TestCases/ICFGActive/lion.c, TestResults/ICFGActive/lion.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/lion.c >& t
+diff t TestResults/ICFGActive/lion.c.out
+
+echo "Testing TestCases/ICFGActive/Loop_1.c, TestResults/ICFGActive/Loop_1.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/Loop_1.c >& t
+diff t TestResults/ICFGActive/Loop_1.c.out
+
+echo "Testing TestCases/ICFGActive/Loop_2.c, TestResults/ICFGActive/Loop_2.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/Loop_2.c >& t
+diff t TestResults/ICFGActive/Loop_2.c.out
+
+echo "Testing TestCases/ICFGActive/Loop_3.c, TestResults/ICFGActive/Loop_3.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/Loop_3.c >& t
+diff t TestResults/ICFGActive/Loop_3.c.out
+
+echo "Testing TestCases/ICFGActive/Loop_simple_1.c, TestResults/ICFGActive/Loop_simple_1.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/Loop_simple_1.c >& t
+diff t TestResults/ICFGActive/Loop_simple_1.c.out
+
+echo "Testing TestCases/ICFGActive/Loop_simple_2a.c, TestResults/ICFGActive/Loop_simple_2a.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/Loop_simple_2a.c >& t
+diff t TestResults/ICFGActive/Loop_simple_2a.c.out
+
+echo "Testing TestCases/ICFGActive/Loop_simple_2.c, TestResults/ICFGActive/Loop_simple_2.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/Loop_simple_2.c >& t
+diff t TestResults/ICFGActive/Loop_simple_2.c.out
+
+echo "Testing TestCases/ICFGActive/Loop_simple_3.c, TestResults/ICFGActive/Loop_simple_3.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/Loop_simple_3.c >& t
+diff t TestResults/ICFGActive/Loop_simple_3.c.out
+
+echo "Testing TestCases/ICFGActive/Loop_simple_4.c, TestResults/ICFGActive/Loop_simple_4.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/Loop_simple_4.c >& t
+diff t TestResults/ICFGActive/Loop_simple_4.c.out
+
+echo "Testing TestCases/ICFGActive/Loop_simple_5.c, TestResults/ICFGActive/Loop_simple_5.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/Loop_simple_5.c >& t
+diff t TestResults/ICFGActive/Loop_simple_5.c.out
+
+echo "Testing TestCases/ICFGActive/Loop_simple_6.c, TestResults/ICFGActive/Loop_simple_6.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/Loop_simple_6.c >& t
+diff t TestResults/ICFGActive/Loop_simple_6.c.out
+
+echo "Testing TestCases/ICFGActive/NestedIf.c, TestResults/ICFGActive/NestedIf.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/NestedIf.c >& t
+diff t TestResults/ICFGActive/NestedIf.c.out
+
+echo "Testing TestCases/ICFGActive/NestedLoopIf.c, TestResults/ICFGActive/NestedLoopIf.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/NestedLoopIf.c >& t
+diff t TestResults/ICFGActive/NestedLoopIf.c.out
+
+echo "Testing TestCases/ICFGActive/NestedLoops.c, TestResults/ICFGActive/NestedLoops.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/NestedLoops.c >& t
+diff t TestResults/ICFGActive/NestedLoops.c.out
+
+echo "Testing TestCases/ICFGActive/SeqOfIfs.c, TestResults/ICFGActive/SeqOfIfs.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/SeqOfIfs.c >& t
+diff t TestResults/ICFGActive/SeqOfIfs.c.out
+
+echo "Testing TestCases/ICFGActive/SeqOfLoops.c, TestResults/ICFGActive/SeqOfLoops.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/SeqOfLoops.c >& t
+diff t TestResults/ICFGActive/SeqOfLoops.c.out
+
+echo "Testing TestCases/ICFGActive/speelpenning.c, TestResults/ICFGActive/speelpenning.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/speelpenning.c >& t
+diff t TestResults/ICFGActive/speelpenning.c.out
+
+echo "Testing TestCases/ICFGActive/tanh_f_arg.c, TestResults/ICFGActive/tanh_f_arg.c.out "
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/tanh_f_arg.c >& t
+diff t TestResults/ICFGActive/tanh_f_arg.c.out
+
