@@ -40,13 +40,13 @@ ParamBindings(
             ExprHandle((i + 1))	 => 
             graph EXPRESSION TREE:
 
-                Node 0: ET OpNode (  )
+                Node 0: ET OpNode ( + )
                 Edge: 
                     0 => 
                     Node 1: ET MemRefNode ( i )
                 Edge: 
                     0 => 
-                    Node 2: ET ConstValNode (  )
+                    Node 2: ET ConstValNode ( 1 )
 
 
     mCallToFormalToActualMap: CallHandle	 => SymToExprHandleMap

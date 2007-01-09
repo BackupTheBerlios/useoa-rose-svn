@@ -18,6 +18,7 @@
   {  0 , "oa-UDDUChainsXAIF", CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-MPICFG",         CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-ReachConsts",    CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
+  {  0 , "oa-ExprTree",       CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-AliasMapXAIF",   CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },  */
   
 
@@ -127,6 +128,8 @@ int DoICFGReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNod
 
 int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle);
 
+int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+
 
 /* Debug flags:
 
@@ -190,6 +193,7 @@ void usage(char **argv)
   cerr << "          --oa-Linearity" << endl;
   cerr << "          --oa-ICFGReachConsts" << endl;
   cerr << "          --oa-ICFGActivity" << endl;
+  cerr << "          --oa-ExprTree" << endl;
 
   exit(-1);
 }
@@ -313,6 +317,27 @@ main ( unsigned argc,  char * argv[] )
       
       
       
+    }
+    else if ( cmds->HasOption("--oa-ExprTree") )
+    {
+      for (int i = 0; i < filenum; ++i) 
+        {
+            SgFile &sageFile = sageProject->get_file(i);
+            SgGlobal *root = sageFile.get_root();
+            SgDeclarationStatementPtrList& declList = root->get_declarations ();
+            for (SgDeclarationStatementPtrList::iterator p = declList.begin(); p != declList.end(); ++p) 
+             {
+               SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
+               if (func == 0){
+                   continue;
+	       }
+               SgFunctionDefinition *defn = func->get_definition();
+               if (defn == 0){     
+                 continue;
+	       }
+               DoExprTree(defn, sageProject, &nodeArray, p_h);
+             }     
+	 } 
     }
     else if( ( cmds->HasOption("--oa-FIAliasEquivSets") ) ||
 	     ( cmds->HasOption("--oa-FIAlias") ) )
@@ -1867,7 +1892,7 @@ void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle s
   
   for ( ; defIter->isValid(); (*defIter)++ ) {
     
-    OA::MemRefHandle memRefHandle = defIter->current();
+  OA::MemRefHandle memRefHandle = defIter->current();
     
     // Finally, get all of the mem ref expressions associated
     // with this memRefHandle.
@@ -1882,3 +1907,65 @@ void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle s
   
 }
 
+int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+{
+  if ( debug ) printf("*******start of DoExprTree\n");
+  OA::OA_ptr<SageIRInterface> ir;
+  ir = new SageIRInterface(p, na, p_handle);
+  
+  // iterate over all statements
+  OA::ProcHandle proc((OA::irhandle_t)(ir->getNodeNumber(f)));
+  OA::OA_ptr<OA::IRStmtIterator> sIt = ir->getStmtIterator(proc);
+  for ( ; sIt->isValid(); (*sIt)++)
+  {
+     OA::StmtHandle stmt = sIt->current();
+     std::cout << "\n========================stmt============================\n";
+     std::cout << "\nstmt = " << ir->toString(stmt) << std::endl;
+     
+     // if the statement has an expression tree then dump that as well
+     OA::ReachConsts::IRStmtType sType = ir->getReachConstsStmtType(stmt);
+     if (sType == OA::ReachConsts::EXPR_STMT) {
+       OA::OA_ptr<OA::AssignPairIterator> espIterPtr
+           = ir->getAssignPairIterator(stmt);
+       for ( ; espIterPtr->isValid(); (*espIterPtr)++) {
+         // unbundle pair
+         OA::MemRefHandle mref = espIterPtr->currentTarget();
+         OA::ExprHandle expr = espIterPtr->currentSource();
+         std::cout << "\n\t--expr----------------------------------------\n";
+         std::cout << "\t  expr = " << ir->toString(expr) << std::endl;
+         std::cout << "\t----------------------------------------------";
+         OA::OA_ptr<OA::ExprTree> eTreePtr = ir->getExprTree(expr);
+         eTreePtr->output(*ir);
+      }
+     }
+
+    // print out all of the ExprTrees for the parameters
+    // Iterate over procedure calls of a statement
+    OA::OA_ptr<OA::IRCallsiteIterator> callsiteItPtr = ir->getCallsites(stmt);
+    for ( ; callsiteItPtr->isValid(); ++(*callsiteItPtr)) {
+        OA::CallHandle call = callsiteItPtr->current();
+        //if (debug) {
+        std::cout << "\n\t--Call-----------------------------------------\n";
+        std::cout << "\t  Call: [" << ir->toString(call) << "]\n";
+        std::cout << "\t----------------------------------------------";
+        //}
+        
+        OA::OA_ptr<OA::IRCallsiteParamIterator> paramIterPtr
+            = ir->getCallsiteParams(call);
+        for ( ; paramIterPtr->isValid(); (*paramIterPtr)++ ) {
+            OA::ExprHandle param = paramIterPtr->current();
+           
+            // get the expression tree for the parameter
+            OA::OA_ptr<OA::ExprTree> eTreePtr = ir->getExprTree(param);
+            eTreePtr->output(*ir);
+        }
+    }
+      
+
+
+
+
+
+  } 
+
+}

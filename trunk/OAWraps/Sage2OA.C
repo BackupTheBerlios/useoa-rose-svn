@@ -2115,6 +2115,248 @@ long SageIRInterface::getNodeNumber(SgNode * n) //can be zero
 
 //various toString methods
 
+std::string SageIRInterface::toString(const OA::OpHandle h)
+{
+  SgNode *node = getNodePtr(h);
+  std::string retstr;
+  retstr = "";
+
+  switch(node->variantT()) {
+    // ---------------------------------------- Binary Op cases
+    case V_SgArrowExp:
+        {
+            break;
+        }
+    case V_SgDotExp:
+        {
+            break;
+        }
+    case V_SgDotStarOp:
+        {
+            break;
+        }
+    case V_SgArrowStarOp:
+        {
+            break;
+        }
+
+    case V_SgEqualityOp:
+        {
+            retstr="==";
+            break;
+        }
+    case V_SgLessThanOp:
+        {
+            retstr="<";
+            break;
+        }
+    case V_SgGreaterThanOp:
+        {
+            retstr=">";
+            break;
+        }
+    case V_SgNotEqualOp:
+        {
+            retstr="!=";
+            break;
+        }
+    case V_SgLessOrEqualOp:
+        {
+            retstr="<=";
+            break;
+        }
+    case V_SgGreaterOrEqualOp:
+        {
+            retstr=">=";
+            break;
+        }
+    case V_SgAddOp:
+        {
+            retstr="+";
+            break;
+        }
+    case V_SgSubtractOp:
+        {
+            retstr="-";
+            break;
+        }
+    case V_SgMultiplyOp:
+        {
+            retstr="*";
+            break;
+        }
+    case V_SgDivideOp:
+        {
+            retstr="/";
+            break;
+        }
+    case V_SgIntegerDivideOp:
+        {
+            break;
+        }
+    case V_SgModOp:
+        {
+            retstr="MOD()";
+            break;
+        }
+    case V_SgAndOp:
+        {
+            retstr="&&";
+            break;
+        }
+    case V_SgOrOp:
+        {
+            retstr="||";
+            break;
+        }
+    case V_SgBitXorOp:
+        {
+            break;
+        }
+    case V_SgBitAndOp:
+        {
+            break;
+        }
+    case V_SgBitOrOp:
+        {
+            break;
+        }
+    case V_SgCommaOpExp:
+        {
+            break;
+        }
+    case V_SgLshiftOp:
+        {
+            break;
+        }
+    case V_SgRshiftOp:
+        {
+            break;
+        }
+    case V_SgPntrArrRefExp:
+        {
+            break;
+        }
+    case V_SgAssignOp:
+        {
+            retstr="=";
+            break;
+        }
+    case V_SgPlusAssignOp:
+        {
+            retstr="+=";
+            break;
+        }
+    case V_SgMinusAssignOp:
+        {
+            retstr="-=";
+            break;
+        }
+    case V_SgAndAssignOp:
+        {
+            break;
+        }
+    case V_SgIorAssignOp:
+        {
+            break;
+        }
+    case V_SgMultAssignOp:
+        {
+            retstr="*=";
+            break;
+        }
+    case V_SgDivAssignOp:
+        {
+            retstr="/=";
+            break;
+        }
+    case V_SgModAssignOp:
+        {
+            break;
+        }
+    case V_SgXorAssignOp:
+        {
+            break;
+        }
+    case V_SgLshiftAssignOp:
+        {
+            break;
+        }
+    case V_SgRshiftAssignOp:
+        {
+            break;
+        }
+    // ---------------------------------------- Unary Op cases
+    case V_SgExpressionRoot:
+        {
+            break;
+        }
+    case V_SgMinusOp:
+        {
+            retstr="-";
+            break;
+        }
+    case V_SgUnaryAddOp:
+        {
+            retstr="++";
+            break;
+        }
+    case V_SgNotOp:
+        {
+            retstr="!";
+            break;
+        }
+    case V_SgBitComplementOp:
+        {
+            break;
+        }
+    case V_SgCastExp:
+        {
+            break;
+        }
+    case V_SgThrowOp:
+        {
+            break;
+        }
+    case V_SgPointerDerefExp:
+        {
+            break;
+        }
+    case V_SgAddressOfOp:
+        {
+            retstr="&";
+            break;
+        }
+    case V_SgMinusMinusOp:
+        {
+            retstr="--";
+            break;
+        }
+    case V_SgPlusPlusOp:
+        {
+            retstr="++";
+            break;
+        }
+
+  }
+
+  return retstr;
+
+}
+
+std::string SageIRInterface::toString(const OA::ConstValHandle h)
+{
+  SgNode *node = getNodePtr(h);
+  if (node == NULL) {
+    return("warning: ConstValHandle is 0  ");
+  }
+  std::string retstr;
+
+  retstr = node->unparseToString();
+
+  return retstr;
+}
+
 std::string SageIRInterface::toString(const OA::ProcHandle h) 
 {
   SgNode *node = getNodePtr(h);
@@ -3431,7 +3673,8 @@ class ExprTreeTraversal
                 isSgSizeOfOp(astNode) || isSgVarArgCopyOp(astNode) || 
                 isSgVarArgEndOp(astNode) || isSgVarArgOp(astNode) || 
                 isSgVarArgStartOneOperandOp(astNode) || 
-                isSgVarArgStartOp(astNode)) {
+                isSgVarArgStartOp(astNode) || isSgFunctionCallExp(astNode) ||
+                isSgExprListExp(astNode)) {
 
       // CallNode
       OA::CallHandle h = mIR->getNodeNumber(astNode);

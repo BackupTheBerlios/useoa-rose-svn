@@ -22,6 +22,9 @@ source scripts/regressReachDefs.script
 echo "########################### running regressUDDUChains.script"
 source scripts/regressUDDUChains.script
 
+echo "########################### running regressExprTree.script"
+source scripts/regressExprTree.script
+
 #echo "########################### running regressUDDUChains.script"
 #source scripts/regressICFGDep.script
 

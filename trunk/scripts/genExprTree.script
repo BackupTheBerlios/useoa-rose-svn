@@ -1,0 +1,10 @@
+echo "Generating TestResults/ExprTree/SimpleBalanced.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleBalanced.c >& TestResults/ExprTree/SimpleBalanced.c.out
+echo "Generating TestResults/ExprTree/SimpleCall2.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleCall2.c >& TestResults/ExprTree/SimpleCall2.c.out
+echo "Generating TestResults/ExprTree/SimpleCall.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleCall.c >& TestResults/ExprTree/SimpleCall.c.out
+echo "Generating TestResults/ExprTree/SimpleSin.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleSin.c >& TestResults/ExprTree/SimpleSin.c.out
+echo "Generating TestResults/ExprTree/SimpleUnbalanced.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleUnbalanced.c >& TestResults/ExprTree/SimpleUnbalanced.c.out

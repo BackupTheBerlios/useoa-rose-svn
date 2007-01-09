@@ -1,0 +1,20 @@
+echo "Testing TestCases/ExprTree/SimpleBalanced.c, TestResults/ExprTree/SimpleBalanced.c.out Checked by LMR 01/08/07"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleBalanced.c >& t
+diff t TestResults/ExprTree/SimpleBalanced.c.out
+
+echo "Testing TestCases/ExprTree/SimpleCall2.c, TestResults/ExprTree/SimpleCall2.c.out Checked by LMR 01/08/07"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleCall2.c >& t
+diff t TestResults/ExprTree/SimpleCall2.c.out
+
+echo "Testing TestCases/ExprTree/SimpleCall.c, TestResults/ExprTree/SimpleCall.c.out Checked by LMR 01/08/07"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleCall.c >& t
+diff t TestResults/ExprTree/SimpleCall.c.out
+
+echo "Testing TestCases/ExprTree/SimpleSin.c, TestResults/ExprTree/SimpleSin.c.out Checked by LMR 01/08/07"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleSin.c >& t
+diff t TestResults/ExprTree/SimpleSin.c.out
+
+echo "Testing TestCases/ExprTree/SimpleUnbalanced.c, TestResults/ExprTree/SimpleUnbalanced.c.out Checked by LMR 01/08/07"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleUnbalanced.c >& t
+diff t TestResults/ExprTree/SimpleUnbalanced.c.out
+

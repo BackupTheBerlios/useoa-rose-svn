@@ -1,0 +1,16 @@
+# comment in file.test
+# Regression tests for Expression Trees
+testname::ExprTree
+inputdir::TestCases/ExprTree
+outputdir::TestResults/ExprTree
+driverexec::./OATest -edg:w --oa-ExprTree -c
+
+# list of tests
+#       input file,             status
+test::  SimpleBalanced.c,         Checked by LMR 01/08/07 
+test::  SimpleCall2.c,            Checked by LMR 01/08/07
+test::  SimpleCall.c,             Checked by LMR 01/08/07
+test::  SimpleSin.c,              Checked by LMR 01/08/07
+test::  SimpleUnbalanced.c,       Checked by LMR 01/08/07
+
+

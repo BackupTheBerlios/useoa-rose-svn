@@ -729,7 +729,7 @@ public:
           return ex->unparseToString();
     }
   std::string toString(const OA::CallHandle h);
-  std::string toString(const OA::OpHandle h) { return ""; }
+  std::string toString(const OA::OpHandle h);
   std::string toString(const OA::MemRefHandle h);
   std::string toString(const OA::SymHandle h); 
   std::string toStringWithoutScope(const OA::SymHandle h); 
@@ -749,7 +749,7 @@ public:
     return ( toString(mrh) );
     //return ""; 
   }
-  std::string toString(const OA::ConstValHandle h) { return ""; }
+  std::string toString(const OA::ConstValHandle h);
   std::string toString(OA::Alias::IRStmtType x);
   
   void dump(OA::OA_ptr<OA::MemRefExprIterator> memRefIterator,

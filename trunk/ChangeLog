@@ -3514,4 +3514,14 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 12/30/06     UseOA-ROSE svn trunk r255   Priyadarshini Malusare
     - Added TestCases and TestResults for ICFGActive.
 
+01/08/07     UseOA-ROSE svn trunk r256   Luis Ramos
+    - Added ExprTree functionality (Driver and TestCases)
+    - Modified OAWraps/Sage2OA by adding and completing toString Routines
+      for toString(const OpHandle) and for toString(const ConstValHandle),
+      it now properly prints Operator information and Constant Values.
+    - Fixed the ExprTreeTraversal Class and under evaluateInheritedAttributes
+      added the types missing: isSgFunctionCallExp(astNode) and
+      isSgExprListExp(astNode)
+    - Regenerated ParamBindings
+
 
