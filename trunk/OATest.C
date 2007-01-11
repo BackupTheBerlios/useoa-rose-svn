@@ -1383,7 +1383,7 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   OA::OA_ptr<OA::UDDUChains::UDDUChainsStandard> udduchains=
       udman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),alias,rds,interSideEffect);
 
-  udduchains->dump(std::cout, irInterface);
+  //udduchains->dump(std::cout, irInterface);
   udduchains->output(*irInterface);
   
 

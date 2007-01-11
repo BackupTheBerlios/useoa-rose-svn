@@ -34,38 +34,6 @@ InterAliasMap(
                         mMRE: 
                         Deref(
                             mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
-                            mMRE: 
-                            NamedRef(
-                                mAddressOf: 0
-                                mFullAccuracy: 1
-                                mMemRefType: DEF
-                                mSymHandle: SymHandle(s)
-                            )
-                            mNumDeref: 1
-                        )
-                    )    
-                    InvisibleLoc(
-                        mMRE: 
-                        Deref(
-                            mAddressOf: 0
-                            mFullAccuracy: 1
-                            mMemRefType: USE
-                            mMRE: 
-                            NamedRef(
-                                mAddressOf: 0
-                                mFullAccuracy: 1
-                                mMemRefType: DEF
-                                mSymHandle: SymHandle(t)
-                            )
-                            mNumDeref: 1
-                        )
-                    )    
-                    InvisibleLoc(
-                        mMRE: 
-                        Deref(
-                            mAddressOf: 0
                             mFullAccuracy: 0
                             mMemRefType: USE
                             mMRE: 

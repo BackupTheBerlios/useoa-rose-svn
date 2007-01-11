@@ -3524,4 +3524,9 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       isSgExprListExp(astNode)
     - Regenerated ParamBindings
 
+01/11/07     UseOA-ROSE svn trunk r257   Priyadarshini Malusare  
+    - Regenerated TestCases for FIAliasAliasMap and SideEffect
+      after fixing problem of multiple location for MemRefExpr 
+      with Partial and Full Accuracy in the same AliasSet.
+
 
