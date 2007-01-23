@@ -125,12 +125,10 @@ InterSideEffectStandard(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mAddressOf: 0
                                 mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(q)
@@ -160,12 +158,10 @@ InterSideEffectStandard(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mAddressOf: 0
                                 mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(q)
@@ -195,12 +191,10 @@ InterSideEffectStandard(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mAddressOf: 0
                                 mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(q)
@@ -230,12 +224,10 @@ InterSideEffectStandard(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mAddressOf: 0
                                 mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(q)

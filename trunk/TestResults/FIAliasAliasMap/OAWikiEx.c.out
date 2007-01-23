@@ -48,28 +48,24 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(__dev)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(g)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
                 4	 => [ 
                     UnnamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
@@ -124,28 +120,24 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(__dev)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(g)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
                 4	 => [ 
                     UnnamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
@@ -209,35 +201,30 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(__major)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(__minor)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(g)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
                 5	 => [ 
                     UnnamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
@@ -313,53 +300,45 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(g)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(a)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(y)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(p)
                     ) ] 
                 5	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
                 6	 => [ 
                     UnnamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
                     )    
                     Deref(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(a)
@@ -367,12 +346,10 @@ InterAliasMap(
                         mNumDeref: 1
                     )    
                     Deref(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(p)

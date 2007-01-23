@@ -46,43 +46,43 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("class Foo *f = ::new Foo ;") =>
         [
             MemRefHandle("f") => 
-                NamedRef( DEF, SymHandle("f"), F, full)
+                NamedRef( DEF, SymHandle("f"), full)
             MemRefHandle("implicit actual this:") => 
-                UnnamedRef( USE, StmtHandle("::new Foo"), T, part)
+                AddressOf( USE, UnnamedRef( USE, StmtHandle("::new Foo"), part), part)
             MemRefHandle("Foo") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), full)
             MemRefHandle("::new Foo") => 
-                UnnamedRef( USE, StmtHandle("::new Foo"), T, part)
+                AddressOf( USE, UnnamedRef( USE, StmtHandle("::new Foo"), part), part)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class Foo *f = ::new Foo ;") =>
         [
-            < NamedRef( DEF, SymHandle("f"), F, full)
-            , UnnamedRef( USE, StmtHandle("::new Foo"), T, part) >
+            < NamedRef( DEF, SymHandle("f"), full)
+            , AddressOf( USE, UnnamedRef( USE, StmtHandle("::new Foo"), part), part) >
         ] }
     CALLSITES = { StmtHandle("class Foo *f = ::new Foo ;") =>
         [
             CallHandle("::new Foo") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("::new Foo") =>
         [
-            < 0, UnnamedRef( USE, StmtHandle("::new Foo"), T, part) >
+            < 0, AddressOf( USE, UnnamedRef( USE, StmtHandle("::new Foo"), part), part) >
         ] }
     MEMREFEXPRS = { StmtHandle("delete f;") =>
         [
             MemRefHandle("f") => 
-                NamedRef( USE, SymHandle("f"), F, full)
+                NamedRef( USE, SymHandle("f"), full)
             MemRefHandle("delete f") => 
-                NamedRef( USE, SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), full)
         ] }
     CALLSITES = { StmtHandle("delete f;") =>
         [
             CallHandle("delete f") => 
-                NamedRef( USE, SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("delete f") =>
         [
-            < 0, NamedRef( USE, SymHandle("f"), F, full) >
+            < 0, NamedRef( USE, SymHandle("f"), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

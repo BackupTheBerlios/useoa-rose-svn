@@ -1,3 +1,4 @@
+
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){int m;int *ptr = &m;int *&refPtr = ptr;*ptr;*refPtr;return 0;}") =>
         [
@@ -11,42 +12,42 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int *ptr = &m;") =>
         [
             MemRefHandle("ptr") => 
-                NamedRef( DEF, SymHandle("ptr"), F, full)
+                NamedRef( DEF, SymHandle("ptr"), full)
             MemRefHandle("&m") => 
-                NamedRef( USE, SymHandle("m"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("m"), full), full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int *ptr = &m;") =>
         [
-            < NamedRef( DEF, SymHandle("ptr"), F, full)
-            , NamedRef( USE, SymHandle("m"), T, full) >
+            < NamedRef( DEF, SymHandle("ptr"), full)
+            , AddressOf( USE, NamedRef( USE, SymHandle("m"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("int *&refPtr = ptr;") =>
         [
             MemRefHandle("refPtr&") => 
-                NamedRef( DEF, SymHandle("refPtr"), F, full)
+                NamedRef( DEF, SymHandle("refPtr"), full)
             MemRefHandle("ptr") => 
-                NamedRef( USE, SymHandle("ptr"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("ptr"), full), full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int *&refPtr = ptr;") =>
         [
-            < NamedRef( DEF, SymHandle("refPtr"), F, full)
-            , NamedRef( USE, SymHandle("ptr"), T, full) >
+            < NamedRef( DEF, SymHandle("refPtr"), full)
+            , AddressOf( USE, NamedRef( USE, SymHandle("ptr"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("*ptr;") =>
         [
             MemRefHandle("ptr") => 
-                NamedRef( USE, SymHandle("ptr"), F, full)
+                NamedRef( USE, SymHandle("ptr"), full)
             MemRefHandle("*ptr") => 
-                Deref( USE, NamedRef( USE, SymHandle("ptr"), F, full), 1, F, full)
+                Deref( USE, NamedRef( USE, SymHandle("ptr"), full), 1, full)
         ] }
     MEMREFEXPRS = { StmtHandle("*refPtr;") =>
         [
             MemRefHandle("refRelatedBaseOrTmp") => 
-                NamedRef( USE, SymHandle("refPtr"), F, full)
+                NamedRef( USE, SymHandle("refPtr"), full)
             MemRefHandle("refPtr") => 
-                Deref( USE, NamedRef( USE, SymHandle("refPtr"), F, full), 1, F, full)
+                Deref( USE, NamedRef( USE, SymHandle("refPtr"), full), 1, full)
             MemRefHandle("*refPtr") => 
-                Deref( USE, Deref( USE, NamedRef( USE, SymHandle("refPtr"), F, full), 1, F, full), 1, F, full)
+                Deref( USE, Deref( USE, NamedRef( USE, SymHandle("refPtr"), full), 1, full), 1, full)
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

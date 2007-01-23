@@ -92,18 +92,15 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(x)
                     )    
                     Deref(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(q)
@@ -112,18 +109,15 @@ InterAliasMap(
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(y)
                     )    
                     Deref(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(p)
@@ -131,12 +125,10 @@ InterAliasMap(
                         mNumDeref: 1
                     )    
                     Deref(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mAddressOf: 0
                             mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(r)
@@ -145,49 +137,42 @@ InterAliasMap(
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(z)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(p)
                     ) ] 
                 5	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(q)
                     ) ] 
                 6	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(r)
                     ) ] 
                 7	 => [ 
                     NamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(printf)
                     ) ] 
                 8	 => [ 
                     UnnamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle("*p = %d\n")
                     ) ] 
                 9	 => [ 
                     UnnamedRef(
-                        mAddressOf: 0
                         mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle("*q = %d\n")

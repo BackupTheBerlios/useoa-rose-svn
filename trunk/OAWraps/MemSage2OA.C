@@ -358,7 +358,15 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
                         // an address taken will cancel out a deref and
                         // return the result
                         mMemref2mreSetMap[actual_memref].erase(actual_mre);
-                        actual_mre = actual_mre->setAddressTaken();
+
+                        OA::OA_ptr<OA::AddressOf> address_mre;
+                        OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                        address_mre = new OA::AddressOf(
+                                              true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+                        actual_mre = address_mre->composeWith(actual_mre);
+
                         mMemref2mreSetMap[actual_memref].insert(actual_mre);
 
                         // We also need to be careful to remove the
@@ -393,7 +401,15 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
                 // If the actual is an array type, take its address.
                 } else if ( isSgArrayType(actual_type) ) {
                     mMemref2mreSetMap[actual_memref].erase(actual_mre);
-                    actual_mre = actual_mre->setAddressTaken();
+
+                    OA::OA_ptr<OA::AddressOf> address_mre;
+                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                    address_mre = new OA::AddressOf(
+                                              true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+                    actual_mre = address_mre->composeWith(actual_mre);
+                    
                     mMemref2mreSetMap[actual_memref].insert(actual_mre);
                 }
 
@@ -482,7 +498,8 @@ applyReferenceConversionRules2And4(OA::StmtHandle stmt,
     bool accuracy = true;
     OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::DEF;
     OA::OA_ptr<OA::MemRefExpr> lhs_tmp_mre;
-    lhs_tmp_mre = new OA::UnnamedRef(addressTaken, accuracy, mrType, stmt);
+
+    lhs_tmp_mre = new OA::UnnamedRef(accuracy, mrType, stmt);
  
     // Record the type of the MRE (reference or non-reference).
     mMre2TypeMap[lhs_tmp_mre] = other;
@@ -513,7 +530,15 @@ applyReferenceConversionRules2And4(OA::StmtHandle stmt,
     mStmt2allMemRefsMap[stmt].insert(memref);
 
     OA::OA_ptr<OA::MemRefExpr> addr_of_lhs_tmp_mre = lhs_tmp_mre->clone();
-    addr_of_lhs_tmp_mre = addr_of_lhs_tmp_mre->setAddressTaken();
+
+    OA::OA_ptr<OA::AddressOf> address_mre;
+    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+    address_mre = new OA::AddressOf(
+                          true,
+                          OA::MemRefExpr::USE,
+                          nullMRE);
+    addr_of_lhs_tmp_mre = address_mre->composeWith(addr_of_lhs_tmp_mre);
+    
     addr_of_lhs_tmp_mre->setMemRefType(OA::MemRefExpr::USE);
 
     // Record the type of the MRE (reference or non-reference).
@@ -531,16 +556,18 @@ derefMre(OA::OA_ptr<OA::MemRefExpr> mre, bool addressTaken, bool accuracy, OA::M
     ROSE_ASSERT(addressTaken == false);
     ROSE_ASSERT(numDerefs == 1);
     OA::OA_ptr<OA::MemRefExpr> nullMRE;
-    deref_mre = new OA::Deref( addressTaken, 
-                               accuracy,
-                               mrType,
-                               nullMRE,
-                               numDerefs);
+
+    deref_mre = new OA::Deref ( accuracy,
+                                mrType,
+                                nullMRE,
+                                numDerefs);
+
 
     OA::OA_ptr<OA::MemRefExpr> tmp_mre = mre->clone();
     OA::OA_ptr<OA::MemRefExpr> composed_mre;
     composed_mre = deref_mre->composeWith(tmp_mre);
     return composed_mre;
+    
 }
 
 /*!
@@ -686,10 +713,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::SymHandle sym = getNodeNumber(initName);
             // construct the NamedRef
             OA::OA_ptr<OA::MemRefExpr> mre;
-            mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
+            
+            mre = new OA::NamedRef(accuracy, mrType, sym);
             
             // Record the type of the MRE (reference or non-reference).
-	    //            mMre2TypeMap[mre] = ( isSgReferenceType(initName->get_type()) ? reference : other );
+	        // mMre2TypeMap[mre] = ( isSgReferenceType(initName->get_type()) ? reference : other );
             mMre2TypeMap[mre] = other;
 
             // if is a reference type then 
@@ -709,16 +737,16 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 mMemref2mreSetMap[hiddenMemref].insert(mre);
 
                 int numderefs = 1;
-		//                mre = new OA::Deref(addressTaken,accuracy,mrType,mre,numderefs);
+		        //  mre = new OA::Deref(addressTaken,accuracy,mrType,mre,numderefs);
                 mre = derefMre(mre, addressTaken, accuracy, mrType, numderefs);
 
-		// It is the deref that we will see as the top mem ref handle
+         		// It is the deref that we will see as the top mem ref handle
                 // and ask whether the access it reprsents is to a reference.
                 mMre2TypeMap[mre] = reference;
             }
 
             // Record the type of the MRE (reference or non-reference).
-	    //            mMre2TypeMap[mre] = other;
+	        // mMre2TypeMap[mre] = other;
             mMemref2mreSetMap[memref].insert(mre);
             break;
         }
@@ -750,7 +778,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::SymHandle sym = getProcSymHandle(functionDeclaration);
             // construct the NamedRef
             OA::OA_ptr<OA::MemRefExpr> mre;
-            mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
+
+            mre = new OA::NamedRef(accuracy, mrType, sym);
             
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[mre] = other;
@@ -787,7 +816,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::SymHandle sym = getProcSymHandle(functionDeclaration);
             // construct the NamedRef
             OA::OA_ptr<OA::MemRefExpr> mre;
-            mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
+
+            mre = new OA::NamedRef(accuracy, mrType, sym);
  
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[mre] = other;
@@ -818,7 +848,16 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
                 OA::OA_ptr<OA::MemRefExpr> mre;
                 OA::StmtHandle stmtHandle = getNodeNumber(funcCallExp);
-                mre = new OA::UnnamedRef(addressTaken,accuracy, mrType, stmtHandle);
+
+                mre = new OA::UnnamedRef(accuracy, mrType, stmtHandle);
+                OA::OA_ptr<OA::AddressOf> address_mre;
+                OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                address_mre = new OA::AddressOf(
+                                              true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+                mre = address_mre->composeWith(mre);
+
  
                 // Record the type of the MRE (reference or non-reference).
                 mMre2TypeMap[mre] = other;
@@ -880,12 +919,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     bool addressTaken = false;
                     int numDerefs = 1;
                     OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                    deref_mre = new OA::Deref( addressTaken, 
-                                               call_mre->hasFullAccuracy(),
+
+                    deref_mre = new OA::Deref( call_mre->hasFullAccuracy(),
                                                OA::MemRefExpr::USE,
                                                nullMRE,
                                                numDerefs);
-
+                    
                     OA::OA_ptr<OA::MemRefExpr> mre = call_mre->clone();
                     call_mre = deref_mre->composeWith(mre);
                     
@@ -915,11 +954,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     OA::OA_ptr<OA::MemRefExpr> mre;
                     mre = getCallMemRefExpr(getCallHandle(astNode));
 
-		    OA::OA_ptr<OA::MemRefExpr> cloned = mre->clone();
+  		            OA::OA_ptr<OA::MemRefExpr> cloned = mre->clone();
                     // Transfer type to cloned MRE
                     mMre2TypeMap[cloned] = mMre2TypeMap[mre];
 
-		    OA::OA_ptr<OA::MemRefExpr> retSlot = cloned;
+		            OA::OA_ptr<OA::MemRefExpr> retSlot = cloned;
                     // If the return value has reference type,
                     // we need to apply reference conversion rule 3.
                     if ( returnsReference(funcCallExp) ) {
@@ -936,7 +975,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                         // deref should be the top memrefhandle.
                         Sg_File_Info *fileInfo = astNode->get_file_info();
                         ROSE_ASSERT(fileInfo != NULL);
-	                OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
+  	                    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
                         mStmt2allMemRefsMap[stmt].insert(hiddenMemref);
                         mMemref2mreSetMap[hiddenMemref].insert(retSlot);
                         int numderefs = 1;
@@ -945,8 +984,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                         retSlot = derefMre(cloned, false, cloned->hasFullAccuracy(), OA::MemRefExpr::USE, numderefs);
 #else
                         retSlot = 
-                            new OA::Deref(false,
-                                          cloned->hasFullAccuracy(),
+                            new OA::Deref(cloned->hasFullAccuracy(),
                                           OA::MemRefExpr::USE,
                                           cloned,
                                           numderefs);
@@ -1039,10 +1077,17 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::OA_ptr<OA::MemRefExpr> mre;
             bool addressTaken = true;
             bool fullAccuracy = false;
-	    OA::StmtHandle stmtHandle = getNodeNumber(newExp);
+    	    OA::StmtHandle stmtHandle = getNodeNumber(newExp);
 
-            mre = new OA::UnnamedRef(addressTaken, fullAccuracy,
-                                     OA::MemRefExpr::USE, stmtHandle);
+            mre = new OA::UnnamedRef(fullAccuracy, OA::MemRefExpr::USE, 
+                                     stmtHandle);
+            OA::OA_ptr<OA::AddressOf> address_mre;
+            OA::OA_ptr<OA::MemRefExpr> nullMRE;
+            address_mre = new OA::AddressOf(
+                                  true,
+                                  OA::MemRefExpr::USE,
+                                  nullMRE);
+            mre = address_mre->composeWith(mre);
 
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[mre] = other;
@@ -1128,36 +1173,38 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                         int numDerefs = 1;
     
                         OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                        deref_mre = new OA::Deref(addressTaken, 
-                                                  lhs_mre->hasFullAccuracy(),
+
+                        deref_mre = new OA::Deref(lhs_mre->hasFullAccuracy(),
                                                   OA::MemRefExpr::USE,
                                                   nullMRE,
                                                   numDerefs);
+
     
                         OA::OA_ptr<OA::MemRefExpr> fieldAccess;
                         addressTaken = false;
     
                         OA::OA_ptr<OA::MemRefExpr> composedMre = deref_mre->composeWith(lhs_mre);
                         mMre2TypeMap[composedMre] = other;
-    
-                        fieldAccess = new OA::FieldAccess(false,
-                                                          deref_mre->hasFullAccuracy(),
+   
+                        fieldAccess = new OA::FieldAccess(deref_mre->hasFullAccuracy(),
                                                           OA::MemRefExpr::USE,
                                                           composedMre,
                                                           OA_VTABLE_STR);
+                        
 
                         // Record the type of the MRE (reference or non-reference).
                         mMre2TypeMap[fieldAccess] = other;
 
-		        composedMre = derefMre(fieldAccess, addressTaken, fieldAccess->hasFullAccuracy(), OA::MemRefExpr::USE, 1);
+         		        composedMre = derefMre(fieldAccess, addressTaken, fieldAccess->hasFullAccuracy(), OA::MemRefExpr::USE, 1);
 
                         mMre2TypeMap[composedMre] = other;
 
-                        fieldAccess = new OA::FieldAccess(false, 
-                                                          deref_mre->hasFullAccuracy(),
+                        fieldAccess = new OA::FieldAccess(deref_mre->hasFullAccuracy(),
                                                           OA::MemRefExpr::USE,
                                                           composedMre,
                                                           field_name);
+
+                        
                         
                         // Record the type of the MRE (reference or non-reference).
                         mMre2TypeMap[fieldAccess] = other;
@@ -1182,11 +1229,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     bool addressTaken = false;
                     int numDerefs = 1;
                     OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                    deref_mre = new OA::Deref( addressTaken, 
-                                               method->hasFullAccuracy(),
+
+                    deref_mre = new OA::Deref( method->hasFullAccuracy(),
                                                OA::MemRefExpr::USE,
                                                nullMRE,
                                                numDerefs);
+
 
                     OA::OA_ptr<OA::MemRefExpr> mre = method->clone();
                     method = deref_mre->composeWith(mre);
@@ -1201,11 +1249,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     bool fullAccuracy = true;
     
                     OA::SymHandle symHandle = getProcSymHandle(methodDecl);
-        
-                    method = new OA::NamedRef(addressTaken, 
-                                              fullAccuracy,
+       
+                    method = new OA::NamedRef(fullAccuracy,
                                               OA::MemRefExpr::USE,
                                               symHandle);
+
     
                    // Record the type of the MRE (reference or non-reference).
                    mMre2TypeMap[method] = other;
@@ -1249,10 +1297,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             mStmt2allMemRefsMap[stmt].insert(memref);
 
             OA::OA_ptr<OA::MemRefExpr> mre;
-            mre = new OA::NamedRef(addressTaken, 
-                                   accuracy,
+
+            mre = new OA::NamedRef(accuracy,
                                    OA::MemRefExpr::USE,
                                    symHandle);
+
+                                   
             ROSE_ASSERT(!mre.ptrEqual(0));
 
             // Record the type of the MRE (reference or non-reference).
@@ -1317,7 +1367,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             bool accuracy = true;
             OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
             OA::OA_ptr<OA::MemRefExpr> mre;
+            /* deprecated addressTaken 1/2/2007
             mre = new OA::NamedRef(addressTaken,accuracy, mrType, formalSym);
+            */
+            mre = new OA::NamedRef(accuracy, mrType, formalSym);
   
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[mre] = other;
@@ -1429,7 +1482,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     bool accuracy = true;
                     OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::DEF;
                     OA::SymHandle sym = getNodeNumber(initName);
-                    mre = new OA::NamedRef(addressTaken,accuracy, mrType, sym);
+
+                    mre = new OA::NamedRef(accuracy, mrType, sym);
+ 
                     // Record the type of the MRE (reference or non-reference).
                     mMre2TypeMap[mre] = ( isSgReferenceType(initName->get_type()) ? reference : other );
 
@@ -1443,17 +1498,18 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         	        OA::SymHandle symHandle = getThisFormalSymHandle(astNode);
 
                     OA::OA_ptr<OA::MemRefExpr> base;
-                    base = new OA::NamedRef(addressTaken, 
-                                            accuracy,
+
+                    base = new OA::NamedRef(accuracy,
                                             mrType,
                                             symHandle);
+                    
                     mMemref2mreSetMap[receiver_memref].insert(base);
 
                     // Record the type of the MRE (reference or non-reference).
                     mMre2TypeMap[base] = other;
 
 
-		    OA::OA_ptr<OA::MemRefExpr> cloned = base->clone();
+   		            OA::OA_ptr<OA::MemRefExpr> cloned = base->clone();
                     // Transfer type to cloned MRE
                     mMre2TypeMap[cloned] = mMre2TypeMap[base];
 
@@ -1464,11 +1520,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 #if 1
                     deref_mre = derefMre(cloned, addressTaken, accuracy, OA::MemRefExpr::USE, numDerefs);
 #else
-                    deref_mre = new OA::Deref(addressTaken, 
-                                              accuracy,
+                    deref_mre = new OA::Deref(accuracy,
                                               OA::MemRefExpr::USE,
                                               cloned,
                                               numDerefs);
+
 #endif
 
                     // Record the type of the MRE (reference or non-reference).
@@ -1478,11 +1534,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     // Create the FieldAccess MRE.
                     OA::OA_ptr<OA::MemRefExpr> fieldAccess;
                     std::string field_name = toStringWithoutScope(initName);
-                    fieldAccess = new OA::FieldAccess(addressTaken, 
-                                                      accuracy,
+
+                    fieldAccess = new OA::FieldAccess(accuracy,
                                                       OA::MemRefExpr::DEF,
                                                       deref_mre,
                                                       field_name);
+
 
                     mre = fieldAccess;
                     // Record the type of the MRE (reference or non-reference).
@@ -1507,13 +1564,34 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     // array variables as actual arrays instead of constant
                     // ptrs to an array, we need to remove the addressTaken
                     // for the rhs MREs
+
+                    
+                    /* deprecated addressTaken 1/2/2007
                     if (isSgArrayType(type)) {
                         child_mre->setAddressTaken(false);
 
                     // If is a reference, then we need to apply reference
                     // conversion rules.  
                     } else if (isReferenceTypeRequiringModeling(getBaseType(type))) {
+                    */
+                   
+                    
+                    if(isSgArrayType(type)) {
+                        if(child_mre->isaRefOp()) {
+                            OA::OA_ptr<OA::RefOp> refOp = child_mre.convert<OA::RefOp>();
+                            ROSE_ASSERT(!refOp.ptrEqual(0));
+                            if(refOp->isaAddressOf()) {
+                               mMemref2mreSetMap[child_memref].erase(child_mre);
+                               child_mre = refOp->getMemRefExpr();
+                               mMemref2mreSetMap[child_memref].insert(child_mre);
+                            }
+                        } else {
+                            assert(0);
+                        }
+                        
+                    } else if (isReferenceTypeRequiringModeling(getBaseType(type))) {
 
+                        
                         // If the rhs has an lvalue, then set the 
                         // addressOf flag for the MREs for the node under 
                         // the SgInitializer node.  i.e., apply
@@ -1521,13 +1599,23 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                         // If the rhs does not have an lvalue, then
                         // apply reference conversion 3 to the _lhs_.
                         if ( is_lval(child_mre) ) {
+                           
                             // Apply reference conversion rule 4-- 
                             // take the address of the rhs.  
                         
                             // an address taken will cancel out a deref and
                             // return the result
                             mMemref2mreSetMap[child_memref].erase(child_mre);
-                            child_mre = child_mre->setAddressTaken();
+
+
+                            OA::OA_ptr<OA::AddressOf> address_mre;
+                            OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                            address_mre = new OA::AddressOf(
+                                                  true,
+                                                  OA::MemRefExpr::USE,
+                                                  nullMRE);
+                            child_mre = address_mre->composeWith(child_mre);
+
                             mMemref2mreSetMap[child_memref].insert(child_mre);
 
                             // We also need to be careful to remove the
@@ -1541,7 +1629,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                             Sg_File_Info *fileInfo = node->get_file_info();
                             ROSE_ASSERT(fileInfo != NULL);
 
-			    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
+             			    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
 
                             // Need to erase the mre w/o the deref.
                             mMemref2mreSetMap[hiddenMemref].erase(child_mre);
@@ -1550,6 +1638,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                             // a pointer assignment.
                             makePtrAssignPair(stmt, mre, child_mre);
                         } else {
+
                             // Apply reference conversion rules 2 and 4.
                             OA::OA_ptr<OA::MemRefExpr> addr_of_lhs_tmp_mre;
                             addr_of_lhs_tmp_mre =
@@ -1590,8 +1679,17 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::OA_ptr<OA::MemRefExpr> mre;
             bool addressTaken = true;
             bool fullAccuracy = false;
-            mre = new OA::UnnamedRef(addressTaken, fullAccuracy,
-                                     OA::MemRefExpr::USE, stmt);
+
+            
+            mre = new OA::UnnamedRef(fullAccuracy, OA::MemRefExpr::USE, stmt);
+            OA::OA_ptr<OA::AddressOf> address_mre;
+            OA::OA_ptr<OA::MemRefExpr> nullMRE;
+            address_mre = new OA::AddressOf(
+                                              true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+            mre = address_mre->composeWith(mre);
+
 
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[mre] = other ;
@@ -1626,10 +1724,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 OA::SymHandle symHandle = getProcSymHandle(functionDeclaration);
         
                 OA::OA_ptr<OA::MemRefExpr> method;
-                method = new OA::NamedRef(addressTaken, 
-                                          fullAccuracy,
+
+                method = new OA::NamedRef(fullAccuracy,
                                           OA::MemRefExpr::USE,
                                           symHandle);
+
     
                 // Record the type of the MRE (reference or non-reference).
                 mMre2TypeMap[method] = other;
@@ -1778,17 +1877,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 #endif
                         // Record the type of the MRE (reference or non-reference).
                         mMre2TypeMap[lhs_mre] = other;
-
-
                     }
 
-
                     OA::OA_ptr<OA::FieldAccess> fieldAccess;
-                    fieldAccess = new OA::FieldAccess(false, 
-                                                      lhs_mre->hasFullAccuracy(),
+
+                    fieldAccess = new OA::FieldAccess(lhs_mre->hasFullAccuracy(),
                                                       OA::MemRefExpr::USE,
                                                       lhs_mre,
                                                       OA_VTABLE_STR);
+
 
                     // Record the type of the MRE (reference or non-reference).
                     mMre2TypeMap[fieldAccess] = other;
@@ -1819,11 +1916,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     // Virtual method invocations need to be represented
                     // via a FieldAccess, as do member variable accesses.
                     OA::OA_ptr<OA::MemRefExpr> fieldAccess;
-                    fieldAccess = new OA::FieldAccess(false, 
-                                                      lhs_mre->hasFullAccuracy(),
+
+                    fieldAccess = new OA::FieldAccess(lhs_mre->hasFullAccuracy(),
                                                       OA::MemRefExpr::USE,
                                                       lhs_mre,
                                                       field_name);
+
 
                     // Record the type of the MRE (reference or non-reference).
                     mMre2TypeMap[fieldAccess] = other;
@@ -1870,8 +1968,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                             memberAccess = derefMre(fieldAccess, false, fieldAccess->hasFullAccuracy(), OA::MemRefExpr::USE, numderefs);
 #else
                             memberAccess = 
-                                new OA::Deref(false,
-                                              fieldAccess->hasFullAccuracy(),
+                                new OA::Deref(fieldAccess->hasFullAccuracy(),
                                               OA::MemRefExpr::USE,
                                               fieldAccess,
                                               numderefs);
@@ -1918,7 +2015,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 for ( ; mLhsIter->isValid(); ++(*mLhsIter) ) {
                     OA::OA_ptr<OA::MemRefExpr> lhs_mre = mLhsIter->current();
                     mMemref2mreSetMap[lhs_memref].erase(lhs_mre);
-                    lhs_mre = lhs_mre->setAddressTaken();
+                    
+                    OA::OA_ptr<OA::AddressOf> address_mre;
+                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                    address_mre = new OA::AddressOf(
+                                          true,
+                                          OA::MemRefExpr::USE,
+                                          nullMRE);
+                    lhs_mre = address_mre->composeWith(lhs_mre);
+
                     mMemref2mreSetMap[lhs_memref].insert(lhs_mre);
 		    //                    lhs_mre->setAddressTaken(true);
                 }
@@ -2085,11 +2190,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     bool addressTaken = false;
                     int numDerefs = 1;
                     OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                    deref_mre = new OA::Deref( addressTaken, 
-                                               lhs_mre->hasFullAccuracy(),
+
+                    deref_mre = new OA::Deref( lhs_mre->hasFullAccuracy(),
                                                OA::MemRefExpr::USE,
                                                nullMRE,
                                                numDerefs);
+
 
                     OA::OA_ptr<OA::MemRefExpr> mre = lhs_mre->clone();
                     mre = deref_mre->composeWith(mre);
@@ -2134,6 +2240,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // Transfer type to cloned MRE
                 mMre2TypeMap[mre] = mMre2TypeMap[lhs_mre];
 
+                // FIXME
+                // Needs to fix when AssignmentPair problem is solved.
+                // Temporarily Fixed: Michelle Suggested to consider
+                // Exposed Uses here. 
+                // PLM 1/4/2007
+ 
                 mre->setMemRefType(OA::MemRefExpr::USE);
                 mMemref2mreSetMap[memref].insert(mre);
 
@@ -2151,7 +2263,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 for ( ; mIter->isValid(); ++(*mIter) ) {
                     OA::OA_ptr<OA::MemRefExpr> rhs_mre = mIter->current();
                     mMemref2mreSetMap[rhs_memref].erase(rhs_mre);
-                    rhs_mre = rhs_mre->setAddressTaken();
+                    
+                    OA::OA_ptr<OA::AddressOf> address_mre;
+                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                    address_mre = new OA::AddressOf(
+                                          true,
+                                          OA::MemRefExpr::USE,
+                                          nullMRE);
+                    rhs_mre = address_mre->composeWith(rhs_mre);
+
                     mMemref2mreSetMap[rhs_memref].insert(rhs_mre);
 		    //                    rhs_mre->setAddressTaken(true);
                 }
@@ -2333,15 +2453,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 bool addressTaken = false;
                 int numDerefs = 1;
                 OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                deref_mre = new OA::Deref( addressTaken, 
-                                           child_mre->hasFullAccuracy(),
+
+                deref_mre = new OA::Deref( child_mre->hasFullAccuracy(),
                                            OA::MemRefExpr::USE,
                                            nullMRE,
                                            numDerefs);
 
                 // use composeWith so that any necessary canonicalization occurs
 
-		OA::OA_ptr<OA::MemRefExpr> composedMre = deref_mre->composeWith(child_mre);
+     		OA::OA_ptr<OA::MemRefExpr> composedMre = deref_mre->composeWith(child_mre);
                 // Transfer type to composed MRE
 	        mMre2TypeMap[composedMre] = other;
 
@@ -2369,7 +2489,16 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 = getMemRefExprIterator(child_memref);
             for ( ; mIter->isValid(); ++(*mIter) ) {
                 OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
-                child_mre = child_mre->setAddressTaken();
+                
+
+                OA::OA_ptr<OA::AddressOf> address_mre;
+                OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                address_mre = new OA::AddressOf(
+                                              true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+                child_mre = address_mre->composeWith(child_mre);
+                
                 mMemref2mreSetMap[memref].insert(child_mre);
             }
 
@@ -2472,10 +2601,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     OA::SymHandle symHandle = getProcSymHandle(functionDeclaration);
         
                     OA::OA_ptr<OA::MemRefExpr> function;
-                    function = new OA::NamedRef(addressTaken, 
-                                                fullAccuracy,
+
+                    function = new OA::NamedRef(fullAccuracy,
                                                 OA::MemRefExpr::DEF,
                                                 symHandle);
+
     
                     // Record the type of the MRE (reference or non-reference).
                     mMre2TypeMap[function] = ( isSgReferenceType(return_type) ? reference : other );
@@ -2518,7 +2648,16 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                 // an address taken will cancel out a deref and
                                 // return the result
                                 mMemref2mreSetMap[child_memref].erase(child_mre);
-                                child_mre = child_mre->setAddressTaken();
+
+                                OA::OA_ptr<OA::AddressOf> address_mre;
+                                OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                                address_mre = new OA::AddressOf(
+                                              true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+                                child_mre = address_mre->composeWith(child_mre);
+
+                                
                                 mMemref2mreSetMap[child_memref].insert(child_mre);
     
                                 // We also need to be careful to remove the
@@ -2532,7 +2671,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                 Sg_File_Info *fileInfo = node->get_file_info();
                                 ROSE_ASSERT(fileInfo != NULL);
     
-    			    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
+                			    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
     
                                 // Need to erase the mre w/o the deref.
                                 mMemref2mreSetMap[hiddenMemref].erase(child_mre);
@@ -2600,20 +2739,33 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     // But that returns a receiver intended as an
                     // implicit this-- i.e., with its address taken.
                     // We just want the object, so deref it.
+
+                    /* deprecated addressTaken 1/2/2007
                     ROSE_ASSERT(receiver_mre->hasAddressTaken());
+                    */
+
+                    if(receiver_mre->isaRefOp()) {
+                        OA::OA_ptr<OA::RefOp> refop = receiver_mre.convert<OA::RefOp>();
+                        ROSE_ASSERT(refop->isaAddressOf());
+
+                    } else {
+                       assert(0);
+                    }
+
 
                     OA::OA_ptr<OA::MemRefExpr> nullMRE;
                     OA::OA_ptr<OA::Deref> deref_mre;
                     bool addressTaken = false;
                     bool accuracy = true;
                     int numDerefs = 1;
-                    deref_mre = new OA::Deref(addressTaken, 
-                                              accuracy,
+
+                    deref_mre = new OA::Deref(accuracy,
                                               OA::MemRefExpr::USE,
                                               nullMRE,
                                               numDerefs);
 
-		    receiver_mre = deref_mre->composeWith(receiver_mre);
+                    
+   		            receiver_mre = deref_mre->composeWith(receiver_mre);
 
                     mMre2TypeMap[receiver_mre] = other;
 
@@ -2882,8 +3034,17 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             stmtHandle = getNodeNumber(stringVal);
 
             OA::OA_ptr<OA::MemRefExpr> mre;
-            mre = new OA::UnnamedRef(addressTaken, accuracy, 
-                                     mrType, stmtHandle);
+
+            mre = new OA::UnnamedRef(accuracy, mrType, stmtHandle);
+            OA::OA_ptr<OA::AddressOf> address_mre;
+            OA::OA_ptr<OA::MemRefExpr> nullMRE;
+            address_mre = new OA::AddressOf(
+                                              true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+            mre = address_mre->composeWith(mre);
+
+
 
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[mre] = other;
@@ -3072,10 +3233,21 @@ bool SageIRInterface::is_lval(OA::MemRefHandle memref)
 //! a location that has an address.
 bool is_lval(OA::OA_ptr<OA::MemRefExpr> mre) 
 {
+    /* deprecated addressTaken 1/2/2007
     // This is not an lvalue if its address has been taken.
     if ( mre->hasAddressTaken() ) {
         return false;
     }
+    */
+
+    // This is not an lvalue if its address has been taken.
+    if(mre->isaRefOp()) {
+        OA::OA_ptr<OA::RefOp> refop = mre.convert<OA::RefOp>();
+       if(refop->isaAddressOf()) {
+           return false; 
+       }
+    } 
+    
 #if 0
     // Wrong!
     // Nor is it an lvalue if it is a formal parameter.
@@ -3187,11 +3359,12 @@ createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
             // NB:  we expect that lhsMRE was already Deref'ed
             //      before being passed here if it is a pointer.
             OA::OA_ptr<OA::FieldAccess> fieldAccess;
-            fieldAccess = new OA::FieldAccess(addressTaken, 
-                                              fullAccuracy,
+
+            fieldAccess = new OA::FieldAccess(fullAccuracy,
                                               memRefType,
                                               lhsMRE,
                                               mangledMethodName);
+ 
 
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[fieldAccess] = other;
@@ -3202,11 +3375,22 @@ createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
             OA::SymHandle symHandle;
             symHandle = getVTableBaseSymHandle(classDefinition);
 	
-            OA::OA_ptr<OA::NamedRef> classMRE;
-            classMRE = new OA::NamedRef(addressTaken, 
-                                        fullAccuracy,
+            //OA::OA_ptr<OA::NamedRef> classMRE;
+
+            OA::OA_ptr<OA::MemRefExpr> classMRE;
+
+            classMRE = new OA::NamedRef(fullAccuracy,
                                         memRefType,
                                         symHandle);
+
+
+            OA::OA_ptr<OA::AddressOf> address_mre;
+            OA::OA_ptr<OA::MemRefExpr> nullMRE;
+            address_mre = new OA::AddressOf(  true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+            classMRE = address_mre->composeWith(classMRE);
+
 
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[classMRE] = other;
@@ -3295,11 +3479,12 @@ createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
                             // As above, we expect that the lhs has
                             // already been Deref'ed if need be.
                             OA::OA_ptr<OA::FieldAccess> fieldAccess;
-                            fieldAccess = new OA::FieldAccess(addressTaken, 
-                                                              fullAccuracy,
+
+                            fieldAccess = new OA::FieldAccess(fullAccuracy,
                                                               memRefType,
                                                               baseLHS,
                                                               mangledMethodName);
+                            
 		
                             // Record the type of the MRE (reference or non-reference).
                             mMre2TypeMap[fieldAccess] = other;
@@ -3311,11 +3496,22 @@ createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
                             symHandle = getProcSymHandle(functionDeclaration);
 
                             addressTaken = true;
-                            OA::OA_ptr<OA::NamedRef> method;
-                            method = new OA::NamedRef(addressTaken, 
-                                                      fullAccuracy,
+                            //OA::OA_ptr<OA::NamedRef> method;
+                            OA::OA_ptr<OA::MemRefExpr> method;
+
+                            method = new OA::NamedRef(fullAccuracy,
                                                       memRefType,
                                                       symHandle);
+
+
+                            OA::OA_ptr<OA::AddressOf> address_mre;
+                            OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                            address_mre = new OA::AddressOf(
+                                              true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+                             method = address_mre->composeWith(method);
+
 		
                             // Record the type of the MRE (reference or non-reference).
                             mMre2TypeMap[method] = other;
@@ -3393,6 +3589,34 @@ SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::Stmt
                                                                         OA::OA_ptr<OA::MemRefExpr> lhs_mre, 
                                                                         OA::OA_ptr<OA::MemRefExpr> rhs_mre)
 {
+
+    OA::StmtHandle rhs_stmt;
+    if(rhs_mre->isaRefOp()) {
+       OA::OA_ptr<OA::RefOp> refOp = rhs_mre.convert<OA::RefOp>();
+       if(refOp->isaAddressOf()) {
+          OA::OA_ptr<OA::MemRefExpr> newmre = refOp->getMemRefExpr();
+          if( !newmre->isaUnnamed() ) {
+              return;
+          }
+          OA::OA_ptr<OA::UnnamedRef> unnamed_mre
+                  = newmre.convert<OA::UnnamedRef>();
+          ROSE_ASSERT(!unnamed_mre.ptrEqual(0));
+          rhs_stmt = unnamed_mre->getStmtHandle();
+       } else {
+          return;
+       }
+    } else {
+
+       if ( !rhs_mre->isaUnnamed() ) {
+          return;
+       }
+       OA::OA_ptr<OA::UnnamedRef> unnamed_mre
+              = rhs_mre.convert<OA::UnnamedRef>();
+       ROSE_ASSERT(!unnamed_mre.ptrEqual(0));
+       rhs_stmt = unnamed_mre->getStmtHandle();
+    }
+
+    /*   
     if ( !rhs_mre->isaUnnamed() ) {
         return;
     }
@@ -3401,6 +3625,7 @@ SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::Stmt
     ROSE_ASSERT(!unnamed_mre.ptrEqual(0));
 
     OA::StmtHandle rhs_stmt = unnamed_mre->getStmtHandle();
+    */
 
     // Verify that this stmt handle maps to an AST node of an
     // expected type.
@@ -3464,11 +3689,12 @@ SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::Stmt
     int numDerefs = 1;
 
     OA::OA_ptr<OA::MemRefExpr> nullMRE;
-    deref_mre = new OA::Deref(addressTaken, 
-                              lhs_mre->hasFullAccuracy(),
+
+    deref_mre = new OA::Deref(lhs_mre->hasFullAccuracy(),
                               OA::MemRefExpr::USE,
                               nullMRE,
                               numDerefs);
+
 
     OA::OA_ptr<OA::MemRefExpr> base;
     base = lhs_mre->clone();
@@ -3674,13 +3900,14 @@ SageIRInterface::createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle s
                         // table into a single monolithic table for a 
                         // class, therefore always use its SgClassDefinition,
                         // rather than a super class's, as the base.
-		        symHandle = getVTableBaseSymHandle(topClassDefinition);
+        		        symHandle = getVTableBaseSymHandle(topClassDefinition);
     
                         OA::OA_ptr<OA::NamedRef> classMRE;
-                        classMRE = new OA::NamedRef(addressTaken, 
-                                                    fullAccuracy,
+
+                        classMRE = new OA::NamedRef(fullAccuracy,
                                                     memRefType,
                                                     symHandle);
+
     
                         // Record the type of the MRE (reference or non-reference).
                         mMre2TypeMap[classMRE] = other;
@@ -3690,11 +3917,12 @@ SageIRInterface::createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle s
                         memRefType = OA::MemRefExpr::DEF;
     
                         OA::OA_ptr<OA::FieldAccess> fieldAccess;
-                        fieldAccess = new OA::FieldAccess(addressTaken, 
-                                                          fullAccuracy,
+
+                        fieldAccess = new OA::FieldAccess(fullAccuracy,
                                                           memRefType,
                                                           classMRE,
                                                           mangledMethodName);
+
     
                         // Record the type of the MRE (reference or non-reference).
                         mMre2TypeMap[fieldAccess] = other;
@@ -3705,11 +3933,18 @@ SageIRInterface::createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle s
                         symHandle = getProcSymHandle(functionDeclaration);
     	  
                         addressTaken = true;
-                        OA::OA_ptr<OA::NamedRef> method;
-                        method = new OA::NamedRef(addressTaken, 
-                                                  fullAccuracy,
+                        OA::OA_ptr<OA::MemRefExpr> method;
+
+                        method = new OA::NamedRef(fullAccuracy,
                                                   memRefType,
                                                   symHandle);
+                        OA::OA_ptr<OA::AddressOf> address_mre;
+                        OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                        address_mre = new OA::AddressOf(
+                                              true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+                        method = address_mre->composeWith(method);
 
                         // Record the type of the MRE (reference or non-reference).
                         mMre2TypeMap[method] = other;
@@ -3880,7 +4115,15 @@ void SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
                 // set the addressTaken for the var because could
                 // be computing the address of the array
 		//                child_mre->setAddressTaken(true);
-                child_mre = child_mre->setAddressTaken();
+        
+                OA::OA_ptr<OA::AddressOf> address_mre;
+                OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                address_mre = new OA::AddressOf(
+                                              true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+                child_mre = address_mre->composeWith(child_mre);
+                
                 // conservatively assume that we are computing address 
                 // somewhere into the array
                 child_mre->setAccuracy(false);
@@ -3894,7 +4137,8 @@ void SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
                 // addressOf doesn't cancel out deref because
                 // deref is partial but the namedRef to a is full
                 // get a clone of the child
-	      //	      if ( !(isDeref(child_mre) && !child_mre->hasFullAccuracy()) ) {
+   	            //	      if ( !(isDeref(child_mre) && !child_mre->hasFullAccuracy()) ) {
+
                 OA::OA_ptr<OA::MemRefExpr> mre = child_mre->clone();
 
                 // Transfer type to cloned MRE
@@ -3903,8 +4147,30 @@ void SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
                 bool addressTaken = true;
                 int numDerefs = 1;
                 bool accuracy = false;
-                mre = new OA::Deref(addressTaken,accuracy,OA::MemRefExpr::USE,
+
+                mre = new OA::Deref(accuracy,OA::MemRefExpr::USE,
                                     mre, numDerefs);
+
+                /* PLM : 1/19/2007
+                 * Do I need one more level of Deref for cases like
+                 * 
+                 * int *constPtr;
+                 * int * q = &constPtr[i];
+                 *
+                 * Need to ask Michelle
+
+                mre = new OA::Deref(accuracy,OA::MemRefExpr::USE,
+                                    mre, numDerefs);
+                */                    
+
+                OA::OA_ptr<OA::AddressOf> address_mre;
+                OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                address_mre = new OA::AddressOf(
+                                          true,
+                                          OA::MemRefExpr::USE,
+                                          nullMRE);
+                mre = address_mre->composeWith(mre);
+
                 // Record the type of the MRE (reference or non-reference).
                 mMre2TypeMap[mre] = other;
 
@@ -3929,17 +4195,17 @@ void SageIRInterface::createUseDefForVarArg(OA::MemRefHandle memref,
         int numDerefs = 1;
         OA::OA_ptr<OA::MemRefExpr> nullMRE;
  
-	OA::OA_ptr<OA::MemRefExpr> cloned = mre->clone();
+     	OA::OA_ptr<OA::MemRefExpr> cloned = mre->clone();
         // Transfer type to cloned MRE
         mMre2TypeMap[cloned] = mMre2TypeMap[mre];
 
-        deref_mre = new OA::Deref( addressTaken, 
-                                   fullAccuracy,
+        deref_mre = new OA::Deref( fullAccuracy,
                                    // FIXME: this needs to be BOTH to
                                    // indicate no known order
                                    OA::MemRefExpr::USEDEF,
                                    cloned,
                                    numDerefs);
+
 
         // Record the type of the MRE (reference or non-reference).
         mMre2TypeMap[deref_mre] = other;
@@ -4047,10 +4313,11 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
           OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
           // get the symbol for the implicit formal this.
           OA::SymHandle symHandle = getThisFormalSymHandle(initName);
-          mre = new OA::NamedRef(addressTaken, 
-                                  accuracy,
+
+          mre = new OA::NamedRef( accuracy,
                                   mrType,
                                   symHandle);
+
 
           // Record the type of the MRE (reference or non-reference).
           mMre2TypeMap[mre] = other;
@@ -4066,7 +4333,9 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
           OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
           // get the symbol for the implicit formal this.
           OA::SymHandle symHandle = getThisFormalSymHandle(initName);
-          mre = new OA::NamedRef(addressTaken, accuracy, mrType, symHandle);
+
+          mre = new OA::NamedRef(accuracy, mrType, symHandle);
+          
           // Deref the MRE.
 
           // Record the type of the MRE (reference or non-reference).
@@ -4088,10 +4357,21 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
           // Create the FieldAccess MRE.
           addressTaken = true;
           std::string field_name = toStringWithoutScope(initName);
-          mre = new OA::FieldAccess(addressTaken, accuracy,
-                                            OA::MemRefExpr::USE,
-                                            deref_mre,
-                                            field_name);
+
+          mre = new OA::FieldAccess(accuracy,
+                                    OA::MemRefExpr::USE,
+                                    deref_mre,
+                                    field_name);
+
+          
+          OA::OA_ptr<OA::AddressOf> address_mre;
+          OA::OA_ptr<OA::MemRefExpr> nullMRE;
+          address_mre = new OA::AddressOf(
+                                         true,
+                                         OA::MemRefExpr::USE,
+                                         nullMRE);
+          mre = address_mre->composeWith(mre);
+
 
           // Record the type of the MRE (reference or non-reference).
           mMre2TypeMap[mre] = ( isSgReferenceType(initName->get_type()) ? reference : other );
@@ -4104,7 +4384,16 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
           bool accuracy = true;
           OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
           OA::SymHandle sym = getNodeNumber(initName);
-          mre = new OA::NamedRef(addressTaken, accuracy, mrType, sym);
+
+          mre = new OA::NamedRef(accuracy, mrType, sym);
+          OA::OA_ptr<OA::AddressOf> address_mre;
+          OA::OA_ptr<OA::MemRefExpr> nullMRE;
+          address_mre = new OA::AddressOf(
+                                          true,
+                                          OA::MemRefExpr::USE,
+                                          nullMRE);
+          mre = address_mre->composeWith(mre);
+
 
           // Record the type of the MRE (reference or non-reference).
           mMre2TypeMap[mre] = ( isSgReferenceType(initName->get_type()) ? reference : other );
@@ -4136,7 +4425,17 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
           bool accuracy = true;
           OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
           OA::StmtHandle stmtHandle = getNodeNumber(ctorInitializer);
-          mre = new OA::UnnamedRef(addressTaken, accuracy, mrType, stmtHandle);
+
+
+          mre = new OA::UnnamedRef(accuracy, mrType, stmtHandle);
+          OA::OA_ptr<OA::AddressOf> address_mre;
+          OA::OA_ptr<OA::MemRefExpr> nullMRE;
+          address_mre = new OA::AddressOf(
+                                              true,
+                                              OA::MemRefExpr::USE,
+                                              nullMRE);
+          mre = address_mre->composeWith(mre);
+
 
           // Record the type of the MRE (reference or non-reference).
           mMre2TypeMap[mre] = other;
@@ -4155,7 +4454,20 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
           bool accuracy = true;
           OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
           OA::StmtHandle stmtHandle = getNodeNumber(ctorInitializer);
+
+          /* deprecated addressTaken 1/2/2007
           mre = new OA::UnnamedRef(addressTaken, accuracy, mrType, stmtHandle);
+          */
+
+
+          mre = new OA::UnnamedRef(accuracy, mrType, stmtHandle);
+          OA::OA_ptr<OA::AddressOf> address_mre;
+          OA::OA_ptr<OA::MemRefExpr> nullMRE;
+          address_mre = new OA::AddressOf(
+                                          true,
+                                          OA::MemRefExpr::USE,
+                                          nullMRE);
+          mre = address_mre->composeWith(mre);
 
           // Record the type of the MRE (reference or non-reference).
           mMre2TypeMap[mre] = other;
@@ -4172,7 +4484,16 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
         bool accuracy = true;
         OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
         OA::StmtHandle stmtHandle = getNodeNumber(ctorInitializer);
-        mre = new OA::UnnamedRef(addressTaken, accuracy, mrType, stmtHandle);
+
+        mre = new OA::UnnamedRef(accuracy, mrType, stmtHandle);
+        OA::OA_ptr<OA::AddressOf> address_mre;
+        OA::OA_ptr<OA::MemRefExpr> nullMRE;
+        address_mre = new OA::AddressOf(
+                                        true,
+                                        OA::MemRefExpr::USE,
+                                        nullMRE);
+        mre = address_mre->composeWith(mre);
+
   
         // Record the type of the MRE (reference or non-reference).
         mMre2TypeMap[mre] = other;

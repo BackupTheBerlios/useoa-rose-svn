@@ -70,14 +70,14 @@ PROCEDURE = { < ProcHandle("Foo::operator="), SymHandle("method:Foo::operator=__
     MEMREFEXPRS = { StmtHandle("return *(this);") =>
         [
             MemRefHandle("(this)") => 
-                NamedRef( USE, SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), F, full)
+                NamedRef( USE, SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), full)
             MemRefHandle("*(this)") => 
-                NamedRef( USE, SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), F, full)
+                NamedRef( USE, SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("return *(this);") =>
         [
-            < NamedRef( DEF, SymHandle("method:Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), F, full)
-            , NamedRef( USE, SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), F, full) >
+            < NamedRef( DEF, SymHandle("method:Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), full)
+            , NamedRef( USE, SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), full) >
         ] }
     LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("this::Foo::operator=__Foo__scope__operator__as____MFb_Foo__Fb___Rb__Foo__Re___Gb___Rb__Foo__Re___Fe_"), local > }
@@ -125,10 +125,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class Foo {public: inline Foo(){}inline Foo(class Foo &f){}inline ~Foo(){}inline Foo &operator=(class Foo &f){return *(this);}virtual inline void virtMethod1(){}virtual inline void virtMethod2(int x){}};") =>
         [
-            < FieldAccess( DEF, NamedRef( USE, SymHandle("SgClassDefinition:Foo"), F, full), virtMethod1_void, F, full)
-            , NamedRef( USE, SymHandle("method:Foo::virtMethod1__Foo__scope__virtMethod1____MFb_Foo__Fb_v_Gb__Fe_"), T, full) >
-            < FieldAccess( DEF, NamedRef( USE, SymHandle("SgClassDefinition:Foo"), F, full), virtMethod2_void_int, F, full)
-            , NamedRef( USE, SymHandle("method:Foo::virtMethod2__Foo__scope__virtMethod2____MFb_Foo__Fb_v_Gb_i_Fe_"), T, full) >
+            < FieldAccess( DEF, NamedRef( USE, SymHandle("SgClassDefinition:Foo"), full), virtMethod1_void, full)
+            , AddressOf( USE, NamedRef( USE, SymHandle("method:Foo::virtMethod1__Foo__scope__virtMethod1____MFb_Foo__Fb_v_Gb__Fe_"), full), full) >
+            < FieldAccess( DEF, NamedRef( USE, SymHandle("SgClassDefinition:Foo"), full), virtMethod2_void_int, full)
+            , AddressOf( USE, NamedRef( USE, SymHandle("method:Foo::virtMethod2__Foo__scope__virtMethod2____MFb_Foo__Fb_v_Gb_i_Fe_"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("int main(){class Foo *f = new Foo ;class Foo *f2 = f;return 0;}") =>
         [
@@ -139,41 +139,41 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("class Foo *f = new Foo ;") =>
         [
             MemRefHandle("f") => 
-                NamedRef( DEF, SymHandle("f"), F, full)
+                NamedRef( DEF, SymHandle("f"), full)
             MemRefHandle("implicit actual this:") => 
-                UnnamedRef( USE, StmtHandle("new Foo"), T, part)
+                AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo"), part), part)
             MemRefHandle("Foo") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), full)
             MemRefHandle("new Foo") => 
-                UnnamedRef( USE, StmtHandle("new Foo"), T, part)
+                AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo"), part), part)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class Foo *f = new Foo ;") =>
         [
-            < NamedRef( DEF, SymHandle("f"), F, full)
-            , UnnamedRef( USE, StmtHandle("new Foo"), T, part) >
-            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("f"), F, full), 1, F, full), __oa_vtable_ptr, F, full)
-            , NamedRef( USE, SymHandle("SgClassDefinition:Foo"), T, full) >
+            < NamedRef( DEF, SymHandle("f"), full)
+            , AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo"), part), part) >
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("f"), full), 1, full), __oa_vtable_ptr, full)
+            , AddressOf( USE, NamedRef( USE, SymHandle("SgClassDefinition:Foo"), full), full) >
         ] }
     CALLSITES = { StmtHandle("class Foo *f = new Foo ;") =>
         [
             CallHandle("new Foo") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("new Foo") =>
         [
-            < 0, UnnamedRef( USE, StmtHandle("new Foo"), T, part) >
+            < 0, AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo"), part), part) >
         ] }
     MEMREFEXPRS = { StmtHandle("class Foo *f2 = f;") =>
         [
             MemRefHandle("f2") => 
-                NamedRef( DEF, SymHandle("f2"), F, full)
+                NamedRef( DEF, SymHandle("f2"), full)
             MemRefHandle("f") => 
-                NamedRef( USE, SymHandle("f"), F, full)
+                NamedRef( USE, SymHandle("f"), full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class Foo *f2 = f;") =>
         [
-            < NamedRef( DEF, SymHandle("f2"), F, full)
-            , NamedRef( USE, SymHandle("f"), F, full) >
+            < NamedRef( DEF, SymHandle("f2"), full)
+            , NamedRef( USE, SymHandle("f"), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

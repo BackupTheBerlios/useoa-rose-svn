@@ -40,115 +40,115 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int *xPtr = &x;") =>
         [
             MemRefHandle("xPtr") => 
-                NamedRef( DEF, SymHandle("xPtr"), F, full)
+                NamedRef( DEF, SymHandle("xPtr"), full)
             MemRefHandle("&x") => 
-                NamedRef( USE, SymHandle("x"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int *xPtr = &x;") =>
         [
-            < NamedRef( DEF, SymHandle("xPtr"), F, full)
-            , NamedRef( USE, SymHandle("x"), T, full) >
+            < NamedRef( DEF, SymHandle("xPtr"), full)
+            , AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("int *&xRefPtr = xPtr;") =>
         [
             MemRefHandle("xRefPtr&") => 
-                NamedRef( DEF, SymHandle("xRefPtr"), F, full)
+                NamedRef( DEF, SymHandle("xRefPtr"), full)
             MemRefHandle("xPtr") => 
-                NamedRef( USE, SymHandle("xPtr"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("xPtr"), full), full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int *&xRefPtr = xPtr;") =>
         [
-            < NamedRef( DEF, SymHandle("xRefPtr"), F, full)
-            , NamedRef( USE, SymHandle("xPtr"), T, full) >
+            < NamedRef( DEF, SymHandle("xRefPtr"), full)
+            , AddressOf( USE, NamedRef( USE, SymHandle("xPtr"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("nonConstRefPtrArg(xPtr);") =>
         [
             MemRefHandle("xPtr") => 
-                NamedRef( USE, SymHandle("xPtr"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("xPtr"), full), full)
             MemRefHandle("nonConstRefPtrArg") => 
-                NamedRef( USE, SymHandle("nonConstRefPtrArg"), F, full)
+                NamedRef( USE, SymHandle("nonConstRefPtrArg"), full)
         ] }
     CALLSITES = { StmtHandle("nonConstRefPtrArg(xPtr);") =>
         [
             CallHandle("nonConstRefPtrArg(xPtr)") => 
-                NamedRef( USE, SymHandle("nonConstRefPtrArg"), F, full)
+                NamedRef( USE, SymHandle("nonConstRefPtrArg"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("nonConstRefPtrArg(xPtr)") =>
         [
-            < 0, NamedRef( USE, SymHandle("xPtr"), T, full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("xPtr"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("nonConstRefPtrArg(xRefPtr);") =>
         [
             MemRefHandle("xRefPtr") => 
-                NamedRef( USE, SymHandle("xRefPtr"), F, full)
+                NamedRef( USE, SymHandle("xRefPtr"), full)
             MemRefHandle("nonConstRefPtrArg") => 
-                NamedRef( USE, SymHandle("nonConstRefPtrArg"), F, full)
+                NamedRef( USE, SymHandle("nonConstRefPtrArg"), full)
         ] }
     CALLSITES = { StmtHandle("nonConstRefPtrArg(xRefPtr);") =>
         [
             CallHandle("nonConstRefPtrArg(xRefPtr)") => 
-                NamedRef( USE, SymHandle("nonConstRefPtrArg"), F, full)
+                NamedRef( USE, SymHandle("nonConstRefPtrArg"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("nonConstRefPtrArg(xRefPtr)") =>
         [
-            < 0, NamedRef( USE, SymHandle("xRefPtr"), F, full) >
+            < 0, NamedRef( USE, SymHandle("xRefPtr"), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("constRefPtrArg((&x));") =>
         [
             MemRefHandle("refRelatedBaseOrTmp") => 
-                UnnamedRef( USE, StmtHandle("constRefPtrArg((&x));"), T, full)
+                UnnamedRef( DEF, StmtHandle("constRefPtrArg((&x));"), full)
             MemRefHandle("refRelatedBaseOrTmp") => 
-                UnnamedRef( DEF, StmtHandle("constRefPtrArg((&x));"), F, full)
+                AddressOf( USE, UnnamedRef( DEF, StmtHandle("constRefPtrArg((&x));"), full), full)
             MemRefHandle("&x") => 
-                NamedRef( USE, SymHandle("x"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full)
             MemRefHandle("constRefPtrArg") => 
-                NamedRef( USE, SymHandle("constRefPtrArg"), F, full)
+                NamedRef( USE, SymHandle("constRefPtrArg"), full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("constRefPtrArg((&x));") =>
         [
-            < UnnamedRef( DEF, StmtHandle("constRefPtrArg((&x));"), F, full)
-            , NamedRef( USE, SymHandle("x"), T, full) >
+            < UnnamedRef( DEF, StmtHandle("constRefPtrArg((&x));"), full)
+            , AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full) >
         ] }
     CALLSITES = { StmtHandle("constRefPtrArg((&x));") =>
         [
             CallHandle("constRefPtrArg((&x))") => 
-                NamedRef( USE, SymHandle("constRefPtrArg"), F, full)
+                NamedRef( USE, SymHandle("constRefPtrArg"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("constRefPtrArg((&x))") =>
         [
-            < 0, UnnamedRef( USE, StmtHandle("constRefPtrArg((&x));"), T, full) >
+            < 0, AddressOf( USE, UnnamedRef( DEF, StmtHandle("constRefPtrArg((&x));"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("constRefPtrArg(xPtr);") =>
         [
             MemRefHandle("xPtr") => 
-                NamedRef( USE, SymHandle("xPtr"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("xPtr"), full), full)
             MemRefHandle("constRefPtrArg") => 
-                NamedRef( USE, SymHandle("constRefPtrArg"), F, full)
+                NamedRef( USE, SymHandle("constRefPtrArg"), full)
         ] }
     CALLSITES = { StmtHandle("constRefPtrArg(xPtr);") =>
         [
             CallHandle("constRefPtrArg(xPtr)") => 
-                NamedRef( USE, SymHandle("constRefPtrArg"), F, full)
+                NamedRef( USE, SymHandle("constRefPtrArg"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("constRefPtrArg(xPtr)") =>
         [
-            < 0, NamedRef( USE, SymHandle("xPtr"), T, full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("xPtr"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("constRefPtrArg(xRefPtr);") =>
         [
             MemRefHandle("xRefPtr") => 
-                NamedRef( USE, SymHandle("xRefPtr"), F, full)
+                NamedRef( USE, SymHandle("xRefPtr"), full)
             MemRefHandle("constRefPtrArg") => 
-                NamedRef( USE, SymHandle("constRefPtrArg"), F, full)
+                NamedRef( USE, SymHandle("constRefPtrArg"), full)
         ] }
     CALLSITES = { StmtHandle("constRefPtrArg(xRefPtr);") =>
         [
             CallHandle("constRefPtrArg(xRefPtr)") => 
-                NamedRef( USE, SymHandle("constRefPtrArg"), F, full)
+                NamedRef( USE, SymHandle("constRefPtrArg"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("constRefPtrArg(xRefPtr)") =>
         [
-            < 0, NamedRef( USE, SymHandle("xRefPtr"), F, full) >
+            < 0, NamedRef( USE, SymHandle("xRefPtr"), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

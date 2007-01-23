@@ -9,19 +9,19 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int x = read();") =>
         [
             MemRefHandle("x") => 
-                NamedRef( DEF, SymHandle("x"), F, full)
+                NamedRef( DEF, SymHandle("x"), full)
             MemRefHandle("read") => 
-                NamedRef( USE, SymHandle("read"), F, full)
+                NamedRef( USE, SymHandle("read"), full)
         ] }
     CALLSITES = { StmtHandle("int x = read();") =>
         [
             CallHandle("read()") => 
-                NamedRef( USE, SymHandle("read"), F, full)
+                NamedRef( USE, SymHandle("read"), full)
         ] }
     MEMREFEXPRS = { StmtHandle("if(x) {fp = foo;}else {fp = bar;}") =>
         [
             MemRefHandle("x") => 
-                NamedRef( USE, SymHandle("x"), F, full)
+                NamedRef( USE, SymHandle("x"), full)
         ] }
     MEMREFEXPRS = { StmtHandle("{fp = foo;}") =>
         [
@@ -29,16 +29,16 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("fp = foo;") =>
         [
             MemRefHandle("foo") => 
-                NamedRef( USE, SymHandle("foo"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("foo"), full), full)
             MemRefHandle("fp") => 
-                NamedRef( DEF, SymHandle("fp"), F, full)
+                NamedRef( DEF, SymHandle("fp"), full)
             MemRefHandle("fp = foo") => 
-                NamedRef( USE, SymHandle("fp"), F, full)
+                NamedRef( USE, SymHandle("fp"), full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("fp = foo;") =>
         [
-            < NamedRef( DEF, SymHandle("fp"), F, full)
-            , NamedRef( USE, SymHandle("foo"), T, full) >
+            < NamedRef( DEF, SymHandle("fp"), full)
+            , AddressOf( USE, NamedRef( USE, SymHandle("foo"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("{fp = bar;}") =>
         [
@@ -46,28 +46,28 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("fp = bar;") =>
         [
             MemRefHandle("bar") => 
-                NamedRef( USE, SymHandle("bar"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("bar"), full), full)
             MemRefHandle("fp") => 
-                NamedRef( DEF, SymHandle("fp"), F, full)
+                NamedRef( DEF, SymHandle("fp"), full)
             MemRefHandle("fp = bar") => 
-                NamedRef( USE, SymHandle("fp"), F, full)
+                NamedRef( USE, SymHandle("fp"), full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("fp = bar;") =>
         [
-            < NamedRef( DEF, SymHandle("fp"), F, full)
-            , NamedRef( USE, SymHandle("bar"), T, full) >
+            < NamedRef( DEF, SymHandle("fp"), full)
+            , AddressOf( USE, NamedRef( USE, SymHandle("bar"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("( *fp)();") =>
         [
             MemRefHandle("fp") => 
-                NamedRef( USE, SymHandle("fp"), F, full)
+                NamedRef( USE, SymHandle("fp"), full)
             MemRefHandle("( *fp)") => 
-                Deref( USE, NamedRef( USE, SymHandle("fp"), F, full), 1, F, full)
+                Deref( USE, NamedRef( USE, SymHandle("fp"), full), 1, full)
         ] }
     CALLSITES = { StmtHandle("( *fp)();") =>
         [
             CallHandle("( *fp)()") => 
-                Deref( USE, NamedRef( USE, SymHandle("fp"), F, full), 1, F, full)
+                Deref( USE, NamedRef( USE, SymHandle("fp"), full), 1, full)
         ] }
     LOCATION = { < SymHandle("fp"), not local > }
     LOCATION = { < SymHandle("x"), local > }

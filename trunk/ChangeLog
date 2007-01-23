@@ -3529,4 +3529,11 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       after fixing problem of multiple location for MemRefExpr 
       with Partial and Full Accuracy in the same AliasSet.
 
+01/23/07     UseOA-ROSE svn trunk r259   Priyadarshini Malusare
+   - Regenerated TestResults for AddressOf Class.
+   - Modifications in SageIRInterface for AddressOf class.
+   - Please refer following link for further reference.
+     http://www-unix.mcs.anl.gov/OpenAnalysisWiki/moin.cgi/AddressOf_20class
+   - regressAll works with OpenAnalysis r285 on Okapi with gcc-3.2
+
 

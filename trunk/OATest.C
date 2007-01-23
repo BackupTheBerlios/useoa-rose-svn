@@ -771,57 +771,62 @@ int DoICFG(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 
 int DoICFGDep(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 {
-  int returnvalue=FALSE;
 
-  
-  /*! commented out by PLM 08/17/06
-  if ( debug ) 
-    printf("*******start of DoICFGDep\n");
-  OA::OA_ptr<SageIRInterface> irInterface;
-  irInterface = new SageIRInterface(sgproject, na, p_handle);
-  //irInterface->createNodeArray(sgproject); //what about global vars?
-  
-  // eachCFG 
-  OA::OA_ptr<OA::CFG::EachCFGInterface> eachCFG;
-  OA::OA_ptr<OA::CFG::ManagerStandard> cfgman;
-  cfgman = new OA::CFG::ManagerStandard(irInterface);
-  eachCFG = new OA::CFG::EachCFGStandard(cfgman);
+   int returnvalue=FALSE;
+   if ( debug ) printf("*******start of DoUDDUChains\n");
+   OA::OA_ptr<SageIRInterface> irInterface;
+   irInterface = new SageIRInterface(sgproject, na, p_handle);
+ 
 
-  //FIAlias
-  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
-  fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
-  OA::OA_ptr<SageIRProcIterator> procIter;
-  procIter = new SageIRProcIterator(sgproject, 
-                                    irInterface);
-  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
-  interAlias = fialiasman->performAnalysis(procIter);
-  
-  // CallGraph
-  OA::OA_ptr<OA::CallGraph::ManagerStandard> callgraphmanstd;
-  callgraphmanstd= new OA::CallGraph::ManagerStandard(irInterface);
-  OA::OA_ptr<OA::CallGraph::CallGraph> cgraph;
-  cgraph = callgraphmanstd->performAnalysis(procIter,interAlias);
-  
-  //ParamBindings
-  OA::OA_ptr<OA::DataFlow::ManagerParamBindings> pbman;
-  pbman = new OA::DataFlow::ManagerParamBindings(irInterface);
-  OA::OA_ptr<OA::DataFlow::ParamBindings> parambind;
-  parambind = pbman->performAnalysis(cgraph);
+   // eachCFG
+   OA::OA_ptr<OA::CFG::EachCFGInterface> eachCFG;
+   OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgman;
+   cfgman = new OA::CFG::ManagerCFGStandard(irInterface);
+   eachCFG = new OA::CFG::EachCFGStandard(cfgman);
+
+
+   //FIAlias
+   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+   OA::OA_ptr<SageIRProcIterator> procIter;
+   procIter = new SageIRProcIterator(sgproject, *irInterface);
+   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+   interAlias = fialiasman->performAnalysis(procIter);
+
+
+   // CallGraph
+   OA::OA_ptr<OA::CallGraph::ManagerCallGraphStandard> cgraphman;
+   cgraphman = new OA::CallGraph::ManagerCallGraphStandard(irInterface);
+   OA::OA_ptr<OA::CallGraph::CallGraph> cgraph =
+      cgraphman->performAnalysis(procIter, interAlias);
+
+   // ParamBindings
+   OA::OA_ptr<OA::DataFlow::ManagerParamBindings> parambindman;
+   parambindman = new OA::DataFlow::ManagerParamBindings(irInterface);
+   OA::OA_ptr<OA::DataFlow::ParamBindings> parambind
+      = parambindman->performAnalysis(cgraph);
 
   // ICFG
-  OA::OA_ptr<OA::ICFG::ManagerICFGStandard> icfgman;
-  icfgman = new OA::ICFG::ManagerICFGStandard(irInterface);
-  OA::OA_ptr<OA::ICFG::ICFG> icfg;
-  icfg = icfgman->performAnalysis(procIter,eachCFG,cgraph);
-  
+   OA::OA_ptr<OA::ICFG::ManagerICFGStandard> icfgman;
+   icfgman = new OA::ICFG::ManagerICFGStandard(irInterface);
+   OA::OA_ptr<OA::ICFG::ICFG> icfg;
+   icfg = icfgman->performAnalysis(procIter,eachCFG,cgraph);
+
   //ICFGDep
   OA::OA_ptr<OA::Activity::ManagerICFGDep> icfgdepman;
   icfgdepman = new OA::Activity::ManagerICFGDep(irInterface);
   OA::OA_ptr<OA::Activity::ICFGDep> icfgDep;
   icfgDep = icfgdepman->performAnalysis(icfg, parambind, interAlias);
 
-*/
-  
+  icfgDep->output(*irInterface);
+
+  std::cout << "\n*******  end of DoICFGDep *********\n\n";
+  return returnvalue;
+
+
+
+
+    
   // text output
   //OA::OA_ptr<OA::OutputBuilder> outBuild;
   
@@ -838,16 +843,6 @@ int DoICFGDep(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
     icfgDep->configOutput(outBuild);
   */
  
-  /*! commented out by PLM 08/17/06
-  icfgDep->output(*irInterface);
-  */
-  
-  // dump output
-  //icfgDep->dump(std::cout,irInterface);
-  
-  
-  std::cout << "\n*******  end of DoICFGDep *********\n\n";
-  return returnvalue;
 }
 
 
@@ -1039,9 +1034,10 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
   procIter = new SageIRProcIterator(p, *irInterface);
+  
   //#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
-
+  
   if(!skipAnalysis) {
     interAlias = fialiasman->performAnalysis(procIter);
     if(!silent) { interAlias->output(*irInterface); }
@@ -1174,7 +1170,7 @@ int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> 
 int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle)
 {
    int returnvalue=FALSE;
-   if ( debug ) printf("*******start of DoUDDUChains\n");
+   if ( debug ) printf("******* start of DoICFGActivity *******\n");
    OA::OA_ptr<SageIRInterface> irInterface;
    irInterface = new SageIRInterface(p, na, p_handle);
 
@@ -1247,6 +1243,8 @@ int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle)
    int numTotal = numIterDep + active->getNumIterUseful()
      + active->getNumIterVary() + numIterActive;
    std::cout << "\n\nTotal Iters: " << numTotal << std::endl;
+
+   std::cout << "\n*******  end of DoICFGActivity *********\n\n";
    return 0;
 }
 
@@ -1256,8 +1254,7 @@ int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle)
 int DoICFGReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>* na, bool p_handle)
 {
    int returnvalue=FALSE;
-   if ( debug )
-   printf("*******start of DoICFG\n");
+   if ( debug )   printf("*******start of DoICFGReachConsts **********\n");
    OA::OA_ptr<SageIRInterface> irInterface;
    irInterface = new SageIRInterface(p, na, p_handle);
    //irInterface->createNodeArray(sgproject); //what about global vars?
@@ -1344,16 +1341,12 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
   cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
 
-
+  // CFG
   //*********** this gets the same free error
   OA::OA_ptr<OA::CFG::CFG> cfg=
   cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
 
-  cfg->output(*irInterface);
-
-
-
-
+  //Alias
   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
@@ -1363,6 +1356,7 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   OA::ProcHandle proc((OA::irhandle_t)(irInterface->getNodeNumber(f)));
   OA::OA_ptr<OA::Alias::Interface> alias = interAlias->getAliasResults(proc);
 
+  // SideEffect
  // Interprocedural Side-Effect Analysis
   // for now generate default conservative interprocedural side-effect results
   OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
@@ -1374,8 +1368,6 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   rdman = new OA::ReachDefs::ManagerReachDefsStandard(irInterface);
   OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds=
      rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect);
-
-  rds->output(*irInterface);
 
   // then UDDUChains
   OA::OA_ptr<OA::UDDUChains::ManagerUDDUChainsStandard> udman;
@@ -1674,7 +1666,13 @@ void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, SageIRInterface *ir,
 	  std::ostream &os)
 {
   refType type = getRefType(memRefExp);
+
+  bool addressTaken;
+
+  /* deprecated addressTaken 1/2/2007
   bool addressTaken = memRefExp->hasAddressTaken();
+  */
+  
   bool fullAccuracy = memRefExp->hasFullAccuracy();
   int numDerefs = 0;
   
@@ -1692,12 +1690,16 @@ void prettyPrintNamedRef(OA::OA_ptr<OA::NamedRef> memRefExp,
   // Only print addressTaken and fullAccuracy if they
   // don't have the default values.
   // Default values for Named Ref: addressTaken = F, fullAccuracy = full.
+  /* deprecated addressTaken 1/2/2007
   bool addressTaken = memRefExp->hasAddressTaken();
+  */
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "NamedRef(";
   os << refTypeToString(mrType);
   os << ", SymHandle(" << ir->toString(symHandle) << ")";
+
+  /* deprecated addressTaken 1/2/2007
   if ( ( addressTaken != false ) || ( fullAccuracy != true ) ) {
     if ( addressTaken == true ) 
       os << ", T";
@@ -1706,6 +1708,15 @@ void prettyPrintNamedRef(OA::OA_ptr<OA::NamedRef> memRefExp,
     if ( fullAccuracy == true ) 
       os << ", full";
     else
+      os << ", partial";
+  }
+  os << ")";
+  */
+
+  if ( fullAccuracy == true ) {
+      os << ", full";
+  }
+  else {
       os << ", partial";
   }
   os << ")";
@@ -1719,12 +1730,18 @@ void prettyPrintUnnamedRef(OA::OA_ptr<OA::UnnamedRef> memRefExp,
   // Only print addressTaken and fullAccuracy if they
   // don't have the default values.
   // Default values for Unnamed Ref: addressTaken = T, fullAccuracy = partial.
+  
+  /* deprecated addressTaken 1/2/2007
   bool addressTaken = memRefExp->hasAddressTaken();
+  */
+  
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "UnnamedRef(";
   os << refTypeToString(mrType);
   os << ", StmtHandle";
+
+  /*
   if ( ( addressTaken != true ) || ( fullAccuracy != false ) ) {
     if ( addressTaken == true ) 
       os << ", T";
@@ -1736,6 +1753,15 @@ void prettyPrintUnnamedRef(OA::OA_ptr<OA::UnnamedRef> memRefExp,
       os << ", partial";
   }
   os << ")";
+  */
+
+  if ( fullAccuracy == true ) {
+      os << ", full";
+  } else {
+      os << ", partial";
+  }
+  os << ")"; 
+
 }
 
 void prettyPrintUnknownRef(OA::OA_ptr<OA::UnknownRef> memRefExp, 
@@ -1746,11 +1772,17 @@ void prettyPrintUnknownRef(OA::OA_ptr<OA::UnknownRef> memRefExp,
   // Only print addressTaken and fullAccuracy if they
   // don't have the default values.
   // Default values for Unknown Ref: addressTaken = F, fullAccuracy = partial.
+  
+  /* deprecated addressTaken 1/2/2007
   bool addressTaken = memRefExp->hasAddressTaken();
+  */
+  
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "UnknownRef(";
   os << refTypeToString(mrType);
+
+  /*
   if ( ( addressTaken != false ) || ( fullAccuracy != false ) ) {
     if ( addressTaken == true ) 
       os << ", T";
@@ -1759,6 +1791,14 @@ void prettyPrintUnknownRef(OA::OA_ptr<OA::UnknownRef> memRefExp,
     if ( fullAccuracy == true ) 
       os << ", full";
     else
+      os << ", partial";
+  }
+  */
+
+  if ( fullAccuracy == true ) {
+      os << ", full";
+  }
+  else {
       os << ", partial";
   }
   os << ")";
@@ -1774,7 +1814,10 @@ void prettyPrintDeref(OA::OA_ptr<OA::Deref> memRefExp,
   // Only print addressTaken and fullAccuracy if they
   // don't have the default values.
   // Default values for Deref: addressTaken = F, fullAccuracy = partial.
+  
+  /* deprecated addressTaken 1/2/2007
   bool addressTaken = memRefExp->hasAddressTaken();
+  */
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "Deref(";
@@ -1782,6 +1825,9 @@ void prettyPrintDeref(OA::OA_ptr<OA::Deref> memRefExp,
   prettyPrintMemRefExp(baseMemRefExpr, ir, os);
   os << ", ";
   os << numDerefs;
+
+  
+  /* deprecated addressTaken 1/2/2007
   if ( ( addressTaken != false ) || ( fullAccuracy != false ) ) {
     if ( addressTaken == true ) 
       os << ", T";
@@ -1792,6 +1838,15 @@ void prettyPrintDeref(OA::OA_ptr<OA::Deref> memRefExp,
     else
       os << ", partial";
   }
+  */
+ 
+  if ( fullAccuracy == true ) {
+      os << ", full";
+  } 
+    else {
+      os << ", partial";
+  }
+
   os << ")";
 }
 

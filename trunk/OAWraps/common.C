@@ -682,6 +682,7 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
                 actualIt != actualArgs.end(); ++actualIt) { 
  
                 SgExpression *actual = *actualIt;
+
                 ROSE_ASSERT(actual != NULL);
 
                 actuals.push_back(actual);

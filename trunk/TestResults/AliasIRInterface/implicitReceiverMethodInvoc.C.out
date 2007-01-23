@@ -51,18 +51,18 @@ PROCEDURE = { < ProcHandle("Foo::someMethod"), SymHandle("method:Foo::someMethod
     MEMREFEXPRS = { StmtHandle("(this) -> someOtherMethod();") =>
         [
             MemRefHandle("(this)") => 
-                NamedRef( USE, SymHandle("this::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full)
+                NamedRef( USE, SymHandle("this::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), full)
             MemRefHandle("(this) -> someOtherMethod") => 
-                NamedRef( USE, SymHandle("method:Foo::someOtherMethod__Foo__scope__someOtherMethod____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::someOtherMethod__Foo__scope__someOtherMethod____MFb_Foo__Fb_v_Gb__Fe_"), full)
         ] }
     CALLSITES = { StmtHandle("(this) -> someOtherMethod();") =>
         [
             CallHandle("(this) -> someOtherMethod()") => 
-                NamedRef( USE, SymHandle("method:Foo::someOtherMethod__Foo__scope__someOtherMethod____MFb_Foo__Fb_v_Gb__Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::someOtherMethod__Foo__scope__someOtherMethod____MFb_Foo__Fb_v_Gb__Fe_"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("(this) -> someOtherMethod()") =>
         [
-            < 0, NamedRef( USE, SymHandle("this::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), F, full) >
+            < 0, NamedRef( USE, SymHandle("this::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), full) >
         ] }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("this::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), local > }

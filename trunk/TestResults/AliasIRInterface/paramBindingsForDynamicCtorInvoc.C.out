@@ -34,29 +34,29 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("class Foo *f = new Foo(y);") =>
         [
             MemRefHandle("f") => 
-                NamedRef( DEF, SymHandle("f"), F, full)
+                NamedRef( DEF, SymHandle("f"), full)
             MemRefHandle("implicit actual this:y") => 
-                UnnamedRef( USE, StmtHandle("new Foo(y)"), T, part)
+                AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo(y)"), part), part)
             MemRefHandle("y") => 
-                NamedRef( USE, SymHandle("y"), F, full)
+                NamedRef( USE, SymHandle("y"), full)
             MemRefHandle("Foo(y)") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), full)
             MemRefHandle("new Foo(y)") => 
-                UnnamedRef( USE, StmtHandle("new Foo(y)"), T, part)
+                AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo(y)"), part), part)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class Foo *f = new Foo(y);") =>
         [
-            < NamedRef( DEF, SymHandle("f"), F, full)
-            , UnnamedRef( USE, StmtHandle("new Foo(y)"), T, part) >
+            < NamedRef( DEF, SymHandle("f"), full)
+            , AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo(y)"), part), part) >
         ] }
     CALLSITES = { StmtHandle("class Foo *f = new Foo(y);") =>
         [
             CallHandle("new Foo(y)") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("new Foo(y)") =>
         [
-            < 0, UnnamedRef( USE, StmtHandle("new Foo(y)"), T, part) >
+            < 0, AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo(y)"), part), part) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

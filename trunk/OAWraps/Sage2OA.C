@@ -1364,7 +1364,7 @@ OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)
   // then call the initialization procedure
   if (mStmt2allMemRefsMap.empty() ) {
       initMemRefAndPtrAssignMaps();
-  }
+  } 
 
   // if there are no pointer pairs for this statement then 
   // it is an ANY_STMT, otherwise it is a PTR_ASSIGN_STMT
@@ -1389,6 +1389,10 @@ SageIRInterface::getMemRefExprIterator(OA::MemRefHandle h)
   for (mreIter = mMemref2mreSetMap[h].begin();
        mreIter != mMemref2mreSetMap[h].end(); mreIter++ )
     {
+      if ( (*mreIter).ptrEqual(0) ) {
+          std::cout << "NULL MRE" << std::endl;
+      }
+
       retList->push_back(*mreIter);
     }
 
@@ -3933,13 +3937,13 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
                    // for an access to the symbol needs a deref
                    
                    if (isSgPointerType(type)) {
-                       mre = new OA::NamedRef(false,true,OA::MemRefExpr::USE,sym);
-                       mre = new OA::Deref(false, fullAccuracy, OA::MemRefExpr::USE, mre, 1);
+                       mre = new OA::NamedRef(true,OA::MemRefExpr::USE,sym);
+                       mre = new OA::Deref(fullAccuracy, OA::MemRefExpr::USE, mre, 1);
                    } else {
                        // one case where we end up here is when passing an array as a parameter
                        // another is if we are just accessing a scalar that is not a
                        // reference parameter
-                       mre = new OA::NamedRef(isAddrOf, fullAccuracy, hty, sym);
+                       mre = new OA::NamedRef(fullAccuracy, hty, sym);
                    }
                    indepList->push_back(mre);
                }
@@ -4075,14 +4079,14 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
                    //if (isSgReferenceType(type)) {
 
                    if(isSgPointerType(type)) {
-                       mre = new OA::NamedRef(false,true,OA::MemRefExpr::USE,sym);
-                       mre = new OA::Deref(false, fullAccuracy, OA::MemRefExpr::DEF, mre, 1);
+                       mre = new OA::NamedRef(true,OA::MemRefExpr::USE,sym);
+                       mre = new OA::Deref(fullAccuracy, OA::MemRefExpr::DEF, mre, 1);
                    } else {
                        // one case where we end up here is when passing an array as a parameter
                        // another is if we are just accessing a scalar that is not a
                        // reference parameter
                        //mre = new OA::NamedRef(isAddrOf, fullAccuracy, hty, sym);
-                       mre = new OA::NamedRef(isAddrOf, fullAccuracy, OA::MemRefExpr::DEF, sym);
+                       mre = new OA::NamedRef(fullAccuracy, OA::MemRefExpr::DEF, sym);
                    }
 
                    depList->push_back(mre);
@@ -4333,6 +4337,7 @@ SageIRInterface::getFormalParamIterator(OA::SymHandle h)
   // able to account, e.g., for MODs and USEs of the 'this' object.
   SgMemberFunctionDeclaration *memberFunctionDeclaration =
     isSgMemberFunctionDeclaration(functionDeclaration);
+
   if ( ( memberFunctionDeclaration != NULL ) && 
        ( isNonStaticMethod(memberFunctionDeclaration) ) ) {
     OA::SymHandle symHandle = getThisExpSymHandle(memberFunctionDeclaration);
@@ -4345,7 +4350,6 @@ SageIRInterface::getFormalParamIterator(OA::SymHandle h)
     functionDeclaration->get_parameterList(); 
 
   if (parameterList != NULL) {
-
     // Iterate over the formal parameters as represented by
     // SgInitializedNames.  Convert them to OA::SymHandles and put
     // them in the list of handles.
@@ -4390,6 +4394,7 @@ void SageIRInterface::dump(OA::OA_ptr<OA::NamedRef> memRefExp,
 {
   OA::SymHandle symHandle = memRefExp->getSymHandle();
 
+  /*  deprecated addressTaken 2/1/2007
   // Only print addressTaken and fullAccuracy if they
   // don't have the default values.
   // Default values for Named Ref: addressTaken = F, fullAccuracy = full.
@@ -4410,6 +4415,24 @@ void SageIRInterface::dump(OA::OA_ptr<OA::NamedRef> memRefExp,
       os << ", partial";
   }
   os << ")";
+  */
+
+
+  // Only print addressTaken and fullAccuracy if they
+  // don't have the default values.
+  // Default values for Named Ref: addressTaken = F, fullAccuracy = full.
+  bool fullAccuracy = memRefExp->hasFullAccuracy();
+
+  os << "NamedRef(";
+  os << refTypeToString(memRefExp);
+  os << ", SymHandle(" << toString(symHandle) << ")";
+  if ( fullAccuracy == true ) {
+      os << ", full";
+  } else {
+      os << ", partial";
+  }
+  os << ")";
+
 }
 
 void SageIRInterface::dump(OA::OA_ptr<OA::UnnamedRef> memRefExp, 
@@ -4418,6 +4441,8 @@ void SageIRInterface::dump(OA::OA_ptr<OA::UnnamedRef> memRefExp,
   // Only print addressTaken and fullAccuracy if they
   // don't have the default values.
   // Default values for Unnamed Ref: addressTaken = T, fullAccuracy = partial.
+
+  /* deprecated addressTaken 2/1/2007
   bool addressTaken = memRefExp->hasAddressTaken();
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
@@ -4435,6 +4460,20 @@ void SageIRInterface::dump(OA::OA_ptr<OA::UnnamedRef> memRefExp,
       os << ", partial";
   }
   os << ")";
+  */
+
+  bool fullAccuracy = memRefExp->hasFullAccuracy();
+
+  os << "UnnamedRef(";
+  os << refTypeToString(memRefExp);
+  os << ", StmtHandle";
+  if ( fullAccuracy == true ) {
+      os << ", full";
+  } else {
+      os << ", partial";
+  }
+  os << ")";
+
 }
 
 void SageIRInterface::dump(OA::OA_ptr<OA::UnknownRef> memRefExp, 
@@ -4443,6 +4482,7 @@ void SageIRInterface::dump(OA::OA_ptr<OA::UnknownRef> memRefExp,
   // Only print addressTaken and fullAccuracy if they
   // don't have the default values.
   // Default values for Unknown Ref: addressTaken = F, fullAccuracy = partial.
+  /* deprecated addressTaken 2/1/2007
   bool addressTaken = memRefExp->hasAddressTaken();
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
@@ -4459,6 +4499,20 @@ void SageIRInterface::dump(OA::OA_ptr<OA::UnknownRef> memRefExp,
       os << ", partial";
   }
   os << ")";
+  */
+
+  bool fullAccuracy = memRefExp->hasFullAccuracy();
+
+  os << "UnknownRef(";
+  os << refTypeToString(memRefExp);
+  if ( fullAccuracy == true ) {
+      os << ", full";
+  }
+  else {
+      os << ", partial";
+  }
+  os << ")";
+
 }
 
 void SageIRInterface::dump(OA::OA_ptr<OA::Deref> memRefExp, 
@@ -4470,6 +4524,7 @@ void SageIRInterface::dump(OA::OA_ptr<OA::Deref> memRefExp,
   // Only print addressTaken and fullAccuracy if they
   // don't have the default values.
   // Default values for Deref: addressTaken = F, fullAccuracy = partial.
+  /* deprecated addressTaken 2/1/2007
   bool addressTaken = memRefExp->hasAddressTaken();
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
@@ -4489,6 +4544,22 @@ void SageIRInterface::dump(OA::OA_ptr<OA::Deref> memRefExp,
       os << ", partial";
   }
   os << ")";
+  */
+
+  bool fullAccuracy = memRefExp->hasFullAccuracy();
+
+  os << "Deref(";
+  os << refTypeToString(memRefExp) << ", ";
+  dump(baseMemRefExpr, os);
+  os << ", ";
+  os << numDerefs;
+  if ( fullAccuracy == true ) {
+      os << ", full";
+  } else {
+      os << ", partial";
+  }
+  os << ")";
+
 }
 
 void SageIRInterface::dump(OA::OA_ptr<OA::FieldAccess> memRefExp, 
@@ -4499,6 +4570,7 @@ void SageIRInterface::dump(OA::OA_ptr<OA::FieldAccess> memRefExp,
   // Only print addressTaken and fullAccuracy if they
   // don't have the default values.
   // Default values for Deref: addressTaken = F, fullAccuracy = partial.
+  /* deprecated addressTaken 2/1/2007
   bool addressTaken = memRefExp->hasAddressTaken();
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
@@ -4517,6 +4589,21 @@ void SageIRInterface::dump(OA::OA_ptr<OA::FieldAccess> memRefExp,
   }
   os << ", " << memRefExp->getFieldName();
   os << ")";
+  */
+
+  bool fullAccuracy = memRefExp->hasFullAccuracy();
+
+  os << "FieldAccess(";
+  os << refTypeToString(memRefExp) << ", ";
+  dump(baseMemRefExpr, os);
+  if ( fullAccuracy == true ) {
+      os << ", full";
+  } else {
+      os << ", partial";
+  }
+  os << ", " << memRefExp->getFieldName();
+  os << ")";
+
 }
 
 void SageIRInterface::dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, 

@@ -8,16 +8,16 @@ PROCEDURE = { < ProcHandle("SubClass::SubClass"), SymHandle("method:SubClass::Su
     MEMREFEXPRS = { StmtHandle("") =>
         [
             MemRefHandle("myParent&") => 
-                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full), 1, F, full), myParent, F, full)
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), full), 1, full), myParent, full)
             MemRefHandle("parSubClass") => 
-                NamedRef( USE, SymHandle("parSubClass"), F, full)
+                NamedRef( USE, SymHandle("parSubClass"), full)
             MemRefHandle("assign_or_agg_initializer:parSubClass") => 
-                NamedRef( USE, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full)
+                NamedRef( USE, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), full)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("") =>
         [
-            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full), 1, F, full), myParent, F, full)
-            , NamedRef( USE, SymHandle("parSubClass"), F, full) >
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), full), 1, full), myParent, full)
+            , NamedRef( USE, SymHandle("parSubClass"), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline SubClass(class Base &parSubClass) : myParent(parSubClass){}") =>
         [
@@ -59,34 +59,34 @@ PROCEDURE = { < ProcHandle("SubSubClass::SubSubClass"), SymHandle("method:SubSub
     MEMREFEXPRS = { StmtHandle("") =>
         [
             MemRefHandle("par") => 
-                NamedRef( USE, SymHandle("par"), F, full)
+                NamedRef( USE, SymHandle("par"), full)
             MemRefHandle("f") => 
-                NamedRef( USE, SymHandle("f"), F, full)
+                NamedRef( USE, SymHandle("f"), full)
             MemRefHandle("implicit actual this:par") => 
-                NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), F, full)
+                NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), full)
             MemRefHandle("implicit actual this:f") => 
-                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), F, full), 1, F, full), mF, T, full)
+                AddressOf( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), full), 1, full), mF, full), full)
             MemRefHandle("SubClass(par)") => 
-                NamedRef( USE, SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), full)
             MemRefHandle("Foo(f)") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), full)
         ] }
     CALLSITES = { StmtHandle("") =>
         [
             CallHandle("SubClass") => 
-                NamedRef( USE, SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"), full)
             CallHandle("mF") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("SubClass") =>
         [
-            < 0, NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), F, full) >
-            < 1, NamedRef( USE, SymHandle("par"), F, full) >
+            < 0, NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), full) >
+            < 1, NamedRef( USE, SymHandle("par"), full) >
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("mF") =>
         [
-            < 0, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), F, full), 1, F, full), mF, T, full) >
-            < 1, NamedRef( USE, SymHandle("f"), F, full) >
+            < 0, AddressOf( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"), full), 1, full), mF, full), full) >
+            < 1, NamedRef( USE, SymHandle("f"), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline SubSubClass(class Base &par,int &aint,class Foo &f) : SubClass(par), mF(f){}") =>
         [

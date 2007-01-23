@@ -1,6 +1,3 @@
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
 
 PROCEDURE = { < ProcHandle("blah"), SymHandle("blah") > }
     FORMALS = {
@@ -17,13 +14,13 @@ PROCEDURE = { < ProcHandle("blah"), SymHandle("blah") > }
     MEMREFEXPRS = { StmtHandle("if((s[0]) ==(t[0])) {}else {}") =>
         [
             MemRefHandle("s") => 
-                NamedRef( USE, SymHandle("s"), F, full)
+                NamedRef( USE, SymHandle("s"), full)
             MemRefHandle("t") => 
-                NamedRef( USE, SymHandle("t"), F, full)
+                NamedRef( USE, SymHandle("t"), full)
             MemRefHandle("(s[0])") => 
-                Deref( USE, NamedRef( USE, SymHandle("s"), F, full), 1, F, part)
+                Deref( USE, NamedRef( USE, SymHandle("s"), full), 1, part)
             MemRefHandle("(t[0])") => 
-                Deref( USE, NamedRef( USE, SymHandle("t"), F, full), 1, F, part)
+                Deref( USE, NamedRef( USE, SymHandle("t"), full), 1, part)
         ] }
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
@@ -48,6 +45,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("struct timeval {};") =>
         [
         ] }
+    MEMREFEXPRS = { StmtHandle("struct __sched_param {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct _pthread_fastlock {};") =>
+        [
+        ] }
     MEMREFEXPRS = { StmtHandle("struct random_data {};") =>
         [
         ] }
@@ -69,23 +72,23 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int x = blah(a,b);") =>
         [
             MemRefHandle("x") => 
-                NamedRef( DEF, SymHandle("x"), F, full)
+                NamedRef( DEF, SymHandle("x"), full)
             MemRefHandle("a") => 
-                NamedRef( USE, SymHandle("a"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full)
             MemRefHandle("b") => 
-                NamedRef( USE, SymHandle("b"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("b"), full), full)
             MemRefHandle("blah") => 
-                NamedRef( USE, SymHandle("blah"), F, full)
+                NamedRef( USE, SymHandle("blah"), full)
         ] }
     CALLSITES = { StmtHandle("int x = blah(a,b);") =>
         [
             CallHandle("blah(a,b)") => 
-                NamedRef( USE, SymHandle("blah"), F, full)
+                NamedRef( USE, SymHandle("blah"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("blah(a,b)") =>
         [
-            < 0, NamedRef( USE, SymHandle("a"), T, full) >
-            < 1, NamedRef( USE, SymHandle("b"), T, full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full) >
+            < 1, AddressOf( USE, NamedRef( USE, SymHandle("b"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

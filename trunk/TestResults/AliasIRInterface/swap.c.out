@@ -18,45 +18,45 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
     MEMREFEXPRS = { StmtHandle("temp =(v[i]);") =>
         [
             MemRefHandle("temp") => 
-                NamedRef( DEF, SymHandle("temp"), F, full)
+                NamedRef( DEF, SymHandle("temp"), full)
             MemRefHandle("v") => 
-                NamedRef( USE, SymHandle("v"), F, full)
+                NamedRef( USE, SymHandle("v"), full)
             MemRefHandle("i") => 
-                NamedRef( USE, SymHandle("i"), F, full)
+                NamedRef( USE, SymHandle("i"), full)
             MemRefHandle("(v[i])") => 
-                Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+                Deref( USE, NamedRef( USE, SymHandle("v"), full), 1, part)
             MemRefHandle("temp =(v[i])") => 
-                NamedRef( USE, SymHandle("temp"), F, full)
+                NamedRef( USE, SymHandle("temp"), full)
         ] }
     MEMREFEXPRS = { StmtHandle("v[i] =(v[j]);") =>
         [
             MemRefHandle("v") => 
-                NamedRef( USE, SymHandle("v"), F, full)
+                NamedRef( USE, SymHandle("v"), full)
             MemRefHandle("i") => 
-                NamedRef( USE, SymHandle("i"), F, full)
+                NamedRef( USE, SymHandle("i"), full)
             MemRefHandle("v") => 
-                NamedRef( USE, SymHandle("v"), F, full)
+                NamedRef( USE, SymHandle("v"), full)
             MemRefHandle("j") => 
-                NamedRef( USE, SymHandle("j"), F, full)
+                NamedRef( USE, SymHandle("j"), full)
             MemRefHandle("v[i]") => 
-                Deref( DEF, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+                Deref( DEF, NamedRef( USE, SymHandle("v"), full), 1, part)
             MemRefHandle("(v[j])") => 
-                Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+                Deref( USE, NamedRef( USE, SymHandle("v"), full), 1, part)
             MemRefHandle("v[i] =(v[j])") => 
-                Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+                Deref( USE, NamedRef( USE, SymHandle("v"), full), 1, part)
         ] }
     MEMREFEXPRS = { StmtHandle("v[j] = temp;") =>
         [
             MemRefHandle("v") => 
-                NamedRef( USE, SymHandle("v"), F, full)
+                NamedRef( USE, SymHandle("v"), full)
             MemRefHandle("j") => 
-                NamedRef( USE, SymHandle("j"), F, full)
+                NamedRef( USE, SymHandle("j"), full)
             MemRefHandle("temp") => 
-                NamedRef( USE, SymHandle("temp"), F, full)
+                NamedRef( USE, SymHandle("temp"), full)
             MemRefHandle("v[j]") => 
-                Deref( DEF, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+                Deref( DEF, NamedRef( USE, SymHandle("v"), full), 1, part)
             MemRefHandle("v[j] = temp") => 
-                Deref( USE, NamedRef( USE, SymHandle("v"), F, full), 1, F, part)
+                Deref( USE, NamedRef( USE, SymHandle("v"), full), 1, part)
         ] }
     LOCATION = { < SymHandle("v"), local > }
     LOCATION = { < SymHandle("i"), local > }
@@ -119,15 +119,15 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("for(i = 0;i < 4;i++) {swap(a,i,(i + 1));}") =>
         [
             MemRefHandle("i") => 
-                NamedRef( DEF, SymHandle("i"), F, full)
+                NamedRef( DEF, SymHandle("i"), full)
             MemRefHandle("i") => 
-                NamedRef( USE, SymHandle("i"), F, full)
+                NamedRef( USE, SymHandle("i"), full)
             MemRefHandle("i") => 
-                NamedRef( USEDEF, SymHandle("i"), F, full)
+                NamedRef( USEDEF, SymHandle("i"), full)
             MemRefHandle("i = 0") => 
-                NamedRef( USE, SymHandle("i"), F, full)
+                NamedRef( USE, SymHandle("i"), full)
             MemRefHandle("i++") => 
-                NamedRef( USE, SymHandle("i"), F, full)
+                NamedRef( USE, SymHandle("i"), full)
         ] }
     MEMREFEXPRS = { StmtHandle("{swap(a,i,(i + 1));}") =>
         [
@@ -135,22 +135,22 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("swap(a,i,(i + 1));") =>
         [
             MemRefHandle("a") => 
-                NamedRef( USE, SymHandle("a"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full)
             MemRefHandle("i") => 
-                NamedRef( USE, SymHandle("i"), F, full)
+                NamedRef( USE, SymHandle("i"), full)
             MemRefHandle("i") => 
-                NamedRef( USE, SymHandle("i"), F, full)
+                NamedRef( USE, SymHandle("i"), full)
             MemRefHandle("swap") => 
-                NamedRef( USE, SymHandle("swap"), F, full)
+                NamedRef( USE, SymHandle("swap"), full)
         ] }
     CALLSITES = { StmtHandle("swap(a,i,(i + 1));") =>
         [
             CallHandle("swap(a,i,(i + 1))") => 
-                NamedRef( USE, SymHandle("swap"), F, full)
+                NamedRef( USE, SymHandle("swap"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("swap(a,i,(i + 1))") =>
         [
-            < 0, NamedRef( USE, SymHandle("a"), T, full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

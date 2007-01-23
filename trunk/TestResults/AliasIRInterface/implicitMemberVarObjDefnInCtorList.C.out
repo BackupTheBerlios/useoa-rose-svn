@@ -61,21 +61,21 @@ PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__
     MEMREFEXPRS = { StmtHandle("") =>
         [
             MemRefHandle("implicit actual this:b") => 
-                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_Bar_Fe_"), F, full), 1, F, full), mBar, T, full)
+                AddressOf( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_Bar_Fe_"), full), 1, full), mBar, full), full)
             MemRefHandle("b") => 
-                NamedRef( USE, SymHandle("b"), T, full)
+                AddressOf( USE, NamedRef( USE, SymHandle("b"), full), full)
             MemRefHandle("Bar(b)") => 
-                NamedRef( USE, SymHandle("method:Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb___Rb__Bar__Re___Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb___Rb__Bar__Re___Fe_"), full)
         ] }
     CALLSITES = { StmtHandle("") =>
         [
             CallHandle("mBar") => 
-                NamedRef( USE, SymHandle("method:Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb___Rb__Bar__Re___Fe_"), F, full)
+                NamedRef( USE, SymHandle("method:Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb___Rb__Bar__Re___Fe_"), full)
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("mBar") =>
         [
-            < 0, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_Bar_Fe_"), F, full), 1, F, full), mBar, T, full) >
-            < 1, NamedRef( USE, SymHandle("b"), T, full) >
+            < 0, AddressOf( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_Bar_Fe_"), full), 1, full), mBar, full), full) >
+            < 1, AddressOf( USE, NamedRef( USE, SymHandle("b"), full), full) >
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline Foo(class Bar b) : mBar(b){}") =>
         [
