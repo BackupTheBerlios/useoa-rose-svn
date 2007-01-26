@@ -509,7 +509,7 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   // helper routines
   OA::SymHandle getProcSymHandle(SgFunctionDeclaration *);
   OA::SymHandle getVarSymHandle(SgInitializedName *);
-  OA::MemRefHandle SageIRInterface::getSymMemRefHandle(OA::SymHandle h);
+  OA::MemRefHandle getSymMemRefHandle(OA::SymHandle h);
 
   // ??
   OA::SymHandle getSymHandle(OA::ProcHandle h) {return getProcSymHandle(h);} //ask Michelle
@@ -531,7 +531,7 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   // Statements: General
   //########################################################
 
-  bool SageIRInterface::returnStatementsAllowed();
+  bool returnStatementsAllowed();
 
   OA::CFG::IRStmtType getCFGStmtType (OA::StmtHandle h);
   OA::StmtLabel getLabel (OA::StmtHandle h);
@@ -895,7 +895,7 @@ public:
   void dump(OA::OA_ptr<OA::FieldAccess> memRefExp, std::ostream& os);
   void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, std::ostream &os);
 
-  string SageIRInterface::refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
+  string refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
 
   //-------------------------------------------------------------------------
   // Interface to ROSE
