@@ -3744,7 +3744,116 @@ OA::OA_ptr<OA::ExprTree> SageIRInterface::getExprTree(OA::ExprHandle h)
 
   return exprTree;
 }
- 
+
+//-------------------------------------------------------------------------
+// LinearityIRInterface
+//-------------------------------------------------------------------------
+
+OA::Linearity::LinOpType 
+  SageIRInterface::getLinearityOpType(OA::OpHandle op)
+{
+  SgNode *node = getNodePtr(op);
+  OA::Linearity::LinOpType opt;
+
+  switch(node->variantT()) {
+  // Unary expression operations.
+  case V_SgMinusOp:
+      opt = OA::Linearity::OPR_LINEAR;
+      break;
+  // Binary expression operations.
+  case V_SgAddOp:
+  case V_SgSubtractOp:
+      opt = OA::Linearity::OPR_ADDSUB;
+      break;
+  case V_SgMultiplyOp:
+  case V_SgDivideOp:
+      opt = OA::Linearity::OPR_MPYDIV;
+      break;
+  case V_SgFunctionCallExp:
+  case V_SgFunctionParameterList:
+    opt = OA::Linearity::OPR_NONLINEAR;
+    break;
+//  case OPR_INTRINSIC_CALL:
+//  case OPR_INTRINSIC_OP:
+//    opt = OA::Linearity::OPR_NONLINEAR;
+//    break;
+  default:
+    opt = OA::Linearity::OPR_NONLINEAR;
+    break;
+  }
+
+return opt;
+
+}
+
+OA::Linearity::IRStmtType 
+  SageIRInterface::getLinearityStmtType(OA::StmtHandle h)
+{
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // FIXME
+  // PLM: this routine is incomplete.
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  SgNode *node = getNodePtr(h);
+  ROSE_ASSERT(node != NULL);
+
+  OA::Linearity::IRStmtType stmtType = OA::Linearity::ANY_STMT;
+
+  bool collectPtrAssigns = false;
+
+  switch(node->variantT()) {
+
+  case V_SgExprStatement:
+    {
+      SgExprStatement *exprStatement = isSgExprStatement(node);
+      ROSE_ASSERT(exprStatement != NULL);
+
+      SgExpression *expression = exprStatement->get_the_expr();
+      SgType *lhsType = NULL;
+
+      switch(expression->variantT()) {
+      case V_SgAssignOp:
+        {
+          // A subset of this case is a new expression.
+          SgBinaryOp *assignOp = isSgBinaryOp(expression);
+          ROSE_ASSERT(assignOp != NULL);
+
+          SgExpression *lhs = assignOp->get_lhs_operand();
+          ROSE_ASSERT(lhs != NULL);
+
+          SgExpression *rhs = assignOp->get_rhs_operand();
+          ROSE_ASSERT(rhs != NULL);
+
+          lhsType = lhs->get_type();
+          ROSE_ASSERT(lhsType != NULL);
+
+          if (!isSgFunctionCallExp(rhs)) {
+            // somehow, cannot handle y = foo() as an EXPR_STMT
+            // FIXME ??
+            stmtType = OA::Linearity::EXPR_STMT;
+          }
+          break;
+        } // end of case V_SgAssignOp:
+      default:
+        {
+          break;
+        }
+      }
+      break;
+    } // end of case V_SgExprStatement:
+
+  default:
+    {
+      break;
+    }
+  }
+
+  return stmtType;
+
+
+
+}
+
 //-------------------------------------------------------------------------
 // ActivityIRInterface
 //-------------------------------------------------------------------------

@@ -3536,4 +3536,11 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
      http://www-unix.mcs.anl.gov/OpenAnalysisWiki/moin.cgi/AddressOf_20class
    - regressAll works with OpenAnalysis r285 on Okapi with gcc-3.2
 
+01/28/07    UseOA-ROSE svn trunk r261   Luis Ramos
+   - Added Linearity Analysis Driver into OATest.
+   - Modified Sage2OA to for SageIRInterface to derive from
+     LinearityIRInterface.
+   - Added two new routines to Sage2OA: getLinearityStmtType and
+     getLinearityOpType
+   - Added a couple of C TestCases but more will come.
 

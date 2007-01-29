@@ -1,0 +1,2 @@
+echo "Generating TestResults/Linearity/Transitive3.c.out"
+./OATest --oa-Linearity TestCases/Linearity/Transitive3.c >& TestResults/Linearity/Transitive3.c.out

@@ -19,6 +19,7 @@
   {  0 , "oa-MPICFG",         CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-ReachConsts",    CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-ExprTree",       CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
+  {  0 , "oa-Linearity",      CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-AliasMapXAIF",   CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },  */
   
 
@@ -66,6 +67,7 @@
 #include <OpenAnalysis/Activity/ManagerICFGDep.hpp>
 #include <OpenAnalysis/Activity/ManagerICFGUseful.hpp>
 #include <OpenAnalysis/Activity/ManagerICFGVaryActive.hpp>
+#include <OpenAnalysis/Linearity/ManagerLinearityStandard.hpp>
 
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
 
@@ -129,6 +131,8 @@ int DoICFGReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNod
 int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle);
 
 int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+
+int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 
 
 /* Debug flags:
@@ -546,12 +550,25 @@ main ( unsigned argc,  char * argv[] )
     }
     else if( cmds->HasOption("--oa-Linearity") )
     {
-      printf("TO DO, implement Linearity analysis\n");
-      return 1;
-    }
-    else if( cmds->HasOption("--oa-Linearity") )
-    {
-      printf("TO DO, implement Linearity analysis\n");
+      printf("Linearity Analysis Start:\n");
+      for (int i = 0; i < filenum; ++i)
+        {
+            SgFile &sageFile = sageProject->get_file(i);
+            SgGlobal *root = sageFile.get_root();
+            SgDeclarationStatementPtrList& declList = root->get_declarations ();
+            for (SgDeclarationStatementPtrList::iterator p = declList.begin(); p != declList.end(); ++p)
+             {
+               SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
+               if (func == 0){
+                   continue;
+               }
+               SgFunctionDefinition *defn = func->get_definition();
+               if (defn == 0){
+                 continue;
+               }
+               DoLinearity(defn, sageProject, &nodeArray, p_h);
+             }
+         }
       return 1;
     }
     else if(skipAnalysis == false)
@@ -1960,6 +1977,53 @@ void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle s
   
   std::cout << std::endl;
   
+}
+
+int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+{
+   int returnvalue=FALSE;
+   OA::OA_ptr<SageIRInterface> irInterface;
+   irInterface = new SageIRInterface(p, na, p_handle);
+
+
+   //CFG
+   OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
+   cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
+   OA::OA_ptr<OA::CFG::CFG> cfg=
+   cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+
+   //Alias
+   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+   fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+   OA::OA_ptr<SageIRProcIterator> procIter;
+   procIter = new SageIRProcIterator(p,*irInterface);
+   OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+   interAlias = fialiasman->performAnalysis(procIter);
+   OA::ProcHandle proc((OA::irhandle_t)(irInterface->getNodeNumber(f)));
+   OA::OA_ptr<OA::Alias::Interface> alias = interAlias->getAliasResults(proc);
+
+   // CallGraph
+  OA::OA_ptr<OA::CallGraph::ManagerCallGraphStandard> cgraphman;
+  cgraphman = new OA::CallGraph::ManagerCallGraphStandard(irInterface);
+  OA::OA_ptr<OA::CallGraph::CallGraph> cgraph =
+      cgraphman->performAnalysis(procIter, interAlias);
+
+   // ParamBindings
+   OA::OA_ptr<OA::DataFlow::ManagerParamBindings> parambindman;
+   parambindman = new OA::DataFlow::ManagerParamBindings(irInterface);
+   OA::OA_ptr<OA::DataFlow::ParamBindings> parambind
+      = parambindman->performAnalysis(cgraph);
+
+   OA::OA_ptr<OA::Linearity::ManagerLinearity> linmanstd;
+   linmanstd = new OA::Linearity::ManagerLinearity(irInterface);
+   OA::OA_ptr<OA::Linearity::LinearityMatrix> LM
+       = linmanstd->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,parambind);
+
+    LM->output(*irInterface);
+   
+
+   return returnvalue;
+
 }
 
 int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)

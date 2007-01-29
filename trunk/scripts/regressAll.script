@@ -25,6 +25,9 @@ source scripts/regressUDDUChains.script
 echo "########################### running regressExprTree.script"
 source scripts/regressExprTree.script
 
+echo "########################### running regressLinearity.script"
+source scripts/regressLinearity.script
+
 #echo "########################### running regressUDDUChains.script"
 #source scripts/regressICFGDep.script
 

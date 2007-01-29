@@ -14,6 +14,7 @@
 #include <OpenAnalysis/IRInterface/XAIFIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/ParamBindingsIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/InterSideEffectIRInterfaceDefault.hpp>
+#include <OpenAnalysis/IRInterface/LinearityIRInterface.hpp>
 #include <OpenAnalysis/SideEffect/ManagerInterSideEffectStandard.hpp>
 #include <OpenAnalysis/SideEffect/ManagerSideEffectStandard.hpp>
 #include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
@@ -474,6 +475,7 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
   public virtual OA::SideEffect::SideEffectIRInterface,
   public virtual OA::SideEffect::InterSideEffectIRInterface,
+  public virtual OA::Linearity::LinearityIRInterface,
   public virtual OA::ReachConsts::ReachConstsIRInterface
 {
   friend class SageIRMemRefIterator;
@@ -849,6 +851,15 @@ public:
 
   //! given a symbol return the size in bytes of that symbol
   int getSizeInBytes(OA::SymHandle h);
+
+  //-------------------------------------------------------------------------
+  // LinearityIRInterface
+  //-------------------------------------------------------------------------
+  
+    //! get the operation type and returns a LinOpType
+  OA::Linearity::LinOpType getLinearityOpType(OA::OpHandle op);
+
+  OA::Linearity::IRStmtType getLinearityStmtType(OA::StmtHandle h);
 
 
   //-------------------------------------------------------------------------

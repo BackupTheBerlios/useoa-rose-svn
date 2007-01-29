@@ -1,0 +1,18 @@
+# comment in file.test
+# Regression tests for Linearity generation
+testname::Linearity
+inputdir::TestCases/Linearity
+outputdir::TestResults/Linearity
+driverexec::./OATest --oa-Linearity
+
+# list of tests
+#       input file,                 status
+#test::  TC1.B,                      Checked by LMR 01/19/07
+#test::  TC1f.B,                     Checked by LMR 01/19/07   
+#test::  Simple.B,                   Checked by LMR 01/19/07
+#test::  Simple2.B,                  Checked by LMR 01/19/07
+#test::  Transitive1.B,              Checked by LMR 01/19/07
+#test::  Transitive2.B,              Checked by LMR 01/19/07
+test::  Transitive3.c,               Checked by LMR 01/28/07
+#test::  Transitive4.B,              Checked by LMR 01/19/07
+#test::  Transitive5.B,              Checked by LMR 01/19/07
