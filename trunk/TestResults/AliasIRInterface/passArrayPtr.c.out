@@ -14,13 +14,13 @@ PROCEDURE = { < ProcHandle("strcmp"), SymHandle("strcmp") > }
     MEMREFEXPRS = { StmtHandle("if(((s[0])) ==((t[0]))) {}else {}") =>
         [
             MemRefHandle("s") => 
-                NamedRef( USE, SymHandle("s"), full)
+                NamedRef( USE, SymHandle("s"))
             MemRefHandle("t") => 
-                NamedRef( USE, SymHandle("t"), full)
+                NamedRef( USE, SymHandle("t"))
             MemRefHandle("(s[0])") => 
-                Deref( USE, NamedRef( USE, SymHandle("s"), full), 1, part)
+                SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("s")), 1))
             MemRefHandle("(t[0])") => 
-                Deref( USE, NamedRef( USE, SymHandle("t"), full), 1, part)
+                SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("t")), 1))
         ] }
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
@@ -42,44 +42,44 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("char a[] = "testing";") =>
         [
             MemRefHandle("a") => 
-                NamedRef( DEF, SymHandle("a"), full)
+                NamedRef( DEF, SymHandle("a"))
             MemRefHandle(""testing"") => 
-                UnnamedRef( USE, StmtHandle(""testing""), part)
+                SubSetRef( USE, UnnamedRef( USE, StmtHandle(""testing"")))
         ] }
     MEMREFEXPRS = { StmtHandle("int x = strcmp(a,a);") =>
         [
             MemRefHandle("x") => 
-                NamedRef( DEF, SymHandle("x"), full)
+                NamedRef( DEF, SymHandle("x"))
             MemRefHandle("a") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("a")))
             MemRefHandle("a") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("a")))
             MemRefHandle("strcmp") => 
-                NamedRef( USE, SymHandle("strcmp"), full)
+                NamedRef( USE, SymHandle("strcmp"))
         ] }
     CALLSITES = { StmtHandle("int x = strcmp(a,a);") =>
         [
             CallHandle("strcmp(a,a)") => 
-                NamedRef( USE, SymHandle("strcmp"), full)
+                NamedRef( USE, SymHandle("strcmp"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("strcmp(a,a)") =>
         [
-            < 0, AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full) >
-            < 1, AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("a"))) >
+            < 1, AddressOf( USE, NamedRef( USE, SymHandle("a"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("a[3] = 'b';") =>
         [
             MemRefHandle("a[3]") => 
-                NamedRef( DEF, SymHandle("a"), part)
+                SubSetRef( DEF, NamedRef( USE, SymHandle("a")))
             MemRefHandle("a[3] = 'b'") => 
-                NamedRef( USE, SymHandle("a"), part)
+                SubSetRef( USE, NamedRef( USE, SymHandle("a")))
         ] }
     MEMREFEXPRS = { StmtHandle("char v =(a[2]);") =>
         [
             MemRefHandle("v") => 
-                NamedRef( DEF, SymHandle("v"), full)
+                NamedRef( DEF, SymHandle("v"))
             MemRefHandle("(a[2])") => 
-                NamedRef( USE, SymHandle("a"), part)
+                SubSetRef( USE, NamedRef( USE, SymHandle("a")))
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

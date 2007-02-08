@@ -8,16 +8,16 @@ PROCEDURE = { < ProcHandle("A::A"), SymHandle("method:A::A__A__scope__A____MFb_A
     MEMREFEXPRS = { StmtHandle("") =>
         [
             MemRefHandle("mB&") => 
-                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), full), 1, full), mB, full)
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_")), 1), mB)
             MemRefHandle("p") => 
-                NamedRef( USE, SymHandle("p"), full)
+                NamedRef( USE, SymHandle("p"))
             MemRefHandle("assign_or_agg_initializer:p") => 
-                NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), full)
+                NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("") =>
         [
-            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), full), 1, full), mB, full)
-            , NamedRef( USE, SymHandle("p"), full) >
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_")), 1), mB)
+            , NamedRef( USE, SymHandle("p")) >
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline A(class B &p) : mB(p){}") =>
         [
@@ -68,42 +68,42 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("class A a(b);") =>
         [
             MemRefHandle("b") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("b"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("b")))
             MemRefHandle("implicit actual this:b") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("a")))
             MemRefHandle("A(b)") => 
-                NamedRef( USE, SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), full)
+                NamedRef( USE, SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"))
         ] }
     CALLSITES = { StmtHandle("class A a(b);") =>
         [
             CallHandle("a") => 
-                NamedRef( USE, SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"), full)
+                NamedRef( USE, SymHandle("method:A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("a") =>
         [
-            < 0, AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full) >
-            < 1, AddressOf( USE, NamedRef( USE, SymHandle("b"), full), full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("a"))) >
+            < 1, AddressOf( USE, NamedRef( USE, SymHandle("b"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("a.foo();") =>
         [
             MemRefHandle("a") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("a")))
             MemRefHandle("a.foo") => 
-                NamedRef( USE, SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), full)
+                NamedRef( USE, SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"))
         ] }
     CALLSITES = { StmtHandle("a.foo();") =>
         [
             CallHandle("a.foo()") => 
-                NamedRef( USE, SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), full)
+                NamedRef( USE, SymHandle("method:A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("a.foo()") =>
         [
-            < 0, AddressOf( USE, NamedRef( USE, SymHandle("a"), full), full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("a"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("return A::sInt;") =>
         [
             MemRefHandle("A::sInt") => 
-                NamedRef( USE, SymHandle("sInt"), full)
+                NamedRef( USE, SymHandle("sInt"))
         ] }
     LOCATION = { < SymHandle("sInt"), not local > }
     LOCATION = { < SymHandle("b"), local > }

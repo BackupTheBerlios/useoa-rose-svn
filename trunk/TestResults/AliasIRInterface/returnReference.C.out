@@ -9,12 +9,12 @@ PROCEDURE = { < ProcHandle("returnRef"), SymHandle("returnRef") > }
     MEMREFEXPRS = { StmtHandle("return global;") =>
         [
             MemRefHandle("global") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("global"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("global")))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("return global;") =>
         [
-            < NamedRef( DEF, SymHandle("returnRef"), full)
-            , AddressOf( USE, NamedRef( USE, SymHandle("global"), full), full) >
+            < NamedRef( DEF, SymHandle("returnRef"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("global"))) >
         ] }
     LOCATION = { < SymHandle("global"), not local > }
     LOCATION = { < SymHandle("returnRef"), not local > }
@@ -29,12 +29,12 @@ PROCEDURE = { < ProcHandle("returnRef2"), SymHandle("returnRef2") > }
     MEMREFEXPRS = { StmtHandle("return globalRef;") =>
         [
             MemRefHandle("globalRef") => 
-                NamedRef( USE, SymHandle("globalRef"), full)
+                NamedRef( USE, SymHandle("globalRef"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("return globalRef;") =>
         [
-            < NamedRef( DEF, SymHandle("returnRef2"), full)
-            , NamedRef( USE, SymHandle("globalRef"), full) >
+            < NamedRef( DEF, SymHandle("returnRef2"))
+            , NamedRef( USE, SymHandle("globalRef")) >
         ] }
     LOCATION = { < SymHandle("globalRef"), not local > }
     LOCATION = { < SymHandle("returnRef2"), not local > }
@@ -49,14 +49,14 @@ PROCEDURE = { < ProcHandle("returnConstRef"), SymHandle("returnConstRef") > }
     MEMREFEXPRS = { StmtHandle("return *((&global));") =>
         [
             MemRefHandle("(&global)") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("global"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("global")))
             MemRefHandle("*((&global))") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("global"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("global")))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("return *((&global));") =>
         [
-            < NamedRef( DEF, SymHandle("returnConstRef"), full)
-            , AddressOf( USE, NamedRef( USE, SymHandle("global"), full), full) >
+            < NamedRef( DEF, SymHandle("returnConstRef"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("global"))) >
         ] }
     LOCATION = { < SymHandle("global"), not local > }
     LOCATION = { < SymHandle("returnConstRef"), not local > }
@@ -71,18 +71,18 @@ PROCEDURE = { < ProcHandle("returnConstRef2"), SymHandle("returnConstRef2") > }
     MEMREFEXPRS = { StmtHandle("return &global;") =>
         [
             MemRefHandle("refRelatedBaseOrTmp") => 
-                UnnamedRef( DEF, StmtHandle("return &global;"), full)
+                UnnamedRef( DEF, StmtHandle("return &global;"))
             MemRefHandle("refRelatedBaseOrTmp") => 
-                AddressOf( USE, UnnamedRef( DEF, StmtHandle("return &global;"), full), full)
+                AddressOf( USE, UnnamedRef( DEF, StmtHandle("return &global;")))
             MemRefHandle("&global") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("global"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("global")))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("return &global;") =>
         [
-            < NamedRef( DEF, SymHandle("returnConstRef2"), full)
-            , AddressOf( USE, UnnamedRef( DEF, StmtHandle("return &global;"), full), full) >
-            < UnnamedRef( DEF, StmtHandle("return &global;"), full)
-            , AddressOf( USE, NamedRef( USE, SymHandle("global"), full), full) >
+            < NamedRef( DEF, SymHandle("returnConstRef2"))
+            , AddressOf( USE, UnnamedRef( DEF, StmtHandle("return &global;"))) >
+            < UnnamedRef( DEF, StmtHandle("return &global;"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("global"))) >
         ] }
     LOCATION = { < SymHandle("global"), not local > }
     LOCATION = { < SymHandle("returnConstRef2"), not local > }
@@ -97,126 +97,126 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int x = returnRef();") =>
         [
             MemRefHandle("refRelatedBaseOrTmp") => 
-                NamedRef( USE, SymHandle("returnRef"), full)
+                NamedRef( USE, SymHandle("returnRef"))
             MemRefHandle("x") => 
-                NamedRef( DEF, SymHandle("x"), full)
+                NamedRef( DEF, SymHandle("x"))
             MemRefHandle("returnRef") => 
-                NamedRef( USE, SymHandle("returnRef"), full)
+                NamedRef( USE, SymHandle("returnRef"))
             MemRefHandle("returnRef()") => 
-                Deref( USE, NamedRef( USE, SymHandle("returnRef"), full), 1, full)
+                Deref( USE, NamedRef( USE, SymHandle("returnRef")), 1)
         ] }
     CALLSITES = { StmtHandle("int x = returnRef();") =>
         [
             CallHandle("returnRef()") => 
-                NamedRef( USE, SymHandle("returnRef"), full)
+                NamedRef( USE, SymHandle("returnRef"))
         ] }
     MEMREFEXPRS = { StmtHandle("int &xRef = returnRef();") =>
         [
             MemRefHandle("xRef&") => 
-                NamedRef( DEF, SymHandle("xRef"), full)
+                NamedRef( DEF, SymHandle("xRef"))
             MemRefHandle("returnRef") => 
-                NamedRef( USE, SymHandle("returnRef"), full)
+                NamedRef( USE, SymHandle("returnRef"))
             MemRefHandle("returnRef()") => 
-                NamedRef( USE, SymHandle("returnRef"), full)
+                NamedRef( USE, SymHandle("returnRef"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int &xRef = returnRef();") =>
         [
-            < NamedRef( DEF, SymHandle("xRef"), full)
-            , NamedRef( USE, SymHandle("returnRef"), full) >
+            < NamedRef( DEF, SymHandle("xRef"))
+            , NamedRef( USE, SymHandle("returnRef")) >
         ] }
     CALLSITES = { StmtHandle("int &xRef = returnRef();") =>
         [
             CallHandle("returnRef()") => 
-                NamedRef( USE, SymHandle("returnRef"), full)
+                NamedRef( USE, SymHandle("returnRef"))
         ] }
     MEMREFEXPRS = { StmtHandle("int x2 = returnRef2();") =>
         [
             MemRefHandle("refRelatedBaseOrTmp") => 
-                NamedRef( USE, SymHandle("returnRef2"), full)
+                NamedRef( USE, SymHandle("returnRef2"))
             MemRefHandle("x2") => 
-                NamedRef( DEF, SymHandle("x2"), full)
+                NamedRef( DEF, SymHandle("x2"))
             MemRefHandle("returnRef2") => 
-                NamedRef( USE, SymHandle("returnRef2"), full)
+                NamedRef( USE, SymHandle("returnRef2"))
             MemRefHandle("returnRef2()") => 
-                Deref( USE, NamedRef( USE, SymHandle("returnRef2"), full), 1, full)
+                Deref( USE, NamedRef( USE, SymHandle("returnRef2")), 1)
         ] }
     CALLSITES = { StmtHandle("int x2 = returnRef2();") =>
         [
             CallHandle("returnRef2()") => 
-                NamedRef( USE, SymHandle("returnRef2"), full)
+                NamedRef( USE, SymHandle("returnRef2"))
         ] }
     MEMREFEXPRS = { StmtHandle("int &xRef2 = returnRef2();") =>
         [
             MemRefHandle("xRef2&") => 
-                NamedRef( DEF, SymHandle("xRef2"), full)
+                NamedRef( DEF, SymHandle("xRef2"))
             MemRefHandle("returnRef2") => 
-                NamedRef( USE, SymHandle("returnRef2"), full)
+                NamedRef( USE, SymHandle("returnRef2"))
             MemRefHandle("returnRef2()") => 
-                NamedRef( USE, SymHandle("returnRef2"), full)
+                NamedRef( USE, SymHandle("returnRef2"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int &xRef2 = returnRef2();") =>
         [
-            < NamedRef( DEF, SymHandle("xRef2"), full)
-            , NamedRef( USE, SymHandle("returnRef2"), full) >
+            < NamedRef( DEF, SymHandle("xRef2"))
+            , NamedRef( USE, SymHandle("returnRef2")) >
         ] }
     CALLSITES = { StmtHandle("int &xRef2 = returnRef2();") =>
         [
             CallHandle("returnRef2()") => 
-                NamedRef( USE, SymHandle("returnRef2"), full)
+                NamedRef( USE, SymHandle("returnRef2"))
         ] }
     MEMREFEXPRS = { StmtHandle("int x3 = returnConstRef();") =>
         [
             MemRefHandle("refRelatedBaseOrTmp") => 
-                NamedRef( USE, SymHandle("returnConstRef"), full)
+                NamedRef( USE, SymHandle("returnConstRef"))
             MemRefHandle("x3") => 
-                NamedRef( DEF, SymHandle("x3"), full)
+                NamedRef( DEF, SymHandle("x3"))
             MemRefHandle("returnConstRef") => 
-                NamedRef( USE, SymHandle("returnConstRef"), full)
+                NamedRef( USE, SymHandle("returnConstRef"))
             MemRefHandle("returnConstRef()") => 
-                Deref( USE, NamedRef( USE, SymHandle("returnConstRef"), full), 1, full)
+                Deref( USE, NamedRef( USE, SymHandle("returnConstRef")), 1)
         ] }
     CALLSITES = { StmtHandle("int x3 = returnConstRef();") =>
         [
             CallHandle("returnConstRef()") => 
-                NamedRef( USE, SymHandle("returnConstRef"), full)
+                NamedRef( USE, SymHandle("returnConstRef"))
         ] }
     MEMREFEXPRS = { StmtHandle("const int &xRef3 = returnConstRef();") =>
         [
             MemRefHandle("xRef3&") => 
-                NamedRef( DEF, SymHandle("xRef3"), full)
+                NamedRef( DEF, SymHandle("xRef3"))
             MemRefHandle("returnConstRef") => 
-                NamedRef( USE, SymHandle("returnConstRef"), full)
+                NamedRef( USE, SymHandle("returnConstRef"))
             MemRefHandle("returnConstRef()") => 
-                NamedRef( USE, SymHandle("returnConstRef"), full)
+                NamedRef( USE, SymHandle("returnConstRef"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("const int &xRef3 = returnConstRef();") =>
         [
-            < NamedRef( DEF, SymHandle("xRef3"), full)
-            , NamedRef( USE, SymHandle("returnConstRef"), full) >
+            < NamedRef( DEF, SymHandle("xRef3"))
+            , NamedRef( USE, SymHandle("returnConstRef")) >
         ] }
     CALLSITES = { StmtHandle("const int &xRef3 = returnConstRef();") =>
         [
             CallHandle("returnConstRef()") => 
-                NamedRef( USE, SymHandle("returnConstRef"), full)
+                NamedRef( USE, SymHandle("returnConstRef"))
         ] }
     MEMREFEXPRS = { StmtHandle("int *const &refPtr = returnConstRef2();") =>
         [
             MemRefHandle("refPtr&") => 
-                NamedRef( DEF, SymHandle("refPtr"), full)
+                NamedRef( DEF, SymHandle("refPtr"))
             MemRefHandle("returnConstRef2") => 
-                NamedRef( USE, SymHandle("returnConstRef2"), full)
+                NamedRef( USE, SymHandle("returnConstRef2"))
             MemRefHandle("returnConstRef2()") => 
-                NamedRef( USE, SymHandle("returnConstRef2"), full)
+                NamedRef( USE, SymHandle("returnConstRef2"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int *const &refPtr = returnConstRef2();") =>
         [
-            < NamedRef( DEF, SymHandle("refPtr"), full)
-            , NamedRef( USE, SymHandle("returnConstRef2"), full) >
+            < NamedRef( DEF, SymHandle("refPtr"))
+            , NamedRef( USE, SymHandle("returnConstRef2")) >
         ] }
     CALLSITES = { StmtHandle("int *const &refPtr = returnConstRef2();") =>
         [
             CallHandle("returnConstRef2()") => 
-                NamedRef( USE, SymHandle("returnConstRef2"), full)
+                NamedRef( USE, SymHandle("returnConstRef2"))
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

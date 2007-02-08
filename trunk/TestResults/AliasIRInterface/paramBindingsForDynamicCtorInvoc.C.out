@@ -34,29 +34,29 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("class Foo *f = new Foo(y);") =>
         [
             MemRefHandle("f") => 
-                NamedRef( DEF, SymHandle("f"), full)
+                NamedRef( DEF, SymHandle("f"))
             MemRefHandle("implicit actual this:y") => 
-                AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo(y)"), part), part)
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, StmtHandle("new Foo(y)"))))
             MemRefHandle("y") => 
-                NamedRef( USE, SymHandle("y"), full)
+                NamedRef( USE, SymHandle("y"))
             MemRefHandle("Foo(y)") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"))
             MemRefHandle("new Foo(y)") => 
-                AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo(y)"), part), part)
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, StmtHandle("new Foo(y)"))))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class Foo *f = new Foo(y);") =>
         [
-            < NamedRef( DEF, SymHandle("f"), full)
-            , AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo(y)"), part), part) >
+            < NamedRef( DEF, SymHandle("f"))
+            , AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, StmtHandle("new Foo(y)")))) >
         ] }
     CALLSITES = { StmtHandle("class Foo *f = new Foo(y);") =>
         [
             CallHandle("new Foo(y)") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"), full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("new Foo(y)") =>
         [
-            < 0, AddressOf( USE, UnnamedRef( USE, StmtHandle("new Foo(y)"), part), part) >
+            < 0, AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, StmtHandle("new Foo(y)")))) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

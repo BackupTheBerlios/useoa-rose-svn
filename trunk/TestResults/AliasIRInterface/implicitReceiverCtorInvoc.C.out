@@ -41,18 +41,18 @@ PROCEDURE = { < ProcHandle("Foo::Foo"), SymHandle("method:Foo::Foo__Foo__scope__
     MEMREFEXPRS = { StmtHandle("") =>
         [
             MemRefHandle("implicit actual this:") => 
-                NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), full)
+                NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
             MemRefHandle("Base()") => 
-                NamedRef( USE, SymHandle("method:Base::Base__Base__scope__Base____MFb_Base__Fb_v_Gb__Fe_"), full)
+                NamedRef( USE, SymHandle("method:Base::Base__Base__scope__Base____MFb_Base__Fb_v_Gb__Fe_"))
         ] }
     CALLSITES = { StmtHandle("") =>
         [
             CallHandle("Base") => 
-                NamedRef( USE, SymHandle("method:Base::Base__Base__scope__Base____MFb_Base__Fb_v_Gb__Fe_"), full)
+                NamedRef( USE, SymHandle("method:Base::Base__Base__scope__Base____MFb_Base__Fb_v_Gb__Fe_"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("Base") =>
         [
-            < 0, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), full) >
+            < 0, NamedRef( USE, SymHandle("this::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_")) >
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline Foo() : Base(){}") =>
         [

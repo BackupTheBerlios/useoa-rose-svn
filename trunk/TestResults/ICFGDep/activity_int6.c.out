@@ -553,12 +553,80 @@ mDepDFSet: StmtHandle	 => DepDFSet
  ] 
         stmt: y[i] =((y[i]) +(x[i]));	 => 
             mUseToDefsMap: UseLoc	 => DefLocSet
+                    
+                    LocSubSet(
+                        mLoc: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mFull: 0
+                    )
+	 => [ 
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(y)
+                                mLocal: 1
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+ ] 
 
             mDefToUsesMap: DefLoc	 => UseLocSet
+                    
+                    LocSubSet(
+                        mLoc: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(y)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mFull: 0
+                    )
+	 => [ 
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(x)
+                                mLocal: 1
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+ ] 
 
             ImplicitRemoves:[  ] 
-            Uses:[  ] 
-            Defs:[  ] 
+            Uses:[ 
+                LocSubSet(
+                    mLoc: 
+                    NamedLoc(
+                        mSymHandle: SymHandle(x)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )
+                    mFull: 0
+                )
+ ] 
+            Defs:[ 
+                LocSubSet(
+                    mLoc: 
+                    NamedLoc(
+                        mSymHandle: SymHandle(y)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )
+                    mFull: 0
+                )
+ ] 
         stmt: y2 = x1;	 => 
             mUseToDefsMap: UseLoc	 => DefLocSet
                     
@@ -855,38 +923,6 @@ mDepDFSet: StmtHandle	 => DepDFSet
             Uses:[  ] 
             Defs:[  ] 
         stmt: if(i < 2) {y2 = x1;}else {y1 = x2;}	 => 
-            mUseToDefsMap: UseLoc	 => DefLocSet
-
-            mDefToUsesMap: DefLoc	 => UseLocSet
-
-            ImplicitRemoves:[  ] 
-            Uses:[  ] 
-            Defs:[  ] 
-        stmt: 	 => 
-            mUseToDefsMap: UseLoc	 => DefLocSet
-
-            mDefToUsesMap: DefLoc	 => UseLocSet
-
-            ImplicitRemoves:[  ] 
-            Uses:[  ] 
-            Defs:[  ] 
-        stmt: 	 => 
-            mUseToDefsMap: UseLoc	 => DefLocSet
-
-            mDefToUsesMap: DefLoc	 => UseLocSet
-
-            ImplicitRemoves:[  ] 
-            Uses:[  ] 
-            Defs:[  ] 
-        stmt: 	 => 
-            mUseToDefsMap: UseLoc	 => DefLocSet
-
-            mDefToUsesMap: DefLoc	 => UseLocSet
-
-            ImplicitRemoves:[  ] 
-            Uses:[  ] 
-            Defs:[  ] 
-        stmt: 	 => 
             mUseToDefsMap: UseLoc	 => DefLocSet
 
             mDefToUsesMap: DefLoc	 => UseLocSet

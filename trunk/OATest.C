@@ -1678,7 +1678,7 @@ void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, bool addressTaken,
 
 }
 
-
+/*
 void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, SageIRInterface *ir,
 	  std::ostream &os)
 {
@@ -1686,9 +1686,8 @@ void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, SageIRInterface *ir,
 
   bool addressTaken;
 
-  /* deprecated addressTaken 1/2/2007
+ // deprecated addressTaken 1/2/2007
   bool addressTaken = memRefExp->hasAddressTaken();
-  */
   
   bool fullAccuracy = memRefExp->hasFullAccuracy();
   int numDerefs = 0;
@@ -1696,8 +1695,9 @@ void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, SageIRInterface *ir,
   dump(memRefExp, addressTaken, fullAccuracy, type, numDerefs, ir, os);
 
 }
+*/
 
-
+/*
 void prettyPrintNamedRef(OA::OA_ptr<OA::NamedRef> memRefExp, 
 			 SageIRInterface *ir, std::ostream& os) 
 {
@@ -1707,16 +1707,15 @@ void prettyPrintNamedRef(OA::OA_ptr<OA::NamedRef> memRefExp,
   // Only print addressTaken and fullAccuracy if they
   // don't have the default values.
   // Default values for Named Ref: addressTaken = F, fullAccuracy = full.
-  /* deprecated addressTaken 1/2/2007
+  //  deprecated addressTaken 1/2/2007
   bool addressTaken = memRefExp->hasAddressTaken();
-  */
+  
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "NamedRef(";
   os << refTypeToString(mrType);
   os << ", SymHandle(" << ir->toString(symHandle) << ")";
 
-  /* deprecated addressTaken 1/2/2007
   if ( ( addressTaken != false ) || ( fullAccuracy != true ) ) {
     if ( addressTaken == true ) 
       os << ", T";
@@ -1728,17 +1727,10 @@ void prettyPrintNamedRef(OA::OA_ptr<OA::NamedRef> memRefExp,
       os << ", partial";
   }
   os << ")";
-  */
-
-  if ( fullAccuracy == true ) {
-      os << ", full";
-  }
-  else {
-      os << ", partial";
-  }
-  os << ")";
 }
+*/
 
+/*
 void prettyPrintUnnamedRef(OA::OA_ptr<OA::UnnamedRef> memRefExp, 
 			   SageIRInterface *ir, std::ostream& os) 
 {
@@ -1748,9 +1740,8 @@ void prettyPrintUnnamedRef(OA::OA_ptr<OA::UnnamedRef> memRefExp,
   // don't have the default values.
   // Default values for Unnamed Ref: addressTaken = T, fullAccuracy = partial.
   
-  /* deprecated addressTaken 1/2/2007
+ //  deprecated addressTaken 1/2/2007
   bool addressTaken = memRefExp->hasAddressTaken();
-  */
   
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
@@ -1758,7 +1749,7 @@ void prettyPrintUnnamedRef(OA::OA_ptr<OA::UnnamedRef> memRefExp,
   os << refTypeToString(mrType);
   os << ", StmtHandle";
 
-  /*
+  
   if ( ( addressTaken != true ) || ( fullAccuracy != false ) ) {
     if ( addressTaken == true ) 
       os << ", T";
@@ -1770,17 +1761,11 @@ void prettyPrintUnnamedRef(OA::OA_ptr<OA::UnnamedRef> memRefExp,
       os << ", partial";
   }
   os << ")";
-  */
-
-  if ( fullAccuracy == true ) {
-      os << ", full";
-  } else {
-      os << ", partial";
-  }
-  os << ")"; 
-
+  
 }
+*/
 
+/*
 void prettyPrintUnknownRef(OA::OA_ptr<OA::UnknownRef> memRefExp, 
 			   SageIRInterface *ir, std::ostream& os) 
 {
@@ -1790,16 +1775,13 @@ void prettyPrintUnknownRef(OA::OA_ptr<OA::UnknownRef> memRefExp,
   // don't have the default values.
   // Default values for Unknown Ref: addressTaken = F, fullAccuracy = partial.
   
-  /* deprecated addressTaken 1/2/2007
   bool addressTaken = memRefExp->hasAddressTaken();
-  */
   
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "UnknownRef(";
   os << refTypeToString(mrType);
 
-  /*
   if ( ( addressTaken != false ) || ( fullAccuracy != false ) ) {
     if ( addressTaken == true ) 
       os << ", T";
@@ -1810,17 +1792,10 @@ void prettyPrintUnknownRef(OA::OA_ptr<OA::UnknownRef> memRefExp,
     else
       os << ", partial";
   }
-  */
-
-  if ( fullAccuracy == true ) {
-      os << ", full";
-  }
-  else {
-      os << ", partial";
-  }
-  os << ")";
 }
+*/
 
+/*
 void prettyPrintDeref(OA::OA_ptr<OA::Deref> memRefExp, 
 		      SageIRInterface *ir, std::ostream& os) 
 {
@@ -1832,9 +1807,8 @@ void prettyPrintDeref(OA::OA_ptr<OA::Deref> memRefExp,
   // don't have the default values.
   // Default values for Deref: addressTaken = F, fullAccuracy = partial.
   
-  /* deprecated addressTaken 1/2/2007
+  // deprecated addressTaken 1/2/2007
   bool addressTaken = memRefExp->hasAddressTaken();
-  */
   bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "Deref(";
@@ -1844,7 +1818,6 @@ void prettyPrintDeref(OA::OA_ptr<OA::Deref> memRefExp,
   os << numDerefs;
 
   
-  /* deprecated addressTaken 1/2/2007
   if ( ( addressTaken != false ) || ( fullAccuracy != false ) ) {
     if ( addressTaken == true ) 
       os << ", T";
@@ -1855,18 +1828,12 @@ void prettyPrintDeref(OA::OA_ptr<OA::Deref> memRefExp,
     else
       os << ", partial";
   }
-  */
  
-  if ( fullAccuracy == true ) {
-      os << ", full";
-  } 
-    else {
-      os << ", partial";
-  }
-
   os << ")";
 }
+*/
 
+/*
 void prettyPrintMemRefExp(OA::OA_ptr<OA::MemRefExpr> memRefExp, SageIRInterface *ir,
 	  std::ostream &os)
 {
@@ -1919,7 +1886,9 @@ void prettyPrintMemRefExp(OA::OA_ptr<OA::MemRefExpr> memRefExp, SageIRInterface 
 
   }
 }
+*/
 
+/*
 void dump(OA::OA_ptr<OA::MemRefExprIterator> memRefIterator,
 	  SageIRInterface *ir, std::ostream& os) {
   
@@ -1932,6 +1901,7 @@ void dump(OA::OA_ptr<OA::MemRefExprIterator> memRefIterator,
     os << endl;
   }
 }
+*/
 
 void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt) 
 {
@@ -1950,7 +1920,9 @@ void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle s
     OA::OA_ptr<OA::MemRefExprIterator> memRefExprIterator = 
       ir->getMemRefExprIterator(memRefHandle);
     
-    dump(memRefExprIterator, ir.operator->(), std::cout);
+    /* PLM 1/23/07
+     * dump(memRefExprIterator, ir.operator->(), std::cout);
+     */ 
     
   }
   
@@ -1971,7 +1943,9 @@ void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle s
     OA::OA_ptr<OA::MemRefExprIterator> memRefExprIterator = 
       ir->getMemRefExprIterator(memRefHandle);
     
+    /* PLM 1/23/07
     dump(memRefExprIterator, ir.operator->(), std::cout);
+    */
     
   }
   

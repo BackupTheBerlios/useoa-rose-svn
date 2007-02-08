@@ -3530,7 +3530,8 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
       with Partial and Full Accuracy in the same AliasSet.
 
 01/23/07     UseOA-ROSE svn trunk r259   Priyadarshini Malusare
-   - Regenerated TestResults for AddressOf Class.
+   - Regenerated TestResults for changes regarding AddressOf Class.
+     in OpenAnalysis.
    - Modifications in SageIRInterface for AddressOf class.
    - Please refer following link for further reference.
      http://www-unix.mcs.anl.gov/OpenAnalysisWiki/moin.cgi/AddressOf_20class
@@ -3543,4 +3544,16 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
    - Added two new routines to Sage2OA: getLinearityStmtType and
      getLinearityOpType
    - Added a couple of C TestCases but more will come.
+
+02/07/07    UseOA-ROSE svn trunk r262   Priyadarshini Malusare
+  - Regenerated TestResults for following changes in OpenAnalysis.
+  - Modifications in SageIRInterface for following changes.
+    - deprecated Accuracy field of MemRefExpr.
+    - Partial Accuracy is represented by instance of SubSetRef class.
+    - Full Accuracy is represented by corresponding MemRefExpr.
+    - Please refer following link on the wiki.
+      http://www-unix.mcs.anl.gov/OpenAnalysisWiki/moin.cgi/Location_20class
+    - regressAll works with OpenAnalysis r298 on Okapi with gcc-3.2
+
+
 

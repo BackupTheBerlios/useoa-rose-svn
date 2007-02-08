@@ -24,17 +24,17 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("(sizeof(x));") =>
         [
             MemRefHandle("x") => 
-                NamedRef( USE, SymHandle("x"), full)
+                NamedRef( USE, SymHandle("x"))
         ] }
     MEMREFEXPRS = { StmtHandle("(sizeof(c));") =>
         [
             MemRefHandle("c") => 
-                NamedRef( USE, SymHandle("c"), full)
+                NamedRef( USE, SymHandle("c"))
         ] }
     MEMREFEXPRS = { StmtHandle("(sizeof(b));") =>
         [
             MemRefHandle("b") => 
-                NamedRef( USE, SymHandle("b"), full)
+                NamedRef( USE, SymHandle("b"))
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

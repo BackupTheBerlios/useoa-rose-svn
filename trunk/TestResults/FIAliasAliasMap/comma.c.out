@@ -58,14 +58,22 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 8	 => [ 
-                    UnnamedLoc(
-                        mStmtHandle: StmtHandle("*p = %d\n")
-                        mLocal: 0
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle("*p = %d\n")
+                            mLocal: 0
+                        )
+                        mFull: 0
                     ) ] 
                 9	 => [ 
-                    UnnamedLoc(
-                        mStmtHandle: StmtHandle("*q = %d\n")
-                        mLocal: 0
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle("*q = %d\n")
+                            mLocal: 0
+                        )
+                        mFull: 0
                     ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
@@ -92,16 +100,13 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(x)
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(q)
                         )
@@ -109,27 +114,22 @@ InterAliasMap(
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(y)
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(p)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(r)
                         )
@@ -137,45 +137,54 @@ InterAliasMap(
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(z)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(p)
                     ) ] 
                 5	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(q)
                     ) ] 
                 6	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(r)
                     ) ] 
                 7	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(printf)
                     ) ] 
                 8	 => [ 
                     UnnamedRef(
-                        mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle("*p = %d\n")
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mStmtHandle: StmtHandle("*p = %d\n")
+                        )
                     ) ] 
                 9	 => [ 
                     UnnamedRef(
-                        mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle("*q = %d\n")
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mStmtHandle: StmtHandle("*q = %d\n")
+                        )
                     ) ] 
 
     )

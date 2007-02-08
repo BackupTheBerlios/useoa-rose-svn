@@ -4046,13 +4046,49 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
                    // for an access to the symbol needs a deref
                    
                    if (isSgPointerType(type)) {
-                       mre = new OA::NamedRef(true,OA::MemRefExpr::USE,sym);
-                       mre = new OA::Deref(fullAccuracy, OA::MemRefExpr::USE, mre, 1);
+
+                       mre = new OA::NamedRef(OA::MemRefExpr::USE,sym);
+                       mre = new OA::Deref(OA::MemRefExpr::USE, mre, 1);
+
+
+                       if(fullAccuracy) {
+
+                          OA::OA_ptr<OA::SubSetRef> subset_mre;
+                          OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                          OA::OA_ptr<OA::MemRefExpr> composed_mre;
+
+                          subset_mre = new OA::SubSetRef(
+                                 OA::MemRefExpr::USE,
+                                 nullMRE
+                                );
+                           mre
+                              = subset_mre->composeWith(mre->clone());
+                       }
+
                    } else {
                        // one case where we end up here is when passing an array as a parameter
                        // another is if we are just accessing a scalar that is not a
                        // reference parameter
+
+                       /* PLM 1/23/07 deprecated Accuracy field
                        mre = new OA::NamedRef(fullAccuracy, hty, sym);
+                       */
+
+                       mre = new OA::NamedRef(hty, sym);
+
+                       if(fullAccuracy) {
+
+                          OA::OA_ptr<OA::SubSetRef> subset_mre;
+                          OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                          OA::OA_ptr<OA::MemRefExpr> composed_mre;
+
+                          subset_mre = new OA::SubSetRef(
+                                 OA::MemRefExpr::USE,
+                                 nullMRE
+                                );
+                           mre
+                              = subset_mre->composeWith(mre->clone());
+                       }
                    }
                    indepList->push_back(mre);
                }
@@ -4188,14 +4224,50 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
                    //if (isSgReferenceType(type)) {
 
                    if(isSgPointerType(type)) {
-                       mre = new OA::NamedRef(true,OA::MemRefExpr::USE,sym);
-                       mre = new OA::Deref(fullAccuracy, OA::MemRefExpr::DEF, mre, 1);
+
+                       mre = new OA::NamedRef(OA::MemRefExpr::USE,sym);
+                       mre = new OA::Deref(OA::MemRefExpr::USE, mre, 1);
+
+
+                       if(fullAccuracy) {
+
+                          OA::OA_ptr<OA::SubSetRef> subset_mre;
+                          OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                          OA::OA_ptr<OA::MemRefExpr> composed_mre;
+
+                          subset_mre = new OA::SubSetRef(
+                                 OA::MemRefExpr::USE,
+                                 nullMRE
+                                );
+                           mre
+                              = subset_mre->composeWith(mre->clone());
+                       }
+
                    } else {
                        // one case where we end up here is when passing an array as a parameter
                        // another is if we are just accessing a scalar that is not a
                        // reference parameter
-                       //mre = new OA::NamedRef(isAddrOf, fullAccuracy, hty, sym);
-                       mre = new OA::NamedRef(fullAccuracy, OA::MemRefExpr::DEF, sym);
+
+                       /* PLM 1/23/07 deprecated Accuracy field
+                       mre = new OA::NamedRef(fullAccuracy, hty, sym);
+                       */
+
+                       mre = new OA::NamedRef(hty, sym);
+
+                       if(fullAccuracy) {
+
+                          OA::OA_ptr<OA::SubSetRef> subset_mre;
+                          OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                          OA::OA_ptr<OA::MemRefExpr> composed_mre;
+
+                          subset_mre = new OA::SubSetRef(
+                                 OA::MemRefExpr::USE,
+                                 nullMRE
+                                );
+                           mre
+                              = subset_mre->composeWith(mre->clone());
+                       }
+
                    }
 
                    depList->push_back(mre);
@@ -4530,16 +4602,16 @@ void SageIRInterface::dump(OA::OA_ptr<OA::NamedRef> memRefExp,
   // Only print addressTaken and fullAccuracy if they
   // don't have the default values.
   // Default values for Named Ref: addressTaken = F, fullAccuracy = full.
-  bool fullAccuracy = memRefExp->hasFullAccuracy();
+  //bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "NamedRef(";
   os << refTypeToString(memRefExp);
   os << ", SymHandle(" << toString(symHandle) << ")";
-  if ( fullAccuracy == true ) {
-      os << ", full";
-  } else {
-      os << ", partial";
-  }
+  //if ( fullAccuracy == true ) {
+  //    os << ", full";
+  //} else {
+  //    os << ", partial";
+  //}
   os << ")";
 
 }
@@ -4571,16 +4643,16 @@ void SageIRInterface::dump(OA::OA_ptr<OA::UnnamedRef> memRefExp,
   os << ")";
   */
 
-  bool fullAccuracy = memRefExp->hasFullAccuracy();
+  //bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "UnnamedRef(";
   os << refTypeToString(memRefExp);
   os << ", StmtHandle";
-  if ( fullAccuracy == true ) {
-      os << ", full";
-  } else {
-      os << ", partial";
-  }
+  //if ( fullAccuracy == true ) {
+  //    os << ", full";
+  //} else {
+  //    os << ", partial";
+  //}
   os << ")";
 
 }
@@ -4610,16 +4682,16 @@ void SageIRInterface::dump(OA::OA_ptr<OA::UnknownRef> memRefExp,
   os << ")";
   */
 
-  bool fullAccuracy = memRefExp->hasFullAccuracy();
+  //bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "UnknownRef(";
   os << refTypeToString(memRefExp);
-  if ( fullAccuracy == true ) {
-      os << ", full";
-  }
-  else {
-      os << ", partial";
-  }
+  //if ( fullAccuracy == true ) {
+  //    os << ", full";
+  //}
+  //else {
+  //    os << ", partial";
+  //}
   os << ")";
 
 }
@@ -4655,18 +4727,18 @@ void SageIRInterface::dump(OA::OA_ptr<OA::Deref> memRefExp,
   os << ")";
   */
 
-  bool fullAccuracy = memRefExp->hasFullAccuracy();
+  //bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "Deref(";
   os << refTypeToString(memRefExp) << ", ";
   dump(baseMemRefExpr, os);
   os << ", ";
   os << numDerefs;
-  if ( fullAccuracy == true ) {
-      os << ", full";
-  } else {
-      os << ", partial";
-  }
+  //if ( fullAccuracy == true ) {
+  //    os << ", full";
+  //} else {
+  //    os << ", partial";
+  //}
   os << ")";
 
 }
@@ -4700,16 +4772,16 @@ void SageIRInterface::dump(OA::OA_ptr<OA::FieldAccess> memRefExp,
   os << ")";
   */
 
-  bool fullAccuracy = memRefExp->hasFullAccuracy();
+  //bool fullAccuracy = memRefExp->hasFullAccuracy();
 
   os << "FieldAccess(";
   os << refTypeToString(memRefExp) << ", ";
   dump(baseMemRefExpr, os);
-  if ( fullAccuracy == true ) {
-      os << ", full";
-  } else {
-      os << ", partial";
-  }
+  //if ( fullAccuracy == true ) {
+  //    os << ", full";
+  //} else {
+  //    os << ", partial";
+  //}
   os << ", " << memRefExp->getFieldName();
   os << ")";
 

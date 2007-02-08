@@ -49,18 +49,18 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("Foo::someMethod(&x);") =>
         [
             MemRefHandle("Foo::someMethod") => 
-                NamedRef( USE, SymHandle("method:Foo::someMethod__Foo__scope__someMethod___Fb_v_Gb___Pb__i__Pe___Fe_"), full)
+                NamedRef( USE, SymHandle("method:Foo::someMethod__Foo__scope__someMethod___Fb_v_Gb___Pb__i__Pe___Fe_"))
             MemRefHandle("&x") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("x")))
         ] }
     CALLSITES = { StmtHandle("Foo::someMethod(&x);") =>
         [
             CallHandle("Foo::someMethod(&x)") => 
-                NamedRef( USE, SymHandle("method:Foo::someMethod__Foo__scope__someMethod___Fb_v_Gb___Pb__i__Pe___Fe_"), full)
+                NamedRef( USE, SymHandle("method:Foo::someMethod__Foo__scope__someMethod___Fb_v_Gb___Pb__i__Pe___Fe_"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("Foo::someMethod(&x)") =>
         [
-            < 0, AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("x"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

@@ -21,80 +21,80 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("x = &y;") =>
         [
             MemRefHandle("x") => 
-                NamedRef( DEF, SymHandle("x"), full)
+                NamedRef( DEF, SymHandle("x"))
             MemRefHandle("&y") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("y"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("y")))
             MemRefHandle("x = &y") => 
-                NamedRef( USE, SymHandle("x"), full)
+                NamedRef( USE, SymHandle("x"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("x = &y;") =>
         [
-            < NamedRef( DEF, SymHandle("x"), full)
-            , AddressOf( USE, NamedRef( USE, SymHandle("y"), full), full) >
+            < NamedRef( DEF, SymHandle("x"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("y"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("z = &x;") =>
         [
             MemRefHandle("z") => 
-                NamedRef( DEF, SymHandle("z"), full)
+                NamedRef( DEF, SymHandle("z"))
             MemRefHandle("&x") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("x")))
             MemRefHandle("z = &x") => 
-                NamedRef( USE, SymHandle("z"), full)
+                NamedRef( USE, SymHandle("z"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("z = &x;") =>
         [
-            < NamedRef( DEF, SymHandle("z"), full)
-            , AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full) >
+            < NamedRef( DEF, SymHandle("z"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("x"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("( *( *z)).p = &n;") =>
         [
             MemRefHandle("z") => 
-                NamedRef( USE, SymHandle("z"), full)
+                NamedRef( USE, SymHandle("z"))
             MemRefHandle("&n") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("n"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("n")))
             MemRefHandle("( *( *z)).p = &n") => 
-                FieldAccess( USE, Deref( USE, Deref( USE, NamedRef( USE, SymHandle("z"), full), 1, full), 1, full), p, full)
+                FieldAccess( USE, Deref( USE, Deref( USE, NamedRef( USE, SymHandle("z")), 1), 1), p)
             MemRefHandle("( *z)") => 
-                Deref( USE, NamedRef( USE, SymHandle("z"), full), 1, full)
+                Deref( USE, NamedRef( USE, SymHandle("z")), 1)
             MemRefHandle("( *( *z)).p") => 
-                FieldAccess( DEF, Deref( USE, Deref( USE, NamedRef( USE, SymHandle("z"), full), 1, full), 1, full), p, full)
+                FieldAccess( DEF, Deref( USE, Deref( USE, NamedRef( USE, SymHandle("z")), 1), 1), p)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("( *( *z)).p = &n;") =>
         [
-            < FieldAccess( DEF, Deref( USE, Deref( USE, NamedRef( USE, SymHandle("z"), full), 1, full), 1, full), p, full)
-            , AddressOf( USE, NamedRef( USE, SymHandle("n"), full), full) >
+            < FieldAccess( DEF, Deref( USE, Deref( USE, NamedRef( USE, SymHandle("z")), 1), 1), p)
+            , AddressOf( USE, NamedRef( USE, SymHandle("n"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("x -> p =(y.p);") =>
         [
             MemRefHandle("x") => 
-                NamedRef( USE, SymHandle("x"), full)
+                NamedRef( USE, SymHandle("x"))
             MemRefHandle("x -> p =(y.p)") => 
-                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("x"), full), 1, full), p, full)
+                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("x")), 1), p)
             MemRefHandle("(y.p)") => 
-                FieldAccess( USE, NamedRef( USE, SymHandle("y"), full), p, full)
+                FieldAccess( USE, NamedRef( USE, SymHandle("y")), p)
             MemRefHandle("x -> p") => 
-                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("x"), full), 1, full), p, full)
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("x")), 1), p)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("x -> p =(y.p);") =>
         [
-            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("x"), full), 1, full), p, full)
-            , FieldAccess( USE, NamedRef( USE, SymHandle("y"), full), p, full) >
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("x")), 1), p)
+            , FieldAccess( USE, NamedRef( USE, SymHandle("y")), p) >
         ] }
     MEMREFEXPRS = { StmtHandle("x -> p = &n;") =>
         [
             MemRefHandle("x") => 
-                NamedRef( USE, SymHandle("x"), full)
+                NamedRef( USE, SymHandle("x"))
             MemRefHandle("&n") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("n"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("n")))
             MemRefHandle("x -> p = &n") => 
-                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("x"), full), 1, full), p, full)
+                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("x")), 1), p)
             MemRefHandle("x -> p") => 
-                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("x"), full), 1, full), p, full)
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("x")), 1), p)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("x -> p = &n;") =>
         [
-            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("x"), full), 1, full), p, full)
-            , AddressOf( USE, NamedRef( USE, SymHandle("n"), full), full) >
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("x")), 1), p)
+            , AddressOf( USE, NamedRef( USE, SymHandle("n"))) >
         ] }
     LOCATION = { < SymHandle("n"), local > }
     LOCATION = { < SymHandle("x"), local > }

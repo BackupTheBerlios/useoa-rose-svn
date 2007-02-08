@@ -48,18 +48,18 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("class Foo f;") =>
         [
             MemRefHandle("implicit actual this:") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("f"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("f")))
             MemRefHandle("Foo") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
         ] }
     CALLSITES = { StmtHandle("class Foo f;") =>
         [
             CallHandle("f") => 
-                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), full)
+                NamedRef( USE, SymHandle("method:Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("f") =>
         [
-            < 0, AddressOf( USE, NamedRef( USE, SymHandle("f"), full), full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("f"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("int x;") =>
         [
@@ -67,21 +67,21 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("f.someMethod(&x);") =>
         [
             MemRefHandle("f") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("f"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("f")))
             MemRefHandle("f.someMethod") => 
-                NamedRef( USE, SymHandle("method:Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), full)
+                NamedRef( USE, SymHandle("method:Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"))
             MemRefHandle("&x") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("x")))
         ] }
     CALLSITES = { StmtHandle("f.someMethod(&x);") =>
         [
             CallHandle("f.someMethod(&x)") => 
-                NamedRef( USE, SymHandle("method:Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), full)
+                NamedRef( USE, SymHandle("method:Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("f.someMethod(&x)") =>
         [
-            < 0, AddressOf( USE, NamedRef( USE, SymHandle("f"), full), full) >
-            < 1, AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("f"))) >
+            < 1, AddressOf( USE, NamedRef( USE, SymHandle("x"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

@@ -15,58 +15,58 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("a = 20;") =>
         [
             MemRefHandle("a") => 
-                NamedRef( DEF, SymHandle("a"), full)
+                NamedRef( DEF, SymHandle("a"))
             MemRefHandle("a = 20") => 
-                NamedRef( USE, SymHandle("a"), full)
+                NamedRef( USE, SymHandle("a"))
         ] }
     MEMREFEXPRS = { StmtHandle("a++;") =>
         [
             MemRefHandle("a") => 
-                NamedRef( USEDEF, SymHandle("a"), full)
+                NamedRef( USEDEF, SymHandle("a"))
             MemRefHandle("a++") => 
-                NamedRef( USE, SymHandle("a"), full)
+                NamedRef( USE, SymHandle("a"))
         ] }
     MEMREFEXPRS = { StmtHandle("b = ++a;") =>
         [
             MemRefHandle("b") => 
-                NamedRef( DEF, SymHandle("b"), full)
+                NamedRef( DEF, SymHandle("b"))
             MemRefHandle("a") => 
-                NamedRef( USEDEF, SymHandle("a"), full)
+                NamedRef( USEDEF, SymHandle("a"))
             MemRefHandle("b = ++a") => 
-                NamedRef( USE, SymHandle("b"), full)
+                NamedRef( USE, SymHandle("b"))
             MemRefHandle("++a") => 
-                NamedRef( USE, SymHandle("a"), full)
+                NamedRef( USE, SymHandle("a"))
         ] }
     MEMREFEXPRS = { StmtHandle("b = a++;") =>
         [
             MemRefHandle("b") => 
-                NamedRef( DEF, SymHandle("b"), full)
+                NamedRef( DEF, SymHandle("b"))
             MemRefHandle("a") => 
-                NamedRef( USEDEF, SymHandle("a"), full)
+                NamedRef( USEDEF, SymHandle("a"))
             MemRefHandle("b = a++") => 
-                NamedRef( USE, SymHandle("b"), full)
+                NamedRef( USE, SymHandle("b"))
             MemRefHandle("a++") => 
-                NamedRef( USE, SymHandle("a"), full)
+                NamedRef( USE, SymHandle("a"))
         ] }
     MEMREFEXPRS = { StmtHandle("a += 45;") =>
         [
             MemRefHandle("a") => 
-                NamedRef( USEDEF, SymHandle("a"), full)
+                NamedRef( USEDEF, SymHandle("a"))
             MemRefHandle("a += 45") => 
-                NamedRef( USE, SymHandle("a"), full)
+                NamedRef( USE, SymHandle("a"))
         ] }
     MEMREFEXPRS = { StmtHandle("return a =(b -= a);") =>
         [
             MemRefHandle("a") => 
-                NamedRef( DEF, SymHandle("a"), full)
+                NamedRef( DEF, SymHandle("a"))
             MemRefHandle("b") => 
-                NamedRef( USEDEF, SymHandle("b"), full)
+                NamedRef( USEDEF, SymHandle("b"))
             MemRefHandle("a") => 
-                NamedRef( USE, SymHandle("a"), full)
+                NamedRef( USE, SymHandle("a"))
             MemRefHandle("a =(b -= a)") => 
-                NamedRef( USE, SymHandle("a"), full)
+                NamedRef( USE, SymHandle("a"))
             MemRefHandle("(b -= a)") => 
-                NamedRef( USE, SymHandle("b"), full)
+                NamedRef( USE, SymHandle("b"))
         ] }
     LOCATION = { < SymHandle("a"), local > }
     LOCATION = { < SymHandle("b"), local > }

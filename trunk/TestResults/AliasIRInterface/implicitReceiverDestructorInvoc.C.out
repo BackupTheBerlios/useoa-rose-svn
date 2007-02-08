@@ -69,18 +69,18 @@ PROCEDURE = { < ProcHandle("Foo::~Foo"), SymHandle("method:Foo::~Foo__Foo__scope
     MEMREFEXPRS = { StmtHandle("(this) -> Base::~Base();") =>
         [
             MemRefHandle("(this)") => 
-                NamedRef( USE, SymHandle("this::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), full)
+                NamedRef( USE, SymHandle("this::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"))
             MemRefHandle("(this) -> Base::~Base") => 
-                NamedRef( USE, SymHandle("method:Base::~Base__Base__scope____dtBase____MFb_Base__Fb_v_Gb__Fe_"), full)
+                NamedRef( USE, SymHandle("method:Base::~Base__Base__scope____dtBase____MFb_Base__Fb_v_Gb__Fe_"))
         ] }
     CALLSITES = { StmtHandle("(this) -> Base::~Base();") =>
         [
             CallHandle("(this) -> Base::~Base()") => 
-                NamedRef( USE, SymHandle("method:Base::~Base__Base__scope____dtBase____MFb_Base__Fb_v_Gb__Fe_"), full)
+                NamedRef( USE, SymHandle("method:Base::~Base__Base__scope____dtBase____MFb_Base__Fb_v_Gb__Fe_"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("(this) -> Base::~Base()") =>
         [
-            < 0, NamedRef( USE, SymHandle("this::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), full) >
+            < 0, NamedRef( USE, SymHandle("this::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_")) >
         ] }
     LOCATION = { < SymHandle("this::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), local > }
     LOCATION = { < SymHandle("method:Base::~Base__Base__scope____dtBase____MFb_Base__Fb_v_Gb__Fe_"), not local > }

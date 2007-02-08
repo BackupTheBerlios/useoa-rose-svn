@@ -2,7 +2,7 @@
 InterAliasMap(
     AliasMap(
         mProcHandle: ProcHandle(p)
-        mNumSets: 11
+        mNumSets: 7
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -16,18 +16,58 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(s2)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s2)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: a
                     ) ] 
                 3	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(s3)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: a
+                    )    
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: b
+                    )    
+                    LocFieldSubSet(
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(s3)
+                                mLocal: 0
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )
+                        mFieldName: c
                     ) ] 
                 4	 => [ 
                     NamedLoc(
@@ -50,75 +90,15 @@ InterAliasMap(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
-                7	 => [ 
-                    LocFieldSubSet(
-                        LocSubSet(
-                            mLoc: 
-                            NamedLoc(
-                                mSymHandle: SymHandle(s2)
-                                mLocal: 0
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
-                            )
-                            mFull: 0
-                        )
-                        mFieldName: a
-                    ) ] 
-                8	 => [ 
-                    LocFieldSubSet(
-                        LocSubSet(
-                            mLoc: 
-                            NamedLoc(
-                                mSymHandle: SymHandle(s3)
-                                mLocal: 0
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
-                            )
-                            mFull: 0
-                        )
-                        mFieldName: a
-                    ) ] 
-                9	 => [ 
-                    LocFieldSubSet(
-                        LocSubSet(
-                            mLoc: 
-                            NamedLoc(
-                                mSymHandle: SymHandle(s3)
-                                mLocal: 0
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
-                            )
-                            mFull: 0
-                        )
-                        mFieldName: b
-                    ) ] 
-                10	 => [ 
-                    LocFieldSubSet(
-                        LocSubSet(
-                            mLoc: 
-                            NamedLoc(
-                                mSymHandle: SymHandle(s3)
-                                mLocal: 0
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
-                            )
-                            mFull: 0
-                        )
-                        mFieldName: c
-                    ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
                 0	 => 1
                 1	 => 2
-                2	 => 2
-                3	 => 2
+                2	 => 1
+                3	 => 1
                 4	 => 2
                 5	 => 2
                 6	 => 2
-                7	 => 1
-                8	 => 1
-                9	 => 1
-                10	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(s1)    MemRefHandle(s1 = s2) ] 
@@ -127,93 +107,75 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(s1)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(s2)
-                    ) ] 
-                3	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(s3)
-                    ) ] 
-                4	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(p)
-                    ) ] 
-                5	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(q)
-                    ) ] 
-                6	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(r)
-                    ) ] 
-                7	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s2)
                         )
                         mFieldName: a
                     ) ] 
-                8	 => [ 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s3)
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: a
-                    ) ] 
-                9	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: b
-                    ) ] 
-                10	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: c
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
                     ) ] 
 
     )
     AliasMap(
         mProcHandle: ProcHandle(q)
-        mNumSets: 11
+        mNumSets: 7
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -227,41 +189,6 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(s2)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                3	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(s3)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                4	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(p)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                5	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(q)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                6	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(r)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                7	 => [ 
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -275,7 +202,7 @@ InterAliasMap(
                         )
                         mFieldName: a
                     ) ] 
-                8	 => [ 
+                3	 => [ 
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -288,8 +215,7 @@ InterAliasMap(
                             mFull: 0
                         )
                         mFieldName: a
-                    ) ] 
-                9	 => [ 
+                    )    
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -302,8 +228,7 @@ InterAliasMap(
                             mFull: 0
                         )
                         mFieldName: b
-                    ) ] 
-                10	 => [ 
+                    )    
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -316,116 +241,115 @@ InterAliasMap(
                             mFull: 0
                         )
                         mFieldName: c
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(r)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
                     ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
                 0	 => 1
                 1	 => 2
-                2	 => 2
-                3	 => 2
+                2	 => 1
+                3	 => 1
                 4	 => 2
                 5	 => 2
                 6	 => 2
-                7	 => 1
-                8	 => 1
-                9	 => 1
-                10	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(s1) ] 
+                2	 => [ MemRefHandle(s2.a = 4)    MemRefHandle(s2.a) ] 
                 3	 => [ MemRefHandle(s3)    MemRefHandle(s3 = s1) ] 
-                7	 => [ MemRefHandle(s2.a = 4)    MemRefHandle(s2.a) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(s1)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(s2)
-                    ) ] 
-                3	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(s3)
-                    ) ] 
-                4	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(p)
-                    ) ] 
-                5	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(q)
-                    ) ] 
-                6	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(r)
-                    ) ] 
-                7	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s2)
                         )
                         mFieldName: a
                     ) ] 
-                8	 => [ 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s3)
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: a
-                    ) ] 
-                9	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: b
-                    ) ] 
-                10	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: c
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
                     ) ] 
 
     )
     AliasMap(
         mProcHandle: ProcHandle(r)
-        mNumSets: 11
+        mNumSets: 7
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -439,41 +363,6 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(s2)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                3	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(s3)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                4	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(p)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                5	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(q)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                6	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(r)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                7	 => [ 
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -487,7 +376,7 @@ InterAliasMap(
                         )
                         mFieldName: a
                     ) ] 
-                8	 => [ 
+                3	 => [ 
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -500,8 +389,7 @@ InterAliasMap(
                             mFull: 0
                         )
                         mFieldName: a
-                    ) ] 
-                9	 => [ 
+                    )    
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -514,8 +402,7 @@ InterAliasMap(
                             mFull: 0
                         )
                         mFieldName: b
-                    ) ] 
-                10	 => [ 
+                    )    
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -528,116 +415,114 @@ InterAliasMap(
                             mFull: 0
                         )
                         mFieldName: c
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(r)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
                     ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
                 0	 => 1
                 1	 => 2
-                2	 => 2
-                3	 => 2
+                2	 => 1
+                3	 => 1
                 4	 => 2
                 5	 => 2
                 6	 => 2
-                7	 => 1
-                8	 => 1
-                9	 => 1
-                10	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 2	 => [ MemRefHandle(s2) ] 
-                3	 => [ MemRefHandle(s3)    MemRefHandle(s3 = s2) ] 
-                8	 => [ MemRefHandle(s3.a = 4)    MemRefHandle(s3.a) ] 
+                3	 => [ MemRefHandle(s3)    MemRefHandle(s3 = s2)    MemRefHandle(s3.a = 4)    MemRefHandle(s3.a) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(s1)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(s2)
-                    ) ] 
-                3	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(s3)
-                    ) ] 
-                4	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(p)
-                    ) ] 
-                5	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(q)
-                    ) ] 
-                6	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(r)
-                    ) ] 
-                7	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s2)
                         )
                         mFieldName: a
                     ) ] 
-                8	 => [ 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s3)
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: a
-                    ) ] 
-                9	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: b
-                    ) ] 
-                10	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: c
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
                     ) ] 
 
     )
     AliasMap(
         mProcHandle: ProcHandle(main)
-        mNumSets: 11
+        mNumSets: 7
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -651,41 +536,6 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(s2)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                3	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(s3)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                4	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(p)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                5	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(q)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                6	 => [ 
-                    NamedLoc(
-                        mSymHandle: SymHandle(r)
-                        mLocal: 0
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    ) ] 
-                7	 => [ 
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -699,7 +549,7 @@ InterAliasMap(
                         )
                         mFieldName: a
                     ) ] 
-                8	 => [ 
+                3	 => [ 
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -712,8 +562,7 @@ InterAliasMap(
                             mFull: 0
                         )
                         mFieldName: a
-                    ) ] 
-                9	 => [ 
+                    )    
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -726,8 +575,7 @@ InterAliasMap(
                             mFull: 0
                         )
                         mFieldName: b
-                    ) ] 
-                10	 => [ 
+                    )    
                     LocFieldSubSet(
                         LocSubSet(
                             mLoc: 
@@ -740,113 +588,110 @@ InterAliasMap(
                             mFull: 0
                         )
                         mFieldName: c
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(r)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
                     ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
                 0	 => 1
                 1	 => 2
-                2	 => 2
-                3	 => 2
+                2	 => 1
+                3	 => 1
                 4	 => 2
                 5	 => 2
                 6	 => 2
-                7	 => 1
-                8	 => 1
-                9	 => 1
-                10	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
+                3	 => [ MemRefHandle(s3.a = 2)    MemRefHandle(s3.b = 3)    MemRefHandle(s3.c = 4)    MemRefHandle(s3.a)    MemRefHandle(s3.b)    MemRefHandle(s3.c) ] 
                 4	 => [ MemRefHandle(p) ] 
                 5	 => [ MemRefHandle(q) ] 
                 6	 => [ MemRefHandle(r) ] 
-                8	 => [ MemRefHandle(s3.a = 2)    MemRefHandle(s3.a) ] 
-                9	 => [ MemRefHandle(s3.b = 3)    MemRefHandle(s3.b) ] 
-                10	 => [ MemRefHandle(s3.c = 4)    MemRefHandle(s3.c) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(s1)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(s2)
-                    ) ] 
-                3	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(s3)
-                    ) ] 
-                4	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(p)
-                    ) ] 
-                5	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(q)
-                    ) ] 
-                6	 => [ 
-                    NamedRef(
-                        mFullAccuracy: 1
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(r)
-                    ) ] 
-                7	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s2)
                         )
                         mFieldName: a
                     ) ] 
-                8	 => [ 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s3)
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: a
-                    ) ] 
-                9	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: b
-                    ) ] 
-                10	 => [ 
+                    )    
                     FieldAccess(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s3)
                         )
                         mFieldName: c
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
                     ) ] 
 
     )

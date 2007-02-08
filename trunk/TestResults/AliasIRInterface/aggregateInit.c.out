@@ -9,9 +9,9 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int a[] = {(0),(1),(2),(3),(4)};") =>
         [
             MemRefHandle("a") => 
-                NamedRef( DEF, SymHandle("a"), full)
+                NamedRef( DEF, SymHandle("a"))
             MemRefHandle("assign_or_agg_initializer:{(0),(1),(2),(3),(4)}") => 
-                UnnamedRef( USE, StmtHandle("int a[] = {(0),(1),(2),(3),(4)};"), part)
+                SubSetRef( USE, UnnamedRef( USE, StmtHandle("int a[] = {(0),(1),(2),(3),(4)};")))
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

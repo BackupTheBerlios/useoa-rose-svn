@@ -33,11 +33,9 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: DEF
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(i)
                             )
@@ -48,11 +46,9 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(j)
                             )
@@ -63,15 +59,12 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             Deref(
-                                mFullAccuracy: 1
                                 mMemRefType: DEF
                                 mMRE: 
                                 NamedRef(
-                                    mFullAccuracy: 1
                                     mMemRefType: USE
                                     mSymHandle: SymHandle(i)
                                 )
@@ -83,15 +76,12 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             Deref(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mMRE: 
                                 NamedRef(
-                                    mFullAccuracy: 1
                                     mMemRefType: USE
                                     mSymHandle: SymHandle(j)
                                 )
@@ -119,29 +109,24 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(i)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(j)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(makeAlias)
                     ) ] 
                 4	 => [ 
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(i)
                         )
@@ -149,11 +134,9 @@ InterAliasMap(
                     ) ] 
                 5	 => [ 
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(j)
                         )
@@ -161,15 +144,12 @@ InterAliasMap(
                     ) ] 
                 6	 => [ 
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: DEF
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(i)
                             )
@@ -178,15 +158,12 @@ InterAliasMap(
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(j)
                             )
@@ -249,27 +226,22 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(loc)
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(a)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(b)
                         )
@@ -277,19 +249,16 @@ InterAliasMap(
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(a)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(b)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(makeAlias)
                     ) ] 

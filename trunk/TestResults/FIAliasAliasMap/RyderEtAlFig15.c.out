@@ -58,18 +58,12 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 8	 => [ 
-                    UnnamedLoc(
-                        mStmtHandle: StmtHandle((malloc((size))))
-                        mLocal: 0
-                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(s)
                             )
@@ -79,11 +73,9 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(t)
                             )
@@ -93,16 +85,22 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: DEF
                                 mSymHandle: SymHandle(my_malloc)
                             )
                             mNumDeref: 1
                         )
+                    )    
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((malloc((size))))
+                            mLocal: 0
+                        )
+                        mFull: 0
                     ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
@@ -122,84 +120,78 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(__dev)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(x)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(s)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(y)
                     ) ] 
                 5	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(t)
                     ) ] 
                 6	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
                 7	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(my_malloc)
                     ) ] 
                 8	 => [ 
                     UnnamedRef(
-                        mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(t)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(my_malloc)
                         )
                         mNumDeref: 1
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mStmtHandle: StmtHandle((malloc((size))))
+                        )
                     ) ] 
 
     )
@@ -261,18 +253,12 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 8	 => [ 
-                    UnnamedLoc(
-                        mStmtHandle: StmtHandle((malloc((size))))
-                        mLocal: 0
-                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(s)
                             )
@@ -282,11 +268,9 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(t)
                             )
@@ -296,16 +280,22 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: DEF
                                 mSymHandle: SymHandle(my_malloc)
                             )
                             mNumDeref: 1
                         )
+                    )    
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((malloc((size))))
+                            mLocal: 0
+                        )
+                        mFull: 0
                     ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
@@ -325,84 +315,78 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(__dev)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(x)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(s)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(y)
                     ) ] 
                 5	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(t)
                     ) ] 
                 6	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
                 7	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(my_malloc)
                     ) ] 
                 8	 => [ 
                     UnnamedRef(
-                        mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(t)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(my_malloc)
                         )
                         mNumDeref: 1
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mStmtHandle: StmtHandle((malloc((size))))
+                        )
                     ) ] 
 
     )
@@ -471,18 +455,12 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 9	 => [ 
-                    UnnamedLoc(
-                        mStmtHandle: StmtHandle((malloc((size))))
-                        mLocal: 0
-                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(s)
                             )
@@ -492,11 +470,9 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(t)
                             )
@@ -506,16 +482,22 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: DEF
                                 mSymHandle: SymHandle(my_malloc)
                             )
                             mNumDeref: 1
                         )
+                    )    
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((malloc((size))))
+                            mLocal: 0
+                        )
+                        mFull: 0
                     ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
@@ -537,90 +519,83 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(__major)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(__minor)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(x)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(s)
                     ) ] 
                 5	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(y)
                     ) ] 
                 6	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(t)
                     ) ] 
                 7	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
                 8	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(my_malloc)
                     ) ] 
                 9	 => [ 
                     UnnamedRef(
-                        mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(t)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(my_malloc)
                         )
                         mNumDeref: 1
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mStmtHandle: StmtHandle((malloc((size))))
+                        )
                     ) ] 
 
     )
@@ -689,9 +664,13 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 9	 => [ 
-                    UnnamedLoc(
-                        mStmtHandle: StmtHandle((malloc((size))))
-                        mLocal: 0
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((malloc((size))))
+                            mLocal: 0
+                        )
+                        mFull: 0
                     ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
@@ -714,101 +693,92 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(x)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(s)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(y)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(t)
                     ) ] 
                 5	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(size)
                     ) ] 
                 6	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(p)
                     ) ] 
                 7	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
                 8	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(my_malloc)
                     ) ] 
                 9	 => [ 
                     UnnamedRef(
-                        mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(t)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(p)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(my_malloc)
                         )
                         mNumDeref: 1
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mStmtHandle: StmtHandle((malloc((size))))
+                        )
                     ) ] 
 
     )
@@ -863,18 +833,12 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 7	 => [ 
-                    UnnamedLoc(
-                        mStmtHandle: StmtHandle((malloc((size))))
-                        mLocal: 0
-                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(s)
                             )
@@ -884,11 +848,9 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(t)
                             )
@@ -898,16 +860,22 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: DEF
                                 mSymHandle: SymHandle(my_malloc)
                             )
                             mNumDeref: 1
                         )
+                    )    
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((malloc((size))))
+                            mLocal: 0
+                        )
+                        mFull: 0
                     ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
@@ -929,78 +897,73 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(x)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(s)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(y)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(t)
                     ) ] 
                 5	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
                 6	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(my_malloc)
                     ) ] 
                 7	 => [ 
                     UnnamedRef(
-                        mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(t)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(my_malloc)
                         )
                         mNumDeref: 1
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mStmtHandle: StmtHandle((malloc((size))))
+                        )
                     ) ] 
 
     )
@@ -1055,18 +1018,12 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 7	 => [ 
-                    UnnamedLoc(
-                        mStmtHandle: StmtHandle((malloc((size))))
-                        mLocal: 0
-                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(s)
                             )
@@ -1076,11 +1033,9 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(t)
                             )
@@ -1090,16 +1045,22 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mMRE: 
                             NamedRef(
-                                mFullAccuracy: 1
                                 mMemRefType: DEF
                                 mSymHandle: SymHandle(my_malloc)
                             )
                             mNumDeref: 1
                         )
+                    )    
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mStmtHandle: StmtHandle((malloc((size))))
+                            mLocal: 0
+                        )
+                        mFull: 0
                     ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
@@ -1121,78 +1082,73 @@ InterAliasMap(
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(x)
                     ) ] 
                 2	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(s)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(y)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(t)
                     ) ] 
                 5	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
                 6	 => [ 
                     NamedRef(
-                        mFullAccuracy: 1
                         mMemRefType: DEF
                         mSymHandle: SymHandle(my_malloc)
                     ) ] 
                 7	 => [ 
                     UnnamedRef(
-                        mFullAccuracy: 0
                         mMemRefType: USE
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(s)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: USE
                             mSymHandle: SymHandle(t)
                         )
                         mNumDeref: 1
                     )    
                     Deref(
-                        mFullAccuracy: 1
                         mMemRefType: USE
                         mMRE: 
                         NamedRef(
-                            mFullAccuracy: 1
                             mMemRefType: DEF
                             mSymHandle: SymHandle(my_malloc)
                         )
                         mNumDeref: 1
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mStmtHandle: StmtHandle((malloc((size))))
+                        )
                     ) ] 
 
     )

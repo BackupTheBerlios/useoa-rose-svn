@@ -40,88 +40,88 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int &xRef = x;") =>
         [
             MemRefHandle("xRef&") => 
-                NamedRef( DEF, SymHandle("xRef"), full)
+                NamedRef( DEF, SymHandle("xRef"))
             MemRefHandle("x") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("x")))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int &xRef = x;") =>
         [
-            < NamedRef( DEF, SymHandle("xRef"), full)
-            , AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full) >
+            < NamedRef( DEF, SymHandle("xRef"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("x"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("nonConstArg(x);") =>
         [
             MemRefHandle("x") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("x")))
             MemRefHandle("nonConstArg") => 
-                NamedRef( USE, SymHandle("nonConstArg"), full)
+                NamedRef( USE, SymHandle("nonConstArg"))
         ] }
     CALLSITES = { StmtHandle("nonConstArg(x);") =>
         [
             CallHandle("nonConstArg(x)") => 
-                NamedRef( USE, SymHandle("nonConstArg"), full)
+                NamedRef( USE, SymHandle("nonConstArg"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("nonConstArg(x)") =>
         [
-            < 0, AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("x"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("nonConstArg(xRef);") =>
         [
             MemRefHandle("xRef") => 
-                NamedRef( USE, SymHandle("xRef"), full)
+                NamedRef( USE, SymHandle("xRef"))
             MemRefHandle("nonConstArg") => 
-                NamedRef( USE, SymHandle("nonConstArg"), full)
+                NamedRef( USE, SymHandle("nonConstArg"))
         ] }
     CALLSITES = { StmtHandle("nonConstArg(xRef);") =>
         [
             CallHandle("nonConstArg(xRef)") => 
-                NamedRef( USE, SymHandle("nonConstArg"), full)
+                NamedRef( USE, SymHandle("nonConstArg"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("nonConstArg(xRef)") =>
         [
-            < 0, NamedRef( USE, SymHandle("xRef"), full) >
+            < 0, NamedRef( USE, SymHandle("xRef")) >
         ] }
     MEMREFEXPRS = { StmtHandle("constArg((5));") =>
         [
             MemRefHandle("constArg") => 
-                NamedRef( USE, SymHandle("constArg"), full)
+                NamedRef( USE, SymHandle("constArg"))
         ] }
     CALLSITES = { StmtHandle("constArg((5));") =>
         [
             CallHandle("constArg((5))") => 
-                NamedRef( USE, SymHandle("constArg"), full)
+                NamedRef( USE, SymHandle("constArg"))
         ] }
     MEMREFEXPRS = { StmtHandle("constArg(x);") =>
         [
             MemRefHandle("x") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full)
+                AddressOf( USE, NamedRef( USE, SymHandle("x")))
             MemRefHandle("constArg") => 
-                NamedRef( USE, SymHandle("constArg"), full)
+                NamedRef( USE, SymHandle("constArg"))
         ] }
     CALLSITES = { StmtHandle("constArg(x);") =>
         [
             CallHandle("constArg(x)") => 
-                NamedRef( USE, SymHandle("constArg"), full)
+                NamedRef( USE, SymHandle("constArg"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("constArg(x)") =>
         [
-            < 0, AddressOf( USE, NamedRef( USE, SymHandle("x"), full), full) >
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("x"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("constArg(xRef);") =>
         [
             MemRefHandle("xRef") => 
-                NamedRef( USE, SymHandle("xRef"), full)
+                NamedRef( USE, SymHandle("xRef"))
             MemRefHandle("constArg") => 
-                NamedRef( USE, SymHandle("constArg"), full)
+                NamedRef( USE, SymHandle("constArg"))
         ] }
     CALLSITES = { StmtHandle("constArg(xRef);") =>
         [
             CallHandle("constArg(xRef)") => 
-                NamedRef( USE, SymHandle("constArg"), full)
+                NamedRef( USE, SymHandle("constArg"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("constArg(xRef)") =>
         [
-            < 0, NamedRef( USE, SymHandle("xRef"), full) >
+            < 0, NamedRef( USE, SymHandle("xRef")) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

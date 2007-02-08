@@ -15,16 +15,16 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("a = b;") =>
         [
             MemRefHandle("a") => 
-                NamedRef( DEF, SymHandle("a"), full)
+                NamedRef( DEF, SymHandle("a"))
             MemRefHandle("b") => 
-                NamedRef( USE, SymHandle("b"), full)
+                NamedRef( USE, SymHandle("b"))
             MemRefHandle("a = b") => 
-                NamedRef( USE, SymHandle("a"), full)
+                NamedRef( USE, SymHandle("a"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("a = b;") =>
         [
-            < NamedRef( DEF, SymHandle("a"), full)
-            , NamedRef( USE, SymHandle("b"), full) >
+            < NamedRef( DEF, SymHandle("a"))
+            , NamedRef( USE, SymHandle("b")) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
