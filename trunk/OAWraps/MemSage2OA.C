@@ -2353,10 +2353,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 OA::MemRefHandle lhs_memref 
                     = findTopMemRefHandle(arrRefExp->get_lhs_operand());
 
+                OA::OA_ptr<OA::MemRefExpr> lhs_mre;
                 OA::OA_ptr<OA::MemRefExprIterator> mIter
                     = getMemRefExprIterator(lhs_memref);
                 for ( ; mIter->isValid(); ++(*mIter) ) {
-                    OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
+                    lhs_mre = mIter->current();
 
                     OA::OA_ptr<OA::SubSetRef> subset_mre;
                     OA::OA_ptr<OA::MemRefExpr> nullMRE;
@@ -2375,6 +2376,16 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // child is no longer a MemRefHandle
                 mMemref2mreSetMap[lhs_memref].clear();
                 mStmt2allMemRefsMap[stmt].erase(lhs_memref);
+
+                // take the rhs MRE and wrap it in an IdxExprAccess
+                MemRefHandle mref =
+                    ((OA::irhandle_t)arrRefExp->get_rhs_operand());
+                OA_ptr<IdxExprAccess> rhs_mre;
+                rhs_mre = new OA::IdxExprAccess(
+                    MemRefExpr::USE, lhs_mre, mref);
+                cout << "IdxExprAccess created for " + toString(mref) << endl;
+                mStmt2allMemRefsMap[stmt].insert(mref);
+                mMemref2mreSetMap[memref].insert(rhs_mre);
             }
             // else if through a variable pointer
             else {

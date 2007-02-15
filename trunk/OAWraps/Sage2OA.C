@@ -5636,6 +5636,66 @@ SageIRInterface::getReachConstsStmtType(OA::StmtHandle h)
   return stmtType;
 }
 
+//-------------------------------------------------------------------------
+// DataDepIRInterface
+//-------------------------------------------------------------------------
+int SageIRInterface::constValIntVal(OA::ConstValHandle h) {
+    OA_ptr<ConstValBasicInterface> constValInterface;
+    constValInterface = getConstValBasic(h);
+    OA_ptr<SageConstVal> val = constValInterface.convert<SageConstVal>();
+
+    if (val->isaInteger()) {
+        return val->getIntegerVal();
+    } else {
+        assert(false);
+    }
+}
+
+OA::AffineExpr::OpType SageIRInterface::getOpType(OA::OpHandle h) {
+    // TODO
+    assert(false);
+}
+
+OA::OA_ptr<OA::IdxExprAccessIterator> SageIRInterface::getIdxExprAccessIter(
+    OA::ProcHandle p)
+{
+    OA_ptr<list<OA_ptr<IdxExprAccess> > > retList;
+    retList = new list<OA_ptr<IdxExprAccess> >;
+
+    // iterate through all statements in the procedure
+    OA_ptr<IRStmtIterator> iterStmts = getStmtIterator(p);
+    for(; iterStmts->isValid(); (*iterStmts)++) {
+        StmtHandle hStmt = iterStmts->current();
+        OA_ptr<SageIRMemRefIterator> iterMRE;
+        iterMRE = new SageIRMemRefIterator(hStmt, *this);
+        for(; iterMRE->isValid(); ++(*iterMRE)) {
+            MemRefHandle hMRE = iterMRE->current();
+            OA_ptr<MemRefExprIterator> iterMRE2 = getMemRefExprIterator(hMRE);
+            for(; iterMRE2->isValid(); ++(*iterMRE2)) {
+                if(iterMRE2->current()->isaRefOp()) {
+                    OA_ptr<RefOp> refOp;
+                    refOp = iterMRE2->current().convert<RefOp>();
+                    if(refOp->isaSubSetRef()) {
+                        OA_ptr<SubSetRef> subSetRef;
+                        subSetRef = refOp.convert<SubSetRef>();
+                        if(subSetRef->isaIdxExprAccess()) {
+                            OA_ptr<IdxExprAccess> idxExprAccess;
+                            idxExprAccess =
+                                subSetRef.convert<IdxExprAccess>();
+                            retList->push_back(idxExprAccess);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    OA_ptr<OA::IdxExprAccessIterator> iterRet;
+    iterRet = new SageIdxExprAccessIterator(retList, this);
+    return iterRet;
+}
+
+
 
 
 

@@ -15,6 +15,7 @@
 #include <OpenAnalysis/IRInterface/ParamBindingsIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/InterSideEffectIRInterfaceDefault.hpp>
 #include <OpenAnalysis/IRInterface/LinearityIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/DataDepIRInterface.hpp>
 #include <OpenAnalysis/SideEffect/ManagerInterSideEffectStandard.hpp>
 #include <OpenAnalysis/SideEffect/ManagerSideEffectStandard.hpp>
 #include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
@@ -27,6 +28,7 @@
 #include <OpenAnalysis/IRInterface/ConstValIntInterface.hpp>
 #include <OpenAnalysis/IRInterface/ReachConstsIRInterface.hpp>
 
+using namespace OA;
 
 class SageIRInterface;
 
@@ -166,47 +168,61 @@ class SageExprHandleIterator: public OA::ExprHandleIterator
 
 typedef SageExprHandleIterator SageIRCallsiteParamIterator;
 
-class SageMemRefExprIterator : public OA::MemRefExprIterator {
-  public:      
-  //#define TOOMANYCOLONS
-#ifdef TOOMANYCOLONS
-    SageMemRefExprIterator(OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr::MemRefExpr> > > pList,
-      SageIRInterface * in)
-      : mList(pList) { mIter = mList->begin(); ir=in;}
-#else
-    SageMemRefExprIterator(OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > pList,
-#endif
-      SageIRInterface * in)
-      : mList(pList) { mIter = mList->begin(); ir=in;}
-    ~SageMemRefExprIterator() {}
+/*! template to construct an implementation of one of the MRE iterator
+    types.  P specifies the class we're inheriting from, T specifies the
+    type of objects this iterators over, L should be the
+    list<OA_ptr<T> >::iterator.  L is needed since explicitly decleraing an
+    iterator in the class causes an error.
+*/
+template<class P, class T, class L>
+class SageMREIteratorImplementation : public P {
+  public:
+    SageMREIteratorImplementation(
+        OA_ptr<list<OA_ptr<T> > > pList,
+        SageIRInterface * in)
+    :
+        mList(pList)
+    {
+        mIter = mList->begin();
+        ir=in;
+    }
+    ~SageMREIteratorImplementation() {}
                     
-#ifdef TOOMANYCOLONS
-    OA::OA_ptr<OA::MemRefExpr::MemRefExpr> current() const
-#else
-    OA::OA_ptr<OA::MemRefExpr> current() const
-#endif
-      { return *mIter; }
+    OA_ptr<T> current() const { 
+      return *mIter;
+    }
 
-                        
     bool isValid() const { return mIter!=mList->end(); }
+
+    int count() const { return mList->size(); }
                                              
     void operator++() { if (isValid()) mIter++; }
     void operator++(int) { ++*this; }
     void reset() { mIter = mList->begin(); }
     SageIRInterface * ir;
   private:
-#ifdef TOOMANYCOLONS
-    OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr::MemRefExpr> > > mList;
-#else
-    OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > mList;
-#endif
-
-#ifdef TOOMANYCOLONS
-    std::list<OA::OA_ptr<OA::MemRefExpr::MemRefExpr> >::iterator mIter;
-#else
-    std::list<OA::OA_ptr<OA::MemRefExpr> >::iterator mIter;
-#endif
+    L mIter;
+    OA_ptr<list<OA_ptr<T> > > mList;
 };
+
+// Construct a SageMREIteratorImplementation class
+#define BuildSgMREIter(A) \
+    typedef SageMREIteratorImplementation< \
+        A ## Iterator, A, list<OA_ptr< A > >::iterator >  \
+        Sage ## A ## Iterator;
+
+BuildSgMREIter(MemRefExpr);
+BuildSgMREIter(NamedRef);
+BuildSgMREIter(UnnamedRef);
+BuildSgMREIter(UnknownRef);
+BuildSgMREIter(RefOp);
+BuildSgMREIter(Deref);
+BuildSgMREIter(SubSetRef);
+BuildSgMREIter(IdxAccess);
+BuildSgMREIter(IdxExprAccess);
+BuildSgMREIter(FieldAccess);
+
+
 
 class SageIRUseDefIterator
 : public OA::IRHandleListIterator<OA::LeafHandle>,
@@ -476,7 +492,8 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   public virtual OA::SideEffect::SideEffectIRInterface,
   public virtual OA::SideEffect::InterSideEffectIRInterface,
   public virtual OA::Linearity::LinearityIRInterface,
-  public virtual OA::ReachConsts::ReachConstsIRInterface
+  public virtual OA::ReachConsts::ReachConstsIRInterface,
+  public virtual OA::DataDep::DataDepIRInterface
 {
   friend class SageIRMemRefIterator;
   friend class FindCallsitesPass;
@@ -891,6 +908,14 @@ public:
       getConstValBasic(OA::ConstSymHandle c);
 
   int returnOpEnumValInt(OA::OpHandle op);
+
+  //-------------------------------------------------------------------------
+  // DataDepIRInterface
+  //-------------------------------------------------------------------------
+  int constValIntVal(OA::ConstValHandle h);
+  OA::AffineExpr::OpType getOpType(OA::OpHandle h);
+  OA::OA_ptr<OA::IdxExprAccessIterator>  getIdxExprAccessIter(ProcHandle p);
+
   //-------------------------------------------------------------------------
   // output methods
   //-------------------------------------------------------------------------

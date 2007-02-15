@@ -3556,4 +3556,5 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     - regressAll works with OpenAnalysis r298 on Okapi with gcc-3.2
 
 
-
+02/15/07    UseOA-ROSE svn trunk r263   Priyadarshini Malusare
+  - Made changes to OAWraps so it now creates  IdxExprAccess objects.
