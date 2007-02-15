@@ -5307,6 +5307,26 @@ void SageIRInterface::findAllPtrAssignAndParamBindPairs(SgNode *astNode,
 }
 */
 
+OA::OA_ptr<SageIRSymIterator> SageIRInterface::getSymIterator(
+    SgProject *proj)
+{
+    OA::OA_ptr<list<OA::SymHandle> > symHandleList;
+    list<SgNode*> names = NodeQuery::querySubTree(proj, V_SgInitializedName);
+    symHandleList = new list<OA::SymHandle>();
+
+    for(list<SgNode*>::iterator i = names.begin(); i != names.end(); i++) {
+        SgInitializedName *initName = isSgInitializedName(*i);        
+        if(initName != NULL) {
+            OA::SymHandle hSym = getVarSymHandle(initName);
+            symHandleList->push_back(hSym);
+        }
+    }
+
+    OA::OA_ptr<SageIRSymIterator> iter;
+    iter = new SageIRSymIterator(symHandleList);
+    return iter;
+}
+
 bool
 SageIRInterface::createsBaseType(SgConstructorInitializer *ctorInitializer) const
 {

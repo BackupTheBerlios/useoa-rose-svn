@@ -29,6 +29,7 @@
 
 #include <rose.h>
 #include <unistd.h>
+#include "common.h"
 #include "Sage2OA.h"
 #include "SageOACallGraph.h"
 #include "MemSage2OA.h"
@@ -40,6 +41,7 @@
 #include <OpenAnalysis/CFG/ManagerCFG.hpp>
 #include <OpenAnalysis/CFG/EachCFGStandard.hpp>
 #include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
+#include <OpenAnalysis/DataDep/ManagerDataDepGCD.hpp>
 #include <OpenAnalysis/ICFG/ManagerICFG.hpp>
 #include <OpenAnalysis/Activity/ManagerICFGDep.hpp>
 #include <OpenAnalysis/MemRefExpr/MemRefExpr.hpp>
@@ -74,7 +76,6 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-using namespace std;
 #include <CommandOptions.h>
 
 #include <defaultFunctionGenerator.h>
@@ -100,6 +101,9 @@ void operator delete(void* ptr)
 */
 
 using namespace std;
+using namespace OA;
+using namespace OA::DataDep;
+using namespace OA::Alias;
 
 int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 int DoAlias(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
@@ -110,6 +114,8 @@ int DoICFG(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoICFGDep(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle);
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
+int DoDataDepGCD(SgProject * proj, std::vector<SgNode*> * na, bool p_handle,
+    char argc, char *argv[]);
 int DoUDDUChainsXAIF(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
 void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt);
@@ -178,26 +184,27 @@ void usage(char **argv)
   cerr << "          --skipAnalysis" << endl;
   cerr << "          --silent" << endl;
   cerr << "     where opt is one of:" << endl;
-  cerr << "          --oa-CFG" << endl;
-  cerr << "          --oa-MemRefExpr" << endl;
-  cerr << "          --oa-FIAliasEquivSets" << endl;
-  cerr << "          --oa-FIAliasAliasMap" << endl;
   cerr << "          --oa-AliasMap" << endl;
+  cerr << "          --oa-AliasMapXAIF" << endl;
+  cerr << "          --oa-CFG" << endl;
   cerr << "          --oa-CallGraph" << endl;
+  cerr << "          --oa-DataDepGCD" << endl;
+  cerr << "          --oa-ExprTree" << endl;
+  cerr << "          --oa-FIAliasAliasMap" << endl;
+  cerr << "          --oa-FIAliasEquivSets" << endl;
   cerr << "          --oa-ICFG" << endl;
+  cerr << "          --oa-ICFGActivity" << endl;
   cerr << "          --oa-ICFGDep" << endl;
+  cerr << "          --oa-ICFGReachConsts" << endl;
+  cerr << "          --oa-Linearity" << endl;
+  cerr << "          --oa-MPICFG" << endl;
+  cerr << "          --oa-MemRefExpr" << endl;
   cerr << "          --oa-ParamBindings" << endl;
+  cerr << "          --oa-ReachConsts" << endl;
   cerr << "          --oa-ReachDefs" << endl;
+  cerr << "          --oa-SideEffect" << endl;
   cerr << "          --oa-UDDUChains" << endl;
   cerr << "          --oa-UDDUChainsXAIF" << endl;
-  cerr << "          --oa-MPICFG" << endl;
-  cerr << "          --oa-ReachConsts" << endl;
-  cerr << "          --oa-AliasMapXAIF" << endl;
-  cerr << "          --oa-SideEffect" << endl;
-  cerr << "          --oa-Linearity" << endl;
-  cerr << "          --oa-ICFGReachConsts" << endl;
-  cerr << "          --oa-ICFGActivity" << endl;
-  cerr << "          --oa-ExprTree" << endl;
 
   exit(-1);
 }
@@ -570,6 +577,11 @@ main ( unsigned argc,  char * argv[] )
              }
          }
       return 1;
+    }
+    else if( cmds->HasOption("--oa-DataDepGCD") )
+    {
+      DoDataDepGCD(sageProject, &nodeArray, p_h, argc, argv);
+      return 0;
     }
     else if(skipAnalysis == false)
     {
@@ -1508,7 +1520,90 @@ int DoUDDUChainsXAIF(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode
 	return returnvalue;
 }
 
- 
+// perform GCD Data-Dependence analysis.  For now this function manually
+// constructs a Loop object based on the command line arguments.  The
+// data-depanalysis manager uses this.  This is because OA doesn't yet have
+// Loop detection analysis.
+int DoDataDepGCD(
+    SgProject * proj,
+    std::vector<SgNode*> * na,
+    bool p_handle,
+    char argc, char *argv[])
+{
+    // construct the IR interface
+    OA::OA_ptr<SageIRInterface> ir;
+    ir = new SageIRInterface(proj, na, p_handle);
+
+    // conduct alias analysis
+    OA_ptr<ManagerFIAliasAliasMap> fialiasman;
+    fialiasman = new ManagerFIAliasAliasMap(ir);
+    OA_ptr<SageIRProcIterator> procIter;
+    procIter = new SageIRProcIterator(proj, *ir);
+    OA_ptr<InterAliasMap> interAliasMap;
+    interAliasMap = fialiasman->performAnalysis(procIter);
+    OA_ptr<Alias::Interface> aliasResults;
+    aliasResults = interAliasMap.convert<Alias::Interface>();
+
+    // iterate through the command line arguments searching for the
+    // --oa-DataDepGCD flag.  After this will be the the index variable
+    // identifier, lower bound, upper bound, and step values.  Note:
+    // This is temporary and as such I don't do anything to check that
+    // the command line arguments are valid.
+    string sIndexVar;
+    int lowerBound;
+    int upperBound;
+    int step = -1;
+    for(int i = 0; i < argc; i++) {
+        if(strcmp(argv[i], "--oa-DataDepGCD") == 0) {
+            assert(argc > i + 4);
+
+            sIndexVar = argv[i + 1];
+            lowerBound = atoi(argv[i + 2]);
+            upperBound = atoi(argv[i + 3]);
+            step = atoi(argv[i + 4]);
+            break;
+        }
+    }
+    assert(step != -1);
+
+    // gather the named location associated with the index variable
+    // identifier
+    OA_ptr<NamedLoc> namedLoc;
+    ProcHandle proc;
+    OA_ptr<SageIRSymIterator> iterSym = ir->getSymIterator(proj);
+    for(; iterSym->isValid(); ++(*iterSym)) {
+        SymHandle hSym = iterSym->current();
+
+        if(ir->toString(hSym) == sIndexVar) {
+            SgFunctionDefinition *func = UseOA::getEnclosingFunction(
+                ir->getNodePtr(hSym));
+            proc = ir->getProcHandle(func);
+            namedLoc = (ir->getLocation(proc, hSym)).convert<NamedLoc>();
+            break;
+        }
+    }
+    if(namedLoc.ptrEqual(NULL)) {
+        cerr << "Could not find index variable " << sIndexVar << endl;
+        exit(1);
+    }
+
+    // construct a loop object
+    OA_ptr<LoopIndex> loopIdx;
+    loopIdx =
+        new LoopIndex(namedLoc, lowerBound, upperBound, step);
+    OA_ptr<Loop> loop;
+    loop = new Loop(loopIdx);
+
+    // construct the data dep GCD manager and perform the analysis
+    OA_ptr<ManagerDataDepGCD> gcdAnal;
+    gcdAnal = new ManagerDataDepGCD(ir, aliasResults);
+    OA_ptr<DataDepResults> results;
+    results = gcdAnal->performAnalysis(proc, loop);
+
+    // output the results
+    results->output(*ir);
+}
+
 void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt)
 {
   //adapted from Nathan's code --should be specific IR independent only OA interface used

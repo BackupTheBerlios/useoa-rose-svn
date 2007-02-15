@@ -1110,6 +1110,10 @@ public:
   //-------------------------------------------------------------------------
   // Helper data structures and methods
   //-------------------------------------------------------------------------
+  public:
+  // returns an iterator over all symbols in the program
+  OA::OA_ptr<SageIRSymIterator> getSymIterator(SgProject *proj);
+
   private:
   // List of all SgFunctionDeclarations in the program, stored as
   // a map from the first non-defining declaration (if non-NULL)
