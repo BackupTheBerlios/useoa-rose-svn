@@ -10,20 +10,20 @@ graph ICFG:
         Node 15: 
             ==  ICFG CFLOW_NODE 15 ==
 int x = read();
-fp1 = zoo;
-if(x) {fp1 = foo;fp2 = bar;}else {fp1 = foo;fp2 = bar;}
+fp1 = ::zoo;
+if(x) {fp1 = ::foo;fp2 = ::bar;}else {fp1 = ::foo;fp2 = ::bar;}
 
 
         Node 16: 
             ==  ICFG CFLOW_NODE 16 ==
-fp1 = foo;
-fp2 = bar;
+fp1 = ::foo;
+fp2 = ::bar;
 
 
         Node 17: 
             ==  ICFG CFLOW_NODE 17 ==
-fp1 = foo;
-fp2 = bar;
+fp1 = ::foo;
+fp2 = ::bar;
 
 
         Node 21: 
@@ -265,9 +265,9 @@ digraph ICFG {
     subgraph cluster_main_0 {
         label="main_0"
         14 [ label="==  ICFG ENTRY_NODE 14 == (entry)\n" ];
-        15 [ label="==  ICFG CFLOW_NODE 15 ==\nint x = read();\nfp1 = zoo;\nif(x) {fp1 = foo;fp2 = bar;}else {fp1 = foo;fp2 = bar;}\n" ];
-        16 [ label="==  ICFG CFLOW_NODE 16 ==\nfp1 = foo;\nfp2 = bar;\n" ];
-        17 [ label="==  ICFG CFLOW_NODE 17 ==\nfp1 = foo;\nfp2 = bar;\n" ];
+        15 [ label="==  ICFG CFLOW_NODE 15 ==\nint x = read();\nfp1 = ::zoo;\nif(x) {fp1 = ::foo;fp2 = ::bar;}else {fp1 = ::foo;fp2 = ::bar;}\n" ];
+        16 [ label="==  ICFG CFLOW_NODE 16 ==\nfp1 = ::foo;\nfp2 = ::bar;\n" ];
+        17 [ label="==  ICFG CFLOW_NODE 17 ==\nfp1 = ::foo;\nfp2 = ::bar;\n" ];
         21 [ label="==  ICFG CALL_NODE 21 ==\ncar1(fp1);\n" ];
         23 [ label="==  ICFG RETURN_NODE 23 ==\n" ];
         29 [ label="==  ICFG CALL_NODE 29 ==\ncar2(fp2);\n" ];

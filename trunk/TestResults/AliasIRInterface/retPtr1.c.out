@@ -139,7 +139,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 AddressOf( USE, NamedRef( USE, SymHandle("strB")))
             MemRefHandle("strA") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("strA")))
-            MemRefHandle("my_strcpy") => 
+            MemRefHandle("::my_strcpy") => 
                 NamedRef( USE, SymHandle("my_strcpy"))
             MemRefHandle("my_strcpy(strB,strA)") => 
                 NamedRef( USE, SymHandle("my_strcpy"))

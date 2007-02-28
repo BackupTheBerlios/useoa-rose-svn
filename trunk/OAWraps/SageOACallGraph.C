@@ -48,7 +48,7 @@ void SageIRCallsiteIterator::FindCallsitesInSgStmt(SgStatement *sgstmt, SgExpres
      {
        
        FindCallsitesPass(ir, lst).traverse(forst->get_test_expr(), preorder);
-       FindCallsitesPass(ir, lst).traverse(forst->get_increment_expr(), preorder);
+       FindCallsitesPass(ir, lst).traverse(forst->get_increment(), preorder);
        FindCallsitesPass(ir, lst).traverse(forst->get_for_init_stmt(), preorder);
      }
      //SgFunctionDefinition ->no call sites

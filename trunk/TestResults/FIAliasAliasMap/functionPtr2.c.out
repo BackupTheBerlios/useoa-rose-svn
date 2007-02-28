@@ -476,7 +476,7 @@ InterAliasMap(
                 1	 => [ MemRefHandle(input)    MemRefHandle(input) ] 
                 3	 => [ MemRefHandle(p) ] 
                 4	 => [ MemRefHandle(q) ] 
-                5	 => [ MemRefHandle(fp)    MemRefHandle(fp)    MemRefHandle(fp)    MemRefHandle(fp = foo)    MemRefHandle(fp = bar) ] 
+                5	 => [ MemRefHandle(fp)    MemRefHandle(fp)    MemRefHandle(fp)    MemRefHandle(fp = ::foo)    MemRefHandle(fp = ::bar) ] 
                 6	 => [ MemRefHandle(read) ] 
                 7	 => [ MemRefHandle(( *fp)) ] 
 

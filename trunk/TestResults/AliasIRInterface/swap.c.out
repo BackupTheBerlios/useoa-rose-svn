@@ -140,7 +140,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("i"))
             MemRefHandle("i") => 
                 NamedRef( USE, SymHandle("i"))
-            MemRefHandle("swap") => 
+            MemRefHandle("::swap") => 
                 NamedRef( USE, SymHandle("swap"))
         ] }
     CALLSITES = { StmtHandle("swap(a,i,(i + 1));") =>

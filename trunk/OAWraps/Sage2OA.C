@@ -879,7 +879,7 @@ OA::StmtHandle SageIRInterface::getLoopIncrement(OA::StmtHandle h)
         SgExpression * exp=NULL;
         if(forst)
         {
-                exp=forst->get_increment_expr();
+                exp=forst->get_increment();
         }
         
         return (OA::irhandle_t)(getNodeNumber(exp));
@@ -3808,7 +3808,7 @@ OA::Linearity::IRStmtType
       SgExprStatement *exprStatement = isSgExprStatement(node);
       ROSE_ASSERT(exprStatement != NULL);
 
-      SgExpression *expression = exprStatement->get_the_expr();
+      SgExpression *expression = exprStatement->get_expression();
       SgType *lhsType = NULL;
 
       switch(expression->variantT()) {
@@ -3888,7 +3888,7 @@ OA::OA_ptr<OA::AssignPairIterator>
         SgExprStatement *exprStatement = isSgExprStatement(node);
         ROSE_ASSERT(exprStatement != NULL);
         
-        SgExpression *expression = exprStatement->get_the_expr();
+        SgExpression *expression = exprStatement->get_expression();
         SgType *lhsType = NULL;
         
         switch(expression->variantT()) {
@@ -4313,7 +4313,7 @@ SageIRInterface::getActivityStmtType(OA::StmtHandle h)
       SgExprStatement *exprStatement = isSgExprStatement(node);
       ROSE_ASSERT(exprStatement != NULL);
       
-      SgExpression *expression = exprStatement->get_the_expr();
+      SgExpression *expression = exprStatement->get_expression();
       SgType *lhsType = NULL;
       
       switch(expression->variantT()) {
@@ -5598,7 +5598,7 @@ SageIRInterface::getReachConstsStmtType(OA::StmtHandle h)
       SgExprStatement *exprStatement = isSgExprStatement(node);
       ROSE_ASSERT(exprStatement != NULL);
 
-      SgExpression *expression = exprStatement->get_the_expr();
+      SgExpression *expression = exprStatement->get_expression();
       SgType *lhsType = NULL;
 
       switch(expression->variantT()) {

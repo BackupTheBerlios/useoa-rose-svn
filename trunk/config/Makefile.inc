@@ -92,8 +92,8 @@ OPENANALYSIS_LIB =-L$(OADIR)/$(ARCH)/lib -lOAul
 OPENANALYSIS_INC =-I$(OADIR)/$(ARCH)/include 
 
 ROSE_INCLUDES=-I$(ROSEDIR)/include
-ROSE_LIBS=-Wl,-rpath,$(ROSEDIR)/lib -L$(ROSEDIR)/lib -lrose -ledg -lm -lfl -lrt -lpthread
-
+#ROSE_LIBS=-Wl,-rpath,$(ROSEDIR)/lib -L$(ROSEDIR)/lib -lrose -ledg -lm -lfl -lrt -lpthread
+ROSE_LIBS=-Wl,-rpath,$(ROSEDIR)/lib -L$(ROSEDIR)/lib -lrose -lm -lfl -lrt -lpthread
 
 # ================ end of package-specific settings ================
 

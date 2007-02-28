@@ -3562,3 +3562,13 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
 02/15/07    UseOA-ROSE svn trunk r264   Andy Stone
   - Udated OATest so that it now has the --oa-DataDepGCD option.
   - Added the DataDep test cases.
+
+02/28/07    UseOA-ROSE svn trunk r265   Priyadarshini Malusare
+  - Modified to work with ROSE-0.8.10a.
+  - Changes to Sage2OA.C, MemSage2OA.C, SageOACallGraph.C
+    due different new naming convensions in ROSE0.8.10a.
+    e.g. get_the_expr is replaced by get_expression,
+	     get_return_expr is replaced by get_expression. etc.
+
+		 
+

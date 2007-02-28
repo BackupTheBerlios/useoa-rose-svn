@@ -65,7 +65,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("xPtr") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("xPtr")))
-            MemRefHandle("nonConstRefPtrArg") => 
+            MemRefHandle("::nonConstRefPtrArg") => 
                 NamedRef( USE, SymHandle("nonConstRefPtrArg"))
         ] }
     CALLSITES = { StmtHandle("nonConstRefPtrArg(xPtr);") =>
@@ -81,7 +81,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("xRefPtr") => 
                 NamedRef( USE, SymHandle("xRefPtr"))
-            MemRefHandle("nonConstRefPtrArg") => 
+            MemRefHandle("::nonConstRefPtrArg") => 
                 NamedRef( USE, SymHandle("nonConstRefPtrArg"))
         ] }
     CALLSITES = { StmtHandle("nonConstRefPtrArg(xRefPtr);") =>
@@ -101,7 +101,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 AddressOf( USE, UnnamedRef( DEF, StmtHandle("constRefPtrArg((&x));")))
             MemRefHandle("&x") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("x")))
-            MemRefHandle("constRefPtrArg") => 
+            MemRefHandle("::constRefPtrArg") => 
                 NamedRef( USE, SymHandle("constRefPtrArg"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("constRefPtrArg((&x));") =>
@@ -122,7 +122,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("xPtr") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("xPtr")))
-            MemRefHandle("constRefPtrArg") => 
+            MemRefHandle("::constRefPtrArg") => 
                 NamedRef( USE, SymHandle("constRefPtrArg"))
         ] }
     CALLSITES = { StmtHandle("constRefPtrArg(xPtr);") =>
@@ -138,7 +138,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("xRefPtr") => 
                 NamedRef( USE, SymHandle("xRefPtr"))
-            MemRefHandle("constRefPtrArg") => 
+            MemRefHandle("::constRefPtrArg") => 
                 NamedRef( USE, SymHandle("constRefPtrArg"))
         ] }
     CALLSITES = { StmtHandle("constRefPtrArg(xRefPtr);") =>

@@ -77,7 +77,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
             MemRefHandle("b") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("b")))
-            MemRefHandle("blah") => 
+            MemRefHandle("::blah") => 
                 NamedRef( USE, SymHandle("blah"))
         ] }
     CALLSITES = { StmtHandle("int x = blah(a,b);") =>

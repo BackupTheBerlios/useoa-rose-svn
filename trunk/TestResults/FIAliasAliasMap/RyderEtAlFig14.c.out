@@ -275,7 +275,7 @@ InterAliasMap(
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(s1) ] 
-                2	 => [ MemRefHandle(s2.a = 4)    MemRefHandle(s2.a) ] 
+                2	 => [ MemRefHandle(s2.::s::a = 4)    MemRefHandle(s2.::s::a) ] 
                 3	 => [ MemRefHandle(s3)    MemRefHandle(s3 = s1) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
@@ -449,7 +449,7 @@ InterAliasMap(
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 2	 => [ MemRefHandle(s2) ] 
-                3	 => [ MemRefHandle(s3)    MemRefHandle(s3 = s2)    MemRefHandle(s3.a = 4)    MemRefHandle(s3.a) ] 
+                3	 => [ MemRefHandle(s3)    MemRefHandle(s3 = s2)    MemRefHandle(s3.::s::a = 4)    MemRefHandle(s3.::s::a) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
@@ -621,10 +621,10 @@ InterAliasMap(
                 6	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                3	 => [ MemRefHandle(s3.a = 2)    MemRefHandle(s3.b = 3)    MemRefHandle(s3.c = 4)    MemRefHandle(s3.a)    MemRefHandle(s3.b)    MemRefHandle(s3.c) ] 
-                4	 => [ MemRefHandle(p) ] 
-                5	 => [ MemRefHandle(q) ] 
-                6	 => [ MemRefHandle(r) ] 
+                3	 => [ MemRefHandle(s3.::s::a = 2)    MemRefHandle(s3.::s::b = 3)    MemRefHandle(s3.::s::c = 4)    MemRefHandle(s3.::s::a)    MemRefHandle(s3.::s::b)    MemRefHandle(s3.::s::c) ] 
+                4	 => [ MemRefHandle(::p) ] 
+                5	 => [ MemRefHandle(::q) ] 
+                6	 => [ MemRefHandle(::r) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 

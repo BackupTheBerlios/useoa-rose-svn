@@ -92,7 +92,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 AddressOf( USE, NamedRef( USE, SymHandle("q")))
             MemRefHandle("r = foo(&q)") => 
                 NamedRef( USE, SymHandle("r"))
-            MemRefHandle("foo") => 
+            MemRefHandle("::foo") => 
                 NamedRef( USE, SymHandle("foo"))
             MemRefHandle("foo(&q)") => 
                 NamedRef( USE, SymHandle("foo"))

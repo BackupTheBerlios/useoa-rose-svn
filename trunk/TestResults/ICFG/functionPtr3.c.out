@@ -10,17 +10,17 @@ graph ICFG:
         Node 13: 
             ==  ICFG CFLOW_NODE 13 ==
 int x = read();
-if(x) {fp = foo;}else {fp = bar;}
+if(x) {fp = ::foo;}else {fp = ::bar;}
 
 
         Node 14: 
             ==  ICFG CFLOW_NODE 14 ==
-fp = foo;
+fp = ::foo;
 
 
         Node 15: 
             ==  ICFG CFLOW_NODE 15 ==
-fp = bar;
+fp = ::bar;
 
 
         Node 18: 
@@ -139,9 +139,9 @@ digraph ICFG {
     subgraph cluster_main_0 {
         label="main_0"
         12 [ label="==  ICFG ENTRY_NODE 12 == (entry)\n" ];
-        13 [ label="==  ICFG CFLOW_NODE 13 ==\nint x = read();\nif(x) {fp = foo;}else {fp = bar;}\n" ];
-        14 [ label="==  ICFG CFLOW_NODE 14 ==\nfp = foo;\n" ];
-        15 [ label="==  ICFG CFLOW_NODE 15 ==\nfp = bar;\n" ];
+        13 [ label="==  ICFG CFLOW_NODE 13 ==\nint x = read();\nif(x) {fp = ::foo;}else {fp = ::bar;}\n" ];
+        14 [ label="==  ICFG CFLOW_NODE 14 ==\nfp = ::foo;\n" ];
+        15 [ label="==  ICFG CFLOW_NODE 15 ==\nfp = ::bar;\n" ];
         18 [ label="==  ICFG CALL_NODE 18 ==\n( *fp)();\n" ];
         20 [ label="==  ICFG RETURN_NODE 20 ==\n" ];
         31 [ label="==  ICFG EXIT_NODE 31 == (exit)\n" ];

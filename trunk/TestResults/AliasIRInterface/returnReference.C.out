@@ -100,7 +100,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("returnRef"))
             MemRefHandle("x") => 
                 NamedRef( DEF, SymHandle("x"))
-            MemRefHandle("returnRef") => 
+            MemRefHandle("::returnRef") => 
                 NamedRef( USE, SymHandle("returnRef"))
             MemRefHandle("returnRef()") => 
                 Deref( USE, NamedRef( USE, SymHandle("returnRef")), 1)
@@ -114,7 +114,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("xRef&") => 
                 NamedRef( DEF, SymHandle("xRef"))
-            MemRefHandle("returnRef") => 
+            MemRefHandle("::returnRef") => 
                 NamedRef( USE, SymHandle("returnRef"))
             MemRefHandle("returnRef()") => 
                 NamedRef( USE, SymHandle("returnRef"))
@@ -135,7 +135,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("returnRef2"))
             MemRefHandle("x2") => 
                 NamedRef( DEF, SymHandle("x2"))
-            MemRefHandle("returnRef2") => 
+            MemRefHandle("::returnRef2") => 
                 NamedRef( USE, SymHandle("returnRef2"))
             MemRefHandle("returnRef2()") => 
                 Deref( USE, NamedRef( USE, SymHandle("returnRef2")), 1)
@@ -149,7 +149,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("xRef2&") => 
                 NamedRef( DEF, SymHandle("xRef2"))
-            MemRefHandle("returnRef2") => 
+            MemRefHandle("::returnRef2") => 
                 NamedRef( USE, SymHandle("returnRef2"))
             MemRefHandle("returnRef2()") => 
                 NamedRef( USE, SymHandle("returnRef2"))
@@ -170,7 +170,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("returnConstRef"))
             MemRefHandle("x3") => 
                 NamedRef( DEF, SymHandle("x3"))
-            MemRefHandle("returnConstRef") => 
+            MemRefHandle("::returnConstRef") => 
                 NamedRef( USE, SymHandle("returnConstRef"))
             MemRefHandle("returnConstRef()") => 
                 Deref( USE, NamedRef( USE, SymHandle("returnConstRef")), 1)
@@ -184,7 +184,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("xRef3&") => 
                 NamedRef( DEF, SymHandle("xRef3"))
-            MemRefHandle("returnConstRef") => 
+            MemRefHandle("::returnConstRef") => 
                 NamedRef( USE, SymHandle("returnConstRef"))
             MemRefHandle("returnConstRef()") => 
                 NamedRef( USE, SymHandle("returnConstRef"))
@@ -203,7 +203,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("refPtr&") => 
                 NamedRef( DEF, SymHandle("refPtr"))
-            MemRefHandle("returnConstRef2") => 
+            MemRefHandle("::returnConstRef2") => 
                 NamedRef( USE, SymHandle("returnConstRef2"))
             MemRefHandle("returnConstRef2()") => 
                 NamedRef( USE, SymHandle("returnConstRef2"))

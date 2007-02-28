@@ -2383,7 +2383,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 OA_ptr<IdxExprAccess> rhs_mre;
                 rhs_mre = new OA::IdxExprAccess(
                     MemRefExpr::USE, lhs_mre, mref);
-                cout << "IdxExprAccess created for " + toString(mref) << endl;
                 mStmt2allMemRefsMap[stmt].insert(mref);
                 mMemref2mreSetMap[memref].insert(rhs_mre);
             }
@@ -2814,7 +2813,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         {
             SgExprStatement *exprStatement = isSgExprStatement(astNode);
             ROSE_ASSERT(exprStatement!=NULL);
-            findAllMemRefsAndPtrAssigns(exprStatement->get_expression_root(),stmt);
+            findAllMemRefsAndPtrAssigns(exprStatement->get_expression(),stmt);
             break;
         }
     //case V_SgCaseOptionStatement: // NOT in enum? spelled differently?
@@ -2838,8 +2837,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgReturnStmt *returnStmt = isSgReturnStmt(astNode);
             ROSE_ASSERT(returnStmt != NULL);
 
-            if ( returnStmt->get_return_expr() != NULL ) {
-                findAllMemRefsAndPtrAssigns(returnStmt->get_return_expr(), stmt);
+            if ( returnStmt->get_expression() != NULL ) {
+                findAllMemRefsAndPtrAssigns(returnStmt->get_expression(), stmt);
     
                 //----------- Ptr Assigns
                 // if the method or function we are in has a ptr or 
@@ -2870,7 +2869,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     
                     // get the memory reference handle for the return exp
                     OA::MemRefHandle child_memref 
-                        = findTopMemRefHandle(returnStmt->get_return_expr());
+
+                        = findTopMemRefHandle(returnStmt->get_expression());
                     SgExpression *child_node=NULL;
                     SgType *child_type;
                     if (child_memref!=OA::MemRefHandle(0)) {
@@ -3154,7 +3154,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // I'm pretty suspicious of putting this here.  bwhite.
             // FIXME: MMS, yeah I agree, I think this needs to be
             // associated with the increment statement somehow?
-            SgExpression *incrExpr = forStatement->get_increment_expr();
+            SgExpression *incrExpr = forStatement->get_increment();
             if (incrExpr != NULL) {
                 findAllMemRefsAndPtrAssigns( incrExpr, stmt );
             }

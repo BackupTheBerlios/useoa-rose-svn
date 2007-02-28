@@ -334,7 +334,7 @@ InterAliasMap(
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 3	 => [ MemRefHandle(x) ] 
-                4	 => [ MemRefHandle(blah) ] 
+                4	 => [ MemRefHandle(::blah) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 

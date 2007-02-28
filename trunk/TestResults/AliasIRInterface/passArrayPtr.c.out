@@ -54,7 +54,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
             MemRefHandle("a") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
-            MemRefHandle("strcmp") => 
+            MemRefHandle("::strcmp") => 
                 NamedRef( USE, SymHandle("strcmp"))
         ] }
     CALLSITES = { StmtHandle("int x = strcmp(a,a);") =>
@@ -70,7 +70,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("a[3] = 'b';") =>
         [
             MemRefHandle("a[3]") => 
+                SubSetRef( DEF, SubSetRef( DEF, NamedRef( USE, SymHandle("a"))))
+            MemRefHandle("a[3]") => 
                 SubSetRef( DEF, NamedRef( USE, SymHandle("a")))
+            MemRefHandle("a[3] = 'b'") => 
+                SubSetRef( USE, SubSetRef( DEF, NamedRef( USE, SymHandle("a"))))
             MemRefHandle("a[3] = 'b'") => 
                 SubSetRef( USE, NamedRef( USE, SymHandle("a")))
         ] }
@@ -78,6 +82,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("v") => 
                 NamedRef( DEF, SymHandle("v"))
+            MemRefHandle("(a[2])") => 
+                SubSetRef( USE, SubSetRef( USE, NamedRef( USE, SymHandle("a"))))
             MemRefHandle("(a[2])") => 
                 SubSetRef( USE, NamedRef( USE, SymHandle("a")))
         ] }

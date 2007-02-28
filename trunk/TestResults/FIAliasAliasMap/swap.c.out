@@ -166,7 +166,7 @@ InterAliasMap(
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 2	 => [ MemRefHandle(i)    MemRefHandle(i)    MemRefHandle(i)    MemRefHandle(i)    MemRefHandle(i)    MemRefHandle(i = 0)    MemRefHandle(i++) ] 
-                3	 => [ MemRefHandle(swap) ] 
+                3	 => [ MemRefHandle(::swap) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
