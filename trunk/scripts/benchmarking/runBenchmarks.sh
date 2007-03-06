@@ -130,9 +130,13 @@ set -- `getopt -l "logFile:" "l:" "$@"` || {
 LOGFILE=`pwd`/benchmark.log
 
 # directory where the benchmark scripts are.
-# NOTE - This script assumes that it's being source from the root UseOA-ROSE
-#        directory.
-SCRIPTDIR=`pwd`/scripts/benchmarking
+# NOTE - This script must either be sourced from the root UseOA-ROSE directory, or the
+#        directory its actually contained in
+if [[ `pwd | grep "scripts/benchmarking$"` ]] ; then
+    SCRIPTDIR=`pwd`
+else
+    SCRIPTDIR=`pwd`/scripts/benchmarking
+fi
 
 # directory where branches of openanalysis reside
 BRANCH_DIR="/home/stone48/berlios/openanalysis/OpenAnalysis/branch"
@@ -454,7 +458,7 @@ function runTimedBenchmark() {
     recompileUseOARoseIfNecessary
 
     logMsg "Run a timed benchmark\nFiles file: $1\nDescription: $2\nAlgorithm: $3 "
-    CMD="`$SCRIPTDIR/OATestLine.py $1 $3` --silent $4"
+    CMD="`$SCRIPTDIR/OATestLine.py $1 $3` $4"
     execTimeAndLogResult "$CMD" "$2"
 }
 
