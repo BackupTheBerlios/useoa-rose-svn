@@ -318,27 +318,34 @@ function execTimeAndLogResult() {
 function doesValInLogMatchVal() {
     ENV_VAR_VAL=`env | grep ^$1_$2 | sed -e "s/$1_$2=//g"`
 
-    if [[ $ENV_VAR_VAL == `grep $2 $3 | cut -d\' -f 2` ]]; then
+    if [[ $ENV_VAR_VAL == `grep ^$2 $3 | cut -d\' -f 2` ]]; then
         return 1
     fi
+    logMsg "For $1 $2: \"$ENV_VAR_VAL\" does not match \"`grep ^$2 $3 | cut -d\' -f 2`\""
     return 0
 }
 
 # determine whether or not it's necessary to recompile UseOA-ROSE before some
 # test is run.  It's assumed that the desired configuration is set in the
 # OA developer environmental variables (specifically: USEOA_ROSE_OADIR,
-# USEOA_ROSE_ROSEDIR, USEOA_ROSE_CXXFLAGS, USEOA_ROSE_ARCH).
+# USEOA_ROSE_ROSEDIR, USEOA_ROSE_CXXFLAGS).
 function isUseOARoseRecompileNecessary() {
     BUILD_LOG_PATH="$USEOA_ROSE_USEOAROSEDIR/build.log"
     PASSED_CHECKS=1
     doesValInLogMatchVal USEOA_ROSE OADIR $BUILD_LOG_PATH
-    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
+    if [[ $? == 0 ]]; then
+        PASSED_CHECKS=0;
+    fi
     doesValInLogMatchVal USEOA_ROSE ROSEDIR $BUILD_LOG_PATH
-    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
+    if [[ $? == 0 ]]; then
+        PASSED_CHECKS=0;
+        logMsg ""
+    fi
     doesValInLogMatchVal USEOA_ROSE CXXFLAGS $BUILD_LOG_PATH
-    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
-    doesValInLogMatchVal USEOA_ROSE ARCH $BUILD_LOG_PATH
-    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
+    if [[ $? == 0 ]]; then
+        PASSED_CHECKS=0;
+        logMsg ""
+    fi
 
     # if all checks passed then a recompile is not necessary
     if [[ $PASSED_CHECKS == 1 ]]; then return 0
@@ -352,11 +359,7 @@ function isOARecompileNecessary() {
     PASSED_CHECKS=1
     doesValInLogMatchVal OA OADIR $BUILD_LOG_PATH
     if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
-    doesValInLogMatchVal OA ROSEDIR $BUILD_LOG_PATH
-    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
     doesValInLogMatchVal OA CXXFLAGS $BUILD_LOG_PATH
-    if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
-    doesValInLogMatchVal OA ARCH $BUILD_LOG_PATH
     if [[ $? == 0 ]]; then PASSED_CHECKS=0; fi
 
     # if all checks passed then a recompile is not necessary
@@ -540,7 +543,7 @@ function getLOC() {
 
 
 #   pass through ROSE  - Run a program through the ROSE identity translator.
-#                        The identity translator (should) return it's input.
+#                        The identity translator (should) return its input.
 #                        In other words: it does nothing.  It's useful to make
 #                        sure a program works with ROSE before trying to get
 #                        OA to work with it.
