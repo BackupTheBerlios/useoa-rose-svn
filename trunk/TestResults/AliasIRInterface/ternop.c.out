@@ -27,8 +27,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("r"))
             MemRefHandle("&a") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
-            MemRefHandle("r = &a") => 
-                NamedRef( USE, SymHandle("r"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("r = &a;") =>
         [
@@ -41,8 +39,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("p"))
             MemRefHandle("&b") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("b")))
-            MemRefHandle("p = &b") => 
-                NamedRef( USE, SymHandle("p"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("p = &b;") =>
         [
@@ -55,8 +51,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("q"))
             MemRefHandle("&p") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("p")))
-            MemRefHandle("q = &p") => 
-                NamedRef( USE, SymHandle("q"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("q = &p;") =>
         [
@@ -71,10 +65,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("q"))
             MemRefHandle("q") => 
                 NamedRef( USE, SymHandle("q"))
-            MemRefHandle("*(((r < *q)?r: *q)) = 42") => 
-                Deref( USE, NamedRef( USE, SymHandle("r")), 1)
-            MemRefHandle("*(((r < *q)?r: *q)) = 42") => 
-                Deref( USE, Deref( USE, NamedRef( USE, SymHandle("q")), 1), 1)
             MemRefHandle("*q") => 
                 Deref( USE, NamedRef( USE, SymHandle("q")), 1)
             MemRefHandle("*(((r < *q)?r: *q))") => 

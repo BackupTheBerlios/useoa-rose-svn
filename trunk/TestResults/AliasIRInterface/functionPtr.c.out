@@ -32,8 +32,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 AddressOf( USE, NamedRef( USE, SymHandle("foo")))
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"))
-            MemRefHandle("fp = foo") => 
-                NamedRef( USE, SymHandle("fp"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("fp = foo;") =>
         [
@@ -49,8 +47,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 AddressOf( USE, NamedRef( USE, SymHandle("bar")))
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"))
-            MemRefHandle("fp = bar") => 
-                NamedRef( USE, SymHandle("fp"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("fp = bar;") =>
         [

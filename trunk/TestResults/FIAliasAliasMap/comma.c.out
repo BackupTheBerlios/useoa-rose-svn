@@ -92,7 +92,7 @@ InterAliasMap(
                 1	 => [ MemRefHandle(x)    MemRefHandle(*q) ] 
                 2	 => [ MemRefHandle(y)    MemRefHandle(*p) ] 
                 3	 => [ MemRefHandle(z) ] 
-                4	 => [ MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p =((q = &x) , r)) ] 
+                4	 => [ MemRefHandle(p)    MemRefHandle(p) ] 
                 5	 => [ MemRefHandle(q)    MemRefHandle(q)    MemRefHandle((q = &x)) ] 
                 6	 => [ MemRefHandle(r)    MemRefHandle(((q = &x) , r)) ] 
                 7	 => [ MemRefHandle(printf)    MemRefHandle(printf) ] 

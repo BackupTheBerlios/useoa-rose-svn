@@ -85,8 +85,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 AddressOf( USE, NamedRef( USE, SymHandle("x")))
             MemRefHandle("(q = &x)") => 
                 NamedRef( USE, SymHandle("q"))
-            MemRefHandle("p =((q = &x) , r)") => 
-                NamedRef( USE, SymHandle("p"))
             MemRefHandle("((q = &x) , r)") => 
                 NamedRef( USE, SymHandle("r"))
         ] }

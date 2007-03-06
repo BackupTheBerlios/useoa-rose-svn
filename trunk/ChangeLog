@@ -3570,5 +3570,12 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     e.g. get_the_expr is replaced by get_expression,
 	     get_return_expr is replaced by get_expression. etc.
 
+03/06/07    UseOA-ROSE svn trunk r266   Priyadarshini Malusare
+  - Modified SageIRInterface to remove [TopMemRefHandle = "use"]
+    associated with the assignment statement. 
+  - regenerated TestCases after the modification.
+
+
+
 		 
 

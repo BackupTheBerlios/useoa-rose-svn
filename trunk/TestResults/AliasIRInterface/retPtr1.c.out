@@ -47,8 +47,6 @@ PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
                 NamedRef( USE, SymHandle("p"))
             MemRefHandle("(source++)") => 
                 NamedRef( USE, SymHandle("source"))
-            MemRefHandle("*(p++) = *(source++)") => 
-                Deref( USE, NamedRef( USE, SymHandle("p")), 1)
         ] }
     MEMREFEXPRS = { StmtHandle("*p = '\0';") =>
         [
@@ -56,8 +54,6 @@ PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
                 NamedRef( USE, SymHandle("p"))
             MemRefHandle("*p") => 
                 Deref( DEF, NamedRef( USE, SymHandle("p")), 1)
-            MemRefHandle("*p = '\0'") => 
-                Deref( USE, NamedRef( USE, SymHandle("p")), 1)
         ] }
     MEMREFEXPRS = { StmtHandle("return destination;") =>
         [

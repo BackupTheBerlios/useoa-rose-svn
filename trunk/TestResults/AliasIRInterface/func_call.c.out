@@ -24,8 +24,6 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
                 NamedRef( USE, SymHandle("hello"))
             MemRefHandle("*hello()") => 
                 Deref( DEF, NamedRef( USE, SymHandle("hello")), 1)
-            MemRefHandle("*hello() = x") => 
-                Deref( USE, NamedRef( USE, SymHandle("hello")), 1)
         ] }
     CALLSITES = { StmtHandle("*hello() = x;") =>
         [
@@ -38,8 +36,6 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
                 NamedRef( DEF, SymHandle("fp"))
             MemRefHandle("::bar") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("bar")))
-            MemRefHandle("fp = ::bar") => 
-                NamedRef( USE, SymHandle("fp"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("fp = ::bar;") =>
         [
@@ -74,8 +70,6 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
                 NamedRef( DEF, SymHandle("fp2"))
             MemRefHandle("hello") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("hello")))
-            MemRefHandle("fp2 = hello") => 
-                NamedRef( USE, SymHandle("fp2"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("fp2 = hello;") =>
         [
@@ -92,8 +86,6 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
                 Deref( USE, NamedRef( USE, SymHandle("fp2")), 1)
             MemRefHandle("( *fp2)") => 
                 Deref( USE, NamedRef( USE, SymHandle("fp2")), 1)
-            MemRefHandle("p =( *fp2)()") => 
-                NamedRef( USE, SymHandle("p"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("p =( *fp2)();") =>
         [
@@ -113,8 +105,6 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
                 NamedRef( USE, SymHandle("malloc"))
             MemRefHandle("(malloc(((sizeof(int )))))") => 
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, StmtHandle("(malloc(((sizeof(int )))))"))))
-            MemRefHandle("p =((int *)(malloc(((sizeof(int ))))))") => 
-                NamedRef( USE, SymHandle("p"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("p =((int *)(malloc(((sizeof(int ))))));") =>
         [

@@ -163,8 +163,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, StmtHandle("(new ::Foo(x))"))))
             MemRefHandle("f -> ::Foo::mFooPtr") => 
                 FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr)
-            MemRefHandle("f -> ::Foo::mFooPtr =(new ::Foo(x))") => 
-                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("f -> ::Foo::mFooPtr =(new ::Foo(x));") =>
         [
@@ -192,8 +190,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 Deref( DEF, FieldAccess( USE, SubSetRef( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr), 1)), mX), 1)
             MemRefHandle("(f -> ::Foo::mFooPtr)") => 
                 FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr)
-            MemRefHandle("(( *(f -> ::Foo::mFooPtr)).::Foo::mX) = x") => 
-                Deref( USE, FieldAccess( USE, SubSetRef( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr), 1)), mX), 1)
         ] }
     MEMREFEXPRS = { StmtHandle("class ::Foo obj(x);") =>
         [
@@ -221,8 +217,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("x"))
             MemRefHandle("(obj.::Foo::mX)") => 
                 Deref( DEF, FieldAccess( USE, NamedRef( USE, SymHandle("obj")), mX), 1)
-            MemRefHandle("(obj.::Foo::mX) = x") => 
-                Deref( USE, FieldAccess( USE, NamedRef( USE, SymHandle("obj")), mX), 1)
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

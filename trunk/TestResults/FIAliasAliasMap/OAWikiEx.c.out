@@ -317,12 +317,12 @@ InterAliasMap(
                 6	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                1	 => [ MemRefHandle(g)    MemRefHandle(g = 6) ] 
-                2	 => [ MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a = p) ] 
-                3	 => [ MemRefHandle(y)    MemRefHandle(y)    MemRefHandle(y = 5) ] 
-                4	 => [ MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p = a)    MemRefHandle(p =((int *)(malloc(((sizeof(int )) *(y)))))) ] 
+                1	 => [ MemRefHandle(g) ] 
+                2	 => [ MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a) ] 
+                3	 => [ MemRefHandle(y)    MemRefHandle(y) ] 
+                4	 => [ MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p) ] 
                 5	 => [ MemRefHandle(malloc) ] 
-                6	 => [ MemRefHandle(*a = 7)    MemRefHandle(*a = 8)    MemRefHandle(*a)    MemRefHandle(*a) ] 
+                6	 => [ MemRefHandle(*a)    MemRefHandle(*a) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
@@ -356,7 +356,7 @@ InterAliasMap(
                         mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE

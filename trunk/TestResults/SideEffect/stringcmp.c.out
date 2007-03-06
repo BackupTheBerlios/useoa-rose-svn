@@ -366,12 +366,6 @@ InterSideEffectStandard(
                         ) ] 
                     mLUSESet: [ 
                         NamedLoc(
-                            mSymHandle: SymHandle(retVal)
-                            mLocal: 1
-                            mFullOverlap: [  ] 
-                            mPartOverlap: [  ] 
-                        )    
-                        NamedLoc(
                             mSymHandle: SymHandle(stringcmp)
                             mLocal: 0
                             mFullOverlap: [  ] 
@@ -407,12 +401,6 @@ InterSideEffectStandard(
                             mPartOverlap: [  ] 
                         )    
                         NamedLoc(
-                            mSymHandle: SymHandle(retVal)
-                            mLocal: 1
-                            mFullOverlap: [  ] 
-                            mPartOverlap: [  ] 
-                        )    
-                        NamedLoc(
                             mSymHandle: SymHandle(stringcmp)
                             mLocal: 0
                             mFullOverlap: [  ] 
@@ -435,12 +423,6 @@ InterSideEffectStandard(
                             mFull: 0
                         ) ] 
                     mLREFSet: [ 
-                        NamedLoc(
-                            mSymHandle: SymHandle(retVal)
-                            mLocal: 1
-                            mFullOverlap: [  ] 
-                            mPartOverlap: [  ] 
-                        )    
                         NamedLoc(
                             mSymHandle: SymHandle(stringcmp)
                             mLocal: 0
@@ -472,12 +454,6 @@ InterSideEffectStandard(
                         )    
                         NamedLoc(
                             mSymHandle: SymHandle(b)
-                            mLocal: 1
-                            mFullOverlap: [  ] 
-                            mPartOverlap: [  ] 
-                        )    
-                        NamedLoc(
-                            mSymHandle: SymHandle(retVal)
                             mLocal: 1
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 

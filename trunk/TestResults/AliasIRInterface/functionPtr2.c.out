@@ -21,8 +21,6 @@ PROCEDURE = { < ProcHandle("foo"), SymHandle("foo") > }
                 Deref( DEF, NamedRef( USE, SymHandle("x")), 1)
             MemRefHandle("*y") => 
                 Deref( USE, NamedRef( USE, SymHandle("y")), 1)
-            MemRefHandle("*x = *y") => 
-                Deref( USE, NamedRef( USE, SymHandle("x")), 1)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("*x = *y;") =>
         [
@@ -55,8 +53,6 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
                 Deref( DEF, NamedRef( USE, SymHandle("yy")), 1)
             MemRefHandle("*xx") => 
                 Deref( USE, NamedRef( USE, SymHandle("xx")), 1)
-            MemRefHandle("*yy = *xx") => 
-                Deref( USE, NamedRef( USE, SymHandle("yy")), 1)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("*yy = *xx;") =>
         [
@@ -131,8 +127,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"))
-            MemRefHandle("fp = ::foo") => 
-                NamedRef( USE, SymHandle("fp"))
             MemRefHandle("::foo") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("foo")))
         ] }
@@ -148,8 +142,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"))
-            MemRefHandle("fp = ::bar") => 
-                NamedRef( USE, SymHandle("fp"))
             MemRefHandle("::bar") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("bar")))
         ] }

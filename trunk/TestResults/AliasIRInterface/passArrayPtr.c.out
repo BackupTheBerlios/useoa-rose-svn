@@ -73,10 +73,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 SubSetRef( DEF, SubSetRef( DEF, NamedRef( USE, SymHandle("a"))))
             MemRefHandle("a[3]") => 
                 SubSetRef( DEF, NamedRef( USE, SymHandle("a")))
-            MemRefHandle("a[3] = 'b'") => 
-                SubSetRef( USE, SubSetRef( DEF, NamedRef( USE, SymHandle("a"))))
-            MemRefHandle("a[3] = 'b'") => 
-                SubSetRef( USE, NamedRef( USE, SymHandle("a")))
         ] }
     MEMREFEXPRS = { StmtHandle("char v =(a[2]);") =>
         [

@@ -88,13 +88,13 @@ InterAliasMap(
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(const_array)    MemRefHandle(const_array) ] 
-                2	 => [ MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p = &i) ] 
-                3	 => [ MemRefHandle(i)    MemRefHandle(i)    MemRefHandle(*p)    MemRefHandle(*p = 5) ] 
-                4	 => [ MemRefHandle(x)    MemRefHandle(x)    MemRefHandle(x = *q) ] 
-                5	 => [ MemRefHandle(y)    MemRefHandle(y)    MemRefHandle(y = *q) ] 
+                2	 => [ MemRefHandle(p)    MemRefHandle(p) ] 
+                3	 => [ MemRefHandle(i)    MemRefHandle(i)    MemRefHandle(*p) ] 
+                4	 => [ MemRefHandle(x)    MemRefHandle(x) ] 
+                5	 => [ MemRefHandle(y)    MemRefHandle(y) ] 
                 6	 => [ MemRefHandle(q)    MemRefHandle(q)    MemRefHandle(q) ] 
                 7	 => [ MemRefHandle(g) ] 
-                8	 => [ MemRefHandle(*q)    MemRefHandle(*q)    MemRefHandle(const_array[i]) ] 
+                8	 => [ MemRefHandle(*q)    MemRefHandle(*q) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 

@@ -25,8 +25,6 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
                 NamedRef( USE, SymHandle("i"))
             MemRefHandle("(v[i])") => 
                 SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("v")), 1))
-            MemRefHandle("temp =(v[i])") => 
-                NamedRef( USE, SymHandle("temp"))
         ] }
     MEMREFEXPRS = { StmtHandle("v[i] =(v[j]);") =>
         [
@@ -42,8 +40,6 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
                 SubSetRef( DEF, Deref( USE, NamedRef( USE, SymHandle("v")), 1))
             MemRefHandle("(v[j])") => 
                 SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("v")), 1))
-            MemRefHandle("v[i] =(v[j])") => 
-                SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("v")), 1))
         ] }
     MEMREFEXPRS = { StmtHandle("v[j] = temp;") =>
         [
@@ -55,8 +51,6 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
                 NamedRef( USE, SymHandle("temp"))
             MemRefHandle("v[j]") => 
                 SubSetRef( DEF, Deref( USE, NamedRef( USE, SymHandle("v")), 1))
-            MemRefHandle("v[j] = temp") => 
-                SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("v")), 1))
         ] }
     LOCATION = { < SymHandle("v"), local > }
     LOCATION = { < SymHandle("i"), local > }
@@ -124,8 +118,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("i"))
             MemRefHandle("i") => 
                 NamedRef( USEDEF, SymHandle("i"))
-            MemRefHandle("i = 0") => 
-                NamedRef( USE, SymHandle("i"))
             MemRefHandle("i++") => 
                 NamedRef( USE, SymHandle("i"))
         ] }

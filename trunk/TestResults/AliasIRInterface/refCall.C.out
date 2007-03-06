@@ -19,8 +19,6 @@ PROCEDURE = { < ProcHandle("foo"), SymHandle("foo") > }
                 Deref( DEF, NamedRef( USE, SymHandle("a")), 1)
             MemRefHandle("c") => 
                 NamedRef( USE, SymHandle("c"))
-            MemRefHandle("a = c") => 
-                Deref( USE, NamedRef( USE, SymHandle("a")), 1)
         ] }
     LOCATION = { < SymHandle("c"), not local > }
     LOCATION = { < SymHandle("a"), local > }

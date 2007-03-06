@@ -61,7 +61,7 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mMemRefType: USE
+                            mMemRefType: DEF
                             mMRE: 
                             NamedRef(
                                 mMemRefType: USE
@@ -73,7 +73,7 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mMemRefType: USE
+                            mMemRefType: DEF
                             mMRE: 
                             NamedRef(
                                 mMemRefType: USE
@@ -159,7 +159,7 @@ InterAliasMap(
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE
@@ -168,7 +168,7 @@ InterAliasMap(
                         mNumDeref: 1
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE
@@ -256,7 +256,7 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mMemRefType: USE
+                            mMemRefType: DEF
                             mMRE: 
                             NamedRef(
                                 mMemRefType: USE
@@ -268,7 +268,7 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mMemRefType: USE
+                            mMemRefType: DEF
                             mMRE: 
                             NamedRef(
                                 mMemRefType: USE
@@ -354,7 +354,7 @@ InterAliasMap(
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE
@@ -363,7 +363,7 @@ InterAliasMap(
                         mNumDeref: 1
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE
@@ -458,7 +458,7 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mMemRefType: USE
+                            mMemRefType: DEF
                             mMRE: 
                             NamedRef(
                                 mMemRefType: USE
@@ -470,7 +470,7 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mMemRefType: USE
+                            mMemRefType: DEF
                             mMRE: 
                             NamedRef(
                                 mMemRefType: USE
@@ -563,7 +563,7 @@ InterAliasMap(
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE
@@ -572,7 +572,7 @@ InterAliasMap(
                         mNumDeref: 1
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE
@@ -737,7 +737,7 @@ InterAliasMap(
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE
@@ -746,7 +746,7 @@ InterAliasMap(
                         mNumDeref: 1
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE
@@ -836,7 +836,7 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mMemRefType: USE
+                            mMemRefType: DEF
                             mMRE: 
                             NamedRef(
                                 mMemRefType: USE
@@ -848,7 +848,7 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mMemRefType: USE
+                            mMemRefType: DEF
                             mMRE: 
                             NamedRef(
                                 mMemRefType: USE
@@ -890,9 +890,9 @@ InterAliasMap(
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(x) ] 
-                2	 => [ MemRefHandle(s)    MemRefHandle(s)    MemRefHandle(s =((struct ::S *)(my_malloc(((sizeof(struct ::S ))))))) ] 
+                2	 => [ MemRefHandle(s)    MemRefHandle(s) ] 
                 6	 => [ MemRefHandle(::my_malloc)    MemRefHandle((my_malloc(((sizeof(struct ::S )))))) ] 
-                7	 => [ MemRefHandle(*s = x)    MemRefHandle(*s) ] 
+                7	 => [ MemRefHandle(*s) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
@@ -931,7 +931,7 @@ InterAliasMap(
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE
@@ -940,7 +940,7 @@ InterAliasMap(
                         mNumDeref: 1
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE
@@ -1021,7 +1021,7 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mMemRefType: USE
+                            mMemRefType: DEF
                             mMRE: 
                             NamedRef(
                                 mMemRefType: USE
@@ -1033,7 +1033,7 @@ InterAliasMap(
                     InvisibleLoc(
                         mMRE: 
                         Deref(
-                            mMemRefType: USE
+                            mMemRefType: DEF
                             mMRE: 
                             NamedRef(
                                 mMemRefType: USE
@@ -1075,9 +1075,9 @@ InterAliasMap(
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 3	 => [ MemRefHandle(y) ] 
-                4	 => [ MemRefHandle(t)    MemRefHandle(t)    MemRefHandle(t =((struct ::T *)(my_malloc(((sizeof(struct ::T ))))))) ] 
+                4	 => [ MemRefHandle(t)    MemRefHandle(t) ] 
                 6	 => [ MemRefHandle(::my_malloc)    MemRefHandle((my_malloc(((sizeof(struct ::T )))))) ] 
-                7	 => [ MemRefHandle(*t = y)    MemRefHandle(*t) ] 
+                7	 => [ MemRefHandle(*t) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
@@ -1116,7 +1116,7 @@ InterAliasMap(
                         mStmtHandle: StmtHandle((malloc((size))))
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE
@@ -1125,7 +1125,7 @@ InterAliasMap(
                         mNumDeref: 1
                     )    
                     Deref(
-                        mMemRefType: USE
+                        mMemRefType: DEF
                         mMRE: 
                         NamedRef(
                             mMemRefType: USE

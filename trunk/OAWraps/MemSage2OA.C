@@ -1283,7 +1283,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                         OA::OA_ptr<OA::MemRefExpr> fieldAccess;
     
                         mMre2TypeMap[composedMre] = other;
-                        
+                       
                         fieldAccess 
                              = new OA::FieldAccess(OA::MemRefExpr::USE,
                                                    composedMre,
@@ -2814,6 +2814,26 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgExprStatement *exprStatement = isSgExprStatement(astNode);
             ROSE_ASSERT(exprStatement!=NULL);
             findAllMemRefsAndPtrAssigns(exprStatement->get_expression(),stmt);
+
+            // Remove Association of TopMemRefHandle 
+            // in case of Assignment Statement
+            // a = b + c
+
+            // Need to check if Statement is AssignOp type because
+            // we dont want to remove all the TopMemRefHandles of
+            // SgExprStatement.
+            // e.g.  if(x) or *a or const_array[i]            
+
+            SgBinaryOp *assignOp = isSgBinaryOp(exprStatement->get_expression());
+            if(assignOp) {
+               OA::MemRefHandle child_memref
+                       =
+               findTopMemRefHandle(exprStatement->get_expression());
+
+               mMemref2mreSetMap[child_memref].clear();
+               mStmt2allMemRefsMap[stmt].erase(child_memref);
+            } 
+
             break;
         }
     //case V_SgCaseOptionStatement: // NOT in enum? spelled differently?
@@ -3743,7 +3763,7 @@ createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
                             OA::OA_ptr<OA::MemRefExpr> fieldAccess;
 
                             // fieldAccess accuracy depends on baseLHS accuracy
-                          
+                         
                             fieldAccess = new OA::FieldAccess(memRefType,
                                                               baseLHS,
                                                               mangledMethodName);

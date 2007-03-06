@@ -16,8 +16,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("a") => 
                 NamedRef( DEF, SymHandle("a"))
-            MemRefHandle("a = 20") => 
-                NamedRef( USE, SymHandle("a"))
         ] }
     MEMREFEXPRS = { StmtHandle("a++;") =>
         [
@@ -32,8 +30,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("b"))
             MemRefHandle("a") => 
                 NamedRef( USEDEF, SymHandle("a"))
-            MemRefHandle("b = ++a") => 
-                NamedRef( USE, SymHandle("b"))
             MemRefHandle("++a") => 
                 NamedRef( USE, SymHandle("a"))
         ] }
@@ -43,8 +39,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("b"))
             MemRefHandle("a") => 
                 NamedRef( USEDEF, SymHandle("a"))
-            MemRefHandle("b = a++") => 
-                NamedRef( USE, SymHandle("b"))
             MemRefHandle("a++") => 
                 NamedRef( USE, SymHandle("a"))
         ] }
@@ -52,8 +46,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("a") => 
                 NamedRef( USEDEF, SymHandle("a"))
-            MemRefHandle("a += 45") => 
-                NamedRef( USE, SymHandle("a"))
         ] }
     MEMREFEXPRS = { StmtHandle("return a =(b -= a);") =>
         [

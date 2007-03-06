@@ -116,12 +116,6 @@ InterSideEffectStandard(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
-                    NamedLoc(
-                        mSymHandle: SymHandle(p)
-                        mLocal: 1
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
@@ -143,12 +137,6 @@ InterSideEffectStandard(
                     )    
                     NamedLoc(
                         mSymHandle: SymHandle(q)
-                        mLocal: 1
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    )    
-                    NamedLoc(
-                        mSymHandle: SymHandle(p)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
@@ -178,12 +166,6 @@ InterSideEffectStandard(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
-                    NamedLoc(
-                        mSymHandle: SymHandle(p)
-                        mLocal: 1
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
@@ -205,12 +187,6 @@ InterSideEffectStandard(
                     )    
                     NamedLoc(
                         mSymHandle: SymHandle(q)
-                        mLocal: 1
-                        mFullOverlap: [  ] 
-                        mPartOverlap: [  ] 
-                    )    
-                    NamedLoc(
-                        mSymHandle: SymHandle(p)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 

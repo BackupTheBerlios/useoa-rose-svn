@@ -42,15 +42,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("q"))
             MemRefHandle("*q") => 
                 Deref( USE, NamedRef( USE, SymHandle("q")), 1)
-            MemRefHandle("x = *q") => 
-                NamedRef( USE, SymHandle("x"))
         ] }
     MEMREFEXPRS = { StmtHandle("p = &i;") =>
         [
             MemRefHandle("p") => 
                 NamedRef( DEF, SymHandle("p"))
-            MemRefHandle("p = &i") => 
-                NamedRef( USE, SymHandle("p"))
             MemRefHandle("&i") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("i")))
         ] }
@@ -65,8 +61,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("p"))
             MemRefHandle("*p") => 
                 Deref( DEF, NamedRef( USE, SymHandle("p")), 1)
-            MemRefHandle("*p = 5") => 
-                Deref( USE, NamedRef( USE, SymHandle("p")), 1)
         ] }
     MEMREFEXPRS = { StmtHandle("y = *q;") =>
         [
@@ -76,8 +70,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("q"))
             MemRefHandle("*q") => 
                 Deref( USE, NamedRef( USE, SymHandle("q")), 1)
-            MemRefHandle("y = *q") => 
-                NamedRef( USE, SymHandle("y"))
         ] }
     MEMREFEXPRS = { StmtHandle("g(x,y);") =>
         [
@@ -99,8 +91,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("const_array"))
             MemRefHandle("i") => 
                 NamedRef( USE, SymHandle("i"))
-            MemRefHandle("const_array[i]") => 
-                SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("const_array")), 1))
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

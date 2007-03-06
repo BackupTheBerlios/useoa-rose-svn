@@ -33,8 +33,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("p"))
             MemRefHandle("&a") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
-            MemRefHandle("p = &a") => 
-                NamedRef( USE, SymHandle("p"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("p = &a;") =>
         [
@@ -47,8 +45,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("q"))
             MemRefHandle("&p") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("p")))
-            MemRefHandle("q = &p") => 
-                NamedRef( USE, SymHandle("q"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("q = &p;") =>
         [
@@ -61,8 +57,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("p"))
             MemRefHandle("q") => 
                 NamedRef( USE, SymHandle("q"))
-            MemRefHandle("p = *q") => 
-                NamedRef( USE, SymHandle("p"))
             MemRefHandle("*q") => 
                 Deref( USE, NamedRef( USE, SymHandle("q")), 1)
         ] }
@@ -75,8 +69,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("p") => 
                 NamedRef( DEF, SymHandle("p"))
-            MemRefHandle("p =(v + 2)") => 
-                NamedRef( USE, SymHandle("p"))
             MemRefHandle("(v + 2)") => 
                 AddressOf( USE, SubSetRef( USE, NamedRef( USE, SymHandle("v"))))
         ] }
@@ -91,8 +83,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("p"))
             MemRefHandle("p") => 
                 NamedRef( USE, SymHandle("p"))
-            MemRefHandle("p = p") => 
-                NamedRef( USE, SymHandle("p"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("p = p;") =>
         [
@@ -105,8 +95,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("p"))
             MemRefHandle("&mystruct.temp::hello") => 
                 AddressOf( USE, FieldAccess( USE, NamedRef( USE, SymHandle("mystruct")), hello))
-            MemRefHandle("p = &mystruct.temp::hello") => 
-                NamedRef( USE, SymHandle("p"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("p = &mystruct.temp::hello;") =>
         [
