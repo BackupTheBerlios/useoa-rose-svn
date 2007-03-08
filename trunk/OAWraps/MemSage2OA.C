@@ -4801,6 +4801,27 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
           mMre2TypeMap[mre] = other;
           return mre;
         }
+        // Case of an aggregate initializer
+        else if ( isSgAggregateInitializer(grandParent) ) {
+             SgInitializedName *initName =
+                isSgInitializedName(grandParent->get_parent());
+             ROSE_ASSERT(initName != NULL);
+             SgVariableDeclaration *varDecl =
+                isSgVariableDeclaration(initName->get_parent());
+             ROSE_ASSERT(varDecl != NULL);
+
+             bool addressTaken = true;
+             bool accuracy = true;
+             OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+             OA::SymHandle sym = getNodeNumber(initName);
+             mre = new OA::NamedRef(mrType, sym);
+
+             // Record the type of the MRE (reference or non-reference).
+             mMre2TypeMap[mre] =
+                ( isSgReferenceType(initName->get_type()) ?
+                reference : other );
+             return mre;
+        }
     }
 
     // If the parent is an expression root, and its parent is
@@ -4887,6 +4908,9 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
         lhs = isSgNewExp(ctorInitializer->get_parent());
     }
     if ( lhs == NULL ) {
+        std::cout << "error at: " <<
+            ctorInitializer->get_startOfConstruct()->get_filenameString() <<
+            ctorInitializer->get_startOfConstruct()->get_line() << endl;
       std::cout << "lhs NULL: " << ctorInitializer->get_parent()->get_parent()->unparseToString() << std::endl;
     }
     ROSE_ASSERT(lhs != NULL);

@@ -123,28 +123,8 @@ set -- `getopt -l "logFile:" "l:" "$@"` || {
     exit 1
 }
 
-
-### Set default values for the script's options:
-
 # log file
 LOGFILE=`pwd`/benchmark.log
-
-# directory where the benchmark scripts are.
-# NOTE - This script must either be sourced from the root UseOA-ROSE directory, or the
-#        directory its actually contained in
-if [[ `pwd | grep "scripts/benchmarking$"` ]] ; then
-    SCRIPTDIR=`pwd`
-else
-    SCRIPTDIR=`pwd`/scripts/benchmarking
-fi
-
-# directory where branches of openanalysis reside
-BRANCH_DIR="/home/stone48/berlios/openanalysis/OpenAnalysis/branch"
-
-# directory where UseOA is located
-USEOA_DIR=`pwd -P`
-
-
 
 # parse options
 # redefine LOGFILE if the user is passing the --log argument
@@ -177,7 +157,33 @@ if [[ $# == 0 ]]; then
 else
     CMDFILE=$1
     CMDFILE=${CMDFILE:1: (( ${#CMDFILE} - 2 )) }
+
+    # handle the case where the script is being invoked from its local directory,
+    # and not the UseOA-ROSE directory.
+    if [[ `pwd | grep "scripts/benchmarking$"` ]] ; then
+        cd ../..
+        CMDFILE="scripts/benchmarking/$CMDFILE"
+        LOGFILE=`pwd`/scripts/benchmarking/benchmark.log
+    fi
 fi
+
+### Set default values for the script's options:
+
+# directory where branches of openanalysis reside
+BRANCH_DIR="/home/stone48/berlios/openanalysis/OpenAnalysis/branch"
+
+# directory where the benchmark scripts are.
+# NOTE - This script must either be sourced from the root UseOA-ROSE directory, or the
+#        directory its actually contained in
+if [[ `pwd | grep "scripts/benchmarking$"` ]] ; then
+    cd ../..
+fi
+    SCRIPTDIR=`pwd`/scripts/benchmarking
+
+# directory where UseOA is located
+USEOA_DIR=`pwd -P`
+
+
 
 
 

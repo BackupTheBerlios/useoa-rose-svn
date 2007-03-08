@@ -209,6 +209,12 @@ void usage(char **argv)
   exit(-1);
 }
 
+// Temp
+class A {
+  public:
+    int val;
+};
+
 int
 main ( unsigned argc,  char * argv[] )
 {
