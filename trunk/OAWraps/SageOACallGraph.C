@@ -213,7 +213,8 @@ void FindCallsitesPass::visit(SgNode* node)
     SgType *type = receiver->get_type(); 
     ROSE_ASSERT(type != NULL);
 
-    SgPointerType *ptrType = isSgPointerType(type);
+    // Need getBaseType to look through typedefs.
+    SgPointerType *ptrType = isSgPointerType(getBaseType(type));
     ROSE_ASSERT(ptrType != NULL);
     type = getBaseType(ptrType->get_base_type());
 

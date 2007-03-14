@@ -416,7 +416,8 @@ getFormalTypes(SgNode *node)
             SgType *varType = var->get_type(); 
             ROSE_ASSERT(varType != NULL); 
 
-            SgPointerType *ptrType = isSgPointerType(varType); 
+            // Need getBaseType to look through typedefs.
+            SgPointerType *ptrType = isSgPointerType(getBaseType(varType)); 
             SgClassType *classType = NULL; 
             if ( ptrType ) { 
                 classType = isSgClassType(ptrType->get_base_type()); 

@@ -3575,6 +3575,67 @@ Added TestCase/CtoA/localNonLocal.c as a regression test for this bug.
     associated with the assignment statement. 
   - regenerated TestCases after the modification.
 
+03/14/07    UseOA-ROSE svn trunk r267   Brian White
+  - Working with Andy to fix some bugs while running spec2006 int benchmarks.
+  - Bug report 1:
+
+struct Bippin {
+  int val;
+  Bippin(int v) { val = v; }
+};
+
+const Bippin theBops[5]= {
+  Bippin(1), Bippin(2), Bippin(3), Bippin(4), Bippin(5) };
+
+int main(char argc, char *argv[]) {
+  int x;
+  theBops[x].val;
+
+  return 0;
+}
+
+stonea@monk ~/hd/useoa-rose
+$ ./OATest --oa-FIAliasAliasMap test.cpp
+delete []theBops
+/s/bach/e/proj/oadev/testprogs/stone-hd/useoa-rose/test.cpp     11
+OATest: MemSage2OA.C:1212: void
+SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle):
+Assertion `methodDecl != __null' failed.
+Aborted
+	
+    Issue here is that ~Bippin is implicity defined.  I turned
+    on AST normalization in OATest to fix this.
+
+  - Bug report 2:
+
+class Bippin {
+ public:
+  int val;
+  Bippin() { val = 42; }
+  Bippin(int v) { val = v; }
+};
+
+int main(char argc, char *argv[]) {
+  Bippin *theBops;
+  theBops = new Bippin[10];
+  delete [] theBops;
+
+  return 0;
+}
+
+stonea@monk ~/hd/useoa-rose
+$ ./OATest --oa-FIAliasAliasMap test2.cpp
+delete []theBops
+/s/bach/e/proj/oadev/testprogs/stone-hd/useoa-rose/test2.cpp    11
+OATest: MemSage2OA.C:1198: void
+SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode*, OA::StmtHandle):
+Assertion `ptrType != __null' failed.
+Aborted
+
+    Issue here is that we were expecting the receiver of a delete
+    to be a pointer type.  Actually, it has SgTypedefType.
+    Just needed to add getBaseType to look through the typedef
+    to get to the pointer type.  
 
 
 		 

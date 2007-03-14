@@ -1190,11 +1190,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgType *type = receiver->get_type(); 
             ROSE_ASSERT(type != NULL);
 
-            SgPointerType *ptrType = isSgPointerType(type);
+            // Need getBaseType to look through typedefs.
+            SgPointerType *ptrType = isSgPointerType(getBaseType(type));
 
-std::cout << astNode->unparseToString() << std::endl;
-std::cout << astNode->get_file_info()->get_filename() << "\t";
-std::cout << astNode->get_file_info()->get_line() << std::endl;
             ROSE_ASSERT(ptrType != NULL);
             type = getBaseType(ptrType->get_base_type());
 
@@ -1943,7 +1941,7 @@ std::cout << astNode->get_file_info()->get_line() << std::endl;
         {
             SgBinaryOp *binaryOp = isSgBinaryOp(astNode);
             ROSE_ASSERT(binaryOp != NULL);
-            
+
             // recurse on lhs and rhs
             findAllMemRefsAndPtrAssigns(binaryOp->get_lhs_operand(),stmt);
             findAllMemRefsAndPtrAssigns(binaryOp->get_rhs_operand(),stmt);
@@ -2134,7 +2132,6 @@ std::cout << astNode->get_file_info()->get_line() << std::endl;
 
                         ROSE_ASSERT(numRhses != 0);
                         ROSE_ASSERT(numRhses == 1);
-
 
                         if ( ( mMre2TypeMap.find(rhs_mre) != mMre2TypeMap.end() ) &&
                              ( mMre2TypeMap[rhs_mre] == reference ) ) {
@@ -4643,6 +4640,11 @@ void SageIRInterface::createUseDefForVarArg(OA::MemRefHandle memref,
  *       ...
  *       return a;
  *
+ *       or
+ *
+ *       return Bippin(123);   // where Bippin is a class.
+ *
+ *
  *   we return the copy constructor to represent the anonymous temporary--
  *   i.e., &(SgConstructorInitializer(a)).
  *
@@ -4834,24 +4836,23 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
     // because we are returning an object.
     SgNode *grandParent2 = parent->get_parent();
     if ( ( isSgExpressionRoot(parent) && isSgReturnStmt(grandParent2) ) ||
-         ( isSgReturnStmt(parent) ) )
-    {
-      OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
-      OA::StmtHandle stmtHandle = getNodeNumber(ctorInitializer);
+         ( isSgReturnStmt(parent) ) ) {
+       OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+       OA::StmtHandle stmtHandle = getNodeNumber(ctorInitializer);
 
-      mre = new OA::UnnamedRef(mrType, stmtHandle);
+       mre = new OA::UnnamedRef(mrType, stmtHandle);
 
-      OA::OA_ptr<OA::AddressOf> address_mre;
-      OA::OA_ptr<OA::MemRefExpr> nullMRE;
+       OA::OA_ptr<OA::AddressOf> address_mre;
+       OA::OA_ptr<OA::MemRefExpr> nullMRE;
 
-      address_mre = new OA::AddressOf(OA::MemRefExpr::USE,
-                                      nullMRE);
+       address_mre = new OA::AddressOf(OA::MemRefExpr::USE,
+                                       nullMRE);
 
-      mre = address_mre->composeWith(mre);
+       mre = address_mre->composeWith(mre);
 
-      // Record the type of the MRE (reference or non-reference).
-      mMre2TypeMap[mre] = other;
-      return mre;
+       // Record the type of the MRE (reference or non-reference).
+       mMre2TypeMap[mre] = other;
+       return mre;
     }
 
     // It looks like the parent could be an assign op as well.
