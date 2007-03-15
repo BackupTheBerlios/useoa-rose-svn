@@ -11,9 +11,9 @@
 #
 # As this script runs it outputs all sorts of useful information (sometimes
 # even the results!) into a log file.  By default this file will be
-# benchmark.log, but it can be changed to something else with the '--log'
+# benchmark.log, but it can be changed to something else with the '--logfile'
 # command line argument.  If you'd rather have everything dump to standard
-# out then set the log to /dev/stdout like so: '--log=/dev/stdout'.
+# out then set the log to /dev/stdout like so: '--logfile=/dev/stdout'.
 #
 # NOTE: This script assumes that it's being source from the root UseOA-ROSE
 #      directory.
@@ -39,7 +39,7 @@
 #                        OA to work with it.
 #
 # usage:
-#    ./runBenchmarks.sh cmdFile --log=logfile
+#    ./runBenchmarks.sh cmdFile --logfile=logfile
 
 # I wrap this code in a subshell so that calls to exit won't close the
 # user's shell if the script is sourced (like it's required to be). It also
@@ -54,7 +54,8 @@
 # output usage information (users get this is they screw up a command line
 # arg).
 function usage() {
-    echo "Usage: `basename $0` [-l file or --logfile file] cmdFile" 1>&2
+    echo -e "Usage: source runBenchmarks.sh [-l file or \c "
+    echo "--logfile file] cmdFile" 1>&2
 }
 
 # print help message
@@ -70,9 +71,9 @@ what I'm talking about.
 
 As this script runs it outputs all sorts of useful information (sometimes
 even the results!) into a log file.  By default this file will be
-benchmark.log, but it can be changed to something else with the '--log'
+benchmark.log, but it can be changed to something else with the '--logFile'
 command line argument.  If you'd rather have everything dump to standard
-out then set the log to /dev/stdout like so: '--log=/dev/stdout'.
+out then set the log to /dev/stdout like so: '--logfile=/dev/stdout'.
 
 NOTE: This script assumes that it's being source from the root UseOA-ROSE
       directory.
@@ -118,7 +119,7 @@ if [[ $1 == "--help" || $1 == "-h" ]] ; then
 fi
 
 # check usage and get options
-set -- `getopt -l "logFile:" "l:" "$@"` || {
+set -- `getopt -l "logfile:" "l:" "$@"` || {
     usage
     exit 1
 }
@@ -158,12 +159,14 @@ else
     CMDFILE=$1
     CMDFILE=${CMDFILE:1: (( ${#CMDFILE} - 2 )) }
 
-    # handle the case where the script is being invoked from its local directory,
-    # and not the UseOA-ROSE directory.
+    # handle the case where the script is being invoked from its local
+    # directory, and not the UseOA-ROSE directory.
     if [[ `pwd | grep "scripts/benchmarking$"` ]] ; then
+        OLD_PWD=`pwd`
         cd ../..
         CMDFILE="scripts/benchmarking/$CMDFILE"
-        LOGFILE=`pwd`/scripts/benchmarking/benchmark.log
+        LOGFILE=`basename $LOGFILE`
+        LOGFILE="$OLD_PWD/$LOGFILE"
     fi
 fi
 
