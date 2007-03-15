@@ -48,6 +48,25 @@
 (
 
 ################################################################################
+#   Temporary flie system
+################################################################################
+# generate a unique temporary file
+TEMP_FILE=`mktemp`
+TEMP_FILE_RESULTS=`mktemp`
+TEMP_FILE_STITCH=`mktemp`
+TEMP_FILE_LOC=`mktemp`
+
+# call this instead of the normal exit command to insure that the
+# temporary file is removed
+function graceful_exit() {
+    rm $TEMP_FILE
+    rm $TEMP_FILE_RESULTS
+    rm $TEMP_FILE_STITCH
+    rm $TEMP_FILE_LOC
+    exit $1
+}
+
+################################################################################
 #   Help System
 ################################################################################
 
@@ -115,13 +134,13 @@ Kinds of tests you can run with this script:
 # this needs to be checked explicitly 
 if [[ $1 == "--help" || $1 == "-h" ]] ; then
     helpMsg
-    exit 2
+    graceful_exit 2
 fi
 
 # check usage and get options
 set -- `getopt -l "logfile:" "l:" "$@"` || {
     usage
-    exit 1
+    graceful_exit 1
 }
 
 # log file
@@ -145,7 +164,7 @@ while : ; do
         ;;
         "-h" | "--help") shift;
             helpMsg
-            exit 2
+            graceful_exit 2
         ;;
         --) break ;;
     esac
@@ -154,7 +173,7 @@ done
 shift    # REMOVE THE TRAILING --
 if [[ $# == 0 ]]; then
     usage
-    exit 1
+    graceful_exit 1
 else
     CMDFILE=$1
     CMDFILE=${CMDFILE:1: (( ${#CMDFILE} - 2 )) }
@@ -278,30 +297,22 @@ function logResult() {
 function execAndLogResult() {
    prepMessage "$1"
    echo `date +"@[%D %r]"` "$MSG_PREPPED" >> $LOGFILE
-   $1 > runBenchmarks.tmp
-   sed 's/.*/!                       &/' runBenchmarks.tmp > runBenchmarks.tmp.results
+   $1 > $TEMP_FILE
+   sed 's/.*/!                       &/' $TEMP_FILE > $TEMP_FILE_RESULTS
    prepAllLinesOfMessage "$2"
    echo `date +"![%D %r]"` $MSG_PREPPED >> $LOGFILE
-   cat runBenchmarks.tmp.results >> $LOGFILE
-
-   # clean up after yourself
-   rm ./runBenchmarks.tmp
-   rm ./runBenchmarks.tmp.results
+   cat TEMP_FILE_RESULTS >> $LOGFILE
 }
 
 # execute $1 with time and output results into the logfile
 function execTimeAndLogResult() {
    prepMessage "/usr/bin/time -p $1"
    echo `date +"@[%D %r]"` "$MSG_PREPPED" >> $LOGFILE
-   /usr/bin/time -p $1 2> runBenchmarks.tmp
-   sed 's/.*/!                       &/' runBenchmarks.tmp > runBenchmarks.tmp.results
+   /usr/bin/time -p $1 2> $TEMP_FILE
+   sed 's/.*/!                       &/' $TEMP_FILE > $TEMP_FILE_RESULTS
    prepAllLinesOfMessage "$2"
    echo `date +"![%D %r]"` $MSG_PREPPED >> $LOGFILE
-   cat runBenchmarks.tmp.results >> $LOGFILE
-
-   # clean up after yourself
-   rm ./runBenchmarks.tmp
-   rm ./runBenchmarks.tmp.results
+   cat $TEMP_FILE_RESULTS >> $LOGFILE
 }
 
 
@@ -529,9 +540,9 @@ function stitchFiles() {
     logMsg "Stitching files\nFiles file: $1\nFile to produce: $2"
 
     # remove the CXXFLAGS and comment lines from the files file
-    sed -e '/#/d' -e '/CXXFLAGS=/d' $1 > tmp
+    sed -e '/#/d' -e '/CXXFLAGS=/d' $1 > $TEMP_FILE_STITCH
     # cat every file in the files file together
-    for file in `cat tmp` ; do echo // START FILE: $file; cat $file ; done > $2
+    for file in `cat $TEMP_FILE_STITCH` ; do echo // START FILE: $file; cat $file ; done > $2
     FILES_FILE_CXXFLAGS=`grep 'CXXFLAGS=' $1 | cut -d = -f 2`
     echo CXXFLAGS="$FILES_FILE_CXXFLAGS" > $2.files
     echo "$2" >> $2.files
@@ -546,8 +557,8 @@ function getLOC() {
     FILES_FILE_CXXFLAGS=`grep 'CXXFLAGS=' $1 | cut -d = -f 2`
 
     # Iterate through each file in the files file
-    sed -e '/#/d' -e '/CXXFLAGS=/d' $1 > tmp_files
-    for file in `cat tmp_files` ; do
+    sed -e '/#/d' -e '/CXXFLAGS=/d' $1 > $TEMP_FILE_LOC
+    for file in `cat $TEMP_FILE_LOC` ; do
 #        cpp $FILES_FILE_CXXFLAGS $file > $1.pp.c
         cpp $FILES_FILE_CXXFLAGS $file $1.pp.c
         logMsg "LOC: `c_count $1.pp.c | head -n1`"
@@ -589,4 +600,3 @@ source $CMDFILE
 
 # -----------------------------------------------------------------------------
 
-)
