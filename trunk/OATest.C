@@ -244,7 +244,7 @@ main ( unsigned argc,  char * argv[] )
     //AstDOTGeneration dottest;
     //dottest.generateInputFiles(sageProject);
 
-#if 1
+#if 0 
     // Perform the AST normalization.
     //    DefaultFunctionGenerator dfg;
     //    dfg.traverse(sageProject, preorder);
