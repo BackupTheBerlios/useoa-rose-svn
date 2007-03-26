@@ -1,4 +1,0 @@
-echo "Generating TestResults/CtoOA/invokeBaseCtor.C.out"
-./CtoOA -edg:w -c TestCases/CtoOA/invokeBaseCtor.C > TestResults/CtoOA/invokeBaseCtor.C.out
-echo "Generating TestResults/CtoOA/localNonLocal.c.out"
-./CtoOA -edg:w -c TestCases/CtoOA/localNonLocal.c > TestResults/CtoOA/localNonLocal.c.out

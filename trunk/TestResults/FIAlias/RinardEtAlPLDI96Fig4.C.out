@@ -1,4 +1,0 @@
-
-EquivSets(
-    mMemRefToProc: MemRefHandle	 => ProcHandle
-        

@@ -1,9 +1,0 @@
-# pass -edg:w to turn off front-end warnings
-# pass -c so ROSE doesn't give us spurious output
-
-./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/t1.c > TestResults/MemRefExpr/t1.c.out
-./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/t2.c > TestResults/MemRefExpr/t2.c.out
-./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/t3.c > TestResults/MemRefExpr/t3.c.out
-./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/t4.c > TestResults/MemRefExpr/t4.c.out
-./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/t5.c > TestResults/MemRefExpr/t5.c.out
-./OATest -edg:w --oa-MemRefExpr -c TestCases/MemRefExprTests/MemRefExprTestInput.C > TestResults/MemRefExpr/MemRefExprTestInput.C.out
