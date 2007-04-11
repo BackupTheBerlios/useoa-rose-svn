@@ -1,11 +1,33 @@
 
 InterActive(
     Procedure( main ): 
-    ActiveLocSet([  ] 
+    ActiveLocSet([ 
+            NamedLoc(
+                mSymHandle: SymHandle(a)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
+            NamedLoc(
+                mSymHandle: SymHandle(b)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
+            NamedLoc(
+                mSymHandle: SymHandle(c)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            ) ] 
     )
-    ActiveStmtSet([  ] 
+    ActiveStmtSet([ 
+            StmtHandle(a =((a <= 0)?b:c);) ] 
     )
-    ActiveMemRefSet([  ] 
+    ActiveMemRefSet([ 
+            MemRefHandle(a)
+                MemRefHandle(a)
+                MemRefHandle((a <= 0)?b:c) ] 
     )
     mNumIterUseful: 2
     mNumIterVary: 2
