@@ -13,7 +13,7 @@ test::constprop_if1b.c,  Checked by PLM 12/27/06
 test::constprop_if1c.c,  Checked by PLM 12/27/06
 test::constprop_loop1.c, Checked by PLM 12/27/06
 test::constprop_loop2.c, Checked by PLM 12/27/06
-test::constprop_proc1.c, Checked by PLM 12/27/06
+#test::constprop_proc1.c, Checked by PLM 12/27/06
 test::constprop_proc2.c, Checked by PLM 12/27/06
 
 

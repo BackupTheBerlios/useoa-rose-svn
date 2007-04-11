@@ -8,7 +8,5 @@ echo "Generating TestResults/ICFGReachConsts/constprop_loop1.c.out"
 ./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_loop1.c >& TestResults/ICFGReachConsts/constprop_loop1.c.out
 echo "Generating TestResults/ICFGReachConsts/constprop_loop2.c.out"
 ./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_loop2.c >& TestResults/ICFGReachConsts/constprop_loop2.c.out
-echo "Generating TestResults/ICFGReachConsts/constprop_proc1.c.out"
-./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_proc1.c >& TestResults/ICFGReachConsts/constprop_proc1.c.out
 echo "Generating TestResults/ICFGReachConsts/constprop_proc2.c.out"
 ./OATest -edg:w --oa-ICFGReachConsts -c TestCases/ReachConstsTests/constprop_proc2.c >& TestResults/ICFGReachConsts/constprop_proc2.c.out

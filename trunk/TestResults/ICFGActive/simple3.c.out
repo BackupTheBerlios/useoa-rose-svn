@@ -57,11 +57,7 @@ InterActive(
                 MemRefHandle(x2)
                 MemRefHandle(v4)
                 MemRefHandle(y2)
-                MemRefHandle(v4)
-                MemRefHandle(v3 =(x1 * x2))
-                MemRefHandle(v4 =(x1 * v3))
-                MemRefHandle(y1 =((v3 * x2) * v4))
-                MemRefHandle(y2 = sin(v4)) ] 
+                MemRefHandle(v4) ] 
     )
     Procedure( main ): 
     ActiveLocSet([  ] 
@@ -70,10 +66,12 @@ InterActive(
     )
     ActiveMemRefSet([  ] 
     )
-    ActiveSymSet: [  ] 
     mNumIterUseful: 2
     mNumIterVary: 2
 )
 
 
 Total Iters: 6
+
+*******  end of DoICFGActivity *********
+

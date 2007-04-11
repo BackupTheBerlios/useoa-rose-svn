@@ -22,66 +22,34 @@ InterActive(
             )    
             InvisibleLoc(
                 mMRE: 
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
+                SubSetRef(
                     mMemRefType: USE
                     mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(x)
-                    )
-                    mNumDeref: 1
-                )
-            )    
-            InvisibleLoc(
-                mMRE: 
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(y)
-                    )
-                    mNumDeref: 1
-                )
-            )    
-            InvisibleLoc(
-                mMRE: 
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
+                    Deref(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(x)
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(x)
+                        )
+                        mNumDeref: 1
                     )
-                    mNumDeref: 1
                 )
             )    
             InvisibleLoc(
                 mMRE: 
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
+                SubSetRef(
                     mMemRefType: DEF
                     mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
+                    Deref(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(y)
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(y)
+                        )
+                        mNumDeref: 1
                     )
-                    mNumDeref: 1
                 )
             ) ] 
     )
@@ -113,14 +81,7 @@ InterActive(
                 MemRefHandle(y[1])
                 MemRefHandle(y[2])
                 MemRefHandle(y[3])
-                MemRefHandle(y[4])
-                MemRefHandle(t1 =((x[1]) /(x[2])))
-                MemRefHandle(t2 =((x[3]) *(x[4])))
-                MemRefHandle(t3 =(t1 * t2))
-                MemRefHandle(y[1] =(t1 * t3))
-                MemRefHandle(y[2] =(1. / t3))
-                MemRefHandle(y[3] = sin(t3))
-                MemRefHandle(y[4] =(t3 * t2)) ] 
+                MemRefHandle(y[4]) ] 
     )
     Procedure( main ): 
     ActiveLocSet([  ] 
@@ -129,10 +90,12 @@ InterActive(
     )
     ActiveMemRefSet([  ] 
     )
-    ActiveSymSet: [  ] 
     mNumIterUseful: 2
     mNumIterVary: 2
 )
 
 
 Total Iters: 6
+
+*******  end of DoICFGActivity *********
+

@@ -4,16 +4,12 @@ echo "Generating TestResults/ICFGActive/simple1.c.out"
 ./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/simple1.c >& TestResults/ICFGActive/simple1.c.out
 echo "Generating TestResults/ICFGActive/simple3.c.out"
 ./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/simple3.c >& TestResults/ICFGActive/simple3.c.out
-echo "Generating TestResults/ICFGActive/argumentArrayIndex2.c.out"
-./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/argumentArrayIndex2.c >& TestResults/ICFGActive/argumentArrayIndex2.c.out
 echo "Generating TestResults/ICFGActive/bat.c.out"
 ./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/bat.c >& TestResults/ICFGActive/bat.c.out
 echo "Generating TestResults/ICFGActive/ConstFoldSimp0.c.out"
 ./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/ConstFoldSimp0.c >& TestResults/ICFGActive/ConstFoldSimp0.c.out
 echo "Generating TestResults/ICFGActive/directDependency1.c.out"
 ./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/directDependency1.c >& TestResults/ICFGActive/directDependency1.c.out
-echo "Generating TestResults/ICFGActive/directDependency3.c.out"
-./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/directDependency3.c >& TestResults/ICFGActive/directDependency3.c.out
 echo "Generating TestResults/ICFGActive/globalActive_1.c.out"
 ./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/globalActive_1.c >& TestResults/ICFGActive/globalActive_1.c.out
 echo "Generating TestResults/ICFGActive/globalActive_2.c.out"
@@ -64,3 +60,7 @@ echo "Generating TestResults/ICFGActive/speelpenning.c.out"
 ./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/speelpenning.c >& TestResults/ICFGActive/speelpenning.c.out
 echo "Generating TestResults/ICFGActive/tanh_f_arg.c.out"
 ./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/tanh_f_arg.c >& TestResults/ICFGActive/tanh_f_arg.c.out
+echo "Generating TestResults/ICFGActive/multiple_assignments.c.out"
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/multiple_assignments.c >& TestResults/ICFGActive/multiple_assignments.c.out
+echo "Generating TestResults/ICFGActive/conditional.c.out"
+./OATest -edg:w --oa-ICFGActivity -c TestCases/ICFGActive/conditional.c >& TestResults/ICFGActive/conditional.c.out

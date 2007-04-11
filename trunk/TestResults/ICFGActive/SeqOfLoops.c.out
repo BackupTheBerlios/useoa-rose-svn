@@ -4,66 +4,34 @@ InterActive(
     ActiveLocSet([ 
             InvisibleLoc(
                 mMRE: 
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
+                SubSetRef(
                     mMemRefType: USE
                     mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(x)
-                    )
-                    mNumDeref: 1
-                )
-            )    
-            InvisibleLoc(
-                mMRE: 
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 1
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(y)
-                    )
-                    mNumDeref: 1
-                )
-            )    
-            InvisibleLoc(
-                mMRE: 
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
-                    mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
+                    Deref(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(x)
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(x)
+                        )
+                        mNumDeref: 1
                     )
-                    mNumDeref: 1
                 )
             )    
             InvisibleLoc(
                 mMRE: 
-                Deref(
-                    mAddressOf: 0
-                    mFullAccuracy: 0
-                    mMemRefType: USE
+                SubSetRef(
+                    mMemRefType: DEF
                     mMRE: 
-                    NamedRef(
-                        mAddressOf: 0
-                        mFullAccuracy: 1
+                    Deref(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(y)
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(y)
+                        )
+                        mNumDeref: 1
                     )
-                    mNumDeref: 1
                 )
             ) ] 
     )
@@ -72,9 +40,7 @@ InterActive(
                 StmtHandle(y[i] =((y[i]) *(x[i]));) ] 
     )
     ActiveMemRefSet([ 
-            MemRefHandle(y[i] =(x[i]))
-                MemRefHandle(y[i] =((y[i]) *(x[i])))
-                MemRefHandle(y[i])
+            MemRefHandle(y[i])
                 MemRefHandle((x[i]))
                 MemRefHandle(y[i])
                 MemRefHandle((y[i]))
@@ -87,10 +53,12 @@ InterActive(
     )
     ActiveMemRefSet([  ] 
     )
-    ActiveSymSet: [  ] 
     mNumIterUseful: 3
     mNumIterVary: 3
 )
 
 
 Total Iters: 8
+
+*******  end of DoICFGActivity *********
+
