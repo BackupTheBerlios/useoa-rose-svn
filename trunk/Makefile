@@ -72,7 +72,8 @@ clean-recursive:
 #LD_LIBRARY_PATH += /soft/apps/packages/gcc-3.1/lib
 
 #bin_PROGRAMS = OATest CtoOA CHAandAliasVirtualMethodResolver
-bin_PROGRAMS = OATest CtoOA 
+#bin_PROGRAMS = OATest CtoOA genPairs
+bin_PROGRAMS = OATest CtoOA
 
 # recursive
 
@@ -91,6 +92,10 @@ CtoOA_SOURCES = CtoOA.cpp
 CtoOA_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH)
 CtoOA_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
 
+genPairs_SOURCES = genPairs.cpp
+genPairs_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH)
+genPairs_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
+
 OACFGTest_SOURCES = CFGTest.C
 OACFGTest_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH)
 OACFGTest_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
@@ -106,6 +111,10 @@ OATest_LDFLAGS =
 am_CtoOA_OBJECTS = CtoOA.$(OBJEXT)
 CtoOA_OBJECTS = $(am_CtoOA_OBJECTS)
 CtoOA_LDFLAGS = 
+
+am_genPairs_OBJECTS = genPairs.$(OBJEXT)
+genPairs_OBJECTS = $(am_genPairs_OBJECTS)
+genPairs_LDFLAGS = 
 
 am_staticVirtualMethodResolver_OBJECTS = staticVirtualMethodResolver.$(OBJEXT)
 staticVirtualMethodResolver_OBJECTS = $(am_staticVirtualMethodResolver_OBJECTS)
@@ -128,6 +137,10 @@ OATest$(EXEEXT): $(OATest_OBJECTS) $(OATest_DEPENDENCIES)
 CtoOA$(EXEEXT): $(CtoOA_OBJECTS) $(CtoOA_DEPENDENCIES) 
 	@rm -f CtoOA$(EXEEXT)
 	$(CXXLINK) $(CtoOA_LDFLAGS) $(CtoOA_OBJECTS) $(CtoOA_LDADD)
+
+genPairs$(EXEEXT): $(genPairs_OBJECTS) $(genPairs_DEPENDENCIES) 
+	@rm -f genPairs$(EXEEXT)
+	$(CXXLINK) $(genPairs_LDFLAGS) $(genPairs_OBJECTS) $(genPairs_LDADD)
 
 
 staticVirtualMethodResolver$(EXEEXT): $(staticVirtualMethodResolver_OBJECTS) $(staticVirtualMethodResolver_DEPENDENCIES) 

@@ -879,7 +879,11 @@ OA::StmtHandle SageIRInterface::getLoopIncrement(OA::StmtHandle h)
         SgExpression * exp=NULL;
         if(forst)
         {
+#ifdef ROSE_PRE_0_8_10A
+                exp=forst->get_increment_expr();
+#else
                 exp=forst->get_increment();
+#endif
         }
         
         return (OA::irhandle_t)(getNodeNumber(exp));
@@ -2374,19 +2378,66 @@ std::string SageIRInterface::toString(const OA::ProcHandle h)
   
   switch(node->variantT()) {
     
+#if 0
   case V_SgFunctionDefinition:
     {
       SgFunctionDefinition *functionDefinition = isSgFunctionDefinition(node);
       ROSE_ASSERT(functionDefinition != NULL);
 
-      SgFunctionDeclaration *functionDeclaration = 
+      node = functionDefinition->get_declaration();
+
+      // follow through.
+    }
+  case V_SgFunctionDeclaration:
+  case V_SgMemberFunctionDeclaration:
+  case V_SgTemplateInstantiationMemberFunctionDecl:
+  case V_SgTemplateInstantiationFunctionDecl:
+    {
+      SgFunctionDeclaration *functionDecl =
+        isSgFunctionDeclaration(node);
+      ROSE_ASSERT(functionDecl != NULL);
+
+      SgFunctionType *functionType = functionDecl->get_type();
+      ROSE_ASSERT(functionType != NULL);
+
+      int numFormals = 0;
+      SgTypePtrList &typePtrList = functionType->get_arguments();
+      numFormals += typePtrList.size();
+
+      if ( isSgMemberFunctionDeclaration(functionDecl) &&
+           !functionDecl->get_declarationModifier().get_storageModifier().isStatic() ) {
+        // Count the receiver as a formal.
+        numFormals++;
+      }
+
+      SgType *ret = functionType->get_return_type();
+      bool hasReturnValue = ( ( ret != NULL ) && ( !isSgTypeVoid(ret) ) );
+
+      std::stringstream ss;
+      ss << numFormals;
+
+      ret = functionDecl->get_name().str() + ss.str() + "Formals";
+      if ( hasReturnValue )
+        ret += "Ret";
+
+      break;
+    }
+
+#else
+
+  case V_SgFunctionDefinition:
+    {
+      SgFunctionDefinition *functionDefinition = isSgFunctionDefinition(node);
+      ROSE_ASSERT(functionDefinition != NULL);
+
+      SgFunctionDeclaration *functionDecl = 
         functionDefinition->get_declaration();
       ROSE_ASSERT(functionDefinition != NULL);
 
-      nm = functionDeclaration->get_name();
+      nm = functionDecl->get_name();
       
       SgMemberFunctionDeclaration *fd = 
-        isSgMemberFunctionDeclaration(functionDeclaration);
+        isSgMemberFunctionDeclaration(functionDecl);
       if (fd != NULL) {
         nm = fd->get_qualified_name();
       }
@@ -2418,7 +2469,7 @@ std::string SageIRInterface::toString(const OA::ProcHandle h)
 
       break;
     }
-
+#endif
   default:
     {
       ret = node->sage_class_name();
@@ -3808,7 +3859,11 @@ OA::Linearity::IRStmtType
       SgExprStatement *exprStatement = isSgExprStatement(node);
       ROSE_ASSERT(exprStatement != NULL);
 
+#ifdef ROSE_PRE_0_8_10A
+      SgExpression *expression = exprStatement->get_the_expr();
+#else
       SgExpression *expression = exprStatement->get_expression();
+#endif
       SgType *lhsType = NULL;
 
       switch(expression->variantT()) {
@@ -3862,74 +3917,31 @@ OA::Linearity::IRStmtType
 //! target MemRefHandle, ExprHandle where
 //! target = expr
 OA::OA_ptr<OA::AssignPairIterator> 
-  SageIRInterface::getAssignPairIterator(OA::StmtHandle h)
+  SageIRInterface::getAssignPairIterator(OA::StmtHandle stmt)
 {
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // FIXME
-  // BK: this routine is incomplete.
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // BW (4/12/07) Completed this routine.  It now
+  // handles general assignments, not merely
+  // those in expression statements, which are
+  // discovered and stored in findAllPtrAssignAndParamBindPairs.
 
   OA::OA_ptr<AssignPairList> assignPairList;
   assignPairList = new AssignPairList;
   
-  if (getActivityStmtType(h)==OA::Activity::EXPR_STMT) {
-    SgNode *node = getNodePtr(h);
-    ROSE_ASSERT(node != NULL);
-    
-    SgExpression *rhs;
-    SgNode *lhs;
-    
-    bool collectPtrAssigns = false;
-    
-    switch(node->variantT()) {
-      
-    case V_SgExprStatement:
+  if (getActivityStmtType(stmt)==OA::Activity::EXPR_STMT) {
+
+      std::set<std::pair<MemRefHandle,
+                         ExprHandle> >::iterator pairIter;
+      for (pairIter = mStmtToAssignPairs[stmt].begin();
+           pairIter!= mStmtToAssignPairs[stmt].end();
+           pairIter++)
       {
-        SgExprStatement *exprStatement = isSgExprStatement(node);
-        ROSE_ASSERT(exprStatement != NULL);
-        
-        SgExpression *expression = exprStatement->get_expression();
-        SgType *lhsType = NULL;
-        
-        switch(expression->variantT()) {
-        case V_SgAssignOp:
-          {
-            // A subset of this case is a new expression.
-            SgBinaryOp *assignOp = isSgBinaryOp(expression);
-            ROSE_ASSERT(assignOp != NULL);
-            
-            SgExpression *lhs = assignOp->get_lhs_operand();
-            ROSE_ASSERT(lhs != NULL);
-            
-            SgExpression *rhs = assignOp->get_rhs_operand();
-            ROSE_ASSERT(rhs != NULL);
-            
-            OA::ExprHandle rhsHandle = getNodeNumber(rhs);
-            OA::MemRefHandle lhsHandle = getNodeNumber(lhs);
-            assignPairList->push_back(AssignPair(lhsHandle, rhsHandle));
-            
-            
-            break;
-          } // end of case V_SgAssignOp:
-          
-          // BK:  I am sure that I am missing some stmts that should be
-          // flagged as an OA::Activity::EXPR_STMT, but this will get us
-          // started
-          
-        default: 
-          {
-            break;
-          }  
-        }
-        break;
-      } // end of case V_SgExprStatement:
-      
-    default:
-      {
-        break;
+          OA::MemRefHandle lhsHandle = pairIter->first;
+          OA::ExprHandle rhsHandle = pairIter->second;
+          assignPairList->push_back(AssignPair(lhsHandle, rhsHandle));
       }
-    }
-  } // end of if (OA::Activity::EXPR_STMT)
+
+  }
+
   OA::OA_ptr<OA::AssignPairIterator> espIter;
   espIter = new SageIRAssignPairIterator(assignPairList);
   return espIter;
@@ -4292,14 +4304,28 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
 
 //! Given a statement, return its Activity::IRStmtType
 OA::Activity::IRStmtType 
-SageIRInterface::getActivityStmtType(OA::StmtHandle h)
+SageIRInterface::getActivityStmtType(OA::StmtHandle stmt)
 {
+
+    if (mStmtToAssignPairs.empty() ) {
+        initMemRefAndPtrAssignMaps();
+    }
+
+#if 1
+    OA::Activity::IRStmtType stmtType = OA::Activity::ANY_STMT;
+
+    if ( mStmtToAssignPairs.find(stmt) != mStmtToAssignPairs.end() ) {
+
+      stmtType = OA::Activity::EXPR_STMT;
+
+    }
+#else
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // FIXME
   // BK: this routine is incomplete.
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  SgNode *node = getNodePtr(h);
+  SgNode *node = getNodePtr(stmt);
   ROSE_ASSERT(node != NULL);
   
   OA::Activity::IRStmtType stmtType = OA::Activity::ANY_STMT;
@@ -4313,7 +4339,11 @@ SageIRInterface::getActivityStmtType(OA::StmtHandle h)
       SgExprStatement *exprStatement = isSgExprStatement(node);
       ROSE_ASSERT(exprStatement != NULL);
       
+#ifdef ROSE_PRE_0_8_10A
+      SgExpression *expression = exprStatement->get_the_expr();
+#else
       SgExpression *expression = exprStatement->get_expression();
+#endif
       SgType *lhsType = NULL;
       
       switch(expression->variantT()) {
@@ -4367,7 +4397,7 @@ SageIRInterface::getActivityStmtType(OA::StmtHandle h)
       break;
     }
   }
-
+#endif
   return stmtType;
 }
 
@@ -5598,7 +5628,11 @@ SageIRInterface::getReachConstsStmtType(OA::StmtHandle h)
       SgExprStatement *exprStatement = isSgExprStatement(node);
       ROSE_ASSERT(exprStatement != NULL);
 
+#ifdef ROSE_PRE_0_8_10A
+      SgExpression *expression = exprStatement->get_the_expr();
+#else
       SgExpression *expression = exprStatement->get_expression();
+#endif
       SgType *lhsType = NULL;
 
       switch(expression->variantT()) {

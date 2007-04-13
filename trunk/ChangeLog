@@ -3637,6 +3637,24 @@ Aborted
     Just needed to add getBaseType to look through the typedef
     to get to the pointer type.  
 
-
+04/13/07    UseOA-ROSE svn trunk r283   Brian White
 		 
+    - Updated getAssignPairIterator and getActivityStmtType.
+      This required collecting (potentially non-ptr assignment pairs)
+      in findAllMemRefsAndPtrAssigns (see calls to makeAssignPairs).
 
+      The assign pairs are actually <MemRefHandle,ExprHandle>.  There are cases
+      in which we want to generate an assign pair and the rhs is not a
+      memrefhandle.  e.g.,:
+
+        int a,b;
+        a = (a + b);
+
+      The code (in SgAssignOp) for creating ptr assign pairs relies on
+      findTopMemRefHandle.  If the rhs memrefhandle is zero (i.e., the rhs is
+      not an lval), it does not create a ptr assign pair.  This is incorrect 
+      for assign pairs where we should get an assignment.
+
+      Therefore, I've added a map from stmt to expr handles 
+      (mStmt2allExprsMap), which is similar to mStmt2allMemRefsMap.  
+      I have also added a findTopExprHandle method.

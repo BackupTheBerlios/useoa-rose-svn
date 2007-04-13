@@ -28,10 +28,10 @@ source scripts/regressExprTree.script
 echo "########################### running regressLinearity.script"
 source scripts/regressLinearity.script
 
-#echo "########################### running regressUDDUChains.script"
+#echo "########################### running regressICFGDep.script"
 #source scripts/regressICFGDep.script
 
-echo "########################### running regressUDDUChains.script"
+echo "########################### running regressICFGActivity.script"
 source scripts/regressICFGActivity.script
 
 #echo "########################### running regressReachConsts.script"

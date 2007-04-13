@@ -394,6 +394,7 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
                                                                formal_type,
                                                                NULL,
                                                                actualNode,
+                                                               actual_memref,
                                                                actual_mre);
 
                         actual_mre = addr_of_lhs_tmp_mre;
@@ -459,6 +460,7 @@ applyReferenceConversionRules2And4(OA::StmtHandle stmt,
                                    SgType *lhs_type,
                                    SgNode *lhs,
                                    SgNode *rhs,
+                                   OA::MemRefHandle rhs_memref,
                                    OA::OA_ptr<OA::MemRefExpr> rhs_mre)
 {
 
@@ -617,6 +619,21 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
 
     ROSE_ASSERT(astNode != NULL);  bool retVal = false;
+
+    if ( isSgExpression(astNode) ) {
+        // We now keep track of all expressions (as well as mem ref handles).
+        // We do this because the rhs of an assignment may be an 
+        // expression, but not a mem ref handle (i.e., it may not have
+        // an lval).  For example:
+        //   int a,b;
+        //   a = (a + b);
+        // Here, (a + b) is an expression, but not a mem ref handle.
+        // Therefore, while makePtrAssignPairs gets the top mem ref handles,
+        // makeAssignPairs gets the top expression handles.
+        ExprHandle exprHandle = getMemRefHandle(astNode);
+        mStmt2allExprsMap[stmt].insert(exprHandle);
+    }
+
     switch(astNode->variantT()) {
 
     // ---------------------------------------- Expression cases
@@ -1553,6 +1570,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgInitializedName *initName = isSgInitializedName(astNode);
             ROSE_ASSERT(initName != NULL);
 
+            bool found_assignment = false;
+
             // if initptr is not null then             
             if (initName->get_initptr()!=NULL) {
                 // recurse on the child
@@ -1576,6 +1595,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     break;
                 }
 
+                // At this point, we know there is a RHS.  Therefore, we
+                // need to create an assignment pair (and we may also need
+                // to create a ptr assignment pair).
+                found_assignment = true;
 
                 // Since our immediate child is NOT a SgConstructorInitializer
                 // we know that the will be a pointer assignment if 
@@ -1688,7 +1711,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 }
 
                 mMemref2mreSetMap[memref].insert(mre);
-
+	    
                 // Iterate over the rhses.
                 OA::OA_ptr<OA::MemRefExprIterator> mIter 
                     = getMemRefExprIterator(child_memref);
@@ -1789,6 +1812,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                                                    type,
                                                                    initName,
                                                                    initName->get_initptr(),
+                                                                   child_memref,
                                                                    child_mre);
 
                             // Now model the reference initialization 
@@ -1802,6 +1826,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     } else if ( isSgPointerType(type) ) {
                         makePtrAssignPair(stmt, mre, child_mre);
                     }
+                }
+                
+                if ( found_assignment == true ) {
+                    makeAssignPair(stmt, memref, child_memref);
                 }
             }
             break;
@@ -2524,6 +2552,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgExpression* lhs_expr 
                 = isSgExpression(assignOp->get_lhs_operand());
             SgType *lhs_type = getBaseType(lhs_expr->get_type());
+
+            // Create an assignment pair.  We may also have to create
+            // a pointer assignment pair (on a per-MRE basis).
+            OA::ExprHandle rhs_expr = findTopExprHandle(assignOp->get_rhs_operand());
+            makeAssignPair(stmt, lhs_memref, rhs_expr);
+
             if (rhs_memref!=OA::MemRefHandle(0))  {
                 
                 mIter = getMemRefExprIterator(lhs_memref);
@@ -2815,7 +2849,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         {
             SgExprStatement *exprStatement = isSgExprStatement(astNode);
             ROSE_ASSERT(exprStatement!=NULL);
+#ifdef ROSE_PRE_0_8_10A
+            findAllMemRefsAndPtrAssigns(exprStatement->get_the_expr(),stmt);
+#else
             findAllMemRefsAndPtrAssigns(exprStatement->get_expression(),stmt);
+#endif
 
             // Remove Association of TopMemRefHandle 
             // in case of Assignment Statement
@@ -2826,11 +2864,21 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // SgExprStatement.
             // e.g.  if(x) or *a or const_array[i]            
 
+#ifdef ROSE_PRE_0_8_10A
+            SgBinaryOp *assignOp = isSgBinaryOp(exprStatement->get_the_expr());
+#else
             SgBinaryOp *assignOp = isSgBinaryOp(exprStatement->get_expression());
+#endif
             if(assignOp) {
+#ifdef ROSE_PRE_0_8_10A
+               OA::MemRefHandle child_memref
+                       =
+               findTopMemRefHandle(exprStatement->get_the_expr());
+#else
                OA::MemRefHandle child_memref
                        =
                findTopMemRefHandle(exprStatement->get_expression());
+#endif
 
                mMemref2mreSetMap[child_memref].clear();
                mStmt2allMemRefsMap[stmt].erase(child_memref);
@@ -2859,8 +2907,14 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgReturnStmt *returnStmt = isSgReturnStmt(astNode);
             ROSE_ASSERT(returnStmt != NULL);
 
-            if ( returnStmt->get_expression() != NULL ) {
-                findAllMemRefsAndPtrAssigns(returnStmt->get_expression(), stmt);
+            SgNode *retExpr;
+#ifdef ROSE_PRE_0_8_10A
+            retExpr = returnStmt->get_return_expr();
+#else
+            retExpr = returnStmt->get_expression();
+#endif
+            if ( retExpr != NULL ) {
+                findAllMemRefsAndPtrAssigns(retExpr, stmt);
     
                 //----------- Ptr Assigns
                 // if the method or function we are in has a ptr or 
@@ -2892,7 +2946,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     // get the memory reference handle for the return exp
                     OA::MemRefHandle child_memref 
 
-                        = findTopMemRefHandle(returnStmt->get_expression());
+                        = findTopMemRefHandle(retExpr);
                     SgExpression *child_node=NULL;
                     SgType *child_type;
                     if (child_memref!=OA::MemRefHandle(0)) {
@@ -2969,6 +3023,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                                                        return_type,
                                                                        returnStmt,
                                                                        child_node,
+                                                                       child_memref,
                                                                        child_mre);
     
                                 // Now model the reference initialization 
@@ -3176,7 +3231,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // I'm pretty suspicious of putting this here.  bwhite.
             // FIXME: MMS, yeah I agree, I think this needs to be
             // associated with the increment statement somehow?
+#ifdef ROSE_PRE_0_8_10A
+            SgExpression *incrExpr = forStatement->get_increment_expr();
+#else
             SgExpression *incrExpr = forStatement->get_increment();
+#endif
             if (incrExpr != NULL) {
                 findAllMemRefsAndPtrAssigns( incrExpr, stmt );
             }
@@ -3420,7 +3479,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
 
     } // end of switch
-}
+} // end findAllMemRefsAndPtrAssigns
 
 //! finds the topmost MemRefHandle in the subtree rooted at the given node
 //! if the tree represents only an rvalue, then MemRefHandle(0) is returned
@@ -3474,6 +3533,30 @@ OA::MemRefHandle SageIRInterface::findTopMemRefHandle(SgNode *astNode)
             return getMemRefHandle(0);
         }
     }
+}
+
+//! finds the topmost ExprHandle in the subtree rooted at the given node
+OA::ExprHandle SageIRInterface::findTopExprHandle(SgNode *astNode)
+{
+    if (astNode==NULL) {
+        return OA::ExprHandle(0);
+    }
+
+    OA::ExprHandle expr = getMemRefHandle(astNode);
+    if ( isSgExpression(astNode) ) {
+        return expr;        
+    }
+
+    // determine the number of children the node has
+    std::vector< SgNode * > kids = 
+        astNode->get_traversalSuccessorContainer();
+
+    // if only one child the return topExprHandle on that
+    if (kids.size()==1) {
+        return findTopExprHandle(kids[0]);
+    }
+
+    return getMemRefHandle(0);
 }
 
 #if 0
@@ -4378,6 +4461,16 @@ SageIRInterface::makePtrAssignPair(OA::StmtHandle stmt,
     // to model virtual method calls if the RHS allocates
     // and instantiates an object via new. 
     createImplicitPtrAssignPairsForDynamicObjectAllocation(stmt, lhs_mre, rhs_mre);
+}
+
+void 
+SageIRInterface::makeAssignPair(OA::StmtHandle stmt,
+                                OA::MemRefHandle lhs_memref,
+                                OA::ExprHandle rhs_expr)
+{
+    mStmtToAssignPairs[stmt].insert(
+        pair<OA::MemRefHandle,
+             OA::ExprHandle>(lhs_memref, rhs_expr));
 }
 
 void

@@ -2117,8 +2117,10 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
      std::cout << "\nstmt = " << ir->toString(stmt) << std::endl;
      
      // if the statement has an expression tree then dump that as well
-     OA::ReachConsts::IRStmtType sType = ir->getReachConstsStmtType(stmt);
-     if (sType == OA::ReachConsts::EXPR_STMT) {
+     //     OA::ReachConsts::IRStmtType sType = ir->getReachConstsStmtType(stmt);
+     OA::Activity::IRStmtType sType = ir->getActivityStmtType(stmt);
+     //     if (sType == OA::ReachConsts::EXPR_STMT) {
+     if (sType == OA::Activity::EXPR_STMT) {
        OA::OA_ptr<OA::AssignPairIterator> espIterPtr
            = ir->getAssignPairIterator(stmt);
        for ( ; espIterPtr->isValid(); (*espIterPtr)++) {

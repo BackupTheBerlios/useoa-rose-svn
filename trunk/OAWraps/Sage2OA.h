@@ -1000,6 +1000,9 @@ public:
   //! unless the rvalue is an addressOf, which is assigned a MemRefHandle
   OA::MemRefHandle findTopMemRefHandle(SgNode *node);
 
+  //! finds the topmost ExprHandle in the subtree rooted at the given node
+  OA::ExprHandle findTopExprHandle(SgNode *node);
+
   //! Determine if all the MREs associated with a given memref are lval
   //  bool is_lval(OA::MemRefHandle memref);
 
@@ -1011,6 +1014,7 @@ public:
   void makePtrAssignPair(OA::StmtHandle stmt,
                          OA::MemRefHandle lhs_memref,
                          OA::MemRefHandle rhs_memref);
+
   void makePtrAssignPair(OA::StmtHandle stmt,
                          OA::OA_ptr<OA::MemRefExpr> lhs_mre,
                          OA::MemRefHandle rhs_memref);
@@ -1023,6 +1027,12 @@ public:
   void makeParamPtrPair(OA::CallHandle call,
                        int formal,
                         OA::OA_ptr<OA::MemRefExpr> actual);
+
+  //! Create an assignment pair, where the memrefs are not
+  //! necessarily pointers.
+  void makeAssignPair(OA::StmtHandle stmt,
+                      OA::MemRefHandle lhs_memref,
+                      OA::ExprHandle rhs_expr);
 
   std::string findFieldName(OA::MemRefHandle memref);
 
@@ -1067,6 +1077,9 @@ public:
   std::map<OA::StmtHandle,std::set<OA::MemRefHandle> >
     mStmt2allMemRefsMap;
 
+  std::map<OA::StmtHandle,std::set<OA::ExprHandle> >
+    mStmt2allExprsMap;
+
   std::map<OA::MemRefHandle,OA::StmtHandle> mMemRef2StmtMap;
 
   std::map<OA::MemRefHandle,std::set<OA::OA_ptr<OA::MemRefExpr> > >
@@ -1096,12 +1109,19 @@ public:
                                      SgType *lhs_type,
                                      SgNode *lhs,
                                      SgNode *rhs,
+                                     OA::MemRefHandle rhs_memref,
                                      OA::OA_ptr<OA::MemRefExpr> rhs_mre);
 
   std::map<OA::StmtHandle,
            std::set<
                std::pair<OA::OA_ptr<OA::MemRefExpr>, 
                          OA::OA_ptr<OA::MemRefExpr> > > > mStmtToPtrPairs;
+
+  std::map<OA::StmtHandle,
+           std::set<
+               std::pair<OA::MemRefHandle, 
+                         OA::ExprHandle> > > mStmtToAssignPairs;
+
   std::map<OA::CallHandle,
            std::set<
                std::pair<int, 
