@@ -1055,8 +1055,9 @@ public:
                SgClassDefinition *classDefinition,
                std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods);
 
-  void createMemRefExprsForPtrArith(SgExpression* node, 
-                                    SgExpression* child, OA::StmtHandle stmt);
+  bool createMemRefExprsForPtrArith(SgExpression* node, 
+                                    SgExpression* child, OA::StmtHandle stmt,
+                                    bool removeChild);
 
   void createUseDefForVarArg(OA::MemRefHandle memref,
                              OA::MemRefHandle valist_memref);

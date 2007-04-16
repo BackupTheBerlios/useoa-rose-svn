@@ -2320,9 +2320,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // then this node should be a MemRefHandle due to 
             // ptr arithmetic
             createMemRefExprsForPtrArith(binaryOp, 
-                                         binaryOp->get_lhs_operand(), stmt);
+                                         binaryOp->get_lhs_operand(), stmt,
+                                         true);
             createMemRefExprsForPtrArith(binaryOp, 
-                                         binaryOp->get_rhs_operand(), stmt);
+                                         binaryOp->get_rhs_operand(), stmt,
+                                         true);
             break;
         }
     case V_SgEqualityOp:
@@ -2536,7 +2538,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 mMemref2mreSetMap[memref].insert(mre);
 
                 // 2) change to a define
-                lhs_mre->setMemRefType(OA::MemRefExpr::DEF);
+		lhs_mre->setMemRefType(OA::MemRefExpr::DEF);
             }
 
             OA::MemRefHandle rhs_memref 
@@ -2616,7 +2618,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                             // an address taken will cancel out a deref and
                             // return the result
                             lhs_mre = lhs_mre->setAddressTaken();
-                            lhs_mre->setMemRefType(OA::MemRefExpr::DEF);
+			    lhs_mre->setMemRefType(OA::MemRefExpr::DEF);
                             mMemref2mreSetMap[lhs_memref].insert(lhs_mre);
                             makePtrAssignPair(stmt, lhs_mre, rhs_mre);
                         }
@@ -2640,7 +2642,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                         // an address taken will cancel out a deref and
                         // return the result
                         lhs_mre = lhs_mre->setAddressTaken();
-                        lhs_mre->setMemRefType(OA::MemRefExpr::DEF);
+			lhs_mre->setMemRefType(OA::MemRefExpr::DEF);
                         mMemref2mreSetMap[lhs_memref].insert(lhs_mre);
                     }
 #if 0
@@ -2666,8 +2668,87 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgPlusAssignOp:
     case V_SgMinusAssignOp:
-        // FIXME: do we need to worry about pointer arithmetic involving the
-        // above two?
+        {
+            SgBinaryOp* binaryOp = isSgBinaryOp(astNode);
+            ROSE_ASSERT(binaryOp);
+
+            // recurse on children
+            findAllMemRefsAndPtrAssigns(binaryOp->get_lhs_operand(),stmt);
+            findAllMemRefsAndPtrAssigns(binaryOp->get_rhs_operand(),stmt);
+
+            // if the lhs is an array type or ptr type
+            // then this node should be a MemRefHandle
+            // because a[2] is represented as a+2 in Sage
+            // if the operand is a pointer type
+            // then this node should be a MemRefHandle due to 
+            // ptr arithmetic
+            bool removeChild = false;
+            bool nodeHasMemRefHandle =            
+                createMemRefExprsForPtrArith(binaryOp, 
+                                             binaryOp->get_lhs_operand(), 
+                                             stmt,
+                                             removeChild);
+
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            if ( nodeHasMemRefHandle ) {
+                // If this is node performs ptr arithmetic,
+                // a node representing that arithmetic will have
+                // been created at astNode by createMemRefExprsForPtrArith.
+                // Since removeChild = false, the child will still
+                // exist and represents the (implicit) left-hand side.
+                // So, we should create ptr assignment pairs, with
+                // the child (marked as a DEF) as the left-hand side 
+                // and the MREs at this node as the right-hand side.
+
+                OA::MemRefHandle child_memref 
+                    = findTopMemRefHandle(binaryOp->get_lhs_operand());
+                OA::OA_ptr<OA::MemRefExprIterator> childIter
+                    = getMemRefExprIterator(child_memref);
+                OA::OA_ptr<OA::MemRefExprIterator> iter
+                    = getMemRefExprIterator(memref);
+                for ( ; childIter->isValid(); ++(*childIter) ) {
+                    OA::OA_ptr<OA::MemRefExpr> child_mre = childIter->current();
+                    child_mre->setMemRefType(OA::MemRefExpr::USEDEF);
+              
+                    for (iter->reset(); iter->isValid(); ++(*iter) ) {
+                        OA::OA_ptr<OA::MemRefExpr> mre = iter->current();
+                        makePtrAssignPair(stmt, child_mre, mre);
+                    }
+                }
+
+            } else {
+                // Actually, this node should always have a MemRefHandle.
+                // If it wasn't created in createMemRefExprsForPtrArith,
+                // do it here.  In this case, it is not a ptr assignment
+                // pair, but a non-ptr assign pair.  As above, make
+                // the child the lhs/DEF.  Clone that child (as a USE)
+                // for the rhs and place it on this node.
+                mStmt2allMemRefsMap[stmt].insert(memref);
+
+                OA::MemRefHandle child_memref 
+                    = findTopMemRefHandle(binaryOp->get_lhs_operand());
+                OA::OA_ptr<OA::MemRefExprIterator> childIter
+                    = getMemRefExprIterator(child_memref);
+                OA::OA_ptr<OA::MemRefExprIterator> iter
+                    = getMemRefExprIterator(memref);
+                for ( ; childIter->isValid(); ++(*childIter) ) {
+                    OA::OA_ptr<OA::MemRefExpr> child_mre = childIter->current();
+
+                    OA::OA_ptr<OA::MemRefExpr> mre = child_mre->clone();
+
+                    // Transfer type to cloned MRE
+                    mMre2TypeMap[mre] = mMre2TypeMap[child_mre];
+
+                    mre->setMemRefType(OA::MemRefExpr::USE);
+                    mMemref2mreSetMap[memref].insert(mre);
+
+                    child_mre->setMemRefType(OA::MemRefExpr::USEDEF);
+                }
+                makeAssignPair(stmt, child_memref, memref);
+            }
+
+            break;
+        }
     case V_SgAndAssignOp:
     case V_SgIorAssignOp:
     case V_SgMultAssignOp:
@@ -2705,6 +2786,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 mMemref2mreSetMap[memref].insert(mre);
                 lhs_mre->setMemRefType(OA::MemRefExpr::USEDEF);
             }
+            makeAssignPair(stmt, lhs_memref, memref);
             break; 
         }
     // ---------------------------------------- Unary Op cases
@@ -2830,12 +2912,79 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // recurse on child
             findAllMemRefsAndPtrAssigns(unaryOp->get_operand(),stmt);
 
-            // is a MemRefHandle
+            // if the operand is an array type or ptr type
+            // then this node should be a MemRefHandle
+            // because a[2] is represented as a+2 in Sage
+            // if the operand is a pointer type
+            // then this node should be a MemRefHandle due to 
+            // ptr arithmetic
+            bool removeChild = false;
+            bool nodeHasMemRefHandle =            
+                createMemRefExprsForPtrArith(unaryOp, 
+                                             unaryOp->get_operand(), 
+                                             stmt,
+                                             removeChild);
+
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            if ( nodeHasMemRefHandle ) {
+                // If this is node performs ptr arithmetic,
+                // a node representing that arithmetic will have
+                // been created at astNode by createMemRefExprsForPtrArith.
+                // Since removeChild = false, the child will still
+                // exist and represents the (implicit) left-hand side.
+                // So, we should create ptr assignment pairs, with
+                // the child (marked as a DEF) as the left-hand side 
+                // and the MREs at this node as the right-hand side.
 
-            SgUnaryOp::Sgop_mode mode = unaryOp->get_mode();
+                OA::MemRefHandle child_memref 
+                    = findTopMemRefHandle(unaryOp->get_operand());
+                OA::OA_ptr<OA::MemRefExprIterator> childIter
+                    = getMemRefExprIterator(child_memref);
+                OA::OA_ptr<OA::MemRefExprIterator> iter
+                    = getMemRefExprIterator(memref);
+                for ( ; childIter->isValid(); ++(*childIter) ) {
+                    OA::OA_ptr<OA::MemRefExpr> child_mre = childIter->current();
+                    child_mre->setMemRefType(OA::MemRefExpr::USEDEF);
+              
+                    for (iter->reset(); iter->isValid(); ++(*iter) ) {
+                        OA::OA_ptr<OA::MemRefExpr> mre = iter->current();
+                        makePtrAssignPair(stmt, child_mre, mre);
+                    }
+                }
 
+            } else {
+                // Actually, this node should always have a MemRefHandle.
+                // If it wasn't created in createMemRefExprsForPtrArith,
+                // do it here.  In this case, it is not a ptr assignment
+                // pair, but a non-ptr assign pair.  As above, make
+                // the child the lhs/DEF.  Clone that child (as a USE)
+                // for the rhs and place it on this node.
+                mStmt2allMemRefsMap[stmt].insert(memref);
+
+                OA::MemRefHandle child_memref 
+                    = findTopMemRefHandle(unaryOp->get_operand());
+                OA::OA_ptr<OA::MemRefExprIterator> childIter
+                    = getMemRefExprIterator(child_memref);
+                OA::OA_ptr<OA::MemRefExprIterator> iter
+                    = getMemRefExprIterator(memref);
+                for ( ; childIter->isValid(); ++(*childIter) ) {
+                    OA::OA_ptr<OA::MemRefExpr> child_mre = childIter->current();
+
+                    OA::OA_ptr<OA::MemRefExpr> mre = child_mre->clone();
+
+                    // Transfer type to cloned MRE
+                    mMre2TypeMap[mre] = mMre2TypeMap[child_mre];
+
+                    mre->setMemRefType(OA::MemRefExpr::USE);
+                    mMemref2mreSetMap[memref].insert(mre);
+
+                    child_mre->setMemRefType(OA::MemRefExpr::USEDEF);
+              
+                }
+                makeAssignPair(stmt, child_memref, memref);
+            }
+
+#if 0
             // its child's MREs should be made USEDEF, 
             // and it should have a similar set of MREs with USE
             OA::MemRefHandle child_memref 
@@ -2860,6 +3009,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // Memory reference is used first and then defined.
                 child_mre->setMemRefType(OA::MemRefExpr::USEDEF);
             }
+#endif
             break;
         }
 
@@ -4534,10 +4684,14 @@ std::string SageIRInterface::findFieldName(OA::MemRefHandle memref)
 /*!
    Takes the node where pointer arithmetic might be occuring
    and determines if it is based on the given child.
+   Returns boolean indicating whether node is assigned a 
+   memrefhandle.
  */
-void SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node, 
-                                  SgExpression* child, OA::StmtHandle stmt)
+bool SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node, 
+						   SgExpression* child, OA::StmtHandle stmt,
+                                                   bool removeChild)
 {
+    bool nodeHasMemRefHandle = false;
     OA::MemRefHandle child_memref  = findTopMemRefHandle(child);
     SgExpression *child_node=NULL;
     SgType *child_type;
@@ -4553,14 +4707,17 @@ void SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
         OA::MemRefHandle memref = getMemRefHandle(node);
         mStmt2allMemRefsMap[stmt].insert(memref);
 
+        nodeHasMemRefHandle = true;
+
         OA::OA_ptr<OA::MemRefExprIterator> mIter 
             = getMemRefExprIterator(child_memref);
         for ( ; mIter->isValid(); ++(*mIter) ) {
             OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
             if (isSgArrayType(child_type)) {
-                mMemref2mreSetMap[child_memref].erase(child_mre);
-                mStmt2allMemRefsMap[stmt].erase(child_memref);
-
+                if ( removeChild ) {
+                    mMemref2mreSetMap[child_memref].erase(child_mre);
+                    mStmt2allMemRefsMap[stmt].erase(child_memref);
+                }
                 // set accuracy to false please see below
 
                 OA::OA_ptr<OA::SubSetRef> subset_mre;
@@ -4653,6 +4810,7 @@ void SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
             }
         }
     }
+    return nodeHasMemRefHandle;
 }
 
 void SageIRInterface::createUseDefForVarArg(OA::MemRefHandle memref,

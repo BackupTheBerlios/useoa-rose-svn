@@ -40,13 +40,20 @@ PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
             MemRefHandle("source") => 
                 NamedRef( USEDEF, SymHandle("source"))
             MemRefHandle("*(p++)") => 
-                Deref( DEF, NamedRef( USE, SymHandle("p")), 1)
+                SubSetRef( DEF, Deref( USE, NamedRef( USE, SymHandle("p")), 1))
             MemRefHandle("*(source++)") => 
-                Deref( USE, NamedRef( USE, SymHandle("source")), 1)
+                SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("source")), 1))
             MemRefHandle("(p++)") => 
-                NamedRef( USE, SymHandle("p"))
+                AddressOf( USE, SubSetRef( DEF, Deref( USE, NamedRef( USE, SymHandle("p")), 1)))
             MemRefHandle("(source++)") => 
-                NamedRef( USE, SymHandle("source"))
+                AddressOf( USE, SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("source")), 1)))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("*(p++) = *(source++);") =>
+        [
+            < NamedRef( USEDEF, SymHandle("source"))
+            , AddressOf( USE, SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("source")), 1))) >
+            < NamedRef( USEDEF, SymHandle("p"))
+            , AddressOf( USE, SubSetRef( DEF, Deref( USE, NamedRef( USE, SymHandle("p")), 1))) >
         ] }
     MEMREFEXPRS = { StmtHandle("*p = '\0';") =>
         [

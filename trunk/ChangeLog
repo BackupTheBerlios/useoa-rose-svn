@@ -3669,5 +3669,27 @@ Aborted
     - Regenerated TestResults for the new change.
     - Compiles with OpenAnalysis revision 351.
 
-	
+04/16/07    UseOA-ROSE svn trunk r286   Brian White
+		 
+    - Handled bug noticed by Priya:  a++, a += 1 were not generating
+      ptr assignment pairs (if a is a ptr) or non-ptr assignment pairs
+      otherwise.  All changes made in this update address this problem.
+
+    - Modified createMemRefExprsForPtrArith so that it returns a boolean
+      indicating whether a memrefhandle was created at the specified node.
+      Also, added a flag to indicate whether it should remove the
+      node's child mres/memrefhandles if the node is a memrefhandle.
+
+    - Updated cases SgPlusAsisgnOp/SgMinusAssignOp to create
+      (ptr) assign pairs.  Invokes createMemRefExprsForPtrArith on
+      the lhs to form a pointer arithmetic memrefhandle that will be
+      used on the _rhs_.  Notice that we do not remove the lhs.
+
+    - Updated cases SgPlusPlusOp/SgMinusMinusOp to create
+      (ptr) assign pairs.  Invokes createMemRefExprsForPtrArith on
+      the operand to form a pointer arithmetic memrefhandle that will be
+      used on the _rhs_.  Notice that we do not remove the operand.	
+
+    - Updated results for regression test retPtr1.c, which were
+      affected by these changes.
 

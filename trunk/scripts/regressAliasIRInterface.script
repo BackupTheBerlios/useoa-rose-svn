@@ -138,7 +138,7 @@ echo "Testing TestCases/AliasTests/refClass2.C, TestResults/AliasIRInterface/ref
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/refClass2.C >& t
 diff t TestResults/AliasIRInterface/refClass2.C.out
 
-echo "Testing TestCases/AliasTests/retPtr1.c, TestResults/AliasIRInterface/retPtr1.c.out checked by MMS 9/14/06"
+echo "Testing TestCases/AliasTests/retPtr1.c, TestResults/AliasIRInterface/retPtr1.c.out checked by MMS 9/14/06 (rechecked by BSW 4/16/07)"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/retPtr1.c >& t
 diff t TestResults/AliasIRInterface/retPtr1.c.out
 
