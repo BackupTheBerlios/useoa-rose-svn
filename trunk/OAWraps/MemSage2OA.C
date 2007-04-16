@@ -502,8 +502,13 @@ applyReferenceConversionRules2And4(OA::StmtHandle stmt,
     OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::DEF;
     OA::OA_ptr<OA::MemRefExpr> lhs_tmp_mre;
 
-    lhs_tmp_mre = new OA::UnnamedRef(mrType, stmt);
- 
+    OA::ExprHandle exprHandle = findTopExprHandle(rhs);
+    if ( isSgExpression(rhs) ) {
+         lhs_tmp_mre = new OA::UnnamedRef(mrType, exprHandle);
+    } else {
+         assert(0);
+    }
+
     // Record the type of the MRE (reference or non-reference).
     mMre2TypeMap[lhs_tmp_mre] = other;
 
@@ -891,9 +896,14 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 //======= create UnnamedRef
                 OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
                 OA::OA_ptr<OA::MemRefExpr> mre;
-                OA::StmtHandle stmtHandle = getNodeNumber(funcCallExp);
 
-                mre = new OA::UnnamedRef(mrType, stmtHandle);
+                OA::ExprHandle exprHandle = findTopExprHandle(funcCallExp);
+                if ( isSgExpression(funcCallExp) ) {
+                     mre = new OA::UnnamedRef(mrType, exprHandle);
+                } else {
+                     assert(0);
+                }
+
                 OA::OA_ptr<OA::SubSetRef> subset_mre;
                 OA::OA_ptr<OA::MemRefExpr> nullMRE;
                 OA::OA_ptr<OA::MemRefExpr> composed_mre;
@@ -1156,10 +1166,14 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // create an UnnamedRef
             OA::OA_ptr<OA::MemRefExpr> mre;
-    	    OA::StmtHandle stmtHandle = getNodeNumber(newExp);
 
-            mre = new OA::UnnamedRef(OA::MemRefExpr::USE,
-                                     stmtHandle);
+            OA::ExprHandle exprHandle = findTopExprHandle(newExp);
+            if ( isSgExpression(newExp) ) {
+                 mre = new OA::UnnamedRef(OA::MemRefExpr::USE, exprHandle);
+            } else {
+                 assert(0);
+            }
+
 
             OA::OA_ptr<OA::SubSetRef> subset_mre;
             OA::OA_ptr<OA::MemRefExpr> nullMRE;
@@ -1849,7 +1863,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // create an UnnamedRef
             OA::OA_ptr<OA::MemRefExpr> mre;
 
-            mre = new OA::UnnamedRef(OA::MemRefExpr::USE, stmt);
+            OA::ExprHandle exprHandle = findTopExprHandle(astNode);
+            if ( isSgExpression(astNode) ) {
+                 mre = new OA::UnnamedRef(OA::MemRefExpr::USE, exprHandle);
+            } else {
+                 assert(0);
+            }
 
             OA::OA_ptr<OA::SubSetRef> subset_mre;
             OA::OA_ptr<OA::MemRefExpr> nullMRE;
@@ -3378,12 +3397,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // default MemRefType, ancestors will change this if necessary
             OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
             // get the symbol for the string
-            OA::StmtHandle stmtHandle;
-            stmtHandle = getNodeNumber(stringVal);
-
             OA::OA_ptr<OA::MemRefExpr> mre;
 
-            mre = new OA::UnnamedRef(mrType, stmtHandle);
+            OA::ExprHandle exprHandle = findTopExprHandle(stringVal);
+            if ( isSgExpression(stringVal) ) {
+                 mre = new OA::UnnamedRef(mrType, exprHandle);
+            } else {
+                 assert(0);
+            }
+
             OA::OA_ptr<OA::SubSetRef> subset_mre;
             OA::OA_ptr<OA::MemRefExpr> nullMRE;
             OA::OA_ptr<OA::MemRefExpr> composed_mre;
@@ -3994,7 +4016,7 @@ SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::Stmt
                                                                         OA::OA_ptr<OA::MemRefExpr> rhs_mre)
 {
 
-   OA::StmtHandle rhs_stmt;
+   OA::ExprHandle rhs_expr;
    OA::OA_ptr<OA::MemRefExpr> newmre ;
 
    newmre = rhs_mre->clone();
@@ -4021,13 +4043,13 @@ SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::Stmt
               = newmre.convert<OA::UnnamedRef>();
    
     ROSE_ASSERT(!unnamed_mre.ptrEqual(0));
-      rhs_stmt = unnamed_mre->getStmtHandle();
+    rhs_expr = unnamed_mre->getExprHandle();
 
     // Verify that this stmt handle maps to an AST node of an
     // expected type.
     verifyStmtHandleType(stmt);
 
-    SgNode *node = getNodePtr(rhs_stmt);
+    SgNode *node = getNodePtr(rhs_expr);
     ROSE_ASSERT(node != NULL);
 
     SgNewExp *newExp = isSgNewExp(node);
@@ -4884,9 +4906,14 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
              isSgFunctionCallExp(grandParent) ) {
 
           OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
-          OA::StmtHandle stmtHandle = getNodeNumber(ctorInitializer);
 
-          mre = new OA::UnnamedRef(mrType, stmtHandle);
+          OA::ExprHandle exprHandle = findTopExprHandle(ctorInitializer);
+          if ( isSgExpression(ctorInitializer) ) {
+               mre = new OA::UnnamedRef(mrType, exprHandle);
+          } else {
+               assert(0);
+          }
+
           OA::OA_ptr<OA::AddressOf> address_mre;
           OA::OA_ptr<OA::MemRefExpr> nullMRE;
 
@@ -4931,9 +4958,13 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
     if ( ( isSgExpressionRoot(parent) && isSgReturnStmt(grandParent2) ) ||
          ( isSgReturnStmt(parent) ) ) {
        OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
-       OA::StmtHandle stmtHandle = getNodeNumber(ctorInitializer);
 
-       mre = new OA::UnnamedRef(mrType, stmtHandle);
+       OA::ExprHandle exprHandle = findTopExprHandle(ctorInitializer);
+       if ( isSgExpression(ctorInitializer) ) {
+            mre = new OA::UnnamedRef(mrType, exprHandle);
+       } else {
+            assert(0);
+       }
 
        OA::OA_ptr<OA::AddressOf> address_mre;
        OA::OA_ptr<OA::MemRefExpr> nullMRE;
@@ -4953,9 +4984,13 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
     if ( isSgAssignOp(parent) ) {
         
         OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
-        OA::StmtHandle stmtHandle = getNodeNumber(ctorInitializer);
 
-        mre = new OA::UnnamedRef(mrType, stmtHandle);
+        OA::ExprHandle exprHandle = findTopExprHandle(ctorInitializer);
+        if ( isSgExpression(ctorInitializer) ) {
+             mre = new OA::UnnamedRef(mrType, exprHandle);
+        } else {
+             assert(0);
+        }
 
         OA::OA_ptr<OA::AddressOf> address_mre;
         OA::OA_ptr<OA::MemRefExpr> nullMRE;

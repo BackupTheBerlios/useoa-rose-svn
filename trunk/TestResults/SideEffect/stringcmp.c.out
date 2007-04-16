@@ -374,7 +374,7 @@ InterSideEffectStandard(
                         LocSubSet(
                             mLoc: 
                             UnnamedLoc(
-                                mStmtHandle: StmtHandle("source")
+                                mExprHandle: ExprHandle("source")
                                 mLocal: 0
                             )
                             mFull: 0
@@ -382,7 +382,7 @@ InterSideEffectStandard(
                         LocSubSet(
                             mLoc: 
                             UnnamedLoc(
-                                mStmtHandle: StmtHandle("dest")
+                                mExprHandle: ExprHandle("dest")
                                 mLocal: 0
                             )
                             mFull: 0
@@ -409,7 +409,7 @@ InterSideEffectStandard(
                         LocSubSet(
                             mLoc: 
                             UnnamedLoc(
-                                mStmtHandle: StmtHandle("source")
+                                mExprHandle: ExprHandle("source")
                                 mLocal: 0
                             )
                             mFull: 0
@@ -417,7 +417,7 @@ InterSideEffectStandard(
                         LocSubSet(
                             mLoc: 
                             UnnamedLoc(
-                                mStmtHandle: StmtHandle("dest")
+                                mExprHandle: ExprHandle("dest")
                                 mLocal: 0
                             )
                             mFull: 0
@@ -432,7 +432,7 @@ InterSideEffectStandard(
                         LocSubSet(
                             mLoc: 
                             UnnamedLoc(
-                                mStmtHandle: StmtHandle("source")
+                                mExprHandle: ExprHandle("source")
                                 mLocal: 0
                             )
                             mFull: 0
@@ -440,7 +440,7 @@ InterSideEffectStandard(
                         LocSubSet(
                             mLoc: 
                             UnnamedLoc(
-                                mStmtHandle: StmtHandle("dest")
+                                mExprHandle: ExprHandle("dest")
                                 mLocal: 0
                             )
                             mFull: 0
@@ -467,7 +467,7 @@ InterSideEffectStandard(
                         LocSubSet(
                             mLoc: 
                             UnnamedLoc(
-                                mStmtHandle: StmtHandle("source")
+                                mExprHandle: ExprHandle("source")
                                 mLocal: 0
                             )
                             mFull: 0
@@ -475,7 +475,7 @@ InterSideEffectStandard(
                         LocSubSet(
                             mLoc: 
                             UnnamedLoc(
-                                mStmtHandle: StmtHandle("dest")
+                                mExprHandle: ExprHandle("dest")
                                 mLocal: 0
                             )
                             mFull: 0

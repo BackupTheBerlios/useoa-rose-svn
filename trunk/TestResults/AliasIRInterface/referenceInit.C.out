@@ -17,9 +17,9 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int *const &addrRef = &x;") =>
         [
             MemRefHandle("refRelatedBaseOrTmp") => 
-                UnnamedRef( DEF, StmtHandle("int *const &addrRef = &x;"))
+                UnnamedRef( DEF, ExprHandle("&x"))
             MemRefHandle("refRelatedBaseOrTmp") => 
-                AddressOf( USE, UnnamedRef( DEF, StmtHandle("int *const &addrRef = &x;")))
+                AddressOf( USE, UnnamedRef( DEF, ExprHandle("&x")))
             MemRefHandle("addrRef&") => 
                 NamedRef( DEF, SymHandle("addrRef"))
             MemRefHandle("&x") => 
@@ -28,8 +28,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     PTRASSIGNPAIRS = { StmtHandle("int *const &addrRef = &x;") =>
         [
             < NamedRef( DEF, SymHandle("addrRef"))
-            , AddressOf( USE, UnnamedRef( DEF, StmtHandle("int *const &addrRef = &x;"))) >
-            < UnnamedRef( DEF, StmtHandle("int *const &addrRef = &x;"))
+            , AddressOf( USE, UnnamedRef( DEF, ExprHandle("&x"))) >
+            < UnnamedRef( DEF, ExprHandle("&x"))
             , AddressOf( USE, NamedRef( USE, SymHandle("x"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("int &ref = x;") =>

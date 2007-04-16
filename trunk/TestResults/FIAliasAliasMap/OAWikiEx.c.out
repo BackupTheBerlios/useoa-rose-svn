@@ -33,7 +33,7 @@ InterAliasMap(
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
-                            mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                            mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                             mLocal: 0
                         )
                         mFull: 0
@@ -68,14 +68,14 @@ InterAliasMap(
                 4	 => [ 
                     UnnamedRef(
                         mMemRefType: USE
-                        mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                        mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                     )    
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
                         UnnamedRef(
                             mMemRefType: USE
-                            mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                            mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                         )
                     ) ] 
 
@@ -113,7 +113,7 @@ InterAliasMap(
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
-                            mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                            mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                             mLocal: 0
                         )
                         mFull: 0
@@ -148,14 +148,14 @@ InterAliasMap(
                 4	 => [ 
                     UnnamedRef(
                         mMemRefType: USE
-                        mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                        mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                     )    
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
                         UnnamedRef(
                             mMemRefType: USE
-                            mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                            mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                         )
                     ) ] 
 
@@ -200,7 +200,7 @@ InterAliasMap(
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
-                            mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                            mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                             mLocal: 0
                         )
                         mFull: 0
@@ -242,14 +242,14 @@ InterAliasMap(
                 5	 => [ 
                     UnnamedRef(
                         mMemRefType: USE
-                        mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                        mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                     )    
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
                         UnnamedRef(
                             mMemRefType: USE
-                            mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                            mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                         )
                     ) ] 
 
@@ -301,7 +301,7 @@ InterAliasMap(
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
-                            mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                            mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                             mLocal: 0
                         )
                         mFull: 0
@@ -353,7 +353,7 @@ InterAliasMap(
                 6	 => [ 
                     UnnamedRef(
                         mMemRefType: USE
-                        mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                        mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                     )    
                     Deref(
                         mMemRefType: DEF
@@ -378,7 +378,7 @@ InterAliasMap(
                         mMRE: 
                         UnnamedRef(
                             mMemRefType: USE
-                            mStmtHandle: StmtHandle((malloc(((sizeof(int )) *(y)))))
+                            mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
                         )
                     ) ] 
 

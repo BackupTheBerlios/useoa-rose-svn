@@ -61,7 +61,7 @@ InterAliasMap(
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
-                            mStmtHandle: StmtHandle("*p = %d\n")
+                            mExprHandle: ExprHandle("*p = %d\n")
                             mLocal: 0
                         )
                         mFull: 0
@@ -70,7 +70,7 @@ InterAliasMap(
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
-                            mStmtHandle: StmtHandle("*q = %d\n")
+                            mExprHandle: ExprHandle("*q = %d\n")
                             mLocal: 0
                         )
                         mFull: 0
@@ -163,27 +163,27 @@ InterAliasMap(
                 8	 => [ 
                     UnnamedRef(
                         mMemRefType: USE
-                        mStmtHandle: StmtHandle("*p = %d\n")
+                        mExprHandle: ExprHandle("*p = %d\n")
                     )    
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
                         UnnamedRef(
                             mMemRefType: USE
-                            mStmtHandle: StmtHandle("*p = %d\n")
+                            mExprHandle: ExprHandle("*p = %d\n")
                         )
                     ) ] 
                 9	 => [ 
                     UnnamedRef(
                         mMemRefType: USE
-                        mStmtHandle: StmtHandle("*q = %d\n")
+                        mExprHandle: ExprHandle("*q = %d\n")
                     )    
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
                         UnnamedRef(
                             mMemRefType: USE
-                            mStmtHandle: StmtHandle("*q = %d\n")
+                            mExprHandle: ExprHandle("*q = %d\n")
                         )
                     ) ] 
 

@@ -4900,9 +4900,9 @@ void SageIRInterface::dump(OA::OA_ptr<OA::NamedLoc> loc, ostream& os)
 
 void SageIRInterface::dump(OA::OA_ptr<OA::UnnamedLoc> loc, ostream& os)
 {
-  OA::StmtHandle stmtHandle = loc->getStmtHandle();
+  OA::ExprHandle exprHandle = loc->getExprHandle();
 
-  os << "UnnamedLoc(stmtHandle = " << toString(stmtHandle) << ")";
+  os << "UnnamedLoc(exprHandle = " << toString(exprHandle) << ")";
 }
 
 void SageIRInterface::dump(OA::OA_ptr<OA::InvisibleLoc> loc, ostream& os)

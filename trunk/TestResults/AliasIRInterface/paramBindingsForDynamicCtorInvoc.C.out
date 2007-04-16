@@ -36,18 +36,18 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("f") => 
                 NamedRef( DEF, SymHandle("f"))
             MemRefHandle("implicit actual this:y") => 
-                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, StmtHandle("new ::Foo(y)"))))
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new ::Foo(y)"))))
             MemRefHandle("y") => 
                 NamedRef( USE, SymHandle("y"))
             MemRefHandle("::Foo(y)") => 
                 NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"))
             MemRefHandle("new ::Foo(y)") => 
-                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, StmtHandle("new ::Foo(y)"))))
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new ::Foo(y)"))))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class ::Foo *f = new ::Foo(y);") =>
         [
             < NamedRef( DEF, SymHandle("f"))
-            , AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, StmtHandle("new ::Foo(y)")))) >
+            , AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new ::Foo(y)")))) >
         ] }
     CALLSITES = { StmtHandle("class ::Foo *f = new ::Foo(y);") =>
         [
@@ -56,7 +56,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("new ::Foo(y)") =>
         [
-            < 0, AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, StmtHandle("new ::Foo(y)")))) >
+            < 0, AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new ::Foo(y)")))) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

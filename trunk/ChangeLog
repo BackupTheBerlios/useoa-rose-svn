@@ -3658,3 +3658,16 @@ Aborted
       Therefore, I've added a map from stmt to expr handles 
       (mStmt2allExprsMap), which is similar to mStmt2allMemRefsMap.  
       I have also added a findTopExprHandle method.
+
+04/15/07    UseOA-ROSE svn trunk r285   Priyadarshini Malusare.
+
+    - Modified SageIRInterface because:
+    - Changed UnnamedRef(memRefType, StmtHandle) to
+      UnnamedRef(memRefType, StmtHandle).
+    - Changed UnnamedLoc(StmtHandle , ....) to
+      UnnamedLoc(ExprHandle , ....)
+    - Regenerated TestResults for the new change.
+    - Compiles with OpenAnalysis revision 351.
+
+	
+

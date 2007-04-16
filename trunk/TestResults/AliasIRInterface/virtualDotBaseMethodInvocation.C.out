@@ -5,8 +5,8 @@ PROCEDURE = { < ProcHandle("::Base::Base"), SymHandle("method:::Base::Base__Base
             < 0, SymHandle("this::::Base::Base__Base__scope__Base____MFb_Base__Fb_v_Gb__Fe_") >
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
-        [In unparseType(0x8224998): nm = ::Foo 
-In unparseType(0x8224998): nm = ::Foo 
+        [In unparseType(0x8223640): nm = ::Foo 
+In unparseType(0x8223640): nm = ::Foo 
 
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline Base(){}") =>
