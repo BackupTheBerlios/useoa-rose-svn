@@ -2,7 +2,7 @@
 InterAliasMap(
     AliasMap(
         mProcHandle: ProcHandle(main)
-        mNumSets: 10
+        mNumSets: 12
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -58,6 +58,16 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 8	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle("*p = %d\n")
+                        mLocal: 0
+                    ) ] 
+                9	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle("*q = %d\n")
+                        mLocal: 0
+                    ) ] 
+                10	 => [ 
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
@@ -66,7 +76,7 @@ InterAliasMap(
                         )
                         mFull: 0
                     ) ] 
-                9	 => [ 
+                11	 => [ 
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
@@ -85,8 +95,10 @@ InterAliasMap(
                 5	 => 2
                 6	 => 2
                 7	 => 2
-                8	 => 1
-                9	 => 1
+                8	 => 2
+                9	 => 2
+                10	 => 1
+                11	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(x)    MemRefHandle(*q) ] 
@@ -164,7 +176,13 @@ InterAliasMap(
                     UnnamedRef(
                         mMemRefType: USE
                         mExprHandle: ExprHandle("*p = %d\n")
-                    )    
+                    ) ] 
+                9	 => [ 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("*q = %d\n")
+                    ) ] 
+                10	 => [ 
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
@@ -173,11 +191,7 @@ InterAliasMap(
                             mExprHandle: ExprHandle("*p = %d\n")
                         )
                     ) ] 
-                9	 => [ 
-                    UnnamedRef(
-                        mMemRefType: USE
-                        mExprHandle: ExprHandle("*q = %d\n")
-                    )    
+                11	 => [ 
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 

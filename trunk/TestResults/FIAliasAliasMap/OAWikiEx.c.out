@@ -2,7 +2,7 @@
 InterAliasMap(
     AliasMap(
         mProcHandle: ProcHandle(gnu_dev_major)
-        mNumSets: 5
+        mNumSets: 6
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -30,6 +30,11 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 4	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
+                        mLocal: 0
+                    ) ] 
+                5	 => [ 
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
@@ -44,7 +49,8 @@ InterAliasMap(
                 1	 => 2
                 2	 => 2
                 3	 => 2
-                4	 => 1
+                4	 => 2
+                5	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(__dev)    MemRefHandle(__dev) ] 
@@ -69,7 +75,8 @@ InterAliasMap(
                     UnnamedRef(
                         mMemRefType: USE
                         mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
-                    )    
+                    ) ] 
+                5	 => [ 
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
@@ -82,7 +89,7 @@ InterAliasMap(
     )
     AliasMap(
         mProcHandle: ProcHandle(gnu_dev_minor)
-        mNumSets: 5
+        mNumSets: 6
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -110,6 +117,11 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 4	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
+                        mLocal: 0
+                    ) ] 
+                5	 => [ 
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
@@ -124,7 +136,8 @@ InterAliasMap(
                 1	 => 2
                 2	 => 2
                 3	 => 2
-                4	 => 1
+                4	 => 2
+                5	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(__dev)    MemRefHandle(__dev) ] 
@@ -149,7 +162,8 @@ InterAliasMap(
                     UnnamedRef(
                         mMemRefType: USE
                         mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
-                    )    
+                    ) ] 
+                5	 => [ 
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
@@ -162,7 +176,7 @@ InterAliasMap(
     )
     AliasMap(
         mProcHandle: ProcHandle(gnu_dev_makedev)
-        mNumSets: 6
+        mNumSets: 7
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -197,6 +211,11 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 5	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
+                        mLocal: 0
+                    ) ] 
+                6	 => [ 
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
@@ -212,7 +231,8 @@ InterAliasMap(
                 2	 => 2
                 3	 => 2
                 4	 => 2
-                5	 => 1
+                5	 => 2
+                6	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(__major)    MemRefHandle(__major) ] 
@@ -243,7 +263,8 @@ InterAliasMap(
                     UnnamedRef(
                         mMemRefType: USE
                         mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
-                    )    
+                    ) ] 
+                6	 => [ 
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
@@ -256,7 +277,7 @@ InterAliasMap(
     )
     AliasMap(
         mProcHandle: ProcHandle(foo)
-        mNumSets: 7
+        mNumSets: 8
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -298,6 +319,11 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 6	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
+                        mLocal: 0
+                    ) ] 
+                7	 => [ 
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
@@ -314,7 +340,8 @@ InterAliasMap(
                 3	 => 2
                 4	 => 2
                 5	 => 2
-                6	 => 1
+                6	 => 2
+                7	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(g) ] 
@@ -322,7 +349,7 @@ InterAliasMap(
                 3	 => [ MemRefHandle(y)    MemRefHandle(y) ] 
                 4	 => [ MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p) ] 
                 5	 => [ MemRefHandle(malloc) ] 
-                6	 => [ MemRefHandle(*a)    MemRefHandle(*a) ] 
+                7	 => [ MemRefHandle(*a)    MemRefHandle(*a) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
@@ -354,7 +381,8 @@ InterAliasMap(
                     UnnamedRef(
                         mMemRefType: USE
                         mExprHandle: ExprHandle((malloc(((sizeof(int )) *(y)))))
-                    )    
+                    ) ] 
+                7	 => [ 
                     Deref(
                         mMemRefType: DEF
                         mMRE: 

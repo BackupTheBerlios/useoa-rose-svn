@@ -2,7 +2,7 @@
 InterAliasMap(
     AliasMap(
         mProcHandle: ProcHandle(blah)
-        mNumSets: 5
+        mNumSets: 6
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -30,6 +30,31 @@ InterAliasMap(
                         mPartOverlap: [  ] 
                     ) ] 
                 4	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(s)
+                            )
+                            mNumDeref: 1
+                        )
+                    )    
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(t)
+                            )
+                            mNumDeref: 1
+                        )
+                    ) ] 
+                5	 => [ 
                     InvisibleLoc(
                         mMRE: 
                         SubSetRef(
@@ -69,11 +94,12 @@ InterAliasMap(
                 2	 => 2
                 3	 => 2
                 4	 => 1
+                5	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(s) ] 
                 2	 => [ MemRefHandle(t) ] 
-                4	 => [ MemRefHandle((s[0]))    MemRefHandle((t[0])) ] 
+                5	 => [ MemRefHandle((s[0]))    MemRefHandle((t[0])) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
@@ -109,7 +135,8 @@ InterAliasMap(
                             mSymHandle: SymHandle(t)
                         )
                         mNumDeref: 1
-                    )    
+                    ) ] 
+                5	 => [ 
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 

@@ -1,84 +1,92 @@
 echo "Testing TestCases/AliasTests/alias1.c, TestResults/FIAliasAliasMap/alias1.c.out checked by AIS 6/23/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias1.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias1.c >& t
 diff t TestResults/FIAliasAliasMap/alias1.c.out
 
 echo "Testing TestCases/AliasTests/alias2.c, TestResults/FIAliasAliasMap/alias2.c.out checked by AIS 6/23/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias2.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias2.c >& t
 diff t TestResults/FIAliasAliasMap/alias2.c.out
 
 echo "Testing TestCases/AliasTests/alias3.c, TestResults/FIAliasAliasMap/alias3.c.out checked by AIS 6/23/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias3.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias3.c >& t
 diff t TestResults/FIAliasAliasMap/alias3.c.out
 
 echo "Testing TestCases/AliasTests/alias4.c, TestResults/FIAliasAliasMap/alias4.c.out checked by AIS 6/23/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias4.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias4.c >& t
 diff t TestResults/FIAliasAliasMap/alias4.c.out
 
 echo "Testing TestCases/AliasTests/alias4b.c, TestResults/FIAliasAliasMap/alias4b.c.out checked by AIS 6/23/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias4b.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/alias4b.c >& t
 diff t TestResults/FIAliasAliasMap/alias4b.c.out
 
-echo "Testing TestCases/AliasTests/comma.c, TestResults/FIAliasAliasMap/comma.c.out checked by AIS 6/23/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/comma.c >& t
+echo "Testing TestCases/AliasTests/comma.c, TestResults/FIAliasAliasMap/comma.c.out checked by AIS 6/23/06 (rechecked MMS 4/24/07)"
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/comma.c >& t
 diff t TestResults/FIAliasAliasMap/comma.c.out
 
-echo "Testing TestCases/AliasTests/constQualified.c, TestResults/FIAliasAliasMap/constQualified.c.out checked MMS 9/6/06"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/constQualified.c >& t
+echo "Testing TestCases/AliasTests/constQualified.c, TestResults/FIAliasAliasMap/constQualified.c.out checked MMS 4/24/07"
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/constQualified.c >& t
 diff t TestResults/FIAliasAliasMap/constQualified.c.out
 
 echo "Testing TestCases/AliasTests/utke.c, TestResults/FIAliasAliasMap/utke.c.out checked by AIS 6/23/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/utke.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/utke.c >& t
 diff t TestResults/FIAliasAliasMap/utke.c.out
 
-echo "Testing TestCases/AliasTests/OAWikiEx.c, TestResults/FIAliasAliasMap/OAWikiEx.c.out checked by AIS 6/23/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/OAWikiEx.c >& t
+echo "Testing TestCases/AliasTests/OAWikiEx.c, TestResults/FIAliasAliasMap/OAWikiEx.c.out checked by AIS 6/23/06 (rechecked MMS 4/24/07)"
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/OAWikiEx.c >& t
 diff t TestResults/FIAliasAliasMap/OAWikiEx.c.out
 
+echo "Testing TestCases/AliasTests/fields2.c, TestResults/FIAliasAliasMap/fields2.c.out checked by MMS 4/24/07"
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/fields2.c >& t
+diff t TestResults/FIAliasAliasMap/fields2.c.out
+
+echo "Testing TestCases/AliasTests/fields3.c, TestResults/FIAliasAliasMap/fields3.c.out checked by MMS 4/24/07"
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/fields3.c >& t
+diff t TestResults/FIAliasAliasMap/fields3.c.out
+
 echo "Testing TestCases/AliasTests/funCall.c, TestResults/FIAliasAliasMap/funCall.c.out checked by MMS 9/13/06"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/funCall.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/funCall.c >& t
 diff t TestResults/FIAliasAliasMap/funCall.c.out
 
 echo "Testing TestCases/AliasTests/functionPtr.c, TestResults/FIAliasAliasMap/functionPtr.c.out checked by AIS 6/27/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr.c >& t
 diff t TestResults/FIAliasAliasMap/functionPtr.c.out
 
 echo "Testing TestCases/AliasTests/functionPtr2.c, TestResults/FIAliasAliasMap/functionPtr2.c.out checked by MMS 7/24/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr2.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/functionPtr2.c >& t
 diff t TestResults/FIAliasAliasMap/functionPtr2.c.out
 
-echo "Testing TestCases/AliasTests/passIntPtrArrayRef.c, TestResults/FIAliasAliasMap/passIntPtrArrayRef.c.out checked by MMS 7/24/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtrArrayRef.c >& t
+echo "Testing TestCases/AliasTests/passIntPtrArrayRef.c, TestResults/FIAliasAliasMap/passIntPtrArrayRef.c.out checked by MMS 7/24/06 (rechecked MMS 4/24/07)"
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtrArrayRef.c >& t
 diff t TestResults/FIAliasAliasMap/passIntPtrArrayRef.c.out
 
 echo "Testing TestCases/AliasTests/passIntPtrArrayRef2.c, TestResults/FIAliasAliasMap/passIntPtrArrayRef2.c.out checked by MMS 7/24/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtrArrayRef2.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtrArrayRef2.c >& t
 diff t TestResults/FIAliasAliasMap/passIntPtrArrayRef2.c.out
 
 echo "Testing TestCases/AliasTests/passIntPtrArrayRef3.c, TestResults/FIAliasAliasMap/passIntPtrArrayRef3.c.out checked by MMS 7/24/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtrArrayRef3.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtrArrayRef3.c >& t
 diff t TestResults/FIAliasAliasMap/passIntPtrArrayRef3.c.out
 
 echo "Testing TestCases/AliasTests/passIntPtr.c, TestResults/FIAliasAliasMap/passIntPtr.c.out checked by MMS 7/23/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtr.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/passIntPtr.c >& t
 diff t TestResults/FIAliasAliasMap/passIntPtr.c.out
 
 echo "Testing TestCases/AliasTests/swap.c, TestResults/FIAliasAliasMap/swap.c.out checked by MMS 7/23/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/swap.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/swap.c >& t
 diff t TestResults/FIAliasAliasMap/swap.c.out
 
 echo "Testing TestCases/AliasTests/invLoc.c, TestResults/FIAliasAliasMap/invLoc.c.out checked by MMS 7/23/06 (rechecked MMS 9/5/06)"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/invLoc.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/invLoc.c >& t
 diff t TestResults/FIAliasAliasMap/invLoc.c.out
 
 echo "Testing TestCases/AliasTests/RyderEtAlFig11.c, TestResults/FIAliasAliasMap/RyderEtAlFig11.c.out checked by MMS 9/13/06"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig11.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig11.c >& t
 diff t TestResults/FIAliasAliasMap/RyderEtAlFig11.c.out
 
 echo "Testing TestCases/AliasTests/RyderEtAlFig14.c, TestResults/FIAliasAliasMap/RyderEtAlFig14.c.out checked by MMS 9/13/06"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig14.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig14.c >& t
 diff t TestResults/FIAliasAliasMap/RyderEtAlFig14.c.out
 
 echo "Testing TestCases/AliasTests/RyderEtAlFig15.c, TestResults/FIAliasAliasMap/RyderEtAlFig15.c.out checked by MMS 9/13/06"
-./OATest -edg:w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig15.c >& t
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/RyderEtAlFig15.c >& t
 diff t TestResults/FIAliasAliasMap/RyderEtAlFig15.c.out
 

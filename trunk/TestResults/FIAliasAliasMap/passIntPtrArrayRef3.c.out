@@ -148,7 +148,7 @@ InterAliasMap(
     )
     AliasMap(
         mProcHandle: ProcHandle(blah)
-        mNumSets: 6
+        mNumSets: 8
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -178,6 +178,32 @@ InterAliasMap(
                 4	 => [ 
                     InvisibleLoc(
                         mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(s)
+                            )
+                            mNumDeref: 1
+                        )
+                    ) ] 
+                5	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(t)
+                            )
+                            mNumDeref: 1
+                        )
+                    ) ] 
+                6	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
                         SubSetRef(
                             mMemRefType: USE
                             mMRE: 
@@ -192,7 +218,7 @@ InterAliasMap(
                             )
                         )
                     ) ] 
-                5	 => [ 
+                7	 => [ 
                     InvisibleLoc(
                         mMRE: 
                         SubSetRef(
@@ -215,14 +241,16 @@ InterAliasMap(
                 1	 => 2
                 2	 => 2
                 3	 => 2
-                4	 => 1
-                5	 => 1
+                4	 => 2
+                5	 => 2
+                6	 => 1
+                7	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(s) ] 
                 2	 => [ MemRefHandle(t) ] 
-                4	 => [ MemRefHandle((s[0])) ] 
-                5	 => [ MemRefHandle((t[0])) ] 
+                6	 => [ MemRefHandle((s[0])) ] 
+                7	 => [ MemRefHandle((t[0])) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
@@ -249,7 +277,18 @@ InterAliasMap(
                             mSymHandle: SymHandle(s)
                         )
                         mNumDeref: 1
-                    )    
+                    ) ] 
+                5	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(t)
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                6	 => [ 
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
@@ -263,16 +302,7 @@ InterAliasMap(
                             mNumDeref: 1
                         )
                     ) ] 
-                5	 => [ 
-                    Deref(
-                        mMemRefType: USE
-                        mMRE: 
-                        NamedRef(
-                            mMemRefType: USE
-                            mSymHandle: SymHandle(t)
-                        )
-                        mNumDeref: 1
-                    )    
+                7	 => [ 
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
