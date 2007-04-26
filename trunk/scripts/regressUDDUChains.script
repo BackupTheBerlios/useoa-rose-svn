@@ -1,12 +1,12 @@
-echo "Testing TestCases/UDDUChainsTests/reachdef_if1.c, TestResults/UDDUChainsTests/reachdef_if1.c.out Not Checked Yet"
+echo "Testing TestCases/UDDUChainsTests/reachdef_if1.c, TestResults/UDDUChainsTests/reachdef_if1.c.out Checked by PLM 4/25/07"
 ./OATest -edg:w --oa-UDDUChains -c TestCases/UDDUChainsTests/reachdef_if1.c >& t
 diff t TestResults/UDDUChainsTests/reachdef_if1.c.out
 
-echo "Testing TestCases/UDDUChainsTests/reachdef_if2.c, TestResults/UDDUChainsTests/reachdef_if2.c.out "
+echo "Testing TestCases/UDDUChainsTests/reachdef_if2.c, TestResults/UDDUChainsTests/reachdef_if2.c.out Checked by PLM 4/25/07"
 ./OATest -edg:w --oa-UDDUChains -c TestCases/UDDUChainsTests/reachdef_if2.c >& t
 diff t TestResults/UDDUChainsTests/reachdef_if2.c.out
 
-echo "Testing TestCases/UDDUChainsTests/reachdef_loopif1.c, TestResults/UDDUChainsTests/reachdef_loopif1.c.out "
+echo "Testing TestCases/UDDUChainsTests/reachdef_loopif1.c, TestResults/UDDUChainsTests/reachdef_loopif1.c.out Checked by PLM 4/25/07"
 ./OATest -edg:w --oa-UDDUChains -c TestCases/UDDUChainsTests/reachdef_loopif1.c >& t
 diff t TestResults/UDDUChainsTests/reachdef_loopif1.c.out
 

@@ -3693,3 +3693,16 @@ Aborted
     - Updated results for regression test retPtr1.c, which were
       affected by these changes.
 
+4/25/07    UseOA-ROSE svn trunk r288 Priyadarshini Malusare
+    - Michelle modified the FIAlias algorithm in OA so that it
+      does not merge subsetrefs or field refs with their enclosed refs
+      to make alias analysis more precise when there are structures
+      with pointer fields and when we model virtual method calls.
+    - Regenerated TestResults for AliasIRInterface.
+    - Fixed output of LocFieldSubSet.
+    - Added missing TestResults for UDDUChains/reachdef_loopif1.c.out
+      and AliasIRInterface/stackinitOfClassWithVirtualMethods.c.out
+    - passes regressAll with OpenAnalysis r366 on Okapi with gcc 3.3.4
+
+
+

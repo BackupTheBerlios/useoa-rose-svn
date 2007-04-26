@@ -37,29 +37,23 @@ InterAliasMap(
                     ) ] 
                 4	 => [ 
                     LocFieldSubSet(
-                        LocSubSet(
-                            mLoc: 
-                            NamedLoc(
-                                mSymHandle: SymHandle(s)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
-                            )
-                            mFull: 0
+                        mLoc: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(s)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
                         )
                         mFieldName: f
                     ) ] 
                 5	 => [ 
                     LocFieldSubSet(
-                        LocSubSet(
-                            mLoc: 
-                            NamedLoc(
-                                mSymHandle: SymHandle(s)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
-                            )
-                            mFull: 0
+                        mLoc: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(s)
+                            mLocal: 1
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
                         )
                         mFieldName: g
                     ) ] 
