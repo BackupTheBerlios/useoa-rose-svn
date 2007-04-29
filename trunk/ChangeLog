@@ -3704,5 +3704,10 @@ Aborted
       and AliasIRInterface/stackinitOfClassWithVirtualMethods.c.out
     - passes regressAll with OpenAnalysis r366 on Okapi with gcc 3.3.4
 
+4/28/07    UseOA-ROSE svn trunk r289 Priyadarshini Malusare
+    - Added the output for IdxAccess and IdxExprAccess for the 
+      NotationGenerator.
+
+	  
 
 
