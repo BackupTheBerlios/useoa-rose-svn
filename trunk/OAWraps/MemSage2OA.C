@@ -566,7 +566,7 @@ derefMre(OA::OA_ptr<OA::MemRefExpr> mre, OA::MemRefExpr::MemRefType mrType, int 
     ROSE_ASSERT(numDerefs == 1);
     OA::OA_ptr<OA::MemRefExpr> nullMRE;
 
-    // create Deref mre with full accuracy
+    // create Deref mre
     OA::OA_ptr<OA::MemRefExpr> composed_mre;
     deref_mre = new OA::Deref (
                                 mrType,
@@ -576,9 +576,9 @@ derefMre(OA::OA_ptr<OA::MemRefExpr> mre, OA::MemRefExpr::MemRefType mrType, int 
     OA::OA_ptr<OA::MemRefExpr> tmp_mre = mre->clone();
     composed_mre = deref_mre->composeWith(tmp_mre);
 
+    /* MMS, 4/27/07, I don't think this is correct or necessary*/
     // change Deref mre to partial accuracy if 
     // original mre has partial accuracy.
-    
     if(mre->isaRefOp()) {
         
        OA::OA_ptr<OA::RefOp> refOp;
@@ -603,6 +603,7 @@ derefMre(OA::OA_ptr<OA::MemRefExpr> mre, OA::MemRefExpr::MemRefType mrType, int 
            } 
        }
     }   
+    /**/
 
     return composed_mre;
     
@@ -1299,7 +1300,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
                                OA::OA_ptr<OA::SubSetRef> subset_mre;
                                OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                               OA::OA_ptr<OA::MemRefExpr> composed_mre;
+                               //OA::OA_ptr<OA::MemRefExpr> composed_mre;
 
                                subset_mre = new OA::SubSetRef(
                                             OA::MemRefExpr::USE,
@@ -1311,6 +1312,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                            }
                         }
 
+                        // FIXME?: this throws away composedMre in above
+                        // statement
                         composedMre = deref_mre->clone();   
  
                         OA::OA_ptr<OA::MemRefExpr> fieldAccess;
@@ -4767,12 +4770,14 @@ bool SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
 
                 int numDerefs = 1;
 
-                mre = new OA::Deref(OA::MemRefExpr::USE,
-                                    mre, numDerefs);
+                OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                OA::OA_ptr<OA::Deref> derefMRE;
+                derefMRE = new OA::Deref(OA::MemRefExpr::USE,
+                                    nullMRE, numDerefs);
+                mre = derefMRE->composeWith(mre);
 
                 // set accuracy false
                 OA::OA_ptr<OA::SubSetRef> subset_mre;
-                OA::OA_ptr<OA::MemRefExpr> nullMRE;
                 OA::OA_ptr<OA::MemRefExpr> composed_mre;
 
                 subset_mre = new OA::SubSetRef(
