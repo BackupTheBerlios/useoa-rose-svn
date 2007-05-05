@@ -3708,6 +3708,9 @@ Aborted
     - Added the output for IdxAccess and IdxExprAccess for the 
       NotationGenerator.
 
-	  
+5/4/07     UseOA-ROSE svn trunk r291 Michelle Strout
+    - Modified MemRefExpr created due to pointer arithmetic to make sure
+      that only one of the operands was a pointer or array type.
+      This makes ./OATest --oa-FIAliasAliasMap -rose:C_only -I/s/bach/e/proj/oadev/CPU2006v1.0.1/benchspec/CPU2006/401.bzip2/src bzip2benchmark.c work.
 
 

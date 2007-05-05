@@ -2322,12 +2322,25 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // if either of the children are pointer types
             // then this node should be a MemRefHandle due to 
             // ptr arithmetic
-            createMemRefExprsForPtrArith(binaryOp, 
+            SgType *lhs_type, *rhs_type;
+            lhs_type = getBaseType(binaryOp->get_lhs_operand()->get_type());
+            rhs_type = getBaseType(binaryOp->get_rhs_operand()->get_type());
+            bool rhs_ptr = false;  bool lhs_ptr = false;
+            lhs_ptr = isSgArrayType(lhs_type)||isSgPointerType(lhs_type);
+            rhs_ptr = isSgArrayType(rhs_type)||isSgPointerType(rhs_type);
+
+            // Only one of the children should be of pointer or array type.
+            // If both are then do not make this node a pointer
+            // arithmetic MemRefHandle.
+            if (lhs_ptr && !rhs_ptr) {
+                createMemRefExprsForPtrArith(binaryOp, 
                                          binaryOp->get_lhs_operand(), stmt,
                                          true);
-            createMemRefExprsForPtrArith(binaryOp, 
+            } else if ( !lhs_ptr && rhs_ptr ) {
+                createMemRefExprsForPtrArith(binaryOp, 
                                          binaryOp->get_rhs_operand(), stmt,
                                          true);
+            }
             break;
         }
     case V_SgEqualityOp:
