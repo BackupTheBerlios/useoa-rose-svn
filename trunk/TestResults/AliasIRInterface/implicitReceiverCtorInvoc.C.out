@@ -40,10 +40,10 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__Foo__sco
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
         [
-            MemRefHandle("implicit actual this:") => 
-                NamedRef( USE, SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
             MemRefHandle("::Base()") => 
                 NamedRef( USE, SymHandle("method:::Base::Base__Base__scope__Base____MFb_Base__Fb_v_Gb__Fe_"))
+            MemRefHandle("implicit actual this:") => 
+                NamedRef( USE, SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
         ] }
     CALLSITES = { StmtHandle("") =>
         [

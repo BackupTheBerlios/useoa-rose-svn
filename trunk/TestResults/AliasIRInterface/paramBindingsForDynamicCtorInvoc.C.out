@@ -33,14 +33,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("class ::Foo *f = new ::Foo(y);") =>
         [
+            MemRefHandle("::Foo(y)") => 
+                NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"))
             MemRefHandle("f") => 
                 NamedRef( DEF, SymHandle("f"))
             MemRefHandle("implicit actual this:y") => 
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new ::Foo(y)"))))
             MemRefHandle("y") => 
                 NamedRef( USE, SymHandle("y"))
-            MemRefHandle("::Foo(y)") => 
-                NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_i_Fe_"))
             MemRefHandle("new ::Foo(y)") => 
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new ::Foo(y)"))))
         ] }

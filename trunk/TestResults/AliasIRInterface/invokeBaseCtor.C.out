@@ -58,6 +58,10 @@ PROCEDURE = { < ProcHandle("::SubSubClass::SubSubClass"), SymHandle("method:::Su
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
         [
+            MemRefHandle("::SubClass(par)") => 
+                NamedRef( USE, SymHandle("method:::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"))
+            MemRefHandle("::Foo(f)") => 
+                NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"))
             MemRefHandle("par") => 
                 NamedRef( USE, SymHandle("par"))
             MemRefHandle("f") => 
@@ -66,10 +70,6 @@ PROCEDURE = { < ProcHandle("::SubSubClass::SubSubClass"), SymHandle("method:::Su
                 NamedRef( USE, SymHandle("this::::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_"))
             MemRefHandle("implicit actual this:f") => 
                 AddressOf( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::SubSubClass::SubSubClass__SubSubClass__scope__SubSubClass____MFb_SubSubClass__Fb_v_Gb___Rb__Base__Re____sep____Rb__i__Re____sep____Rb__Foo__Re___Fe_")), 1), mF))
-            MemRefHandle("::SubClass(par)") => 
-                NamedRef( USE, SymHandle("method:::SubClass::SubClass__SubClass__scope__SubClass____MFb_SubClass__Fb_v_Gb___Rb__Base__Re___Fe_"))
-            MemRefHandle("::Foo(f)") => 
-                NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Foo__Re___Fe_"))
         ] }
     CALLSITES = { StmtHandle("") =>
         [

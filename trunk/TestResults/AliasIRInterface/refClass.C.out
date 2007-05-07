@@ -95,12 +95,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("class ::foo f(ptr);") =>
         [
+            MemRefHandle("::foo(ptr)") => 
+                NamedRef( USE, SymHandle("method:::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"))
             MemRefHandle("ptr") => 
                 NamedRef( USE, SymHandle("ptr"))
             MemRefHandle("implicit actual this:ptr") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("f")))
-            MemRefHandle("::foo(ptr)") => 
-                NamedRef( USE, SymHandle("method:::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"))
         ] }
     CALLSITES = { StmtHandle("class ::foo f(ptr);") =>
         [

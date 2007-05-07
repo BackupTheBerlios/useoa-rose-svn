@@ -2533,6 +2533,20 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
   SgExpression *expression = isSgExpression(node);
   SgInitializedName *initializedName = isSgInitializedName(node);
 
+  Sg_File_Info *fileInfo = isSg_File_Info(node);
+  if ( fileInfo != NULL ) {
+    // (BW 5/3/07) We use Sg_File_Info to represent constructor
+    // calls (amongst other things).  If the parent is a
+    // SgConstructorInitializer, operate on that instead.
+    SgNode *parent = node->get_parent();
+    expression = isSgConstructorInitializer(parent);
+    if ( expression == NULL ) {
+        // applyReferenceConversionRules2And4 uses Sg_File_Infos for temporary
+        // variables.
+        strdump = "refRelatedBaseOrTmp";
+    }
+  }
+
   if ( expression != NULL ) {
     SgConstructorInitializer *ctorInitializer =
       isSgConstructorInitializer(expression);
@@ -2543,14 +2557,18 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
     if ( ctorInitializer ) {
       SgMemberFunctionDeclaration *constructor =
         ctorInitializer->get_declaration();
-      ROSE_ASSERT(constructor != NULL);
-      SgNode *scope = constructor->get_scope();
-      ROSE_ASSERT(scope != NULL);
-      SgClassDefinition *classDefinition = isSgClassDefinition(scope);
-      ROSE_ASSERT(classDefinition != NULL);
+      if ( constructor != NULL ) {
+          SgNode *scope = constructor->get_scope();
+          ROSE_ASSERT(scope != NULL);
+          SgClassDefinition *classDefinition = isSgClassDefinition(scope);
+          ROSE_ASSERT(classDefinition != NULL);
 
-      strdump = classDefinition->get_qualified_name().str() + 
-        expression->unparseToString();
+          strdump = classDefinition->get_qualified_name().str() + 
+            expression->unparseToString();
+      } else {
+          SgType *type = ctorInitializer->get_type();
+          strdump = type->unparseToString() + " " + expression->unparseToString(); 
+      }
     } else if ( assignInitializer || aggregateInitializer ) {
       // These may be used to model the implicit this at a call site.
       strdump = "assign_or_agg_initializer:" + expression->unparseToString();
@@ -2600,13 +2618,6 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
     }
   } 
 
-  Sg_File_Info *fileInfo = isSg_File_Info(node);
-  if ( fileInfo != NULL ) {
-    // applyReferenceConversionRules2And4 uses Sg_File_Infos for temporary
-    // variables.
-    strdump = "refRelatedBaseOrTmp";
-  }
-
   if ( ( expression == NULL ) && ( initializedName == NULL ) && ( fileInfo == NULL ) ) {
     ROSE_ABORT();
   }
@@ -2637,6 +2648,19 @@ std::string SageIRInterface::toString(const OA::CallHandle h)
       ROSE_ASSERT(deleteExp != NULL);
       retstr = deleteExp->unparseToString();
       break;
+    }
+
+  case V_Sg_File_Info:
+    {
+      // (BW 5/3/07)  Needed to add this since we now represent   
+      // constructor invocations via the Sg_File_Info of the 
+      // SgConstructorInitializer, rather than the SgConstructorInitializer.
+      SgNode *parent = node->get_parent();
+      if ( !isSgConstructorInitializer(parent) ) {
+        break;
+      }
+      node = parent;
+      // fall through
     }
 
   case V_SgConstructorInitializer:
@@ -2671,6 +2695,13 @@ std::string SageIRInterface::toString(const OA::CallHandle h)
           ROSE_ASSERT(isSgReturnStmt(parent));
 
           retstr = parent->unparseToString();
+          break;
+        }
+      case V_SgDotExp:
+        {
+          // A method is invoked on a SgConstructorInitializer--
+          // i.e., on an anonymous object.
+          retstr = ctorInitializer->unparseToString();
           break;
         }
       default:

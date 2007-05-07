@@ -67,12 +67,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("class ::A a(b);") =>
         [
+            MemRefHandle("::A(b)") => 
+                NamedRef( USE, SymHandle("method:::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"))
             MemRefHandle("b") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("b")))
             MemRefHandle("implicit actual this:b") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
-            MemRefHandle("::A(b)") => 
-                NamedRef( USE, SymHandle("method:::A::A__A__scope__A____MFb_A__Fb_v_Gb___Rb__B__Re___Fe_"))
         ] }
     CALLSITES = { StmtHandle("class ::A a(b);") =>
         [

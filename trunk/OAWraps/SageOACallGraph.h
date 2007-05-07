@@ -14,12 +14,17 @@
 
 class FindCallsitesPass : public SgSimpleProcessing {
 private:
- SgExpressionPtrList & call_lst;
+  // (BW 5/3/07)  Since we now represent constructor invocations
+  // via their Sg_File_Info, rather than the SgConstructorInitializer,
+  // the call_lst can no longer be an expression list.
+  // SgExpressionPtrList & call_lst;
+  std::list<SgNode *> &call_lst;
  SageIRInterface & mIR;
 protected:
   void visit(SgNode* node);
 public:
-  FindCallsitesPass(SageIRInterface &ir, SgExpressionPtrList& p) 
+  //  FindCallsitesPass(SageIRInterface &ir, SgExpressionPtrList& p) 
+  FindCallsitesPass(SageIRInterface &ir, std::list<SgNode*> & p) 
     : mIR(ir), call_lst(p) {}
 };
 
@@ -90,12 +95,24 @@ class SageIRCallsiteIterator: public OA::IRCallsiteIterator
   void reset();
   SageIRInterface &ir;
  private:
+#if 1
+  // (BW 5/3/07)  Since we now represent constructor invocations
+  // via their Sg_File_Info, rather than the SgConstructorInitializer,
+  // the calls_in_stmt can no longer be an expression list.
+  // SgExpressionPtrList & call_lst;
+  std::list<SgNode*> calls_in_stmt; 
+  std::list<SgNode*>::iterator st_iter;
+  std::list<SgNode*>::iterator begin;
+  std::list<SgNode*>::iterator end;
+  void FindCallsitesInSgStmt(SgStatement *sgstmt, std::list<SgNode*> & lst);
+#else
   SgExpressionPtrList calls_in_stmt; 
   SgExpressionPtrList::iterator st_iter;
   SgExpressionPtrList::iterator begin;
   SgExpressionPtrList::iterator end;
-  bool valid;
   void FindCallsitesInSgStmt(SgStatement *sgstmt, SgExpressionPtrList& lst);
+#endif
+  bool valid;
 };
 
 #endif

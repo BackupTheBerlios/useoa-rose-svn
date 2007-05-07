@@ -60,12 +60,12 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__Foo__sco
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
         [
+            MemRefHandle("::Bar(b)") => 
+                NamedRef( USE, SymHandle("method:::Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb___Rb__Bar__Re___Fe_"))
             MemRefHandle("implicit actual this:b") => 
                 AddressOf( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb_Bar_Fe_")), 1), mBar))
             MemRefHandle("b") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("b")))
-            MemRefHandle("::Bar(b)") => 
-                NamedRef( USE, SymHandle("method:::Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb___Rb__Bar__Re___Fe_"))
         ] }
     CALLSITES = { StmtHandle("") =>
         [

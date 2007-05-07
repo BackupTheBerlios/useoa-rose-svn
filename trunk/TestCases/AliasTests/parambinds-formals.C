@@ -111,7 +111,8 @@ void ellipsis_int(int i, ...)
 {
     int j;
     va_list ap;
-    va_start(ap,(const void *)i);
+    //    va_start(ap,(const void *)i);
+    va_start(ap,i);
 
     // g++ only accepts basic types or ptr types for the second param
     j = va_arg(ap,int);

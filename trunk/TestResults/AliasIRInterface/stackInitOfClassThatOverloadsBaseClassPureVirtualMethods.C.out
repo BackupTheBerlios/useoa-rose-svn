@@ -5,11 +5,7 @@ PROCEDURE = { < ProcHandle("::Base::Base"), SymHandle("method:::Base::Base__Base
             < 0, SymHandle("this::::Base::Base__Base__scope__Base____MFb_Base__Fb_v_Gb__Fe_") >
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
-        [In unparseType(0x8224930): nm = ::Foo 
-In unparseType(0x8224930): nm = ::Foo 
-In unparseType(0x8224930): nm = ::Foo 
-In unparseType(0x8224930): nm = ::Foo 
-
+        [
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline Base(){}") =>
         [
@@ -255,10 +251,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("class ::Foo f;") =>
         [
-            MemRefHandle("implicit actual this:") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("f")))
             MemRefHandle("::Foo") => 
                 NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
+            MemRefHandle("implicit actual this:") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("f")))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class ::Foo f;") =>
         [

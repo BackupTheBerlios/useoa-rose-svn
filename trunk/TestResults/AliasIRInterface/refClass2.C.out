@@ -204,12 +204,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("class ::foo f(ptr);") =>
         [
+            MemRefHandle("::foo(ptr)") => 
+                NamedRef( USE, SymHandle("method:::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"))
             MemRefHandle("ptr") => 
                 NamedRef( USE, SymHandle("ptr"))
             MemRefHandle("implicit actual this:ptr") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("f")))
-            MemRefHandle("::foo(ptr)") => 
-                NamedRef( USE, SymHandle("method:::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"))
         ] }
     CALLSITES = { StmtHandle("class ::foo f(ptr);") =>
         [
@@ -248,14 +248,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("class ::foo *fooptr = new ::foo(&z);") =>
         [
+            MemRefHandle("::foo(&z)") => 
+                NamedRef( USE, SymHandle("method:::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"))
             MemRefHandle("fooptr") => 
                 NamedRef( DEF, SymHandle("fooptr"))
             MemRefHandle("&z") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("z")))
             MemRefHandle("implicit actual this:&z") => 
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new ::foo(&z)"))))
-            MemRefHandle("::foo(&z)") => 
-                NamedRef( USE, SymHandle("method:::foo::foo__foo__scope__foo____MFb_foo__Fb_v_Gb___Pb__i__Pe___Fe_"))
             MemRefHandle("new ::foo(&z)") => 
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new ::foo(&z)"))))
         ] }

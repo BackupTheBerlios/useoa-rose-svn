@@ -3713,4 +3713,118 @@ Aborted
       that only one of the operands was a pointer or array type.
       This makes ./OATest --oa-FIAliasAliasMap -rose:C_only -I/s/bach/e/proj/oadev/CPU2006v1.0.1/benchspec/CPU2006/401.bzip2/src bzip2benchmark.c work.
 
+05/03/07    UseOA-ROSE svn trunk r292   Brian White
 
+    - Created MREs for anonymous objects created by SgConstructorInitializer
+      and SgAssignInitializer.  Though we probably wouldn't expect a
+      SgAssignInitializer to create an object, ROSE sometimes uses it
+      where we expect a SgConstructorInitializer (e.g., when a constructor
+      is not explicitly defined and we have not performed AST normalization).
+
+      The program that manifests the problem:
+
+	class foo 
+	{
+	public:
+	  foo operator+(int x) { };
+	  void operator*() { };
+	};
+
+	int main()
+	{
+	  foo *f;
+	  int i;
+	  *((*f) + i);
+	  return 0;
+	}
+
+      The problem is that no call mre exists for the outer method
+      invocation * in *((*f) + i).  [The inner call is the '+'.]
+      We attempt to create an MRE at the dot expression for operator*.
+      Unfortunately, there is no lhs MRE!  The MRE that we want
+      is an anonymous object created from the return value of (*f)+i.
+
+      Basic scheme:  always create MREs at SgConstructorInitializer
+      and at SgAssignInitializer (when the type is a class type)
+      under the assumption that these are creating anonymous objects
+      (for which we want an MRE).  They will _not_ be anonymous
+      objects if there are associated with a SgInitializedName or
+      a SgNewExp.  [Well, in the latter case they might be, but 
+      we will create an MRE at the SgNewExp.]
+      Therefore, in those cases, delete the MREs and memrefs associated
+      with the initializer.  
+
+      Caveat:  a SgConstructorInitializer node was already being
+      used for the call.  Rather than disturb that, I will
+      use the SgFileInfo of the SgAssignInitializer/SgConstructorInitializer
+      for the anonymous MRE.
+
+      No, that doesn't work.  The SgFunctionCallExp case expects to
+      find the memrefhandle for the call at SgFunctionCallExp->get_function(),
+      which is a dot/arrow expression for a method.  The SgDotExp case
+      expects to find the lhs operand at the lhs node; this would
+      be the SgConstructorInitializer/SgAssignInitializer.  If we put
+      the MRE for the lhs at the SgFileInfo, it won't be found.
+      Hence, put the anonymous MRE for the SgConstructorInitializer/
+      SgAssignInitializer at the respective AST node.  _Move_ the
+      call mre for the SgConstructorInitializer to its SgFileInfo.
+
+      Representing constructor call sites via the Sg_File_Info at
+      the SgConstructorInitializer required a change in 
+      FindCallsitesPass::visit, which returns the callsites for a 
+      stmt.  This now returns the Sg_File_Info instead of the
+      SgConstructorInitializer.  Also needed to change
+      SageIRInterface::toString(CallHandle) to look at the parent of the
+      Sg_File_Info to find the SgConstructorInitializer.  Further,
+      the SgConstructorInitializer case needs to anticipate that it
+      may occur as the lhs of a SgDotExp (i.e., for an invocation
+      on an anonymous object).  
+      Likewise, needed to change createParamBindPtrAssignPairs,
+      getActuals, and SageIRInterface::toString(MemRefHandle)
+
+    - Added SgTypedefDeclaration to the no-op case in 
+      findAllMemRefsAndPtrAssigns.
+
+    - Also related to anonymous objects:  A method may be invoked
+      on an anonymous object.  In this case, the left-hand side of the
+      dot expression is a SgConstructorInitializer.  Modified 
+      createConstructorInitializerReceiverMRE to return (the address of)
+      the same MRE created above to represent the anonymous object
+      (i.e., an MRE using the SgConstructorInitializer as a symbol).
+      Created the same MRE for the case in which the direct parent of
+      the SgConstructorInitializer is a SgExprStatement.  This occurs,
+      for example, for the statement 'l.begin();' where begin returns
+      an object.  Hence, a constructor is invoked at the callsite to
+      create an anonymous copy of the object.
+
+    - Changed SgConstructorInitializer case of findAllMemRefsAndPtrAssigns
+      so that we always visit the argument list of the invoked 
+      constructor and create an anonymous MRE for the object
+      even if we can not infer which constructor was invoked.
+      This happens when we have not normalized the AST and when
+      constructors are implicitly defined.
+
+    - The referenceMemVarAccesses.C regression test fails.  The problem
+      occurs at the statement:
+
+          f->mFooPtr->mX = x;
+
+      The LHS is now incorrectly represented as
+
+          SubSetRef( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr), 1))
+
+      whereas it was previously correctly represented as
+	
+          FieldAccess( USE, SubSetRef( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr), 1)), mX)
+
+      This problem occurs because the FieldAccess is composedWith a 
+      SubSetRef on line MemSage2OA.C:2203 in the SgDotExp/SgArrowExp
+      case of findAllMemRefsAndPtrAssigns.  Prior to 4/27/07, composeWith
+      would simply return its argument if it was a FieldAccess.
+      Now, after a change on that date by Michelle, it instead strips
+      off the FieldAccess and returns the MRE it wraps (in this case
+      another SubSetRef).  This returned MRE is the incorrect one shown
+      above.  I don't know how SubSetRefs are used.  Presumably,
+      we either should not be composing the (correct) FieldAccess with
+      a SubSetRef to get the incorrect result or composeWith should be
+      reverted to its previous semantics.  Ask Michelle.

@@ -60,12 +60,12 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__Foo__sco
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
         [
+            MemRefHandle("::Base(b)") => 
+                NamedRef( USE, SymHandle("method:::Base::Base__Base__scope__Base____MFb_Base__Fb_v_Gb___Rb__Base__Re___Fe_"))
             MemRefHandle("implicit actual this:b") => 
                 NamedRef( USE, SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb___Rb__Base__Re___Fe_"))
             MemRefHandle("b") => 
                 NamedRef( USE, SymHandle("b"))
-            MemRefHandle("::Base(b)") => 
-                NamedRef( USE, SymHandle("method:::Base::Base__Base__scope__Base____MFb_Base__Fb_v_Gb___Rb__Base__Re___Fe_"))
         ] }
     CALLSITES = { StmtHandle("") =>
         [

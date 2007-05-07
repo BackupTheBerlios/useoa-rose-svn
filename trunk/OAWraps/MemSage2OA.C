@@ -137,6 +137,20 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
                                       isCallADotExp);
             break;
         }
+
+    case V_Sg_File_Info:
+        {
+            // (BW 5/3/07)  Needed to add this since we now represent   
+            // constructor invocations via the Sg_File_Info of the 
+            // SgConstructorInitializer, rather than the SgConstructorInitializer.
+            SgNode *parent = node->get_parent();
+            if ( !isSgConstructorInitializer(parent) ) {
+              break;
+            }
+            node = parent;
+            // fall through
+        }
+
     case V_SgConstructorInitializer:
         {
             isCallANonStaticMethodInvocation = true;
@@ -966,6 +980,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             if (isaCallHandle) {
                 // is a CallHandle
                 // FIXME: should I go ahead and assign this call to this stmt here?
+
                 OA::CallHandle call = getCallHandle(astNode);
                 OA::MemRefHandle funcMemRef 
                     = findTopMemRefHandle(funcCallExp->get_function());
@@ -973,8 +988,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     = getMemRefExprIterator(funcMemRef);
 
                 OA::OA_ptr<OA::MemRefExpr> call_mre;
+                ROSE_ASSERT(mIter->isValid());
                 call_mre = mIter->current();
-
+ 
                 if ( isFieldAccess(call_mre ) ) {
                     // Need to deref the field access for a virtual
                     // method.
@@ -1204,6 +1220,20 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             ROSE_ASSERT(ctorInitializer != NULL);
 
             findAllMemRefsAndPtrAssigns(ctorInitializer, stmt);
+
+            // We created a memref at the constructor initializer
+            // or assign initializer in case it was used to create 
+            // an anonymous object (e.g., that was passed as an 
+            // actual arg).  Notice that ROSE somtimes uses
+            // SgAssignInitializer where we would expect a 
+            // SgConstructorInitializer (e.g., when constructors
+            // are not explicitly defined and normalization has
+            // not been performed).  Evidently, since it occurs 
+            // within the context of a SgInitializedName, it is 
+            // not anonymous and we do not need it.  Remove it.
+	    OA::MemRefHandle hiddenMemref = getMemRefHandle(ctorInitializer);
+	    mMemref2mreSetMap[hiddenMemref].clear();
+	    mStmt2allMemRefsMap[stmt].erase(hiddenMemref);
 
             break;
         }
@@ -1608,9 +1638,32 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // that will show up in the side-effect results.
                 SgConstructorInitializer *ctorInitializer =
                     isSgConstructorInitializer(initName->get_initptr());
-                if (ctorInitializer) {
-                    break;
+                SgAssignInitializer *assignInitializer =
+                    isSgAssignInitializer(initName->get_initptr());
+                if ( ctorInitializer || 
+                     ( assignInitializer && 
+                       ( isSgClassType(getBaseType(assignInitializer->get_type())) ) ) ) {
+                    // We created a memref at the constructor initializer
+                    // or assign initializer in case it was used to create 
+                    // an anonymous object (e.g., that was passed as an 
+                    // actual arg).  Notice that ROSE somtimes uses
+                    // SgAssignInitializer where we would expect a 
+                    // SgConstructorInitializer (e.g., when constructors
+                    // are not explicitly defined and normalization has
+                    // not been performed).  Evidently, since it occurs 
+                    // within the context of a SgInitializedName, it is 
+                    // not anonymous and we do not need it.  Remove it.
+                    Sg_File_Info *fileInfo = initName->get_initptr()->get_file_info();
+                    ROSE_ASSERT(fileInfo != NULL);
+		    //		    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
+		    OA::MemRefHandle hiddenMemref = getMemRefHandle(initName->get_initptr());
+		    mMemref2mreSetMap[hiddenMemref].clear();
+		    mStmt2allMemRefsMap[stmt].erase(hiddenMemref);
                 }
+
+                if ( ctorInitializer ) {
+                    break;
+                } 
 
                 // At this point, we know there is a RHS.  Therefore, we
                 // need to create an assignment pair (and we may also need
@@ -1905,21 +1958,54 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 isSgConstructorInitializer(astNode);
             ROSE_ASSERT(ctorInit != NULL);
 
+            Sg_File_Info *fileInfo = astNode->get_file_info();
+            ROSE_ASSERT(fileInfo != NULL);
+
+            // Get the list of actual arguments from the constructor call.
+            SgExprListExp* exprListExp = ctorInit->get_args();  
+            ROSE_ASSERT (exprListExp != NULL);  
+    
             // Get the declaration of the function.
             SgFunctionDeclaration *functionDeclaration = 
                 ctorInit->get_declaration();
+
+            // Even if we can not infer from the AST which constructor
+            // was invoked, we should visit the argument list and
+            // create an anonymous MRE.
+
+            // This initializer may be used to create an anonymous
+            // object.  Therefore, create an MRE for it.  If it
+            // does not create an anonymous object (i.e., is 
+            // associated with a SgInitializedName), this MRE will
+            // be removed there.
+            OA::MemRefHandle hiddenMemref = getMemRefHandle(astNode);
+            OA::SymHandle anonymousSymHandle = getNodeNumber(astNode);
+            OA::OA_ptr<OA::MemRefExpr> anonymousMRE;
+            anonymousMRE = new OA::NamedRef(OA::MemRefExpr::DEF,
+                                            anonymousSymHandle);
+            // Record the type of the MRE (reference or non-reference).
+            mMre2TypeMap[anonymousMRE] = other;
+            mStmt2allMemRefsMap[stmt].insert(hiddenMemref);
+            mMemref2mreSetMap[hiddenMemref].insert(anonymousMRE);
+
+            // Create MREs for the actuals passed to the constructor.
+    
+            // Notice that since we visit the SgExprListExp and since 
+            // that case visits its sub-expressions, we do not 
+            // need to explicitly visit the actual args here.
+            findAllMemRefsAndPtrAssigns(exprListExp, stmt);
 
             // The declaration of the constructor initializer
             // may be NULL either if the constructor is
             // implicitly defined (and we have not done
             // AST normalization) or if this is a base type.
             // Tolerate NULL for the latter reason.
-            if (functionDeclaration == NULL) {
-                // If the class declaration associated with this
-                // method is NULL, then it looks like a basic type.
-                ROSE_ASSERT(ctorInit->get_class_decl() == NULL);
-	    } else {
+            if (functionDeclaration != NULL) {
 
+                // The AST knows which constructor is invoked by the
+                // initializer.  Create a call handle for it and
+                // analyze the parameter bindings.
+ 
                 OA::SymHandle symHandle = getProcSymHandle(functionDeclaration);
         
                 OA::OA_ptr<OA::MemRefExpr> method;
@@ -1931,32 +2017,19 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // Record the type of the MRE (reference or non-reference).
                 mMre2TypeMap[method] = other;
     
-                OA::CallHandle call = getCallHandle(astNode);
-#if 0
-		//		std::cout << "Adding call handle for " << (int)(call.hval()) << std::endl;
-		SgNode *node = getNodePtr(call);
-		ROSE_ASSERT(node != NULL);
-		std::cout << "call handle node (h: " << (int)(call.hval()) << " type: " << node->sage_class_name()
-                  << ") " << node->unparseToString() 
-                  << std::endl;
-		node->get_file_info()->display("call handle: ");
-#endif
+                // (BW 5/3/07)  Since we are using the SgConstructorInitializer
+                // for the MRE for a potential temporary object, we know
+                // use the Sg_File_Info of that node for the constructor
+                // invocation.
+		//                OA::CallHandle call = getCallHandle(astNode);
+                OA::CallHandle call = getCallHandle(fileInfo);
+
                 mCallToMRE[call] = method;
-                OA::MemRefHandle memref = getMemRefHandle(astNode);
+		//                OA::MemRefHandle memref = getMemRefHandle(astNode);
+                OA::MemRefHandle memref = getMemRefHandle(fileInfo);
                 mStmt2allMemRefsMap[stmt].insert(memref);
                 mMemref2mreSetMap[memref].insert(method);
 
-                // Create MREs for the actuals passed to the constructor.
-    
-                // Get the list of actual arguments from the constructor call.
-                SgExprListExp* exprListExp = ctorInit->get_args();  
-                ROSE_ASSERT (exprListExp != NULL);  
-    
-                // Notice that since we visit the SgExprListExp and since 
-                // that case visits its sub-expressions, we do not 
-                // need to explicitly visit the actual args here.
-                findAllMemRefsAndPtrAssigns(exprListExp, stmt);
-                
                 // Note that we use the SgExprList of the constructor
                 // to model the actual 'this' argument.  
                 OA::MemRefHandle receiver_memref = getMemRefHandle(exprListExp);
@@ -1970,8 +2043,13 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // of the constructor invocation.
                 // This also applies reference conversion rules
                 // 2 and 4, as required.
-                createParamBindPtrAssignPairs(stmt, ctorInit);
-            }
+                // (BW 5/3/07) Pass the Sg_File_Info, since it is
+                // used as the call handle.
+		//                createParamBindPtrAssignPairs(stmt, ctorInit);
+                createParamBindPtrAssignPairs(stmt, fileInfo);
+
+
+	    }
 
             break;
         }
@@ -1979,6 +2057,26 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         {
             SgAssignInitializer *assignInit = isSgAssignInitializer(astNode);
             ROSE_ASSERT(assignInit != NULL);
+
+            // This initializer may be used to create an anonymous
+            // object.  Therefore, create an MRE for it.  If it
+            // does not create an anonymous object (i.e., is 
+            // associated with a SgInitializedName), this MRE will
+            // be removed there.
+            SgClassType *clsType = isSgClassType(getBaseType(assignInit->get_type()));
+            if ( clsType != NULL ) {
+                Sg_File_Info *fileInfo = astNode->get_file_info();
+                ROSE_ASSERT(fileInfo != NULL);
+                OA::MemRefHandle hiddenMemref = getMemRefHandle(astNode);
+                OA::SymHandle anonymousSymHandle = getNodeNumber(astNode);
+                OA::OA_ptr<OA::MemRefExpr> anonymousMRE;
+                anonymousMRE = new OA::NamedRef(OA::MemRefExpr::DEF,
+                                                anonymousSymHandle);
+                // Record the type of the MRE (reference or non-reference).
+                mMre2TypeMap[anonymousMRE] = other;
+                mStmt2allMemRefsMap[stmt].insert(hiddenMemref);
+                mMemref2mreSetMap[hiddenMemref].insert(anonymousMRE);
+            }
 
             // recurse on child
             findAllMemRefsAndPtrAssigns(assignInit->get_operand_i(),stmt);
@@ -2009,7 +2107,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
 	    //            std::string field_name = findFieldName(rhs_memref);
 	    std::string field_name = toStringWithoutScope(binaryOp->get_rhs_operand());
-
+ 
             bool isVirtualInvocation = false;
             bool isMethodInvocation = false;
             SgMemberFunctionRefExp *memberFunctionRefExp =
@@ -2142,6 +2240,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                                       lhs_mre,
                                                       field_name);
 
+
                     if(lhs_mre->isaRefOp()) {
 
                       OA::OA_ptr<OA::RefOp> refOp;
@@ -2161,7 +2260,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                             = subset_mre->composeWith(fieldAccess->clone());
                       }
                     }
-
 
                     // Record the type of the MRE (reference or non-reference).
                     mMre2TypeMap[fieldAccess] = other;
@@ -3610,6 +3708,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgClinkageStartStatement:
     case V_SgEnumDeclaration:
     case V_SgTemplateDeclaration:
+    case V_SgTypedefDeclaration:
     case V_SgNamespaceDeclarationStatement:
     case V_SgNamespaceAliasDeclarationStatement:
     case V_SgUsingDirectiveStatement:
@@ -4963,12 +5062,41 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
     // If the parent of the constructor initializer is a 
     // SgInitializedName, then figure out whether we have a base
     // class invocation, a member variable initialization, or a stack
-    // declaration.
+    // declaration.  If the parent is a SgDotExp, then the lhs/this of
+    // the constructor is an anonymous object.  Similarly, the direct parent
+    // of the SgConstructorInitializer may be a SgExprStatement
+    // (e.g., the statement 'l.begin();' where begin returns an object
+    // that causes a constructor invocation at the call site to create
+    // an anonymous object). We will represent both of these
+    // via the SgConstructorInitializer itself, as done in the
+    // SgConstructorInitializer case of findAllMemRefsAndPtrAssigns.
     // Stop the recursion and return
     // NULL if we reach a SgStatement without first finding
     // any of these cases.
 
     SgNode *parent = ctorInitializer->get_parent();
+
+    if ( isSgDotExp(parent) || isSgExprStatement(parent) ) {
+        // This is the case in which the object created is anonymous.
+        // Represent that it via the SgConstructorInitializer.
+
+        OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+        OA::SymHandle sym = getNodeNumber(ctorInitializer);
+        mre = new OA::NamedRef(mrType, sym);
+
+        OA::OA_ptr<OA::AddressOf> address_mre;
+        OA::OA_ptr<OA::MemRefExpr> nullMRE;
+
+        address_mre = new OA::AddressOf(OA::MemRefExpr::USE,
+                                        nullMRE);
+
+        mre = address_mre->composeWith(mre);
+
+        // Record the type of the MRE (reference or non-reference).
+        mMre2TypeMap[mre] = other;
+
+        return mre;
+    }
 
     SgInitializedName *initName = isSgInitializedName(parent);
     if ( initName != NULL ) {

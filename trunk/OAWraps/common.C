@@ -266,6 +266,17 @@ void verifyCallHandleNodeType(SgNode *node)
             // These are the expected call handle node types.
             break;
         }
+    case V_Sg_File_Info:
+        {
+            // (BW 5/3/07)  Needed to add this since we now represent   
+            // constructor invocations via the Sg_File_Info of the 
+            // SgConstructorInitializer, rather than the SgConstructorInitializer.
+            SgNode *parent = node->get_parent();
+            if ( isSgConstructorInitializer(parent) ) {
+              break;
+            }
+            // fall through
+        }
     default:
         {
             std::cerr << "verifyCallHandleNodeType:  was not expecting a "
@@ -691,6 +702,18 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
 
             break;
         }        
+    case V_Sg_File_Info:
+        {
+            // (BW 5/3/07)  Needed to add this since we now represent   
+            // constructor invocations via the Sg_File_Info of the 
+            // SgConstructorInitializer, rather than the SgConstructorInitializer.
+            SgNode *parent = node->get_parent();
+            if ( !isSgConstructorInitializer(parent) ) {
+                ROSE_ABORT();
+            }
+            node = parent;
+            // fall through
+        }
     case V_SgConstructorInitializer:
         {
             SgConstructorInitializer *ctorInitializer =

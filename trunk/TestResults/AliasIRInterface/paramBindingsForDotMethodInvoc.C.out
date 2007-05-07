@@ -47,10 +47,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("class ::Foo f;") =>
         [
-            MemRefHandle("implicit actual this:") => 
-                AddressOf( USE, NamedRef( USE, SymHandle("f")))
             MemRefHandle("::Foo") => 
                 NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
+            MemRefHandle("implicit actual this:") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("f")))
         ] }
     CALLSITES = { StmtHandle("class ::Foo f;") =>
         [

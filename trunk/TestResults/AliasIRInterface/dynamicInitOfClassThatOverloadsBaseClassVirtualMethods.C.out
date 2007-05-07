@@ -5,11 +5,7 @@ PROCEDURE = { < ProcHandle("::Base::Base"), SymHandle("method:::Base::Base__Base
             < 0, SymHandle("this::::Base::Base__Base__scope__Base____MFb_Base__Fb_v_Gb__Fe_") >
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
-        [In unparseType(0x82250e8): nm = ::Foo 
-In unparseType(0x82250e8): nm = ::Foo 
-In unparseType(0x82250e8): nm = ::Foo 
-In unparseType(0x82250e8): nm = ::Foo 
-
+        [
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline Base(){}") =>
         [
@@ -276,12 +272,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("class ::Base *f =(new ::Foo );") =>
         [
+            MemRefHandle("::Foo") => 
+                NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
             MemRefHandle("f") => 
                 NamedRef( DEF, SymHandle("f"))
             MemRefHandle("implicit actual this:") => 
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("(new ::Foo )"))))
-            MemRefHandle("::Foo") => 
-                NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
             MemRefHandle("(new ::Foo )") => 
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("(new ::Foo )"))))
         ] }

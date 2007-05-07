@@ -25,7 +25,7 @@ SageIRCallsiteIterator::SageIRCallsiteIterator(SgStatement * sgstmt,
   valid=TRUE;
 }
 
-void SageIRCallsiteIterator::FindCallsitesInSgStmt(SgStatement *sgstmt, SgExpressionPtrList& lst)
+void SageIRCallsiteIterator::FindCallsitesInSgStmt(SgStatement *sgstmt, std::list<SgNode*> & lst)
 {
   //we only want Callsites in non-scope stmts, for scopes only in non-body
   if(!isSgScopeStatement(sgstmt))
@@ -75,7 +75,7 @@ void SageIRCallsiteIterator::FindCallsitesInSgStmt(SgStatement *sgstmt, SgExpres
 // Returns the current item.
 OA::CallHandle SageIRCallsiteIterator::current() const
 {
-  SgExpression* cur = *st_iter;
+  SgNode* cur = *st_iter;
   OA::CallHandle h = 0;
 
   if (isValid()) {
@@ -201,7 +201,12 @@ void FindCallsitesPass::visit(SgNode* node)
     ROSE_ASSERT(ctorInitializer != NULL);
 
     if ( !mIR.createsBaseType(ctorInitializer) ) {
-      call_lst.push_back(exp);
+      //      call_lst.push_back(exp);
+      // (5/3/07 BW) I changed constructor invocations to be
+      // represented by the Sg_File_Info at the SgConstructorInitializer.
+      Sg_File_Info *fileInfo = ctorInitializer->get_file_info();
+      ROSE_ASSERT(fileInfo != NULL);
+      call_lst.push_back(fileInfo);
     } 
 
   } else if ( isSgDeleteExp(exp) ) {

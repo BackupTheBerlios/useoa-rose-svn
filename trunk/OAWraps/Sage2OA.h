@@ -475,7 +475,7 @@ class SageIntegerConstVal
 };
 
 
-
+//#include "AttributePropagationIRInterface.hpp"
 
 class 
 SageIRInterface : public virtual OA::SSA::SSAIRInterface,
@@ -493,6 +493,7 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   public virtual OA::SideEffect::InterSideEffectIRInterface,
   public virtual OA::Linearity::LinearityIRInterface,
   public virtual OA::ReachConsts::ReachConstsIRInterface,
+		  //  public virtual OA::AttributePropagation::AttributePropagationIRInterface,
   public virtual OA::DataDep::DataDepIRInterface
 {
   friend class SageIRMemRefIterator;
@@ -956,6 +957,11 @@ public:
               // We expect that a call handle is one of
               // these three cases.
 	      break;
+          }
+      case V_Sg_File_Info:
+          {
+              // A SgFileInfo can represent the call to a constructor.
+              break;
           }
       default:
           {
