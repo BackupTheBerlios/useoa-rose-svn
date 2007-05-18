@@ -3828,3 +3828,10 @@ Aborted
       we either should not be composing the (correct) FieldAccess with
       a SubSetRef to get the incorrect result or composeWith should be
       reverted to its previous semantics.  Ask Michelle.
+
+5/18/07    UseOA-ROSE svn trunk r292 Priyadarshini Malusare
+     - Regenrated FIAliasAliasMap testcases for the modification 
+       logic in AliasMap addLocation is not correct wrt MAYALIAS, 	 
+     - regressAll works with OpenAnalysis revision r397.
+
+

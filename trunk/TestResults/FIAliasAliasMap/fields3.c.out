@@ -63,8 +63,8 @@ InterAliasMap(
                 1	 => 1
                 2	 => 2
                 3	 => 2
-                4	 => 1
-                5	 => 1
+                4	 => 2
+                5	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 2	 => [ MemRefHandle(p)    MemRefHandle(p) ] 

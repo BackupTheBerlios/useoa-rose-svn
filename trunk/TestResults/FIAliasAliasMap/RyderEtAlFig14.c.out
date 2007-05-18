@@ -103,10 +103,10 @@ InterAliasMap(
                 4	 => 2
                 5	 => 2
                 6	 => 2
-                7	 => 1
-                8	 => 1
-                9	 => 1
-                10	 => 1
+                7	 => 2
+                8	 => 2
+                9	 => 2
+                10	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(s1) ] 
@@ -288,10 +288,10 @@ InterAliasMap(
                 4	 => 2
                 5	 => 2
                 6	 => 2
-                7	 => 1
-                8	 => 1
-                9	 => 1
-                10	 => 1
+                7	 => 2
+                8	 => 2
+                9	 => 2
+                10	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(s1) ] 
@@ -474,10 +474,10 @@ InterAliasMap(
                 4	 => 2
                 5	 => 2
                 6	 => 2
-                7	 => 1
-                8	 => 1
-                9	 => 1
-                10	 => 1
+                7	 => 2
+                8	 => 2
+                9	 => 2
+                10	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 2	 => [ MemRefHandle(s2) ] 
@@ -660,10 +660,10 @@ InterAliasMap(
                 4	 => 2
                 5	 => 2
                 6	 => 2
-                7	 => 1
-                8	 => 1
-                9	 => 1
-                10	 => 1
+                7	 => 2
+                8	 => 2
+                9	 => 2
+                10	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 4	 => [ MemRefHandle(::p) ] 
