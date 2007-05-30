@@ -61,6 +61,7 @@ InterActive(
     )
     mNumIterUseful: 3
     mNumIterVary: 3
+    mNumIterActive: 1
 )
 
 

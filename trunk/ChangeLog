@@ -3834,4 +3834,8 @@ Aborted
        logic in AliasMap addLocation is not correct wrt MAYALIAS, 	 
      - regressAll works with OpenAnalysis revision r397.
 
+5/30/07    UseOA-ROSE svn trunk r294 Barbara Kreaseck
+     - Regenerated ICFGActivity TestResults to accommodate output changes 
+       in OpenAnalysis InterActive class.
+     - regressAll works with OpenAnalysis r410 on Okapi with gcc 3.3.4
 
