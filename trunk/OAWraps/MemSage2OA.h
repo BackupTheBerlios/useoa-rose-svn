@@ -41,8 +41,8 @@ class SageMemRefHandleIterator
   public virtual OA::MemRefHandleIterator
 {
  public:
-  SageMemRefHandleIterator (OA::OA_ptr<std::list<OA::MemRefHandle> > pList)
-    : OA::IRHandleListIterator<OA::MemRefHandle>(pList) {}
+  SageMemRefHandleIterator (OA::OA_ptr<std::list<OA::MemRefHandle> > pList);
+  
   ~SageMemRefHandleIterator () {}
 
   void operator ++ ()

@@ -7,6 +7,8 @@
 using namespace std;
 using namespace UseOA;
 
+bool debug = false;
+
 bool is_lval(OA::OA_ptr<OA::MemRefExpr> mre);
 
 bool isReferenceTypeRequiringModeling(SgType *type)
@@ -18,6 +20,7 @@ SageIRMemRefIterator::SageIRMemRefIterator(OA::StmtHandle h,
                        SageIRInterface& ir)
   : mValid(true), mIR(ir)
 {
+  OA_DEBUG_CTRL_MACRO("DEBUG_MemSage2OA:ALL", debug);
   create(h);
   reset();
 }
@@ -74,6 +77,12 @@ SageIRMemRefIterator::create(OA::StmtHandle h)
       mMemRefList.push_back(*setIter);
     }
 
+}
+
+SageMemRefHandleIterator::SageMemRefHandleIterator (OA::OA_ptr<std::list<OA::MemRefHandle> > pList)
+    : OA::IRHandleListIterator<OA::MemRefHandle>(pList)
+{
+    OA_DEBUG_CTRL_MACRO("DEBUG_MemSage2OA:ALL", debug);
 }
 
 bool isFieldAccess(OA::OA_ptr<OA::MemRefExpr> mre)
@@ -3428,10 +3437,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgAsmStmt:
         {
-            
-	  std::cout << "Got an ASM stmt!" << std::endl;
-          astNode->get_file_info()->display("ASM stmt:");
-	  std::cout << astNode->unparseToCompleteString();
+          if(debug) {
+              std::cout << "Got an ASM stmt!" << std::endl;
+              astNode->get_file_info()->display("ASM stmt:");
+              std::cout << astNode->unparseToCompleteString();
+          }
+
           SgAsmStmt *asmStmt = isSgAsmStmt(astNode);
           ROSE_ASSERT(asmStmt != NULL);
           SgExpressionPtrList &expressions = asmStmt->get_operands();
@@ -3439,13 +3450,17 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                it != expressions.end(); ++it) {
             SgExpression *expr = *it;
             ROSE_ASSERT(expr != NULL);
-	    std::cout << "expr: " << expr->unparseToString() << std::endl;
+            if(debug) {
+                std::cout << "expr: " << expr->unparseToString() << std::endl;
+            }
           }
 	  SgAsmStmt::AsmRegisterNameList &clobberList = asmStmt->get_clobberRegisterList();
           for (SgAsmStmt::AsmRegisterNameList::iterator it = clobberList.begin();
                it != clobberList.end(); ++it) {
 	    SgInitializedName::asm_register_name_enum name = *it;
-	    std::cout << "name: " << name << std::endl;
+            if(debug) {
+                std::cout << "name: " << name << std::endl;
+            }
           }
 
 	  //            ROSE_ASSERT(0);
@@ -5341,12 +5356,6 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
         // one of the anonymous memory object cases named above.
         // In that case, our parent had better be a SgNewExp.
         lhs = isSgNewExp(ctorInitializer->get_parent());
-    }
-    if ( lhs == NULL ) {
-        std::cout << "error at: " <<
-            ctorInitializer->get_startOfConstruct()->get_filenameString() <<
-            ctorInitializer->get_startOfConstruct()->get_line() << endl;
-      std::cout << "lhs NULL: " << ctorInitializer->get_parent()->get_parent()->unparseToString() << std::endl;
     }
     ROSE_ASSERT(lhs != NULL);
 

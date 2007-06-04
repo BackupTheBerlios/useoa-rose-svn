@@ -27,7 +27,9 @@ SageIRInterface::SageIRInterface(SgNode *root,
     mExcludeInputFiles(excludeInputFiles)
 { 
   if ( !mUseVtableOpt ) {
-    std::cout << "Using per-method virtual table model" << std::endl;
+    if(debug) {
+        std::cout << "Using per-method virtual table model" << std::endl;
+    }
   }
   if ( persistent_handles ) { 
     ROSE_ASSERT(nodeArrayPtr != NULL); 
@@ -1394,7 +1396,9 @@ SageIRInterface::getMemRefExprIterator(OA::MemRefHandle h)
        mreIter != mMemref2mreSetMap[h].end(); mreIter++ )
     {
       if ( (*mreIter).ptrEqual(0) ) {
-          std::cout << "NULL MRE" << std::endl;
+        if(debug) {
+            std::cout << "NULL MRE" << std::endl;
+        }
       }
 
       retList->push_back(*mreIter);
@@ -1449,8 +1453,9 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
       SgInitializedName *initName = isSgInitializedName(node);
       ROSE_ASSERT(initName != NULL);
 
-      if (debug) 
+      if (debug) {
         cout << "getLocation initName: " << initName->get_name().str() << endl;
+      }
 
       SgDeclarationStatement *declarationStmt = initName->get_declaration();
       ROSE_ASSERT(declarationStmt != NULL);
@@ -1538,9 +1543,10 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
         isSgFunctionDeclaration(node);
       ROSE_ASSERT(functionDeclaration != NULL);
 
-      if (debug) 
+      if (debug) {
         cout << "getLocation func: " 
              << functionDeclaration->get_name().str() << endl;
+      }
 
       break;
     }
@@ -2488,7 +2494,10 @@ std::string getFileNameByTraversalBackToFileNode ( SgNode* astNode )
 
      ROSE_ASSERT (astNode != NULL);
 
-     std::cout << "Trying to find file name of node type: " << astNode->sage_class_name() << std::endl;
+     if(debug) {
+         std::cout << "Trying to find file name of node type: "
+                   << astNode->sage_class_name() << std::endl;
+    }
 
   // Make sure this is not a project node (since the SgFile exists below 
   // the project and could not be found by a traversal of the parent list)
@@ -2500,7 +2509,10 @@ std::string getFileNameByTraversalBackToFileNode ( SgNode* astNode )
             // printf ("In getFileNameByTraversalBackToFileNode(): parent = %s \n",parent->sage_class_name());
                parent = parent->get_parent();
                if ( parent != NULL ) {
-	         	 std::cout << "parent node type is: " << parent->sage_class_name() << std::endl;
+                    if(debug) {
+	         	 std::cout << "parent node type is: "
+                                   << parent->sage_class_name() << std::endl;
+                    }
                }
              }
 
@@ -3382,20 +3394,29 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
     if ( mCallToMRE[h].ptrEqual(0) ) {
         SgNode *node = getNodePtr(h);
         ROSE_ASSERT(node != NULL);
-	std::cout << "node (h: " << (int)(h.hval()) << " type: " << node->sage_class_name()
-                  << ") " << node->unparseToString() 
-                  << " has NULL call MRE" 
-                  << std::endl;
-        node->get_file_info()->display("NULL call MRE: ");
+        if(debug) {
+            std::cout << "node (h: " << (int)(h.hval()) << " type: "
+                      << node->sage_class_name()
+                      << ") " << node->unparseToString() 
+                      << " has NULL call MRE" 
+                      << std::endl;
+            node->get_file_info()->display("NULL call MRE: ");
+        }
         SgDeleteExp *deleteExp = isSgDeleteExp(node);
         if ( deleteExp != NULL ) {
           SgType *type = deleteExp->get_variable()->get_type();
-	  std::cerr << "type of expr deleted: " << deleteExp->get_variable()->get_type()->sage_class_name() << std::endl;
+          if(debug) {
+              std::cerr << "type of expr deleted: "
+                        << deleteExp->get_variable()->get_type()->sage_class_name() << std::endl;
+          }
 
           SgPointerType *ptrType = isSgPointerType(type);
           ROSE_ASSERT(ptrType != NULL);
           type = getBaseType(ptrType->get_base_type());
-	  std::cerr << "ptr type: " << type->sage_class_name() << std::endl;
+
+          if(debug) {
+              std::cerr << "ptr type: " << type->sage_class_name() << std::endl;
+          }
         }
         ROSE_ABORT();
     }
@@ -3489,8 +3510,9 @@ OA::SymHandle SageIRInterface::getSymHandle(OA::LeafHandle h)
     }
   default:
     {
-      cerr << "SageIRInterface::getSymHandle(OA::LeafHandle h) didn't know" << endl;
-      cerr << "how to handle a LeafHandle of type: " << node->sage_class_name() << endl;
+      cerr << "SageIRInterface::getSymHandle(OA::LeafHandle h) didn't know\n";
+      cerr << "how to handle a LeafHandle of type: " << node->sage_class_name()
+           << endl;
       ROSE_ABORT();
     }
   }
@@ -3540,18 +3562,26 @@ OA::SymHandle SageIRInterface::getFormalForActual(OA::ProcHandle caller,
   if ( !foundParam ) {
     SgNode *node = getNodePtr(param);
     ROSE_ASSERT(node != NULL);
-    cerr << "Could not find actual parameter (of type " << node->sage_class_name() << ") within list of parameters of types (";
-    
+    if(debug) {
+        cerr << "Could not find actual parameter (of type "
+             << node->sage_class_name()
+             << ") within list of parameters of types (";
+    }
+
     callsiteParamIter->reset();
     for ( ; callsiteParamIter->isValid(); (*callsiteParamIter)++ ) { 
     
       OA::ExprHandle callsiteParam = callsiteParamIter->current(); 
       node = getNodePtr(callsiteParam);
       ROSE_ASSERT(node != NULL);
-      cerr << node->sage_class_name() << " ";
+      if(debug) {
+          cerr << node->sage_class_name() << " ";
+      }
     }
 
-    cerr << ")" << endl;
+    if(debug) {
+        cerr << ")" << endl;
+    }
     ROSE_ABORT();
 
   }

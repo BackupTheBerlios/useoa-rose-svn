@@ -16,12 +16,14 @@
 #include <OpenAnalysis/IRInterface/InterSideEffectIRInterfaceDefault.hpp>
 #include <OpenAnalysis/IRInterface/LinearityIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/DataDepIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/LoopIRInterface.hpp>
 #include <OpenAnalysis/SideEffect/ManagerInterSideEffectStandard.hpp>
 #include <OpenAnalysis/SideEffect/ManagerSideEffectStandard.hpp>
 #include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
 #include <OpenAnalysis/Alias/Interface.hpp>
 #include <OpenAnalysis/Alias/ManagerFIAlias.hpp>
 #include <OpenAnalysis/ExprTree/ExprTree.hpp>
+#include <OpenAnalysis/Loop/LoopAbstraction.hpp>
 
 // ReachConsts
 #include <OpenAnalysis/IRInterface/ConstValBasicInterface.hpp>
@@ -493,8 +495,8 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   public virtual OA::SideEffect::InterSideEffectIRInterface,
   public virtual OA::Linearity::LinearityIRInterface,
   public virtual OA::ReachConsts::ReachConstsIRInterface,
-		  //  public virtual OA::AttributePropagation::AttributePropagationIRInterface,
-  public virtual OA::DataDep::DataDepIRInterface
+  public virtual OA::DataDep::DataDepIRInterface,
+  public virtual OA::Loop::LoopIRInterface
 {
   friend class SageIRMemRefIterator;
   friend class FindCallsitesPass;
@@ -1133,6 +1135,15 @@ public:
            std::set<
                std::pair<int, 
                          OA::OA_ptr<OA::MemRefExpr> > > > mCallToParamPtrPairs;
+
+  //-------------------------------------------------------------------------
+  // Loop Assignments
+  //-------------------------------------------------------------------------
+  OA_ptr<std::list<OA_ptr<Loop::LoopAbstraction> > >
+    gatherLoops(const ProcHandle &proc);
+
+  OA_ptr<list<StmtHandle> >
+    gatherStatements(const StmtHandle &stmt);
 
   //-------------------------------------------------------------------------
   // Helper data structures and methods

@@ -71,6 +71,8 @@
 #include <OpenAnalysis/Activity/ManagerICFGVaryActive.hpp>
 #include <OpenAnalysis/Linearity/ManagerLinearityStandard.hpp>
 
+#include <OpenAnalysis/Loop/LoopManager.hpp>
+
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
 
 #include <string>
@@ -138,6 +140,7 @@ int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle);
 
 int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 
+int DoLoop(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 
 
@@ -197,6 +200,7 @@ void usage(char **argv)
   cerr << "          --oa-ICFGDep" << endl;
   cerr << "          --oa-ICFGReachConsts" << endl;
   cerr << "          --oa-Linearity" << endl;
+  cerr << "          --oa-Loop" << endl;
   cerr << "          --oa-MPICFG" << endl;
   cerr << "          --oa-MemRefExpr" << endl;
   cerr << "          --oa-ParamBindings" << endl;
@@ -264,7 +268,7 @@ main ( unsigned argc,  char * argv[] )
     if ( cmds->HasOption("--exitWithTop") )  { exitWithTop = true; }
     if ( cmds->HasOption("--skipAnalysis") ) { skipAnalysis = true; }
     if ( cmds->HasOption("--silent") )       { silent = true; }
-    
+
     if( cmds->HasOption("--oa-CFG") )
     {
         for (int i = 0; i < filenum; ++i) 
@@ -584,6 +588,34 @@ main ( unsigned argc,  char * argv[] )
          }
       return 1;
     }
+    else if( cmds->HasOption("--oa-Loop") )
+    {
+        printf("Loop Analysis Start:\n");
+        // iterate through every file, then every function in every file
+        for (int i = 0; i < filenum; ++i) {
+            SgFile &sageFile = sageProject->get_file(i);
+            SgGlobal *root = sageFile.get_root();
+            SgDeclarationStatementPtrList& declList = root->get_declarations ();
+            for (SgDeclarationStatementPtrList::iterator p = declList.begin();
+                 p != declList.end(); ++p)
+             {
+               SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
+               if (func == 0){
+                   continue;
+               }
+               SgFunctionDefinition *defn = func->get_definition();
+               if (defn == 0){
+                 continue;
+               }
+
+               // perform loop analysis on the given function
+               DoLoop(defn, sageProject, &nodeArray, p_h);
+             }
+         }
+
+      return 0;
+    }
+
     else if( cmds->HasOption("--oa-DataDepGCD") )
     {
       DoDataDepGCD(sageProject, &nodeArray, p_h, argc, argv);
@@ -1594,10 +1626,13 @@ int DoDataDepGCD(
     }
 
     // construct a loop object
+    cerr << "TODO: Implement DataDepGCD\n";
+    assert(false);
+    /*
     OA_ptr<LoopIndex> loopIdx;
     loopIdx =
         new LoopIndex(namedLoc, lowerBound, upperBound, step);
-    OA_ptr<Loop> loop;
+    OA_ptr<LoopAbstraction> loop;
     loop = new Loop(loopIdx);
 
     // construct the data dep GCD manager and perform the analysis
@@ -1608,6 +1643,7 @@ int DoDataDepGCD(
 
     // output the results
     results->output(*ir);
+    */
 }
 
 void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt)
@@ -2054,6 +2090,29 @@ void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle s
   
 }
 
+int DoLoop(
+    SgFunctionDefinition * f,
+    SgProject * p,
+    std::vector<SgNode*> * na,
+    bool p_handle)
+{
+    // construct a Sage interface, then construct the analysis manager
+    OA_ptr<SageIRInterface> irInterface;
+    irInterface = new SageIRInterface(p, na, p_handle);
+    
+    OA_ptr<Loop::LoopManager> loopMngr;
+    loopMngr = new LoopManager(irInterface);
+ 
+    // construct an iterator over all the procedures in the project
+    OA_ptr<SageIRProcIterator> procIter;
+    procIter = new SageIRProcIterator(p, *irInterface);
+
+    // perform the analysis
+    OA_ptr<LoopResults> results;
+    results = loopMngr->performLoopDetection(procIter);
+    results->printLoopTree();
+}
+
 int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
    int returnvalue=FALSE;
@@ -2156,12 +2215,6 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
             eTreePtr->output(*ir);
         }
     }
-      
-
-
-
-
-
   } 
-
 }
+
