@@ -17,7 +17,14 @@ using namespace std;
 using namespace OA;
 using namespace Loop;
 
-bool loopDebug = false;
+// various debugging flags can be set by the OA_DEBUG environmental variable.
+// when one of the debugging flags is on it will output loops that fail
+// the associated requirement.
+bool loopDebug       = false;   // set with LoopStats. Turns on the flags below
+bool debugBadInit    = false;   // set with LoopStats_BadInit
+bool debugLowerBound = false;   // set with LoopStats_BadLowerBound
+bool debugUpperBound = false;   // set with LoopStats_BadUpperBound
+bool debugBadStep    = false;   // set with LoopStats_BadStep
 
 class LoopAnalStatistics {
   public:
@@ -37,10 +44,16 @@ class LoopAnalStatistics {
         mnAccepted(0),
         mnRejected_BadLowerBound(0),
         mnRejected_BadUpperBound(0),
-        mnRejected_BadStep(0)
+        mnRejected_BadStep(0),
+        mnForLoops(0),
+        mnWhileLoops(0),
+        mnDoWhileLoops(0)
     { }
 
     void incrementAcceptedCounter() { mnAccepted++; }
+    void encounteredForLoop() { mnForLoops++; }
+    void encounteredWhileLoop() { mnWhileLoops++; }
+    void encounteredDoWhileLoop() { mnDoWhileLoops++; }
 
     void incrementRejectedCounter(Rejection reason) {
         switch(reason) {
@@ -59,24 +72,21 @@ class LoopAnalStatistics {
         }
     }
 
+    int getNumForLoops() { return mnForLoops; }
+    int getNumWhileLoops() { return mnWhileLoops; }
+    int getNumDoWhileLoops() { return mnDoWhileLoops; }
     int getNumAccepted() { return mnAccepted; }
-
     int getNumBadInit() { return mnRejected_BadInit; }
-
     int getNumBadLowerBound() { return mnRejected_BadLowerBound; }
-
     int getNumBadUpperBound() { return mnRejected_BadUpperBound; }
-
     int getNumBadStep() { return mnRejected_BadStep; }
-
     int getNumRedfinition() { return mnRejected_Redefinition; }
-
     int getNumLoopsWithFunctionCall() { return mnRejected_FunctionCall; }
-
     int getNumLoopsWithDeref() { return mnRejected_Deref; }
 
     int getNumRejected() {
-        return getNumBadLowerBound() +
+        return getNumBadInit() +
+               getNumBadLowerBound() +
                getNumBadUpperBound() +
                getNumBadStep() +
                getNumRedfinition() +
@@ -85,7 +95,10 @@ class LoopAnalStatistics {
     }
 
     void output() {
-        cerr << "Number of loops accepted:        " << getNumAccepted()
+        cerr << "Number of for loops:             " << getNumForLoops()
+           << "\nNumber of while loops:           " << getNumWhileLoops()
+           << "\nNumber of do while loops:        " << getNumDoWhileLoops()
+           << "\nNumber of loops accepted:        " << getNumAccepted()
            << "\nNumber of loops rejected:        " << getNumRejected()
            << "\n  Rejected for bad initi:        " << getNumBadInit()
            << "\n  Rejected for bad lower bound:  " << getNumBadLowerBound()
@@ -107,6 +120,9 @@ class LoopAnalStatistics {
     int mnRejected_Redefinition;
     int mnRejected_FunctionCall;
     int mnRejected_Deref;
+    int mnForLoops;
+    int mnWhileLoops;
+    int mnDoWhileLoops;
 };
 
 const char *LoopAnalStatistics::rejectionStr[] = {
@@ -274,9 +290,18 @@ LoopNestAttribute LoopNestProcessor::evaluateInheritedAttribute(
     SgNode *astNode,
     LoopNestAttribute attrib)
 {
-    // the attribute only needs to be modified within for statements
-    if(astNode->variantT() == V_SgForStatement) {
+    // whenever a while or do while statement is encountered increment
+    // the appropriate counter
+    if(astNode->variantT() == V_SgWhileStmt) {
+        gStatistics.encounteredWhileLoop();
+    }
+    else if(astNode->variantT() == V_SgDoWhileStmt) {
+        gStatistics.encounteredDoWhileLoop();
+    }
 
+    // the attribute only needs to be modified within for statements
+    else if(astNode->variantT() == V_SgForStatement) {
+        gStatistics.encounteredForLoop();
         SgForStatement *stmt = isSgForStatement(astNode);
         assert(stmt != NULL);
 
@@ -686,6 +711,11 @@ OA_ptr<LoopAbstraction> LoopNestProcessor::buildLoopAbstraction(
     int lowerBound, upperBound, step;
 
 
+    if(loopDebug) {
+        cerr << "Trying to build an abstraction from the statement: "
+             << forStatementNode->unparseToString() << endl;
+    }
+
     // note: many of the functions used here will set the variable error to
     // true if they can't perform their duty.  Whenever this happens a
     // NULL pointer should be returned.
@@ -699,6 +729,12 @@ OA_ptr<LoopAbstraction> LoopNestProcessor::buildLoopAbstraction(
     if(error) {
         rejected = true;
         gStatistics.incrementRejectedCounter(LoopAnalStatistics::BAD_INIT);
+       
+        // output the loop if the debugging flag to do so is on
+        if(debugBadInit) {
+            cerr << "BadInit: " << forStatement->unparseToString() << endl;
+        }
+
         return loopAbstraction;
     }
 
@@ -708,6 +744,10 @@ OA_ptr<LoopAbstraction> LoopNestProcessor::buildLoopAbstraction(
         rejected = true;
         gStatistics.incrementRejectedCounter(
             LoopAnalStatistics::BAD_LOWER_BOUND);
+
+        // output the loop if the debugging flag to do so is on
+        if(debugLowerBound) { cerr << forStatement->unparseToString() << endl; }
+
         return loopAbstraction;
     }
 
@@ -718,6 +758,10 @@ OA_ptr<LoopAbstraction> LoopNestProcessor::buildLoopAbstraction(
         rejected = true;
         gStatistics.incrementRejectedCounter(
             LoopAnalStatistics::BAD_UPPER_BOUND);
+
+        // output the loop if the debugging flag to do so is on
+        if(debugUpperBound) { cerr << forStatement->unparseToString() << endl; }
+
         return loopAbstraction;
     }
 
@@ -729,6 +773,10 @@ OA_ptr<LoopAbstraction> LoopNestProcessor::buildLoopAbstraction(
              << endl << endl << endl;
         rejected = true;
         gStatistics.incrementRejectedCounter(LoopAnalStatistics::BAD_STEP);
+
+        // output the loop if the debugging flag to do so is on
+        if(debugBadStep) { cerr << forStatement->unparseToString() << endl; }
+
         return loopAbstraction;
     }
 
@@ -813,9 +861,17 @@ void outputListOfLoops(
 OA_ptr<list<OA_ptr<LoopAbstraction> > >
 SageIRInterface::gatherLoops(const ProcHandle &proc)
 {
+    // check the OA_DEBUG environmental variable to see what sorts of debugging
+    // information should be output
     OA_DEBUG_CTRL_MACRO("LoopStats:ALL", loopDebug);
-    loopDebug = true;
+    OA_DEBUG_CTRL_MACRO("LoopStats:LoopStats_BadInit:ALL", debugBadInit);
+    OA_DEBUG_CTRL_MACRO("LoopStats:LoopStats_BadLowerBound:ALL",
+                        debugLowerBound);
+    OA_DEBUG_CTRL_MACRO("LoopStats:LoopStats_BadUpperBound:ALL",
+                        debugUpperBound);
+    OA_DEBUG_CTRL_MACRO("LoopStats:LoopStats_BadStep:ALL", debugBadStep);
 
+    loopDebug = true;
     if(loopDebug) {
         cerr << endl;
         cerr << "Gather loops for procedure: "
@@ -836,8 +892,8 @@ SageIRInterface::gatherLoops(const ProcHandle &proc)
 
     // if debug mode is on output results:
     if(loopDebug) {
-        outputListOfLoops(loops, *this);
-        cerr << endl;
+//        outputListOfLoops(loops, *this);
+//        cerr << endl;
         gStatistics.output();
         cerr << endl;
     }
@@ -845,11 +901,21 @@ SageIRInterface::gatherLoops(const ProcHandle &proc)
     return loops;
 }
 
-
-OA_ptr<list<StmtHandle> >
-SageIRInterface::gatherStatements(const StmtHandle &stmt)
+StmtHandle SageIRInterface::findEnclosingLoop(const StmtHandle &stmt)
 {
-    //TODO
-    assert(false);
+    // traverse from the statement up to the top of the tree until we
+    // find a for loop
+    SgNode *current = (getNodePtr(stmt))->get_parent();
+    while(isSgForStatement(current) != NULL && current != NULL) {
+        current = current->get_parent();
+    }
+
+    // if we didn't reach the top convert the SgNode to a statement handle
+    // and return it, otherwise assert for now
+    if(current != NULL) {
+        return (irhandle_t)(getNodeNumber(current));
+    } else {
+        assert(false);
+    }
 }
 

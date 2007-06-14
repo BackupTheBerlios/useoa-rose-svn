@@ -37,6 +37,7 @@
 #include <OpenAnalysis/Alias/ManagerAliasMapBasic.hpp>
 #include <OpenAnalysis/Alias/ManagerFIAliasEquivSets.hpp>
 #include <OpenAnalysis/Alias/ManagerFIAliasAliasMap.hpp>
+#include <OpenAnalysis/Alias/Interface.hpp>
 #include <OpenAnalysis/CallGraph/ManagerCallGraph.hpp>
 #include <OpenAnalysis/CFG/ManagerCFG.hpp>
 #include <OpenAnalysis/CFG/EachCFGStandard.hpp>
@@ -106,6 +107,7 @@ using namespace std;
 using namespace OA;
 using namespace OA::DataDep;
 using namespace OA::Alias;
+using namespace OA::AffineExpr;
 
 int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 int DoAlias(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
@@ -140,7 +142,7 @@ int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle);
 
 int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 
-int DoLoop(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+int DoLoop(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 
 
@@ -591,29 +593,8 @@ main ( unsigned argc,  char * argv[] )
     else if( cmds->HasOption("--oa-Loop") )
     {
         printf("Loop Analysis Start:\n");
-        // iterate through every file, then every function in every file
-        for (int i = 0; i < filenum; ++i) {
-            SgFile &sageFile = sageProject->get_file(i);
-            SgGlobal *root = sageFile.get_root();
-            SgDeclarationStatementPtrList& declList = root->get_declarations ();
-            for (SgDeclarationStatementPtrList::iterator p = declList.begin();
-                 p != declList.end(); ++p)
-             {
-               SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
-               if (func == 0){
-                   continue;
-               }
-               SgFunctionDefinition *defn = func->get_definition();
-               if (defn == 0){
-                 continue;
-               }
-
-               // perform loop analysis on the given function
-               DoLoop(defn, sageProject, &nodeArray, p_h);
-             }
-         }
-
-      return 0;
+        DoLoop(sageProject, &nodeArray, p_h);
+        return 0;
     }
 
     else if( cmds->HasOption("--oa-DataDepGCD") )
@@ -2090,28 +2071,102 @@ void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle s
   
 }
 
+
+void analyzeSubscript(
+    OA_ptr<IdxExprAccess> exp,
+    OA_ptr<LoopIRInterface> ir,
+    OA_ptr<Alias::Interface> aliasResults)
+{
+    AffineExpr::AffineAnlState affineExpAnlErrState;
+    OA_ptr<ManagerAffineExpr> affineExpAnl;
+    affineExpAnl = new ManagerAffineExpr(ir, aliasResults);
+    cout << "Analyze: " << ir->toString(exp->getExpr()) << endl;
+
+    // get the expression tree for the subscript then try and convert it into
+    // an affine expression, the success or failure of this helps determine
+    // whether an access is linear or not
+    OA_ptr<ExprTree> expTree = ir->getExprTree(exp->getExpr());
+    affineExpAnl->exprTreeToAffineExpr(*expTree, &affineExpAnlErrState);
+    switch(affineExpAnlErrState) {
+        case INVALID_OPERATOR:
+            cout << "Invalid operator state" << endl;
+            break;
+    
+        case NON_LINEAR_TERM:
+            cout << "Nonlinear term state" << endl;
+            break;
+
+        case UNKNOWN_VAR:
+            cout << "Unknown variable state" << endl;
+            break;
+    }
+}
+
+
+
+
 int DoLoop(
-    SgFunctionDefinition * f,
     SgProject * p,
     std::vector<SgNode*> * na,
     bool p_handle)
 {
-    // construct a Sage interface, then construct the analysis manager
+    // construct a Sage interface
     OA_ptr<SageIRInterface> irInterface;
     irInterface = new SageIRInterface(p, na, p_handle);
     
-    OA_ptr<Loop::LoopManager> loopMngr;
-    loopMngr = new LoopManager(irInterface);
- 
     // construct an iterator over all the procedures in the project
     OA_ptr<SageIRProcIterator> procIter;
     procIter = new SageIRProcIterator(p, *irInterface);
 
-    // perform the analysis
-    OA_ptr<LoopResults> results;
-    results = loopMngr->performLoopDetection(procIter);
-    results->printLoopTree();
+    // perform alias analysis
+    OA_ptr<Alias::ManagerFIAliasAliasMap> fialiasman;
+    fialiasman = new Alias::ManagerFIAliasAliasMap(irInterface);
+    OA_ptr<Alias::InterAliasMap> aliasMaps;
+    aliasMaps = fialiasman->performAnalysis(procIter);
+
+    // construct the manager for loop detection analysis
+    OA_ptr<Loop::LoopManager> loopMngr;
+    loopMngr = new LoopManager(irInterface);
+
+    // iterate across all the procedures in the program, perform the loop
+    // detection analysis on all of them.
+    procIter = new SageIRProcIterator(p, *irInterface);
+    for(; procIter->isValid(); ++(*procIter)) {
+        OA_ptr<LoopResults> results;
+        results = loopMngr->performLoopDetection(procIter->current(),
+            aliasMaps->getAliasResults(procIter->current()));
+        // results->printLoopTree();
+    }
+
+    
+
+    // iterate through procedures, for each procedure:
+    // iterate through index expressions analyzing them
+    OA_ptr<SageIRProcIterator> i;
+    i = new SageIRProcIterator(p, *irInterface);
+
+    for(; i->isValid(); ++(*i)) {
+        SymHandle sym = irInterface->getSymHandle(i->current());
+        cout << "Sym is: " << irInterface->toString(sym) << endl;
+        
+
+        OA_ptr<IdxExprAccessIterator> j =
+            irInterface->getIdxExprAccessIter(i->current());
+        for(; j->isValid(); (*j)++) {
+            OA_ptr<IdxExprAccess> access = j->current();
+            analyzeSubscript(
+                access, irInterface, aliasMaps->getAliasResults(i->current()));
+
+            // for now get the enclosing loop and print information about it
+            // out
+            //irInterface->findEnclosingLoop(j->);
+        }
+    }
 }
+
+
+
+
 
 int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {

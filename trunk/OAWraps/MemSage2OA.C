@@ -120,6 +120,21 @@ bool isDeref(OA::OA_ptr<OA::MemRefExpr> mre)
     return false;
 }
 
+void SageIRInterface::relateMemRefAndStmt(
+    OA::MemRefHandle mref, OA::StmtHandle stmt)
+{
+    mStmt2allMemRefsMap[stmt].insert(mref);
+    mMemRef2StmtMap[mref] = stmt;
+}
+
+void SageIRInterface::deleteMemRefStmtRelation(
+    OA::MemRefHandle mref, OA::StmtHandle stmt)
+{
+    mStmt2allMemRefsMap[stmt].erase(mref);
+    mMemRef2StmtMap.erase(mref);
+}
+
+
 /*!
    Create the parameter bindings for a call handle and
    place them in mCallToParamPtrPairs.  
@@ -520,7 +535,7 @@ applyReferenceConversionRules2And4(OA::StmtHandle stmt,
     ROSE_ASSERT(fileInfo != NULL);
 
     OA::MemRefHandle memref = getMemRefHandle(fileInfo);
-    mStmt2allMemRefsMap[stmt].insert(memref);
+    relateMemRefAndStmt(memref, stmt);
 
     OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::DEF;
     OA::OA_ptr<OA::MemRefExpr> lhs_tmp_mre;
@@ -558,7 +573,8 @@ applyReferenceConversionRules2And4(OA::StmtHandle stmt,
     ROSE_ASSERT(fileInfo != NULL);
 
     memref = getMemRefHandle(fileInfo);
-    mStmt2allMemRefsMap[stmt].insert(memref);
+    relateMemRefAndStmt(memref, stmt);
+
 
     OA::OA_ptr<OA::MemRefExpr> addr_of_lhs_tmp_mre = lhs_tmp_mre->clone();
 
@@ -777,7 +793,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             //======= create a NamedRef
             // default MemRefType, ancestors will change this if necessary
@@ -810,7 +826,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 Sg_File_Info *fileInfo = astNode->get_file_info();
                 ROSE_ASSERT(fileInfo != NULL);
 	            OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
-                mStmt2allMemRefsMap[stmt].insert(hiddenMemref);
+                relateMemRefAndStmt(hiddenMemref, stmt);
                 mMemref2mreSetMap[hiddenMemref].insert(mre);
 
                 int numderefs = 1;
@@ -841,7 +857,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
             
             //======= create a NamedRef for the function
             OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
@@ -876,7 +892,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // MemRefHandle here that will later be taken away at the SgDotExp
             // or SgArrowExp
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
             
             //======= create a NamedRef
             OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
@@ -915,7 +931,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             if (isFunc(funcCallExp, "malloc")) {
                 // is a MemRefHandle
                 OA::MemRefHandle memref = getMemRefHandle(astNode);
-                mStmt2allMemRefsMap[stmt].insert(memref);
+                relateMemRefAndStmt(memref, stmt);
 
                 //======= create UnnamedRef
                 OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
@@ -958,7 +974,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
                 // is a MemRefHandle 
                 OA::MemRefHandle memref = getMemRefHandle(astNode);
-                mStmt2allMemRefsMap[stmt].insert(memref);
+                relateMemRefAndStmt(memref, stmt);
 
                 // create a DEF and a USE to deref of a clone of the first 
                 // actual parameter,
@@ -981,7 +997,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 OA::MemRefHandle function_memref 
                     = findTopMemRefHandle(funcCallExp->get_function());
                 mMemref2mreSetMap[function_memref].clear();
-                mStmt2allMemRefsMap[stmt].erase(function_memref);
+                deleteMemRefStmtRelation(function_memref, stmt);
 
             // else if the function returns a pointer or reference
             // the MRE for this node is the same as the CallMRE
@@ -1065,7 +1081,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 {
                     // is a MemRefHandle
                     OA::MemRefHandle memref = getMemRefHandle(astNode);
-                    mStmt2allMemRefsMap[stmt].insert(memref);
+                    relateMemRefAndStmt(memref, stmt);
+
                     // clone MRE for function 
                     OA::OA_ptr<OA::MemRefExpr> mre;
                     mre = getCallMemRefExpr(getCallHandle(astNode));
@@ -1092,7 +1109,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                         Sg_File_Info *fileInfo = astNode->get_file_info();
                         ROSE_ASSERT(fileInfo != NULL);
   	                    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
-                        mStmt2allMemRefsMap[stmt].insert(hiddenMemref);
+                        relateMemRefAndStmt(hiddenMemref, stmt);
                         mMemref2mreSetMap[hiddenMemref].insert(retSlot);
                         int numderefs = 1;
 
@@ -1148,7 +1165,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             // take the MREs from the true and false branch and assign
             // them all to this MemRefHandle
@@ -1161,7 +1178,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 mMemref2mreSetMap[memref].insert(mre);
             }
             mMemref2mreSetMap[true_memref].clear();
-            mStmt2allMemRefsMap[stmt].erase(true_memref);
+            deleteMemRefStmtRelation(true_memref, stmt);
+
             OA::MemRefHandle false_memref 
                 = findTopMemRefHandle(condExp->get_false_exp());
             mIter = getMemRefExprIterator(false_memref);
@@ -1170,7 +1188,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 mMemref2mreSetMap[memref].insert(mre);
             }
             mMemref2mreSetMap[false_memref].clear();
-            mStmt2allMemRefsMap[stmt].erase(false_memref);
+            deleteMemRefStmtRelation(false_memref, stmt);
             break;
         }
     case V_SgNewExp:
@@ -1188,7 +1206,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             // create an UnnamedRef
             OA::OA_ptr<OA::MemRefExpr> mre;
@@ -1242,7 +1260,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // not anonymous and we do not need it.  Remove it.
 	    OA::MemRefHandle hiddenMemref = getMemRefHandle(ctorInitializer);
 	    mMemref2mreSetMap[hiddenMemref].clear();
-	    mStmt2allMemRefsMap[stmt].erase(hiddenMemref);
+            deleteMemRefStmtRelation(hiddenMemref, stmt);
 
             break;
         }
@@ -1501,7 +1519,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // We consider function/method invocations to be 
                 // uses, so add the call as a general MRE.
                 OA::MemRefHandle memref = getMemRefHandle(astNode);
-                mStmt2allMemRefsMap[stmt].insert(memref);
+                relateMemRefAndStmt(memref, stmt);
                 mMemref2mreSetMap[memref].insert(method);
     
                 // Create parameter binding params arising from
@@ -1518,7 +1536,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::SymHandle symHandle = getThisExpSymHandle(thisExp);
 
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             OA::OA_ptr<OA::MemRefExpr> mre;
 
@@ -1550,7 +1568,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             // recurse on child
             findAllMemRefsAndPtrAssigns(varArgOp->get_operand_expr(), stmt);
@@ -1608,7 +1626,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             // recurse on child
             findAllMemRefsAndPtrAssigns(varArgEndOp->get_operand_expr(), stmt);
@@ -1667,7 +1685,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 		    //		    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
 		    OA::MemRefHandle hiddenMemref = getMemRefHandle(initName->get_initptr());
 		    mMemref2mreSetMap[hiddenMemref].clear();
-		    mStmt2allMemRefsMap[stmt].erase(hiddenMemref);
+                    deleteMemRefStmtRelation(hiddenMemref, stmt);
                 }
 
                 if ( ctorInitializer ) {
@@ -1712,13 +1730,13 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     ROSE_ASSERT(initer != NULL);
 
                     receiver_memref = getMemRefHandle(initer);
-                    mStmt2allMemRefsMap[stmt].insert(receiver_memref);
+                    relateMemRefAndStmt(receiver_memref, stmt);
                 }
 
                 // we are on the SgInitializedName node, it is the lhs
                 // and it is a MemRefHandle
                 OA::MemRefHandle memref = getMemRefHandle(astNode);
-                mStmt2allMemRefsMap[stmt].insert(memref);
+                relateMemRefAndStmt(memref, stmt);
 
                 // Create the MRE for this SgInitializedName node
                 OA::OA_ptr<OA::MemRefExpr> mre;
@@ -1923,7 +1941,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             // create an UnnamedRef
             OA::OA_ptr<OA::MemRefExpr> mre;
@@ -1994,7 +2012,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                             anonymousSymHandle);
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[anonymousMRE] = other;
-            mStmt2allMemRefsMap[stmt].insert(hiddenMemref);
+            relateMemRefAndStmt(hiddenMemref, stmt);
             mMemref2mreSetMap[hiddenMemref].insert(anonymousMRE);
 
             // Create MREs for the actuals passed to the constructor.
@@ -2036,13 +2054,13 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 mCallToMRE[call] = method;
 		//                OA::MemRefHandle memref = getMemRefHandle(astNode);
                 OA::MemRefHandle memref = getMemRefHandle(fileInfo);
-                mStmt2allMemRefsMap[stmt].insert(memref);
+                relateMemRefAndStmt(memref, stmt);
                 mMemref2mreSetMap[memref].insert(method);
 
                 // Note that we use the SgExprList of the constructor
                 // to model the actual 'this' argument.  
                 OA::MemRefHandle receiver_memref = getMemRefHandle(exprListExp);
-                mStmt2allMemRefsMap[stmt].insert(receiver_memref);
+                relateMemRefAndStmt(receiver_memref, stmt);
                 OA::OA_ptr<OA::MemRefExpr> receiver_mre
                     = createConstructorInitializerReceiverMRE(ctorInit);
                 mMemref2mreSetMap[receiver_memref].insert(receiver_mre);
@@ -2083,7 +2101,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                                 anonymousSymHandle);
                 // Record the type of the MRE (reference or non-reference).
                 mMre2TypeMap[anonymousMRE] = other;
-                mStmt2allMemRefsMap[stmt].insert(hiddenMemref);
+                relateMemRefAndStmt(hiddenMemref, stmt);
                 mMemref2mreSetMap[hiddenMemref].insert(anonymousMRE);
             }
 
@@ -2105,7 +2123,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             // clones MREs for lhs and wraps them in a Deref and a FieldAccess
             OA::MemRefHandle lhs_memref 
@@ -2306,7 +2324,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                             Sg_File_Info *fileInfo = astNode->get_file_info();
                             ROSE_ASSERT(fileInfo != NULL);
 	                    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
-                            mStmt2allMemRefsMap[stmt].insert(hiddenMemref);
+                            relateMemRefAndStmt(hiddenMemref, stmt);
                             mMemref2mreSetMap[hiddenMemref].insert(fieldAccess);
 
                             // wrap the NamedRef in a Deref
@@ -2352,7 +2370,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             if ( !isMethodInvocation && !isSgArrowExp(binaryOp) ) {
                 mMemref2mreSetMap[lhs_memref].clear();
-                mStmt2allMemRefsMap[stmt].erase(lhs_memref);
+                deleteMemRefStmtRelation(lhs_memref, stmt);
             } else if ( !isSgArrowExp(binaryOp) ) {
                 // For a method invocation, we use the child/lhs receiver 
                 // MRE as the implicit actual.  Therefore, not only do we
@@ -2381,7 +2399,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // Note that lhs continues to be a MemRefHandle.
 
             mMemref2mreSetMap[rhs_memref].clear();
-            mStmt2allMemRefsMap[stmt].erase(rhs_memref);
+            deleteMemRefStmtRelation(rhs_memref, stmt);
 
             // We also need to be careful to remove the
             // original reference base at the rhs, if one exists.
@@ -2396,7 +2414,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
 	    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
             mMemref2mreSetMap[hiddenMemref].clear();
-            mStmt2allMemRefsMap[stmt].erase(hiddenMemref);
+            deleteMemRefStmtRelation(hiddenMemref, stmt);
             break;
         }
 
@@ -2488,7 +2506,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
+
 
             // takes MREs from rhs 
             OA::MemRefHandle rhs_memref 
@@ -2502,7 +2521,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // make rhs not a MemRefHandle
             mMemref2mreSetMap[rhs_memref].clear();
-            mStmt2allMemRefsMap[stmt].erase(rhs_memref);
+            deleteMemRefStmtRelation(rhs_memref, stmt);
             break;
         }
     case V_SgPntrArrRefExp:
@@ -2548,16 +2567,17 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     mMemref2mreSetMap[memref].insert(lhs_mre);
                 }
                 // child is no longer a MemRefHandle
-                mMemref2mreSetMap[lhs_memref].clear();
-                mStmt2allMemRefsMap[stmt].erase(lhs_memref);
+//                mMemref2mreSetMap[lhs_memref].clear();
+//                mStmt2allMemRefsMap[stmt].erase(lhs_memref);
 
                 // take the rhs MRE and wrap it in an IdxExprAccess
                 MemRefHandle mref =
                     ((OA::irhandle_t)arrRefExp->get_rhs_operand());
+
                 OA_ptr<IdxExprAccess> rhs_mre;
                 rhs_mre = new OA::IdxExprAccess(
                     MemRefExpr::USE, lhs_mre, mref);
-                mStmt2allMemRefsMap[stmt].insert(mref);
+                relateMemRefAndStmt(memref, stmt);
                 mMemref2mreSetMap[memref].insert(rhs_mre);
             }
             // else if through a variable pointer
@@ -2620,7 +2640,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 }
             }
 
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
             break;
         }
     case V_SgAssignOp:
@@ -2635,7 +2655,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // astNode is a MemRefHandle because it results in a use 
             // of the location indicated by the lhs            
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             // 1) the MREs for this are the MREs for left child set to USE
             // 2) change MRType for top memory reference on the lhs to DEF 
@@ -2846,7 +2866,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // pair, but a non-ptr assign pair.  As above, make
                 // the child the lhs/DEF.  Clone that child (as a USE)
                 // for the rhs and place it on this node.
-                mStmt2allMemRefsMap[stmt].insert(memref);
+                relateMemRefAndStmt(memref, stmt);
 
                 OA::MemRefHandle child_memref 
                     = findTopMemRefHandle(binaryOp->get_lhs_operand());
@@ -2886,7 +2906,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             // recurse on children
             findAllMemRefsAndPtrAssigns(binaryOp->get_lhs_operand(),stmt);
@@ -2934,7 +2954,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             // get the MemRefHandle for the child
             OA::MemRefHandle child_memref 
@@ -2997,7 +3017,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt); 
 
             // MREs are all MREs for child node with addressOf=true
             OA::MemRefHandle child_memref 
@@ -3023,7 +3043,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // child is no longer a MemRefHandle
             mMemref2mreSetMap[child_memref].clear();
-            mStmt2allMemRefsMap[stmt].erase(child_memref);
+            deleteMemRefStmtRelation(child_memref, stmt);
             break;
         }
     case V_SgMinusMinusOp:
@@ -3082,7 +3102,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // pair, but a non-ptr assign pair.  As above, make
                 // the child the lhs/DEF.  Clone that child (as a USE)
                 // for the rhs and place it on this node.
-                mStmt2allMemRefsMap[stmt].insert(memref);
+                relateMemRefAndStmt(memref, stmt); 
 
                 OA::MemRefHandle child_memref 
                     = findTopMemRefHandle(unaryOp->get_operand());
@@ -3173,7 +3193,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 #endif
 
                mMemref2mreSetMap[child_memref].clear();
-               mStmt2allMemRefsMap[stmt].erase(child_memref);
+               deleteMemRefStmtRelation(child_memref, stmt);
             } 
 
             break;
@@ -3662,7 +3682,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
-            mStmt2allMemRefsMap[stmt].insert(memref);
+            relateMemRefAndStmt(memref, stmt);
 
             //======= create a NamedRef
             // Set addressTaken and fullAccuracy like new/malloc.
@@ -4835,7 +4855,7 @@ bool SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
     {
         // this node is a MemRefHandle
         OA::MemRefHandle memref = getMemRefHandle(node);
-        mStmt2allMemRefsMap[stmt].insert(memref);
+        relateMemRefAndStmt(memref, stmt);
 
         nodeHasMemRefHandle = true;
 
@@ -4846,7 +4866,7 @@ bool SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
             if (isSgArrayType(child_type)) {
                 if ( removeChild ) {
                     mMemref2mreSetMap[child_memref].erase(child_mre);
-                    mStmt2allMemRefsMap[stmt].erase(child_memref);
+                    deleteMemRefStmtRelation(child_memref, stmt);
                 }
                 // set accuracy to false please see below
 

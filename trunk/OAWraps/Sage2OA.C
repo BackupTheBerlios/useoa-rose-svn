@@ -5767,13 +5767,61 @@ int SageIRInterface::constValIntVal(OA::ConstValHandle h) {
 }
 
 OA::AffineExpr::OpType SageIRInterface::getOpType(OA::OpHandle h) {
-    // TODO
-    assert(false);
+    // NOTE: this code is very similiar to getLinearityOpType, perhaps
+    //       we should think about merging the two?
+
+    SgNode *node = getNodePtr(h);
+
+    switch(node->variantT()) {
+        case V_SgAddOp:         return AffineExpr::OP_ADD;          break;
+        case V_SgSubtractOp:    return AffineExpr::OP_SUBTRACT;     break;
+        case V_SgMultiplyOp:    return AffineExpr::OP_MULTIPLY;     break;
+        case V_SgDivideOp:      return AffineExpr::OP_DIVIDE;       break;
+        case V_SgModOp:         return AffineExpr::OP_MODULO;       break;
+        case V_SgLshiftOp:      return AffineExpr::OP_SHIFT_LEFT;   break;
+        case V_SgRshiftOp:      return AffineExpr::OP_SHIFT_RIGHT;  break;
+        case V_SgBitAndOp:      return AffineExpr::OP_BIT_AND;      break;
+        case V_SgBitOrOp:       return AffineExpr::OP_BIT_OR;       break;
+        case V_SgBitXorOp:      return AffineExpr::OP_BIT_XOR;      break;
+        default:                return AffineExpr::OP_OTHER;        break;
+    }
+
+    return AffineExpr::OP_OTHER;
 }
 
 OA::OA_ptr<OA::IdxExprAccessIterator> SageIRInterface::getIdxExprAccessIter(
     OA::ProcHandle p)
 {
+    OA_ptr<list<OA_ptr<IdxExprAccess> > > retList;
+    retList = new list<OA_ptr<IdxExprAccess> >;
+
+    // Iterate through all statements in the procedure, for each statement
+    // iterate across all memory references, for each memory ref determine
+    // whether or not its an index expression access, if it is add it to
+    // the list of elements to iterate over
+    OA_ptr<IRStmtIterator> i = getStmtIterator(p); 
+    for(; i->isValid(); (*i)++) {
+        StmtHandle stmt = i->current();
+        OA_ptr<MemRefHandleIterator> j = getAllMemRefs(stmt);
+        for(; j->isValid(); (*j)++) {
+            MemRefHandle memref = j->current();
+            OA_ptr<MemRefExprIterator> k = getMemRefExprIterator(memref);
+            for(; k->isValid(); (*k)++) {
+                OA_ptr<MemRefExpr> mre = k->current();
+                if(mre->isaIdxExprAccess()) {
+                    OA_ptr<IdxExprAccess> idxExprAccess;
+                    idxExprAccess = mre.convert<IdxExprAccess>();
+                    retList->push_back(idxExprAccess);
+                }
+            }
+        }
+    }
+
+    OA_ptr<OA::IdxExprAccessIterator> iterRet;
+    iterRet = new SageIdxExprAccessIterator(retList, this);
+    return iterRet;
+
+#if 0
     OA_ptr<list<OA_ptr<IdxExprAccess> > > retList;
     retList = new list<OA_ptr<IdxExprAccess> >;
 
@@ -5808,6 +5856,7 @@ OA::OA_ptr<OA::IdxExprAccessIterator> SageIRInterface::getIdxExprAccessIter(
     OA_ptr<OA::IdxExprAccessIterator> iterRet;
     iterRet = new SageIdxExprAccessIterator(retList, this);
     return iterRet;
+#endif
 }
 
 

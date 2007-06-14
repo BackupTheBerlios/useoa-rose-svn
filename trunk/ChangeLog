@@ -3839,3 +3839,12 @@ Aborted
        in OpenAnalysis InterActive class.
      - regressAll works with OpenAnalysis r410 on Okapi with gcc 3.3.4
 
+6/14/07    UseOA-ROSE svn trunk r296 Andy Stone
+    - Although the SageIRInterface declares a map mMemRef2StmtMap, it does not
+      actually use it.  The opposite map mStmt2allMemRefsMap, however is
+      heavily used.  I've changed this.  Specifically by adding two functions:
+      relateMemRefAndStmt and deleteMemRefStmtRelation, these functions
+      are called in place of directly adding or deleting mappings to
+      mStmt2allMemRefsMap, and they make the appropriate mapping in 
+      mMemRef2StmtMap.
+

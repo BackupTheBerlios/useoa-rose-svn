@@ -1099,6 +1099,14 @@ public:
   std::map<OA::OA_ptr<OA::MemRefExpr>, typeEnum >
     mMre2TypeMap;
 
+  //! given a memory reference handle and a statement handle asscociate them
+  //! in the mStmt2allMemRefsMap and mMemRef2StmtMap maps
+  void relateMemRefAndStmt(OA::MemRefHandle mref, OA::StmtHandle stmt);
+
+  //! remove relations between the specified memref and stmt in the
+  //! mStmt2allMemRefsMap and mMemRef2StmtMap maps
+  void deleteMemRefStmtRelation(OA::MemRefHandle mref, OA::StmtHandle stmt);
+
   // why would we need this one?
   //std::map<OA::OA_ptr<OA::MemRefExpr>,OA::MemRefHandle >
   //  mMre2MemrefMap;
@@ -1142,8 +1150,7 @@ public:
   OA_ptr<std::list<OA_ptr<Loop::LoopAbstraction> > >
     gatherLoops(const ProcHandle &proc);
 
-  OA_ptr<list<StmtHandle> >
-    gatherStatements(const StmtHandle &stmt);
+  StmtHandle findEnclosingLoop(const StmtHandle &stmt);
 
   //-------------------------------------------------------------------------
   // Helper data structures and methods
