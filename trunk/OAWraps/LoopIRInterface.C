@@ -906,16 +906,16 @@ StmtHandle SageIRInterface::findEnclosingLoop(const StmtHandle &stmt)
     // traverse from the statement up to the top of the tree until we
     // find a for loop
     SgNode *current = (getNodePtr(stmt))->get_parent();
-    while(isSgForStatement(current) != NULL && current != NULL) {
+    while(isSgForStatement(current) == NULL && current != NULL) {
         current = current->get_parent();
     }
 
     // if we didn't reach the top convert the SgNode to a statement handle
-    // and return it, otherwise assert for now
+    // and return it, otherwise return the NULL StmtHandle
     if(current != NULL) {
         return (irhandle_t)(getNodeNumber(current));
     } else {
-        assert(false);
+        return 0;
     }
 }
 

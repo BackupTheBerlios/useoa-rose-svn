@@ -2068,15 +2068,34 @@ void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle s
   }
   
   std::cout << std::endl;
-  
 }
 
 
 void analyzeSubscript(
     OA_ptr<IdxExprAccess> exp,
     OA_ptr<LoopIRInterface> ir,
-    OA_ptr<Alias::Interface> aliasResults)
+    OA_ptr<Alias::Interface> aliasResults,
+    OA_ptr<LoopResults> results)
 {
+    // get the loop which sorrounds the subscript
+    OA_ptr<LoopAbstraction> loop;
+    MemRefHandle mref = ir->getMemRefHandle(exp);
+    StmtHandle stmt = ir->getStmt(mref);
+    StmtHandle hLoop = ir->findEnclosingLoop(stmt);
+    loop = results->getLoop(hLoop);
+
+    // get global parameters
+    OA_ptr<list<OA_ptr<LoopIndex> > > indices = results->getIndexVars(loop);
+
+    for(list<OA_ptr<LoopIndex> >::iterator i = indices->begin();
+        i != indices->end(); i++)
+    {
+        cout << "index: " << ir->toString((*i)->getVariable()->getSymHandle())
+             << endl;
+    }
+
+    // attempt to pass the subscript expression through an affine expression
+    // analyzer.
     AffineExpr::AffineAnlState affineExpAnlErrState;
     OA_ptr<ManagerAffineExpr> affineExpAnl;
     affineExpAnl = new ManagerAffineExpr(ir, aliasResults);
@@ -2133,36 +2152,41 @@ int DoLoop(
     procIter = new SageIRProcIterator(p, *irInterface);
     for(; procIter->isValid(); ++(*procIter)) {
         OA_ptr<LoopResults> results;
-        results = loopMngr->performLoopDetection(procIter->current(),
-            aliasMaps->getAliasResults(procIter->current()));
+        results = loopMngr->performLoopDetection(procIter->current());
         // results->printLoopTree();
+
+        // iterate through index expressions in the procedure analyzing them
+        OA_ptr<IdxExprAccessIterator> j =
+            irInterface->getIdxExprAccessIter(procIter->current());
+        for(; j->isValid(); (*j)++) {
+            OA_ptr<IdxExprAccess> access = j->current();
+            analyzeSubscript(
+                access,
+                irInterface,
+                aliasMaps->getAliasResults(procIter->current()),
+                results);
+
+            // for now get the enclosing loop and print information about it
+            // out
+            /*
+            MemRefHandle mref = irInterface->getMemRefHandle(access);
+
+            StmtHandle stmt = irInterface->getStmt(mref);
+            StmtHandle loop = irInterface->findEnclosingLoop(stmt);
+
+            cout << "Loop enclosing "
+                 << irInterface->toString(stmt) << ": "
+                 << irInterface->toString(loop) << endl;
+            */
+        }
     }
 
     
 
-    // iterate through procedures, for each procedure:
-    // iterate through index expressions analyzing them
-    OA_ptr<SageIRProcIterator> i;
-    i = new SageIRProcIterator(p, *irInterface);
+    // The code below whould be sectioned off into a manager class for
+    // something like affine expression linearity analysis.
 
-    for(; i->isValid(); ++(*i)) {
-        SymHandle sym = irInterface->getSymHandle(i->current());
-        cout << "Sym is: " << irInterface->toString(sym) << endl;
-        
-
-        OA_ptr<IdxExprAccessIterator> j =
-            irInterface->getIdxExprAccessIter(i->current());
-        for(; j->isValid(); (*j)++) {
-            OA_ptr<IdxExprAccess> access = j->current();
-            analyzeSubscript(
-                access, irInterface, aliasMaps->getAliasResults(i->current()));
-
-            // for now get the enclosing loop and print information about it
-            // out
-            //irInterface->findEnclosingLoop(j->);
-        }
     }
-}
 
 
 

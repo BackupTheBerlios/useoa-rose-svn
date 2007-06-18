@@ -134,6 +134,29 @@ void SageIRInterface::deleteMemRefStmtRelation(
     mMemRef2StmtMap.erase(mref);
 }
 
+OA::MemRefHandle SageIRInterface::getMemRefHandle(
+    OA::OA_ptr<OA::MemRefExpr> mre)
+{
+    typedef std::map<OA::MemRefHandle,std::set<OA::OA_ptr<OA::MemRefExpr> > >
+        MemRefToMRESetMap_t;
+
+    // iterate through every set in the mMemref2mreSetMap map
+    for(MemRefToMRESetMap_t::iterator i = mMemref2mreSetMap.begin();
+        i != mMemref2mreSetMap.end(); i++)
+    {
+        std::set<OA::OA_ptr<OA::MemRefExpr> >::iterator foundMRE;
+        foundMRE = (i->second).find(mre);
+        if(foundMRE != (i->second).end()) {
+            return i->first;
+        }
+    }
+    return 0;
+}
+
+OA::StmtHandle SageIRInterface::getStmt(OA::MemRefHandle mref) {
+    return mMemRef2StmtMap[mref];
+}
+
 
 /*!
    Create the parameter bindings for a call handle and

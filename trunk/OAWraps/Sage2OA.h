@@ -1107,6 +1107,16 @@ public:
   //! mStmt2allMemRefsMap and mMemRef2StmtMap maps
   void deleteMemRefStmtRelation(OA::MemRefHandle mref, OA::StmtHandle stmt);
 
+  public:
+  //! Temporary hack to get a MemRefHandle given a MemRefExpr, code
+  //! iterates through the 'MemRefHandle -> set<MemRefExpr>' map until
+  //! it finds the one.
+  OA::MemRefHandle getMemRefHandle(OA::OA_ptr<OA::MemRefExpr>);
+
+  OA::StmtHandle getStmt(OA::MemRefHandle mref);
+
+  private:
+
   // why would we need this one?
   //std::map<OA::OA_ptr<OA::MemRefExpr>,OA::MemRefHandle >
   //  mMre2MemrefMap;
@@ -1147,6 +1157,7 @@ public:
   //-------------------------------------------------------------------------
   // Loop Assignments
   //-------------------------------------------------------------------------
+  public:
   OA_ptr<std::list<OA_ptr<Loop::LoopAbstraction> > >
     gatherLoops(const ProcHandle &proc);
 
