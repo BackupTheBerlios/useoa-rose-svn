@@ -3848,3 +3848,7 @@ Aborted
       mStmt2allMemRefsMap, and they make the appropriate mapping in 
       mMemRef2StmtMap.
 
+6/19/07    UseOA-ROSE svn trunk r298 Andy Stone
+    - Fixed bug where IdxExprAccess objects were incorrectly being decorated
+      with a SubSet MRE.
+

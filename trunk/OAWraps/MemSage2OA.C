@@ -2574,24 +2574,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     = getMemRefExprIterator(lhs_memref);
                 for ( ; mIter->isValid(); ++(*mIter) ) {
                     lhs_mre = mIter->current();
-
-                    OA::OA_ptr<OA::SubSetRef> subset_mre;
-                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                    OA::OA_ptr<OA::MemRefExpr> composed_mre;
-
-                    subset_mre = new OA::SubSetRef(
-                                           OA::MemRefExpr::USE,
-                                           nullMRE
-                                     );
-                    lhs_mre
-                          = subset_mre->composeWith(lhs_mre->clone());
-
-
-                    mMemref2mreSetMap[memref].insert(lhs_mre);
                 }
-                // child is no longer a MemRefHandle
-//                mMemref2mreSetMap[lhs_memref].clear();
-//                mStmt2allMemRefsMap[stmt].erase(lhs_memref);
 
                 // take the rhs MRE and wrap it in an IdxExprAccess
                 MemRefHandle mref =
