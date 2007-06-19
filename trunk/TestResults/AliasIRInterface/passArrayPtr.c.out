@@ -69,19 +69,19 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("a[3] = 'b';") =>
         [
+            MemRefHandle("a") => 
+                NamedRef( USE, SymHandle("a"))
             MemRefHandle("a[3]") => 
-                IdxExprAccess( DEF, SubSetRef( DEF, NamedRef( USE, SymHandle("a"))), MemRefHandle("3"))
-            MemRefHandle("a[3]") => 
-                SubSetRef( DEF, NamedRef( USE, SymHandle("a")))
+                IdxExprAccess( DEF, NamedRef( USE, SymHandle("a")), MemRefHandle("3"))
         ] }
     MEMREFEXPRS = { StmtHandle("char v =(a[2]);") =>
         [
             MemRefHandle("v") => 
                 NamedRef( DEF, SymHandle("v"))
+            MemRefHandle("a") => 
+                NamedRef( USE, SymHandle("a"))
             MemRefHandle("(a[2])") => 
-                IdxExprAccess( USE, SubSetRef( USE, NamedRef( USE, SymHandle("a"))), MemRefHandle("2"))
-            MemRefHandle("(a[2])") => 
-                SubSetRef( USE, NamedRef( USE, SymHandle("a")))
+                IdxExprAccess( USE, NamedRef( USE, SymHandle("a")), MemRefHandle("2"))
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

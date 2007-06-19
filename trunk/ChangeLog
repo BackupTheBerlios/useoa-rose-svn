@@ -3852,3 +3852,8 @@ Aborted
     - Fixed bug where IdxExprAccess objects were incorrectly being decorated
       with a SubSet MRE.
 
+6/19/07    UseOA-ROSE svn trunk r299 Priyadarshini Malusare
+    - Regenerated AliasIRInterface/passArrayPtr TestCase after
+      Andy's changes for IdxExpr. i.e. IdxExprAccess objects are created
+      they're no longer being decorated with a SubSetRef .
+
