@@ -134,6 +134,7 @@ void SageIRInterface::deleteMemRefStmtRelation(
     mMemRef2StmtMap.erase(mref);
 }
 
+/*
 OA::MemRefHandle SageIRInterface::getMemRefHandle(
     OA::OA_ptr<OA::MemRefExpr> mre)
 {
@@ -151,7 +152,7 @@ OA::MemRefHandle SageIRInterface::getMemRefHandle(
         }
     }
     return 0;
-}
+}*/
 
 OA::StmtHandle SageIRInterface::getStmt(OA::MemRefHandle mref) {
     return mMemRef2StmtMap[mref];

@@ -2077,6 +2077,8 @@ void analyzeSubscript(
     OA_ptr<Alias::Interface> aliasResults,
     OA_ptr<LoopResults> results)
 {
+    assert(false);
+    #if 0
     // get the loop which sorrounds the subscript
     OA_ptr<LoopAbstraction> loop;
     MemRefHandle mref = ir->getMemRefHandle(exp);
@@ -2119,6 +2121,7 @@ void analyzeSubscript(
             cout << "Unknown variable state" << endl;
             break;
     }
+    #endif
 }
 
 

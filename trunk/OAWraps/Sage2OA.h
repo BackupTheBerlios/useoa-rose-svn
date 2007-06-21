@@ -1111,7 +1111,7 @@ public:
   //! Temporary hack to get a MemRefHandle given a MemRefExpr, code
   //! iterates through the 'MemRefHandle -> set<MemRefExpr>' map until
   //! it finds the one.
-  OA::MemRefHandle getMemRefHandle(OA::OA_ptr<OA::MemRefExpr>);
+  //OA::MemRefHandle getMemRefHandle(OA::OA_ptr<OA::MemRefExpr>);
 
   OA::StmtHandle getStmt(OA::MemRefHandle mref);
 
