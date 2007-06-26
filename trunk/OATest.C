@@ -864,7 +864,8 @@ int DoICFGDep(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
   OA::OA_ptr<OA::Activity::ManagerICFGDep> icfgdepman;
   icfgdepman = new OA::Activity::ManagerICFGDep(irInterface);
   OA::OA_ptr<OA::Activity::ICFGDep> icfgDep;
-  icfgDep = icfgdepman->performAnalysis(icfg, parambind, interAlias);
+  icfgDep = icfgdepman->performAnalysis(icfg, parambind, interAlias,
+                                        OA::DataFlow::ITERATIVE);
 
   icfgDep->output(*irInterface);
 
@@ -938,7 +939,9 @@ int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
   interSEman = new OA::SideEffect::ManagerInterSideEffectStandard(irInterface);
 
   OA::OA_ptr<OA::SideEffect::InterSideEffectStandard> interSE;
-  interSE = interSEman->performAnalysis(callgraph, parambind, interAlias, sideeffectman);  
+  interSE = interSEman->performAnalysis(callgraph, parambind, interAlias, 
+                                        sideeffectman,
+                                        OA::DataFlow::ITERATIVE);  
 
   interSE->output(*irInterface); 
   
@@ -1134,7 +1137,9 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   OA::OA_ptr<OA::ReachDefs::ManagerReachDefsStandard> rdman;
   rdman = new OA::ReachDefs::ManagerReachDefsStandard(irInterface);
   OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds= 
-     rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect); 
+     rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),
+                            cfg,alias,interSideEffect,
+                            OA::DataFlow::ITERATIVE); 
   
   rds->output(*irInterface);  
 
@@ -1193,7 +1198,8 @@ int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> 
 
    OA::OA_ptr<OA::SideEffect::InterSideEffectStandard> interSE;
    interSE = interSEman->performAnalysis(cgraph, parambind,
-                                        interAlias, sideeffectman);
+                                        interAlias, sideeffectman,
+                                        OA::DataFlow::ITERATIVE);
   /*
 
    // Interprocedural Side-Effect Analysis
@@ -1206,7 +1212,9 @@ int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> 
    OA::OA_ptr<OA::ReachConsts::ManagerReachConstsStandard> rcman;
    rcman = new OA::ReachConsts::ManagerReachConstsStandard(irInterface);
    OA::OA_ptr<OA::ReachConsts::ReachConstsStandard> reachConsts=
-          rcman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSE); 
+          rcman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),
+                                 cfg,alias,interSE,
+                                 OA::DataFlow::ITERATIVE); 
  
    reachConsts->output(*irInterface); 
    std::cout << "\n*******  end of DoUDDUChains *********\n\n";
@@ -1269,7 +1277,8 @@ int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle)
 
    OA::OA_ptr<OA::SideEffect::InterSideEffectStandard> interSE;
    interSE = interSEman->performAnalysis(cgraph, parambind,
-                                        interAlias, sideeffectman);
+                                        interAlias, sideeffectman,
+                                        OA::DataFlow::ITERATIVE);
 
    // ICFG
    OA::OA_ptr<OA::ICFG::ManagerICFGStandard> icfgman;
@@ -1282,7 +1291,8 @@ int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle)
    activeman = new OA::Activity::ManagerICFGActive(irInterface);
    OA::OA_ptr<OA::Activity::InterActive> active;
    active = activeman->performAnalysis(icfg, parambind,
-                                        interAlias, interSE);
+                                        interAlias, interSE,
+                                        OA::DataFlow::ITERATIVE);
 
    active->output(*irInterface);
 
@@ -1363,13 +1373,15 @@ int DoICFGReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNod
 
    OA::OA_ptr<OA::SideEffect::InterSideEffectStandard> interSE;
    interSE = interSEman->performAnalysis(callgraph, parambind,
-                                        interAlias, sideeffectman);
+                                        interAlias, sideeffectman,
+                                        OA::DataFlow::ITERATIVE);
  
    // ICFGReachConsts
    OA::OA_ptr<OA::ReachConsts::ManagerICFGReachConsts> ircsman;
    ircsman = new OA::ReachConsts::ManagerICFGReachConsts(irInterface);
    OA::OA_ptr<OA::ReachConsts::InterReachConsts> ircs
-      = ircsman->performAnalysis(icfg,parambind,interAlias,interSE);
+      = ircsman->performAnalysis(icfg,parambind,interAlias,interSE,
+                                 OA::DataFlow::ITERATIVE);
 
    ircs->output(*irInterface);
  
@@ -1415,7 +1427,9 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
   OA::OA_ptr<OA::ReachDefs::ManagerReachDefsStandard> rdman;
   rdman = new OA::ReachDefs::ManagerReachDefsStandard(irInterface);
   OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds=
-     rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect);
+     rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),
+                            cfg,alias,interSideEffect,
+                            OA::DataFlow::ITERATIVE);
 
   // then UDDUChains
   OA::OA_ptr<OA::UDDUChains::ManagerUDDUChainsStandard> udman;
@@ -1472,7 +1486,9 @@ int DoUDDUChainsXAIF(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode
   OA::OA_ptr<OA::ReachDefs::ManagerReachDefsStandard> rdman;
   rdman = new OA::ReachDefs::ManagerReachDefsStandard(irInterface);
   OA::OA_ptr<OA::ReachDefs::ReachDefsStandard> rds=
-     rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,interSideEffect);
+     rdman->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),
+                            cfg,alias,interSideEffect,
+                            OA::DataFlow::ITERATIVE);
 
   rds->output(*irInterface);
 
@@ -2233,7 +2249,9 @@ int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * 
    OA::OA_ptr<OA::Linearity::ManagerLinearity> linmanstd;
    linmanstd = new OA::Linearity::ManagerLinearity(irInterface);
    OA::OA_ptr<OA::Linearity::LinearityMatrix> LM
-       = linmanstd->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,alias,parambind);
+       = linmanstd->performAnalysis(
+               (OA::irhandle_t)irInterface->getNodeNumber(f),cfg,
+                alias,parambind,OA::DataFlow::ITERATIVE);
 
     LM->output(*irInterface);
    

@@ -3857,3 +3857,9 @@ Aborted
       Andy's changes for IdxExpr. i.e. IdxExprAccess objects are created
       they're no longer being decorated with a SubSetRef .
 
+6/26/07    UseOA-ROSE svn trunk r301 Priyadarshini Malusare
+    - Added extra option to *Manager->performAnalysis to specifiy
+      DataFlow Analysis Algorithm (Iterative/WorkList(Queue/PQueue)).
+    - Compiled with OpenAnalysis revision 427, and Passes all regressAll.
+
+
