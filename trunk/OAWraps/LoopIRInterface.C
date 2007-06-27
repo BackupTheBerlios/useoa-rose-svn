@@ -255,7 +255,9 @@ class LoopNestProcessor : public AstTopDownProcessing<LoopNestAttribute>
        to an index variable determine if they refer to the same thing */
     bool isIndexVariable(SgVarRefExp *varRef, OA_ptr<NamedLoc> idxVar);
 
-
+    /* Given a statement handle for a loop extract the last statement
+       the loop contains.  If the last statement is a loop recurse. */
+    StmtHandle extractLastLoopStmt(StmtHandle stmt);
 
     // Member vars:
     OA_ptr<list<OA_ptr<LoopAbstraction> > > mResults;
@@ -676,6 +678,24 @@ bool LoopNestProcessor::isIndexVariable(
     return (indexVarNode == indexVarNode2);
 }
 
+StmtHandle LoopNestProcessor::extractLastLoopStmt(StmtHandle stmt) {
+    OA_ptr<IRRegionStmtIterator> bodyIter = mIR.loopBody(stmt);
+    StmtHandle last = 0;
+    for(; bodyIter->isValid(); (*bodyIter)++) {
+        last = bodyIter->current();
+    }
+
+    // if the last statement was another block of some sort, rescurse
+    if(isSgScopeStatement(mIR.getNodePtr(last)) != NULL) {
+        StmtHandle recursedLast;
+        recursedLast = extractLastLoopStmt(last);
+
+        if(recursedLast) { last = recursedLast; }
+    }
+
+    return last;
+}
+
 // Query for assignment operations like '=', '+=', '*=', '/=', or '%='
 static NodeQuerySynthesizedAttributeType queryAssignments(SgNode *astNode) {
     assert(astNode != 0);
@@ -828,14 +848,18 @@ OA_ptr<LoopAbstraction> LoopNestProcessor::buildLoopAbstraction(
         return loopAbstraction;
     }
 
+    // now determine the statement that is the end of this loop
+    StmtHandle stmt = (OA::irhandle_t)(mIR.getNodeNumber(forStatement));    
+    StmtHandle last = extractLastLoopStmt(stmt);
+
+    
     // otherwise use the information calculated above to construct a new
     // LoopAbstraction object.
     OA_ptr<LoopIndex> loopIdx;
     OA_ptr<LoopAbstraction> parent;
     parent = attrib.getLastLoop();
     loopIdx = new LoopIndex(indexVariable, lowerBound, upperBound, step);
-    StmtHandle stmt = (OA::irhandle_t)(mIR.getNodeNumber(forStatement));    
-    loopAbstraction = new LoopAbstraction(loopIdx, stmt, parent);
+    loopAbstraction = new LoopAbstraction(loopIdx, stmt, last, parent);
 
     gStatistics.incrementAcceptedCounter();
     return loopAbstraction;
