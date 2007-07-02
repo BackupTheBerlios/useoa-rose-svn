@@ -176,11 +176,13 @@ InterAliasMap(
                     UnnamedRef(
                         mMemRefType: USE
                         mExprHandle: ExprHandle("*p = %d\n")
+                        mLocal: 0
                     ) ] 
                 9	 => [ 
                     UnnamedRef(
                         mMemRefType: USE
                         mExprHandle: ExprHandle("*q = %d\n")
+                        mLocal: 0
                     ) ] 
                 10	 => [ 
                     SubSetRef(
@@ -189,6 +191,7 @@ InterAliasMap(
                         UnnamedRef(
                             mMemRefType: USE
                             mExprHandle: ExprHandle("*p = %d\n")
+                            mLocal: 0
                         )
                     ) ] 
                 11	 => [ 
@@ -198,6 +201,7 @@ InterAliasMap(
                         UnnamedRef(
                             mMemRefType: USE
                             mExprHandle: ExprHandle("*q = %d\n")
+                            mLocal: 0
                         )
                     ) ] 
 

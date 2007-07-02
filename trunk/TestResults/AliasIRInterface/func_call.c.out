@@ -104,12 +104,12 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
             MemRefHandle("malloc") => 
                 NamedRef( USE, SymHandle("malloc"))
             MemRefHandle("(malloc(((sizeof(int )))))") => 
-                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("(malloc(((sizeof(int )))))"))))
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("(malloc(((sizeof(int )))))"), 0)))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("p =((int *)(malloc(((sizeof(int ))))));") =>
         [
             < NamedRef( DEF, SymHandle("p"))
-            , AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("(malloc(((sizeof(int )))))")))) >
+            , AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("(malloc(((sizeof(int )))))"), 0))) >
         ] }
     CALLSITES = { StmtHandle("p =((int *)(malloc(((sizeof(int ))))));") =>
         [

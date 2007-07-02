@@ -11,7 +11,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("a") => 
                 NamedRef( DEF, SymHandle("a"))
             MemRefHandle("assign_or_agg_initializer:{(0),(1),(2),(3),(4)}") => 
-                SubSetRef( USE, UnnamedRef( USE, ExprHandle("{(0),(1),(2),(3),(4)}")))
+                SubSetRef( USE, UnnamedRef( USE, ExprHandle("{(0),(1),(2),(3),(4)}"), 0))
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

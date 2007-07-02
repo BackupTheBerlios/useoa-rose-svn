@@ -449,6 +449,7 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
                         mMemref2mreSetMap[hiddenMemref].erase(actual_mre);
 
                     } else {
+
                         // Apply reference conversion rules 2 and 4.
                         OA::OA_ptr<OA::MemRefExpr> addr_of_lhs_tmp_mre;
                         addr_of_lhs_tmp_mre =
@@ -566,7 +567,36 @@ applyReferenceConversionRules2And4(OA::StmtHandle stmt,
 
     OA::ExprHandle exprHandle = findTopExprHandle(rhs);
     if ( isSgExpression(rhs) ) {
-         lhs_tmp_mre = new OA::UnnamedRef(mrType, exprHandle);
+
+         //UnnamedRef for LHS is local.
+        
+         // Following steps will find out Procedure Name/scope
+         // of UnnamedRef. 
+
+         SgNode *parent = rhs->get_parent();
+         while ( !isSgFunctionDefinition(parent) ) {
+              parent = parent->get_parent();
+         }
+
+         SgFunctionDefinition *functionDefinition
+                   = isSgFunctionDefinition(parent);
+         
+         ROSE_ASSERT(functionDefinition != NULL); 
+         
+         SgFunctionDeclaration *functionDeclaration =
+              functionDefinition->get_declaration();
+         
+         ROSE_ASSERT(functionDeclaration != NULL);
+         
+         SymHandle procSym = getProcSymHandle(functionDeclaration);
+
+         ProcHandle proc   = getProcHandle(procSym);
+
+         // Create an UnnamedRef
+         lhs_tmp_mre = new OA::UnnamedRef(mrType, exprHandle,proc);
+
+         //lhs_tmp_mre = new OA::UnnamedRef(mrType, exprHandle);
+
     } else {
          assert(0);
     }
@@ -1971,8 +2001,38 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::OA_ptr<OA::MemRefExpr> mre;
 
             OA::ExprHandle exprHandle = findTopExprHandle(astNode);
+
             if ( isSgExpression(astNode) ) {
-                 mre = new OA::UnnamedRef(OA::MemRefExpr::USE, exprHandle);
+
+                 SgFunctionDefinition *functionDefinition
+                   = isSgFunctionDefinition(astNode);
+
+                 if(functionDefinition != NULL) {
+
+                    //SgAggregateInitializer   int A[ ] = { 1,2,3,4,5,6} 
+                    //if A is local initialized inside some procedure,
+                    //then  UnnamedRef is local.
+
+                    SgFunctionDeclaration *functionDeclaration =
+                    functionDefinition->get_declaration();
+
+                    ROSE_ASSERT(functionDeclaration != NULL);
+
+                    SymHandle procSym = getProcSymHandle(functionDeclaration);
+
+                    ProcHandle proc   = getProcHandle(procSym);
+
+                    mre 
+                    = new OA::UnnamedRef(OA::MemRefExpr::USE, exprHandle, proc);
+                 } else {
+
+                    // if A is local initialized inside some procedure, 
+                    // then  UnnamedRef is non-local. 
+
+                    mre = new OA::UnnamedRef(OA::MemRefExpr::USE, exprHandle);
+
+                 }
+
             } else {
                  assert(0);
             }
@@ -3335,6 +3395,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                 
                                 makePtrAssignPair(stmt, function, child_mre);
                             } else {
+
                                 // Apply reference conversion rules 2 and 4.
                                 OA::OA_ptr<OA::MemRefExpr> addr_of_lhs_tmp_mre;
                                 addr_of_lhs_tmp_mre =
@@ -3707,7 +3768,37 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             OA::ExprHandle exprHandle = findTopExprHandle(stringVal);
             if ( isSgExpression(stringVal) ) {
-                 mre = new OA::UnnamedRef(mrType, exprHandle);
+
+                 SgFunctionDefinition *functionDefinition
+                   = isSgFunctionDefinition(stringVal);
+
+                 if(functionDefinition != NULL) {
+
+                    //SgAggregateInitializer   int A[ ] = { 1,2,3,4,5,6}
+                    //if A is local initialized inside some procedure,
+                    //then  UnnamedRef is local.
+
+                    SgFunctionDeclaration *functionDeclaration =
+                    functionDefinition->get_declaration();
+
+                    ROSE_ASSERT(functionDeclaration != NULL);
+
+                    SymHandle procSym = getProcSymHandle(functionDeclaration);
+
+                    ProcHandle proc   = getProcHandle(procSym);
+
+                    mre
+                    = new OA::UnnamedRef(mrType, exprHandle, proc);
+
+                 } else {
+
+                    // if A is local initialized inside some procedure,
+                    // then  UnnamedRef is non-local.
+
+                    mre = new OA::UnnamedRef(mrType, exprHandle);
+
+                 }
+
             } else {
                  assert(0);
             }
@@ -5255,7 +5346,28 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
 
           OA::ExprHandle exprHandle = findTopExprHandle(ctorInitializer);
           if ( isSgExpression(ctorInitializer) ) {
-               mre = new OA::UnnamedRef(mrType, exprHandle);
+
+               //UnnamedRef for LHS is local.
+
+               // Following steps will find out Procedure Name/scope
+               // of UnnamedRef.
+               SgFunctionDefinition *functionDefinition
+                       = isSgFunctionDefinition(ctorInitializer);
+               
+               ROSE_ASSERT(functionDefinition != NULL);
+               
+               SgFunctionDeclaration *functionDeclaration =
+                  functionDefinition->get_declaration();
+               
+               ROSE_ASSERT(functionDeclaration != NULL);
+               
+               SymHandle procSym = getProcSymHandle(functionDeclaration);
+               
+               ProcHandle proc   = getProcHandle(procSym);
+
+               // Create an UnnamedRef
+               mre = new OA::UnnamedRef(mrType, exprHandle,proc);
+              
           } else {
                assert(0);
           }
@@ -5307,7 +5419,28 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
 
        OA::ExprHandle exprHandle = findTopExprHandle(ctorInitializer);
        if ( isSgExpression(ctorInitializer) ) {
-            mre = new OA::UnnamedRef(mrType, exprHandle);
+
+            //UnnamedRef for LHS is local.
+
+            // Following steps will find out Procedure Name/scope
+            // of UnnamedRef.
+            SgFunctionDefinition *functionDefinition
+                     = isSgFunctionDefinition(ctorInitializer);
+            
+            ROSE_ASSERT(functionDefinition != NULL);
+            
+            SgFunctionDeclaration *functionDeclaration =
+                functionDefinition->get_declaration();
+            
+            ROSE_ASSERT(functionDeclaration != NULL);
+            
+            SymHandle procSym = getProcSymHandle(functionDeclaration);
+
+            ProcHandle proc   = getProcHandle(procSym);
+
+            // Create an UnnamedRef
+            mre = new OA::UnnamedRef(mrType, exprHandle,proc);
+
        } else {
             assert(0);
        }
@@ -5333,7 +5466,28 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
 
         OA::ExprHandle exprHandle = findTopExprHandle(ctorInitializer);
         if ( isSgExpression(ctorInitializer) ) {
-             mre = new OA::UnnamedRef(mrType, exprHandle);
+
+               //UnnamedRef for LHS is local.
+
+               // Following steps will find out Procedure Name/scope
+               // of UnnamedRef.
+               SgFunctionDefinition *functionDefinition
+                       = isSgFunctionDefinition(ctorInitializer);
+               
+               ROSE_ASSERT(functionDefinition != NULL);
+               
+               SgFunctionDeclaration *functionDeclaration =
+                  functionDefinition->get_declaration();
+               
+               ROSE_ASSERT(functionDeclaration != NULL);
+               
+               SymHandle procSym = getProcSymHandle(functionDeclaration);
+
+               ProcHandle proc   = getProcHandle(procSym);
+
+               // Create an UnnamedRef
+               mre = new OA::UnnamedRef(mrType, exprHandle,proc);
+
         } else {
              assert(0);
         }

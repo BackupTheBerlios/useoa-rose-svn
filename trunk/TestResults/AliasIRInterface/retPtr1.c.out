@@ -125,14 +125,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("strA") => 
                 NamedRef( DEF, SymHandle("strA"))
             MemRefHandle(""Laurel"") => 
-                SubSetRef( USE, UnnamedRef( USE, ExprHandle(""Laurel"")))
+                SubSetRef( USE, UnnamedRef( USE, ExprHandle(""Laurel""), 0))
         ] }
     MEMREFEXPRS = { StmtHandle("char strB[] = "Hardy";") =>
         [
             MemRefHandle("strB") => 
                 NamedRef( DEF, SymHandle("strB"))
             MemRefHandle(""Hardy"") => 
-                SubSetRef( USE, UnnamedRef( USE, ExprHandle(""Hardy"")))
+                SubSetRef( USE, UnnamedRef( USE, ExprHandle(""Hardy""), 0))
         ] }
     MEMREFEXPRS = { StmtHandle("char *cptr = my_strcpy(strB,strA);") =>
         [

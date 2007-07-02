@@ -245,10 +245,10 @@ main ( unsigned argc,  char * argv[] )
     int filenum = sageProject->numberOfFiles();
 
     // debug info
-    //AstPDFGeneration pdftest;
-    //pdftest.generateInputFiles(sageProject);
-    //AstDOTGeneration dottest;
-    //dottest.generateInputFiles(sageProject);
+    AstPDFGeneration pdftest;
+    pdftest.generateInputFiles(sageProject);
+    AstDOTGeneration dottest;
+    dottest.generateInputFiles(sageProject);
 
 #if 0 
     // Perform the AST normalization.

@@ -71,17 +71,17 @@ PROCEDURE = { < ProcHandle("returnConstRef2"), SymHandle("returnConstRef2") > }
     MEMREFEXPRS = { StmtHandle("return &global;") =>
         [
             MemRefHandle("refRelatedBaseOrTmp") => 
-                UnnamedRef( DEF, ExprHandle("&global"))
+                UnnamedRef( DEF, ExprHandle("&global"), 1, ProcHandle("returnConstRef2"))
             MemRefHandle("refRelatedBaseOrTmp") => 
-                AddressOf( USE, UnnamedRef( DEF, ExprHandle("&global")))
+                AddressOf( USE, UnnamedRef( DEF, ExprHandle("&global"), 1, ProcHandle("returnConstRef2")))
             MemRefHandle("&global") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("global")))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("return &global;") =>
         [
             < NamedRef( DEF, SymHandle("returnConstRef2"))
-            , AddressOf( USE, UnnamedRef( DEF, ExprHandle("&global"))) >
-            < UnnamedRef( DEF, ExprHandle("&global"))
+            , AddressOf( USE, UnnamedRef( DEF, ExprHandle("&global"), 1, ProcHandle("returnConstRef2"))) >
+            < UnnamedRef( DEF, ExprHandle("&global"), 1, ProcHandle("returnConstRef2"))
             , AddressOf( USE, NamedRef( USE, SymHandle("global"))) >
         ] }
     LOCATION = { < SymHandle("global"), not local > }

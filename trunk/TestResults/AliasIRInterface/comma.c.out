@@ -102,7 +102,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("printf") => 
                 NamedRef( USE, SymHandle("printf"))
             MemRefHandle(""*p = %d\n"") => 
-                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle(""*p = %d\n""))))
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle(""*p = %d\n""), 0)))
             MemRefHandle("*p") => 
                 Deref( USE, NamedRef( USE, SymHandle("p")), 1)
         ] }
@@ -113,7 +113,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("printf("*p = %d\n", *p)") =>
         [
-            < 0, AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle(""*p = %d\n"")))) >
+            < 0, AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle(""*p = %d\n""), 0))) >
         ] }
     MEMREFEXPRS = { StmtHandle("printf("*q = %d\n", *q);") =>
         [
@@ -122,7 +122,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("printf") => 
                 NamedRef( USE, SymHandle("printf"))
             MemRefHandle(""*q = %d\n"") => 
-                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle(""*q = %d\n""))))
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle(""*q = %d\n""), 0)))
             MemRefHandle("*q") => 
                 Deref( USE, NamedRef( USE, SymHandle("q")), 1)
         ] }
@@ -133,7 +133,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("printf("*q = %d\n", *q)") =>
         [
-            < 0, AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle(""*q = %d\n"")))) >
+            < 0, AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle(""*q = %d\n""), 0))) >
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
