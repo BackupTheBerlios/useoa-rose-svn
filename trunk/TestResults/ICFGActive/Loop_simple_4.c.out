@@ -26,10 +26,9 @@ InterActive(
                     mNumDeref: 1
                 )
             )    
-            InvisibleLoc(
-                mMRE: 
-                SubSetRef(
-                    mMemRefType: USE
+            LocSubSet(
+                mLoc: 
+                InvisibleLoc(
                     mMRE: 
                     Deref(
                         mMemRefType: USE
@@ -41,11 +40,11 @@ InterActive(
                         mNumDeref: 1
                     )
                 )
+                mFull: 0
             )    
-            InvisibleLoc(
-                mMRE: 
-                SubSetRef(
-                    mMemRefType: DEF
+            LocSubSet(
+                mLoc: 
+                InvisibleLoc(
                     mMRE: 
                     Deref(
                         mMemRefType: USE
@@ -57,6 +56,7 @@ InterActive(
                         mNumDeref: 1
                     )
                 )
+                mFull: 0
             ) ] 
     )
     ActiveStmtSet([ 
@@ -94,10 +94,25 @@ InterActive(
                     mNumDeref: 1
                 )
             )    
-            InvisibleLoc(
-                mMRE: 
-                SubSetRef(
-                    mMemRefType: DEF
+            LocSubSet(
+                mLoc: 
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(x)
+                        )
+                        mNumDeref: 1
+                    )
+                )
+                mFull: 0
+            )    
+            LocSubSet(
+                mLoc: 
+                InvisibleLoc(
                     mMRE: 
                     Deref(
                         mMemRefType: USE
@@ -109,6 +124,7 @@ InterActive(
                         mNumDeref: 1
                     )
                 )
+                mFull: 0
             ) ] 
     )
     ActiveStmtSet([  ] 
@@ -122,13 +138,13 @@ InterActive(
     )
     ActiveMemRefSet([  ] 
     )
-    mNumIterUseful: 4
-    mNumIterVary: 4
+    mNumIterUseful: 5
+    mNumIterVary: 5
     mNumIterActive: 1
 )
 
 
-Total Iters: 10
+Total Iters: 12
 
 *******  end of DoICFGActivity *********
 

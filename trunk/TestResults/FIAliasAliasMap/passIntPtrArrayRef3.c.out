@@ -202,10 +202,9 @@ InterAliasMap(
                         )
                     ) ] 
                 6	 => [ 
-                    InvisibleLoc(
-                        mMRE: 
-                        SubSetRef(
-                            mMemRefType: USE
+                    LocSubSet(
+                        mLoc: 
+                        InvisibleLoc(
                             mMRE: 
                             Deref(
                                 mMemRefType: USE
@@ -217,12 +216,12 @@ InterAliasMap(
                                 mNumDeref: 1
                             )
                         )
+                        mFull: 0
                     ) ] 
                 7	 => [ 
-                    InvisibleLoc(
-                        mMRE: 
-                        SubSetRef(
-                            mMemRefType: USE
+                    LocSubSet(
+                        mLoc: 
+                        InvisibleLoc(
                             mMRE: 
                             Deref(
                                 mMemRefType: USE
@@ -234,6 +233,7 @@ InterAliasMap(
                                 mNumDeref: 1
                             )
                         )
+                        mFull: 0
                     ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
