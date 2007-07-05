@@ -98,10 +98,9 @@ InterSideEffectStandard(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
-                    InvisibleLoc(
-                        mMRE: 
-                        SubSetRef(
-                            mMemRefType: USE
+                    LocSubSet(
+                        mLoc: 
+                        InvisibleLoc(
                             mMRE: 
                             Deref(
                                 mMemRefType: USE
@@ -113,11 +112,11 @@ InterSideEffectStandard(
                                 mNumDeref: 1
                             )
                         )
+                        mFull: 0
                     )    
-                    InvisibleLoc(
-                        mMRE: 
-                        SubSetRef(
-                            mMemRefType: USE
+                    LocSubSet(
+                        mLoc: 
+                        InvisibleLoc(
                             mMRE: 
                             Deref(
                                 mMemRefType: USE
@@ -129,6 +128,7 @@ InterSideEffectStandard(
                                 mNumDeref: 1
                             )
                         )
+                        mFull: 0
                     ) ] 
                 mUSESet: [ 
                     NamedLoc(
@@ -149,10 +149,9 @@ InterSideEffectStandard(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
-                    InvisibleLoc(
-                        mMRE: 
-                        SubSetRef(
-                            mMemRefType: USE
+                    LocSubSet(
+                        mLoc: 
+                        InvisibleLoc(
                             mMRE: 
                             Deref(
                                 mMemRefType: USE
@@ -164,11 +163,11 @@ InterSideEffectStandard(
                                 mNumDeref: 1
                             )
                         )
+                        mFull: 0
                     )    
-                    InvisibleLoc(
-                        mMRE: 
-                        SubSetRef(
-                            mMemRefType: USE
+                    LocSubSet(
+                        mLoc: 
+                        InvisibleLoc(
                             mMRE: 
                             Deref(
                                 mMemRefType: USE
@@ -180,6 +179,7 @@ InterSideEffectStandard(
                                 mNumDeref: 1
                             )
                         )
+                        mFull: 0
                     ) ] 
                 mLREFSet: [ 
                     NamedLoc(
@@ -200,10 +200,9 @@ InterSideEffectStandard(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
-                    InvisibleLoc(
-                        mMRE: 
-                        SubSetRef(
-                            mMemRefType: USE
+                    LocSubSet(
+                        mLoc: 
+                        InvisibleLoc(
                             mMRE: 
                             Deref(
                                 mMemRefType: USE
@@ -215,11 +214,11 @@ InterSideEffectStandard(
                                 mNumDeref: 1
                             )
                         )
+                        mFull: 0
                     )    
-                    InvisibleLoc(
-                        mMRE: 
-                        SubSetRef(
-                            mMemRefType: USE
+                    LocSubSet(
+                        mLoc: 
+                        InvisibleLoc(
                             mMRE: 
                             Deref(
                                 mMemRefType: USE
@@ -231,6 +230,7 @@ InterSideEffectStandard(
                                 mNumDeref: 1
                             )
                         )
+                        mFull: 0
                     ) ] 
                 mREFSet: [ 
                     NamedLoc(
@@ -251,10 +251,9 @@ InterSideEffectStandard(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     )    
-                    InvisibleLoc(
-                        mMRE: 
-                        SubSetRef(
-                            mMemRefType: USE
+                    LocSubSet(
+                        mLoc: 
+                        InvisibleLoc(
                             mMRE: 
                             Deref(
                                 mMemRefType: USE
@@ -266,11 +265,11 @@ InterSideEffectStandard(
                                 mNumDeref: 1
                             )
                         )
+                        mFull: 0
                     )    
-                    InvisibleLoc(
-                        mMRE: 
-                        SubSetRef(
-                            mMemRefType: USE
+                    LocSubSet(
+                        mLoc: 
+                        InvisibleLoc(
                             mMRE: 
                             Deref(
                                 mMemRefType: USE
@@ -282,6 +281,7 @@ InterSideEffectStandard(
                                 mNumDeref: 1
                             )
                         )
+                        mFull: 0
                     ) ] 
                 mUnknownLocSet: [ 
                     UnknownLoc(
@@ -389,22 +389,30 @@ InterSideEffectStandard(
                         ) ] 
                     mUSESet: [ 
                         NamedLoc(
-                            mSymHandle: SymHandle(a)
-                            mLocal: 1
-                            mFullOverlap: [  ] 
-                            mPartOverlap: [  ] 
-                        )    
-                        NamedLoc(
-                            mSymHandle: SymHandle(b)
-                            mLocal: 1
-                            mFullOverlap: [  ] 
-                            mPartOverlap: [  ] 
-                        )    
-                        NamedLoc(
                             mSymHandle: SymHandle(stringcmp)
                             mLocal: 0
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
+                        )    
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(a)
+                                mLocal: 1
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )    
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(b)
+                                mLocal: 1
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
                         )    
                         LocSubSet(
                             mLoc: 
@@ -447,22 +455,30 @@ InterSideEffectStandard(
                         ) ] 
                     mREFSet: [ 
                         NamedLoc(
-                            mSymHandle: SymHandle(a)
-                            mLocal: 1
-                            mFullOverlap: [  ] 
-                            mPartOverlap: [  ] 
-                        )    
-                        NamedLoc(
-                            mSymHandle: SymHandle(b)
-                            mLocal: 1
-                            mFullOverlap: [  ] 
-                            mPartOverlap: [  ] 
-                        )    
-                        NamedLoc(
                             mSymHandle: SymHandle(stringcmp)
                             mLocal: 0
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
+                        )    
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(a)
+                                mLocal: 1
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
+                        )    
+                        LocSubSet(
+                            mLoc: 
+                            NamedLoc(
+                                mSymHandle: SymHandle(b)
+                                mLocal: 1
+                                mFullOverlap: [  ] 
+                                mPartOverlap: [  ] 
+                            )
+                            mFull: 0
                         )    
                         LocSubSet(
                             mLoc: 
@@ -492,56 +508,88 @@ InterSideEffectStandard(
                         mLDEFSet: [  ] 
                         mDEFSet: [  ] 
                         mLUSESet: [ 
-                            NamedLoc(
-                                mSymHandle: SymHandle(a)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
+                            LocSubSet(
+                                mLoc: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(a)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mFull: 0
                             )    
-                            NamedLoc(
-                                mSymHandle: SymHandle(b)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
+                            LocSubSet(
+                                mLoc: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(b)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mFull: 0
                             ) ] 
                         mUSESet: [ 
-                            NamedLoc(
-                                mSymHandle: SymHandle(a)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
+                            LocSubSet(
+                                mLoc: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(a)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mFull: 0
                             )    
-                            NamedLoc(
-                                mSymHandle: SymHandle(b)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
+                            LocSubSet(
+                                mLoc: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(b)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mFull: 0
                             ) ] 
                         mLREFSet: [ 
-                            NamedLoc(
-                                mSymHandle: SymHandle(a)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
+                            LocSubSet(
+                                mLoc: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(a)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mFull: 0
                             )    
-                            NamedLoc(
-                                mSymHandle: SymHandle(b)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
+                            LocSubSet(
+                                mLoc: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(b)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mFull: 0
                             ) ] 
                         mREFSet: [ 
-                            NamedLoc(
-                                mSymHandle: SymHandle(a)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
+                            LocSubSet(
+                                mLoc: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(a)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mFull: 0
                             )    
-                            NamedLoc(
-                                mSymHandle: SymHandle(b)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
+                            LocSubSet(
+                                mLoc: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(b)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mFull: 0
                             ) ] 
                         mUnknownLocSet: [ 
                             UnknownLoc(

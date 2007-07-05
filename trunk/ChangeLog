@@ -3873,3 +3873,10 @@ Aborted
    - Regenerated testcases for ICFGActivity and FIAliasAlias analysis.
    - Compiled with OpenAnalysis revision 435. 
 
+07/05/07    UseOA-ROSE svn trunk r305 Priyadarshini Malusare.
+   - Two InvisibleLocations mayOverlap if:
+     a. Number of Derefs are same.
+     b. Same SymHandle for innermost MRE.
+   - Regenerated testcases for ICFGActivity and sideEffect analysis.
+   - Compiled with OpenAnalysis revision 435. Passes All RegressAll.
+
