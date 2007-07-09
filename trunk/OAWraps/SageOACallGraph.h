@@ -30,11 +30,11 @@ public:
 
 class FindProcsPass : public SgSimpleProcessing {
 private:
- SgStatementPtrList & proc_lst;
+  std::set<SgStatement*> & proc_lst;
 protected:
   void visit(SgNode* node);
 public:
-  FindProcsPass(SgStatementPtrList& p)  
+  FindProcsPass(std::set<SgStatement *>& p)  
     : proc_lst(p) {}
 };
 
@@ -61,14 +61,19 @@ class SageIRProcIterator: public OA::IRProcIterator
   void operator++ (); 
 
   void reset();
+
+  //! Add any ProcHandles from otherIter to this.
+  //! Warning this might disrupt the current pointer.
+  void unionIterators(SageIRProcIterator &otherIter);
+
   SageIRInterface& ir;
  private:
-  SgStatementPtrList procs_in_proj; 
-  SgStatementPtrList::iterator st_iter;
-  SgStatementPtrList::iterator begin;
-  SgStatementPtrList::iterator end;
+  std::set<SgStatement*> procs_in_proj; 
+  std::set<SgStatement*>::iterator st_iter;
+  std::set<SgStatement*>::iterator begin;
+  std::set<SgStatement*>::iterator end;
   bool valid;
-  void FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst);
+  void FindProcsInSgTree(SgNode *node, std::set<SgStatement*>& lst);
   bool mExcludeInputFiles;
 
 };

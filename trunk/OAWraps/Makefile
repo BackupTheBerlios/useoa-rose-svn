@@ -13,7 +13,7 @@ include ../config/Makefile.inc
 srcdir = $(USEOAROSEDIR)/OAWraps/
 
 DEFINES = -DHAVE_CONFIG_H -DOA_IRHANDLETYPE_UL $(GLOBAL_DEFINES) #-DOA_OPEN64 
-INCLUDES = -I. -I.. $(ROSE_INCLUDES) $(OPENANALYSIS_INC) 
+INCLUDES = -I. -I.. $(ROSE_INCLUDES) $(OPENANALYSIS_INC) -I/fusion/research2/bwhite/cpp-annotation-language
 LIBS= $(ROSE_LIBS) -lm -lfl -lrt -lpthread $(OPENANALYSIS_LIB)
 CXXFLAGS_2 = $(CXXFLAGS) -fPIC -ftemplate-depth-50 
 LDFLAGS = -fPIC $(PROFILE_OPTIONS)
@@ -35,7 +35,7 @@ libSage2OASources = Sage2OA.C LoopIRInterface.C MemSage2OA.C SageOACallGraph.C c
 
 
 #lib_LIBRARIES = libSage2OA.a
-lib_LIBRARIES = libSage2OA.so 
+lib_LIBRARIES = libSage2OA.so libSage2OA.a 
 LIBRARIES = $(lib_LIBRARIES)
 
 libSage2OA_so_SOURCES = $(libSage2OASources)

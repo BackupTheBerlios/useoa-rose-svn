@@ -3708,7 +3708,7 @@ Aborted
     - Added the output for IdxAccess and IdxExprAccess for the 
       NotationGenerator.
 
-5/4/07     UseOA-ROSE svn trunk r291 Michelle Strout
+5/4/07     UseOA-ROSE svn trunk r292 Michelle Strout
     - Modified MemRefExpr created due to pointer arithmetic to make sure
       that only one of the operands was a pointer or array type.
       This makes ./OATest --oa-FIAliasAliasMap -rose:C_only -I/s/bach/e/proj/oadev/CPU2006v1.0.1/benchspec/CPU2006/401.bzip2/src bzip2benchmark.c work.
@@ -3880,3 +3880,82 @@ Aborted
    - Regenerated testcases for ICFGActivity and sideEffect analysis.
    - Compiled with OpenAnalysis revision 435. Passes All RegressAll.
 
+07/05/07    UseOA-ROSE svn trunk r306   Brian White
+
+    - Modified CallNode creation case of 
+      ExprTreeTraversal::evaluateInheritedAttribute.  I removed the
+      following SgNodes from consideration as call nodes:
+        SgNewExp
+	SgSizeOfOp
+        SgVarArgCopyOp
+        SgVarArgEndOp
+        SgVarArgOp
+	SgVarArgStartOneOperandOp
+	SgVarArgStartOp
+	SgExprListExp
+
+      Now CallNodes are only associated with those SgNodes that
+      give rise to call handles in findAllMemRefsAndPtrAssigns:
+      SgFunctionCallExp, SgDeleteExp, and SgConstructorInitializer.
+
+    - Modified ExprTreeTraversal::evaluateInheritedAttribute, which
+      translates SgNodes to an ExprTree.  Added a case for SgNodes
+      that should not be translated to expression nodes.  The one
+      such case so far is SgMemberFunctionRefExp.
+
+    - Changed the backend implementation of SageIRProcIterator from
+      a list to a set and added a unionIterators method between two
+      SageIRProcIterator.  
+
+    - Commented out code in SgDeleteExp case of findAllMemRefsAndPtrAssigns, 
+      which appeared to be a bug.  [Someone else had previously noted FIXME.]
+
+      // FIXME?: this throws away composedMre in above
+      // statement
+      //                        composedMre = deref_mre->clone();   
+
+    - Changed isBaseClassInvocation to handle case in which a
+      SgInitializedName's SgConstructorInitializer is NULL.
+      In that case, we are unable to determine if the name of
+      the SgInitializedName matches the name of the invoked
+      constructor.  Instead, look at the type of the SgInitializedName
+      and compare that to the name of the SgInitializedName.
+
+    - Modified returnsAddress to call getBaseType before 
+      examining a type to determine whether it is a SgPointerType
+      or SgReferenceType.  This was previously returning the
+      wrong thing for a SgTypedefType that referred to a SgPointerType.
+
+    - Modified SgThrowOp case of findAllMemRefsAndPtrAssigns.
+      If the operand of a throw expression is NULL, as it is
+      allowed to be, do not recurse, as the NULL node will cause
+      an assertion failure during recursion.
+
+    - Reset iterator (mRhsIter->reset()) in SgArrowExp/SgDotExp case.
+      The problem was that we were iterativing over this loop
+      multiple times (via an enclosing loop).  The first time through
+      the mRhsIter loop is fine, but subsequent iterations found
+      mRhsIter->isValid() == false, since the iterator had not been reset.
+      We should be careful and _always_ reset() an iterator during
+      loop initialization to encourage safe programming, even if
+      it appears unnecessary.
+
+      Added reset() to a slew of for loop initializations, though
+      these are redundant in all of these cases (since the iterator
+      is defined immediately preceding the loop).
+
+      Beware that the iterator should _not_ be reset in this case:
+
+	    for ( ; actualsIter->isValid(); (*actualsIter)++ ) { 
+
+    - getLocation() was encountered NULL declarations for SgInitializedNames.
+      This appears to be a bug in ROSE and occurs when the SgInitializedName
+      represents a static member variable and is attached to a SgVarRefExp
+      where the variable is declared after its use (via the SgVarRefExp).
+      This was reported to Dan:
+          Date: Wed, 4 Jul 2007 17:56:22 -0400 (EDT)
+          From: Brian White <bwhite@cacao.csl.cornell.edu>
+          To: dan quinlan <dquinlan@llnl.gov>
+          Subject: bug with static variables
+      For now, I have always declared such variables to be non-local.
+      This will be incorrect (half the time).

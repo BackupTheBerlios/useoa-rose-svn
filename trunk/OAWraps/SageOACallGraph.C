@@ -102,7 +102,7 @@ void SageIRCallsiteIterator::reset()
 
 //SageIRProcIterator implementation
 
-void SageIRProcIterator::FindProcsInSgTree(SgNode *node, SgStatementPtrList& lst)
+void SageIRProcIterator::FindProcsInSgTree(SgNode *node, std::set<SgStatement *>& lst)
 {
   if ( mExcludeInputFiles ) {
     //    std::cout << "Exclude = true" << std::endl;
@@ -160,6 +160,24 @@ void SageIRProcIterator::reset()
   st_iter = begin;
 }
 
+void SageIRProcIterator::unionIterators(SageIRProcIterator &otherIter)
+{
+    // It only makes sense to union ProcHandles from the same IR interface.
+    ROSE_ASSERT(&ir == &otherIter.ir);
+
+    std::set<SgStatement *> tmp;
+    std::set_union(procs_in_proj.begin(), procs_in_proj.end(),
+                   otherIter.procs_in_proj.begin(), otherIter.procs_in_proj.end(),
+                   std::inserter(tmp, tmp.end()));
+    procs_in_proj = tmp;
+    
+    // Recent the iterator pointers.  We may get unexpected results
+    // if we are in the middle of iterating over this.
+    begin = procs_in_proj.begin();
+    st_iter = procs_in_proj.begin();
+    end = procs_in_proj.end();
+
+}
 
 void FindCallsitesPass::visit(SgNode* node)
 {
@@ -179,6 +197,7 @@ void FindCallsitesPass::visit(SgNode* node)
 
   if( isSgFunctionCallExp(exp) ) {
       if (!isVaStart(isSgFunctionCallExp(exp))) {
+	//	std::cout << "Found call site: " << node->unparseToString() << std::endl;
         call_lst.push_back(exp);
       }
 
@@ -250,7 +269,10 @@ void FindProcsPass::visit(SgNode* node)
 #else
   if(isSgFunctionDeclaration(node))
 #endif
-    proc_lst.push_back(isSgStatement(node));
+  {
+    //    std::cout << "Found proc: " << isSgFunctionDefinition(node)->get_declaration()->get_name().str() << std::endl;
+    proc_lst.insert(isSgStatement(node));
+  }
   return;
 }
 

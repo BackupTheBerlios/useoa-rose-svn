@@ -495,6 +495,7 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   public virtual OA::SideEffect::InterSideEffectIRInterface,
   public virtual OA::Linearity::LinearityIRInterface,
   public virtual OA::ReachConsts::ReachConstsIRInterface,
+		  //  public virtual OA::AttributePropagation::AttributePropagationIRInterface,
   public virtual OA::DataDep::DataDepIRInterface,
   public virtual OA::Loop::LoopIRInterface
 {
@@ -748,6 +749,8 @@ public:
   std::string toString(const OA::ExprHandle h) 
       {
           SgExpression * ex=(SgExpression*)getNodePtr(h);
+          if ( ex == NULL ) { return ("NULL ExprHandle\n"); }
+	  //	  std::cout << "exprType = " << ex->sage_class_name() << std::endl;
           return ex->unparseToString();
     }
   std::string toString(const OA::CallHandle h);

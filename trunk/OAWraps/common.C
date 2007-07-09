@@ -1360,6 +1360,9 @@ bool returnsAddress(SgFunctionCallExp *functionCallExp)
   //  SgType *type = functionCallExp->get_return_type();
   ROSE_ASSERT(type != NULL);
 
+  type = getBaseType(type);
+  ROSE_ASSERT(type != NULL);
+
   if ( isSgReferenceType(type) || isSgPointerType(type) ) {
     returnsAddr = true;
   }
@@ -1373,6 +1376,8 @@ bool returnsAddress(SgFunctionCallExp *functionCallExp)
   // NB:  type could be SgTypeVoid and need not be a SgFunctionType.
   if ( funcType != NULL ) {
     SgType *retType = funcType->get_return_type();
+    retType = getBaseType(retType);
+    ROSE_ASSERT(retType != NULL);
     if ( isSgReferenceType(retType) || isSgPointerType(retType) ) {
       returnsAddr = true;
     }
@@ -1498,6 +1503,28 @@ bool isBaseClassInvocation(SgConstructorInitializer *ctorInitializer)
       // is not a variable, but a base class.
       SgMemberFunctionDeclaration *invokedCtor = 
         ctorInitializer->get_declaration();
+      if ( invokedCtor == NULL ) {
+          // The constructor initializer is NULL, so we can not determine
+          // the name of the invoked constructor.  [This may happen
+          // when the constructor is implicitly defined.]  Instead,
+          // compare the type of the SgInitializedName, which should
+          // have the same name as the constructor, to the name
+          // of the SgInitializedName.
+          SgType *initType = initName->get_type();
+          ROSE_ASSERT(initType != NULL);
+
+          initType = getBaseType(initType);
+
+          SgNamedType *namedType = isSgNamedType(initType);
+
+	  //	  std::string typeName = initType->unparseToString();
+	  //	  std::cout << "initName: " << initName->get_name().str() << " type = " << typeName << std::endl;
+          if ( ( namedType != NULL ) && 
+               ( namedType->get_name() == initName->get_name() ) ) {
+            return true;
+          }
+          return false;
+      }
       ROSE_ASSERT(invokedCtor != NULL);
 
       if ( invokedCtor->get_name() == initName->get_name() ) {

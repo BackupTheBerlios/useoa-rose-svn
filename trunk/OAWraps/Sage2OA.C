@@ -1298,7 +1298,7 @@ SageIRInterface::getDefMemRefs(OA::StmtHandle stmt)
   // and only put DEFs in the list
   OA::OA_ptr<SageIRMemRefIterator> mIter;
   mIter = new SageIRMemRefIterator(stmt, *this);
-  for ( ; mIter->isValid(); ++(*mIter) ) {
+  for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
     OA::MemRefHandle memref = mIter->current();
 
     // loop over memory reference expressions for this memref handle
@@ -1332,7 +1332,7 @@ SageIRInterface::getUseMemRefs(OA::StmtHandle stmt)
   // and only put USES in the list
   OA::OA_ptr<SageIRMemRefIterator> mIter;
   mIter = new SageIRMemRefIterator(stmt, *this);
-  for ( ; mIter->isValid(); ++(*mIter) ) {
+  for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
     OA::MemRefHandle memref = mIter->current();
 
     // loop over memory reference expressions for this memref handle
@@ -1457,11 +1457,26 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
         cout << "getLocation initName: " << initName->get_name().str() << endl;
       }
 
+      SgFunctionDefinition *enclosingProc = NULL;
       SgDeclarationStatement *declarationStmt = initName->get_declaration();
-      ROSE_ASSERT(declarationStmt != NULL);
-      
-      SgFunctionDefinition *enclosingProc = 
-	getEnclosingFunction(declarationStmt);
+      if ( declarationStmt == NULL ) {
+        // BW 7/5/07   There appears to be a bug in ROSE bug that
+        // leads to a NULL declaration for a SgInitializedName
+        // representing a static member variable and attached to a SgVarRefExp
+        // when the variable is declared after its use (via the SgVarRefExp).
+        // This was reported to Dan:
+        //    Date: Wed, 4 Jul 2007 17:56:22 -0400 (EDT)
+        //    From: Brian White <bwhite@cacao.csl.cornell.edu>
+        //    To: dan quinlan <dquinlan@llnl.gov>
+        //    Subject: bug with static variables
+        // Could call getEnclosingFunction on the initName, but
+        // this appears to do the wrong thing as well (i.e., returning
+        // a function even though it is declared in the class).
+        // We'll simply do the wrong thing here.
+        enclosingProc = NULL;
+      } else {
+        enclosingProc = getEnclosingFunction(declarationStmt);
+      }
       
       // For some reason, the declaration stmt of the initialized
       // name for myParent is the SgCtorInitializerList and is
@@ -1496,6 +1511,14 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
         } else {
           // This symbol is not visible within this procedure, 
           // so return a NULL location.
+#if 1
+	  if ( debug ) {
+        cout << "getLocation initName: " << initName->get_name().str() << endl;
+	cout << "enclosing: " << enclosingProc->unparseToString() << endl;
+	cout << "procDefn: " << procDefn->unparseToString() << endl;
+	cout << "decl: " << declarationStmt->unparseToString() << endl;
+	  }
+#endif
 	  return loc;
 	}
 
@@ -2716,6 +2739,13 @@ std::string SageIRInterface::toString(const OA::CallHandle h)
           retstr = ctorInitializer->unparseToString();
           break;
         }
+
+      case V_SgReturnStmt:
+      case V_SgExprListExp:
+        {
+          retstr = parent->unparseToString();
+          break;
+        }
       default:
         {
           ROSE_ABORT();
@@ -3119,6 +3149,8 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
   if (node == NULL) {
     return("warning: SymHandle is 0  ");
   }
+  //  printf("symHandle addr = %x\n", node);
+  //  std::cout << "nodeType = " << node->sage_class_name() << std::endl;
 
   SgName nm;
   std::string ret;
@@ -3130,6 +3162,15 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
       SgFunctionDeclaration *fd = isSgFunctionDeclaration(node);
       ROSE_ASSERT(fd != NULL);
 
+#if 0
+      SgFunctionDeclaration *defining = getDefiningDeclaration(fd);
+  
+      if ( defining != NULL ) {
+   
+	printf("defining symHandle addr = %x\n", defining);
+	std::cout << defining->get_definition()->unparseToString() << std::endl;
+      }
+#endif
       nm = fd->get_name();
       ret = nm.str();
 
@@ -3372,7 +3413,7 @@ OA::SymHandle SageIRInterface::getFormalSym(OA::ProcHandle procHandle,
     getFormalParamIterator(procSymHandle);
 
   int paramNum = 0;
-  for ( ; formalsIter->isValid(); (*formalsIter)++ ) { 
+  for (formalsIter->reset(); formalsIter->isValid(); (*formalsIter)++ ) { 
     
     if ( paramNum == n )
       formal = formalsIter->current();
@@ -3550,7 +3591,7 @@ OA::SymHandle SageIRInterface::getFormalForActual(OA::ProcHandle caller,
   // list of parameters.
   int  n          = 1;
   bool foundParam = false;
-  for ( ; callsiteParamIter->isValid(); n++, (*callsiteParamIter)++ ) { 
+  for (callsiteParamIter->reset(); callsiteParamIter->isValid(); n++, (*callsiteParamIter)++ ) { 
     
     OA::ExprHandle callsiteParam = callsiteParamIter->current(); 
     if ( callsiteParam == param ) {
@@ -3568,8 +3609,7 @@ OA::SymHandle SageIRInterface::getFormalForActual(OA::ProcHandle caller,
              << ") within list of parameters of types (";
     }
 
-    callsiteParamIter->reset();
-    for ( ; callsiteParamIter->isValid(); (*callsiteParamIter)++ ) { 
+    for (callsiteParamIter->reset(); callsiteParamIter->isValid(); (*callsiteParamIter)++ ) { 
     
       OA::ExprHandle callsiteParam = callsiteParamIter->current(); 
       node = getNodePtr(callsiteParam);
@@ -3594,7 +3634,7 @@ OA::SymHandle SageIRInterface::getFormalForActual(OA::ProcHandle caller,
 
   int  m             = 1;
   bool foundNthParam = false;
-  for ( ; formalParamIter->isValid(); m++, (*formalParamIter)++ ) { 
+  for (formalParamIter->reset(); formalParamIter->isValid(); m++, (*formalParamIter)++ ) { 
     
     retFormal = formalParamIter->current(); 
     if ( m == n ) {
@@ -3687,6 +3727,8 @@ class ExprTreeTraversal
     // within the ExprTree as the inherited attribute.
     OA::OA_ptr<OA::ExprTree::Node> parent = inheritedAttribute;
 
+    //    std::cout << "exprTreeBuild: " << astNode->sage_class_name() << " " << astNode->unparseToString() << std::endl;
+
     if ( isSgVarRefExp(astNode) || isSgThisExp(astNode) ) {
 
       // ConstSymNode (with const type modifier) or
@@ -3729,7 +3771,7 @@ class ExprTreeTraversal
             
           } 
         }
-      } 
+      }
       
       if ( isConst ) {
         
@@ -3772,7 +3814,8 @@ class ExprTreeTraversal
       }
       parent = node;
 
-    } else if ( isSgUnaryOp(astNode) || isSgBinaryOp(astNode) ) {
+    } else if ( isSgUnaryOp(astNode) || isSgBinaryOp(astNode) ||
+                isSgAssignInitializer(astNode) ) {
       // OpNode
       OA::OpHandle h = mIR->getNodeNumber(astNode);
       OA::OA_ptr<OA::ExprTree::OpNode> node;
@@ -3785,12 +3828,8 @@ class ExprTreeTraversal
         
       parent = node;
       
-    } else if ( isSgDeleteExp(astNode) || isSgNewExp(astNode) || 
-                isSgSizeOfOp(astNode) || isSgVarArgCopyOp(astNode) || 
-                isSgVarArgEndOp(astNode) || isSgVarArgOp(astNode) || 
-                isSgVarArgStartOneOperandOp(astNode) || 
-                isSgVarArgStartOp(astNode) || isSgFunctionCallExp(astNode) ||
-                isSgExprListExp(astNode)) {
+    } else if ( isSgDeleteExp(astNode) || isSgConstructorInitializer(astNode)
+                || isSgFunctionCallExp(astNode) ) {
 
       // CallNode
       OA::CallHandle h = mIR->getNodeNumber(astNode);
@@ -3816,6 +3855,17 @@ class ExprTreeTraversal
       }
       parent = node;
       
+    } else if ( isSgMemberFunctionRefExp(astNode) ||
+                isSgNewExp(astNode) || 
+                isSgSizeOfOp(astNode) || isSgVarArgCopyOp(astNode) || 
+                isSgVarArgEndOp(astNode) || isSgVarArgOp(astNode) || 
+                isSgVarArgStartOneOperandOp(astNode) || 
+                isSgVarArgStartOp(astNode) || 
+                isSgExprListExp(astNode)) {
+
+      // Do not create an expression node for these AST nodes.
+      // Do not adjust the parent/return value for this traversal.
+
     } else {
 #if 0
       // (vanilla) Node
@@ -3829,6 +3879,8 @@ class ExprTreeTraversal
 #endif
       cerr << "Can not create a vanilla node because it is virtual." << endl;
       cerr << "Sage type " << astNode->sage_class_name() << " must correspond to a derived OA::ExprTree node type" << endl;
+      std::cerr << "astNode: " << astNode->unparseToString() << std::endl;
+      std::cerr << "astNode parent: " << astNode->get_parent()->unparseToString() << std::endl;
       ROSE_ABORT();
     }
 
@@ -4023,7 +4075,7 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
   SgPragmaDeclaration * pragmadecl=NULL;
 
   OA::OA_ptr<OA::IRStmtIterator> stmtIterPtr = getStmtIterator(h);
-  for ( ; stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
+  for (stmtIterPtr->reset(); stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
 
      OA::StmtHandle stmt = stmtIterPtr->current();
      SgNode *node = getNodePtr(stmt);
@@ -4198,7 +4250,7 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
   SgPragmaDeclaration * pragmadecl=NULL;
 
   OA::OA_ptr<OA::IRStmtIterator> stmtIterPtr = getStmtIterator(h);
-  for ( ; stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
+  for (stmtIterPtr->reset(); stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
 
      OA::StmtHandle stmt = stmtIterPtr->current();
      SgNode *node = getNodePtr(stmt);
@@ -5062,7 +5114,7 @@ void SageIRInterface::initPointerAssignMaps()
 
       // Iterate over the statements of this procedure
       OA::OA_ptr<OA::IRStmtIterator> stmtIterPtr = getStmtIterator(currProc);
-      for ( ; stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
+      for (stmtIterPtr->reset(); stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
           OA::StmtHandle stmt = stmtIterPtr->current();
 
           // find all of the ptr assign pairs in the statement
@@ -5800,13 +5852,13 @@ OA::OA_ptr<OA::IdxExprAccessIterator> SageIRInterface::getIdxExprAccessIter(
     // whether or not its an index expression access, if it is add it to
     // the list of elements to iterate over
     OA_ptr<IRStmtIterator> i = getStmtIterator(p); 
-    for(; i->isValid(); (*i)++) {
+    for(i->reset(); i->isValid(); (*i)++) {
         StmtHandle stmt = i->current();
         OA_ptr<MemRefHandleIterator> j = getAllMemRefs(stmt);
-        for(; j->isValid(); (*j)++) {
+        for(j->reset(); j->isValid(); (*j)++) {
             MemRefHandle memref = j->current();
             OA_ptr<MemRefExprIterator> k = getMemRefExprIterator(memref);
-            for(; k->isValid(); (*k)++) {
+            for(k->reset(); k->isValid(); (*k)++) {
                 OA_ptr<MemRefExpr> mre = k->current();
                 if(mre->isaIdxExprAccess()) {
                     OA_ptr<IdxExprAccess> idxExprAccess;
