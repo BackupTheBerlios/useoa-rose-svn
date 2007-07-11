@@ -5145,6 +5145,26 @@ void SageIRInterface::createUseDefForVarArg(OA::MemRefHandle memref,
         */
     }
 }
+
+static SgFunctionDeclaration*
+getFunctionDeclaration(SgConstructorInitializer *ctorInitializer)
+{
+    ROSE_ASSERT(ctorInitializer != NULL);
+
+    SgFunctionDeclaration *functionDeclaration = 
+        ctorInitializer->get_declaration();
+    ROSE_ASSERT(functionDeclaration != NULL);
+
+    SgFunctionDeclaration *definingDecl = 
+        getDefiningDeclaration(functionDeclaration);
+ 
+    if ( definingDecl != NULL ) {
+        return definingDecl;
+    }
+
+    return functionDeclaration;
+}
+
 /**  
  *   \brief  Return an MRE for the SgConstructorInitializer's implicit this.
  *   \param  ctorInitializer  A SgConstructorInitializer representing
@@ -5384,14 +5404,8 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
 
                // Following steps will find out Procedure Name/scope
                // of UnnamedRef.
-               SgFunctionDefinition *functionDefinition
-                       = isSgFunctionDefinition(ctorInitializer);
-               
-               ROSE_ASSERT(functionDefinition != NULL);
-               
                SgFunctionDeclaration *functionDeclaration =
-                  functionDefinition->get_declaration();
-               
+                   getFunctionDeclaration(ctorInitializer);
                ROSE_ASSERT(functionDeclaration != NULL);
                
                SymHandle procSym = getProcSymHandle(functionDeclaration);
@@ -5457,14 +5471,8 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
 
             // Following steps will find out Procedure Name/scope
             // of UnnamedRef.
-            SgFunctionDefinition *functionDefinition
-                     = isSgFunctionDefinition(ctorInitializer);
-            
-            ROSE_ASSERT(functionDefinition != NULL);
-            
             SgFunctionDeclaration *functionDeclaration =
-                functionDefinition->get_declaration();
-            
+                getFunctionDeclaration(ctorInitializer);
             ROSE_ASSERT(functionDeclaration != NULL);
             
             SymHandle procSym = getProcSymHandle(functionDeclaration);
@@ -5504,14 +5512,8 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
 
                // Following steps will find out Procedure Name/scope
                // of UnnamedRef.
-               SgFunctionDefinition *functionDefinition
-                       = isSgFunctionDefinition(ctorInitializer);
-               
-               ROSE_ASSERT(functionDefinition != NULL);
-               
                SgFunctionDeclaration *functionDeclaration =
-                  functionDefinition->get_declaration();
-               
+                   getFunctionDeclaration(ctorInitializer);
                ROSE_ASSERT(functionDeclaration != NULL);
                
                SymHandle procSym = getProcSymHandle(functionDeclaration);

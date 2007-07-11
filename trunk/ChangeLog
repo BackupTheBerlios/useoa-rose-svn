@@ -3959,3 +3959,11 @@ Aborted
           Subject: bug with static variables
       For now, I have always declared such variables to be non-local.
       This will be incorrect (half the time).
+
+07/09/07    UseOA-ROSE svn trunk r307   Brian White	
+
+    - Fixed 3 cases in createConstructorInitializerReceiverMRE
+      where we were incorrectly casting a SgConstructorInitializer
+      to a SgFunctionDefinition.  Instead extract the
+      SgFunctionDeclaration (we don't need the SgFunctionDefinition)
+      via getFunctionDeclaration.
