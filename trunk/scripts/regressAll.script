@@ -1,6 +1,9 @@
 echo "########################### running regressFIAliasAliasMap.script"
 source scripts/regressFIAliasAliasMap.script
 
+echo "########################### running regressFIAliasReachableAliasMap.script"
+source scripts/regressFIAliasReachableAliasMap.script
+
 echo "########################### running regressAliasIRInterface.script"
 source scripts/regressAliasIRInterface.script
 

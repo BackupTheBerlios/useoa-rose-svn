@@ -282,7 +282,7 @@ InterAliasMap(
 
     )
     AliasMap(
-        mProcHandle: ProcHandle(foo)
+        mProcHandle: ProcHandle(main)
         mNumSets: 8
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 

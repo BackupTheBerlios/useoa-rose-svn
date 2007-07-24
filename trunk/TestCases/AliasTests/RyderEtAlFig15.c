@@ -40,4 +40,10 @@ void b()
   *t = y;
 }
 
+int main()
+{
+  a();
+  b();
+  return 0;
+}
 

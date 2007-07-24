@@ -1,0 +1,209 @@
+
+InterAliasMap(
+    AliasMap(
+        mProcHandle: ProcHandle(main)
+        mNumSets: 12
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(x)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(y)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(z)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(q)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(r)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                7	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(printf)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                8	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle("*p = %d\n")
+                        mLocal: 0
+                    ) ] 
+                9	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle("*q = %d\n")
+                        mLocal: 0
+                    ) ] 
+                10	 => [ 
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mExprHandle: ExprHandle("*p = %d\n")
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    ) ] 
+                11	 => [ 
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mExprHandle: ExprHandle("*q = %d\n")
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+                4	 => 2
+                5	 => 2
+                6	 => 2
+                7	 => 2
+                8	 => 2
+                9	 => 2
+                10	 => 1
+                11	 => 1
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                1	 => [ MemRefHandle(x)    MemRefHandle(*q) ] 
+                2	 => [ MemRefHandle(y)    MemRefHandle(*p) ] 
+                3	 => [ MemRefHandle(z) ] 
+                4	 => [ MemRefHandle(p)    MemRefHandle(p) ] 
+                5	 => [ MemRefHandle(q)    MemRefHandle(q)    MemRefHandle((q = &x)) ] 
+                6	 => [ MemRefHandle(r)    MemRefHandle(((q = &x) , r)) ] 
+                7	 => [ MemRefHandle(printf)    MemRefHandle(printf) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(x)
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(q)
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(y)
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(p)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(r)
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(z)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(p)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(q)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(r)
+                    ) ] 
+                7	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(printf)
+                    ) ] 
+                8	 => [ 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("*p = %d\n")
+                        mLocal: 0
+                    ) ] 
+                9	 => [ 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("*q = %d\n")
+                        mLocal: 0
+                    ) ] 
+                10	 => [ 
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mExprHandle: ExprHandle("*p = %d\n")
+                            mLocal: 0
+                        )
+                    ) ] 
+                11	 => [ 
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mExprHandle: ExprHandle("*q = %d\n")
+                            mLocal: 0
+                        )
+                    ) ] 
+
+    )
+)

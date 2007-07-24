@@ -2,7 +2,7 @@
 
 int g;
 
-int foo(int *a) 
+int main(int *a) 
 {
   int y;
   int *p;

@@ -3967,3 +3967,14 @@ Aborted
       to a SgFunctionDefinition.  Instead extract the
       SgFunctionDeclaration (we don't need the SgFunctionDefinition)
       via getFunctionDeclaration.
+
+07/24/07    UseOA-ROSE svn trunk r308   Brian White	
+
+    - Requires OA version 446, which implements FIAliasReachable.
+	
+    - Added regression tests for FIAliasReachable, which
+      only examines reachable procedures, to regressAll.script.
+      regressFIAliasReachableAliasMap.script uses the same
+      tests as FIAlias, though the results are sometimes different.
+
+    - Added OATest option for FIAliasReachable.

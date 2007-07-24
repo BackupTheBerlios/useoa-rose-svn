@@ -1,0 +1,46 @@
+echo "Generating TestResults/FIAliasReachableAliasMap/alias1.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/alias1.c >& TestResults/FIAliasReachableAliasMap/alias1.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/alias2.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/alias2.c >& TestResults/FIAliasReachableAliasMap/alias2.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/alias3.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/alias3.c >& TestResults/FIAliasReachableAliasMap/alias3.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/alias4.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/alias4.c >& TestResults/FIAliasReachableAliasMap/alias4.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/alias4b.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/alias4b.c >& TestResults/FIAliasReachableAliasMap/alias4b.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/comma.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/comma.c >& TestResults/FIAliasReachableAliasMap/comma.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/constQualified.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/constQualified.c >& TestResults/FIAliasReachableAliasMap/constQualified.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/utke.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/utke.c >& TestResults/FIAliasReachableAliasMap/utke.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/OAWikiEx.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/OAWikiEx.c >& TestResults/FIAliasReachableAliasMap/OAWikiEx.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/fields2.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/fields2.c >& TestResults/FIAliasReachableAliasMap/fields2.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/fields3.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/fields3.c >& TestResults/FIAliasReachableAliasMap/fields3.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/funCall.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/funCall.c >& TestResults/FIAliasReachableAliasMap/funCall.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/functionPtr.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/functionPtr.c >& TestResults/FIAliasReachableAliasMap/functionPtr.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/functionPtr2.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/functionPtr2.c >& TestResults/FIAliasReachableAliasMap/functionPtr2.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/passIntPtrArrayRef.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/passIntPtrArrayRef.c >& TestResults/FIAliasReachableAliasMap/passIntPtrArrayRef.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/passIntPtrArrayRef2.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/passIntPtrArrayRef2.c >& TestResults/FIAliasReachableAliasMap/passIntPtrArrayRef2.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/passIntPtrArrayRef3.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/passIntPtrArrayRef3.c >& TestResults/FIAliasReachableAliasMap/passIntPtrArrayRef3.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/passIntPtr.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/passIntPtr.c >& TestResults/FIAliasReachableAliasMap/passIntPtr.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/swap.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/swap.c >& TestResults/FIAliasReachableAliasMap/swap.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/invLoc.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/invLoc.c >& TestResults/FIAliasReachableAliasMap/invLoc.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/RyderEtAlFig11.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/RyderEtAlFig11.c >& TestResults/FIAliasReachableAliasMap/RyderEtAlFig11.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/RyderEtAlFig14.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/RyderEtAlFig14.c >& TestResults/FIAliasReachableAliasMap/RyderEtAlFig14.c.out
+echo "Generating TestResults/FIAliasReachableAliasMap/RyderEtAlFig15.c.out"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/RyderEtAlFig15.c >& TestResults/FIAliasReachableAliasMap/RyderEtAlFig15.c.out

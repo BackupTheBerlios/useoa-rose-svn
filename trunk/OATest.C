@@ -113,6 +113,7 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
 int DoAlias(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+int DoFIAliasReachableAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoCallGraph(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoICFG(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoICFGDep(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
@@ -196,6 +197,7 @@ void usage(char **argv)
   cerr << "          --oa-DataDepGCD" << endl;
   cerr << "          --oa-ExprTree" << endl;
   cerr << "          --oa-FIAliasAliasMap" << endl;
+  cerr << "          --oa-FIAliasReachableAliasMap" << endl;
   cerr << "          --oa-FIAliasEquivSets" << endl;
   cerr << "          --oa-ICFG" << endl;
   cerr << "          --oa-ICFGActivity" << endl;
@@ -372,6 +374,10 @@ main ( unsigned argc,  char * argv[] )
     else if( cmds->HasOption("--oa-FIAliasAliasMap") )
     {
       DoFIAliasAliasMap(sageProject, &nodeArray, p_h);
+    }
+    else if( cmds->HasOption("--oa-FIAliasReachableAliasMap") )
+    {
+      DoFIAliasReachableAliasMap(sageProject, &nodeArray, p_h);
     }
     else if( cmds->HasOption("--oa-AliasMap") )
     {
@@ -1091,6 +1097,70 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   
   if(!skipAnalysis) {
     interAlias = fialiasman->performAnalysis(procIter);
+    if(!silent) { interAlias->output(*irInterface); }
+  }
+}
+
+/** Find main within a program. */
+SgFunctionDeclaration *findMain(SgProject *project)
+{
+    ROSE_ASSERT(project != NULL);
+    std::list<SgNode *> nodes = NodeQuery::querySubTree(project,
+                                                        V_SgFunctionDeclaration);
+
+    SgFunctionDeclaration *mainFunc = NULL;
+    for (std::list<SgNode *>::iterator it = nodes.begin();
+         it != nodes.end(); ++it ) {
+        SgFunctionDeclaration *decl = isSgFunctionDeclaration(*it);      
+        ROSE_ASSERT(decl != NULL);
+
+        SgName name = decl->get_name();
+        if ( !strcmp("main", name.str() ) ) {
+            mainFunc = decl;
+            break;
+        }
+    }
+    return mainFunc;
+}
+
+int DoFIAliasReachableAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+{
+  int returnvalue=FALSE;
+  if ( debug ) printf("*******start of FIAlias\n");
+  OA::OA_ptr<SageIRInterface> irInterface;
+  //std::vector<SgNode*> nodeArray;
+  //bool p_h=FALSE; //for debugging only switch between persistent and "pointer" handles (pointers are faster, persistent are easier to debug
+  irInterface = new SageIRInterface(p, na, p_handle); 
+  //irInterface = new SageIRInterface(p, &nodeArray, p_h); 
+  
+#if 0
+  list<SgNode *> nodes = NodeQuery::querySubTree(p,
+						 V_SgVariableDeclaration);
+  for (list<SgNode *>::iterator it = nodes.begin();
+       it != nodes.end(); ++it ) {
+    
+    SgNode *n = *it;
+    ROSE_ASSERT(n != NULL);
+    
+    SgVariableDeclaration *var = isSgVariableDeclaration(n);
+    ROSE_ASSERT(var != NULL);
+
+    cout << var->unparseToCompleteString() << endl;
+  }
+#endif
+
+  //FIAlias
+  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
+  fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  procIter = new SageIRProcIterator(findMain(p), *irInterface);
+  
+  //#define BRIAN_ADDED_DEBUG_PARAM_TO_PERFORMANALYSIS
+  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
+  
+  if(!skipAnalysis) {
+    OA::Alias::FIAliasImplement implement = OA::Alias::REACHABLE_PROCS;
+    interAlias = fialiasman->performAnalysis(procIter, implement);
     if(!silent) { interAlias->output(*irInterface); }
   }
 }
