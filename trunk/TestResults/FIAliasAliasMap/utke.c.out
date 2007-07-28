@@ -2,7 +2,7 @@
 InterAliasMap(
     AliasMap(
         mProcHandle: ProcHandle(main)
-        mNumSets: 4
+        mNumSets: 5
         mStartId: 0
         mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
                 0	 => [ 
@@ -35,17 +35,26 @@ InterAliasMap(
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(z)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
 
         mIdToSetStatusMap: int	 => AliasResultType
                 0	 => 1
                 1	 => 1
                 2	 => 2
                 3	 => 2
+                4	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(z)    MemRefHandle(*p)    MemRefHandle(*p) ] 
                 2	 => [ MemRefHandle(y) ] 
                 3	 => [ MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p) ] 
+                4	 => [ MemRefHandle(z) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
@@ -75,6 +84,11 @@ InterAliasMap(
                     NamedRef(
                         mMemRefType: DEF
                         mSymHandle: SymHandle(p)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(z)
                     ) ] 
 
     )

@@ -33,11 +33,33 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     )
                     
                     Statement: StmtHandle(p = 5;)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(bar(&m,&p,&v,x);)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(p)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(m = 5;)	 => 
@@ -45,11 +67,33 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     )
                     
                     Statement: StmtHandle(p = 2;)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(bar(&p,&m,&v,x);)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(p)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(*f =(((m + p) + v) + *x);)	 => 
@@ -123,11 +167,33 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     )
                     
                     Statement: StmtHandle(p = 5;)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(bar(&m,&p,&v,x);)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(p)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(m = 5;)	 => 
@@ -135,11 +201,33 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     )
                     
                     Statement: StmtHandle(p = 2;)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(bar(&p,&m,&v,x);)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(p)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(*f =(((m + p) + v) + *x);)	 => 
@@ -213,11 +301,33 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     )
                     
                     Statement: StmtHandle(p = 5;)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(bar(&m,&p,&v,x);)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(p)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(m = 5;)	 => 
@@ -225,11 +335,33 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     )
                     
                     Statement: StmtHandle(p = 2;)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(m)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=5>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(bar(&p,&m,&v,x);)	 => 
-                    ConstDefSet([  ] 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(p)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
                     )
                     
                     Statement: StmtHandle(*f =(((m + p) + v) + *x);)	 => 
