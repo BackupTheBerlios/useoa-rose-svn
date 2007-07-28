@@ -29,7 +29,7 @@ ReachDefsStandard(
     mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
             StmtHandle(return *p =(a = &g);)	 => [ StmtHandle(*p =(a = &b);) ] 
 
-    mExitReachDefs: [ StmtHandle(return *p =(a = &g);) ] 
+    mExitReachDefs: [ StmtHandle(*p =(a = &b);)    StmtHandle(return *p =(a = &g);) ] 
 )
 
 *******  end of DoReachDef *********

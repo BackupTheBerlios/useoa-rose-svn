@@ -11,7 +11,7 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     
                     Statement: StmtHandle(y = 5;)	 => 
                     ConstDefSet([ 
-                            ConstDefSet: 
+                            ConstDef: 
                             ConstDef(
                                 Location: 
                                 NamedLoc(
@@ -26,7 +26,7 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     
                     Statement: StmtHandle(x =(y + y);)	 => 
                     ConstDefSet([ 
-                            ConstDefSet: 
+                            ConstDef: 
                             ConstDef(
                                 Location: 
                                 NamedLoc(
@@ -37,7 +37,7 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                                 )
                                 mCDType: ,VALUE=2>
                             )    
-                            ConstDefSet: 
+                            ConstDef: 
                             ConstDef(
                                 Location: 
                                 NamedLoc(
@@ -52,7 +52,7 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     
                     Statement: StmtHandle(y = 5;)	 => 
                     ConstDefSet([ 
-                            ConstDefSet: 
+                            ConstDef: 
                             ConstDef(
                                 Location: 
                                 NamedLoc(
@@ -67,7 +67,7 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     
                     Statement: StmtHandle(z = y;)	 => 
                     ConstDefSet([ 
-                            ConstDefSet: 
+                            ConstDef: 
                             ConstDef(
                                 Location: 
                                 NamedLoc(
@@ -82,7 +82,7 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     
                     Statement: StmtHandle(if(x > 0) {y = 5;x =(y + y);}else {y = 5;})	 => 
                     ConstDefSet([ 
-                            ConstDefSet: 
+                            ConstDef: 
                             ConstDef(
                                 Location: 
                                 NamedLoc(
@@ -97,7 +97,7 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     
                     Statement: StmtHandle(return 0;)	 => 
                     ConstDefSet([ 
-                            ConstDefSet: 
+                            ConstDef: 
                             ConstDef(
                                 Location: 
                                 NamedLoc(
@@ -108,7 +108,7 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                                 )
                                 mCDType: ,VALUE=5>
                             )    
-                            ConstDefSet: 
+                            ConstDef: 
                             ConstDef(
                                 Location: 
                                 NamedLoc(

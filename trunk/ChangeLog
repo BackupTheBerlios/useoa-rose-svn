@@ -3978,3 +3978,14 @@ Aborted
       tests as FIAlias, though the results are sometimes different.
 
     - Added OATest option for FIAliasReachable.
+
+07/27/07    UseOA-Rose svn trunk r309   Barbara Kreaseck
+
+    - re-gen'd the following to match AliasMap changes and ConstDef changes
+      in OA r448
+         FIAliasAliasMap
+         FIAliasReachableAliasMap
+         ReachDefs
+         ICFGReachConsts
+
+
