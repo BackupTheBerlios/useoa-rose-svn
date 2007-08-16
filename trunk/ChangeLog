@@ -3993,4 +3993,9 @@ Aborted
     - re-gen'd FIAliasAliasMap, FIAliasReachableAliasMap, ICFGReachConsts
       to reflect changes in OpenAnalysis r450
 
+08/16/07    UseOA-Rose svn trunk 311   Priyadarshini Malusare
+
+   - create --oa-PtrAssign flag in OATest to test assignment pairs
+   - Added TestCases and TestResults /AssignPairs/integer_assignment.*
+
 

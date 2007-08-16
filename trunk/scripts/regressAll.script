@@ -43,6 +43,9 @@ source scripts/regressICFGActivity.script
 echo "########################### running regressICFGReachConsts.script"
 source scripts/regressICFGReachConsts.script
 
+echo "########################### running regressptrAssign.script"
+source scripts/regressptrAssign.script
+
 
 
 

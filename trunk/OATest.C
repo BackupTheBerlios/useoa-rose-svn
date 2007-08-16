@@ -145,6 +145,7 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 
 int DoLoop(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+int DoPtrAssign(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 
 
 /* Debug flags:
@@ -364,6 +365,30 @@ main ( unsigned argc,  char * argv[] )
              }     
 	 } 
     }
+
+    else if( cmds->HasOption("--oa-PtrAssign") ) {
+      for (int i = 0; i < filenum; ++i)
+      {
+        SgFile &sageFile = sageProject->get_file(i);
+        SgGlobal *root = sageFile.get_root();
+        SgDeclarationStatementPtrList& declList = root->get_declarations ();
+        for (SgDeclarationStatementPtrList::iterator p = declList.begin();         p != declList.end(); ++p)
+        {
+            SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
+            if (func == 0){
+                continue;
+            }
+            SgFunctionDefinition *defn = func->get_definition();
+            if (defn == 0){
+                continue;
+            }
+            DoPtrAssign(defn, sageProject, &nodeArray, p_h);
+        }
+      }
+    }
+
+
+    
     else if( ( cmds->HasOption("--oa-FIAliasEquivSets") ) ||
 	     ( cmds->HasOption("--oa-FIAlias") ) )
     {
@@ -2386,5 +2411,34 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
         }
     }
   } 
+}
+
+
+int DoPtrAssign(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+{
+  if ( debug ) printf("*******start of DoPtrAssign\n");
+
+  OA::OA_ptr<SageIRInterface> ir;
+  ir = new SageIRInterface(p, na, p_handle);
+
+  // iterate over all statements
+  OA::ProcHandle proc((OA::irhandle_t)(ir->getNodeNumber(f)));
+  OA::OA_ptr<OA::IRStmtIterator> sIt = ir->getStmtIterator(proc);
+  for ( ; sIt->isValid(); (*sIt)++)
+  {
+     OA::StmtHandle stmt = sIt->current();
+     std::cout << "\n==========stmt========\n";
+     std::cout << "\nstmt = ( " << ir->toString(stmt) << " ) "<< std::endl;
+     OA::OA_ptr<OA::AssignPairIterator> espIterPtr
+         = ir->getAssignPairIterator(stmt);
+     for ( ; espIterPtr->isValid(); (*espIterPtr)++) {
+         // unbundle pair
+         OA::MemRefHandle mref = espIterPtr->currentTarget();
+         OA::ExprHandle expr = espIterPtr->currentSource();
+         std::cout << "\n\t--expr----------------------------------------\n";
+         std::cout << "\t  expr = " << ir->toString(expr) << std::endl;
+         std::cout << "\t----------------------------------------------";
+     }
+  }
 }
 
