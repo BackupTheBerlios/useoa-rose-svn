@@ -1639,10 +1639,10 @@ int DoUDDUChainsXAIF(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode
   udduchains->dump(std::cout, irInterface);
 
  // and finally UDDUChainsXAIF
-  OA::OA_ptr<OA::XAIF::ManagerStandard> udmanXAIF;
-  udmanXAIF = new OA::XAIF::ManagerStandard(irInterface);
+  OA::OA_ptr<OA::XAIF::ManagerUDDUChainsXAIF> udmanXAIF;
+  udmanXAIF = new OA::XAIF::ManagerUDDUChainsXAIF(irInterface);
   OA::OA_ptr<OA::XAIF::UDDUChainsXAIF> udduchainsXAIF=
-  udmanXAIF->performAnalysis((OA::irhandle_t)irInterface->getNodeNumber(f),cfg,udduchains);
+  udmanXAIF->performAnalysis(cfg,udduchains);
   udduchainsXAIF->dump(std::cout, irInterface);
 
   

@@ -287,13 +287,7 @@ InterSideEffectStandard(
                         mMODSet: [  ] 
                         mLDEFSet: [  ] 
                         mDEFSet: [  ] 
-                        mLUSESet: [ 
-                            NamedLoc(
-                                mSymHandle: SymHandle(c)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
-                            ) ] 
+                        mLUSESet: [  ] 
                         mUSESet: [ 
                             NamedLoc(
                                 mSymHandle: SymHandle(c)
@@ -301,13 +295,7 @@ InterSideEffectStandard(
                                 mFullOverlap: [  ] 
                                 mPartOverlap: [  ] 
                             ) ] 
-                        mLREFSet: [ 
-                            NamedLoc(
-                                mSymHandle: SymHandle(c)
-                                mLocal: 1
-                                mFullOverlap: [  ] 
-                                mPartOverlap: [  ] 
-                            ) ] 
+                        mLREFSet: [  ] 
                         mREFSet: [ 
                             NamedLoc(
                                 mSymHandle: SymHandle(c)
