@@ -170,7 +170,16 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
 {
     verifyCallHandleNodeType(node);
     OA::CallHandle call = getCallHandle(node);
-  
+ 
+    OA::OA_ptr<OA::IRCallsiteParamIterator> actualsIt =
+        getCallsiteParams(call);
+    actualsIt->reset();
+    for ( ; actualsIt->isValid(); (*actualsIt)++ ) {
+        OA::ExprHandle actualExpr = actualsIt->current();
+        // Store all ExprHandles for the Statement
+        mStmt2allExprsMap[stmt].insert(actualExpr);
+    }
+    
     bool isCallADotExp           = false;
     bool isCallANonStaticMethodInvocation = false;
 
@@ -730,7 +739,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         // Therefore, while makePtrAssignPairs gets the top mem ref handles,
         // makeAssignPairs gets the top expression handles.
         ExprHandle exprHandle = getMemRefHandle(astNode);
-        mStmt2allExprsMap[stmt].insert(exprHandle);
+        //mStmt2allExprsMap[stmt].insert(exprHandle);
     }
 
     switch(astNode->variantT()) {
@@ -1236,6 +1245,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             findAllMemRefsAndPtrAssigns(condExp->get_conditional_exp(),stmt);
             findAllMemRefsAndPtrAssigns(condExp->get_true_exp(),stmt);
             findAllMemRefsAndPtrAssigns(condExp->get_false_exp(),stmt);
+
+
+
+            // Store ExprHandles for the condition checking
+            mStmt2allExprsMap[stmt].insert(getMemRefHandle(astNode));
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
@@ -3615,6 +3629,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
           
             SgStatement *condition = ifStmt->get_conditional();
             if ( condition != NULL ) {
+
+                // Store all ExprHandles for the Statement
+                mStmt2allExprsMap[stmt].insert(getMemRefHandle(condition));
+
                 findAllMemRefsAndPtrAssigns( condition, stmt );
             }
             break;
@@ -3642,6 +3660,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             }
             SgExpression *testExpr = forStatement->get_test_expr();
             if (testExpr != NULL) {
+
+                 // Store all ExprHandles for the Statement
+                 mStmt2allExprsMap[stmt].insert(getMemRefHandle(astNode));
+
                 findAllMemRefsAndPtrAssigns( testExpr, stmt );
             }
 
@@ -3687,6 +3709,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             SgStatement *condition = whileStmt->get_condition();
             if ( condition != NULL ) {
+
+                // Store all ExprHandles for the Statement
+                mStmt2allExprsMap[stmt].insert(getMemRefHandle(condition));
+
                 findAllMemRefsAndPtrAssigns( condition, stmt );
             }
             break;
@@ -3699,6 +3725,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             SgStatement *condition = doWhileStmt->get_condition();
             if ( condition != NULL ) {
+
+                // Store all ExprHandles for the Statement
+                mStmt2allExprsMap[stmt].insert(getMemRefHandle(astNode));
+
                 findAllMemRefsAndPtrAssigns( condition, stmt );
             }
             break;
@@ -4922,6 +4952,10 @@ SageIRInterface::makeAssignPair(OA::StmtHandle stmt,
     mStmtToAssignPairs[stmt].insert(
         pair<OA::MemRefHandle,
              OA::ExprHandle>(lhs_memref, rhs_expr));
+
+    // Store all ExprHandles for the Statement
+    mStmt2allExprsMap[stmt].insert(rhs_expr);
+
 }
 
 void

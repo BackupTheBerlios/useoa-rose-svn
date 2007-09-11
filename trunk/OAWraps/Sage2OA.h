@@ -505,7 +505,8 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   friend class SgParamBindPtrAssignIterator;
   friend class ExprTreeTraversal;
   friend class NumberTraversal;
-
+  friend class SageExprHandleIterator;
+  
   public:
   //! Constructor.
   SageIRInterface(SgNode *root, 
@@ -862,6 +863,10 @@ public:
   //! target = expr
   OA::OA_ptr<OA::AssignPairIterator> 
     getAssignPairIterator(OA::StmtHandle h);
+
+  // Iterator over Expressions in the given Statement
+  OA::OA_ptr<OA::ExprHandleIterator>
+      SageIRInterface::getExprHandleIterator(OA::StmtHandle stmt);
 
   //! Return an iterator over all independent MemRefExpr for given proc
   OA::OA_ptr<OA::MemRefExprIterator> getIndepMemRefExprIter(OA::ProcHandle h);

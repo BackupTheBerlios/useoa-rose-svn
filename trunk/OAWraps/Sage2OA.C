@@ -4025,7 +4025,33 @@ OA::Linearity::IRStmtType
 //-------------------------------------------------------------------------
 // ActivityIRInterface
 //-------------------------------------------------------------------------
- 
+
+
+
+OA::OA_ptr<OA::ExprHandleIterator>
+SageIRInterface::getExprHandleIterator(OA::StmtHandle h)
+{
+
+  if(mStmt2allExprsMap[h].empty()) {
+     initMemRefAndPtrAssignMaps();
+  }
+  OA::OA_ptr<std::list<OA::ExprHandle> > exprList;
+  exprList = new std::list<OA::ExprHandle>;
+
+  std::set<OA::ExprHandle>::iterator pairIter;
+
+  for (pairIter = SageIRInterface::mStmt2allExprsMap[h].begin(); 
+       pairIter!= SageIRInterface::mStmt2allExprsMap[h].end();
+       pairIter++) {
+       exprList->push_back(*pairIter);
+  }
+
+  OA::OA_ptr<OA::ExprHandleIterator> retval;
+  retval = new SageExprHandleIterator(exprList);
+  return retval;
+}
+
+
 //! Given a statement return a list to the pairs of 
 //! target MemRefHandle, ExprHandle where
 //! target = expr
