@@ -18,3 +18,35 @@ echo "Testing TestCases/ExprTree/SimpleUnbalanced.c, TestResults/ExprTree/Simple
 ./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleUnbalanced.c >& t
 diff t TestResults/ExprTree/SimpleUnbalanced.c.out
 
+echo "Testing TestCases/ExprTree/integer_assignment.c, TestResults/ExprTree/integer_assignment.c.out "
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/integer_assignment.c >& t
+diff t TestResults/ExprTree/integer_assignment.c.out
+
+echo "Testing TestCases/ExprTree/function.c, TestResults/ExprTree/function.c.out "
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/function.c >& t
+diff t TestResults/ExprTree/function.c.out
+
+echo "Testing TestCases/ExprTree/function_pointer.c, TestResults/ExprTree/function_pointer.c.out "
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/function_pointer.c >& t
+diff t TestResults/ExprTree/function_pointer.c.out
+
+echo "Testing TestCases/ExprTree/multiple_assignment.c, TestResults/ExprTree/multiple_assignment.c.out "
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/multiple_assignment.c >& t
+diff t TestResults/ExprTree/multiple_assignment.c.out
+
+echo "Testing TestCases/ExprTree/multiple_operations.c, TestResults/ExprTree/multiple_operations.c.out "
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/multiple_operations.c >& t
+diff t TestResults/ExprTree/multiple_operations.c.out
+
+echo "Testing TestCases/ExprTree/preincreament.c, TestResults/ExprTree/preincreament.c.out "
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/preincreament.c >& t
+diff t TestResults/ExprTree/preincreament.c.out
+
+echo "Testing TestCases/ExprTree/postincreament.c, TestResults/ExprTree/postincreament.c.out "
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/postincreament.c >& t
+diff t TestResults/ExprTree/postincreament.c.out
+
+echo "Testing TestCases/ExprTree/combine.c, TestResults/ExprTree/combine.c.out "
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/combine.c >& t
+diff t TestResults/ExprTree/combine.c.out
+

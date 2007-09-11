@@ -12,5 +12,13 @@ test::  SimpleCall2.c,            Checked by LMR 01/08/07
 test::  SimpleCall.c,             Checked by LMR 01/08/07
 test::  SimpleSin.c,              Checked by LMR 01/08/07
 test::  SimpleUnbalanced.c,       Checked by LMR 01/08/07
+test:: integer_assignment.c,
+test:: function.c,
+test:: function_pointer.c,
+test:: multiple_assignment.c,
+test:: multiple_operations.c,
+test:: preincreament.c,
+test:: postincreament.c,
+test:: combine.c,
 
 

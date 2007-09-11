@@ -8,3 +8,19 @@ echo "Generating TestResults/ExprTree/SimpleSin.c.out"
 ./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleSin.c >& TestResults/ExprTree/SimpleSin.c.out
 echo "Generating TestResults/ExprTree/SimpleUnbalanced.c.out"
 ./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/SimpleUnbalanced.c >& TestResults/ExprTree/SimpleUnbalanced.c.out
+echo "Generating TestResults/ExprTree/integer_assignment.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/integer_assignment.c >& TestResults/ExprTree/integer_assignment.c.out
+echo "Generating TestResults/ExprTree/function.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/function.c >& TestResults/ExprTree/function.c.out
+echo "Generating TestResults/ExprTree/function_pointer.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/function_pointer.c >& TestResults/ExprTree/function_pointer.c.out
+echo "Generating TestResults/ExprTree/multiple_assignment.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/multiple_assignment.c >& TestResults/ExprTree/multiple_assignment.c.out
+echo "Generating TestResults/ExprTree/multiple_operations.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/multiple_operations.c >& TestResults/ExprTree/multiple_operations.c.out
+echo "Generating TestResults/ExprTree/preincreament.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/preincreament.c >& TestResults/ExprTree/preincreament.c.out
+echo "Generating TestResults/ExprTree/postincreament.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/postincreament.c >& TestResults/ExprTree/postincreament.c.out
+echo "Generating TestResults/ExprTree/combine.c.out"
+./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/combine.c >& TestResults/ExprTree/combine.c.out

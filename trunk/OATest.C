@@ -2357,6 +2357,39 @@ int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * 
 
 int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
+
+  if ( debug ) printf("*******start of DoExprTree\n");
+  OA::OA_ptr<SageIRInterface> ir;
+  ir = new SageIRInterface(p, na, p_handle);
+
+  // iterate over all statements
+  //   iterate over ExprHandles for the statement
+  //     create ExprTree(expr)
+  OA::ProcHandle proc((OA::irhandle_t)(ir->getNodeNumber(f)));
+  OA::OA_ptr<OA::IRStmtIterator> sIt = ir->getStmtIterator(proc);
+  for ( ; sIt->isValid(); (*sIt)++) {
+    OA::StmtHandle stmt = sIt->current();
+    OA::OA_ptr<OA::ExprHandleIterator> exprIter;
+    exprIter = ir->getExprHandleIterator(stmt);
+    std::cout << "\n========================stmt============================\n";
+    std::cout << "\nstmt = ";
+    std::cout << ir->toString(stmt) << std::endl;
+
+    for ( ; exprIter->isValid(); (*exprIter)++) {
+         OA::ExprHandle expr = exprIter->current();
+         std::cout << "\n\t--expr----------------------------------------\n";
+         std::cout << "\t  expr = " << ir->toString(expr) << std::endl;
+         std::cout << "\t----------------------------------------------";
+         OA::OA_ptr<OA::ExprTree> eTreePtr = ir->getExprTree(expr);
+         eTreePtr->output(*ir);
+    }
+
+  }
+  return 0;
+
+
+    
+  /*  
   if ( debug ) printf("*******start of DoExprTree\n");
   OA::OA_ptr<SageIRInterface> ir;
   ir = new SageIRInterface(p, na, p_handle);
@@ -2411,6 +2444,7 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
         }
     }
   } 
+  */
 }
 
 
