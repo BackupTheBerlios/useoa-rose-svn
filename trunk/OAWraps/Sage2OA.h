@@ -865,8 +865,7 @@ public:
     getAssignPairIterator(OA::StmtHandle h);
 
   // Iterator over Expressions in the given Statement
-  OA::OA_ptr<OA::ExprHandleIterator>
-      SageIRInterface::getExprHandleIterator(OA::StmtHandle stmt);
+  OA::OA_ptr<OA::ExprHandleIterator> getExprHandleIterator(OA::StmtHandle stmt);
 
   //! Return an iterator over all independent MemRefExpr for given proc
   OA::OA_ptr<OA::MemRefExprIterator> getIndepMemRefExprIter(OA::ProcHandle h);
