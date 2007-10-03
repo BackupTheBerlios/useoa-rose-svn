@@ -17,8 +17,8 @@ test:: function.c,
 test:: function_pointer.c,
 test:: multiple_assignment.c,
 test:: multiple_operations.c,
-test:: preincreament.c,
-test:: postincreament.c,
+#test:: preincreament.c,
+#test:: postincreament.c,
 test:: combine.c,
 
 

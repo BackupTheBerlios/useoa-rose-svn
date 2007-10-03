@@ -181,13 +181,13 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("(( *(f -> ::Foo::mFooPtr)).::Foo::mX) = x;") =>
         [
             MemRefHandle("refRelatedBaseOrTmp") => 
-                SubSetRef( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr), 1))
+                SubSetRef( USE, FieldAccess( USE, SubSetRef( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr), 1)), mX))
             MemRefHandle("f") => 
                 NamedRef( USE, SymHandle("f"))
             MemRefHandle("x") => 
                 NamedRef( USE, SymHandle("x"))
             MemRefHandle("(( *(f -> ::Foo::mFooPtr)).::Foo::mX)") => 
-                SubSetRef( DEF, Deref( USE, SubSetRef( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr), 1)), 1))
+                SubSetRef( DEF, Deref( USE, SubSetRef( USE, FieldAccess( USE, SubSetRef( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr), 1)), mX)), 1))
             MemRefHandle("(f -> ::Foo::mFooPtr)") => 
                 FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mFooPtr)
         ] }

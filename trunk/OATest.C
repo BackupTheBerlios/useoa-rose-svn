@@ -145,7 +145,7 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 
 int DoLoop(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
-int DoPtrAssign(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+int DoAssignPairs(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 
 
 /* Debug flags:
@@ -366,7 +366,7 @@ main ( unsigned argc,  char * argv[] )
 	 } 
     }
 
-    else if( cmds->HasOption("--oa-PtrAssign") ) {
+    else if( cmds->HasOption("--oa-AssignPairs") ) {
       for (int i = 0; i < filenum; ++i)
       {
         SgFile &sageFile = sageProject->get_file(i);
@@ -382,7 +382,8 @@ main ( unsigned argc,  char * argv[] )
             if (defn == 0){
                 continue;
             }
-            DoPtrAssign(defn, sageProject, &nodeArray, p_h);
+
+            DoAssignPairs(defn, sageProject, &nodeArray, p_h);
         }
       }
     }
@@ -2448,7 +2449,7 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 }
 
 
-int DoPtrAssign(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
+int DoAssignPairs(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
   if ( debug ) printf("*******start of DoPtrAssign\n");
 

@@ -31,21 +31,30 @@ stmt = double x;
 
 stmt = foo(a,f,x,t);
 
-	--Call-----------------------------------------
-	  Call: [foo(a,f,x,t)]
+	--expr----------------------------------------
+	  expr = a
 	----------------------------------------------
 graph EXPRESSION TREE:
 
     Node 0: ET MemRefNode ( a )
 
+	--expr----------------------------------------
+	  expr = f
+	----------------------------------------------
 graph EXPRESSION TREE:
 
     Node 0: ET MemRefNode ( f )
 
+	--expr----------------------------------------
+	  expr = x
+	----------------------------------------------
 graph EXPRESSION TREE:
 
     Node 0: ET MemRefNode ( x )
 
+	--expr----------------------------------------
+	  expr = t
+	----------------------------------------------
 graph EXPRESSION TREE:
 
     Node 0: ET MemRefNode ( t )
@@ -71,6 +80,13 @@ stmt = int i;
 stmt = a =((a * x) + sin(t));
 
 	--expr----------------------------------------
+	  expr = t
+	----------------------------------------------
+graph EXPRESSION TREE:
+
+    Node 0: ET MemRefNode ( t )
+
+	--expr----------------------------------------
 	  expr = ((a * x) + sin(t))
 	----------------------------------------------
 graph EXPRESSION TREE:
@@ -88,10 +104,3 @@ graph EXPRESSION TREE:
     Edge: 
         0 => 
         Node 4: ET CallNode ( sin(t) )
-
-	--Call-----------------------------------------
-	  Call: [sin(t)]
-	----------------------------------------------
-graph EXPRESSION TREE:
-
-    Node 0: ET MemRefNode ( t )

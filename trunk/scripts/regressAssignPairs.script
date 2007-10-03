@@ -1,0 +1,4 @@
+echo "Testing TestCases/AssignPairs/integer_assignment.c, TestResults/AssignPairs/integer_assignment.c.out "
+./OATest -edg:w --oa-AssignPairs -c TestCases/AssignPairs/integer_assignment.c >& t
+diff t TestResults/AssignPairs/integer_assignment.c.out
+

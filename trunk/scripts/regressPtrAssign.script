@@ -1,4 +1,0 @@
-echo "Testing TestCases/PtrAssign/integer_assignment.c, TestResults/PtrAssign/integer_assignment.c.out "
-./OATest -edg:w --oa-PtrAssign -c TestCases/PtrAssign/integer_assignment.c >& t
-diff t TestResults/PtrAssign/integer_assignment.c.out
-

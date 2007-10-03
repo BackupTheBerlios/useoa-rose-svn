@@ -27,21 +27,30 @@ stmt = double x;
 
 stmt = foo(a,f,x,t);
 
-	--Call-----------------------------------------
-	  Call: [foo(a,f,x,t)]
+	--expr----------------------------------------
+	  expr = a
 	----------------------------------------------
 graph EXPRESSION TREE:
 
     Node 0: ET MemRefNode ( a )
 
+	--expr----------------------------------------
+	  expr = f
+	----------------------------------------------
 graph EXPRESSION TREE:
 
     Node 0: ET MemRefNode ( f )
 
+	--expr----------------------------------------
+	  expr = x
+	----------------------------------------------
 graph EXPRESSION TREE:
 
     Node 0: ET MemRefNode ( x )
 
+	--expr----------------------------------------
+	  expr = t
+	----------------------------------------------
 graph EXPRESSION TREE:
 
     Node 0: ET MemRefNode ( t )

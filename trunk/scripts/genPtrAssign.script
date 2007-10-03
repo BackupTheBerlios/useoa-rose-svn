@@ -1,2 +1,0 @@
-echo "Generating TestResults/PtrAssign/integer_assignment.c.out"
-./OATest -edg:w --oa-PtrAssign -c TestCases/PtrAssign/integer_assignment.c >& TestResults/PtrAssign/integer_assignment.c.out

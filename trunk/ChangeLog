@@ -4011,6 +4011,10 @@ Aborted
    - Not a major regressAll failure. Only output sequence order
      mismatch.
 
+10/1/07    UseOA-ROSE svn trunk 317  Priyadarshini Malusare
+   - Few commits were not done properly and therefore we got lots
+     of regressAll. I fixed the problem in this revision.
+	 
 10/3/07    UseOA-Rose svn trunk 317   Michelle Strout
     - put code in findAllMemRefsAndPtrAssigns to handle SgVarArgStartOp
     - changed the code in MemSage2OA.C:createMemRefExprsForPtrArith so
@@ -4019,5 +4023,7 @@ Aborted
     plus node in the AST is passed up and assigned to the second plus node
     instead of another layer of SubSetRef, AddressOf being composed.
 
-
+10/3/07    UseOA-Rose svn trunk 318   Priyadarshini Malusare
+   - Few commits were not done properly and therefore we got lots
+     of regressAll. I fixed the problem in this revision.
 

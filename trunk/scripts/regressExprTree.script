@@ -38,14 +38,6 @@ echo "Testing TestCases/ExprTree/multiple_operations.c, TestResults/ExprTree/mul
 ./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/multiple_operations.c >& t
 diff t TestResults/ExprTree/multiple_operations.c.out
 
-echo "Testing TestCases/ExprTree/preincreament.c, TestResults/ExprTree/preincreament.c.out "
-./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/preincreament.c >& t
-diff t TestResults/ExprTree/preincreament.c.out
-
-echo "Testing TestCases/ExprTree/postincreament.c, TestResults/ExprTree/postincreament.c.out "
-./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/postincreament.c >& t
-diff t TestResults/ExprTree/postincreament.c.out
-
 echo "Testing TestCases/ExprTree/combine.c, TestResults/ExprTree/combine.c.out "
 ./OATest -edg:w --oa-ExprTree -c TestCases/ExprTree/combine.c >& t
 diff t TestResults/ExprTree/combine.c.out
