@@ -4005,11 +4005,19 @@ Aborted
       ManagerUDDUChainsXAIF::performAnalysis.  
    - Fixed regressAll.
 
-10/11/07    UseOA-Rose svn trunk 314   Priyadarshini Malusare
+10/1/07    UseOA-Rose svn trunk 314   Priyadarshini Malusare
    - Regenerated ouptut of ExprTree after adding getExprIterator 
      in the IRInterface.
    - Not a major regressAll failure. Only output sequence order
      mismatch.
 
-   
+10/3/07    UseOA-Rose svn trunk 317   Michelle Strout
+    - put code in findAllMemRefsAndPtrAssigns to handle SgVarArgStartOp
+    - changed the code in MemSage2OA.C:createMemRefExprsForPtrArith so
+    that if there are multiple levels of pointer arithmetic (eg. p + 4 +
+    3), then the AddressOf(SubSetRef(NamedRef(p))) calculated at the first
+    plus node in the AST is passed up and assigned to the second plus node
+    instead of another layer of SubSetRef, AddressOf being composed.
+
+
 

@@ -1641,6 +1641,29 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             break;
         }
     case V_SgVarArgStartOp:
+        {
+            // don't think these nodes are currently used in ROSE, 
+            // 8/9/06 Dan email
+            // ROSE_ASSERT(0);
+            // 10/1/07, apparently this node is being used
+            // example in parambinds-formals-intPtrs.C,
+            // va_start(ap,i); where ap is a va_list
+            SgVarArgStartOp *varArgStartOp = isSgVarArgStartOp(astNode);
+            ROSE_ASSERT(varArgStartOp!=NULL);
+
+            // is a MemRefHandle
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            relateMemRefAndStmt(memref, stmt);
+
+            // recurse on children
+            findAllMemRefsAndPtrAssigns(varArgStartOp->get_lhs_operand(), stmt);
+            findAllMemRefsAndPtrAssigns(varArgStartOp->get_rhs_operand(), stmt);
+
+            // also create a use and def to the deref of the va_list
+            createUseDefForVarArg(memref, 
+                findTopMemRefHandle(varArgStartOp->get_lhs_operand()));
+            break;
+        }
     case V_SgVarArgCopyOp:
     case V_SgVarArgStartOneOperandOp:
         {
@@ -5031,41 +5054,36 @@ bool SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
                     mMemref2mreSetMap[child_memref].erase(child_mre);
                     deleteMemRefStmtRelation(child_memref, stmt);
                 }
-                // set accuracy to false please see below
-
-                OA::OA_ptr<OA::SubSetRef> subset_mre;
-                OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                OA::OA_ptr<OA::MemRefExpr> composed_mre;
-
-                subset_mre = new OA::SubSetRef(
+                // conservatively assume that we are computing address 
+                // somewhere into the array
+                // unless the child_mre is already an addressOf
+                // In that case this is a multi-level address calculation
+                // instruction and we just keep passing up the mre as is.
+                if (!child_mre->isaAddressOf()) {
+                    OA::OA_ptr<OA::SubSetRef> subset_mre;
+                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                    OA::OA_ptr<OA::MemRefExpr> composed_mre;
+                    subset_mre = new OA::SubSetRef(
                                            OA::MemRefExpr::USE,
                                            nullMRE
                                           );
+                    child_mre
+                        = subset_mre->composeWith(child_mre);
 
-
-                child_mre
-                   = subset_mre->composeWith(child_mre);
-
-                
-                // set the addressTaken for the var because could
-                // be computing the address of the array
-		        // child_mre->setAddressTaken(true);
-        
-                OA::OA_ptr<OA::AddressOf> address_mre;
-
-                address_mre = new OA::AddressOf(
+                    OA::OA_ptr<OA::AddressOf> address_mre;
+                    address_mre = new OA::AddressOf(
                                               OA::MemRefExpr::USE,
                                               nullMRE);
-
-                child_mre = address_mre->composeWith(child_mre);
-                
-                // conservatively assume that we are computing address 
-                // somewhere into the array
-                
+                    child_mre = address_mre->composeWith(child_mre);
+                } 
+ 
+               
                 // take the MRE away from the lhs and make it
                 // belong to this node
-                mMemref2mreSetMap[memref].insert(child_mre);
+                mMemref2mreSetMap[memref].insert(child_mre);            
+                
             }
+            // MMS 10/2/07, not sure what status of the below code is
             if (isSgPointerType(child_type)) {
                 // want  Deref(NamedRef(a),addressOf=T,part)
                 // addressOf doesn't cancel out deref because
