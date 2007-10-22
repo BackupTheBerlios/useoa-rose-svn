@@ -1364,24 +1364,6 @@ SageIRInterface::getAllMemRefs(OA::StmtHandle stmt)
   return mIter;
 }
 
-OA::Alias::IRStmtType SageIRInterface::getAliasStmtType(OA::StmtHandle h)
-{ 
-  // if haven't already determined the set of ptr assigns for the program
-  // then call the initialization procedure
-  if (mStmt2allMemRefsMap.empty() ) {
-      initMemRefAndPtrAssignMaps();
-  } 
-
-  // if there are no pointer pairs for this statement then 
-  // it is an ANY_STMT, otherwise it is a PTR_ASSIGN_STMT
-  if (mStmtToPtrPairs[h].empty()) {
-    return OA::Alias::ANY_STMT;
-  } else {
-    return OA::Alias::PTR_ASSIGN_STMT;
-  }
-
-}
-
 
 OA::OA_ptr<OA::MemRefExprIterator> 
 SageIRInterface::getMemRefExprIterator(OA::MemRefHandle h)
@@ -3323,23 +3305,6 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
   return ret; 
 }
 
-std::string SageIRInterface::toString(OA::Alias::IRStmtType x)
-{
-  //printf("implement SageIRInterface::toString(OA::Alias::IRStmtType x)\n");
-  std::string ret;
-  switch(x)
-  {
-    case OA::Alias::PTR_ASSIGN_STMT:
-      ret="pointer assignment\n";
-      break;
-    case OA::Alias::ANY_STMT:
-      ret="not a pointer assignment\n";
-      break;
-    default:
-      ret="unknown\n";
-  }
-  return ret;
-}
   
 //-------------------------------------------------------------------------
 // AliasIRInterface
@@ -3383,8 +3348,6 @@ void SgParamBindPtrAssignIterator::create(OA::CallHandle call)
 // assignments in stmt.
 void SgPtrAssignPairStmtIterator::create(OA::StmtHandle stmt)
 {
-  if ( mIR->getAliasStmtType(stmt) != OA::Alias::PTR_ASSIGN_STMT )
-    return;
 
   // loop through the pairs we found in initMemRefsAndPtrAssigns
   std::set<std::pair<OA::OA_ptr<OA::MemRefExpr>,
@@ -3950,78 +3913,6 @@ return opt;
 
 }
 
-OA::Linearity::IRStmtType 
-  SageIRInterface::getLinearityStmtType(OA::StmtHandle h)
-{
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // FIXME
-  // PLM: this routine is incomplete.
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  SgNode *node = getNodePtr(h);
-  ROSE_ASSERT(node != NULL);
-
-  OA::Linearity::IRStmtType stmtType = OA::Linearity::ANY_STMT;
-
-  bool collectPtrAssigns = false;
-
-  switch(node->variantT()) {
-
-  case V_SgExprStatement:
-    {
-      SgExprStatement *exprStatement = isSgExprStatement(node);
-      ROSE_ASSERT(exprStatement != NULL);
-
-#ifdef ROSE_PRE_0_8_10A
-      SgExpression *expression = exprStatement->get_the_expr();
-#else
-      SgExpression *expression = exprStatement->get_expression();
-#endif
-      SgType *lhsType = NULL;
-
-      switch(expression->variantT()) {
-      case V_SgAssignOp:
-        {
-          // A subset of this case is a new expression.
-          SgBinaryOp *assignOp = isSgBinaryOp(expression);
-          ROSE_ASSERT(assignOp != NULL);
-
-          SgExpression *lhs = assignOp->get_lhs_operand();
-          ROSE_ASSERT(lhs != NULL);
-
-          SgExpression *rhs = assignOp->get_rhs_operand();
-          ROSE_ASSERT(rhs != NULL);
-
-          lhsType = lhs->get_type();
-          ROSE_ASSERT(lhsType != NULL);
-
-          if (!isSgFunctionCallExp(rhs)) {
-            // somehow, cannot handle y = foo() as an EXPR_STMT
-            // FIXME ??
-            stmtType = OA::Linearity::EXPR_STMT;
-          }
-          break;
-        } // end of case V_SgAssignOp:
-      default:
-        {
-          break;
-        }
-      }
-      break;
-    } // end of case V_SgExprStatement:
-
-  default:
-    {
-      break;
-    }
-  }
-
-  return stmtType;
-
-
-
-}
-
 //-------------------------------------------------------------------------
 // ActivityIRInterface
 //-------------------------------------------------------------------------
@@ -4058,6 +3949,11 @@ SageIRInterface::getExprHandleIterator(OA::StmtHandle h)
 OA::OA_ptr<OA::AssignPairIterator> 
   SageIRInterface::getAssignPairIterator(OA::StmtHandle stmt)
 {
+
+  if(mStmt2allMemRefsMap[stmt].empty()) {
+     findAllMemRefsAndPtrAssigns( getSgNode(stmt), stmt );
+  }
+
   // BW (4/12/07) Completed this routine.  It now
   // handles general assignments, not merely
   // those in expression statements, which are
@@ -4066,8 +3962,6 @@ OA::OA_ptr<OA::AssignPairIterator>
   OA::OA_ptr<AssignPairList> assignPairList;
   assignPairList = new AssignPairList;
   
-  if (getActivityStmtType(stmt)==OA::Activity::EXPR_STMT) {
-
       std::set<std::pair<MemRefHandle,
                          ExprHandle> >::iterator pairIter;
       for (pairIter = mStmtToAssignPairs[stmt].begin();
@@ -4078,8 +3972,6 @@ OA::OA_ptr<OA::AssignPairIterator>
           OA::ExprHandle rhsHandle = pairIter->second;
           assignPairList->push_back(AssignPair(lhsHandle, rhsHandle));
       }
-
-  }
 
   OA::OA_ptr<OA::AssignPairIterator> espIter;
   espIter = new SageIRAssignPairIterator(assignPairList);
@@ -4439,105 +4331,6 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
   depIter = new SageMemRefExprIterator(depList,this);
   return depIter;
 
-}
-
-//! Given a statement, return its Activity::IRStmtType
-OA::Activity::IRStmtType 
-SageIRInterface::getActivityStmtType(OA::StmtHandle stmt)
-{
-
-    if (mStmtToAssignPairs.empty() ) {
-        initMemRefAndPtrAssignMaps();
-    }
-
-#if 1
-    OA::Activity::IRStmtType stmtType = OA::Activity::ANY_STMT;
-
-    if ( mStmtToAssignPairs.find(stmt) != mStmtToAssignPairs.end() ) {
-
-      stmtType = OA::Activity::EXPR_STMT;
-
-    }
-#else
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // FIXME
-  // BK: this routine is incomplete.
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  SgNode *node = getNodePtr(stmt);
-  ROSE_ASSERT(node != NULL);
-  
-  OA::Activity::IRStmtType stmtType = OA::Activity::ANY_STMT;
-  
-  bool collectPtrAssigns = false;
-  
-  switch(node->variantT()) {
-    
-  case V_SgExprStatement:
-    {
-      SgExprStatement *exprStatement = isSgExprStatement(node);
-      ROSE_ASSERT(exprStatement != NULL);
-      
-#ifdef ROSE_PRE_0_8_10A
-      SgExpression *expression = exprStatement->get_the_expr();
-#else
-      SgExpression *expression = exprStatement->get_expression();
-#endif
-      SgType *lhsType = NULL;
-      
-      switch(expression->variantT()) {
-      case V_SgAssignOp:
-        {
-          // A subset of this case is a new expression.
-          SgBinaryOp *assignOp = isSgBinaryOp(expression);
-          ROSE_ASSERT(assignOp != NULL);
-          
-          SgExpression *lhs = assignOp->get_lhs_operand();
-          ROSE_ASSERT(lhs != NULL);
-          
-          SgExpression *rhs = assignOp->get_rhs_operand();
-          ROSE_ASSERT(rhs != NULL);
-
-          lhsType = lhs->get_type();
-          ROSE_ASSERT(lhsType != NULL);
-          
-          if (!isSgFunctionCallExp(rhs)) {
-            // somehow, cannot handle y = foo() as an EXPR_STMT
-            // FIXME ??
-            stmtType = OA::Activity::EXPR_STMT;
-          }
-          /* don't care about this for Activity::StmtType
-             if ( lhsType != NULL ) {
-             SgType *baseType = getBaseType(lhsType);
-             ROSE_ASSERT(baseType != NULL);
-             if ( isSgPointerType(baseType) || isSgReferenceType(baseType) ) 
-             {
-             stmtType = OA::Alias::PTR_ASSIGN_STMT;
-             }
-             }
-          */
-          break;
-        } // end of case V_SgAssignOp:
-
-        // BK:  I am sure that I am missing some stmts that should be
-        // flagged as an OA::Activity::EXPR_STMT, but this will get us
-        // started
-
-      default: 
-        {
-          break;
-        }  
-      }
-      break;
-    } // end of case V_SgExprStatement:
-
-  default:
-    {
-      break;
-    }
-  }
-#endif
-  return stmtType;
 }
 
 //! given a symbol return the size in bytes of that symbol
@@ -5743,91 +5536,6 @@ SageIRInterface::evalOp(OA::OpHandle op,
   return op1->eval(oper, operand2);
 }
 
-
-//! Given a statement, return its Activity::IRStmtType
-OA::ReachConsts::IRStmtType
-SageIRInterface::getReachConstsStmtType(OA::StmtHandle h)
-{
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // FIXME
-  // PLM: this routine is incomplete.
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  SgNode *node = getNodePtr(h);
-  ROSE_ASSERT(node != NULL);
-
-  OA::ReachConsts::IRStmtType stmtType = OA::ReachConsts::ANY_STMT;
-
-  bool collectPtrAssigns = false;
-
-  switch(node->variantT()) {
-
-  case V_SgExprStatement:
-    {
-      SgExprStatement *exprStatement = isSgExprStatement(node);
-      ROSE_ASSERT(exprStatement != NULL);
-
-#ifdef ROSE_PRE_0_8_10A
-      SgExpression *expression = exprStatement->get_the_expr();
-#else
-      SgExpression *expression = exprStatement->get_expression();
-#endif
-      SgType *lhsType = NULL;
-
-      switch(expression->variantT()) {
-      case V_SgAssignOp:
-        {
-          // A subset of this case is a new expression.
-          SgBinaryOp *assignOp = isSgBinaryOp(expression);
-          ROSE_ASSERT(assignOp != NULL);
-
-          SgExpression *lhs = assignOp->get_lhs_operand();
-          ROSE_ASSERT(lhs != NULL);
-
-          SgExpression *rhs = assignOp->get_rhs_operand();
-          ROSE_ASSERT(rhs != NULL);
-
-          lhsType = lhs->get_type();
-          ROSE_ASSERT(lhsType != NULL);
-
-          if (!isSgFunctionCallExp(rhs)) {
-            // somehow, cannot handle y = foo() as an EXPR_STMT
-            // FIXME ??
-            stmtType = OA::ReachConsts::EXPR_STMT;
-          }
-          /* don't care about this for Activity::StmtType
-             if ( lhsType != NULL ) {
-             SgType *baseType = getBaseType(lhsType);
-             ROSE_ASSERT(baseType != NULL);
-             if ( isSgPointerType(baseType) || isSgReferenceType(baseType) )
-             {
-             stmtType = OA::Alias::PTR_ASSIGN_STMT;
-             }
-             }
-          */
-          break;
-        } // end of case V_SgAssignOp:
-
-        // BK:  I am sure that I am missing some stmts that should be
-        // flagged as an OA::Activity::EXPR_STMT, but this will get us
-        // started
-
-      default:
-        {
-          break;
-        }
-      }
-      break;
-    } // end of case V_SgExprStatement:
-
-  default:
-    {
-      break;
-    }
-  }
-
-  return stmtType;
-}
 
 //-------------------------------------------------------------------------
 // DataDepIRInterface

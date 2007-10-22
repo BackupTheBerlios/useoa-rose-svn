@@ -4027,3 +4027,9 @@ Aborted
    - Few commits were not done properly and therefore we got lots
      of regressAll. I fixed the problem in this revision.
 
+10/23/07    UseOA-Rose svn trunk 320   Priyadarshini Malusare
+   - Deperecated getAliasStmtType
+   - Regenerated Linearity Pair Example because we created AssignPairs 
+     for increament statement of loop.
+
+

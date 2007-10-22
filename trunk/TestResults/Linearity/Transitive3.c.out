@@ -1,14 +1,14 @@
-"/fusion/research2/bwhite/alias-analysis-project/UseOA/TestCases/Linearity/Transitive3.c", line 10: warning: 
+"/home/malusare/ParamBind/UseOA-ROSE/TestCases/Linearity/Transitive3.c", line 10: warning: 
           variable "b" was set but never used
      double a, b, c, x, y, z;
                ^
 
-"/fusion/research2/bwhite/alias-analysis-project/UseOA/TestCases/Linearity/Transitive3.c", line 10: warning: 
+"/home/malusare/ParamBind/UseOA-ROSE/TestCases/Linearity/Transitive3.c", line 10: warning: 
           variable "c" was set but never used
      double a, b, c, x, y, z;
                   ^
 
-"/fusion/research2/bwhite/alias-analysis-project/UseOA/TestCases/Linearity/Transitive3.c", line 10: warning: 
+"/home/malusare/ParamBind/UseOA-ROSE/TestCases/Linearity/Transitive3.c", line 10: warning: 
           variable "z" was set but never used
      double a, b, c, x, y, z;
                            ^
@@ -116,6 +116,30 @@ LinearityStandard(
                         mPartOverlap: [  ] 
                     )
                     LClass: Nonlinear
+                ) ] 
+            
+            NamedLoc(
+                mSymHandle: SymHandle(i)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )	 => [ 
+                LinearityPair(
+                    Location->V: 
+                    NamedLoc(
+                        mSymHandle: SymHandle(i)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )
+                    Location->W: 
+                    NamedLoc(
+                        mSymHandle: SymHandle(i)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )
+                    LClass: Linear
                 ) ] 
 
 )

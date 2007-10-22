@@ -663,8 +663,6 @@ public:
   OA::OA_ptr<OA::MemRefHandleIterator> getAllMemRefs(OA::IRHandle h);
   */
 
-  OA::Alias::IRStmtType getAliasStmtType(OA::StmtHandle h);
-  
   OA::OA_ptr<OA::MemRefExprIterator> 
   getMemRefExprIterator(OA::MemRefHandle h);
 
@@ -776,7 +774,6 @@ public:
     //return ""; 
   }
   std::string toString(const OA::ConstValHandle h);
-  std::string toString(OA::Alias::IRStmtType x);
   
   void dump(OA::OA_ptr<OA::MemRefExprIterator> memRefIterator,
             std::ostream& os);
@@ -873,9 +870,6 @@ public:
   //! Return an iterator over all dependent MemRefExpr for given proc
   OA::OA_ptr<OA::MemRefExprIterator> getDepMemRefExprIter(OA::ProcHandle h);
   
-  //! Given a statement, return its Activity::IRStmtType
-  OA::Activity::IRStmtType getActivityStmtType(OA::StmtHandle h);
-
   //! given a symbol return the size in bytes of that symbol
   int getSizeInBytes(OA::SymHandle h);
 
@@ -885,8 +879,6 @@ public:
   
     //! get the operation type and returns a LinOpType
   OA::Linearity::LinOpType getLinearityOpType(OA::OpHandle op);
-
-  OA::Linearity::IRStmtType getLinearityStmtType(OA::StmtHandle h);
 
 
   //-------------------------------------------------------------------------
@@ -898,9 +890,6 @@ public:
   OA::OA_ptr<OA::ConstValBasicInterface> evalOp(OA::OpHandle op,
       OA::OA_ptr<OA::ConstValBasicInterface> operand1,
       OA::OA_ptr<OA::ConstValBasicInterface> operand2);
-
-  //! Given a statement, return its ReachConsts::IRStmtType
-  OA::ReachConsts::IRStmtType getReachConstsStmtType(OA::StmtHandle h);
 
   std::string
     toString(OA::OA_ptr<OA::ConstValBasicInterface> cvPtr);

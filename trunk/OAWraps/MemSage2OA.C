@@ -2844,6 +2844,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // Create an assignment pair.  We may also have to create
             // a pointer assignment pair (on a per-MRE basis).
             OA::ExprHandle rhs_expr = findTopExprHandle(assignOp->get_rhs_operand());
+
             makeAssignPair(stmt, lhs_memref, rhs_expr);
 
             if (rhs_memref!=OA::MemRefHandle(0))  {
