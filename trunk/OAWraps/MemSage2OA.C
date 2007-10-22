@@ -3954,6 +3954,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgUnsignedLongVal:
     case V_SgUnsignedShortVal:
     case V_SgWcharVal:
+    case V_SgComplexVal:
         {
             // if this node has a non-null operand then recurse on it
             // this is used in at least the sizeof case
