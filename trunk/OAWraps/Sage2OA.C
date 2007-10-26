@@ -745,6 +745,7 @@ bool SageIRInterface::returnStatementsAllowed()
 OA::CFG::IRStmtType SageIRInterface::getCFGStmtType(OA::StmtHandle h)
 {
         OA::CFG::IRStmtType ty;
+
         switch(((SgStatement*)(getNodePtr(h)))->variantT())
         {
                 case V_SgBasicBlock:
@@ -838,13 +839,13 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
         SgStatement * sptr = (SgStatement*)(getNodePtr(h));
         if(SgScopeStatement * scope = isSgScopeStatement(sptr))
         {
-                SgStatementPtrList  & stptr=scope->getStatementList();
-                retit = new SageIRRegionStmtIterator(stptr, this);
+            SgStatementPtrList  & stptr=scope->getStatementList();
+            retit = new SageIRRegionStmtIterator(stptr, this);
         }
         else
         {
-                printf("error in SageIRInterface::LoopBody\n");
-                retit = new SageIRRegionStmtIterator(this);
+            printf("error in SageIRInterface::LoopBody\n");
+            retit = new SageIRRegionStmtIterator(this);
         }
     return retit;
 }
@@ -856,6 +857,12 @@ OA::StmtHandle SageIRInterface::loopHeader(OA::StmtHandle h)
         if(forst)
         {
                 st=forst->get_init_stmt().front();
+
+                // Check to see if get_init_stmt returns an empty list, if it
+                // is we need to return NULL.
+                if(st == forst->get_init_stmt().back()) {
+                    st = NULL;
+                }
         }
         
         return (OA::irhandle_t)(getNodeNumber(st));
