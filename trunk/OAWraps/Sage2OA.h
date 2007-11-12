@@ -385,11 +385,11 @@ class SageConstVal : public virtual OA::ConstValBasicInterface {
     virtual ~SageConstVal() {}
 
     // Methods needed by OA, default behavior
-    virtual bool operator==(OA::ConstValBasicInterface& x)
+    virtual bool operator<(OA::ConstValBasicInterface& x)
     { return false; }
 
-    //virtual bool operator!=(OA::ConstValBasicInterface& x)
-    //{ return false; }
+    virtual bool operator==(OA::ConstValBasicInterface& x)
+    { return false; }
 
     virtual bool operator!=(OA::ConstValBasicInterface& x)
     { return true; }
@@ -440,20 +440,28 @@ class SageIntegerConstVal
     ~SageIntegerConstVal() {}
 
     // Methods used by OpenAnalysis
-    bool operator==(OA::ConstValBasicInterface& other)
-        { SageConstVal& otherRecast = dynamic_cast<SageConstVal&>(other);
-          if (otherRecast.isaInteger()) {
-              return (otherRecast.getIntegerVal() == mVal);
-          }
-          return false;
+    bool operator<(OA::ConstValBasicInterface& other)
+    {
+        SageConstVal& otherRecast = dynamic_cast<SageConstVal&>(other);
+        if (otherRecast.isaInteger()) {
+            return (otherRecast.getIntegerVal() < mVal);
         }
-    bool operator!=(OA::ConstValBasicInterface& other)
-        { SageConstVal& otherRecast = dynamic_cast<SageConstVal&>(other);
-          if (otherRecast.isaInteger()) {
-              return (otherRecast.getIntegerVal() != mVal);
-          }
-          return true;
+        return false;
+    }
+    bool operator==(OA::ConstValBasicInterface& other) {
+        SageConstVal& otherRecast = dynamic_cast<SageConstVal&>(other);
+        if (otherRecast.isaInteger()) {
+            return (otherRecast.getIntegerVal() == mVal);
         }
+        return false;
+    }
+    bool operator!=(OA::ConstValBasicInterface& other) {
+        SageConstVal& otherRecast = dynamic_cast<SageConstVal&>(other);
+        if (otherRecast.isaInteger()) {
+            return (otherRecast.getIntegerVal() != mVal);
+        }
+        return true;
+    }
 
     std::string toString()
         { std::ostringstream oss; oss << mVal; return oss.str(); }
