@@ -128,21 +128,13 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 int Foo(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> *na, bool p_handle);
 int DoAliasMapXAIFFIAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
-
-
-
 void prettyPrintMemRefExp(OA::OA_ptr<OA::MemRefExpr> memRefExp, 
 			  SageIRInterface *ir,
 			  std::ostream &os);
-
 int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
-   
 int DoICFGReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>* na, bool p_handle);
-
 int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle);
-
 int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
-
 int DoLoop(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoAssignPairs(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
@@ -153,6 +145,7 @@ int DoAssignPairs(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> 
     turn this on:      If you:
     debug               Want debugging output.
     outputRose          
+    outputAST           output .dot and .pdf files of the AST
     exitWithTop         Want to run the unix 'top' program on this process
                         immediatly before it exits. Q: Why would you want to do
                         this? A: It shows how much memory the process used.
@@ -167,6 +160,7 @@ int DoAssignPairs(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> 
 
 bool debug = false;
 bool outputRose = false;
+bool outputAST = false;
 bool exitWithTop = false;
 bool skipAnalysis = false;
 bool silent = false;
@@ -174,6 +168,7 @@ bool silent = false;
 void readDebuggingFlags() {
     USEOA_DEBUG_CTRL_MACRO("DEBUG",         debug);
     USEOA_DEBUG_CTRL_MACRO("OUTPUT_ROSE",   outputRose);
+    USEOA_DEBUG_CTRL_MACRO("OUTPUT_AST",    outputAST);
     USEOA_DEBUG_CTRL_MACRO("EXIT_WITH_TOP", exitWithTop);
     USEOA_DEBUG_CTRL_MACRO("SKIP_ANALYSIS", skipAnalysis);
     USEOA_DEBUG_CTRL_MACRO("SILENT", silent);
@@ -187,6 +182,7 @@ void usage(char **argv)
   cerr << "     where debugFlags is one or more of: " << endl;
   cerr << "          --debug" << endl;
   cerr << "          --outputRose" << endl;
+  cerr << "          --outputAST" << endl;
   cerr << "          --exitWithTop" << endl;
   cerr << "          --skipAnalysis" << endl;
   cerr << "          --silent" << endl;
@@ -231,7 +227,7 @@ main ( unsigned argc,  char * argv[] )
 
   bool p_h=FALSE; //for debugging only switch between persistent and "pointer" handles (pointers are faster, persistent are easier to debug
 
-  //  p_h = TRUE;
+//    bool p_h = TRUE;
   
   std::vector<SgNode*> nodeArray;
 
@@ -247,11 +243,26 @@ main ( unsigned argc,  char * argv[] )
     SgProject * sageProject =frontend( (int)(argc-1),&argv[1]);
     int filenum = sageProject->numberOfFiles();
 
-    // debug info
-    AstPDFGeneration pdftest;
-    pdftest.generateInputFiles(sageProject);
-    AstDOTGeneration dottest;
-    dottest.generateInputFiles(sageProject);
+    CmdOptions *cmds = CmdOptions::GetInstance();
+    cmds->SetOptions(argc, argv);
+
+    // debug flags, these can alternatively be set with the USEOA_DEBUG environmental
+    // variable.
+    if ( cmds->HasOption("--debug") )        { debug = true; }
+    if ( cmds->HasOption("--outputRose") )   { outputRose = true; }
+    if ( cmds->HasOption("--outputDOT") )    { outputAST = true; }
+    if ( cmds->HasOption("--exitWithTop") )  { exitWithTop = true; }
+    if ( cmds->HasOption("--skipAnalysis") ) { skipAnalysis = true; }
+    if ( cmds->HasOption("--silent") )       { silent = true; }
+
+
+    // output AST if the flag to do so is set.
+    if(outputAST) {
+        AstPDFGeneration pdftest;
+        pdftest.generateInputFiles(sageProject);
+        AstDOTGeneration dottest;
+        dottest.generateInputFiles(sageProject);
+    }
 
 #if 0 
     // Perform the AST normalization.
@@ -262,18 +273,7 @@ main ( unsigned argc,  char * argv[] )
     shortCircuitingTransformation(sageProject);
     //    destructorCallAnnotator(sageProject);
 #endif
-
-    CmdOptions *cmds = CmdOptions::GetInstance();
-    cmds->SetOptions(argc, argv);
-
-    // debug flags, these can alternatively be set with the USEOA_DEBUG environmental
-    // variable.
-    if ( cmds->HasOption("--debug") )        { debug = true; }
-    if ( cmds->HasOption("--outputRose") )   { outputRose = true; }
-    if ( cmds->HasOption("--exitWithTop") )  { exitWithTop = true; }
-    if ( cmds->HasOption("--skipAnalysis") ) { skipAnalysis = true; }
-    if ( cmds->HasOption("--silent") )       { silent = true; }
-
+    
     if( cmds->HasOption("--oa-CFG") )
     {
         for (int i = 0; i < filenum; ++i) 
@@ -682,7 +682,6 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
 		
 //	}
 
-        // output CFG analysis using OutputBuilderDOT
         OA::OA_ptr<OA::OutputBuilderDOT> dotBuilder;
         dotBuilder = new OA::OutputBuilderDOT();
         cfg->configOutput(dotBuilder);
@@ -2271,6 +2270,7 @@ int DoLoop(
         // results->printLoopTree();
 
         // iterate through index expressions in the procedure analyzing them
+        /*
         OA_ptr<IdxExprAccessIterator> j =
             irInterface->getIdxExprAccessIter(procIter->current());
         for(; j->isValid(); (*j)++) {
@@ -2280,7 +2280,7 @@ int DoLoop(
                 irInterface,
                 aliasMaps->getAliasResults(procIter->current()),
                 results);
-
+        */
             // for now get the enclosing loop and print information about it
             // out
             /*
@@ -2292,8 +2292,8 @@ int DoLoop(
             cout << "Loop enclosing "
                  << irInterface->toString(stmt) << ": "
                  << irInterface->toString(loop) << endl;
-            */
-        }
+           /
+        }*/
     }
 
     
@@ -2301,7 +2301,7 @@ int DoLoop(
     // The code below whould be sectioned off into a manager class for
     // something like affine expression linearity analysis.
 
-    }
+}
 
 
 
