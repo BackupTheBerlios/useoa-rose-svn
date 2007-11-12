@@ -17,6 +17,8 @@
 #include <OpenAnalysis/IRInterface/LinearityIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/DataDepIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/LoopIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/auto_ReachingDefsIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/LivenessIRInterface.hpp>
 #include <OpenAnalysis/SideEffect/ManagerInterSideEffectStandard.hpp>
 #include <OpenAnalysis/SideEffect/ManagerSideEffectStandard.hpp>
 #include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
@@ -497,7 +499,9 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   public virtual OA::ReachConsts::ReachConstsIRInterface,
 		  //  public virtual OA::AttributePropagation::AttributePropagationIRInterface,
   public virtual OA::DataDep::DataDepIRInterface,
-  public virtual OA::Loop::LoopIRInterface
+  public virtual OA::Loop::LoopIRInterface,
+  public virtual OA::Liveness::LivenessIRInterface,
+  public virtual OA::ReachingDefs::ReachingDefsIRInterface
 {
   friend class SageIRMemRefIterator;
   friend class FindCallsitesPass;
@@ -877,7 +881,7 @@ public:
   // LinearityIRInterface
   //-------------------------------------------------------------------------
   
-    //! get the operation type and returns a LinOpType
+  //! get the operation type and returns a LinOpType
   OA::Linearity::LinOpType getLinearityOpType(OA::OpHandle op);
 
 
