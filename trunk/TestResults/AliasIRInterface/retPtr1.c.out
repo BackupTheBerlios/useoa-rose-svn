@@ -5,10 +5,10 @@ PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
             < 0, SymHandle("destination") >
             < 1, SymHandle("source") >
         ] }
-    MEMREFEXPRS = { StmtHandle("char *my_strcpy(char *destination,char *source){char *p = destination;while((( *source)) !=('\0')){*(p++) = *(source++);}*p = '\0';return destination;}") =>
+    MEMREFEXPRS = { StmtHandle("char *my_strcpy(char *destination,char *source){char *p = destination;while((( *source)) != '\0'){*(p++) = *(source++);}*p =('\0');return destination;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{char *p = destination;while((( *source)) !=('\0')){*(p++) = *(source++);}*p = '\0';return destination;}") =>
+    MEMREFEXPRS = { StmtHandle("{char *p = destination;while((( *source)) != '\0'){*(p++) = *(source++);}*p =('\0');return destination;}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("char *p = destination;") =>
@@ -23,7 +23,7 @@ PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
             < NamedRef( DEF, SymHandle("p"))
             , NamedRef( USE, SymHandle("destination")) >
         ] }
-    MEMREFEXPRS = { StmtHandle("while((( *source)) !=('\0')){*(p++) = *(source++);}") =>
+    MEMREFEXPRS = { StmtHandle("while((( *source)) != '\0'){*(p++) = *(source++);}") =>
         [
             MemRefHandle("source") => 
                 NamedRef( USE, SymHandle("source"))
@@ -55,7 +55,7 @@ PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
             < NamedRef( USEDEF, SymHandle("p"))
             , AddressOf( USE, SubSetRef( DEF, Deref( USE, NamedRef( USE, SymHandle("p")), 1))) >
         ] }
-    MEMREFEXPRS = { StmtHandle("*p = '\0';") =>
+    MEMREFEXPRS = { StmtHandle("*p =('\0');") =>
         [
             MemRefHandle("p") => 
                 NamedRef( USE, SymHandle("p"))
@@ -87,31 +87,31 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data ;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_trans_data {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct __gconv_step {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_step {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct __gconv_step_data {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_step_data {};") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("struct _IO_FILE ;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct _IO_marker {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::_IO_marker {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct _IO_FILE {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::_IO_FILE {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stdin_;") =>
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stdin_;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stdout_;") =>
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stdout_;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stderr_;") =>
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stderr_;") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int main(){char strA[] = "Laurel";char strB[] = "Hardy";char *cptr = my_strcpy(strB,strA);puts((strB));}") =>
@@ -142,7 +142,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 AddressOf( USE, NamedRef( USE, SymHandle("strB")))
             MemRefHandle("strA") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("strA")))
-            MemRefHandle("::my_strcpy") => 
+            MemRefHandle("my_strcpy") => 
                 NamedRef( USE, SymHandle("my_strcpy"))
             MemRefHandle("my_strcpy(strB,strA)") => 
                 NamedRef( USE, SymHandle("my_strcpy"))
@@ -178,7 +178,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             < 0, NamedRef( USE, SymHandle("strB")) >
         ] }
-    MEMREFEXPRS = { StmtHandle("return 0;") =>
+    MEMREFEXPRS = { StmtHandle("return '\0';") =>
         [
         ] }
     LOCATION = { < SymHandle("strA"), local > }

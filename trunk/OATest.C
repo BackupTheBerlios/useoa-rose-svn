@@ -244,7 +244,12 @@ main ( unsigned argc,  char * argv[] )
     int filenum = sageProject->numberOfFiles();
 
     CmdOptions *cmds = CmdOptions::GetInstance();
+#ifdef ROSE_PRE_0_9_0B
     cmds->SetOptions(argc, argv);
+#else
+    vector<string> argvList(argv, argv + argc);
+    cmds->SetOptions(argvList);
+#endif
 
     // debug flags, these can alternatively be set with the USEOA_DEBUG environmental
     // variable.
@@ -304,14 +309,29 @@ main ( unsigned argc,  char * argv[] )
       {
           SgFile &sageFile = sageProject->get_file(i);
           SgGlobal *root = sageFile.get_root();
+#ifdef ROSE_PRE_0_9_0B
 	  const char *fileName = sageFile.getFileName();
+#else
+	  const char *fileName = sageFile.getFileName().c_str();
+#endif
 	  ROSE_ASSERT(fileName != NULL);
           ir->createNodeArray(root);
 
-	  list<SgNode *> nodes = NodeQuery::querySubTree(root,
-							 V_SgFunctionDefinition);
+#ifdef ROSE_PRE_0_9_0B
+	  list<SgNode *> nodes = 
+#else
+          NodeQuerySynthesizedAttributeType nodes =
+#endif
+              NodeQuery::querySubTree(root,
+				      V_SgFunctionDefinition);
+#ifdef ROSE_PRE_0_9_0B
 	  for (list<SgNode *>::iterator it = nodes.begin();
-	       it != nodes.end(); ++it ) {
+	       it != nodes.end(); ++it ) 
+#else
+	  for (NodeQuerySynthesizedAttributeType::iterator it = nodes.begin();
+	       it != nodes.end(); ++it ) 
+#endif
+          {
 	    
 	    SgNode *n = *it;
 	    ROSE_ASSERT(n != NULL);
@@ -323,9 +343,15 @@ main ( unsigned argc,  char * argv[] )
 	      if (!defn->get_file_info())
 		continue;
 	      // Don't output junk we pull in from header files.
+#ifdef ROSE_PRE_0_9_0B
 	      if (!ROSE::isSameName(fileName,
 				    (defn->get_file_info())->get_filename()))
 		continue;
+#else
+	      if (strcmp(fileName, (defn->get_file_info())->get_filename()))
+		continue;
+#endif
+
 #endif
               OA::ProcHandle proc((OA::irhandle_t)(ir->getNodeNumber(defn)));
               OA::OA_ptr<OA::IRStmtIterator> sIt = ir->getStmtIterator(proc);
@@ -1130,12 +1156,23 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 SgFunctionDeclaration *findMain(SgProject *project)
 {
     ROSE_ASSERT(project != NULL);
-    std::list<SgNode *> nodes = NodeQuery::querySubTree(project,
-                                                        V_SgFunctionDeclaration);
+#ifdef PRE_ROSE_0_9_0B
+    std::list<SgNode *> nodes = 
+#else
+    NodeQuerySynthesizedAttributeType nodes =
+#endif
+        NodeQuery::querySubTree(project,
+                                V_SgFunctionDeclaration);
 
     SgFunctionDeclaration *mainFunc = NULL;
+#ifdef PRE_ROSE_0_9_0B
     for (std::list<SgNode *>::iterator it = nodes.begin();
-         it != nodes.end(); ++it ) {
+         it != nodes.end(); ++it ) 
+#else
+    for (NodeQuerySynthesizedAttributeType::iterator it = nodes.begin();
+         it != nodes.end(); ++it ) 
+#endif
+    {
         SgFunctionDeclaration *decl = isSgFunctionDeclaration(*it);      
         ROSE_ASSERT(decl != NULL);
 

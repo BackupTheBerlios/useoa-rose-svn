@@ -64,10 +64,10 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
     LOCATION = { < SymHandle("bar"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
-    MEMREFEXPRS = { StmtHandle("void main(){int input = read();int a;int b;int *p = &a;int *q = &b;int(*fp)(int **, int **);if(input) {fp = ::foo;}else {fp = ::bar;}( *fp)(&p,&q);}") =>
+    MEMREFEXPRS = { StmtHandle("void main(){int input = read();int a;int b;int *p = &a;int *q = &b;int(*fp)(int **, int **);if(input != 0) {fp = foo;}else {fp = bar;}( *fp)(&p,&q);}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{int input = read();int a;int b;int *p = &a;int *q = &b;int(*fp)(int **, int **);if(input) {fp = ::foo;}else {fp = ::bar;}( *fp)(&p,&q);}") =>
+    MEMREFEXPRS = { StmtHandle("{int input = read();int a;int b;int *p = &a;int *q = &b;int(*fp)(int **, int **);if(input != 0) {fp = foo;}else {fp = bar;}( *fp)(&p,&q);}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int input = read();") =>
@@ -115,37 +115,37 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int(*fp)(int **, int **);") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("if(input) {fp = ::foo;}else {fp = ::bar;}") =>
+    MEMREFEXPRS = { StmtHandle("if(input != 0) {fp = foo;}else {fp = bar;}") =>
         [
             MemRefHandle("input") => 
                 NamedRef( USE, SymHandle("input"))
         ] }
-    MEMREFEXPRS = { StmtHandle("{fp = ::foo;}") =>
+    MEMREFEXPRS = { StmtHandle("{fp = foo;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("fp = ::foo;") =>
+    MEMREFEXPRS = { StmtHandle("fp = foo;") =>
         [
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"))
-            MemRefHandle("::foo") => 
+            MemRefHandle("foo") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("foo")))
         ] }
-    PTRASSIGNPAIRS = { StmtHandle("fp = ::foo;") =>
+    PTRASSIGNPAIRS = { StmtHandle("fp = foo;") =>
         [
             < NamedRef( DEF, SymHandle("fp"))
             , AddressOf( USE, NamedRef( USE, SymHandle("foo"))) >
         ] }
-    MEMREFEXPRS = { StmtHandle("{fp = ::bar;}") =>
+    MEMREFEXPRS = { StmtHandle("{fp = bar;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("fp = ::bar;") =>
+    MEMREFEXPRS = { StmtHandle("fp = bar;") =>
         [
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"))
-            MemRefHandle("::bar") => 
+            MemRefHandle("bar") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("bar")))
         ] }
-    PTRASSIGNPAIRS = { StmtHandle("fp = ::bar;") =>
+    PTRASSIGNPAIRS = { StmtHandle("fp = bar;") =>
         [
             < NamedRef( DEF, SymHandle("fp"))
             , AddressOf( USE, NamedRef( USE, SymHandle("bar"))) >

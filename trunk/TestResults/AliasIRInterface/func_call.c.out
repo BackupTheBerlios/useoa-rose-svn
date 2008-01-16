@@ -1,9 +1,9 @@
 
 PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
-    MEMREFEXPRS = { StmtHandle("int bar(){int x = 0;int *p;*hello() = x;fp = ::bar;( *fp)();bar();fp2 = hello;p =( *fp2)();p =((int *)(malloc(((sizeof(int ))))));return x;}") =>
+    MEMREFEXPRS = { StmtHandle("int bar(){int x = 0;int *p;*hello() = x;fp = bar;( *fp)();bar();fp2 = hello;p =( *fp2)();p =((int *)(malloc(((sizeof(int ))))));return x;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{int x = 0;int *p;*hello() = x;fp = ::bar;( *fp)();bar();fp2 = hello;p =( *fp2)();p =((int *)(malloc(((sizeof(int ))))));return x;}") =>
+    MEMREFEXPRS = { StmtHandle("{int x = 0;int *p;*hello() = x;fp = bar;( *fp)();bar();fp2 = hello;p =( *fp2)();p =((int *)(malloc(((sizeof(int ))))));return x;}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int x = 0;") =>
@@ -30,14 +30,14 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
             CallHandle("hello()") => 
                 NamedRef( USE, SymHandle("hello"))
         ] }
-    MEMREFEXPRS = { StmtHandle("fp = ::bar;") =>
+    MEMREFEXPRS = { StmtHandle("fp = bar;") =>
         [
             MemRefHandle("fp") => 
                 NamedRef( DEF, SymHandle("fp"))
-            MemRefHandle("::bar") => 
+            MemRefHandle("bar") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("bar")))
         ] }
-    PTRASSIGNPAIRS = { StmtHandle("fp = ::bar;") =>
+    PTRASSIGNPAIRS = { StmtHandle("fp = bar;") =>
         [
             < NamedRef( DEF, SymHandle("fp"))
             , AddressOf( USE, NamedRef( USE, SymHandle("bar"))) >
@@ -56,7 +56,7 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
         ] }
     MEMREFEXPRS = { StmtHandle("bar();") =>
         [
-            MemRefHandle("::bar") => 
+            MemRefHandle("bar") => 
                 NamedRef( USE, SymHandle("bar"))
         ] }
     CALLSITES = { StmtHandle("bar();") =>

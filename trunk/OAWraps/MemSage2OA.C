@@ -484,7 +484,6 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
                                               nullMRE);
                                               
                     actual_mre = address_mre->composeWith(actual_mre);
-                    
                     mMemref2mreSetMap[actual_memref].insert(actual_mre);
                 }
 
@@ -871,7 +870,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::OA_ptr<OA::MemRefExpr> mre;
            
             mre = new OA::NamedRef(mrType, sym);
-            
+
             // Record the type of the MRE (reference or non-reference).
 	        // mMre2TypeMap[mre] = ( isSgReferenceType(initName->get_type()) ? reference : other );
             mMre2TypeMap[mre] = other;
@@ -2692,17 +2691,32 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     = getMemRefExprIterator(lhs_memref);
                 for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
                     lhs_mre = mIter->current();
+
+                    // take the rhs MRE and wrap it in an IdxExprAccess
+                    MemRefHandle mref =
+                        ((OA::irhandle_t)arrRefExp->get_rhs_operand());
+
+                    OA_ptr<IdxExprAccess> rhs_mre;
+
+                    // if the lhs is an array, we need to dereference
+                    // it before wrapping in an IdxExprAccess.
+                    OA::OA_ptr<OA::Deref> deref_mre;
+                    int numDerefs = 1;
+                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+
+                    deref_mre = new OA::Deref( OA::MemRefExpr::USE,
+                                               nullMRE,
+                                               numDerefs);
+                    lhs_mre = deref_mre->composeWith(lhs_mre->clone());
+
+                    rhs_mre = new OA::IdxExprAccess(
+                        MemRefExpr::USE, lhs_mre, mref);
+
+                    // Record the type of the MRE (reference or non-reference).
+                    mMre2TypeMap[rhs_mre] = other;
+
+                    mMemref2mreSetMap[memref].insert(rhs_mre);
                 }
-
-                // take the rhs MRE and wrap it in an IdxExprAccess
-                MemRefHandle mref =
-                    ((OA::irhandle_t)arrRefExp->get_rhs_operand());
-
-                OA_ptr<IdxExprAccess> rhs_mre;
-                rhs_mre = new OA::IdxExprAccess(
-                    MemRefExpr::USE, lhs_mre, mref);
-                relateMemRefAndStmt(memref, stmt);
-                mMemref2mreSetMap[memref].insert(rhs_mre);
             }
             // else if through a variable pointer
             else {
@@ -2723,7 +2737,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     deref_mre = new OA::Deref( OA::MemRefExpr::USE,
                                                nullMRE,
                                                numDerefs);
-
                     OA::OA_ptr<OA::MemRefExpr> mre;
                     
                     mre = deref_mre->composeWith(lhs_mre->clone());
@@ -4835,6 +4848,7 @@ SageIRInterface::createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle s
                             mangleFunctionName(functionDeclaration);
                         memRefType = OA::MemRefExpr::DEF;
     
+
                         OA::OA_ptr<OA::FieldAccess> fieldAccess;
 
 

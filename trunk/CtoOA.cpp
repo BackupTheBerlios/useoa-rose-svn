@@ -43,7 +43,12 @@ int main ( unsigned argc,  char * argv[] )
     //    p_h = TRUE;
 
     CmdOptions *cmds = CmdOptions::GetInstance();
+#ifdef ROSE_PRE_0_9_0B
     cmds->SetOptions(argc, argv);
+#else
+    vector<string> argvList(argv, argv + argc);
+    cmds->SetOptions(argvList);
+#endif
     bool useVtableOpt = true;
     if ( cmds->HasOption("--usePerMethodVirtualModel") ) { useVtableOpt = false; }
 

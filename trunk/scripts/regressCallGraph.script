@@ -50,17 +50,17 @@ echo "Testing TestCases/CallGraphTests/functions6.c, TestResults/CallGraph/funct
 ./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions6.c >& t
 diff t TestResults/CallGraph/functions6.c.out
 
-echo "Testing TestCases/CallGraphTests/activity_proc_call1.c, TestResults/CallGraph/activity_proc_call1.c.out checked by BK 7/10/06"
-./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/activity_proc_call1.c >& t
-diff t TestResults/CallGraph/activity_proc_call1.c.out
+echo "Testing TestCases/CallGraphTests/activity_proc_call1.C, TestResults/CallGraph/activity_proc_call1.C.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/activity_proc_call1.C >& t
+diff t TestResults/CallGraph/activity_proc_call1.C.out
 
-echo "Testing TestCases/CallGraphTests/interalias_proc_call1.c, TestResults/CallGraph/interalias_proc_call1.c.out checked by BK 7/10/06"
-./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/interalias_proc_call1.c >& t
-diff t TestResults/CallGraph/interalias_proc_call1.c.out
+echo "Testing TestCases/CallGraphTests/interalias_proc_call1.C, TestResults/CallGraph/interalias_proc_call1.C.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/interalias_proc_call1.C >& t
+diff t TestResults/CallGraph/interalias_proc_call1.C.out
 
-echo "Testing TestCases/CallGraphTests/nested_calls_1.c, TestResults/CallGraph/nested_calls_1.c.out checked by BK 7/10/06"
-./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/nested_calls_1.c >& t
-diff t TestResults/CallGraph/nested_calls_1.c.out
+echo "Testing TestCases/CallGraphTests/nested_calls_1.C, TestResults/CallGraph/nested_calls_1.C.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/nested_calls_1.C >& t
+diff t TestResults/CallGraph/nested_calls_1.C.out
 
 echo "Testing TestCases/CallGraphTests/multi_func_calls.c, TestResults/CallGraph/multi_func_calls.c.out checked by BK 7/10/06"
 ./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/multi_func_calls.c >& t

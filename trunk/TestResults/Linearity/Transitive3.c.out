@@ -1,18 +1,3 @@
-"/home/malusare/ParamBind/UseOA-ROSE/TestCases/Linearity/Transitive3.c", line 10: warning: 
-          variable "b" was set but never used
-     double a, b, c, x, y, z;
-               ^
-
-"/home/malusare/ParamBind/UseOA-ROSE/TestCases/Linearity/Transitive3.c", line 10: warning: 
-          variable "c" was set but never used
-     double a, b, c, x, y, z;
-                  ^
-
-"/home/malusare/ParamBind/UseOA-ROSE/TestCases/Linearity/Transitive3.c", line 10: warning: 
-          variable "z" was set but never used
-     double a, b, c, x, y, z;
-                           ^
-
 Linearity Analysis Start:
 
 LinearityStandard(

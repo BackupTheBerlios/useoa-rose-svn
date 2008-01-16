@@ -1053,7 +1053,7 @@ InterAliasMap(
         mIdToMemRefSetMap: int	 => MemRefSet
                 1	 => [ MemRefHandle(x) ] 
                 2	 => [ MemRefHandle(s)    MemRefHandle(s) ] 
-                6	 => [ MemRefHandle(::my_malloc)    MemRefHandle((my_malloc(((sizeof(struct ::S )))))) ] 
+                6	 => [ MemRefHandle(my_malloc)    MemRefHandle((my_malloc(((sizeof(struct S )))))) ] 
                 10	 => [ MemRefHandle(*s) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
@@ -1273,7 +1273,7 @@ InterAliasMap(
         mIdToMemRefSetMap: int	 => MemRefSet
                 3	 => [ MemRefHandle(y) ] 
                 4	 => [ MemRefHandle(t)    MemRefHandle(t) ] 
-                6	 => [ MemRefHandle(::my_malloc)    MemRefHandle((my_malloc(((sizeof(struct ::T )))))) ] 
+                6	 => [ MemRefHandle(my_malloc)    MemRefHandle((my_malloc(((sizeof(struct T )))))) ] 
                 10	 => [ MemRefHandle(*t) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
@@ -1491,8 +1491,8 @@ InterAliasMap(
                 10	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                7	 => [ MemRefHandle(::a) ] 
-                8	 => [ MemRefHandle(::b) ] 
+                7	 => [ MemRefHandle(a) ] 
+                8	 => [ MemRefHandle(b) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 

@@ -6,7 +6,7 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
             < 1, SymHandle("i") >
             < 2, SymHandle("j") >
         ] }
-    MEMREFEXPRS = { StmtHandle("void swap(int *v,int i,int j){int temp;temp =(v[i]);v[i] =(v[j]);v[j] = temp;}") =>
+    MEMREFEXPRS = { StmtHandle("void swap(int v[],int i,int j){int temp;temp =(v[i]);v[i] =(v[j]);v[j] = temp;}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("{int temp;temp =(v[i]);v[i] =(v[j]);v[j] = temp;}") =>
@@ -24,7 +24,7 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
             MemRefHandle("i") => 
                 NamedRef( USE, SymHandle("i"))
             MemRefHandle("(v[i])") => 
-                SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("v")), 1))
+                IdxExprAccess( USE, Deref( USE, NamedRef( USE, SymHandle("v")), 1), MemRefHandle("i"))
         ] }
     MEMREFEXPRS = { StmtHandle("v[i] =(v[j]);") =>
         [
@@ -37,9 +37,9 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
             MemRefHandle("j") => 
                 NamedRef( USE, SymHandle("j"))
             MemRefHandle("v[i]") => 
-                SubSetRef( DEF, Deref( USE, NamedRef( USE, SymHandle("v")), 1))
+                IdxExprAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("v")), 1), MemRefHandle("i"))
             MemRefHandle("(v[j])") => 
-                SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("v")), 1))
+                IdxExprAccess( USE, Deref( USE, NamedRef( USE, SymHandle("v")), 1), MemRefHandle("j"))
         ] }
     MEMREFEXPRS = { StmtHandle("v[j] = temp;") =>
         [
@@ -50,7 +50,7 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
             MemRefHandle("temp") => 
                 NamedRef( USE, SymHandle("temp"))
             MemRefHandle("v[j]") => 
-                SubSetRef( DEF, Deref( USE, NamedRef( USE, SymHandle("v")), 1))
+                IdxExprAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("v")), 1), MemRefHandle("j"))
         ] }
     LOCATION = { < SymHandle("v"), local > }
     LOCATION = { < SymHandle("i"), local > }
@@ -68,31 +68,31 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data ;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_trans_data {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct __gconv_step {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_step {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct __gconv_step_data {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_step_data {};") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("struct _IO_FILE ;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct _IO_marker {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::_IO_marker {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct _IO_FILE {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::_IO_FILE {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stdin_;") =>
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stdin_;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stdout_;") =>
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stdout_;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stderr_;") =>
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stderr_;") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int main(){int a[5];int i;int j;for(i = 0;i < 4;i++) {swap(a,i,(i + 1));}return 0;}") =>
@@ -132,7 +132,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("i"))
             MemRefHandle("i") => 
                 NamedRef( USE, SymHandle("i"))
-            MemRefHandle("::swap") => 
+            MemRefHandle("swap") => 
                 NamedRef( USE, SymHandle("swap"))
         ] }
     CALLSITES = { StmtHandle("swap(a,i,(i + 1));") =>

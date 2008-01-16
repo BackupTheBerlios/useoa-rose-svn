@@ -70,8 +70,8 @@ InterAliasMap(
 
         mIdToMemRefSetMap: int	 => MemRefSet
                 3	 => [ MemRefHandle(p)    MemRefHandle(p) ] 
-                5	 => [ MemRefHandle(s.test::f) ] 
-                6	 => [ MemRefHandle(s.test::g) ] 
+                5	 => [ MemRefHandle(s.f) ] 
+                6	 => [ MemRefHandle(s.g) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 

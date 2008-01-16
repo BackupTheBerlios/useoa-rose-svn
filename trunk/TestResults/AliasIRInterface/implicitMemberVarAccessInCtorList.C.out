@@ -11,7 +11,7 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__Foo__sco
             MemRefHandle("assign_or_agg_initializer:5") => 
                 NamedRef( USE, SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
         ] }
-    MEMREFEXPRS = { StmtHandle("public: inline Foo() : mX(5){}") =>
+    MEMREFEXPRS = { StmtHandle("public: inline Foo::Foo() : mX(5){}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("{}") =>
@@ -20,25 +20,25 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__Foo__sco
     LOCATION = { < SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
 
-PROCEDURE = { < ProcHandle("::Foo::~Foo"), SymHandle("method:::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_") > }
+PROCEDURE = { < ProcHandle("::Foo::~Foo"), SymHandle("method:::Foo::~Foo__L0R") > }
     FORMALS = {
         [
-            < 0, SymHandle("this::::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_") >
+            < 0, SymHandle("this::::Foo::~Foo__L0R") >
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("public: inline ~Foo(){}") =>
+    MEMREFEXPRS = { StmtHandle("public: inline Foo::~Foo(){}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("this::::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), local > }
-    LOCATION = { < SymHandle("method:::Foo::~Foo__Foo__scope____dtFoo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
+    LOCATION = { < SymHandle("this::::Foo::~Foo__L0R"), local > }
+    LOCATION = { < SymHandle("method:::Foo::~Foo__L0R"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
-    MEMREFEXPRS = { StmtHandle("class Foo {public: inline Foo() : mX(5){}inline ~Foo(){}int mX;};") =>
+    MEMREFEXPRS = { StmtHandle("class ::Foo {public: inline Foo::Foo() : mX(5){}inline Foo::~Foo(){}int mX;};") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int main(){return 0;}") =>

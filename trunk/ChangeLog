@@ -4032,4 +4032,42 @@ Aborted
    - Regenerated Linearity Pair Example because we created AssignPairs 
      for increament statement of loop.
 
+1/15/08	    UseOA-ROSE svn trunk 326 Brian White
+   - This version has been updated to compile against ROSE 0.9.0b.
+     I have also updated the test results.  Because these differed
+     dramatically (though mostly superficially), I have not included
+     an option to compile this code with a ROSE version prior to 0.9.0b.
 
+   - Was getting undefined symbol yywrap during link.  Added -lsage3
+     to link line to fix this (in config/Makefile.inc)
+
+   - Bug fix in V_SgPntrArrRefExp case of findAllMemRefsAndPtrAssigns.
+     In cases where an IdxExprAccess is created to wrap the
+     lhs of the array expression, we were iterating over all of the
+     lhs mre's, but only wrapping the last of them.  i.e.,
+
+     for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
+	lhs_mre = mIter->current();
+     }
+
+     // Create IdxExprAccess from lhs_mre
+
+     Instead, we should create an IdxExprAccess for _each_ mre of the lhs:
+
+     for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
+	lhs_mre = mIter->current();
+        // Create IdxExprAccess from lhs_mre
+     }
+
+   - Another bug fix in V_SgPntrArrRefExp case of findAllMemRefsAndPtrAssigns.
+     In cases where an IdxExprAccess is created to wrap the lhs,
+     we first need to deref the lhs.  
+
+   - Fixed a related bug in getIndepMemRefExprIter and 
+     getDepMemRefExprIter:  previously, we deref'ed an MRE for a pointer
+     type.  Also now do this for an array type.
+
+   - Updated regression tests.  ICFGActivity/Loop_simple_4.c still fails.
+     I don't know why.  However, if I change formal params from
+     double x[2] to double *x, the problem persists.  i.e., this may
+     not be related to any of the problems noted above for SgArrayType.

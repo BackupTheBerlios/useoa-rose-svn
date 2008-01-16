@@ -420,8 +420,13 @@ OA_ptr<NamedLoc> LoopNestProcessor::extractIndexVariableInCPPStyleLoop(
 
     // check to see if the init statement has a single variable
     // assignment, within the assignment get the variable reference
+#ifdef PRE_ROSE_0_9_0B
     list<SgNode*> declarations = 
         NodeQuery::querySubTree(init, V_SgVariableDeclaration);
+#else
+    NodeQuerySynthesizedAttributeType declarations = 
+        NodeQuery::querySubTree(init, V_SgVariableDeclaration);
+#endif
     if(declarations.size() != 1) {
         (*error) = true;
         return ret;
@@ -803,14 +808,25 @@ OA_ptr<LoopAbstraction> LoopNestProcessor::buildLoopAbstraction(
     // check to assure that the index variable is not redefined anywhere
     // in the loop body.  Search for assignment expressions with the
     // index variable as the LHS
+#ifdef PRE_ROSE_0_9_0B
     list<SgNode*> assignments = 
         NodeQuery::querySubTree(
             forStatement->get_loop_body(), &queryAssignments);
+#else
+    NodeQuerySynthesizedAttributeType assignments = 
+        NodeQuery::querySubTree(
+            forStatement->get_loop_body(), &queryAssignments);
+#endif    
     if(!assignments.empty()) {
         // check to see if the LHS of any of the assignments is the
         // index variable
+#ifdef PRE_ROSE_0_9_0B
         for(list<SgNode*>::iterator i = assignments.begin();
             i != assignments.end(); i++)
+#else
+        for(NodeQuerySynthesizedAttributeType::iterator i = assignments.begin();
+            i != assignments.end(); i++)
+#endif
         {
             SgBinaryOp *binOp = isSgBinaryOp(*i);
 
@@ -828,7 +844,11 @@ OA_ptr<LoopAbstraction> LoopNestProcessor::buildLoopAbstraction(
     }
 
     // check to assure that the loop contains no function calls
+#ifdef PRE_ROSE_0_9_0B
     list<SgNode*> functions =
+#else
+    NodeQuerySynthesizedAttributeType functions = 
+#endif
         NodeQuery::querySubTree(
             forStatement->get_loop_body(), V_SgFunctionCallExp);
     if(!functions.empty()) {
@@ -839,7 +859,11 @@ OA_ptr<LoopAbstraction> LoopNestProcessor::buildLoopAbstraction(
     }
 
     // check to assure that the loop contains no dereferences
+#ifdef PRE_ROSE_0_9_0B
     list<SgNode*> pointers =
+#else
+    NodeQuerySynthesizedAttributeType pointers =
+#endif
         NodeQuery::querySubTree(
             forStatement->get_loop_body(), V_SgPointerDerefExp);
     if(!pointers.empty()) {

@@ -9,37 +9,37 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data ;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_trans_data {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct __gconv_step {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_step {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct __gconv_step_data {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_step_data {};") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("struct _IO_FILE ;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct _IO_marker {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::_IO_marker {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("struct _IO_FILE {};") =>
+    MEMREFEXPRS = { StmtHandle("struct ::_IO_FILE {};") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stdin_;") =>
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stdin_;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stdout_;") =>
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stdout_;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("extern "C" struct _IO_FILE_plus _IO_2_1_stderr_;") =>
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stderr_;") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("int main(){int x = 1;int y = 2;int z = 3;int *p;int *q;int *r = &y;p =((q = &x) , r);printf("*p = %d\n", *p);printf("*q = %d\n", *q);return 0;}") =>
+    MEMREFEXPRS = { StmtHandle("int main(){int x = 1;int y = 2;int z = 3;int *p;int *q;int *r = &y;p =((q = &x) , r);printf(("*p = %d\n"), *p);printf(("*q = %d\n"), *q);return 0;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{int x = 1;int y = 2;int z = 3;int *p;int *q;int *r = &y;p =((q = &x) , r);printf("*p = %d\n", *p);printf("*q = %d\n", *q);return 0;}") =>
+    MEMREFEXPRS = { StmtHandle("{int x = 1;int y = 2;int z = 3;int *p;int *q;int *r = &y;p =((q = &x) , r);printf(("*p = %d\n"), *p);printf(("*q = %d\n"), *q);return 0;}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int x = 1;") =>
@@ -95,7 +95,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             < NamedRef( DEF, SymHandle("q"))
             , AddressOf( USE, NamedRef( USE, SymHandle("x"))) >
         ] }
-    MEMREFEXPRS = { StmtHandle("printf("*p = %d\n", *p);") =>
+    MEMREFEXPRS = { StmtHandle("printf(("*p = %d\n"), *p);") =>
         [
             MemRefHandle("p") => 
                 NamedRef( USE, SymHandle("p"))
@@ -106,16 +106,16 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("*p") => 
                 Deref( USE, NamedRef( USE, SymHandle("p")), 1)
         ] }
-    CALLSITES = { StmtHandle("printf("*p = %d\n", *p);") =>
+    CALLSITES = { StmtHandle("printf(("*p = %d\n"), *p);") =>
         [
-            CallHandle("printf("*p = %d\n", *p)") => 
+            CallHandle("printf(("*p = %d\n"), *p)") => 
                 NamedRef( USE, SymHandle("printf"))
         ] }
-    PARAMBINDPTRASSIGNPAIRS = { CallHandle("printf("*p = %d\n", *p)") =>
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("printf(("*p = %d\n"), *p)") =>
         [
             < 0, AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle(""*p = %d\n""), 0))) >
         ] }
-    MEMREFEXPRS = { StmtHandle("printf("*q = %d\n", *q);") =>
+    MEMREFEXPRS = { StmtHandle("printf(("*q = %d\n"), *q);") =>
         [
             MemRefHandle("q") => 
                 NamedRef( USE, SymHandle("q"))
@@ -126,12 +126,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("*q") => 
                 Deref( USE, NamedRef( USE, SymHandle("q")), 1)
         ] }
-    CALLSITES = { StmtHandle("printf("*q = %d\n", *q);") =>
+    CALLSITES = { StmtHandle("printf(("*q = %d\n"), *q);") =>
         [
-            CallHandle("printf("*q = %d\n", *q)") => 
+            CallHandle("printf(("*q = %d\n"), *q)") => 
                 NamedRef( USE, SymHandle("printf"))
         ] }
-    PARAMBINDPTRASSIGNPAIRS = { CallHandle("printf("*q = %d\n", *q)") =>
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("printf(("*q = %d\n"), *q)") =>
         [
             < 0, AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle(""*q = %d\n""), 0))) >
         ] }

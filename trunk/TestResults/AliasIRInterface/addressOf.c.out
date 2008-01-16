@@ -1,9 +1,9 @@
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
-    MEMREFEXPRS = { StmtHandle("int main(){int a;int b;int c;int *p;int **q;int v[3];struct temp {int hello;}mystruct;p = &a;q = &p;p = *q;p =(v + 2);p = p;p = &mystruct.temp::hello;return 0;}") =>
+    MEMREFEXPRS = { StmtHandle("int main(){int a;int b;int c;int *p;int **q;int v[3];struct temp {int hello;}mystruct;p = &a;q = &p;p = *q;p =(v + 2);p = p;p = &mystruct.hello;return 0;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{int a;int b;int c;int *p;int **q;int v[3];struct temp {int hello;}mystruct;p = &a;q = &p;p = *q;p =(v + 2);p = p;p = &mystruct.temp::hello;return 0;}") =>
+    MEMREFEXPRS = { StmtHandle("{int a;int b;int c;int *p;int **q;int v[3];struct temp {int hello;}mystruct;p = &a;q = &p;p = *q;p =(v + 2);p = p;p = &mystruct.hello;return 0;}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int a;") =>
@@ -89,14 +89,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             < NamedRef( DEF, SymHandle("p"))
             , NamedRef( USE, SymHandle("p")) >
         ] }
-    MEMREFEXPRS = { StmtHandle("p = &mystruct.temp::hello;") =>
+    MEMREFEXPRS = { StmtHandle("p = &mystruct.hello;") =>
         [
             MemRefHandle("p") => 
                 NamedRef( DEF, SymHandle("p"))
-            MemRefHandle("&mystruct.temp::hello") => 
+            MemRefHandle("&mystruct.hello") => 
                 AddressOf( USE, FieldAccess( USE, NamedRef( USE, SymHandle("mystruct")), hello))
         ] }
-    PTRASSIGNPAIRS = { StmtHandle("p = &mystruct.temp::hello;") =>
+    PTRASSIGNPAIRS = { StmtHandle("p = &mystruct.hello;") =>
         [
             < NamedRef( DEF, SymHandle("p"))
             , AddressOf( USE, FieldAccess( USE, NamedRef( USE, SymHandle("mystruct")), hello)) >

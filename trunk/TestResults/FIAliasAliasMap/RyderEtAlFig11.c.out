@@ -49,7 +49,7 @@ InterAliasMap(
                 3	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                1	 => [ MemRefHandle(( *b))    MemRefHandle(*b)    MemRefHandle(( *b))    MemRefHandle(( *b)++) ] 
+                1	 => [ MemRefHandle(*b)    MemRefHandle(*b)    MemRefHandle(( *b))    MemRefHandle(( *b)++) ] 
                 2	 => [ MemRefHandle(b)    MemRefHandle(b)    MemRefHandle(b)    MemRefHandle(b) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
@@ -128,7 +128,7 @@ InterAliasMap(
                 2	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                2	 => [ MemRefHandle(::R)    MemRefHandle(::R) ] 
+                2	 => [ MemRefHandle(R)    MemRefHandle(R) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 

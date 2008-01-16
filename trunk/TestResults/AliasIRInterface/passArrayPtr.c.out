@@ -33,10 +33,10 @@ PROCEDURE = { < ProcHandle("strcmp"), SymHandle("strcmp") > }
     LOCATION = { < SymHandle("strcmp"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
-    MEMREFEXPRS = { StmtHandle("int main(){char a[] = "testing";int x = strcmp(a,a);a[3] = 'b';char v =(a[2]);}") =>
+    MEMREFEXPRS = { StmtHandle("int main(){char a[] = "testing";int x = strcmp(a,a);a[3] =('b');char v =(a[2]);}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{char a[] = "testing";int x = strcmp(a,a);a[3] = 'b';char v =(a[2]);}") =>
+    MEMREFEXPRS = { StmtHandle("{char a[] = "testing";int x = strcmp(a,a);a[3] =('b');char v =(a[2]);}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("char a[] = "testing";") =>
@@ -54,7 +54,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
             MemRefHandle("a") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
-            MemRefHandle("::strcmp") => 
+            MemRefHandle("strcmp") => 
                 NamedRef( USE, SymHandle("strcmp"))
         ] }
     CALLSITES = { StmtHandle("int x = strcmp(a,a);") =>
@@ -67,12 +67,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             < 0, AddressOf( USE, NamedRef( USE, SymHandle("a"))) >
             < 1, AddressOf( USE, NamedRef( USE, SymHandle("a"))) >
         ] }
-    MEMREFEXPRS = { StmtHandle("a[3] = 'b';") =>
+    MEMREFEXPRS = { StmtHandle("a[3] =('b');") =>
         [
             MemRefHandle("a") => 
                 NamedRef( USE, SymHandle("a"))
             MemRefHandle("a[3]") => 
-                IdxExprAccess( DEF, NamedRef( USE, SymHandle("a")), MemRefHandle("3"))
+                IdxExprAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("a")), 1), MemRefHandle("3"))
         ] }
     MEMREFEXPRS = { StmtHandle("char v =(a[2]);") =>
         [
@@ -81,7 +81,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("a") => 
                 NamedRef( USE, SymHandle("a"))
             MemRefHandle("(a[2])") => 
-                IdxExprAccess( USE, NamedRef( USE, SymHandle("a")), MemRefHandle("2"))
+                IdxExprAccess( USE, Deref( USE, NamedRef( USE, SymHandle("a")), 1), MemRefHandle("2"))
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [

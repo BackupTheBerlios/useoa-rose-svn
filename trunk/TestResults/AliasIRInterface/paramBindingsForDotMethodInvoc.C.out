@@ -7,7 +7,7 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__Foo__sco
     MEMREFEXPRS = { StmtHandle("") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("public: inline Foo(){}") =>
+    MEMREFEXPRS = { StmtHandle("public: inline Foo::Foo(){}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("{}") =>
@@ -16,27 +16,27 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__Foo__sco
     LOCATION = { < SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
 
-PROCEDURE = { < ProcHandle("::Foo::someMethod"), SymHandle("method:::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_") > }
+PROCEDURE = { < ProcHandle("::Foo::someMethod"), SymHandle("method:::Foo::someMethod__L0R") > }
     FORMALS = {
         [
-            < 0, SymHandle("this::::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_") >
+            < 0, SymHandle("this::::Foo::someMethod__L0R") >
             < 1, SymHandle("x") >
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("public: inline void someMethod(int *x){}") =>
+    MEMREFEXPRS = { StmtHandle("public: inline void Foo::someMethod(int *x){}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
     LOCATION = { < SymHandle("x"), local > }
-    LOCATION = { < SymHandle("this::::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), local > }
-    LOCATION = { < SymHandle("method:::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), not local > }
+    LOCATION = { < SymHandle("this::::Foo::someMethod__L0R"), local > }
+    LOCATION = { < SymHandle("method:::Foo::someMethod__L0R"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
-    MEMREFEXPRS = { StmtHandle("class Foo {public: inline Foo(){}inline void someMethod(int *x){}};") =>
+    MEMREFEXPRS = { StmtHandle("class ::Foo {public: inline Foo::Foo(){}inline void Foo::someMethod(int *x){}};") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int main(){class ::Foo f;int x;f.someMethod(&x);return 0;}") =>
@@ -45,14 +45,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("{class ::Foo f;int x;f.someMethod(&x);return 0;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("class ::Foo f;") =>
+    MEMREFEXPRS = { StmtHandle("class Foo f;") =>
         [
             MemRefHandle("::Foo") => 
                 NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
             MemRefHandle("implicit actual this:") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("f")))
         ] }
-    CALLSITES = { StmtHandle("class ::Foo f;") =>
+    CALLSITES = { StmtHandle("class Foo f;") =>
         [
             CallHandle("f") => 
                 NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
@@ -69,14 +69,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("f") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("f")))
             MemRefHandle("f.someMethod") => 
-                NamedRef( USE, SymHandle("method:::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"))
+                NamedRef( USE, SymHandle("method:::Foo::someMethod__L0R"))
             MemRefHandle("&x") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("x")))
         ] }
     CALLSITES = { StmtHandle("f.someMethod(&x);") =>
         [
             CallHandle("f.someMethod(&x)") => 
-                NamedRef( USE, SymHandle("method:::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"))
+                NamedRef( USE, SymHandle("method:::Foo::someMethod__L0R"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("f.someMethod(&x)") =>
         [
@@ -90,4 +90,4 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
-    LOCATION = { < SymHandle("method:::Foo::someMethod__Foo__scope__someMethod____MFb_Foo__Fb_v_Gb___Pb__i__Pe___Fe_"), not local > }
+    LOCATION = { < SymHandle("method:::Foo::someMethod__L0R"), not local > }

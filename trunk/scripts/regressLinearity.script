@@ -1,4 +1,4 @@
 echo "Testing TestCases/Linearity/Transitive3.c, TestResults/Linearity/Transitive3.c.out Checked by LMR 01/28/07"
-./OATest --oa-Linearity TestCases/Linearity/Transitive3.c >& t
+./OATest  --edg:no_warnings -w --oa-Linearity TestCases/Linearity/Transitive3.c >& t
 diff t TestResults/Linearity/Transitive3.c.out
 

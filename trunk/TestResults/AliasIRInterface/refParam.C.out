@@ -29,10 +29,10 @@ PROCEDURE = { < ProcHandle("foo"), SymHandle("foo") > }
     LOCATION = { < SymHandle("foo"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
-    MEMREFEXPRS = { StmtHandle("int main(){int m;b = &m;int *x;foo(x);*b;return 0;}") =>
+    MEMREFEXPRS = { StmtHandle("int main(){int m;b = &m;int *x;::foo(x);*b;return 0;}") =>
         [
         ] }
-    MEMREFEXPRS = { StmtHandle("{int m;b = &m;int *x;foo(x);*b;return 0;}") =>
+    MEMREFEXPRS = { StmtHandle("{int m;b = &m;int *x;::foo(x);*b;return 0;}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("int m;") =>
@@ -57,7 +57,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("x") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("x")))
-            MemRefHandle("::foo") => 
+            MemRefHandle("foo") => 
                 NamedRef( USE, SymHandle("foo"))
         ] }
     CALLSITES = { StmtHandle("foo(x);") =>

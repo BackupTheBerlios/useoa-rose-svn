@@ -39,11 +39,20 @@ SageIRInterface::SageIRInterface(SgNode *root,
   // Initialize the list of function declarations in the program.
   // We want declarations with an associated SgFunctionDefinition,
   // therefore lookup the definitions and find its declaration.
+#ifdef PRE_ROSE_0_9_0B
   list<SgNode *> nodes = NodeQuery::querySubTree(root,
                                                  V_SgFunctionDefinition);
+#else
+  NodeQuerySynthesizedAttributeType nodes = NodeQuery::querySubTree(root,
+                                                 V_SgFunctionDefinition);
+#endif
 
-  for (list<SgNode *>::iterator it = nodes.begin();
-       it != nodes.end(); ++it ) {
+#ifdef PRE_ROSE_0_9_0B
+  for (list<SgNode *>::iterator it = nodes.begin(); it != nodes.end(); ++it ) 
+#else
+  for (NodeQuerySynthesizedAttributeType::iterator it = nodes.begin(); it != nodes.end(); ++it ) 
+#endif
+  {
 
     SgNode *n = *it;
     ROSE_ASSERT(n != NULL);
@@ -4057,10 +4066,7 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
                    ROSE_ASSERT(initName != NULL);
                    OA::SymHandle sym = getNodeNumber(initName);
                    bool isAddrOf, fullAccuracy;
-                   OA::MemRefExpr::MemRefType hty;
                    isAddrOf = false;
-                   hty = OA::MemRefExpr::USE;
-
                    SgType *type = initName->get_type();
                    //SgType *baseType = getBaseType(type);
 
@@ -4095,11 +4101,10 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
                    // if the symbol is a reference parameter, then the MemRefExpr
                    // for an access to the symbol needs a deref
                    
-                   if (isSgPointerType(type)) {
+                   if (isSgPointerType(type) || isSgArrayType(type)) {
 
                        mre = new OA::NamedRef(OA::MemRefExpr::USE,sym);
                        mre = new OA::Deref(OA::MemRefExpr::USE, mre, 1);
-
 
                        if(fullAccuracy) {
 
@@ -4119,12 +4124,10 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
                        // one case where we end up here is when passing an array as a parameter
                        // another is if we are just accessing a scalar that is not a
                        // reference parameter
+		       // No!  We treat the first case (array type)
+                       // as we would a pointer above.   bwhite 1/16/08
 
-                       /* PLM 1/23/07 deprecated Accuracy field
-                       mre = new OA::NamedRef(fullAccuracy, hty, sym);
-                       */
-
-                       mre = new OA::NamedRef(hty, sym);
+                       mre = new OA::NamedRef(OA::MemRefExpr::USE, sym);
 
                        if(fullAccuracy) {
 
@@ -4229,10 +4232,7 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
                    OA::SymHandle sym = getNodeNumber(initName);
 
                    bool isAddrOf, fullAccuracy;
-                   OA::MemRefExpr::MemRefType hty;
                    isAddrOf = false;
-                   hty = OA::MemRefExpr::DEF;
-
                    /*
                    SgVariableDeclaration * vard =   varSymbol->get_declaration();
                    SgType * tp=(vd->get_variables()).front()->get_type();
@@ -4273,11 +4273,10 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
                    // for an access to the symbol needs a deref
                    //if (isSgReferenceType(type)) {
 
-                   if(isSgPointerType(type)) {
+                   if(isSgPointerType(type) || isSgArrayType(type)) {
 
                        mre = new OA::NamedRef(OA::MemRefExpr::USE,sym);
                        mre = new OA::Deref(OA::MemRefExpr::USE, mre, 1);
-
 
                        if(fullAccuracy) {
 
@@ -4297,12 +4296,10 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
                        // one case where we end up here is when passing an array as a parameter
                        // another is if we are just accessing a scalar that is not a
                        // reference parameter
+		       // No!  We treat the first case (array type)
+                       // as we would a pointer above.   bwhite 1/16/08
 
-                       /* PLM 1/23/07 deprecated Accuracy field
-                       mre = new OA::NamedRef(fullAccuracy, hty, sym);
-                       */
-
-                       mre = new OA::NamedRef(hty, sym);
+                       mre = new OA::NamedRef(OA::MemRefExpr::USE, sym);
 
                        if(fullAccuracy) {
 
@@ -5280,10 +5277,19 @@ OA::OA_ptr<SageIRSymIterator> SageIRInterface::getSymIterator(
     SgProject *proj)
 {
     OA::OA_ptr<list<OA::SymHandle> > symHandleList;
+#ifdef PRE_ROSE_0_9_0B
     list<SgNode*> names = NodeQuery::querySubTree(proj, V_SgInitializedName);
+#else
+    NodeQuerySynthesizedAttributeType names = NodeQuery::querySubTree(proj, V_SgInitializedName);
+#endif
     symHandleList = new list<OA::SymHandle>();
 
-    for(list<SgNode*>::iterator i = names.begin(); i != names.end(); i++) {
+#ifdef PRE_ROSE_0_9_0B
+    for(list<SgNode*>::iterator i = names.begin(); i != names.end(); i++) 
+#else
+    for(NodeQuerySynthesizedAttributeType::iterator i = names.begin(); i != names.end(); i++) 
+#endif
+    {
         SgInitializedName *initName = isSgInitializedName(*i);        
         if(initName != NULL) {
             OA::SymHandle hSym = getVarSymHandle(initName);
