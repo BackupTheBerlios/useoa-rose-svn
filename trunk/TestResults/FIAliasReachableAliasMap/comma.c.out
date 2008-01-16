@@ -60,19 +60,19 @@ InterAliasMap(
                 8	 => [ 
                     UnnamedLoc(
                         mExprHandle: ExprHandle("*p = %d\n")
-                        mLocal: 0
+                        mLocal: 1
                     ) ] 
                 9	 => [ 
                     UnnamedLoc(
                         mExprHandle: ExprHandle("*q = %d\n")
-                        mLocal: 0
+                        mLocal: 1
                     ) ] 
                 10	 => [ 
                     LocSubSet(
                         mLoc: 
                         UnnamedLoc(
                             mExprHandle: ExprHandle("*p = %d\n")
-                            mLocal: 0
+                            mLocal: 1
                         )
                         mFull: 0
                     ) ] 
@@ -81,7 +81,7 @@ InterAliasMap(
                         mLoc: 
                         UnnamedLoc(
                             mExprHandle: ExprHandle("*q = %d\n")
-                            mLocal: 0
+                            mLocal: 1
                         )
                         mFull: 0
                     ) ] 
@@ -176,13 +176,15 @@ InterAliasMap(
                     UnnamedRef(
                         mMemRefType: USE
                         mExprHandle: ExprHandle("*p = %d\n")
-                        mLocal: 0
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
                     ) ] 
                 9	 => [ 
                     UnnamedRef(
                         mMemRefType: USE
                         mExprHandle: ExprHandle("*q = %d\n")
-                        mLocal: 0
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
                     ) ] 
                 10	 => [ 
                     SubSetRef(
@@ -191,7 +193,8 @@ InterAliasMap(
                         UnnamedRef(
                             mMemRefType: USE
                             mExprHandle: ExprHandle("*p = %d\n")
-                            mLocal: 0
+                            mLocal: 1
+                            mProcHandle: ProcHandle(main)
                         )
                     ) ] 
                 11	 => [ 
@@ -201,7 +204,8 @@ InterAliasMap(
                         UnnamedRef(
                             mMemRefType: USE
                             mExprHandle: ExprHandle("*q = %d\n")
-                            mLocal: 0
+                            mLocal: 1
+                            mProcHandle: ProcHandle(main)
                         )
                     ) ] 
 

@@ -710,6 +710,34 @@ derefMre(OA::OA_ptr<OA::MemRefExpr> mre, OA::MemRefExpr::MemRefType mrType, int 
     
 }
 
+// Returns true if (the return value of) a function call is
+// used as the left-hand side of a method invocation.
+static bool usedAsReceiver(SgFunctionCallExp *funcCall)
+{
+    ROSE_ASSERT(funcCall != NULL);
+    bool receiver = false;
+
+    return false;
+
+    SgNode *node = funcCall->get_parent();
+    while(1) {
+        ROSE_ASSERT(node != NULL);
+        if ( isSgGlobal(node) ) {
+            break;
+        }
+        if ( isSgDotExp(node) || isSgArrowExp(node) ) {
+            receiver = true;
+            break;
+        }
+        if ( isSgExpressionRoot(node) ) {
+            node = node->get_parent();
+        } else {
+            break;
+        }
+    }
+    return receiver;
+}
+
 /*!
    Should originally be called on a statement so astNode and stmt will
    be the same.  This is a recursive procedure that traverses down
@@ -1158,7 +1186,13 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 #endif
                 mCallToMRE[call] = call_mre;
 
-                if (returnsAddress(funcCallExp) 
+                // BW 8/3/07  We need to create an MRE for this function
+                // call if its result is used as the left-hand side of
+                // a dot/arrow expression.  Previously, we did not do 
+                // this when a function returned an object, which prevented
+                // us from creating a call mre at the dot/arrow expression
+                // (as this requires a lhs).  
+                if ( ( returnsAddress(funcCallExp) || usedAsReceiver(funcCallExp) )
                     && !isFunc(funcCallExp, "malloc")) 
                 {
                     // is a MemRefHandle
@@ -2060,8 +2094,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             if ( isSgExpression(astNode) ) {
 
-                 SgFunctionDefinition *functionDefinition
-                   = isSgFunctionDefinition(astNode);
+                 SgFunctionDefinition *functionDefinition =
+                     getEnclosingFunction(astNode);
 
                  if(functionDefinition != NULL) {
 
@@ -2082,7 +2116,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     = new OA::UnnamedRef(OA::MemRefExpr::USE, exprHandle, proc);
                  } else {
 
-                    // if A is local initialized inside some procedure, 
+                    // if A is not local initialized inside some procedure, 
                     // then  UnnamedRef is non-local. 
 
                     mre = new OA::UnnamedRef(OA::MemRefExpr::USE, exprHandle);
@@ -3093,6 +3127,23 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             }
             break;
         }
+    case V_SgTypeIdOp:
+        {
+            // A typeid op takes an expression or a class type
+            // and returns type information.
+            // It is part of the C++ run-time type information (RTTI)
+            // interface.
+            SgTypeIdOp *typeIdOp = isSgTypeIdOp(astNode);
+            ROSE_ASSERT(typeIdOp != NULL);
+
+            SgExpression *expr = typeIdOp->get_operand_expr();
+            // expr may be NULL if typeid is passed a type.
+            if ( expr != NULL ) {
+                findAllMemRefsAndPtrAssigns(expr, stmt);
+            }
+
+            break;
+        }
     case V_SgPointerDerefExp:
         {
             SgPointerDerefExp *ptrDerefOp = isSgPointerDerefExp(astNode);
@@ -3867,8 +3918,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::ExprHandle exprHandle = findTopExprHandle(stringVal);
             if ( isSgExpression(stringVal) ) {
 
-                 SgFunctionDefinition *functionDefinition
-                   = isSgFunctionDefinition(stringVal);
+                 SgFunctionDefinition *functionDefinition =
+                     getEnclosingFunction(astNode);
 
                  if(functionDefinition != NULL) {
 
@@ -3949,6 +4000,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgBasicBlock:
     case V_SgFunctionDeclaration:
     case V_SgNullExpression:
+    case V_SgNullStatement:
         break;
 
     case V_SgBoolValExp:
@@ -4313,6 +4365,7 @@ createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
 
             switch(declarationStatement->variantT()) {
             case V_SgMemberFunctionDeclaration:
+            case V_SgTemplateInstantiationMemberFunctionDecl:
                 {
                     SgMemberFunctionDeclaration *functionDeclaration =  
                         isSgMemberFunctionDeclaration(declarationStatement); 
@@ -4795,6 +4848,7 @@ SageIRInterface::createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle s
 
         switch(declarationStatement->variantT()) {
         case V_SgMemberFunctionDeclaration:
+        case V_SgTemplateInstantiationMemberFunctionDecl:
             {
                 SgMemberFunctionDeclaration *functionDeclaration =  
                     isSgMemberFunctionDeclaration(declarationStatement); 

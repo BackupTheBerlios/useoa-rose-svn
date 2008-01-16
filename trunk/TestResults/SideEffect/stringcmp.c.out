@@ -375,7 +375,7 @@ InterSideEffectStandard(
                             mLoc: 
                             UnnamedLoc(
                                 mExprHandle: ExprHandle("source")
-                                mLocal: 0
+                                mLocal: 1
                             )
                             mFull: 0
                         )    
@@ -383,7 +383,7 @@ InterSideEffectStandard(
                             mLoc: 
                             UnnamedLoc(
                                 mExprHandle: ExprHandle("dest")
-                                mLocal: 0
+                                mLocal: 1
                             )
                             mFull: 0
                         ) ] 
@@ -418,7 +418,7 @@ InterSideEffectStandard(
                             mLoc: 
                             UnnamedLoc(
                                 mExprHandle: ExprHandle("source")
-                                mLocal: 0
+                                mLocal: 1
                             )
                             mFull: 0
                         )    
@@ -426,7 +426,7 @@ InterSideEffectStandard(
                             mLoc: 
                             UnnamedLoc(
                                 mExprHandle: ExprHandle("dest")
-                                mLocal: 0
+                                mLocal: 1
                             )
                             mFull: 0
                         ) ] 
@@ -441,7 +441,7 @@ InterSideEffectStandard(
                             mLoc: 
                             UnnamedLoc(
                                 mExprHandle: ExprHandle("source")
-                                mLocal: 0
+                                mLocal: 1
                             )
                             mFull: 0
                         )    
@@ -449,7 +449,7 @@ InterSideEffectStandard(
                             mLoc: 
                             UnnamedLoc(
                                 mExprHandle: ExprHandle("dest")
-                                mLocal: 0
+                                mLocal: 1
                             )
                             mFull: 0
                         ) ] 
@@ -484,7 +484,7 @@ InterSideEffectStandard(
                             mLoc: 
                             UnnamedLoc(
                                 mExprHandle: ExprHandle("source")
-                                mLocal: 0
+                                mLocal: 1
                             )
                             mFull: 0
                         )    
@@ -492,7 +492,7 @@ InterSideEffectStandard(
                             mLoc: 
                             UnnamedLoc(
                                 mExprHandle: ExprHandle("dest")
-                                mLocal: 0
+                                mLocal: 1
                             )
                             mFull: 0
                         ) ] 

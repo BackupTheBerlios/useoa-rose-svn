@@ -941,6 +941,8 @@ public:
   void dump(OA::OA_ptr<OA::Deref> memRefExp, std::ostream& os);
   void dump(OA::OA_ptr<OA::FieldAccess> memRefExp, std::ostream& os);
   void dump(OA::OA_ptr<OA::MemRefExpr> memRefExp, std::ostream &os);
+  void dump(OA::OA_ptr<OA::AddressOf> memRefExp, std::ostream& os);
+  void dump(OA::OA_ptr<OA::SubSetRef> memRefExp, std::ostream& os);
 
   string refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
 

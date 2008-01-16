@@ -865,13 +865,18 @@ OA::StmtHandle SageIRInterface::loopHeader(OA::StmtHandle h)
         SgForStatement * forst=isSgForStatement((SgStatement *)getNodePtr(h));
         if(forst)
         {
-                st=forst->get_init_stmt().front();
-
-                // Check to see if get_init_stmt returns an empty list, if it
-                // is we need to return NULL.
-                if(st == forst->get_init_stmt().back()) {
-                    st = NULL;
-                }
+            // BW 8/13/07  If there are no init statements, then
+            // the list forst->get_init_stmt() will have size 0
+            // and front() will return something invalid.  Check
+            // size first!
+            // st=forst->get_init_stmt().front();
+            if ( forst->get_init_stmt().size() == 1 ) {
+                st = forst->get_init_stmt().front();
+            }
+            // But what happens if there are multiple statements
+            // in the loop initializer?  Doesn't seem that
+            // this should be possible.
+            ROSE_ASSERT(forst->get_init_stmt().size() <= 1);
         }
         
         return (OA::irhandle_t)(getNodeNumber(st));
@@ -1552,7 +1557,9 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
     break;
     }
   case V_SgFunctionDeclaration:
+  case V_SgTemplateInstantiationFunctionDecl:
   case V_SgMemberFunctionDeclaration:
+  case V_SgTemplateInstantiationMemberFunctionDecl:
     {
       // For now, the solution is simply to call all functions/methods
       // visible.  This isn't true given static functions, private methods,
@@ -1648,7 +1655,9 @@ NumberTraversal::visit ( SgNode* astNode )
     }
 
   case V_SgFunctionDeclaration:
+  case V_SgTemplateInstantiationFunctionDecl:
   case V_SgMemberFunctionDeclaration:
+  case V_SgTemplateInstantiationMemberFunctionDecl:
     {
       SgFunctionDeclaration *functionDeclaration =
         isSgFunctionDeclaration(astNode);
@@ -1910,6 +1919,7 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
         switch(declarationStatement->variantT()) {
           
         case V_SgMemberFunctionDeclaration:
+        case V_SgTemplateInstantiationMemberFunctionDecl:
           {
             SgMemberFunctionDeclaration *functionDeclaration =  
               isSgMemberFunctionDeclaration(declarationStatement); 
@@ -2022,7 +2032,9 @@ void SageIRInterface::numberASTNodes(SgNode *astNode)
       break;
     }
   case V_SgFunctionDeclaration:
+  case V_SgTemplateInstantiationFunctionDecl:
   case V_SgMemberFunctionDeclaration:
+  case V_SgTemplateInstantiationMemberFunctionDecl:
     {
       SgFunctionDeclaration *functionDeclaration =
         isSgFunctionDeclaration(astNode);
@@ -2475,6 +2487,7 @@ std::string SageIRInterface::toString(const OA::ProcHandle h)
     }
 
   case V_SgFunctionDeclaration:
+  case V_SgTemplateInstantiationFunctionDecl:
     {
       SgFunctionDeclaration *fd = isSgFunctionDeclaration(node);
       ROSE_ASSERT(fd != NULL);
@@ -2486,6 +2499,7 @@ std::string SageIRInterface::toString(const OA::ProcHandle h)
     }
 
   case V_SgMemberFunctionDeclaration:
+  case V_SgTemplateInstantiationMemberFunctionDecl:
     {
       SgMemberFunctionDeclaration *fd = isSgMemberFunctionDeclaration(node);
       ROSE_ASSERT(fd != NULL);
@@ -2740,6 +2754,7 @@ std::string SageIRInterface::toString(const OA::CallHandle h)
 
       case V_SgReturnStmt:
       case V_SgExprListExp:
+      case V_SgThrowOp:
         {
           retstr = parent->unparseToString();
           break;
@@ -2774,6 +2789,7 @@ std::string SageIRInterface::toStringWithoutScope(const OA::SymHandle h)
   switch(node->variantT()) {
     
   case V_SgFunctionDeclaration:
+  case V_SgTemplateInstantiationFunctionDecl:
     {
       SgFunctionDeclaration *fd = isSgFunctionDeclaration(node);
       ROSE_ASSERT(fd != NULL);
@@ -2786,6 +2802,7 @@ std::string SageIRInterface::toStringWithoutScope(const OA::SymHandle h)
     }
 
   case V_SgMemberFunctionDeclaration:
+  case V_SgTemplateInstantiationMemberFunctionDecl:
     {
       SgMemberFunctionDeclaration *fd = isSgMemberFunctionDeclaration(node);
       ROSE_ASSERT(fd != NULL);
@@ -2945,6 +2962,7 @@ std::string SageIRInterface::toStringWithoutScope(SgNode *node)
   switch(node->variantT()) {
     
   case V_SgFunctionDeclaration:
+  case V_SgTemplateInstantiationFunctionDecl:
     {
       SgFunctionDeclaration *fd = isSgFunctionDeclaration(node);
       ROSE_ASSERT(fd != NULL);
@@ -2957,6 +2975,7 @@ std::string SageIRInterface::toStringWithoutScope(SgNode *node)
     }
 
   case V_SgMemberFunctionDeclaration:
+  case V_SgTemplateInstantiationMemberFunctionDecl:
     {
       SgMemberFunctionDeclaration *fd = isSgMemberFunctionDeclaration(node);
       ROSE_ASSERT(fd != NULL);
@@ -3035,36 +3054,39 @@ std::string SageIRInterface::toStringWithoutScope(SgNode *node)
 
         SgDeclarationStatement *declarationStmt = 
           initName->get_declaration();
-        ROSE_ASSERT(declarationStmt != NULL);
 
-        SgFunctionDefinition *functionDefinition = 
-          getEnclosingFunction(declarationStmt);
+        ret = nm.str();
+        
+        if ( declarationStmt != NULL ) {
 
-        if (functionDefinition == NULL) {
+          SgFunctionDefinition *functionDefinition = 
+            getEnclosingFunction(declarationStmt);
 
-          //      ret = string("global: " ) + nm.str();
-          ret = nm.str();
+          if (functionDefinition == NULL) {
 
-        } else {
+            //      ret = string("global: " ) + nm.str();
+            ret = nm.str();
 
-          SgFunctionDeclaration *functionDeclaration = 
-            functionDefinition->get_declaration();
-          ROSE_ASSERT(functionDefinition != NULL);
+          } else {
+
+            SgFunctionDeclaration *functionDeclaration = 
+              functionDefinition->get_declaration();
+            ROSE_ASSERT(functionDefinition != NULL);
           
-          SgName funcName;
-          funcName = functionDeclaration->get_name();
+            SgName funcName;
+            funcName = functionDeclaration->get_name();
           
-          SgMemberFunctionDeclaration *fd = 
-            isSgMemberFunctionDeclaration(functionDeclaration);
-          if (fd != NULL) {
-            funcName = fd->get_qualified_name();
+            SgMemberFunctionDeclaration *fd = 
+              isSgMemberFunctionDeclaration(functionDeclaration);
+            if (fd != NULL) {
+              funcName = fd->get_qualified_name();
+            }
+          
+            //      ret = nm.str() + string(" defined in: ") + funcName.str();
+            ret = nm.str();
           }
-          
-          //      ret = nm.str() + string(" defined in: ") + funcName.str();
-          ret = nm.str();
         }
       }
-
       break;
     }
 
@@ -3156,6 +3178,7 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
   switch(node->variantT()) {
     
   case V_SgFunctionDeclaration:
+  case V_SgTemplateInstantiationFunctionDecl:
     {
       SgFunctionDeclaration *fd = isSgFunctionDeclaration(node);
       ROSE_ASSERT(fd != NULL);
@@ -3176,6 +3199,7 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
     }
 
   case V_SgMemberFunctionDeclaration:
+  case V_SgTemplateInstantiationMemberFunctionDecl:
     {
       SgMemberFunctionDeclaration *fd = isSgMemberFunctionDeclaration(node);
       ROSE_ASSERT(fd != NULL);
@@ -3204,33 +3228,38 @@ std::string SageIRInterface::toString(const OA::SymHandle h)
 
         SgDeclarationStatement *declarationStmt = 
           initName->get_declaration();
-        ROSE_ASSERT(declarationStmt != NULL);
+                  
+        ret = nm.str();
+        
+        if ( declarationStmt != NULL ) {
 
-        SgFunctionDefinition *functionDefinition = 
-          getEnclosingFunction(declarationStmt);
+          SgFunctionDefinition *functionDefinition = 
+            getEnclosingFunction(declarationStmt);
 
-        if (functionDefinition == NULL) {
+          if (functionDefinition == NULL) {
 
-          //      ret = string("global: " ) + nm.str();
-          ret = nm.str();
+            //      ret = string("global: " ) + nm.str();
+            ret = nm.str();
 
-        } else {
+          } else {
 
-          SgFunctionDeclaration *functionDeclaration = 
-            functionDefinition->get_declaration();
-          ROSE_ASSERT(functionDefinition != NULL);
+            SgFunctionDeclaration *functionDeclaration = 
+              functionDefinition->get_declaration();
+            ROSE_ASSERT(functionDefinition != NULL);
+            
+            SgName funcName;
+            funcName = functionDeclaration->get_name();
           
-          SgName funcName;
-          funcName = functionDeclaration->get_name();
+            SgMemberFunctionDeclaration *fd = 
+              isSgMemberFunctionDeclaration(functionDeclaration);
+            if (fd != NULL) {
+              funcName = fd->get_qualified_name();
+            }
           
-          SgMemberFunctionDeclaration *fd = 
-            isSgMemberFunctionDeclaration(functionDeclaration);
-          if (fd != NULL) {
-            funcName = fd->get_qualified_name();
+            //      ret = nm.str() + string(" defined in: ") + funcName.str();
+            ret = nm.str();
           }
-          
-          //      ret = nm.str() + string(" defined in: ") + funcName.str();
-          ret = nm.str();
+
         }
       }
 
@@ -4709,6 +4738,38 @@ void SageIRInterface::dump(OA::OA_ptr<OA::Deref> memRefExp,
 
 }
 
+void SageIRInterface::dump(OA::OA_ptr<OA::AddressOf> memRefExp, 
+                               std::ostream& os) 
+{
+  OA::OA_ptr<OA::MemRefExpr> baseMemRefExpr = memRefExp->getMemRefExpr();
+
+  // Only print addressTaken and fullAccuracy if they
+  // don't have the default values.
+  // Default values for Deref: addressTaken = F, fullAccuracy = partial.
+
+  os << "AddressOf(";
+  os << refTypeToString(memRefExp) << ", ";
+  dump(baseMemRefExpr, os);
+  os << ")";
+
+}
+
+void SageIRInterface::dump(OA::OA_ptr<OA::SubSetRef> memRefExp, 
+                               std::ostream& os) 
+{
+  OA::OA_ptr<OA::MemRefExpr> baseMemRefExpr = memRefExp->getMemRefExpr();
+
+  // Only print addressTaken and fullAccuracy if they
+  // don't have the default values.
+  // Default values for Deref: addressTaken = F, fullAccuracy = partial.
+
+  os << "SubSetRef(";
+  os << refTypeToString(memRefExp) << ", ";
+  dump(baseMemRefExpr, os);
+  os << ")";
+
+}
+
 void SageIRInterface::dump(OA::OA_ptr<OA::FieldAccess> memRefExp, 
                                std::ostream& os) 
 {
@@ -4803,12 +4864,29 @@ void SageIRInterface::dump(OA::OA_ptr<OA::MemRefExpr> memRefExp,
 
         dump(fieldAccess, os);
 
-      } else {
 
-        cerr << "Unknown memRefExp type!" << endl;
+      } else if ( subSetRef->isaIdxAccess() ) {
+
+        cerr << "IdxAccess case not implemented yet" << endl;
         ROSE_ABORT();
 
+      } else if ( subSetRef->isaIdxExprAccess() ) {
+
+        cerr << "IdxExprAccess case not implemented yet" << endl;
+        ROSE_ABORT();
+
+      } else {
+
+        dump(subSetRef, os);
+
       }
+
+    } else if ( refOp->isaAddressOf() ) {
+
+      OA::OA_ptr<OA::AddressOf> addrOf = memRefExp.convert<OA::AddressOf>();
+      ROSE_ASSERT(!addrOf.ptrEqual(0));
+
+      dump(addrOf, os);
 
     } else {
 

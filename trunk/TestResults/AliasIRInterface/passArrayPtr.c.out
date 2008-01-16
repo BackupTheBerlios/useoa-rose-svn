@@ -44,7 +44,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("a") => 
                 NamedRef( DEF, SymHandle("a"))
             MemRefHandle(""testing"") => 
-                SubSetRef( USE, UnnamedRef( USE, ExprHandle(""testing""), 0))
+                SubSetRef( USE, UnnamedRef( USE, ExprHandle(""testing""), 1, ProcHandle("main")))
         ] }
     MEMREFEXPRS = { StmtHandle("int x = strcmp(a,a);") =>
         [
