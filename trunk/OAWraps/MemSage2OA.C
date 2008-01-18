@@ -536,7 +536,6 @@ applyReferenceConversionRules2And4(OA::StmtHandle stmt,
 {
 
     ROSE_ASSERT(lhs_type != NULL);
-    SgType *lhs_base_type = getBaseType(lhs_type);
 
     // This rule only applies when the rhs does not have an lvalue
     // (e.g., 3+5 and &y are not lvalues).  
@@ -1401,7 +1400,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             ROSE_ASSERT(type != NULL);
 
             // Need getBaseType to look through typedefs.
-            SgPointerType *ptrType = isSgPointerType(getBaseType(type));
+            SgPointerType *ptrType = isSgPointerType(lookThruReferenceType(type));
 
             ROSE_ASSERT(ptrType != NULL);
             type = getBaseType(ptrType->get_base_type());
@@ -1417,236 +1416,244 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     
                 SgMemberFunctionDeclaration *methodDecl = 
                     lookupDestructorInClass(classDefn); 
-                ROSE_ASSERT(methodDecl != NULL); 
+                // AST NORMALIZATION
+                // methodDecl could be NULL if the AST has not
+                // been normalized.  In this case, we will
+                // not emit an invocation of the destructor.
+                // Analysis results may not be correct.
+                // ROSE_ASSERT(methodDecl != NULL); 
+                if ( methodDecl != NULL ) { 
+     
+                    // Create the MRE for the call handle.
+                    OA::OA_ptr<OA::MemRefExpr> method;
     
-                // Create the MRE for the call handle.
-                OA::OA_ptr<OA::MemRefExpr> method;
+                    // If the destructor is virtual, we need to create
+                    // an invocation through a field access.
+                    // However, according to section r.12.7 of 
+                    // Stroustrup 2nd edition, calls to virtual methods
+                    // within a constructor or destructor may be
+                    // statically resolved.
+                    SgFunctionDefinition *funcDefn =
+                        getEnclosingFunction(astNode);
+                    SgMemberFunctionDeclaration *decl =
+                        isSgMemberFunctionDeclaration(funcDefn->get_declaration());
+                    bool invokedFromCtorOrDtor = 
+                        ( ( decl != NULL ) &&
+                          ( isConstructor(decl) || isDestructor(decl) ) );
     
-                // If the destructor is virtual, we need to create
-                // an invocation through a field access.
-                // However, according to section r.12.7 of 
-                // Stroustrup 2nd edition, calls to virtual methods
-                // within a constructor or destructor may be
-                // statically resolved.
-                SgFunctionDefinition *funcDefn =
-                    getEnclosingFunction(astNode);
-                SgMemberFunctionDeclaration *decl =
-                    isSgMemberFunctionDeclaration(funcDefn->get_declaration());
-                bool invokedFromCtorOrDtor = 
-                    ( ( decl != NULL ) &&
-                      ( isConstructor(decl) || isDestructor(decl) ) );
-
-                if ( isVirtual(methodDecl) && !invokedFromCtorOrDtor ) {
+                    if ( isVirtual(methodDecl) && !invokedFromCtorOrDtor ) {
     
-                    // Notice that we first need to visit the receiver,
-                    // so that we will have a MRE for the base of
-                    // the field access.  
+                        // Notice that we first need to visit the receiver,
+                        // so that we will have a MRE for the base of
+                        // the field access.  
     
-                    // clones MREs for lhs and wraps them in a Deref 
-                    // and a FieldAccess
-                    OA::MemRefHandle lhs_memref
-                        = findTopMemRefHandle(receiver);
-                    std::string field_name 
-                        = toStringWithoutScope(methodDecl);
-                    OA::OA_ptr<OA::MemRefExprIterator> mIter
-                        = getMemRefExprIterator(lhs_memref);
-                    int numMREs = 0;
-                    for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
-                        OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
-                        OA::OA_ptr<OA::Deref> deref_mre;
+                        // clones MREs for lhs and wraps them in a Deref 
+                        // and a FieldAccess
+                        OA::MemRefHandle lhs_memref
+                            = findTopMemRefHandle(receiver);
+                        std::string field_name 
+                            = toStringWithoutScope(methodDecl);
+                        OA::OA_ptr<OA::MemRefExprIterator> mIter
+                            = getMemRefExprIterator(lhs_memref);
+                        int numMREs = 0;
+                        for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
+                            OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
+                            OA::OA_ptr<OA::Deref> deref_mre;
                         
-                        int numDerefs = 1;
+                            int numDerefs = 1;
     
+                            OA::OA_ptr<OA::MemRefExpr> nullMRE;
+
+                            OA::OA_ptr<OA::MemRefExpr> composed_mre;
+
+                            deref_mre = new OA::Deref(OA::MemRefExpr::USE,
+                                                      nullMRE,
+                                                      numDerefs);
+
+                            OA::OA_ptr<OA::MemRefExpr> composedMre
+                                        = deref_mre->composeWith(lhs_mre);
+
+
+                            if(lhs_mre->isaRefOp()) {
+
+                               OA::OA_ptr<OA::RefOp> refOp;
+                               refOp = lhs_mre.convert<OA::RefOp>();
+
+                               if(refOp->isaSubSetRef()) { 
+
+                                   OA::OA_ptr<OA::SubSetRef> subset_mre;
+                                   OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                                   //OA::OA_ptr<OA::MemRefExpr> composed_mre;
+
+                                   subset_mre = new OA::SubSetRef(
+                                                OA::MemRefExpr::USE,
+                                                nullMRE
+                                                );
+                                   composedMre
+                                    = subset_mre->composeWith(composedMre->clone());
+
+                               }
+                            }
+
+                            // FIXME?: this throws away composedMre in above
+                            // statement
+                            // composedMre = deref_mre->clone();   
+ 
+                            OA::OA_ptr<OA::MemRefExpr> fieldAccess;
+    
+                            mMre2TypeMap[composedMre] = other;
+                       
+                            fieldAccess 
+                                 = new OA::FieldAccess(OA::MemRefExpr::USE,
+                                                       composedMre,
+                                                       OA_VTABLE_STR);
+
+                            if(lhs_mre->isaRefOp()) {
+
+                               OA::OA_ptr<OA::RefOp> refOp;
+                               refOp = lhs_mre.convert<OA::RefOp>();
+
+                               if(refOp->isaSubSetRef()) {
+                            
+                                  OA::OA_ptr<OA::SubSetRef> subset_mre;
+                                  OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                                  OA::OA_ptr<OA::MemRefExpr> composed_mre;
+
+                                  subset_mre = new OA::SubSetRef(
+                                                OA::MemRefExpr::USE,
+                                                nullMRE
+                                                );
+                                  fieldAccess
+                                   = subset_mre->composeWith(fieldAccess->clone());
+
+                                }
+                           }
+
+                            // Record the type of the MRE (reference or non-reference).
+                            mMre2TypeMap[fieldAccess] = other;
+                            composedMre = derefMre(fieldAccess, OA::MemRefExpr::USE, 1);
+
+                            mMre2TypeMap[composedMre] = other;
+
+                            fieldAccess = new OA::FieldAccess(
+                                                              OA::MemRefExpr::USE,
+                                                              composedMre,
+                                                              field_name);
+
+                            if(lhs_mre->isaRefOp()) {
+
+                               OA::OA_ptr<OA::RefOp> refOp;
+                               refOp = lhs_mre.convert<OA::RefOp>();
+                           
+                               if(refOp->isaSubSetRef()) {
+                                  OA::OA_ptr<OA::SubSetRef> subset_mre;
+                                  OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                                  OA::OA_ptr<OA::MemRefExpr> composed_mre;
+
+                                  subset_mre = new OA::SubSetRef(
+                                                OA::MemRefExpr::USE,
+                                                nullMRE
+                                                );
+                                  fieldAccess
+                                   = subset_mre->composeWith(fieldAccess->clone());
+                               }
+
+                            }
+
+                        
+                            // Record the type of the MRE (reference or non-reference).
+                            mMre2TypeMap[fieldAccess] = other;
+    
+                            // I do not think that there should be a general
+                            // MRE here.  Just a call handle.
+    
+                            // mMemref2mreSetMap[memref].insert(fieldAccess);
+                            method = fieldAccess;
+    
+                            ++numMREs;
+                        }
+
+                        // XXX:  Could we have multiple MREs here?  I don't
+                        // think so.  Even if we could, mCallToMRE is
+                        // not set up to handle it.  Abort if we see it.
+                        ROSE_ASSERT( numMREs == 1 );
+    
+                        // Need to deref the field access for a virtual
+                        // method.
+                        OA::OA_ptr<OA::Deref> deref_mre;
+                        int numDerefs = 1;
                         OA::OA_ptr<OA::MemRefExpr> nullMRE;
 
-                        OA::OA_ptr<OA::MemRefExpr> composed_mre;
+                        deref_mre = new OA::Deref( OA::MemRefExpr::USE,
+                                                   nullMRE,
+                                                   numDerefs);
 
-                        deref_mre = new OA::Deref(OA::MemRefExpr::USE,
-                                                  nullMRE,
-                                                  numDerefs);
+                        OA::OA_ptr<OA::MemRefExpr> mre = method->clone();
+                        method = deref_mre->composeWith(mre);
 
-                        OA::OA_ptr<OA::MemRefExpr> composedMre
-                                    = deref_mre->composeWith(lhs_mre);
-
-
-                        if(lhs_mre->isaRefOp()) {
-
+                        if(method->isaRefOp()) {
                            OA::OA_ptr<OA::RefOp> refOp;
-                           refOp = lhs_mre.convert<OA::RefOp>();
-
-                           if(refOp->isaSubSetRef()) { 
+                           refOp = method.convert<OA::RefOp>();
+                           if(refOp->isaSubSetRef()) {
 
                                OA::OA_ptr<OA::SubSetRef> subset_mre;
                                OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                               //OA::OA_ptr<OA::MemRefExpr> composed_mre;
+                               OA::OA_ptr<OA::MemRefExpr> composed_mre;
 
                                subset_mre = new OA::SubSetRef(
-                                            OA::MemRefExpr::USE,
-                                            nullMRE
-                                            );
-                               composedMre
-                                = subset_mre->composeWith(composedMre->clone());
+                                                OA::MemRefExpr::USE,
+                                                nullMRE
+                                                );
+                               method
+                                   = subset_mre->composeWith(method->clone());
 
                            }
                         }
 
-                        // FIXME?: this throws away composedMre in above
-                        // statement
-			//                        composedMre = deref_mre->clone();   
- 
-                        OA::OA_ptr<OA::MemRefExpr> fieldAccess;
-    
-                        mMre2TypeMap[composedMre] = other;
-                       
-                        fieldAccess 
-                             = new OA::FieldAccess(OA::MemRefExpr::USE,
-                                                   composedMre,
-                                                   OA_VTABLE_STR);
-
-                        if(lhs_mre->isaRefOp()) {
-
-                           OA::OA_ptr<OA::RefOp> refOp;
-                           refOp = lhs_mre.convert<OA::RefOp>();
-
-                           if(refOp->isaSubSetRef()) {
-                            
-                              OA::OA_ptr<OA::SubSetRef> subset_mre;
-                              OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                              OA::OA_ptr<OA::MemRefExpr> composed_mre;
-
-                              subset_mre = new OA::SubSetRef(
-                                            OA::MemRefExpr::USE,
-                                            nullMRE
-                                            );
-                              fieldAccess
-                               = subset_mre->composeWith(fieldAccess->clone());
-
-                            }
-                       }
 
                         // Record the type of the MRE (reference or non-reference).
-                        mMre2TypeMap[fieldAccess] = other;
+                        mMre2TypeMap[method] = other;
 
-         		        composedMre = derefMre(fieldAccess, OA::MemRefExpr::USE, 1);
-
-                        mMre2TypeMap[composedMre] = other;
-
-                        fieldAccess = new OA::FieldAccess(
-                                                          OA::MemRefExpr::USE,
-                                                          composedMre,
-                                                          field_name);
-
-                        if(lhs_mre->isaRefOp()) {
-
-                           OA::OA_ptr<OA::RefOp> refOp;
-                           refOp = lhs_mre.convert<OA::RefOp>();
-                           
-                           if(refOp->isaSubSetRef()) {
-                              OA::OA_ptr<OA::SubSetRef> subset_mre;
-                              OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                              OA::OA_ptr<OA::MemRefExpr> composed_mre;
-
-                              subset_mre = new OA::SubSetRef(
-                                            OA::MemRefExpr::USE,
-                                            nullMRE
-                                            );
-                              fieldAccess
-                               = subset_mre->composeWith(fieldAccess->clone());
-                           }
-
-                        }
-
-                        
-                        // Record the type of the MRE (reference or non-reference).
-                        mMre2TypeMap[fieldAccess] = other;
+                    } else {
     
-                        // I do not think that there should be a general
-                        // MRE here.  Just a call handle.
+                        // Create a call handle for the delete expression.
     
-                        // mMemref2mreSetMap[memref].insert(fieldAccess);
-                        method = fieldAccess;
-    
-                        ++numMREs;
-                    }
-
-                    // XXX:  Could we have multiple MREs here?  I don't
-                    // think so.  Even if we could, mCallToMRE is
-                    // not set up to handle it.  Abort if we see it.
-                    ROSE_ASSERT( numMREs == 1 );
-    
-                    // Need to deref the field access for a virtual
-                    // method.
-                    OA::OA_ptr<OA::Deref> deref_mre;
-                    int numDerefs = 1;
-                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
-
-                    deref_mre = new OA::Deref( OA::MemRefExpr::USE,
-                                               nullMRE,
-                                               numDerefs);
-
-                    OA::OA_ptr<OA::MemRefExpr> mre = method->clone();
-                    method = deref_mre->composeWith(mre);
-
-                    if(method->isaRefOp()) {
-                       OA::OA_ptr<OA::RefOp> refOp;
-                       refOp = method.convert<OA::RefOp>();
-                       if(refOp->isaSubSetRef()) {
-
-                           OA::OA_ptr<OA::SubSetRef> subset_mre;
-                           OA::OA_ptr<OA::MemRefExpr> nullMRE;
-                           OA::OA_ptr<OA::MemRefExpr> composed_mre;
-
-                           subset_mre = new OA::SubSetRef(
-                                            OA::MemRefExpr::USE,
-                                            nullMRE
-                                            );
-                           method
-                               = subset_mre->composeWith(method->clone());
-
-                       }
-                    }
-
-
-                    // Record the type of the MRE (reference or non-reference).
-                    mMre2TypeMap[method] = other;
-
-                } else {
-    
-                    // Create a call handle for the delete expression.
-    
-                   OA::SymHandle symHandle = getProcSymHandle(methodDecl);
+                       OA::SymHandle symHandle = getProcSymHandle(methodDecl);
       
-                   method = new OA::NamedRef( OA::MemRefExpr::USE,
-                                              symHandle);
+                       method = new OA::NamedRef( OA::MemRefExpr::USE,
+                                                  symHandle);
 
+        
+                       // Record the type of the MRE (reference or non-reference).
+                       mMre2TypeMap[method] = other;
     
-                   // Record the type of the MRE (reference or non-reference).
-                   mMre2TypeMap[method] = other;
-    
-                }
+                    }
     	
-                OA::CallHandle call = getCallHandle(astNode);
-		//		std::cout << "Adding call handle for " << (int)(call.hval()) << std::endl;
+                    OA::CallHandle call = getCallHandle(astNode);
+                    // std::cout << "Adding call handle for " << (int)(call.hval()) << std::endl;
 #if 0
-		SgNode *node = getNodePtr(call);
-		ROSE_ASSERT(node != NULL);
-		std::cout << "call handle node (h: " << (int)(call.hval()) << " type: " << node->sage_class_name()
-                  << ") " << node->unparseToString() 
-                  << std::endl;
-		node->get_file_info()->display("call handle: ");
+                    SgNode *node = getNodePtr(call);
+                    ROSE_ASSERT(node != NULL);
+                    std::cout << "call handle node (h: " << (int)(call.hval()) << " type: " << node->sage_class_name()
+                              << ") " << node->unparseToString() 
+                              << std::endl;
+                    node->get_file_info()->display("call handle: ");
 #endif
-                mCallToMRE[call] = method;
+                    mCallToMRE[call] = method;
     
-                // We consider function/method invocations to be 
-                // uses, so add the call as a general MRE.
-                OA::MemRefHandle memref = getMemRefHandle(astNode);
-                relateMemRefAndStmt(memref, stmt);
-                mMemref2mreSetMap[memref].insert(method);
+                    // We consider function/method invocations to be 
+                    // uses, so add the call as a general MRE.
+                    OA::MemRefHandle memref = getMemRefHandle(astNode);
+                    relateMemRefAndStmt(memref, stmt);
+                    mMemref2mreSetMap[memref].insert(method);
     
-                // Create parameter binding params arising from
-                // the receiver used to invoke the destructor.
-                createParamBindPtrAssignPairs(stmt, deleteExp);
-            }
+                    // Create parameter binding params arising from
+                    // the receiver used to invoke the destructor.
+                    createParamBindPtrAssignPairs(stmt, deleteExp);
+
+                } // end of methodDecl != NULL
+
+            } // end of isSgClassType(type)
             break;
         }
     case V_SgThisExp:
@@ -1813,7 +1820,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     isSgAssignInitializer(initName->get_initptr());
                 if ( ctorInitializer || 
                      ( assignInitializer && 
-                       ( isSgClassType(getBaseType(assignInitializer->get_type())) ) ) ) {
+                       ( isSgClassType(lookThruReferenceType(assignInitializer->get_type())) ) ) ) {
                     // We created a memref at the constructor initializer
                     // or assign initializer in case it was used to create 
                     // an anonymous object (e.g., that was passed as an 
@@ -1980,7 +1987,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     */
                    
                     
-                    if(isSgArrayType(type)) {
+                    if(isSgArrayType(lookThruReferenceType(type))) {
                         if(child_mre->isaRefOp()) {
                             OA::OA_ptr<OA::RefOp> refOp = child_mre.convert<OA::RefOp>();
                             ROSE_ASSERT(!refOp.ptrEqual(0));
@@ -2264,7 +2271,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // does not create an anonymous object (i.e., is 
             // associated with a SgInitializedName), this MRE will
             // be removed there.
-            SgClassType *clsType = isSgClassType(getBaseType(assignInit->get_type()));
+            SgClassType *clsType = isSgClassType(lookThruReferenceType(assignInit->get_type()));
             if ( clsType != NULL ) {
                 Sg_File_Info *fileInfo = astNode->get_file_info();
                 ROSE_ASSERT(fileInfo != NULL);
@@ -2622,8 +2629,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // then this node should be a MemRefHandle due to 
             // ptr arithmetic
             SgType *lhs_type, *rhs_type;
-            lhs_type = getBaseType(binaryOp->get_lhs_operand()->get_type());
-            rhs_type = getBaseType(binaryOp->get_rhs_operand()->get_type());
+            lhs_type = lookThruReferenceType(binaryOp->get_lhs_operand()->get_type());
+            rhs_type = lookThruReferenceType(binaryOp->get_rhs_operand()->get_type());
             bool rhs_ptr = false;  bool lhs_ptr = false;
             lhs_ptr = isSgArrayType(lhs_type)||isSgPointerType(lhs_type);
             rhs_ptr = isSgArrayType(rhs_type)||isSgPointerType(rhs_type);
@@ -2711,7 +2718,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             findAllMemRefsAndPtrAssigns(arrRefExp->get_rhs_operand(), stmt); 
 
             // if through a constant pointer
-            if(!isSgPointerType(getBaseType(
+            if(!isSgPointerType(lookThruReferenceType(
                             arrRefExp->get_lhs_operand()->get_type()))) 
             {
                 // take the lhs MREs and make each of them have partial
@@ -4607,7 +4614,7 @@ SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::Stmt
         return;
     }
 
-    SgType *type = getBaseType(newExp->get_type());
+    SgType *type = lookThruReferenceType(newExp->get_type());
     ROSE_ASSERT(type != NULL);
 
     // We only create implicit pointer assignment pairs
@@ -5104,7 +5111,7 @@ bool SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
     if (child_memref!=OA::MemRefHandle(0)) {
         child_node = isSgExpression(getSgNode(child_memref));
         ROSE_ASSERT(child_node);
-        child_type = getBaseType(child_node->get_type());
+        child_type = lookThruReferenceType(child_node->get_type());
     }
     if (child_node && 
         (isSgArrayType(child_type)||isSgPointerType(child_type)))

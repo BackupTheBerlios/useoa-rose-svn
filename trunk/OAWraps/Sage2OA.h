@@ -376,6 +376,41 @@ class SageIRAssignPairIterator
     AssignPairList::iterator mIter;
 };
 
+/*!
+ * Enumerate over all procedures in the IR.
+ */
+
+class SageIRProcIterator: public OA::IRProcIterator 
+{
+ public:
+  SageIRProcIterator (SgNode *node, SageIRInterface& in);
+  // MMS, can't take an OA_ptr to SageIRInterface because need to
+  // construct one of these within a SageIRInterface and can't pass this to
+  // an OA_ptr
+  ~SageIRProcIterator () {}
+
+  OA::ProcHandle current () const;
+  bool isValid () const { return (valid && (st_iter!=end)); } 
+  void operator++ (); 
+
+  void reset();
+
+  //! Add any ProcHandles from otherIter to this.
+  //! Warning this might disrupt the current pointer.
+  void unionIterators(SageIRProcIterator &otherIter);
+
+  SageIRInterface& ir;
+ private:
+  std::set<SgStatement*> procs_in_proj; 
+  std::set<SgStatement*>::iterator st_iter;
+  std::set<SgStatement*>::iterator begin;
+  std::set<SgStatement*>::iterator end;
+  bool valid;
+  void FindProcsInSgTree(SgNode *node, std::set<SgStatement*>& lst);
+  bool mExcludeInputFiles;
+
+};
+
 enum typeEnum { reference, other };
 
 

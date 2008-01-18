@@ -3441,6 +3441,8 @@ OA::SymHandle SageIRInterface::getFormalSym(OA::ProcHandle procHandle,
 OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
 {
     if ( mCallToMRE[h].ptrEqual(0) ) {
+        bool old_debug = debug;
+        debug = true;
         SgNode *node = getNodePtr(h);
         ROSE_ASSERT(node != NULL);
         if(debug) {
@@ -3467,6 +3469,7 @@ OA::OA_ptr<OA::MemRefExpr> SageIRInterface::getCallMemRefExpr(OA::CallHandle h)
               std::cerr << "ptr type: " << type->sage_class_name() << std::endl;
           }
         }
+        debug = old_debug;
         ROSE_ABORT();
     }
     return mCallToMRE[h];

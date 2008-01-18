@@ -89,6 +89,8 @@ isVaStart(SgFunctionCallExp *functionCallExp);
 
 SgType* getBaseType(SgType *type);
 
+SgType* lookThruReferenceType(SgType *type);
+
 //bool isConstType(SgType *type);
 
 //bool isNonconstReference(SgType *type);

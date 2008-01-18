@@ -242,7 +242,7 @@ void FindCallsitesPass::visit(SgNode* node)
     ROSE_ASSERT(type != NULL);
 
     // Need getBaseType to look through typedefs.
-    SgPointerType *ptrType = isSgPointerType(getBaseType(type));
+    SgPointerType *ptrType = isSgPointerType(lookThruReferenceType(type));
     ROSE_ASSERT(ptrType != NULL);
     type = getBaseType(ptrType->get_base_type());
 
@@ -251,7 +251,22 @@ void FindCallsitesPass::visit(SgNode* node)
     // If this is a base type, then do nothing more--
     // i.e., not even a call handle.
     if ( isSgClassType(type) ) {
-      call_lst.push_back(exp);
+
+      // AST NORMALIZATION
+      // Also, do not create a call handle if this is an
+      // invocation of a destructor without a definition,
+      // i.e., a default destructor.  Eventually, once
+      // the AST is normalized (i.e., all special method
+      // definitions and invocations are made explicit),
+      // then all destructors will have definitions.
+      SgClassDefinition *classDefn = getClassDefinition(type);
+      ROSE_ASSERT(classDefn != NULL);
+    
+      SgMemberFunctionDeclaration *methodDecl = 
+          lookupDestructorInClass(classDefn); 
+      if ( methodDecl != NULL ) {
+          call_lst.push_back(exp);
+      }
     }
   }
 

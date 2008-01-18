@@ -428,7 +428,7 @@ getFormalTypes(SgNode *node)
             ROSE_ASSERT(varType != NULL); 
 
             // Need getBaseType to look through typedefs.
-            SgPointerType *ptrType = isSgPointerType(getBaseType(varType)); 
+            SgPointerType *ptrType = isSgPointerType(lookThruReferenceType(varType)); 
             SgClassType *classType = NULL; 
             if ( ptrType ) { 
                 classType = isSgClassType(ptrType->get_base_type()); 
@@ -1600,6 +1600,32 @@ SgType* getBaseType(SgType *type)
   SgModifierType *modifierType = isSgModifierType(type);
   if (modifierType) {
     return getBaseType(modifierType->get_base_type());
+  }
+
+  return type;
+}
+
+SgType* lookThruReferenceType(SgType *type) 
+{
+  if ( type == NULL ) return NULL;
+
+  SgTypedefType *typedefType = isSgTypedefType(type);
+  if (typedefType != NULL) {
+
+    SgType *baseType = typedefType->get_base_type();
+    ROSE_ASSERT(baseType != NULL);
+    return lookThruReferenceType(baseType);
+
+  }
+
+  SgModifierType *modifierType = isSgModifierType(type);
+  if (modifierType) {
+    return lookThruReferenceType(modifierType->get_base_type());
+  }
+
+  SgReferenceType *refType = isSgReferenceType(type);
+  if (refType) { 
+    return lookThruReferenceType(refType->get_base_type());
   }
 
   return type;

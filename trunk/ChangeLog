@@ -4118,3 +4118,75 @@ Aborted
      of aggregate initializer and strings are now local.
 
    - ICFGActivity/Loop_simple_4.c still fails.
+
+1/17/08	    UseOA-ROSE svn trunk 328 Brian White		
+
+   - Moved SageIRProcIterator from SageOACallGraph.h to Sage2OA.h.
+     Ideally, a user of OpenAnalysis will only need to 
+     #include "Sage2OA.h"
+
+   - Created aliasAnalyzer, a dumbed down, but heavily commented,
+     version of OATest that only performs FIAliasAliasMap and 
+     FIAliasReachableAliasMap.  aliasAnalyzer is intentionally simple 
+     so that it is appropriate as a ROSE tutorial showing how 
+     to interface ROSE and OpenAnalysis.
+   
+   - Changed the following assertions to conditionals.  These 
+     have to do with AST normalization.  e.g., asserting that
+     a destructor is defined within a class.  Because 
+     the compiler/language provides defaults for such special
+     methods, a definition may not exist _unless_ the AST
+     has been normalized to explicitly include the
+     definitions of special methods (and their invocations).
+     These have been annotated with AST NORMALIZATION in the
+     code.  At some point, once AST normalization works, 
+     we need to go back and change conditionals to assertions.
+
+   - More AST NORMALIZATION:  changed FindCallsitesPass::visit
+     so that it does not record a callsite for an invocation
+     of a destructor without a definition (i.e., a default
+     destructor).  Without a definition, we are unable to 
+     get a method declaration and so can not create a call mre.
+     Hence, if we were to record the callsite, we would generate 
+     a callhandle and eventually getCallMemRefExpr would abort 	
+     for the lack of an associated call mre.
+
+   - Added lookThruReferenceType(SgType *t), which returns the type t
+     after stripping off any modifiers, typedefs (a la getBaseType)
+     or reference type.  Changed a few uses of getBaseType to
+     instead use lookThruReferenceType.  In some cases, we had
+     not anticipated a reference to a pointer (i.e., int *&).
+     Such a reference could occur in a delete exp, for example.
+     Changed getBaseType to lookThruReferenceType in 
+     SgDeleteExp case of getFormalTypes, 
+     SgDeleteExp case of findAllMemRefsAndPtrAssigns,
+     SgDeleteExp case of FindCallsitesPass,
+     SgInitializedName of findAllMemRefsAndPtrAssigns,
+     SgAssignInitializer of findAllMemRefsAndPtrAssigns,
+     SgSubtractOp of findAllMemRefsAndPtrAssigns,
+     SgPntrArrRefExp of findAllMemRefsAndPtrAssigns,
+     createImplicitPtrAssignPairsForDynamicObjectAllocation,
+     createMemRefExprsForPtrArith.
+
+   - The SPEC 2006 C++ benchmark 444.namd passes through FIAlias 
+     analysis.  What does this mean?  aliasAnalyzer does not
+     crash when run on 444.namd.  We are not doing whole-program
+     analysis--i.e., each file is analyzed individually.  Obviously,
+     the alias results are not correct.  However, we are testing
+     UseOA, not OpenAnalysis.  If UseOA doesn't crash on each
+     individual file, I don't see why it would crash on the
+     concatentation of these files.  Since we are not doing whole-program
+     analysis, the file passed to FIAlias may not define main.
+     Therefore, we can not use FIAliasReachableAliasMap, which
+     would effectively do nothing for all but the single file that
+     defines main.  Instead, by default, aliasAnalyzer uses
+     FIAliasAliasMap.
+
+     Finally, the backend fails when compiling LJTable.  Again,
+     we are not testing the backend, which is not required for
+     analysis.  This bug was previously reported to Dan as
+     empty-sizeof.
+
+
+	
+	

@@ -74,7 +74,7 @@ clean-recursive:
 
 #bin_PROGRAMS = OATest CtoOA CHAandAliasVirtualMethodResolver
 #bin_PROGRAMS = OATest CtoOA genPairs
-bin_PROGRAMS = OATest CtoOA
+bin_PROGRAMS = OATest CtoOA aliasAnalyzer
 
 # recursive
 
@@ -88,6 +88,10 @@ OPENANALYSIS_LIB_WITH_PATH =$(OADIR)/$(ARCH)/lib/libOAul.a
 OATest_SOURCES = OATest.C
 OATest_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH)
 OATest_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS) 
+
+aliasAnalyzer_SOURCES = aliasAnalyzer.C
+aliasAnalyzer_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH)
+aliasAnalyzer_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS) 
 
 CtoOA_SOURCES = CtoOA.cpp
 CtoOA_DEPENDENCIES = $(ROSE_LIBS_WITH_PATH) $(OPENANALYSIS_LIB_WITH_PATH)
@@ -108,6 +112,10 @@ CHAandAliasVirtualMethodResolver_LDADD = $(LIBS_WITH_RPATH) $(LIBS) $(ROSE_LIBS)
 am_OATest_OBJECTS = OATest.$(OBJEXT)
 OATest_OBJECTS = $(am_OATest_OBJECTS)
 OATest_LDFLAGS = 
+
+am_aliasAnalyzer_OBJECTS = aliasAnalyzer.$(OBJEXT)
+aliasAnalyzer_OBJECTS = $(am_aliasAnalyzer_OBJECTS)
+aliasAnalyzer_LDFLAGS = 
 
 am_CtoOA_OBJECTS = CtoOA.$(OBJEXT)
 CtoOA_OBJECTS = $(am_CtoOA_OBJECTS)
@@ -134,6 +142,10 @@ CHAandAliasVirtualMethodResolver_LDFLAGS =
 OATest$(EXEEXT): $(OATest_OBJECTS) $(OATest_DEPENDENCIES) 
 	@rm -f OATest$(EXEEXT)
 	$(CXXLINK) $(OATest_LDFLAGS) $(OATest_OBJECTS) $(OATest_LDADD)
+
+aliasAnalyzer$(EXEEXT): $(aliasAnalyzer_OBJECTS) $(aliasAnalyzer_DEPENDENCIES) 
+	@rm -f aliasAnalyzer$(EXEEXT)
+	$(CXXLINK) $(aliasAnalyzer_LDFLAGS) $(aliasAnalyzer_OBJECTS) $(aliasAnalyzer_LDADD)
 
 CtoOA$(EXEEXT): $(CtoOA_OBJECTS) $(CtoOA_DEPENDENCIES) 
 	@rm -f CtoOA$(EXEEXT)
