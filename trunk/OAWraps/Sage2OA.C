@@ -2714,12 +2714,21 @@ std::string SageIRInterface::toString(const OA::CallHandle h)
 
   case V_SgDeleteExp:
     {
-      ROSE_ABORT();
-      // Temporarily not using this for invocation of destructor
-      SgDeleteExp *deleteExp = isSgDeleteExp(node);
-      ROSE_ASSERT(deleteExp != NULL);
-      retstr = deleteExp->unparseToString();
-      break;
+        // SgDeleteExp represents an invocation of operator delete,
+        // not a destructor.
+        SgDeleteExp *deleteExp = isSgDeleteExp(node);
+        ROSE_ASSERT(deleteExp != NULL);
+        SgFunctionDeclaration *deleteDecl = 
+            isPlacementDelete(deleteExp);          
+        if ( deleteDecl == NULL ) {
+	    std::cerr << "toString(CallHandle) was not expecting a "
+                      << "non-placement delete" << std::endl;
+            ROSE_ABORT();
+	}
+        // To differentiate the string from that of a destructor,
+        // we will prepend "operator delete".
+        retstr = "operator delete: " + deleteExp->unparseToString();
+        break;
     }
 
   case V_SgNewExp:
@@ -3889,7 +3898,8 @@ class ExprTreeTraversal
         
       parent = node;
       
-    } else if ( isSgDeleteExp(astNode) || 
+    } else if ( ( isSgDeleteExp(astNode) && 
+                  isPlacementDelete(isSgDeleteExp(astNode)) )  || 
                 ( isSg_File_Info(astNode) && 
                    ( isSgConstructorInitializer(astNode->get_parent()) ||
                      isSgDeleteExp(astNode->get_parent()) ) )
@@ -5537,8 +5547,18 @@ OA::CallHandle SageIRInterface::getCallHandle(SgNode *astNode)
         }
     case V_SgDeleteExp:
         {
-            ROSE_ABORT();
-            // Temporarily not using a SgDeleteExp.
+            // SgDeleteExp represents invocation of operator delete,
+            // not a destructor.
+            SgDeleteExp *deleteExp = isSgDeleteExp(astNode);
+            ROSE_ASSERT(deleteExp != NULL);
+            SgFunctionDeclaration *deleteDecl = 
+                isPlacementDelete(deleteExp);          
+            if ( deleteDecl == NULL ) {
+	        std::cerr << "getCallHandle was not expecting a "
+                          << "non-placement delete" << std::endl;
+                ROSE_ABORT();
+	    }
+            break;
         }
     case V_SgNewExp:
         {

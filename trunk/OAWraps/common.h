@@ -107,6 +107,8 @@ bool findNodeInSubtree(SgNode *needle, SgNode *haystack);
 
 bool isPlacementNew(SgNewExp *newExp);
 
+SgFunctionDeclaration *isPlacementDelete(SgDeleteExp *deleteExp);
+
 bool isOperatorNew(SgFunctionDeclaration *functionDeclaration);
 
 } // end of namespace UseOA

@@ -302,17 +302,19 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
         }
     case V_SgDeleteExp:
         {
+            SgDeleteExp *deleteExp = isSgDeleteExp(node);
+            SgFunctionDeclaration *deleteDecl = 
+                isPlacementDelete(deleteExp);          
+            if (deleteDecl == NULL) {
+                std::cerr << "createParamBindPtrAssignPairs was not "
+                          << "expecting a non-placement delete" << std::endl;
+                ROSE_ABORT();
+            }
             // Note that we use SgDeleteExp to model an invocation of
-            // a destructor, not the delete operator.  The former
-            // is non-static (think virtual destructor), while the
-            // latter is static.
-            isCallANonStaticMethodInvocation = true; 
-
-            // No!  Above is now false, I am now representing 
-            // destructor invocation with a Sg_File_info.  Until
-            // I model a delete invocation with SgDeleteExp, we
-            // should not be here.
-            ROSE_ABORT();
+            // the delete operator, not a constructor.  The 
+            // delete operator is static, even if it is not
+            // declared as such.
+            isCallANonStaticMethodInvocation = false; 
             break;
         }
     default:
@@ -1566,17 +1568,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // with the use of the Sg_File_info of SgConstructorInitializer
             // to model a constructor invocation.  1/28/08
 
-            SgFunctionDeclaration *deleteDecl = 
-               deleteExp->get_deleteOperatorDeclaration();
-#if 0
-            if ( deleteDecl != NULL ) {
-		std::cout << "deleteDecl = " << deleteDecl->unparseToString() << std::endl;
-                Sg_File_Info *fileInfo = deleteDecl->get_file_info();
-                ROSE_ASSERT(fileInfo != NULL);
-		std::cout << "file = " << fileInfo->unparseToString() << std::endl;
-            }
-#endif
-            // ROSE_ASSERT(deleteDecl == NULL);
+            // Represent invocation of non-builtin operator delete
+            // with SgDeleteExp.
 
             SgExpression *receiver = deleteExp->get_variable();
             ROSE_ASSERT(receiver != NULL);
@@ -1584,6 +1577,32 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // Visit the receiver of the delete expression,
             // which will be the implicit this.
             findAllMemRefsAndPtrAssigns(receiver, stmt);
+
+            SgFunctionDeclaration *deleteDecl = 
+                isPlacementDelete(deleteExp);          
+            if ( deleteDecl != NULL ) {
+
+                // Create a call handle for the delete operator.
+                OA::SymHandle deleteSymHandle = getProcSymHandle(deleteDecl);
+                OA::OA_ptr<OA::MemRefExpr> deleteMRE;
+                deleteMRE = new OA::NamedRef(OA::MemRefExpr::USE,
+                                             deleteSymHandle);
+                // Record the type of the MRE (reference or non-reference).
+                mMre2TypeMap[deleteMRE] = other;
+
+                OA::CallHandle deleteCall = getCallHandle(deleteExp);
+                mCallToMRE[deleteCall] = deleteMRE;
+    
+                // We consider function/method invocations to be 
+                // uses, so add the call as a general MRE.
+                OA::MemRefHandle deleteMemref = getMemRefHandle(deleteExp);
+                relateMemRefAndStmt(deleteMemref, stmt);
+                mMemref2mreSetMap[deleteMemref].insert(deleteMRE);
+    
+                // Create parameter binding params arising from
+                // the invocation of the delete operator.
+                createParamBindPtrAssignPairs(stmt, deleteExp);
+            }
 
             SgType *type = receiver->get_type(); 
             ROSE_ASSERT(type != NULL);

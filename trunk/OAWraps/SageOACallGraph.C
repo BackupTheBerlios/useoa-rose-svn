@@ -280,6 +280,14 @@ void FindCallsitesPass::visit(SgNode* node)
           call_lst.push_back(fileInfo);
       }
     }
+
+    // If this is an invocation of a non-builtin delete
+    // operator (not a destructor) model it using SgDeleteExp.
+    SgFunctionDeclaration *deleteDecl = 
+        isPlacementDelete(deleteExp);          
+    if ( deleteDecl ) {
+        call_lst.push_back(deleteExp);
+    }
   }
 
   return;

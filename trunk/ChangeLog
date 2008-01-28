@@ -4477,3 +4477,22 @@ Compilation terminated.
      createParamBindPtrAssignPairs, FindCallsitesPass::visit,
      toString(const OA::MemRefHandle h).
 	
+1/28/08	    UseOA-ROSE svn trunk 331 Brian White		
+
+   - Added modeling of invocation of operator delete, whenever
+     it is not the builtin delete.  i.e., when 
+     deleteExp->get_deleteOperatorDeclaration() is not NULL.
+     Use the SgDeleteExp as the call handle for the invocation
+     of operator delete.  We are free to do so now (i.e., as of
+     previous rev) that destructor invocations are represented
+     by Sg_File_Info of SgDeleteExp, rather than SgDeleteExp.
+
+     Modified the same functions as above:
+     createParamBindPtrAssignPairs, SgDeleteExp case of
+     findAllMemRefsAndPtrAssigns, verifyCallHandleNodeType, 
+     toString(const OA::CallHandle h), ExprTreeTraversal,
+     getCallHandle, getFormalTypes, getActuals,
+     createParamBindPtrAssignPairs, FindCallsitesPass::visit,
+     toString(const OA::MemRefHandle h).
+
+

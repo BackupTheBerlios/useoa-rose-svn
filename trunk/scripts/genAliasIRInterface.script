@@ -138,3 +138,9 @@ echo "Generating TestResults/AliasIRInterface/referenceFormal.C.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/referenceFormal.C >& TestResults/AliasIRInterface/referenceFormal.C.out
 echo "Generating TestResults/AliasIRInterface/refCall.C.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/refCall.C >& TestResults/AliasIRInterface/refCall.C.out
+echo "Generating TestResults/AliasIRInterface/placementNew1.C.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/placementNew1.C >& TestResults/AliasIRInterface/placementNew1.C.out
+echo "Generating TestResults/AliasIRInterface/placementNew2.C.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/placementNew2.C >& TestResults/AliasIRInterface/placementNew2.C.out
+echo "Generating TestResults/AliasIRInterface/placementDelete1.C.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/placementDelete1.C >& TestResults/AliasIRInterface/placementDelete1.C.out

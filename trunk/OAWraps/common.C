@@ -272,14 +272,23 @@ void verifyCallHandleNodeType(SgNode *node)
             if ( !isPlacementNew(newExp) ) {
                 std::cerr << "verifyCallHandleNodeType:  was not expecting a "
                           << "non-placement new expression" << std::endl;
+                ROSE_ABORT();
             }
             break;
         }
     case V_SgDeleteExp:
         {     
-            ROSE_ABORT();
-            // We are temporarily not using this.  It will soon be used
-            // to model invocation of the delete operator.  1/28/08.
+            // SgDeleteExp is used to represent the invocation of
+            // a delete operator, not a destructor.
+            SgDeleteExp *deleteExp = isSgDeleteExp(node);
+            SgFunctionDeclaration *deleteDecl = 
+                isPlacementDelete(deleteExp);          
+            if ( !deleteDecl ) {
+                std::cerr << "verifyCallHandleNodeType:  was not expecting a "
+                          << "non-placement delete expression" << std::endl;
+                ROSE_ABORT();
+            }
+            break;
         }
     case V_Sg_File_Info:
         {
@@ -523,49 +532,23 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
 	}
     case V_SgDeleteExp:
         {
-            ROSE_ABORT();
+            // SgDeleteExp represents invocations of operator delete,
+	    // not the destructor.
             // SgDeleteExp will eventually represent destructor invocations.
             SgDeleteExp *deleteExp = isSgDeleteExp(node);
             ROSE_ASSERT(deleteExp != NULL);
 
-            SgExpression *var = deleteExp->get_variable(); 
-            ROSE_ASSERT(var != NULL); 
+            SgFunctionDeclaration *deleteDecl =
+                isPlacementDelete(deleteExp);
+            if ( deleteDecl ) {
+                functionType = deleteDecl->get_type();
+                ROSE_ASSERT(functionType != NULL);
+            } else {
+		std::cerr << "getFormalTypes was not expecting a "
+                          << "non-placement delete" << std::endl;
+                ROSE_ABORT();
+            }
 
-            SgType *varType = var->get_type(); 
-            ROSE_ASSERT(varType != NULL); 
-
-            // Need getBaseType to look through typedefs.
-            SgPointerType *ptrType = isSgPointerType(lookThruReferenceType(varType)); 
-            SgClassType *classType = NULL; 
-            if ( ptrType ) { 
-                classType = isSgClassType(ptrType->get_base_type()); 
-            } else { 
-                classType = isSgClassType(varType); 
-            } 
-            ROSE_ASSERT(classType != NULL); 
-
-            SgClassDeclaration *classDeclaration =  
-                isSgClassDeclaration(classType->get_declaration()); 
-            ROSE_ASSERT(classDeclaration != NULL); 
-
-            classDeclaration = 
-                isSgClassDeclaration(getDefiningDeclaration(classDeclaration));
-            ROSE_ASSERT(classDeclaration != NULL);
-
-            SgClassDefinition *classDefn  =  
-                classDeclaration->get_definition();  
-            ROSE_ASSERT(classDefn != NULL); 
-
-            // This assumes that the AST has been normalized. 
-            // Without it, the destructor declaration may 
-            // not exist if it is compiler generated. 
-            SgMemberFunctionDeclaration *funcDecl = 
-                lookupDestructorInClass(classDefn); 
-            ROSE_ASSERT(funcDecl != NULL); 
-
-            functionType = funcDecl->get_type();
-            ROSE_ASSERT(functionType != NULL);
-            
             break;
         }
     default:
@@ -905,14 +888,25 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
         }
     case V_SgDeleteExp:
         {
-            ROSE_ABORT();
             // SgDeleteExp models an invocation of operator delete,
             // not the destructor.
             SgDeleteExp *deleteExp = isSgDeleteExp(node);
             ROSE_ASSERT(deleteExp != NULL);
 
-            // The only actual passed to a destructor is
-            // the receiver.
+            SgFunctionDeclaration *deleteDecl = 
+                isPlacementDelete(deleteExp);          
+            if ( deleteDecl == NULL ) {
+		std::cerr << "getActuals was not expecting a " 
+                          << "non-placement delete" << std::endl;
+                ROSE_ABORT();
+            }
+
+            // The only actual passed to operator delete is
+            // the receiver.  Is this correct?  I don't know
+            // where else to get actuals.  However, I thought
+            // that the type signature of operator delete needed
+            // to match that of operator new, which can have
+            // more than one argument.
             SgExpression *var = deleteExp->get_variable(); 
             ROSE_ASSERT(var != NULL); 
 
@@ -1919,6 +1913,14 @@ bool isPlacementNew(SgNewExp *newExp)
                  ( ( newDecl != NULL ) && ( placement_args != NULL ) ) );
 
     return ( ( newDecl != NULL ) && ( placement_args != NULL ) );
+}
+
+SgFunctionDeclaration *isPlacementDelete(SgDeleteExp *deleteExp)
+{
+    ROSE_ASSERT(deleteExp != NULL);
+    SgFunctionDeclaration *deleteDecl = 
+        deleteExp->get_deleteOperatorDeclaration();
+    return deleteDecl;
 }
 
 bool isOperatorNew(SgFunctionDeclaration *functionDeclaration)

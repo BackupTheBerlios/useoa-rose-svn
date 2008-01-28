@@ -97,4 +97,6 @@ test::  referenceFormal.C,          checked by BSW 10/10/06
 test::  refCall.C,                  checked by BSW 10/10/06
 test::  placementNew1.C,                  checked by BSW 1/25/08
 test::  placementNew2.C,                  checked by BSW 1/25/08
+test::  placementDelete1.C,                  checked by BSW 1/28/08
+#test::  placementDelete2.C,                  checked by BSW 1/28/08
 
