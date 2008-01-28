@@ -70,10 +70,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("delete f;") =>
         [
-            MemRefHandle("f") => 
-                NamedRef( USE, SymHandle("f"))
             MemRefHandle("delete f") => 
                 NamedRef( USE, SymHandle("method:::Foo::~Foo__L0R"))
+            MemRefHandle("f") => 
+                NamedRef( USE, SymHandle("f"))
         ] }
     CALLSITES = { StmtHandle("delete f;") =>
         [

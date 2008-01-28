@@ -238,7 +238,6 @@ void FindCallsitesPass::visit(SgNode* node)
     } 
 
   } else if ( isSgDeleteExp(exp) ) {
-
     // Do not mark a destructor as a call site
     // if it destroys a basic type.
     SgDeleteExp *deleteExp = isSgDeleteExp(exp);
@@ -274,7 +273,11 @@ void FindCallsitesPass::visit(SgNode* node)
       SgMemberFunctionDeclaration *methodDecl = 
           lookupDestructorInClass(classDefn); 
       if ( methodDecl != NULL ) {
-          call_lst.push_back(exp);
+          Sg_File_Info *fileInfo = exp->get_file_info();
+          ROSE_ASSERT(fileInfo != NULL);
+          // Use the Sg_File_Info of a SgDeleteExp to
+          // represent the invocation of a destructor.
+          call_lst.push_back(fileInfo);
       }
     }
   }

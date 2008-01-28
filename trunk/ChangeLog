@@ -4459,3 +4459,21 @@ Error limit reached.
 10 errors detected in the compilation of "/fusion/research4/bwhite/spec-c++-project-latest/spec-2006-c++/471.omnetpp/src/test.cc".
 Compilation terminated.
 	
+1/28/08	    UseOA-ROSE svn trunk 330 Brian White		
+
+   - Changed modeling of destructor invocations.  Now represent them
+     using a MemRefHandle which is the Sg_File_Info of the SgDeleteExp.
+     I do this for consistency with the handling of constructors/new.
+     We will soon represent invocations of delete using SgDeleteExp.
+
+     Call handle for a destructor invocation is a Sg_file_info of
+     the SgDeleteExp.  
+	
+     This involved changes to the following functions:
+     createParamBindPtrAssignPairs, SgDeleteExp case of
+     findAllMemRefsAndPtrAssigns, verifyCallHandleNodeType, 
+     toString(const OA::CallHandle h), ExprTreeTraversal,
+     getCallHandle, getFormalTypes, getActuals,
+     createParamBindPtrAssignPairs, FindCallsitesPass::visit,
+     toString(const OA::MemRefHandle h).
+	

@@ -2602,8 +2602,14 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
     // (BW 5/3/07) We use Sg_File_Info to represent constructor
     // calls (amongst other things).  If the parent is a
     // SgConstructorInitializer, operate on that instead.
+
+    // We now use the Sg_File_Info of a SgDeleteExp to
+    // represent a destructor invocation.  1/28/08
     SgNode *parent = node->get_parent();
     expression = isSgConstructorInitializer(parent);
+    if ( expression == NULL ) {
+	expression = isSgDeleteExp(parent);
+    }
     if ( expression == NULL ) {
         // applyReferenceConversionRules2And4 uses Sg_File_Infos for temporary
         // variables.
@@ -2708,6 +2714,8 @@ std::string SageIRInterface::toString(const OA::CallHandle h)
 
   case V_SgDeleteExp:
     {
+      ROSE_ABORT();
+      // Temporarily not using this for invocation of destructor
       SgDeleteExp *deleteExp = isSgDeleteExp(node);
       ROSE_ASSERT(deleteExp != NULL);
       retstr = deleteExp->unparseToString();
@@ -2733,9 +2741,20 @@ std::string SageIRInterface::toString(const OA::CallHandle h)
       // (BW 5/3/07)  Needed to add this since we now represent   
       // constructor invocations via the Sg_File_Info of the 
       // SgConstructorInitializer, rather than the SgConstructorInitializer.
+
+      // We now represent invocations of the destructor with the
+      // Sg_File_Info of a SgDeleteExp.  
       SgNode *parent = node->get_parent();
-      if ( !isSgConstructorInitializer(parent) ) {
+      if ( !isSgConstructorInitializer(parent) && !isSgDeleteExp(parent) ) {
         break;
+      }
+      if ( isSgDeleteExp(parent) ) {
+          // For now, delete and destructor have the same string 
+          // representation.
+          SgDeleteExp *deleteExp = isSgDeleteExp(parent);
+          ROSE_ASSERT(deleteExp != NULL);
+          retstr = deleteExp->unparseToString();
+          break;
       }
       node = parent;
       // fall through
@@ -3870,7 +3889,10 @@ class ExprTreeTraversal
         
       parent = node;
       
-    } else if ( isSgDeleteExp(astNode) || isSgConstructorInitializer(astNode)
+    } else if ( isSgDeleteExp(astNode) || 
+                ( isSg_File_Info(astNode) && 
+                   ( isSgConstructorInitializer(astNode->get_parent()) ||
+                     isSgDeleteExp(astNode->get_parent()) ) )
                 || isSgFunctionCallExp(astNode) ) {
 
       // CallNode
@@ -5508,11 +5530,15 @@ OA::CallHandle SageIRInterface::getCallHandle(SgNode *astNode)
     switch(astNode->variantT()) {
     case V_SgFunctionCallExp:
     case V_SgConstructorInitializer:
-    case V_SgDeleteExp:
         {
             // We expect that a call handle is one of
             // these three cases.
             break;
+        }
+    case V_SgDeleteExp:
+        {
+            ROSE_ABORT();
+            // Temporarily not using a SgDeleteExp.
         }
     case V_SgNewExp:
         {
@@ -5528,8 +5554,13 @@ OA::CallHandle SageIRInterface::getCallHandle(SgNode *astNode)
         }
     case V_Sg_File_Info:
         {
-            // A SgFileInfo can represent the call to a constructor.
-            break;
+            // A SgFileInfo can represent the call to a constructor or a
+            // destructor.
+            if ( isSgConstructorInitializer(astNode->get_parent()) ||
+                 isSgDeleteExp(astNode->get_parent()) ) {
+              break;
+            }
+            // fall thru
         }
     default:
         {

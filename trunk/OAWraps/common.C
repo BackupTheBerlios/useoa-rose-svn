@@ -261,7 +261,6 @@ void verifyCallHandleNodeType(SgNode *node)
     switch(node->variantT()) {
     case V_SgFunctionCallExp:
     case V_SgConstructorInitializer:
-    case V_SgDeleteExp:
         {
             // These are the expected call handle node types.
             break;
@@ -276,13 +275,22 @@ void verifyCallHandleNodeType(SgNode *node)
             }
             break;
         }
+    case V_SgDeleteExp:
+        {     
+            ROSE_ABORT();
+            // We are temporarily not using this.  It will soon be used
+            // to model invocation of the delete operator.  1/28/08.
+        }
     case V_Sg_File_Info:
         {
             // (BW 5/3/07)  Needed to add this since we now represent   
             // constructor invocations via the Sg_File_Info of the 
             // SgConstructorInitializer, rather than the SgConstructorInitializer.
+
+            // We now use the Sg_File_Info of a SgDeleteExp to 
+            // model destructor invocation.
             SgNode *parent = node->get_parent();
-            if ( isSgConstructorInitializer(parent) ) {
+            if ( isSgConstructorInitializer(parent) || isSgDeleteExp(parent) ) {
               break;
             }
             // fall through
@@ -459,8 +467,64 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
 
             break;
         }
+    case V_Sg_File_Info:
+        {
+            Sg_File_Info *fileInfo = isSg_File_Info(node);
+            ROSE_ASSERT(fileInfo != NULL);
+
+            // Invocations of destructors are represented by
+            // the Sg_File_Info of a SgDeleteExp.  
+            // Note that invocations of constructors are represented
+            // by the Sg_File_Info of a SgConstructorInitializer,
+            // with the latter being passed to this function.
+  
+            SgDeleteExp *deleteExp = isSgDeleteExp(node->get_parent());
+            if ( deleteExp != NULL ) {
+
+                SgExpression *var = deleteExp->get_variable(); 
+                ROSE_ASSERT(var != NULL); 
+
+                SgType *varType = var->get_type(); 
+                ROSE_ASSERT(varType != NULL); 
+
+                // Need getBaseType to look through typedefs.
+                SgPointerType *ptrType = isSgPointerType(lookThruReferenceType(varType)); 
+                SgClassType *classType = NULL; 
+                if ( ptrType ) { 
+                    classType = isSgClassType(ptrType->get_base_type()); 
+                } else { 
+                    classType = isSgClassType(varType); 
+                } 
+                ROSE_ASSERT(classType != NULL); 
+
+                SgClassDeclaration *classDeclaration =  
+                    isSgClassDeclaration(classType->get_declaration()); 
+                ROSE_ASSERT(classDeclaration != NULL); 
+
+                classDeclaration = 
+                    isSgClassDeclaration(getDefiningDeclaration(classDeclaration));
+                ROSE_ASSERT(classDeclaration != NULL);
+
+                SgClassDefinition *classDefn  =  
+                    classDeclaration->get_definition();  
+                ROSE_ASSERT(classDefn != NULL); 
+
+                // This assumes that the AST has been normalized. 
+                // Without it, the destructor declaration may 
+                // not exist if it is compiler generated. 
+                SgMemberFunctionDeclaration *funcDecl = 
+                    lookupDestructorInClass(classDefn); 
+                ROSE_ASSERT(funcDecl != NULL); 
+
+                functionType = funcDecl->get_type();
+                ROSE_ASSERT(functionType != NULL);
+            }
+            break;
+	}
     case V_SgDeleteExp:
         {
+            ROSE_ABORT();
+            // SgDeleteExp will eventually represent destructor invocations.
             SgDeleteExp *deleteExp = isSgDeleteExp(node);
             ROSE_ASSERT(deleteExp != NULL);
 
@@ -784,9 +848,24 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
             // (BW 5/3/07)  Needed to add this since we now represent   
             // constructor invocations via the Sg_File_Info of the 
             // SgConstructorInitializer, rather than the SgConstructorInitializer.
+
+            // We now also use the Sg_File_Info of a SgDeleteExp to
+            // model a destructor invocation.
             SgNode *parent = node->get_parent();
-            if ( !isSgConstructorInitializer(parent) ) {
+            if ( !isSgConstructorInitializer(parent) && !isSgDeleteExp(parent)) {
                 ROSE_ABORT();
+            }
+            if ( isSgDeleteExp(parent) ) {
+                SgDeleteExp *deleteExp = isSgDeleteExp(parent);
+                ROSE_ASSERT(deleteExp != NULL);
+
+                // The only actual passed to a destructor is
+                // the receiver.
+                SgExpression *var = deleteExp->get_variable(); 
+                ROSE_ASSERT(var != NULL); 
+
+                actuals.push_back(var);
+                break;
             }
             node = parent;
             // fall through
@@ -826,6 +905,9 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
         }
     case V_SgDeleteExp:
         {
+            ROSE_ABORT();
+            // SgDeleteExp models an invocation of operator delete,
+            // not the destructor.
             SgDeleteExp *deleteExp = isSgDeleteExp(node);
             ROSE_ASSERT(deleteExp != NULL);
 

@@ -238,9 +238,22 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
             // (BW 5/3/07)  Needed to add this since we now represent   
             // constructor invocations via the Sg_File_Info of the 
             // SgConstructorInitializer, rather than the SgConstructorInitializer.
+              
+            // Also represent destructor invocations via Sg_File_Info of
+            // the SgDeleteExp, rather than the SgDeleteExp, which 
+            // will now be used to represent an invocation of delete.
+
             SgNode *parent = node->get_parent();
-            if ( !isSgConstructorInitializer(parent) ) {
+            if ( !isSgConstructorInitializer(parent) && !isSgDeleteExp(parent) ) {
               break;
+            }
+            if ( isSgDeleteExp(parent) ) {
+                // Note that we now use the Sg_File_info of a SgDeleteExp 
+                // to model an invocation of a destructor.  A destructor
+                // is non-static (think virtual destructor), while 
+		// operator delete is static.
+                isCallANonStaticMethodInvocation = true; 
+                break;
             }
             node = parent;
             // fall through
@@ -248,27 +261,28 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
 
     case V_SgConstructorInitializer:
         {
-            isCallANonStaticMethodInvocation = true;
-
             SgConstructorInitializer *ctorInit =
                 isSgConstructorInitializer(node);
-            ROSE_ASSERT(ctorInit != NULL);
+            if ( ctorInit != NULL ) {
 
-            if ( isObjectInitialization(ctorInit) ) {
-                // If the parent of the constructor initialize is a var, then
-                // we are in the case:
-                // A a;
-                // rather than:
-                // A a = new A;
-                // Therefore, in the implicit param binding with 'this', we
-                // need to treat this as if it were a dot expression, so
-                // that we take the address of a:  this = &a.
+                isCallANonStaticMethodInvocation = true;
 
-                // Note, it is _not_ sufficient that the parent be a 
-                // SgInitializedName (as was checked previously), as this
-                // might also indicate invocation of a base class.
-                isCallADotExp = true;
-            }
+                if ( isObjectInitialization(ctorInit) ) {
+                    // If the parent of the constructor initialize is a var, then
+                    // we are in the case:
+                    // A a;
+                    // rather than:
+                    // A a = new A;
+                    // Therefore, in the implicit param binding with 'this', we
+                    // need to treat this as if it were a dot expression, so
+                    // that we take the address of a:  this = &a.
+
+                    // Note, it is _not_ sufficient that the parent be a 
+                    // SgInitializedName (as was checked previously), as this
+                    // might also indicate invocation of a base class.
+                    isCallADotExp = true;
+                }
+            }    
             break;
         }
     case V_SgNewExp:
@@ -293,6 +307,12 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
             // is non-static (think virtual destructor), while the
             // latter is static.
             isCallANonStaticMethodInvocation = true; 
+
+            // No!  Above is now false, I am now representing 
+            // destructor invocation with a Sg_File_info.  Until
+            // I model a delete invocation with SgDeleteExp, we
+            // should not be here.
+            ROSE_ABORT();
             break;
         }
     default:
@@ -1541,16 +1561,21 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             SgDeleteExp *deleteExp = isSgDeleteExp(astNode);
             ROSE_ASSERT(deleteExp != NULL);
 
-            // We don't yet model operator delete--i.e., invocations
-            // of delete (as opposed to invocations of the destructor).
-            // To be symmetric with new/constructor (modeled by
-            // SgNewExp/Sg_File_info of SgConstructorInitializer),
-            // we should use SgDeleteExp for delete and
-            // the Sg_File_info of SgDeleteExp for destructor.
-            // But this will break all of our regression tests.
-            // Perhaps use Sg_File_info/SgDeleteExp for delete/destrutor.
+            // Represent an invocation of a destructor using
+            // the Sg_File_info of the SgDeleteExp, to be consistent
+            // with the use of the Sg_File_info of SgConstructorInitializer
+            // to model a constructor invocation.  1/28/08
+
             SgFunctionDeclaration *deleteDecl = 
                deleteExp->get_deleteOperatorDeclaration();
+#if 0
+            if ( deleteDecl != NULL ) {
+		std::cout << "deleteDecl = " << deleteDecl->unparseToString() << std::endl;
+                Sg_File_Info *fileInfo = deleteDecl->get_file_info();
+                ROSE_ASSERT(fileInfo != NULL);
+		std::cout << "file = " << fileInfo->unparseToString() << std::endl;
+            }
+#endif
             // ROSE_ASSERT(deleteDecl == NULL);
 
             SgExpression *receiver = deleteExp->get_variable();
@@ -1780,7 +1805,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
                     } else {
     
-                        // Create a call handle for the delete expression.
+                        // Create a call handle for the destructor.
     
                        OA::SymHandle symHandle = getProcSymHandle(methodDecl);
       
@@ -1793,7 +1818,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     
                     }
     	
-                    OA::CallHandle call = getCallHandle(astNode);
+                    Sg_File_Info *fileInfo = deleteExp->get_file_info();
+                    ROSE_ASSERT(fileInfo != NULL);
+                    //OA::CallHandle call = getCallHandle(astNode);
+                    // We now use the Sg_File_Info of SgDeleteExp to
+                    // represent the destructor invocation.  1/28/08
+                    OA::CallHandle call = getCallHandle(fileInfo);
                     // std::cout << "Adding call handle for " << (int)(call.hval()) << std::endl;
 #if 0
                     SgNode *node = getNodePtr(call);
@@ -1807,13 +1837,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     
                     // We consider function/method invocations to be 
                     // uses, so add the call as a general MRE.
-                    OA::MemRefHandle memref = getMemRefHandle(astNode);
+                    // OA::MemRefHandle memref = getMemRefHandle(astNode);
+                    OA::MemRefHandle memref = getMemRefHandle(fileInfo);
                     relateMemRefAndStmt(memref, stmt);
                     mMemref2mreSetMap[memref].insert(method);
     
                     // Create parameter binding params arising from
                     // the receiver used to invoke the destructor.
-                    createParamBindPtrAssignPairs(stmt, deleteExp);
+                    // createParamBindPtrAssignPairs(stmt, deleteExp);
+                    createParamBindPtrAssignPairs(stmt, fileInfo);
 
                 } // end of methodDecl != NULL
 
@@ -2390,7 +2422,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 mMre2TypeMap[method] = other;
     
                 // (BW 5/3/07)  Since we are using the SgConstructorInitializer
-                // for the MRE for a potential temporary object, we know
+                // for the MRE for a potential temporary object, we now
                 // use the Sg_File_Info of that node for the constructor
                 // invocation.
 		//                OA::CallHandle call = getCallHandle(astNode);
