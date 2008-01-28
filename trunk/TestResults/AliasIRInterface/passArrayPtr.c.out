@@ -28,9 +28,9 @@ PROCEDURE = { < ProcHandle("strcmp"), SymHandle("strcmp") > }
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
+    LOCATION = { < SymHandle("strcmp"), not local > }
     LOCATION = { < SymHandle("s"), local > }
     LOCATION = { < SymHandle("t"), local > }
-    LOCATION = { < SymHandle("strcmp"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){char a[] = "testing";int x = strcmp(a,a);a[3] =('b');char v =(a[2]);}") =>
@@ -41,21 +41,21 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("char a[] = "testing";") =>
         [
-            MemRefHandle("a") => 
-                NamedRef( DEF, SymHandle("a"))
             MemRefHandle(""testing"") => 
                 SubSetRef( USE, UnnamedRef( USE, ExprHandle(""testing""), 1, ProcHandle("main")))
+            MemRefHandle("a") => 
+                NamedRef( DEF, SymHandle("a"))
         ] }
     MEMREFEXPRS = { StmtHandle("int x = strcmp(a,a);") =>
         [
-            MemRefHandle("x") => 
-                NamedRef( DEF, SymHandle("x"))
             MemRefHandle("a") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
             MemRefHandle("a") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
             MemRefHandle("strcmp") => 
                 NamedRef( USE, SymHandle("strcmp"))
+            MemRefHandle("x") => 
+                NamedRef( DEF, SymHandle("x"))
         ] }
     CALLSITES = { StmtHandle("int x = strcmp(a,a);") =>
         [
@@ -76,18 +76,18 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("char v =(a[2]);") =>
         [
-            MemRefHandle("v") => 
-                NamedRef( DEF, SymHandle("v"))
             MemRefHandle("a") => 
                 NamedRef( USE, SymHandle("a"))
             MemRefHandle("(a[2])") => 
                 IdxExprAccess( USE, Deref( USE, NamedRef( USE, SymHandle("a")), 1), MemRefHandle("2"))
+            MemRefHandle("v") => 
+                NamedRef( DEF, SymHandle("v"))
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
+    LOCATION = { < SymHandle("strcmp"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("a"), local > }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("v"), local > }
-    LOCATION = { < SymHandle("strcmp"), not local > }
-    LOCATION = { < SymHandle("main"), not local > }

@@ -104,9 +104,9 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("a"), local > }
     LOCATION = { < SymHandle("p"), local > }
     LOCATION = { < SymHandle("q"), local > }
     LOCATION = { < SymHandle("v"), local > }
     LOCATION = { < SymHandle("mystruct"), local > }
-    LOCATION = { < SymHandle("main"), not local > }

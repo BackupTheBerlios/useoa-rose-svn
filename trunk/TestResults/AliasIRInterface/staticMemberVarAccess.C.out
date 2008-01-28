@@ -17,5 +17,5 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
-    LOCATION = { < SymHandle("sX"), not local > }
     LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("sX"), not local > }

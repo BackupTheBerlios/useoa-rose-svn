@@ -86,8 +86,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("x")), 1), p)
             , AddressOf( USE, NamedRef( USE, SymHandle("n"))) >
         ] }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("n"), local > }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("y"), local > }
     LOCATION = { < SymHandle("z"), local > }
-    LOCATION = { < SymHandle("main"), not local > }

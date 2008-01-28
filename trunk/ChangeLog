@@ -4187,6 +4187,275 @@ Aborted
      analysis.  This bug was previously reported to Dan as
      empty-sizeof.
 
+1/17/08	    UseOA-ROSE svn trunk 329 Brian White		
 
+   - Above bug fixes were sufficient to analyze 473.astar.
+
+   - Created a map from MRE to SgNode, mMre2SgNode.  Interface is 
+
+       //! Return the SgNode associated with an MRE. 
+       SgNode *getSgNode(OA::OA_ptr<OA::MemRefExpr> mre); 
+
+       //! Associate a SgNode with an MRE. 
+       void mapMREToSgNode(OA::OA_ptr<OA::MemRefExpr> mre, SgNode *node);
 	
+     Eventually, we will need this so that ROSE traversals invoking 
+     OA analyses can convert the analysis results back to Sage constructs.
+     For now, I need it to make the rhs of a dynamic allocation
+     back to the SgNewExp in the placement new case, where we
+     don't know what the MRE looks like.  In the non-placement
+     new case, we know the MRE is an unnamed mre and how to
+     extract the SgNewExp from it.  In the future, we should
+     associate MREs and SgNodes when we create MREs.  I am
+     abusing this facility for now since I am associating
+     the placement new SgExpression with an MRE at the SgNewExp,
+     though the MRE is created elsewhere.  Further, I am not
+     using the map elsewhere.  Eventually, when we associate
+     MREs and SgNodes at the MRE creation site, we should
+     remove this association in SgNewExp.
+	
+   - Handling of optional placement args to new.  The standard
+     invocation of new (e.g., new std::string("hi")) results in
+     a call to void *operator new(size_t t).  If placement args
+     are provided,  
+     void *operator new(size_t t, placement_arg1, ... placement_argN)
+     is instead invoked (and must be defined).  In this case,
+     the invoked new operator is provided in 
+     SgNewExp->get_newOperatorDeclaration().  Therefore, invocations
+     of new need to be handled in two separate cases:
+     (1) Standard new (w/o placement args) is like invocation of
+         malloc.  i.e., generates an unnamed ref.  Also, create
+         implicit ptr assignments (e.g., for virtual methods) for lhs.
+     (2) Placement new is like invocation of a function (with a 
+         pointer return value).  Therefore, we should treat this
+         just like the case of a pointer-returning function in
+         SgFunctionCallExp.  Create implicit ptr assignments
+         (e.g., fort virtual methods) for the pointer returned
+         by the new invocation.  Also, create param bindings.
+
+     Syntax:
+	int main()
+	{
+	  char *buf  = new char[1000];   //pre-allocated buffer
+	  std::string *p = new (buf) std::string("hi");  //placement new
+	  std::string *q = new std::string("hi");  //ordinary heap allocation
+	}  
+
+     These changes were made to the SgNewExp case of 
+     findAllMemRefsAndPtrAssigns.
+
+     A callhandle may now be a SgNewExp.  Modified getCallHandle.
+     Modified FindCallsitesPass::visit(SgNode* node) to create a 
+     call handle for SgNewExp if it corresponds to a non-builtin
+     new invocation.
+	
+     Updated createImplicitPtrAssignPairsForDynamicObjectAllocation
+     to handle placement new (i.e., rhs_mre may be either an unnamed
+     ref for the builtin-new or a named ref for placement new).
+     To handle param bindings for placement new modified
+     createParamBindPtrAssignPairs and getActuals.
+     Also modified getFormalParamIterator and getFormalTypes:
+     The first formal to operator new is size_t.  However, the
+     corresponding actual is not passed explicitly.  Therefore,
+     and since the actual is not a pointer and does not induce
+     side effects, we will not include the formal in the list of
+     formals and their types. 
+
+   - Added regression tests TestCases/AliasTests/placementNew1.C and
+     placementNew2.C for AliasIRInterface and FIAlias* tests.
+
+   - Reran regression tests and checked in changes.  Many superficial
+     ordering differences.
+	
+   - Trouble with 483.xalancbmk.  The following errors occur
+     when attempting to compile the code emitted by the ROSE
+     backend for LinuxPlatformUtils.cpp.  They are (all)
+     caused by the bug previously reported to Dan as
+     include-outside-of-namespace.
+
+In file included from rose_LinuxPlatformUtils.cpp:643:
+xercesc/util/LogicalPath.c:40: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:51: error: ISO C++ forbids declaration of `tmpBuf' 
+   with no type
+xercesc/util/LogicalPath.c:56: error: syntax error before `if'
+xercesc/util/LogicalPath.c:65: error: `basePath' was not declared in this scope
+xercesc/util/LogicalPath.c:65: error: `XMLString' was not declared in this 
+   scope
+xercesc/util/LogicalPath.c:65: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:65: error: syntax error before `)' token
+xercesc/util/LogicalPath.c:84: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:85: error: `basePath' was not declared in this scope
+xercesc/util/LogicalPath.c:85: error: ISO C++ forbids declaration of `tmpBuf' 
+   with no type
+xercesc/util/LogicalPath.c:85: error: assignment (not initialization) in 
+   declaration
+xercesc/util/LogicalPath.c:86: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:88: error: `manager' was not declared in this scope
+xercesc/util/LogicalPath.c:88: error: ISO C++ forbids declaration of `
+   removeDotSlash' with no type
+xercesc/util/LogicalPath.c:88: error: initializer list being treated as 
+   compound expression
+xercesc/util/LogicalPath.c:90: error: `manager' was not declared in this scope
+xercesc/util/LogicalPath.c:90: error: ISO C++ forbids declaration of `
+   removeDotDotSlash' with no type
+xercesc/util/LogicalPath.c:90: error: initializer list being treated as 
+   compound expression
+xercesc/util/LogicalPath.c:92: error: syntax error before `return'
+xercesc/util/LogicalPath.c:103: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:109: error: `XMLString' was not declared in this 
+   scope
+xercesc/util/LogicalPath.c:109: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:110: error: `XMLString' was not declared in this 
+   scope
+xercesc/util/LogicalPath.c:110: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:111: error: `manager' was not declared in this scope
+xercesc/util/LogicalPath.c:111: error: 'ArrayJanitor' is used as a type, but is 
+   not defined as a type.
+xercesc/util/LogicalPath.c:112: error: `path' was not declared in this scope
+xercesc/util/LogicalPath.c:114: error: syntax error before `while'
+xercesc/util/LogicalPath.c:126: error: syntax error before `-=' token
+xercesc/util/LogicalPath.c:131: error: syntax error before `--' token
+xercesc/util/LogicalPath.c:141: error: syntax error before `++' token
+xercesc/util/LogicalPath.c:146: error: ISO C++ forbids declaration of `tarPtr' 
+   with no type
+xercesc/util/LogicalPath.c:146: error: conflicting types for `int*tarPtr'
+xercesc/util/LogicalPath.c:112: error: previous declaration as `XMLCh*tarPtr'
+xercesc/util/LogicalPath.c:148: error: syntax error before `return'
+xercesc/util/LogicalPath.c:156: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:160: error: `manager' was not declared in this scope
+xercesc/util/LogicalPath.c:162: error: `pathLen' was not declared in this scope
+xercesc/util/LogicalPath.c:164: error: `manager' was not declared in this scope
+xercesc/util/LogicalPath.c:164: error: 'ArrayJanitor' is used as a type, but is 
+   not defined as a type.
+xercesc/util/LogicalPath.c:166: error: `manager' was not declared in this scope
+xercesc/util/LogicalPath.c:168: error: `pathLen' was not declared in this scope
+xercesc/util/LogicalPath.c:170: error: `manager' was not declared in this scope
+xercesc/util/LogicalPath.c:170: error: 'ArrayJanitor' is used as a type, but is 
+   not defined as a type.
+xercesc/util/LogicalPath.c:174: error: `int index' redeclared as different kind 
+   of symbol
+/usr/include/string.h:288: error: previous declaration of `char* index(const 
+   char*, int)'
+xercesc/util/LogicalPath.c:178: error: syntax error before `while'
+xercesc/util/LogicalPath.c:184: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:185: error: ISO C++ forbids declaration of `segIndex
+   ' with no type
+xercesc/util/LogicalPath.c:185: error: redefinition of `int segIndex'
+xercesc/util/LogicalPath.c:175: error: `int segIndex' previously defined here
+xercesc/util/LogicalPath.c:186: error: syntax error before `while'
+xercesc/util/LogicalPath.c:199: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:201: error: ISO C++ forbids declaration of `path' 
+   with no type
+xercesc/util/LogicalPath.c:201: error: invalid initializer
+xercesc/util/LogicalPath.c:202: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:203: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:205: error: ISO C++ forbids declaration of `offset' 
+   with no type
+xercesc/util/LogicalPath.c:205: error: redefinition of `int offset'
+xercesc/util/LogicalPath.c:176: error: `int offset' previously defined here
+xercesc/util/LogicalPath.c:206: error: syntax error before `}' token
+xercesc/util/LogicalPath.c:216: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:221: error: redefinition of `XMLCh*srcPtr'
+xercesc/util/LogicalPath.c:109: error: `XMLCh*srcPtr' previously defined here
+xercesc/util/LogicalPath.c:221: error: `srcPath' was not declared in this scope
+xercesc/util/LogicalPath.c:222: error: redefinition of `int srcLen'
+xercesc/util/LogicalPath.c:110: error: `int srcLen' previously defined here
+xercesc/util/LogicalPath.c:222: error: `XMLString' was not declared in this 
+   scope
+xercesc/util/LogicalPath.c:222: error: syntax error before `::' token
+xercesc/util/LogicalPath.c:225: error: syntax error before `while'
+xercesc/util/LogicalPath.c:240: error: syntax error before `--' token
+gmake: *** [LinuxPlatformUtils.o] Error 1
+
+
+   - Trouble with 453.povray.  The following error occurs
+     when attempting to compile the code emitted by the ROSE
+     backend for fnpovfpu.cpp.  It is
+     caused by the bug previously reported to Dan as
+     runon-#define.
+	
+	In file included from povray.h:45, 
+                 from rose_fnpovfpu.cpp:205: 
+rose_fnpovfpu.cpp:278:2: '#' is not followed by a macro parameter 
+rose_fnpovfpu.cpp:314:2: '#' is not followed by a macro parameter 
+gmake: *** [fnpovfpu.o] Error 1 
+
+   - Trouble with 471.omnetpp, 450.soplex, and 447.dealII.  
+     The following error occurs from files that #include <limits>.
+     "Solved" this problem by changing the const declarations
+     within ROSE-0.9.0b/LINUX-3.3.3/include/g++_HEADERS/hdrs1/limits
+     so that they do not involve function calls.  e.g., 
+
+     static const bool has_infinity 
+        = __builtin_huge_valf () / 2 == __builtin_huge_valf (); 
+
+     becomes 
+
+     static const bool has_infinity = false;
+
+     May not be correct, but allows us to compile.
+
+     This bug was written up as limits-with-nonconst-expr and
+     sent to Dan:
+
+     From bwhite@cacao.csl.cornell.edu Tue Jan 22 12:51:56 2008
+     Date: Tue, 22 Jan 2008 12:49:14 -0500 (EST)
+     From: Brian White <bwhite@cacao.csl.cornell.edu>
+     To: dan quinlan <dquinlan@llnl.gov>
+     Subject: ROSE can't compile a program with #include<iostream>?
+
+     Here are the errors:
+
+"/fusion/research4/bwhite/spec-c++-project-latest/ROSE-0.9.0b/LINUX-3.3.3/include/g++_HEADERS/hdrs1/limits", line 897: error:
+          function call is not allowed in a constant expression
+        = __builtin_huge_valf () / 2 == __builtin_huge_valf ();
+          ^
+
+"/fusion/research4/bwhite/spec-c++-project-latest/ROSE-0.9.0b/LINUX-3.3.3/include/g++_HEADERS/hdrs1/limits", line 897: error:
+          function call is not allowed in a constant expression
+        = __builtin_huge_valf () / 2 == __builtin_huge_valf ();
+                                        ^
+
+"/fusion/research4/bwhite/spec-c++-project-latest/ROSE-0.9.0b/LINUX-3.3.3/include/g++_HEADERS/hdrs1/limits", line 899: error:
+          function call is not allowed in a constant expression
+        = __builtin_nanf ("") != __builtin_nanf ("");
+
+"/fusion/research4/bwhite/spec-c++-project-latest/ROSE-0.9.0b/LINUX-3.3.3/include/g++_HEADERS/hdrs1/limits", line 899: error:
+          function call is not allowed in a constant expression
+        = __builtin_nanf ("") != __builtin_nanf ("");
+                                 ^
+
+"/fusion/research4/bwhite/spec-c++-project-latest/ROSE-0.9.0b/LINUX-3.3.3/include/g++_HEADERS/hdrs1/limits", line 955: error:
+          function call is not allowed in a constant expression
+        = __builtin_huge_val () / 2 == __builtin_huge_val ();
+          ^
+
+"/fusion/research4/bwhite/spec-c++-project-latest/ROSE-0.9.0b/LINUX-3.3.3/include/g++_HEADERS/hdrs1/limits", line 955: error:
+          function call is not allowed in a constant expression
+        = __builtin_huge_val () / 2 == __builtin_huge_val ();
+                                       ^
+
+"/fusion/research4/bwhite/spec-c++-project-latest/ROSE-0.9.0b/LINUX-3.3.3/include/g++_HEADERS/hdrs1/limits", line 957: error:
+          function call is not allowed in a constant expression
+        = __builtin_nan ("") != __builtin_nan ("");
+          ^
+
+"/fusion/research4/bwhite/spec-c++-project-latest/ROSE-0.9.0b/LINUX-3.3.3/include/g++_HEADERS/hdrs1/limits", line 957: error:
+          function call is not allowed in a constant expression
+        = __builtin_nan ("") != __builtin_nan ("");
+                                ^
+
+"/fusion/research4/bwhite/spec-c++-project-latest/ROSE-0.9.0b/LINUX-3.3.3/include/g++_HEADERS/hdrs1/limits", line 1013: error:
+          function call is not allowed in a constant expression
+        = __builtin_huge_vall () / 2 == __builtin_huge_vall ();
+          ^
+
+"/fusion/research4/bwhite/spec-c++-project-latest/ROSE-0.9.0b/LINUX-3.3.3/include/g++_HEADERS/hdrs1/limits", line 1013: error:
+          function call is not allowed in a constant expression
+        = __builtin_huge_vall () / 2 == __builtin_huge_vall ();
+                                        ^
+
+Error limit reached.
+10 errors detected in the compilation of "/fusion/research4/bwhite/spec-c++-project-latest/spec-2006-c++/471.omnetpp/src/test.cc".
+Compilation terminated.
 	

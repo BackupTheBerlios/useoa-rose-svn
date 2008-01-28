@@ -10,71 +10,71 @@ InterAliasMap(
                     ) ] 
                 1	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(x)
+                        mSymHandle: SymHandle(malloc)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(s)
+                        mSymHandle: SymHandle(my_malloc)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 3	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(y)
+                        mSymHandle: SymHandle(a)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 4	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(t)
+                        mSymHandle: SymHandle(b)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 5	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(size)
-                        mLocal: 1
+                        mSymHandle: SymHandle(x)
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 6	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(p)
-                        mLocal: 1
+                        mSymHandle: SymHandle(s)
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 7	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(malloc)
+                        mSymHandle: SymHandle(y)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 8	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(my_malloc)
+                        mSymHandle: SymHandle(t)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 9	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(a)
-                        mLocal: 0
+                        mSymHandle: SymHandle(size)
+                        mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 10	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(b)
-                        mLocal: 0
+                        mSymHandle: SymHandle(p)
+                        mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
@@ -109,60 +109,60 @@ InterAliasMap(
                 12	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                5	 => [ MemRefHandle(size) ] 
-                6	 => [ MemRefHandle(p)    MemRefHandle(p) ] 
-                7	 => [ MemRefHandle(malloc) ] 
+                1	 => [ MemRefHandle(malloc) ] 
+                9	 => [ MemRefHandle(size) ] 
+                10	 => [ MemRefHandle(p)    MemRefHandle(p) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(x)
-                    ) ] 
-                2	 => [ 
-                    NamedRef(
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(s)
-                    ) ] 
-                3	 => [ 
-                    NamedRef(
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(y)
-                    ) ] 
-                4	 => [ 
-                    NamedRef(
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(t)
-                    ) ] 
-                5	 => [ 
-                    NamedRef(
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(size)
-                    ) ] 
-                6	 => [ 
-                    NamedRef(
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(p)
-                    ) ] 
-                7	 => [ 
-                    NamedRef(
-                        mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
-                8	 => [ 
+                2	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(my_malloc)
                     ) ] 
-                9	 => [ 
+                3	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(a)
                     ) ] 
-                10	 => [ 
+                4	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(b)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(x)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s)
+                    ) ] 
+                7	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(y)
+                    ) ] 
+                8	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(t)
+                    ) ] 
+                9	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(size)
+                    ) ] 
+                10	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(p)
                     ) ] 
                 11	 => [ 
                     UnnamedRef(
@@ -171,6 +171,15 @@ InterAliasMap(
                         mLocal: 0
                     ) ] 
                 12	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(my_malloc)
+                        )
+                        mNumDeref: 1
+                    )    
                     Deref(
                         mMemRefType: DEF
                         mMRE: 
@@ -198,15 +207,6 @@ InterAliasMap(
                         )
                         mNumDeref: 1
                     )    
-                    Deref(
-                        mMemRefType: USE
-                        mMRE: 
-                        NamedRef(
-                            mMemRefType: USE
-                            mSymHandle: SymHandle(my_malloc)
-                        )
-                        mNumDeref: 1
-                    )    
                     SubSetRef(
                         mMemRefType: USE
                         mMRE: 
@@ -228,56 +228,56 @@ InterAliasMap(
                     ) ] 
                 1	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(x)
+                        mSymHandle: SymHandle(malloc)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(s)
+                        mSymHandle: SymHandle(my_malloc)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 3	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(y)
+                        mSymHandle: SymHandle(a)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 4	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(t)
+                        mSymHandle: SymHandle(b)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 5	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(malloc)
+                        mSymHandle: SymHandle(x)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 6	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(my_malloc)
+                        mSymHandle: SymHandle(s)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 7	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(a)
+                        mSymHandle: SymHandle(y)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 8	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(b)
+                        mSymHandle: SymHandle(t)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
@@ -288,6 +288,18 @@ InterAliasMap(
                         mLocal: 0
                     ) ] 
                 10	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(my_malloc)
+                            )
+                            mNumDeref: 1
+                        )
+                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
@@ -308,18 +320,6 @@ InterAliasMap(
                             NamedRef(
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(t)
-                            )
-                            mNumDeref: 1
-                        )
-                    )    
-                    InvisibleLoc(
-                        mMRE: 
-                        Deref(
-                            mMemRefType: USE
-                            mMRE: 
-                            NamedRef(
-                                mMemRefType: USE
-                                mSymHandle: SymHandle(my_malloc)
                             )
                             mNumDeref: 1
                         )
@@ -347,51 +347,51 @@ InterAliasMap(
                 10	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                1	 => [ MemRefHandle(x) ] 
-                2	 => [ MemRefHandle(s)    MemRefHandle(s) ] 
-                6	 => [ MemRefHandle(my_malloc)    MemRefHandle((my_malloc(((sizeof(struct S )))))) ] 
+                2	 => [ MemRefHandle(my_malloc)    MemRefHandle((my_malloc(((sizeof(struct S )))))) ] 
+                5	 => [ MemRefHandle(x) ] 
+                6	 => [ MemRefHandle(s)    MemRefHandle(s) ] 
                 10	 => [ MemRefHandle(*s) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(x)
-                    ) ] 
-                2	 => [ 
-                    NamedRef(
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(s)
-                    ) ] 
-                3	 => [ 
-                    NamedRef(
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(y)
-                    ) ] 
-                4	 => [ 
-                    NamedRef(
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(t)
-                    ) ] 
-                5	 => [ 
-                    NamedRef(
-                        mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
-                6	 => [ 
+                2	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(my_malloc)
                     ) ] 
-                7	 => [ 
+                3	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(a)
                     ) ] 
-                8	 => [ 
+                4	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(b)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(x)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s)
+                    ) ] 
+                7	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(y)
+                    ) ] 
+                8	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(t)
                     ) ] 
                 9	 => [ 
                     UnnamedRef(
@@ -400,6 +400,15 @@ InterAliasMap(
                         mLocal: 0
                     ) ] 
                 10	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(my_malloc)
+                        )
+                        mNumDeref: 1
+                    )    
                     Deref(
                         mMemRefType: DEF
                         mMRE: 
@@ -415,15 +424,6 @@ InterAliasMap(
                         NamedRef(
                             mMemRefType: USE
                             mSymHandle: SymHandle(t)
-                        )
-                        mNumDeref: 1
-                    )    
-                    Deref(
-                        mMemRefType: USE
-                        mMRE: 
-                        NamedRef(
-                            mMemRefType: USE
-                            mSymHandle: SymHandle(my_malloc)
                         )
                         mNumDeref: 1
                     )    
@@ -448,56 +448,56 @@ InterAliasMap(
                     ) ] 
                 1	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(x)
+                        mSymHandle: SymHandle(malloc)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(s)
+                        mSymHandle: SymHandle(my_malloc)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 3	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(y)
+                        mSymHandle: SymHandle(a)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 4	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(t)
+                        mSymHandle: SymHandle(b)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 5	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(malloc)
+                        mSymHandle: SymHandle(x)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 6	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(my_malloc)
+                        mSymHandle: SymHandle(s)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 7	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(a)
+                        mSymHandle: SymHandle(y)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 8	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(b)
+                        mSymHandle: SymHandle(t)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
@@ -508,6 +508,18 @@ InterAliasMap(
                         mLocal: 0
                     ) ] 
                 10	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(my_malloc)
+                            )
+                            mNumDeref: 1
+                        )
+                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
@@ -528,18 +540,6 @@ InterAliasMap(
                             NamedRef(
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(t)
-                            )
-                            mNumDeref: 1
-                        )
-                    )    
-                    InvisibleLoc(
-                        mMRE: 
-                        Deref(
-                            mMemRefType: USE
-                            mMRE: 
-                            NamedRef(
-                                mMemRefType: USE
-                                mSymHandle: SymHandle(my_malloc)
                             )
                             mNumDeref: 1
                         )
@@ -567,51 +567,51 @@ InterAliasMap(
                 10	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                3	 => [ MemRefHandle(y) ] 
-                4	 => [ MemRefHandle(t)    MemRefHandle(t) ] 
-                6	 => [ MemRefHandle(my_malloc)    MemRefHandle((my_malloc(((sizeof(struct T )))))) ] 
+                2	 => [ MemRefHandle(my_malloc)    MemRefHandle((my_malloc(((sizeof(struct T )))))) ] 
+                7	 => [ MemRefHandle(y) ] 
+                8	 => [ MemRefHandle(t)    MemRefHandle(t) ] 
                 10	 => [ MemRefHandle(*t) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(x)
-                    ) ] 
-                2	 => [ 
-                    NamedRef(
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(s)
-                    ) ] 
-                3	 => [ 
-                    NamedRef(
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(y)
-                    ) ] 
-                4	 => [ 
-                    NamedRef(
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(t)
-                    ) ] 
-                5	 => [ 
-                    NamedRef(
-                        mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
-                6	 => [ 
+                2	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(my_malloc)
                     ) ] 
-                7	 => [ 
+                3	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(a)
                     ) ] 
-                8	 => [ 
+                4	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(b)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(x)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s)
+                    ) ] 
+                7	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(y)
+                    ) ] 
+                8	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(t)
                     ) ] 
                 9	 => [ 
                     UnnamedRef(
@@ -620,6 +620,15 @@ InterAliasMap(
                         mLocal: 0
                     ) ] 
                 10	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(my_malloc)
+                        )
+                        mNumDeref: 1
+                    )    
                     Deref(
                         mMemRefType: DEF
                         mMRE: 
@@ -635,15 +644,6 @@ InterAliasMap(
                         NamedRef(
                             mMemRefType: USE
                             mSymHandle: SymHandle(t)
-                        )
-                        mNumDeref: 1
-                    )    
-                    Deref(
-                        mMemRefType: USE
-                        mMRE: 
-                        NamedRef(
-                            mMemRefType: USE
-                            mSymHandle: SymHandle(my_malloc)
                         )
                         mNumDeref: 1
                     )    
@@ -668,56 +668,56 @@ InterAliasMap(
                     ) ] 
                 1	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(x)
+                        mSymHandle: SymHandle(malloc)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(s)
+                        mSymHandle: SymHandle(my_malloc)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 3	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(y)
+                        mSymHandle: SymHandle(a)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 4	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(t)
+                        mSymHandle: SymHandle(b)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 5	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(malloc)
+                        mSymHandle: SymHandle(x)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 6	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(my_malloc)
+                        mSymHandle: SymHandle(s)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 7	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(a)
+                        mSymHandle: SymHandle(y)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 8	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(b)
+                        mSymHandle: SymHandle(t)
                         mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
@@ -728,6 +728,18 @@ InterAliasMap(
                         mLocal: 0
                     ) ] 
                 10	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(my_malloc)
+                            )
+                            mNumDeref: 1
+                        )
+                    )    
                     InvisibleLoc(
                         mMRE: 
                         Deref(
@@ -748,18 +760,6 @@ InterAliasMap(
                             NamedRef(
                                 mMemRefType: USE
                                 mSymHandle: SymHandle(t)
-                            )
-                            mNumDeref: 1
-                        )
-                    )    
-                    InvisibleLoc(
-                        mMRE: 
-                        Deref(
-                            mMemRefType: USE
-                            mMRE: 
-                            NamedRef(
-                                mMemRefType: USE
-                                mSymHandle: SymHandle(my_malloc)
                             )
                             mNumDeref: 1
                         )
@@ -787,49 +787,49 @@ InterAliasMap(
                 10	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                7	 => [ MemRefHandle(a) ] 
-                8	 => [ MemRefHandle(b) ] 
+                3	 => [ MemRefHandle(a) ] 
+                4	 => [ MemRefHandle(b) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(x)
-                    ) ] 
-                2	 => [ 
-                    NamedRef(
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(s)
-                    ) ] 
-                3	 => [ 
-                    NamedRef(
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(y)
-                    ) ] 
-                4	 => [ 
-                    NamedRef(
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(t)
-                    ) ] 
-                5	 => [ 
-                    NamedRef(
-                        mMemRefType: USE
                         mSymHandle: SymHandle(malloc)
                     ) ] 
-                6	 => [ 
+                2	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(my_malloc)
                     ) ] 
-                7	 => [ 
+                3	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(a)
                     ) ] 
-                8	 => [ 
+                4	 => [ 
                     NamedRef(
                         mMemRefType: USE
                         mSymHandle: SymHandle(b)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(x)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(s)
+                    ) ] 
+                7	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(y)
+                    ) ] 
+                8	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(t)
                     ) ] 
                 9	 => [ 
                     UnnamedRef(
@@ -838,6 +838,15 @@ InterAliasMap(
                         mLocal: 0
                     ) ] 
                 10	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(my_malloc)
+                        )
+                        mNumDeref: 1
+                    )    
                     Deref(
                         mMemRefType: DEF
                         mMRE: 
@@ -853,15 +862,6 @@ InterAliasMap(
                         NamedRef(
                             mMemRefType: USE
                             mSymHandle: SymHandle(t)
-                        )
-                        mNumDeref: 1
-                    )    
-                    Deref(
-                        mMemRefType: USE
-                        mMRE: 
-                        NamedRef(
-                            mMemRefType: USE
-                            mSymHandle: SymHandle(my_malloc)
                         )
                         mNumDeref: 1
                     )    

@@ -201,6 +201,15 @@ void FindCallsitesPass::visit(SgNode* node)
         call_lst.push_back(exp);
       }
 
+  } else if ( isSgNewExp(exp) ) {
+
+      SgNewExp *newExp = isSgNewExp(exp);
+      ROSE_ASSERT(newExp != NULL);
+
+      if ( isPlacementNew(newExp) ) {
+          call_lst.push_back(newExp);
+      }
+
   } else if ( isSgConstructorInitializer(exp) ) {
     //    ROSE_ASSERT(0); // MMS, not sure how we handle these yet
 

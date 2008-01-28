@@ -38,6 +38,8 @@ test::  invLoc.c,               checked by MMS 7/23/06 (rechecked MMS 9/5/06)
 test::  RyderEtAlFig11.c,       checked by MMS 9/13/06
 test::  RyderEtAlFig14.c,       checked by MMS 9/13/06
 test::  RyderEtAlFig15.c,       checked by MMS 9/13/06
+test::  placementNew1.C,       checked by 1/25/08
+test::  placementNew2.C,       checked by 1/25/08
 #test::  RyderEtAlFig1a.c,       checked by ???
 #test::  RyderEtAlFig1b.c,       checked by ???
 #test::  RyderEtAlFig1c.c,       checked by ???

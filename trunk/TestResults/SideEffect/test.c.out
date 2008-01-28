@@ -134,53 +134,53 @@ InterSideEffectStandard(
                         ) ] 
                     mLUSESet: [ 
                         NamedLoc(
-                            mSymHandle: SymHandle(x)
-                            mLocal: 1
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         )    
                         NamedLoc(
-                            mSymHandle: SymHandle(f)
-                            mLocal: 0
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         ) ] 
                     mUSESet: [ 
                         NamedLoc(
-                            mSymHandle: SymHandle(x)
-                            mLocal: 1
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         )    
                         NamedLoc(
-                            mSymHandle: SymHandle(f)
-                            mLocal: 0
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         ) ] 
                     mLREFSet: [ 
                         NamedLoc(
-                            mSymHandle: SymHandle(x)
-                            mLocal: 1
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         )    
                         NamedLoc(
-                            mSymHandle: SymHandle(f)
-                            mLocal: 0
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         ) ] 
                     mREFSet: [ 
                         NamedLoc(
-                            mSymHandle: SymHandle(x)
-                            mLocal: 1
+                            mSymHandle: SymHandle(f)
+                            mLocal: 0
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         )    
                         NamedLoc(
-                            mSymHandle: SymHandle(f)
-                            mLocal: 0
+                            mSymHandle: SymHandle(x)
+                            mLocal: 1
                             mFullOverlap: [  ] 
                             mPartOverlap: [  ] 
                         ) ] 

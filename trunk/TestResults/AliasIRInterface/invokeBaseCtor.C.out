@@ -7,12 +7,12 @@ PROCEDURE = { < ProcHandle("::SubClass::SubClass"), SymHandle("method:::SubClass
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
         [
-            MemRefHandle("myParent&") => 
-                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::SubClass::SubClass__L0R")), 1), myParent)
             MemRefHandle("parSubClass") => 
                 NamedRef( USE, SymHandle("parSubClass"))
             MemRefHandle("assign_or_agg_initializer:parSubClass") => 
                 NamedRef( USE, SymHandle("this::::SubClass::SubClass__L0R"))
+            MemRefHandle("myParent&") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::SubClass::SubClass__L0R")), 1), myParent)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("") =>
         [
@@ -25,8 +25,8 @@ PROCEDURE = { < ProcHandle("::SubClass::SubClass"), SymHandle("method:::SubClass
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("parSubClass"), local > }
     LOCATION = { < SymHandle("this::::SubClass::SubClass__L0R"), local > }
+    LOCATION = { < SymHandle("parSubClass"), local > }
     LOCATION = { < SymHandle("method:::SubClass::SubClass__L0R"), not local > }
 
 PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__L1R") > }
@@ -44,8 +44,8 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__L1R") > 
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("this::::Foo::Foo__L1R"), local > }
+    LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__L1R"), not local > }
 
 PROCEDURE = { < ProcHandle("::SubSubClass::SubSubClass"), SymHandle("method:::SubSubClass::SubSubClass__L2R") > }
@@ -94,10 +94,10 @@ PROCEDURE = { < ProcHandle("::SubSubClass::SubSubClass"), SymHandle("method:::Su
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
+    LOCATION = { < SymHandle("this::::SubSubClass::SubSubClass__L2R"), local > }
     LOCATION = { < SymHandle("par"), local > }
     LOCATION = { < SymHandle("aint"), local > }
     LOCATION = { < SymHandle("f"), local > }
-    LOCATION = { < SymHandle("this::::SubSubClass::SubSubClass__L2R"), local > }
     LOCATION = { < SymHandle("method:::SubClass::SubClass__L0R"), not local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__L1R"), not local > }
     LOCATION = { < SymHandle("method:::SubSubClass::SubSubClass__L2R"), not local > }

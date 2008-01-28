@@ -106,21 +106,6 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                             ) ] 
                     )
                     
-                    Statement: StmtHandle(if(x > 0) {y = 5;x =(y + y);}else {y = 3;x = 10;})	 => 
-                    ConstDefSet([ 
-                            ConstDef: 
-                            ConstDef(
-                                Location: 
-                                NamedLoc(
-                                    mSymHandle: SymHandle(x)
-                                    mLocal: 1
-                                    mFullOverlap: [  ] 
-                                    mPartOverlap: [  ] 
-                                )
-                                mCDType: ,VALUE=2>
-                            ) ] 
-                    )
-                    
                     Statement: StmtHandle(return 0;)	 => 
                     ConstDefSet([ 
                             ConstDef: 
@@ -146,6 +131,21 @@ mProcToReachConstsMap: ProcHandle	 => ReachConsts
                     
                     Statement: StmtHandle(int z;)	 => 
                     ConstDefSet([  ] 
+                    )
+                    
+                    Statement: StmtHandle(if(x > 0) {y = 5;x =(y + y);}else {y = 3;x = 10;})	 => 
+                    ConstDefSet([ 
+                            ConstDef: 
+                            ConstDef(
+                                Location: 
+                                NamedLoc(
+                                    mSymHandle: SymHandle(x)
+                                    mLocal: 1
+                                    mFullOverlap: [  ] 
+                                    mPartOverlap: [  ] 
+                                )
+                                mCDType: ,VALUE=2>
+                            ) ] 
                     )
 
         )

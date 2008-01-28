@@ -14,8 +14,8 @@ PROCEDURE = { < ProcHandle("::Bar::Bar"), SymHandle("method:::Bar::Bar__L0R") > 
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("this::::Bar::Bar__L0R"), local > }
+    LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("method:::Bar::Bar__L0R"), not local > }
 
 PROCEDURE = { < ProcHandle("::Bar::Bar"), SymHandle("method:::Bar::Bar__Bar__scope__Bar____MFb_Bar__Fb_v_Gb__Fe_") > }
@@ -83,8 +83,8 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__L2R") > 
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("this::::Foo::Foo__L2R"), local > }
+    LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("method:::Bar::Bar__L0R"), not local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__L2R"), not local > }
 

@@ -8,13 +8,13 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("int a[] = {(0),(1),(2),(3),(4)};") =>
         [
-            MemRefHandle("a") => 
-                NamedRef( DEF, SymHandle("a"))
             MemRefHandle("assign_or_agg_initializer:{(0),(1),(2),(3),(4)}") => 
                 SubSetRef( USE, UnnamedRef( USE, ExprHandle("{(0),(1),(2),(3),(4)}"), 1, ProcHandle("main")))
+            MemRefHandle("a") => 
+                NamedRef( DEF, SymHandle("a"))
         ] }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
-    LOCATION = { < SymHandle("a"), local > }
     LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("a"), local > }

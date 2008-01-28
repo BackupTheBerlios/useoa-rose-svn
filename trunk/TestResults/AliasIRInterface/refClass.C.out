@@ -7,10 +7,6 @@ PROCEDURE = { < ProcHandle("::foo::foo"), SymHandle("method:::foo::foo__L0R") > 
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
         [
-            MemRefHandle("someRef&") => 
-                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someRef)
-            MemRefHandle("someOtherRef&") => 
-                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someOtherRef)
             MemRefHandle("x") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("x")))
             MemRefHandle("assign_or_agg_initializer:x") => 
@@ -21,6 +17,10 @@ PROCEDURE = { < ProcHandle("::foo::foo"), SymHandle("method:::foo::foo__L0R") > 
                 NamedRef( USE, SymHandle("this::::foo::foo__L0R"))
             MemRefHandle("((this) -> foo::someRef)") => 
                 FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someRef)
+            MemRefHandle("someRef&") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someRef)
+            MemRefHandle("someOtherRef&") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someOtherRef)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("") =>
         [
@@ -64,8 +64,8 @@ PROCEDURE = { < ProcHandle("::foo::foo"), SymHandle("method:::foo::foo__L0R") > 
             MemRefHandle("*((this) -> foo::someOtherRef)") => 
                 Deref( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someOtherRef), 1), 1)
         ] }
-    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("this::::foo::foo__L0R"), local > }
+    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("method:::foo::foo__L0R"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
@@ -83,10 +83,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("int *ptr = &y;") =>
         [
-            MemRefHandle("ptr") => 
-                NamedRef( DEF, SymHandle("ptr"))
             MemRefHandle("&y") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("y")))
+            MemRefHandle("ptr") => 
+                NamedRef( DEF, SymHandle("ptr"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int *ptr = &y;") =>
         [
@@ -122,8 +122,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("y"), local > }
     LOCATION = { < SymHandle("ptr"), local > }
     LOCATION = { < SymHandle("f"), local > }
-    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("method:::foo::foo__L0R"), not local > }

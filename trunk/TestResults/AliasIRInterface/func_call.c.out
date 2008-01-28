@@ -121,10 +121,10 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
             MemRefHandle("x") => 
                 NamedRef( USE, SymHandle("x"))
         ] }
+    LOCATION = { < SymHandle("malloc"), not local > }
+    LOCATION = { < SymHandle("hello"), not local > }
+    LOCATION = { < SymHandle("bar"), not local > }
     LOCATION = { < SymHandle("fp"), not local > }
     LOCATION = { < SymHandle("fp2"), not local > }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("p"), local > }
-    LOCATION = { < SymHandle("malloc"), not local > }
-    LOCATION = { < SymHandle("hello"), not local > }
-    LOCATION = { < SymHandle("bar"), not local > }

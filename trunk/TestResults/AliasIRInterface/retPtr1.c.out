@@ -13,10 +13,10 @@ PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
         ] }
     MEMREFEXPRS = { StmtHandle("char *p = destination;") =>
         [
-            MemRefHandle("p") => 
-                NamedRef( DEF, SymHandle("p"))
             MemRefHandle("destination") => 
                 NamedRef( USE, SymHandle("destination"))
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("char *p = destination;") =>
         [
@@ -72,10 +72,10 @@ PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
             < NamedRef( DEF, SymHandle("my_strcpy"))
             , NamedRef( USE, SymHandle("destination")) >
         ] }
+    LOCATION = { < SymHandle("my_strcpy"), not local > }
     LOCATION = { < SymHandle("destination"), local > }
     LOCATION = { < SymHandle("source"), local > }
     LOCATION = { < SymHandle("p"), local > }
-    LOCATION = { < SymHandle("my_strcpy"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("struct __gconv_step ;") =>
@@ -122,22 +122,20 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("char strA[] = "Laurel";") =>
         [
-            MemRefHandle("strA") => 
-                NamedRef( DEF, SymHandle("strA"))
             MemRefHandle(""Laurel"") => 
                 SubSetRef( USE, UnnamedRef( USE, ExprHandle(""Laurel""), 1, ProcHandle("main")))
+            MemRefHandle("strA") => 
+                NamedRef( DEF, SymHandle("strA"))
         ] }
     MEMREFEXPRS = { StmtHandle("char strB[] = "Hardy";") =>
         [
-            MemRefHandle("strB") => 
-                NamedRef( DEF, SymHandle("strB"))
             MemRefHandle(""Hardy"") => 
                 SubSetRef( USE, UnnamedRef( USE, ExprHandle(""Hardy""), 1, ProcHandle("main")))
+            MemRefHandle("strB") => 
+                NamedRef( DEF, SymHandle("strB"))
         ] }
     MEMREFEXPRS = { StmtHandle("char *cptr = my_strcpy(strB,strA);") =>
         [
-            MemRefHandle("cptr") => 
-                NamedRef( DEF, SymHandle("cptr"))
             MemRefHandle("strB") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("strB")))
             MemRefHandle("strA") => 
@@ -146,6 +144,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( USE, SymHandle("my_strcpy"))
             MemRefHandle("my_strcpy(strB,strA)") => 
                 NamedRef( USE, SymHandle("my_strcpy"))
+            MemRefHandle("cptr") => 
+                NamedRef( DEF, SymHandle("cptr"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("char *cptr = my_strcpy(strB,strA);") =>
         [
@@ -181,9 +181,9 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return '\0';") =>
         [
         ] }
-    LOCATION = { < SymHandle("strA"), local > }
-    LOCATION = { < SymHandle("strB"), local > }
-    LOCATION = { < SymHandle("cptr"), local > }
     LOCATION = { < SymHandle("puts"), not local > }
     LOCATION = { < SymHandle("my_strcpy"), not local > }
     LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("strA"), local > }
+    LOCATION = { < SymHandle("strB"), local > }
+    LOCATION = { < SymHandle("cptr"), local > }

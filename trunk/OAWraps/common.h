@@ -13,7 +13,7 @@ SgPointerDerefExp *isFunctionPointer(SgFunctionCallExp *functionCall);
 
 SgFunctionDeclaration *getFunctionDeclaration(SgFunctionCallExp *functionCall);
 
-SgTypePtrList &getFormalTypes(SgNode *node);
+void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes);
 
 void verifyCallHandleNodeType(SgNode *node);
 
@@ -102,6 +102,12 @@ bool hasDefinition(SgFunctionDeclaration *functionDeclaration);
 bool isConstructor(SgMemberFunctionDeclaration *memberFunctionDeclaration);
 
 bool isDestructor(SgMemberFunctionDeclaration *memberFunctionDeclaration);
+
+bool findNodeInSubtree(SgNode *needle, SgNode *haystack);
+
+bool isPlacementNew(SgNewExp *newExp);
+
+bool isOperatorNew(SgFunctionDeclaration *functionDeclaration);
 
 } // end of namespace UseOA
 

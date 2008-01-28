@@ -7,12 +7,12 @@ PROCEDURE = { < ProcHandle("::A::A"), SymHandle("method:::A::A__L0R") > }
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
         [
-            MemRefHandle("mB&") => 
-                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::A::A__L0R")), 1), mB)
             MemRefHandle("p") => 
                 NamedRef( USE, SymHandle("p"))
             MemRefHandle("assign_or_agg_initializer:p") => 
                 NamedRef( USE, SymHandle("this::::A::A__L0R"))
+            MemRefHandle("mB&") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::A::A__L0R")), 1), mB)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("") =>
         [
@@ -25,8 +25,8 @@ PROCEDURE = { < ProcHandle("::A::A"), SymHandle("method:::A::A__L0R") > }
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("p"), local > }
     LOCATION = { < SymHandle("this::::A::A__L0R"), local > }
+    LOCATION = { < SymHandle("p"), local > }
     LOCATION = { < SymHandle("method:::A::A__L0R"), not local > }
 
 PROCEDURE = { < ProcHandle("::A::foo"), SymHandle("method:::A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_") > }
@@ -105,9 +105,9 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("A::sInt") => 
                 NamedRef( USE, SymHandle("sInt"))
         ] }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("sInt"), not local > }
     LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("a"), local > }
-    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("method:::A::A__L0R"), not local > }
     LOCATION = { < SymHandle("method:::A::foo__A__scope__foo____MFb_A__Fb_v_Gb__Fe_"), not local > }

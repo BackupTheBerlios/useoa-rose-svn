@@ -24,9 +24,9 @@ PROCEDURE = { < ProcHandle("foo"), SymHandle("foo") > }
             < Deref( DEF, NamedRef( USE, SymHandle("a")), 1)
             , NamedRef( USE, SymHandle("b")) >
         ] }
+    LOCATION = { < SymHandle("foo"), not local > }
     LOCATION = { < SymHandle("b"), not local > }
     LOCATION = { < SymHandle("a"), local > }
-    LOCATION = { < SymHandle("foo"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){int m;b = &m;int *x;::foo(x);*b;return 0;}") =>
@@ -79,8 +79,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
+    LOCATION = { < SymHandle("foo"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("b"), not local > }
     LOCATION = { < SymHandle("m"), local > }
     LOCATION = { < SymHandle("x"), local > }
-    LOCATION = { < SymHandle("foo"), not local > }
-    LOCATION = { < SymHandle("main"), not local > }

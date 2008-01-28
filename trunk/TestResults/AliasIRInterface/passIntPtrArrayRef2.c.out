@@ -31,21 +31,15 @@ PROCEDURE = { < ProcHandle("blah"), SymHandle("blah") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
+    LOCATION = { < SymHandle("blah"), not local > }
     LOCATION = { < SymHandle("s"), local > }
     LOCATION = { < SymHandle("t"), local > }
-    LOCATION = { < SymHandle("blah"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("struct ::timespec {};") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("struct ::timeval {};") =>
-        [
-        ] }
-    MEMREFEXPRS = { StmtHandle("struct ::__sched_param {};") =>
-        [
-        ] }
-    MEMREFEXPRS = { StmtHandle("struct ::_pthread_fastlock {};") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("struct ::random_data {};") =>
@@ -65,14 +59,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("int x = blah(a,a);") =>
         [
-            MemRefHandle("x") => 
-                NamedRef( DEF, SymHandle("x"))
             MemRefHandle("a") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
             MemRefHandle("a") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
             MemRefHandle("blah") => 
                 NamedRef( USE, SymHandle("blah"))
+            MemRefHandle("x") => 
+                NamedRef( DEF, SymHandle("x"))
         ] }
     CALLSITES = { StmtHandle("int x = blah(a,a);") =>
         [
@@ -87,7 +81,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
-    LOCATION = { < SymHandle("a"), local > }
-    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("blah"), not local > }
     LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("x"), local > }

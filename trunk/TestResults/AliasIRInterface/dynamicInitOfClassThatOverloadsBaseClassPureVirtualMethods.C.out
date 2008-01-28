@@ -5,10 +5,10 @@ PROCEDURE = { < ProcHandle("::Base::Base"), SymHandle("method:::Base::Base__L0R"
             < 0, SymHandle("this::::Base::Base__L0R") >
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
-        [In unparseType(0x8225b58): nm = ::Foo 
-In unparseType(0x8225b58): nm = ::Foo 
-In unparseType(0x8225b58): nm = ::Foo 
-In unparseType(0x8225b58): nm = ::Foo 
+        [In unparseType(0x8a6e10): nm = ::Foo 
+In unparseType(0x8a6e10): nm = ::Foo 
+In unparseType(0x8a6e10): nm = ::Foo 
+In unparseType(0x8a6e10): nm = ::Foo 
 
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline Base::Base(){}") =>
@@ -35,8 +35,8 @@ PROCEDURE = { < ProcHandle("::Base::Base"), SymHandle("method:::Base::Base__L1R"
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("this::::Base::Base__L1R"), local > }
+    LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("method:::Base::Base__L1R"), not local > }
 
 PROCEDURE = { < ProcHandle("::Base::~Base"), SymHandle("method:::Base::~Base__L2R") > }
@@ -83,8 +83,8 @@ PROCEDURE = { < ProcHandle("::Base::operator="), SymHandle("method:::Base::opera
             < NamedRef( DEF, SymHandle("method:::Base::operator=__L3R"))
             , NamedRef( USE, SymHandle("this::::Base::operator=__L3R")) >
         ] }
-    LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("this::::Base::operator=__L3R"), local > }
+    LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("method:::Base::operator=__L3R"), not local > }
 
 PROCEDURE = { < ProcHandle("::Base::virtMethodBase"), SymHandle("method:::Base::virtMethodBase__L4R") > }
@@ -136,8 +136,8 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__L5R") > 
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("this::::Foo::Foo__L5R"), local > }
+    LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__L5R"), not local > }
 
 PROCEDURE = { < ProcHandle("::Foo::~Foo"), SymHandle("method:::Foo::~Foo__L6R") > }
@@ -184,8 +184,8 @@ PROCEDURE = { < ProcHandle("::Foo::operator="), SymHandle("method:::Foo::operato
             < NamedRef( DEF, SymHandle("method:::Foo::operator=__L7R"))
             , NamedRef( USE, SymHandle("this::::Foo::operator=__L7R")) >
         ] }
-    LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("this::::Foo::operator=__L7R"), local > }
+    LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("method:::Foo::operator=__L7R"), not local > }
 
 PROCEDURE = { < ProcHandle("::Foo::virtMethod1"), SymHandle("method:::Foo::virtMethod1__L8R") > }
@@ -220,8 +220,8 @@ PROCEDURE = { < ProcHandle("::Foo::virtMethod2"), SymHandle("method:::Foo::virtM
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("this::::Foo::virtMethod2__L9R"), local > }
+    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("method:::Foo::virtMethod2__L9R"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
@@ -257,12 +257,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("::Foo") => 
                 NamedRef( USE, SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
-            MemRefHandle("f") => 
-                NamedRef( DEF, SymHandle("f"))
             MemRefHandle("implicit actual this:") => 
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new Foo"), 0)))
             MemRefHandle("new Foo") => 
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new Foo"), 0)))
+            MemRefHandle("f") => 
+                NamedRef( DEF, SymHandle("f"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class Foo *f = new Foo ;") =>
         [
@@ -283,10 +283,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("SgClassDefinition:::Base"), not local > }
     LOCATION = { < SymHandle("SgClassDefinition:::Foo"), not local > }
-    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("method:::Base::virtMethodBase__L4R"), not local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
     LOCATION = { < SymHandle("method:::Foo::~Foo__L6R"), not local > }

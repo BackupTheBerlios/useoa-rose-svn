@@ -582,6 +582,9 @@ SageIRInterface : public virtual OA::SSA::SSAIRInterface,
   OA::SymHandle getVarSymHandle(SgInitializedName *);
   OA::MemRefHandle getSymMemRefHandle(OA::SymHandle h);
 
+  // Interface from OA handles to SgNodes.
+  SgFunctionDeclaration *getFuncDeclFromSymHandle(OA::SymHandle symHandle);
+
   // ??
   OA::SymHandle getSymHandle(OA::ProcHandle h) {return getProcSymHandle(h);} //ask Michelle
 
@@ -632,6 +635,9 @@ private:
   // loops
   //------------------------------
 public:
+  //! Return the SgNode associated with an MRE. 
+  SgNode *getSgNode(OA::OA_ptr<OA::MemRefExpr> mre); 
+
   OA::OA_ptr<OA::IRRegionStmtIterator> loopBody (OA::StmtHandle h);
   OA::StmtHandle loopHeader (OA::StmtHandle h);
   bool loopIterationsDefinedAtEntry (OA::StmtHandle h);
@@ -995,32 +1001,7 @@ public:
   }
   OA::SymHandle getSymHandle(SgNode *astNode);
   OA::SymHandle getVTableBaseSymHandle(SgClassDefinition *classDefn);
-  OA::CallHandle getCallHandle(SgNode *astNode) { 
-      switch(astNode->variantT()) {
-      case V_SgFunctionCallExp:
-      case V_SgConstructorInitializer:
-      case V_SgDeleteExp:
-          {
-              // We expect that a call handle is one of
-              // these three cases.
-	      break;
-          }
-      case V_Sg_File_Info:
-          {
-              // A SgFileInfo can represent the call to a constructor.
-              break;
-          }
-      default:
-          {
-              std::cerr << "astNode type: " << astNode->sage_class_name();
-	      std::cerr << " not expected to be represented by";
-	      std::cerr << " a call handle!" << std::endl;
-              ROSE_ABORT();
-          }
-      }
-      OA::CallHandle retval = getNodeNumber(astNode);
-      return retval;
-  }
+  OA::CallHandle getCallHandle(SgNode *astNode);
   OA::ProcHandle getProcHandle(SgFunctionDefinition *astNode);
   SgFunctionDefinition *getSgNode(OA::ProcHandle h);
 
@@ -1125,6 +1106,9 @@ public:
   //! a SgFunctionParameterList.
   OA::SymHandle getThisExpSymHandle(SgNode *node);
 
+  //! Associate a SgNode with an MRE. 
+  void mapMREToSgNode(OA::OA_ptr<OA::MemRefExpr> mre, SgNode *node); 
+
   // assumption is that StmtHandles and MemRefHandles are unique across
   // different program and procedure contexts for which analysis is being
   // currently performed
@@ -1143,6 +1127,19 @@ public:
 
   std::map<OA::OA_ptr<OA::MemRefExpr>, typeEnum >
     mMre2TypeMap;
+
+  struct ltmre 
+  { 
+    bool operator()(OA::OA_ptr<OA::MemRefExpr> mre1, 
+                    OA::OA_ptr<OA::MemRefExpr> mre2) const  
+    { 
+      return ( *mre1 < *mre2 ); 
+    } 
+  }; 
+ 
+ 
+  std::map<OA::OA_ptr<OA::MemRefExpr>, SgNode*, ltmre > 
+    mMre2SgNode; 
 
   //! given a memory reference handle and a statement handle asscociate them
   //! in the mStmt2allMemRefsMap and mMemRef2StmtMap maps

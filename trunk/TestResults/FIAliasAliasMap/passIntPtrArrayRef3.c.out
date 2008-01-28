@@ -10,15 +10,15 @@ InterAliasMap(
                     ) ] 
                 1	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(__dev)
-                        mLocal: 1
+                        mSymHandle: SymHandle(blah)
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(blah)
-                        mLocal: 0
+                        mSymHandle: SymHandle(__dev)
+                        mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
@@ -29,18 +29,18 @@ InterAliasMap(
                 2	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                1	 => [ MemRefHandle(__dev)    MemRefHandle(__dev) ] 
+                2	 => [ MemRefHandle(__dev)    MemRefHandle(__dev) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(__dev)
+                        mSymHandle: SymHandle(blah)
                     ) ] 
                 2	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(blah)
+                        mSymHandle: SymHandle(__dev)
                     ) ] 
 
     )
@@ -54,15 +54,15 @@ InterAliasMap(
                     ) ] 
                 1	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(__dev)
-                        mLocal: 1
+                        mSymHandle: SymHandle(blah)
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(blah)
-                        mLocal: 0
+                        mSymHandle: SymHandle(__dev)
+                        mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
@@ -73,18 +73,18 @@ InterAliasMap(
                 2	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                1	 => [ MemRefHandle(__dev)    MemRefHandle(__dev) ] 
+                2	 => [ MemRefHandle(__dev)    MemRefHandle(__dev) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(__dev)
+                        mSymHandle: SymHandle(blah)
                     ) ] 
                 2	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(blah)
+                        mSymHandle: SymHandle(__dev)
                     ) ] 
 
     )
@@ -98,22 +98,22 @@ InterAliasMap(
                     ) ] 
                 1	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(__major)
-                        mLocal: 1
+                        mSymHandle: SymHandle(blah)
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(__minor)
+                        mSymHandle: SymHandle(__major)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 3	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(blah)
-                        mLocal: 0
+                        mSymHandle: SymHandle(__minor)
+                        mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
@@ -125,24 +125,24 @@ InterAliasMap(
                 3	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                1	 => [ MemRefHandle(__major)    MemRefHandle(__major) ] 
-                2	 => [ MemRefHandle(__minor)    MemRefHandle(__minor) ] 
+                2	 => [ MemRefHandle(__major)    MemRefHandle(__major) ] 
+                3	 => [ MemRefHandle(__minor)    MemRefHandle(__minor) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(__major)
+                        mSymHandle: SymHandle(blah)
                     ) ] 
                 2	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(__minor)
+                        mSymHandle: SymHandle(__major)
                     ) ] 
                 3	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(blah)
+                        mSymHandle: SymHandle(__minor)
                     ) ] 
 
     )
@@ -156,22 +156,22 @@ InterAliasMap(
                     ) ] 
                 1	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(s)
-                        mLocal: 1
+                        mSymHandle: SymHandle(blah)
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(t)
+                        mSymHandle: SymHandle(s)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 3	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(blah)
-                        mLocal: 0
+                        mSymHandle: SymHandle(t)
+                        mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
@@ -247,8 +247,8 @@ InterAliasMap(
                 7	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                1	 => [ MemRefHandle(s) ] 
-                2	 => [ MemRefHandle(t) ] 
+                2	 => [ MemRefHandle(s) ] 
+                3	 => [ MemRefHandle(t) ] 
                 6	 => [ MemRefHandle((s[0])) ] 
                 7	 => [ MemRefHandle((t[0])) ] 
 
@@ -256,17 +256,17 @@ InterAliasMap(
                 1	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(s)
+                        mSymHandle: SymHandle(blah)
                     ) ] 
                 2	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(t)
+                        mSymHandle: SymHandle(s)
                     ) ] 
                 3	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(blah)
+                        mSymHandle: SymHandle(t)
                     ) ] 
                 4	 => [ 
                     Deref(
@@ -328,29 +328,29 @@ InterAliasMap(
                     ) ] 
                 1	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(a)
-                        mLocal: 1
+                        mSymHandle: SymHandle(blah)
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(b)
+                        mSymHandle: SymHandle(a)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 3	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(x)
+                        mSymHandle: SymHandle(b)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 4	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(blah)
-                        mLocal: 0
+                        mSymHandle: SymHandle(x)
+                        mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
@@ -363,29 +363,29 @@ InterAliasMap(
                 4	 => 2
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                3	 => [ MemRefHandle(x) ] 
-                4	 => [ MemRefHandle(blah) ] 
+                1	 => [ MemRefHandle(blah) ] 
+                4	 => [ MemRefHandle(x) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(a)
+                        mSymHandle: SymHandle(blah)
                     ) ] 
                 2	 => [ 
                     NamedRef(
                         mMemRefType: USE
-                        mSymHandle: SymHandle(b)
+                        mSymHandle: SymHandle(a)
                     ) ] 
                 3	 => [ 
                     NamedRef(
-                        mMemRefType: DEF
-                        mSymHandle: SymHandle(x)
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(b)
                     ) ] 
                 4	 => [ 
                     NamedRef(
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(blah)
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(x)
                     ) ] 
 
     )

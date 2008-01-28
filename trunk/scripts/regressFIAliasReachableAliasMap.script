@@ -90,3 +90,11 @@ echo "Testing TestCases/AliasTests/RyderEtAlFig15.c, TestResults/FIAliasReachabl
 ./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/RyderEtAlFig15.c >& t
 diff t TestResults/FIAliasReachableAliasMap/RyderEtAlFig15.c.out
 
+echo "Testing TestCases/AliasTests/placementNew1.C, TestResults/FIAliasReachableAliasMap/placementNew1.C.out checked by BSW 1/25/08"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/placementNew1.C >& t
+diff t TestResults/FIAliasReachableAliasMap/placementNew1.C.out
+
+echo "Testing TestCases/AliasTests/placementNew2.C, TestResults/FIAliasReachableAliasMap/placementNew2.C.out checked by BSW 1/25/08"
+./OATest --edg:no_warnings -w --oa-FIAliasReachableAliasMap -c TestCases/AliasTests/placementNew2.C >& t
+diff t TestResults/FIAliasReachableAliasMap/placementNew2.C.out
+

@@ -266,6 +266,16 @@ void verifyCallHandleNodeType(SgNode *node)
             // These are the expected call handle node types.
             break;
         }
+    case V_SgNewExp:
+        {
+            SgNewExp *newExp = isSgNewExp(node);
+            ROSE_ASSERT(newExp != NULL);
+            if ( !isPlacementNew(newExp) ) {
+                std::cerr << "verifyCallHandleNodeType:  was not expecting a "
+                          << "non-placement new expression" << std::endl;
+            }
+            break;
+        }
     case V_Sg_File_Info:
         {
             // (BW 5/3/07)  Needed to add this since we now represent   
@@ -357,14 +367,11 @@ void verifySymHandleNodeType(SgNode *node)
  *       getCallsiteParams which folds the actual 
  *       corresponding to the 'this' pointer in as the first argument.
  */
-SgTypePtrList &
-getFormalTypes(SgNode *node)
+void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
 {
     ROSE_ASSERT(node != NULL);
 
     SgFunctionType *functionType = NULL;
-
-    std::list<SgType *> typeList;
 
     verifyCallHandleNodeType(node);
 
@@ -400,6 +407,42 @@ getFormalTypes(SgNode *node)
                 ROSE_ASSERT(functionType != NULL);
             }
             break;
+        }
+    case V_SgNewExp:
+        {
+            SgNewExp *newExp = isSgNewExp(node);
+            ROSE_ASSERT(newExp != NULL);
+	  
+            if ( !isPlacementNew(newExp) ) {
+                std::cerr << "getFormalTypes was not expecting a "
+                          << "non-placement new expression" << std::endl;
+                ROSE_ABORT();
+            }
+
+            SgFunctionDeclaration *functionDeclaration = 
+                newExp->get_newOperatorDeclaration();
+            ROSE_ASSERT(functionDeclaration != NULL);
+
+            functionType = functionDeclaration->get_type();
+            ROSE_ASSERT(functionType != NULL);
+
+            SgTypePtrList &typePtrList = functionType->get_arguments();
+
+            // The first formal to operator new is size_t.  However, the
+            // corresponding actual is not passed explicitly.  Therefore,
+            // and since the actual is not a pointer and does not induce
+            // side effects, we will not include the formal in the list of
+            // formals and their types. 
+	    SgTypePtrList::iterator it = typePtrList.begin();
+            ++it;
+            for(; it != typePtrList.end(); ++it) {
+                SgType *type = *it;
+                ROSE_ASSERT(type != NULL);
+                formalTypes.push_back(type);
+            }
+
+            // return!  Not break;
+            return;
         }
     case V_SgConstructorInitializer:
         {
@@ -470,7 +513,14 @@ getFormalTypes(SgNode *node)
     }
 
     ROSE_ASSERT(functionType != NULL);
-    return functionType->get_arguments();
+    SgTypePtrList &typePtrList = functionType->get_arguments();
+
+	    
+    for(SgTypePtrList::iterator it = typePtrList.begin(); it != typePtrList.end(); ++it) {
+        SgType *type = *it;
+        ROSE_ASSERT(type != NULL);
+        formalTypes.push_back(type);
+    }
 }
 
 /** \brief Returns true if the method is a destructor.
@@ -701,7 +751,34 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
 	    }
 
             break;
-        }        
+        }      
+    case V_SgNewExp: 
+        {
+            SgNewExp *newExp = isSgNewExp(node);
+            ROSE_ASSERT(newExp != NULL);
+            if ( !isPlacementNew(newExp) ) {
+                std::cerr << "getActuals was not expecting a "
+                          << "non-placement new expression" << std::endl;
+                ROSE_ABORT();
+            }
+
+            SgExprListExp* exprListExp = newExp->get_placement_args();
+            ROSE_ASSERT (exprListExp != NULL);  
+
+            SgExpressionPtrList & actualArgs =  
+                exprListExp->get_expressions();  
+
+            for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
+                actualIt != actualArgs.end(); ++actualIt) { 
+ 
+                SgExpression *actual = *actualIt;
+
+                ROSE_ASSERT(actual != NULL);
+
+                actuals.push_back(actual);
+	    }
+            break;
+        }  
     case V_Sg_File_Info:
         {
             // (BW 5/3/07)  Needed to add this since we now represent   
@@ -1722,6 +1799,58 @@ bool isArrowExp(SgExpression *function)
   }
 
   return false;
+}
+
+bool findNodeInSubtree(SgNode *needle, SgNode *haystack)
+{
+    if ( ( haystack == NULL ) || ( needle == NULL ) ) {
+        return false;
+    }
+     
+    NodeQuerySynthesizedAttributeType nodeLst = NodeQuery::querySubTree(haystack, V_SgNode);
+
+    for (NodeQuerySynthesizedAttributeType::iterator nodeIt = nodeLst.begin(); 
+         nodeIt != nodeLst.end(); ++nodeIt ) {
+
+        SgNode *n = *nodeIt;
+        ROSE_ASSERT(n != NULL);      
+
+        if ( n == needle ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool isPlacementNew(SgNewExp *newExp)
+{
+    ROSE_ASSERT(newExp != NULL);
+    SgFunctionDeclaration *newDecl = newExp->get_newOperatorDeclaration();
+    SgExprListExp *placement_args = newExp->get_placement_args();
+
+    // If the new expression uses placement args, it should
+    // also have a handle to the invoked new operator.
+    // Otherwise, the invoked new operator should be builtin
+    // and we won't have a handle to its declaration.
+    ROSE_ASSERT( ( ( newDecl == NULL ) && ( placement_args == NULL ) ) ||
+                 ( ( newDecl != NULL ) && ( placement_args != NULL ) ) );
+
+    return ( ( newDecl != NULL ) && ( placement_args != NULL ) );
+}
+
+bool isOperatorNew(SgFunctionDeclaration *functionDeclaration)
+{
+    ROSE_ASSERT(functionDeclaration != NULL);
+    SgSpecialFunctionModifier &specialFunctionModifier = 
+        functionDeclaration->get_specialFunctionModifier(); 
+ 
+    SgName functionName = functionDeclaration->get_name(); 
+ 
+    //   std::cout << "functionName = " << functionName.str() << " operator = " << specialFunctionModifier.isOperator() << std::endl;
+
+    return ( specialFunctionModifier.isOperator() && 
+             functionName == SgName("operator new") ); 
 }
 
 } // end of namespace UseOA

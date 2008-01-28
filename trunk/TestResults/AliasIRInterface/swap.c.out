@@ -52,11 +52,11 @@ PROCEDURE = { < ProcHandle("swap"), SymHandle("swap") > }
             MemRefHandle("v[j]") => 
                 IdxExprAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("v")), 1), MemRefHandle("j"))
         ] }
+    LOCATION = { < SymHandle("swap"), not local > }
     LOCATION = { < SymHandle("v"), local > }
     LOCATION = { < SymHandle("i"), local > }
     LOCATION = { < SymHandle("j"), local > }
     LOCATION = { < SymHandle("temp"), local > }
-    LOCATION = { < SymHandle("swap"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("struct __gconv_step ;") =>
@@ -147,7 +147,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
-    LOCATION = { < SymHandle("a"), local > }
-    LOCATION = { < SymHandle("i"), local > }
     LOCATION = { < SymHandle("swap"), not local > }
     LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("i"), local > }

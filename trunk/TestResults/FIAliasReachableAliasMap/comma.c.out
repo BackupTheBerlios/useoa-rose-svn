@@ -10,50 +10,50 @@ InterAliasMap(
                     ) ] 
                 1	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(x)
-                        mLocal: 1
+                        mSymHandle: SymHandle(printf)
+                        mLocal: 0
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 2	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(y)
+                        mSymHandle: SymHandle(x)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 3	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(z)
+                        mSymHandle: SymHandle(y)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 4	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(p)
+                        mSymHandle: SymHandle(z)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 5	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(q)
+                        mSymHandle: SymHandle(p)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 6	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(r)
+                        mSymHandle: SymHandle(q)
                         mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
                 7	 => [ 
                     NamedLoc(
-                        mSymHandle: SymHandle(printf)
-                        mLocal: 0
+                        mSymHandle: SymHandle(r)
+                        mLocal: 1
                         mFullOverlap: [  ] 
                         mPartOverlap: [  ] 
                     ) ] 
@@ -101,16 +101,21 @@ InterAliasMap(
                 11	 => 1
 
         mIdToMemRefSetMap: int	 => MemRefSet
-                1	 => [ MemRefHandle(x)    MemRefHandle(*q) ] 
-                2	 => [ MemRefHandle(y)    MemRefHandle(*p) ] 
-                3	 => [ MemRefHandle(z) ] 
-                4	 => [ MemRefHandle(p)    MemRefHandle(p) ] 
-                5	 => [ MemRefHandle(q)    MemRefHandle(q)    MemRefHandle((q = &x)) ] 
-                6	 => [ MemRefHandle(r)    MemRefHandle(((q = &x) , r)) ] 
-                7	 => [ MemRefHandle(printf)    MemRefHandle(printf) ] 
+                1	 => [ MemRefHandle(printf)    MemRefHandle(printf) ] 
+                2	 => [ MemRefHandle(*q)    MemRefHandle(x) ] 
+                3	 => [ MemRefHandle(*p)    MemRefHandle(y) ] 
+                4	 => [ MemRefHandle(z) ] 
+                5	 => [ MemRefHandle(p)    MemRefHandle(p) ] 
+                6	 => [ MemRefHandle(q)    MemRefHandle(q)    MemRefHandle((q = &x)) ] 
+                7	 => [ MemRefHandle(((q = &x) , r))    MemRefHandle(r) ] 
 
         mIdToMRESetMap: int	 => MemRefExprSet
                 1	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(printf)
+                    ) ] 
+                2	 => [ 
                     NamedRef(
                         mMemRefType: DEF
                         mSymHandle: SymHandle(x)
@@ -124,7 +129,7 @@ InterAliasMap(
                         )
                         mNumDeref: 1
                     ) ] 
-                2	 => [ 
+                3	 => [ 
                     NamedRef(
                         mMemRefType: DEF
                         mSymHandle: SymHandle(y)
@@ -147,30 +152,25 @@ InterAliasMap(
                         )
                         mNumDeref: 1
                     ) ] 
-                3	 => [ 
+                4	 => [ 
                     NamedRef(
                         mMemRefType: DEF
                         mSymHandle: SymHandle(z)
                     ) ] 
-                4	 => [ 
+                5	 => [ 
                     NamedRef(
                         mMemRefType: DEF
                         mSymHandle: SymHandle(p)
                     ) ] 
-                5	 => [ 
+                6	 => [ 
                     NamedRef(
                         mMemRefType: DEF
                         mSymHandle: SymHandle(q)
                     ) ] 
-                6	 => [ 
+                7	 => [ 
                     NamedRef(
                         mMemRefType: DEF
                         mSymHandle: SymHandle(r)
-                    ) ] 
-                7	 => [ 
-                    NamedRef(
-                        mMemRefType: USE
-                        mSymHandle: SymHandle(printf)
                     ) ] 
                 8	 => [ 
                     UnnamedRef(

@@ -27,9 +27,9 @@ PROCEDURE = { < ProcHandle("foo"), SymHandle("foo") > }
             < Deref( DEF, NamedRef( USE, SymHandle("x")), 1)
             , Deref( USE, NamedRef( USE, SymHandle("y")), 1) >
         ] }
+    LOCATION = { < SymHandle("foo"), not local > }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("y"), local > }
-    LOCATION = { < SymHandle("foo"), not local > }
 
 PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
     FORMALS = {
@@ -59,9 +59,9 @@ PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
             < Deref( DEF, NamedRef( USE, SymHandle("yy")), 1)
             , Deref( USE, NamedRef( USE, SymHandle("xx")), 1) >
         ] }
+    LOCATION = { < SymHandle("bar"), not local > }
     LOCATION = { < SymHandle("xx"), local > }
     LOCATION = { < SymHandle("yy"), local > }
-    LOCATION = { < SymHandle("bar"), not local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("void main(){int input = read();int a;int b;int *p = &a;int *q = &b;int(*fp)(int **, int **);if(input != 0) {fp = foo;}else {fp = bar;}( *fp)(&p,&q);}") =>
@@ -72,10 +72,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("int input = read();") =>
         [
-            MemRefHandle("input") => 
-                NamedRef( DEF, SymHandle("input"))
             MemRefHandle("read") => 
                 NamedRef( USE, SymHandle("read"))
+            MemRefHandle("input") => 
+                NamedRef( DEF, SymHandle("input"))
         ] }
     CALLSITES = { StmtHandle("int input = read();") =>
         [
@@ -90,10 +90,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("int *p = &a;") =>
         [
-            MemRefHandle("p") => 
-                NamedRef( DEF, SymHandle("p"))
             MemRefHandle("&a") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("a")))
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int *p = &a;") =>
         [
@@ -102,10 +102,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("int *q = &b;") =>
         [
-            MemRefHandle("q") => 
-                NamedRef( DEF, SymHandle("q"))
             MemRefHandle("&b") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("b")))
+            MemRefHandle("q") => 
+                NamedRef( DEF, SymHandle("q"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int *q = &b;") =>
         [
@@ -171,13 +171,13 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             < 0, AddressOf( USE, NamedRef( USE, SymHandle("p"))) >
             < 1, AddressOf( USE, NamedRef( USE, SymHandle("q"))) >
         ] }
+    LOCATION = { < SymHandle("read"), not local > }
+    LOCATION = { < SymHandle("foo"), not local > }
+    LOCATION = { < SymHandle("bar"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("input"), local > }
     LOCATION = { < SymHandle("a"), local > }
     LOCATION = { < SymHandle("b"), local > }
     LOCATION = { < SymHandle("p"), local > }
     LOCATION = { < SymHandle("q"), local > }
     LOCATION = { < SymHandle("fp"), local > }
-    LOCATION = { < SymHandle("read"), not local > }
-    LOCATION = { < SymHandle("foo"), not local > }
-    LOCATION = { < SymHandle("bar"), not local > }
-    LOCATION = { < SymHandle("main"), not local > }

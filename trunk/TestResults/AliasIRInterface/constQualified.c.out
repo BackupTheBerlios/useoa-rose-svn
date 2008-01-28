@@ -20,14 +20,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("const int *q =(const_array + i);") =>
         [
-            MemRefHandle("q") => 
-                NamedRef( DEF, SymHandle("q"))
             MemRefHandle("const_array") => 
                 NamedRef( USE, SymHandle("const_array"))
             MemRefHandle("i") => 
                 NamedRef( USE, SymHandle("i"))
             MemRefHandle("(const_array + i)") => 
                 AddressOf( USE, SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("const_array")), 1)))
+            MemRefHandle("q") => 
+                NamedRef( DEF, SymHandle("q"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("const int *q =(const_array + i);") =>
         [
@@ -95,11 +95,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
+    LOCATION = { < SymHandle("g"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("const_array"), not local > }
     LOCATION = { < SymHandle("p"), local > }
     LOCATION = { < SymHandle("i"), local > }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("y"), local > }
     LOCATION = { < SymHandle("q"), local > }
-    LOCATION = { < SymHandle("g"), not local > }
-    LOCATION = { < SymHandle("main"), not local > }

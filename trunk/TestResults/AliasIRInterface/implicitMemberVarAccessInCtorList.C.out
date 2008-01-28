@@ -6,10 +6,10 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__Foo__sco
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
         [
-            MemRefHandle("mX") => 
-                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_")), 1), mX)
             MemRefHandle("assign_or_agg_initializer:5") => 
                 NamedRef( USE, SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
+            MemRefHandle("mX") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_")), 1), mX)
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline Foo::Foo() : mX(5){}") =>
         [

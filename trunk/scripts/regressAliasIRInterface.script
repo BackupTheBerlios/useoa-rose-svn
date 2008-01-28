@@ -278,3 +278,11 @@ echo "Testing TestCases/AliasTests/refCall.C, TestResults/AliasIRInterface/refCa
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/refCall.C >& t
 diff t TestResults/AliasIRInterface/refCall.C.out
 
+echo "Testing TestCases/AliasTests/placementNew1.C, TestResults/AliasIRInterface/placementNew1.C.out checked by BSW 1/25/08"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/placementNew1.C >& t
+diff t TestResults/AliasIRInterface/placementNew1.C.out
+
+echo "Testing TestCases/AliasTests/placementNew2.C, TestResults/AliasIRInterface/placementNew2.C.out checked by BSW 1/25/08"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/placementNew2.C >& t
+diff t TestResults/AliasIRInterface/placementNew2.C.out
+

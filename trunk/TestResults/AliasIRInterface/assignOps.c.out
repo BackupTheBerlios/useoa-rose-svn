@@ -60,6 +60,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("(b -= a)") => 
                 NamedRef( USE, SymHandle("b"))
         ] }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("a"), local > }
     LOCATION = { < SymHandle("b"), local > }
-    LOCATION = { < SymHandle("main"), not local > }

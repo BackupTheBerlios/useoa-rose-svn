@@ -650,6 +650,14 @@ SageIRInterface::getProcSymHandle(SgFunctionDeclaration *functionDeclaration)
   return sh;
 }
 
+SgFunctionDeclaration *
+SageIRInterface::getFuncDeclFromSymHandle(OA::SymHandle symHandle)
+{
+    SgNode *node = getNodePtr(symHandle);
+    SgFunctionDeclaration *funcDecl = isSgFunctionDeclaration(node);
+    return funcDecl;
+}
+
 OA::SymHandle SageIRInterface::getProcSymHandle(OA::ProcHandle ph)
 {
   OA::SymHandle sh;
@@ -2443,6 +2451,15 @@ std::string SageIRInterface::toString(const OA::ProcHandle h)
       SgTypePtrList &typePtrList = functionType->get_arguments();
       numFormals += typePtrList.size();
 
+      // The first formal to operator new is size_t.  However, the
+      // corresponding actual is not passed explicitly.  Therefore,
+      // and since the actual is not a pointer and does not induce
+      // side effects, we will not include the formal in the list of
+      // formals and their types. 
+      if ( isOperatorNew(functionDeclaration) ) {
+        --numFormals;
+      }
+
       if ( isSgMemberFunctionDeclaration(functionDecl) &&
            !functionDecl->get_declarationModifier().get_storageModifier().isStatic() ) {
         // Count the receiver as a formal.
@@ -2694,6 +2711,20 @@ std::string SageIRInterface::toString(const OA::CallHandle h)
       SgDeleteExp *deleteExp = isSgDeleteExp(node);
       ROSE_ASSERT(deleteExp != NULL);
       retstr = deleteExp->unparseToString();
+      break;
+    }
+
+  case V_SgNewExp:
+    {
+      SgNewExp *newExp = isSgNewExp(node);
+      ROSE_ASSERT(newExp != NULL);
+      if ( !isPlacementNew(newExp) ) {
+        std::cerr << "toString(callHandle) was not expecting " << std::endl
+                  << "a non-placement new expression to be" << std::endl
+                  << "used as a call handle." << std::endl;
+        ROSE_ABORT();
+      }
+      retstr = newExp->unparseToString();
       break;
     }
 
@@ -4517,6 +4548,9 @@ SageIRInterface::getFormalParamIterator(OA::SymHandle h)
   SgMemberFunctionDeclaration *memberFunctionDeclaration =
     isSgMemberFunctionDeclaration(functionDeclaration);
 
+  // Note that new and delete are static, even if they are
+  // not explicitly declared as such.
+
   if ( ( memberFunctionDeclaration != NULL ) && 
        ( isNonStaticMethod(memberFunctionDeclaration) ) ) {
     OA::SymHandle symHandle = getThisExpSymHandle(memberFunctionDeclaration);
@@ -4532,10 +4566,23 @@ SageIRInterface::getFormalParamIterator(OA::SymHandle h)
     // Iterate over the formal parameters as represented by
     // SgInitializedNames.  Convert them to OA::SymHandles and put
     // them in the list of handles.
+
+    // The first formal to operator new is size_t.  However, the
+    // corresponding actual is not passed explicitly.  Therefore,
+    // and since the actual is not a pointer and does not induce
+    // side effects, we will not include the formal in the list of
+    // formals and their types. 
+    bool skipFirstParam = isOperatorNew(functionDeclaration);
+
     const SgInitializedNamePtrList &formalParams = parameterList->get_args(); 
     for(SgInitializedNamePtrList::const_iterator formalIt = formalParams.begin();
         formalIt != formalParams.end(); ++formalIt) { 
       
+      if ( skipFirstParam ) {
+        skipFirstParam = false;
+        continue;
+      }
+
       SgInitializedName* formalParam = *formalIt;  
       ROSE_ASSERT(formalParam != NULL); 
       
@@ -5454,6 +5501,46 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
     } else {
         return true;
     }
+}
+
+OA::CallHandle SageIRInterface::getCallHandle(SgNode *astNode)
+{ 
+    switch(astNode->variantT()) {
+    case V_SgFunctionCallExp:
+    case V_SgConstructorInitializer:
+    case V_SgDeleteExp:
+        {
+            // We expect that a call handle is one of
+            // these three cases.
+            break;
+        }
+    case V_SgNewExp:
+        {
+            // If this is placement new, we expect it will be
+            // used as a call handle.
+            SgNewExp *newExp = isSgNewExp(astNode);
+            if ( !isPlacementNew(newExp) ) {
+                std::cerr << "Non-placement SgNewExp not expected to be";
+                std::cerr << " represented by a call handle!" << std::endl;
+                ROSE_ABORT();
+            }
+            break;
+        }
+    case V_Sg_File_Info:
+        {
+            // A SgFileInfo can represent the call to a constructor.
+            break;
+        }
+    default:
+        {
+            std::cerr << "astNode type: " << astNode->sage_class_name();
+            std::cerr << " not expected to be represented by";
+            std::cerr << " a call handle!" << std::endl;
+            ROSE_ABORT();
+        }
+    }
+    OA::CallHandle retval = getNodeNumber(astNode);
+    return retval;
 }
 
 OA::ProcHandle SageIRInterface::getProcHandle(SgFunctionDefinition *node)

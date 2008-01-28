@@ -10,8 +10,8 @@ PROCEDURE = { < ProcHandle("nonConstArg"), SymHandle("nonConstArg") > }
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("nonConstArg"), not local > }
+    LOCATION = { < SymHandle("x"), local > }
 
 PROCEDURE = { < ProcHandle("constArg"), SymHandle("constArg") > }
     FORMALS = {
@@ -24,8 +24,8 @@ PROCEDURE = { < ProcHandle("constArg"), SymHandle("constArg") > }
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("constArg"), not local > }
+    LOCATION = { < SymHandle("x"), local > }
 
 PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("int main(){int x;int &xRef = x;::nonConstArg(x);::nonConstArg(xRef);::constArg((5));::constArg(x);::constArg(xRef);return 0;}") =>
@@ -39,10 +39,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("int &xRef = x;") =>
         [
-            MemRefHandle("xRef&") => 
-                NamedRef( DEF, SymHandle("xRef"))
             MemRefHandle("x") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("x")))
+            MemRefHandle("xRef&") => 
+                NamedRef( DEF, SymHandle("xRef"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int &xRef = x;") =>
         [
@@ -126,8 +126,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
-    LOCATION = { < SymHandle("x"), local > }
-    LOCATION = { < SymHandle("xRef"), local > }
     LOCATION = { < SymHandle("nonConstArg"), not local > }
     LOCATION = { < SymHandle("constArg"), not local > }
     LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("xRef"), local > }

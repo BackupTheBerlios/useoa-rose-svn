@@ -7,12 +7,12 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__L0R") > 
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
         [
-            MemRefHandle("mX&") => 
-                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::Foo::Foo__L0R")), 1), mX)
             MemRefHandle("x") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("x")))
             MemRefHandle("assign_or_agg_initializer:x") => 
                 NamedRef( USE, SymHandle("this::::Foo::Foo__L0R"))
+            MemRefHandle("mX&") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::Foo::Foo__L0R")), 1), mX)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("") =>
         [
@@ -25,8 +25,8 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__L0R") > 
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("this::::Foo::Foo__L0R"), local > }
+    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__L0R"), not local > }
 
 PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__L1R") > }
@@ -39,12 +39,12 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__L1R") > 
         [
             MemRefHandle("refRelatedBaseOrTmp") => 
                 NamedRef( USE, SymHandle("f"))
-            MemRefHandle("mX&") => 
-                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::Foo::Foo__L1R")), 1), mX)
             MemRefHandle("assign_or_agg_initializer:(f.Foo::mX)") => 
                 NamedRef( USE, SymHandle("this::::Foo::Foo__L1R"))
             MemRefHandle("(f.Foo::mX)") => 
                 FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), mX)
+            MemRefHandle("mX&") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::Foo::Foo__L1R")), 1), mX)
         ] }
     PTRASSIGNPAIRS = { StmtHandle("") =>
         [
@@ -57,8 +57,8 @@ PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__L1R") > 
     MEMREFEXPRS = { StmtHandle("{}") =>
         [
         ] }
-    LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("this::::Foo::Foo__L1R"), local > }
+    LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__L1R"), not local > }
 
 PROCEDURE = { < ProcHandle("::Foo::operator="), SymHandle("method:::Foo::operator=__L2R") > }
@@ -88,8 +88,8 @@ PROCEDURE = { < ProcHandle("::Foo::operator="), SymHandle("method:::Foo::operato
             < NamedRef( DEF, SymHandle("method:::Foo::operator=__L2R"))
             , NamedRef( USE, SymHandle("this::::Foo::operator=__L2R")) >
         ] }
-    LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("this::::Foo::operator=__L2R"), local > }
+    LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("method:::Foo::operator=__L2R"), not local > }
 
 PROCEDURE = { < ProcHandle("::Foo::~Foo"), SymHandle("method:::Foo::~Foo__L3R") > }
@@ -126,14 +126,14 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         [
             MemRefHandle("::Foo(x)") => 
                 NamedRef( USE, SymHandle("method:::Foo::Foo__L0R"))
-            MemRefHandle("f") => 
-                NamedRef( DEF, SymHandle("f"))
             MemRefHandle("x") => 
                 NamedRef( USE, SymHandle("x"))
             MemRefHandle("implicit actual this:x") => 
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new Foo(x)"), 0)))
             MemRefHandle("new Foo(x)") => 
                 AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new Foo(x)"), 0)))
+            MemRefHandle("f") => 
+                NamedRef( DEF, SymHandle("f"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("class Foo *f = new Foo(x);") =>
         [
@@ -221,8 +221,8 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("f"), local > }
     LOCATION = { < SymHandle("obj"), local > }
-    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__L0R"), not local > }

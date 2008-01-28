@@ -134,6 +134,44 @@ void SageIRInterface::deleteMemRefStmtRelation(
     mMemRef2StmtMap.erase(mref);
 }
 
+void SageIRInterface::mapMREToSgNode( 
+    OA::OA_ptr<OA::MemRefExpr> mre, SgNode *node) 
+{ 
+    ROSE_ASSERT(node != NULL); 
+    ROSE_ASSERT(!mre.ptrEqual(0)); 
+    //    std::cout << "mapping mre = "; 
+    //    mre->dump(std::cout); 
+    //    std::cout << std::endl; 
+    //    std::cout << "to node = " << node->sage_class_name() << std::endl; 
+    mMre2SgNode[mre] = node; 
+} 
+ 
+SgNode *SageIRInterface::getSgNode(OA::OA_ptr<OA::MemRefExpr> mre) 
+{ 
+    ROSE_ASSERT(!mre.ptrEqual(0)); 
+    if ( mMre2SgNode.find(mre) != mMre2SgNode.end() ) { 
+        return mMre2SgNode[mre]; 
+    } else { 
+        if ( mre->isaNamed() ) { 
+            std::cout << "getSgNode(mre) with named mre" << std::endl; 
+            OA::OA_ptr<OA::NamedRef> namedRef = mre.convert<OA::NamedRef>(); 
+            ROSE_ASSERT(!namedRef.ptrEqual(0)); 
+ 
+            OA::SymHandle symHandle = namedRef->getSymHandle(); 
+            SgNode *node = getSgNode(symHandle); 
+            if ( node != NULL ) { 
+                std::cout << "getSgNode was NULL but got a named mre for " 
+                          << node->sage_class_name()  
+                          << " " 
+                          << node->unparseToString() 
+                          << std::endl; 
+                return node; 
+            } 
+        } 
+    } 
+    return NULL; 
+} 
+
 /*
 OA::MemRefHandle SageIRInterface::getMemRefHandle(
     OA::OA_ptr<OA::MemRefExpr> mre)
@@ -233,8 +271,27 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
             }
             break;
         }
+    case V_SgNewExp:
+        {
+            // This is the explicit invocation of new, not the constructor.
+            // We only expect to be here if the invocation is of a
+            // non-builtin new--i.e., a placement new.
+            SgNewExp *newExp = isSgNewExp(node);
+            ROSE_ASSERT(newExp != NULL);
+            if ( !isPlacementNew(newExp) ) {
+                std::cerr << "createParamBindPtrAssignPairs was not expecting "
+                          << "a non-placement new expression." << std::endl;
+                ROSE_ABORT();
+            }
+            isCallANonStaticMethodInvocation = false; 
+            break;
+        }
     case V_SgDeleteExp:
         {
+            // Note that we use SgDeleteExp to model an invocation of
+            // a destructor, not the delete operator.  The former
+            // is non-static (think virtual destructor), while the
+            // latter is static.
             isCallANonStaticMethodInvocation = true; 
             break;
         }
@@ -252,7 +309,8 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
 
     // Get the list of formal types.
     // NB:  This does _not_ have the receiver formal type folded in.
-    SgTypePtrList &typePtrList = getFormalTypes(node);
+    std::vector<SgType *> formalTypes;
+    getFormalTypes(node, formalTypes);
 
     // Get the list of actual argument MREs.
     // NB:  This _does_ have the receiver actual argument folded in.
@@ -264,7 +322,7 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
 
     // Handle the implicit this parameter outside of the loop.
     // Note that the implicit actual is included in actualsIter,
-    // though the formal is not represented in typePtrList.
+    // though the formal is not represented in formalTypes.
 
     // If this is a method, constructor, or destructor invocation,
     // we need to fold the receiver in as the 1st actual argument.
@@ -343,7 +401,7 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
     // Simultaneously iterate over both formals and actuals.
     // If the formal is a reference parameter (i.e., 
     // a pointer or a reference) store it in the iterator's list.
-    SgTypePtrList::iterator formalIt = typePtrList.begin();
+    std::vector<SgType*>::iterator formalIt = formalTypes.begin();
     for ( ; actualsIter->isValid(); (*actualsIter)++ ) { 
         bool treatAsPointerParam = false;
 
@@ -368,7 +426,7 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
 
         // In the presence of varargs, we may have fewer
         // formals than actuals.
-        if ( formalIt != typePtrList.end() ) {
+        if ( formalIt != formalTypes.end() ) {
             formal_type = getBaseType(*formalIt);
         }
 
@@ -493,7 +551,7 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
     nxt_iter:
         // If we haven't run out of formal types because of varargs,
         // go to the next one.
-        if (formalIt != typePtrList.end()) {
+        if (formalIt != formalTypes.end()) {
             ++formalIt;
         }
  
@@ -504,6 +562,24 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
         }
     } 
 }
+
+class printType : public AstTopDownProcessing<int> 
+{ 
+ public: 
+ 
+  private: 
+  int evaluateInheritedAttribute(SgNode* ast, int depth) 
+  { 
+    int spaces = depth * 5; 
+    for (int i = 0; i < spaces; ++i) { 
+      std::cout << " "; 
+    } 
+    std::cout << ast->sage_class_name() << std::endl; 
+ 
+    return depth + 1; 
+  } 
+}; 
+
 
 void SageIRInterface::initMemRefAndPtrAssignMaps()
 {
@@ -517,7 +593,13 @@ void SageIRInterface::initMemRefAndPtrAssignMaps()
       OA::OA_ptr<OA::IRStmtIterator> stmtIterPtr = getStmtIterator(currProc);
       for (stmtIterPtr->reset(); stmtIterPtr->isValid(); ++(*stmtIterPtr)) {
           OA::StmtHandle stmt = stmtIterPtr->current();
-
+#if 0
+          SgNode *stmtNode = getSgNode(stmt);
+          ROSE_ASSERT(stmtNode != NULL);          
+	  std::cout << "stmt = " << stmtNode->unparseToString() << std::endl;
+          printType pt;
+          pt.traverse(stmtNode, 0);
+#endif
           // find all of the CallHandles and MemRefHandles within this Stmt
           findAllMemRefsAndPtrAssigns( getSgNode(stmt), stmt );
       }
@@ -1317,51 +1399,121 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             ROSE_ASSERT(newExp != NULL);
 
             // Invocations of new are represented by unnamed memory references,
-            // just as calls to malloc.
-
-            // Notice that we also need to represent the access to the 
-            // invoked constructor/method.  Do this at the 
-            // SgConstructorInitializer accessible from newExp as 
-            // newExp->get_constructor_args();
+            // just as calls to malloc, unless it is an invocation of
+            // placement new, which is implemented as a standard function
+            // call.
 
             // is a MemRefHandle
             OA::MemRefHandle memref = getMemRefHandle(astNode);
             relateMemRefAndStmt(memref, stmt);
 
-            // create an UnnamedRef
-            OA::OA_ptr<OA::MemRefExpr> mre;
+            SgFunctionDeclaration *newDecl = newExp->get_newOperatorDeclaration();
+            SgExprListExp *placement_args = newExp->get_placement_args();
 
-            OA::ExprHandle exprHandle = findTopExprHandle(newExp);
-            if ( isSgExpression(newExp) ) {
-                 mre = new OA::UnnamedRef(OA::MemRefExpr::USE, exprHandle);
+            // If the new expression uses placement args, it should
+            // also have a handle to the invoked new operator.
+            // Otherwise, the invoked new operator should be builtin
+            // and we won't have a handle to its declaration.
+            ROSE_ASSERT( ( ( newDecl == NULL ) && ( placement_args == NULL ) ) ||
+			 ( ( newDecl != NULL ) && ( placement_args != NULL ) ) );
+
+            if ( ( newDecl != NULL ) && ( placement_args != NULL ) ) {
+                // This is placement new--we are invoking a non-builtin
+                // operator new.  Therefore, we will treat this like
+                // an invocation (see SgFunctionCallExp case) of a
+                // function that returns a pointer.  Hence, we need to
+                // create a call mre, create param bindings, and 
+                // create implicit pointer assignments where the base   
+                // of the lhs of the assignments is the ptr value
+                // returned from the function.
+      
+                findAllMemRefsAndPtrAssigns(placement_args, stmt);
+
+                // newDecl could be a method declaration.  In fact,
+                // it likely is.  Therefore, we might be tempted to 
+                // make this a field access (i.e., a method invocation).
+                // However, new and delete are static methods
+                // even if they are not declared as such 
+                // (e.g., see Stroustrup section edition r.12.5)--
+                // therefore, 'this' is not accessible within them.
+                // Hence, we should be OK modeling this as a direct 
+                // function call.
+
+                // Create the call MRE.  It is simply the declaration
+                // newDecl of the invoked operator now.  See
+                // V_SgFunctionRefExp above.
+
+                OA::CallHandle call = getCallHandle(astNode);
+
+                //======= create a NamedRef for the function
+                OA::OA_ptr<OA::MemRefExpr> call_mre; 
+                OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+                OA::SymHandle sym = getProcSymHandle(newDecl);
+                // construct the NamedRef
+                call_mre = new OA::NamedRef(mrType, sym);
+            
+                // Record the type of the MRE (reference or non-reference).
+                mMre2TypeMap[call_mre] = other;
+
+                mMemref2mreSetMap[memref].insert(call_mre);
+
+                mCallToMRE[call] = call_mre;
+
+                // This call_mre will also be used as a return slot.
+            
+                // Create the param bindings.  Note that the 
+                // first argument, sizeof(T), is implicit and will
+                // be in placement_args.
+                createParamBindPtrAssignPairs(stmt, newExp);
             } else {
-                 assert(0);
-            }
+                // The MRE is the unnamed ref returned by the dynamic
+                // allocation.
+
+                // create an UnnamedRef
+                OA::OA_ptr<OA::MemRefExpr> mre;
+
+                OA::ExprHandle exprHandle = findTopExprHandle(newExp);
+                if ( isSgExpression(newExp) ) {
+                     mre = new OA::UnnamedRef(OA::MemRefExpr::USE, exprHandle);
+                } else {
+                     assert(0);
+                }
 
 
-            OA::OA_ptr<OA::SubSetRef> subset_mre;
-            OA::OA_ptr<OA::MemRefExpr> nullMRE;
-            OA::OA_ptr<OA::MemRefExpr> composed_mre;
+                OA::OA_ptr<OA::SubSetRef> subset_mre;
+                OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                OA::OA_ptr<OA::MemRefExpr> composed_mre;
 
-            subset_mre = new OA::SubSetRef(
-                                 OA::MemRefExpr::USE,
-                                 nullMRE
-                                );
-            mre = subset_mre->composeWith(mre->clone());
+                subset_mre = new OA::SubSetRef(
+                                     OA::MemRefExpr::USE,
+                                     nullMRE
+                                    );
+                mre = subset_mre->composeWith(mre->clone());
 
             
-            OA::OA_ptr<OA::AddressOf> address_mre;
+                OA::OA_ptr<OA::AddressOf> address_mre;
 
-            address_mre = new OA::AddressOf(
-                                  OA::MemRefExpr::USE,
-                                  nullMRE);
+                address_mre = new OA::AddressOf(
+                                      OA::MemRefExpr::USE,
+                                      nullMRE);
 
-            mre = address_mre->composeWith(mre);
+                mre = address_mre->composeWith(mre);
 
-            // Record the type of the MRE (reference or non-reference).
-            mMre2TypeMap[mre] = other;
-            mMemref2mreSetMap[memref].insert(mre);
+                // Record the type of the MRE (reference or non-reference).
+                mMre2TypeMap[mre] = other;
+                mMemref2mreSetMap[memref].insert(mre);
+            }
 
+            // Notice that we also need to represent the access to the 
+            // invoked constructor/method.  Do this at the 
+            // SgConstructorInitializer accessible from newExp as 
+            // newExp->get_constructor_args();  
+            // We do this for the placement new case as well.  I believe
+            // that the invocation of the constructor is implicit
+            // regardless of whether we use new or placement new.
+            // Therefore, for placement new we actually get 2 
+            // call mres--one for the constructor and one for the
+            // non-builtin operator new.
             SgConstructorInitializer *ctorInitializer =
                 newExp->get_constructor_args();
             ROSE_ASSERT(ctorInitializer != NULL);
@@ -1388,6 +1540,18 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         {
             SgDeleteExp *deleteExp = isSgDeleteExp(astNode);
             ROSE_ASSERT(deleteExp != NULL);
+
+            // We don't yet model operator delete--i.e., invocations
+            // of delete (as opposed to invocations of the destructor).
+            // To be symmetric with new/constructor (modeled by
+            // SgNewExp/Sg_File_info of SgConstructorInitializer),
+            // we should use SgDeleteExp for delete and
+            // the Sg_File_info of SgDeleteExp for destructor.
+            // But this will break all of our regression tests.
+            // Perhaps use Sg_File_info/SgDeleteExp for delete/destrutor.
+            SgFunctionDeclaration *deleteDecl = 
+               deleteExp->get_deleteOperatorDeclaration();
+            // ROSE_ASSERT(deleteDecl == NULL);
 
             SgExpression *receiver = deleteExp->get_variable();
             ROSE_ASSERT(receiver != NULL);
@@ -2601,6 +2765,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
     case V_SgDotStarOp:
         {
+	  std::cout << "dotstar = " << astNode->unparseToString() << std::endl;
+              astNode->get_file_info()->display("dotstar:");
+                SgFunctionDefinition *enclosingFunction =
+                    getEnclosingFunction(astNode);
+		ROSE_ASSERT(enclosingFunction != NULL);
+		std::cout << "enclosing function = " << enclosingFunction->unparseToString() << std::endl;
             ROSE_ASSERT(0);
             break;
         }
@@ -3184,7 +3354,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 OA::OA_ptr<OA::MemRefExpr> composedMre
                       = deref_mre->composeWith(child_mre);
 
-
                 if( child_mre->isaRefOp() ){
 
                   OA::OA_ptr<OA::RefOp> refOp;
@@ -3201,6 +3370,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                      );
                      composedMre
                          = subset_mre->composeWith(composedMre->clone());
+
                   }
                 }
 
@@ -4573,49 +4743,125 @@ SageIRInterface::createImplicitPtrAssignPairsForDynamicObjectAllocation(OA::Stmt
                                                                         OA::OA_ptr<OA::MemRefExpr> rhs_mre)
 {
 
-   OA::ExprHandle rhs_expr;
-   OA::OA_ptr<OA::MemRefExpr> newmre ;
-
-   newmre = rhs_mre->clone();
-
-   if(rhs_mre->isaRefOp()) {
-       // for the case like AddressOf(SubSetRef(UnnamedRef(...)..)..)
-       // recurse on MemRefExpr until UnnamedRef is found
-       OA::OA_ptr<OA::RefOp> refOp = rhs_mre.convert<OA::RefOp>();
-       
-       newmre = refOp->getMemRefExpr();
-
-       while(newmre->isaRefOp()) {
-          refOp = newmre.convert<OA::RefOp>();
-          newmre = refOp->getMemRefExpr();
-       }
-   } 
-
-   if( newmre.ptrEqual(0) || !newmre->isaUnnamed()) {
-        return;
-   }
-
-   
-    OA::OA_ptr<OA::UnnamedRef> unnamed_mre
-              = newmre.convert<OA::UnnamedRef>();
-   
-    ROSE_ASSERT(!unnamed_mre.ptrEqual(0));
-    rhs_expr = unnamed_mre->getExprHandle();
-
     // Verify that this stmt handle maps to an AST node of an
     // expected type.
     verifyStmtHandleType(stmt);
 
-    SgNode *node = getNodePtr(rhs_expr);
-    ROSE_ASSERT(node != NULL);
+    OA::ExprHandle rhs_expr;
+    OA::OA_ptr<OA::MemRefExpr> newmre ;
 
-    SgNewExp *newExp = isSgNewExp(node);
-    if ( newExp == NULL ) {
-        return;
+    newmre = rhs_mre->clone();
+
+    // We expect the rhs_mre of a dynamic allocation to be a new expresion.
+    // If it invokes the built-in new, we should have an unnamed ref.
+    // If it invokes a placement new, we should have a named ref for the
+    // declared new operator.
+
+    if(rhs_mre->isaRefOp()) {
+        // for the case like AddressOf(SubSetRef(UnnamedRef(...)..)..)
+        // recurse on MemRefExpr until UnnamedRef is found
+        OA::OA_ptr<OA::RefOp> refOp = rhs_mre.convert<OA::RefOp>();
+       
+        newmre = refOp->getMemRefExpr();
+
+        while(newmre->isaRefOp()) {
+           refOp = newmre.convert<OA::RefOp>();
+           newmre = refOp->getMemRefExpr();
+        }
+    } 
+
+    SgType *type = NULL;
+
+    bool placementNew = false;
+
+    if ( !newmre.ptrEqual(0) && newmre->isaUnnamed() ) {
+        OA::OA_ptr<OA::UnnamedRef> unnamed_mre
+                  = newmre.convert<OA::UnnamedRef>();
+   
+        ROSE_ASSERT(!unnamed_mre.ptrEqual(0));
+        rhs_expr = unnamed_mre->getExprHandle();
+
+        SgNode *node = getNodePtr(rhs_expr);
+        ROSE_ASSERT(node != NULL);
+
+        SgNewExp *newExp = isSgNewExp(node);
+        if ( newExp == NULL ) {
+            return;
+        }
+        type = lookThruReferenceType(newExp->get_type());
     }
 
-    SgType *type = lookThruReferenceType(newExp->get_type());
-    ROSE_ASSERT(type != NULL);
+    if ( !newmre.ptrEqual(0) && newmre->isaNamed() ) {
+        OA::OA_ptr<OA::NamedRef> named_mre = newmre.convert<OA::NamedRef>();
+        OA::SymHandle symHandle = named_mre->getSymHandle(); 
+        SgFunctionDeclaration *funcDecl = getFuncDeclFromSymHandle(symHandle);
+        if ( funcDecl == NULL ) {
+            return;
+        }
+        if ( !isOperatorNew(funcDecl) ) {
+            return;            
+        }
+        // We only care about class types.  Dynamic allocation
+        // of arrays of objects is accomplished through the 
+        // builtin new and should be modeled by a unnamed ref above.
+        // Dynamic allocation of an object either uses the
+        // builtin new or one declared within a class.  i.e.,
+        // we can get the type from the method.
+
+        // Not true!  e.g., gcc 4.1.2 (in the file new)
+        // defines a default
+        // inline void* operator new(std::size_t, void* __p) throw() { return __p; }
+        // that is invoked by 
+        // std::string *p = new (buf) std::string("hi");
+        // and presumably would be invoked by any 
+        // We need to get a handle to the SgNewExp to determine
+        // the type.  Unfortunately, we might not get that
+        // if the new operator is the generic one above
+        // (i.e., not a static method defined for a class).
+        // In that case, get the callsites of this stmt.
+        // The callhandle of the call_mre corresponding to the
+        // rhs_mre will be the SgNewExp
+
+
+        SgMemberFunctionDeclaration *methodDecl =
+            isSgMemberFunctionDeclaration(funcDecl);
+        if ( methodDecl == NULL ) {
+
+            OA::OA_ptr<OA::IRCallsiteIterator> callsiteItPtr = 
+                getCallsites(stmt);
+            for ( ; callsiteItPtr->isValid(); ++(*callsiteItPtr)) {
+                OA::CallHandle call = callsiteItPtr->current();
+                OA::OA_ptr<OA::MemRefExpr> call_mre;
+                call_mre = getCallMemRefExpr(call);
+                ROSE_ASSERT(!call_mre.ptrEqual(0));
+                if ( *call_mre == *rhs_mre ) {
+                    SgNode *node = getNodePtr(call);
+                    ROSE_ASSERT(node != NULL);
+                    SgNewExp *newExp = isSgNewExp(node);
+                    ROSE_ASSERT(newExp != NULL);
+                    type = lookThruReferenceType(newExp->get_type());    
+                }
+	    }
+
+        } else {
+
+            SgClassDefinition *classDefinition = 
+                isSgClassDefinition(methodDecl->get_class_scope());
+            ROSE_ASSERT(classDefinition != NULL);
+
+            SgClassDeclaration *classDecl =
+                classDefinition->get_declaration();
+            ROSE_ASSERT(classDecl != NULL);
+
+            type = classDecl->get_type();
+        }  
+
+        placementNew = true;
+    }
+
+    if ( type == NULL ) {
+        return;
+    }
 
     // We only create implicit pointer assignment pairs
     // for classes/structs, not basic types.

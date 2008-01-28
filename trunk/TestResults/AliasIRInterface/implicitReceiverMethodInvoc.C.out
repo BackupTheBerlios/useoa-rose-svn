@@ -64,8 +64,8 @@ PROCEDURE = { < ProcHandle("::Foo::someMethod"), SymHandle("method:::Foo::someMe
         [
             < 0, NamedRef( USE, SymHandle("this::::Foo::someMethod__L1R")) >
         ] }
-    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("this::::Foo::someMethod__L1R"), local > }
+    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("method:::Foo::someOtherMethod__L0R"), not local > }
     LOCATION = { < SymHandle("method:::Foo::someMethod__L1R"), not local > }
 

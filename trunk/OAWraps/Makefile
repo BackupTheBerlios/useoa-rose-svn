@@ -36,7 +36,8 @@ libSage2OASources = Sage2OA.C LoopIRInterface.C MemSage2OA.C SageOACallGraph.C c
 
 
 #lib_LIBRARIES = libSage2OA.a
-lib_LIBRARIES = libSage2OA.so libSage2OA.a 
+#lib_LIBRARIES = libSage2OA.so libSage2OA.a 
+lib_LIBRARIES = libSage2OA.so
 LIBRARIES = $(lib_LIBRARIES)
 
 libSage2OA_so_SOURCES = $(libSage2OASources)

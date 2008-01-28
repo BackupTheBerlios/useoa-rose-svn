@@ -20,10 +20,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 UnnamedRef( DEF, ExprHandle("&x"), 1, ProcHandle("main"))
             MemRefHandle("refRelatedBaseOrTmp") => 
                 AddressOf( USE, UnnamedRef( DEF, ExprHandle("&x"), 1, ProcHandle("main")))
-            MemRefHandle("addrRef&") => 
-                NamedRef( DEF, SymHandle("addrRef"))
             MemRefHandle("&x") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("x")))
+            MemRefHandle("addrRef&") => 
+                NamedRef( DEF, SymHandle("addrRef"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int *const &addrRef = &x;") =>
         [
@@ -34,10 +34,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("int &ref = x;") =>
         [
-            MemRefHandle("ref&") => 
-                NamedRef( DEF, SymHandle("ref"))
             MemRefHandle("x") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("x")))
+            MemRefHandle("ref&") => 
+                NamedRef( DEF, SymHandle("ref"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int &ref = x;") =>
         [
@@ -51,12 +51,12 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("const int &ref2 = cond?x:5;") =>
         [
-            MemRefHandle("ref2&") => 
-                NamedRef( DEF, SymHandle("ref2"))
             MemRefHandle("cond") => 
                 NamedRef( USE, SymHandle("cond"))
             MemRefHandle("cond?x:5") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("x")))
+            MemRefHandle("ref2&") => 
+                NamedRef( DEF, SymHandle("ref2"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("const int &ref2 = cond?x:5;") =>
         [
@@ -65,10 +65,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("int &ref3 = ref;") =>
         [
-            MemRefHandle("ref3&") => 
-                NamedRef( DEF, SymHandle("ref3"))
             MemRefHandle("ref") => 
                 NamedRef( USE, SymHandle("ref"))
+            MemRefHandle("ref3&") => 
+                NamedRef( DEF, SymHandle("ref3"))
         ] }
     PTRASSIGNPAIRS = { StmtHandle("int &ref3 = ref;") =>
         [
@@ -78,6 +78,7 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
+    LOCATION = { < SymHandle("main"), not local > }
     LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("constRef"), local > }
     LOCATION = { < SymHandle("addrRef"), local > }
@@ -85,4 +86,3 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     LOCATION = { < SymHandle("cond"), local > }
     LOCATION = { < SymHandle("ref2"), local > }
     LOCATION = { < SymHandle("ref3"), local > }
-    LOCATION = { < SymHandle("main"), not local > }

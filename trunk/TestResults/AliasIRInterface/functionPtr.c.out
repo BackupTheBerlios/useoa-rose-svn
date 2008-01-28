@@ -8,10 +8,10 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
         ] }
     MEMREFEXPRS = { StmtHandle("int x = read();") =>
         [
-            MemRefHandle("x") => 
-                NamedRef( DEF, SymHandle("x"))
             MemRefHandle("read") => 
                 NamedRef( USE, SymHandle("read"))
+            MemRefHandle("x") => 
+                NamedRef( DEF, SymHandle("x"))
         ] }
     CALLSITES = { StmtHandle("int x = read();") =>
         [
@@ -65,9 +65,9 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             CallHandle("( *fp)()") => 
                 Deref( USE, NamedRef( USE, SymHandle("fp")), 1)
         ] }
-    LOCATION = { < SymHandle("fp"), not local > }
-    LOCATION = { < SymHandle("x"), local > }
     LOCATION = { < SymHandle("read"), not local > }
     LOCATION = { < SymHandle("foo"), not local > }
     LOCATION = { < SymHandle("bar"), not local > }
     LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("fp"), not local > }
+    LOCATION = { < SymHandle("x"), local > }
