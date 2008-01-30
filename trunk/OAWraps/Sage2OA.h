@@ -1093,6 +1093,8 @@ public:
                                     SgExpression* child, OA::StmtHandle stmt,
                                     bool removeChild);
 
+  bool performsPtrArithmetic(SgNode *astNode);
+
   void createUseDefForVarArg(OA::MemRefHandle memref,
                              OA::MemRefHandle valist_memref);
 

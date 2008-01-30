@@ -810,20 +810,20 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
             }
 
             SgExprListExp* exprListExp = newExp->get_placement_args();
-            ROSE_ASSERT (exprListExp != NULL);  
+            if ( exprListExp != NULL ) {
 
-            SgExpressionPtrList & actualArgs =  
-                exprListExp->get_expressions();  
+                SgExpressionPtrList & actualArgs =  
+                    exprListExp->get_expressions();  
 
-            for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
-                actualIt != actualArgs.end(); ++actualIt) { 
+                for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
+                    actualIt != actualArgs.end(); ++actualIt) { 
  
-                SgExpression *actual = *actualIt;
+                    SgExpression *actual = *actualIt;
+                    ROSE_ASSERT(actual != NULL);
 
-                ROSE_ASSERT(actual != NULL);
-
-                actuals.push_back(actual);
-	    }
+                    actuals.push_back(actual);
+   	        }
+            }
             break;
         }  
     case V_Sg_File_Info:
@@ -1907,12 +1907,12 @@ bool isPlacementNew(SgNewExp *newExp)
 
     // If the new expression uses placement args, it should
     // also have a handle to the invoked new operator.
-    // Otherwise, the invoked new operator should be builtin
-    // and we won't have a handle to its declaration.
-    ROSE_ASSERT( ( ( newDecl == NULL ) && ( placement_args == NULL ) ) ||
-                 ( ( newDecl != NULL ) && ( placement_args != NULL ) ) );
+    // However, we may have the handle without having placement
+    // args (i.e., the defined operator new may simply use
+    // the default size_t arg).
+    ROSE_ASSERT( ( newDecl != NULL ) || ( placement_args == NULL ) );
 
-    return ( ( newDecl != NULL ) && ( placement_args != NULL ) );
+    return ( newDecl != NULL );
 }
 
 SgFunctionDeclaration *isPlacementDelete(SgDeleteExp *deleteExp)

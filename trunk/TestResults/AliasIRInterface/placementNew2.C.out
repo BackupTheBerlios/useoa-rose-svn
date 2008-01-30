@@ -1,0 +1,170 @@
+
+PROCEDURE = { < ProcHandle("::foo::virt"), SymHandle("method:::foo::virt__L2R") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::::foo::virt__L2R") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: virtual inline void foo::virt(){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("this::::foo::virt__L2R"), local > }
+    LOCATION = { < SymHandle("method:::foo::virt__L2R"), not local > }
+
+PROCEDURE = { < ProcHandle("::foo::operator new"), SymHandle("method:::foo::operator new__L3R") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("buf") >
+            < 1, SymHandle("n") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline static void *foo::operator new(size_t size,char *buf,int n){return buf;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{return buf;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("return buf;") =>
+        [
+            MemRefHandle("buf") => 
+                NamedRef( USE, SymHandle("buf"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("return buf;") =>
+        [
+            < NamedRef( DEF, SymHandle("method:::foo::operator new__L3R"))
+            , NamedRef( USE, SymHandle("buf")) >
+        ] }
+    LOCATION = { < SymHandle("buf"), local > }
+    LOCATION = { < SymHandle("n"), local > }
+    LOCATION = { < SymHandle("method:::foo::operator new__L3R"), not local > }
+
+PROCEDURE = { < ProcHandle("::foo::operator delete"), SymHandle("method:::foo::operator delete__L4R") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("p") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline static void foo::operator delete(void *p){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("p"), local > }
+    LOCATION = { < SymHandle("method:::foo::operator delete__L4R"), not local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class ::foo {public: virtual inline void foo::virt(){}inline static void *foo::operator new(size_t size,char *buf,int n){return buf;}inline static void foo::operator delete(void *p){}};") =>
+        [
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("class ::foo {public: virtual inline void foo::virt(){}inline static void *foo::operator new(size_t size,char *buf,int n){return buf;}inline static void foo::operator delete(void *p){}};") =>
+        [
+            < FieldAccess( DEF, NamedRef( USE, SymHandle("SgClassDefinition:::foo")), virt_void)
+            , AddressOf( USE, NamedRef( USE, SymHandle("method:::foo::virt__L2R"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("int main(){char *buf = new char [1000];class ::foo *f = new /* Output placement arguments for new operator */(buf,2) ::foo ;( *((class ::foo *)buf)).virt();f -> virt();return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{char *buf = new char [1000];class ::foo *f = new /* Output placement arguments for new operator */(buf,2) ::foo ;( *((class ::foo *)buf)).virt();f -> virt();return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("char *buf = new char [1000];") =>
+        [
+            MemRefHandle("new char [1000]") => 
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new char [1000]"), 0)))
+            MemRefHandle("buf") => 
+                NamedRef( DEF, SymHandle("buf"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("char *buf = new char [1000];") =>
+        [
+            < NamedRef( DEF, SymHandle("buf"))
+            , AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new char [1000]"), 0))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class foo *f = new /* Output placement arguments for new operator */(buf,2) foo ;") =>
+        [
+            MemRefHandle("::foo") => 
+                NamedRef( USE, SymHandle("method:::foo::foo__foo__scope__foo____Fb_v_Gb__Fe_"))
+            MemRefHandle("buf") => 
+                NamedRef( USE, SymHandle("buf"))
+            MemRefHandle("implicit actual this:") => 
+                NamedRef( USE, SymHandle("method:::foo::operator new__L3R"))
+            MemRefHandle("new /* Output placement arguments for new operator */(buf,2) foo") => 
+                NamedRef( USE, SymHandle("method:::foo::operator new__L3R"))
+            MemRefHandle("f") => 
+                NamedRef( DEF, SymHandle("f"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("class foo *f = new /* Output placement arguments for new operator */(buf,2) foo ;") =>
+        [
+            < NamedRef( DEF, SymHandle("f"))
+            , NamedRef( USE, SymHandle("method:::foo::operator new__L3R")) >
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("f")), 1), __oa_vtable_ptr)
+            , AddressOf( USE, NamedRef( USE, SymHandle("SgClassDefinition:::foo"))) >
+        ] }
+    CALLSITES = { StmtHandle("class foo *f = new /* Output placement arguments for new operator */(buf,2) foo ;") =>
+        [
+            CallHandle("new /* Output placement arguments for new operator */(buf,2) foo") => 
+                NamedRef( USE, SymHandle("method:::foo::operator new__L3R"))
+            CallHandle("new /* Output placement arguments for new operator */(buf,2) foo") => 
+                NamedRef( USE, SymHandle("method:::foo::foo__foo__scope__foo____Fb_v_Gb__Fe_"))
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("new /* Output placement arguments for new operator */(buf,2) foo") =>
+        [
+            < 0, NamedRef( USE, SymHandle("buf")) >
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("new /* Output placement arguments for new operator */(buf,2) foo") =>
+        [
+            < 0, NamedRef( USE, SymHandle("method:::foo::operator new__L3R")) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("( *((class foo *)buf)).virt();") =>
+        [
+            MemRefHandle("buf") => 
+                NamedRef( USE, SymHandle("buf"))
+            MemRefHandle("( *((class foo *)buf))") => 
+                NamedRef( USE, SymHandle("buf"))
+            MemRefHandle("( *((class foo *)buf)).virt") => 
+                FieldAccess( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("buf")), 1), __oa_vtable_ptr), 1), virt_void)
+        ] }
+    CALLSITES = { StmtHandle("( *((class foo *)buf)).virt();") =>
+        [
+            CallHandle("( *((class foo *)buf)).virt()") => 
+                Deref( USE, FieldAccess( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("buf")), 1), __oa_vtable_ptr), 1), virt_void), 1)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("( *((class foo *)buf)).virt()") =>
+        [
+            < 0, NamedRef( USE, SymHandle("buf")) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("f -> virt();") =>
+        [
+            MemRefHandle("f") => 
+                NamedRef( USE, SymHandle("f"))
+            MemRefHandle("f -> virt") => 
+                FieldAccess( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), __oa_vtable_ptr), 1), virt_void)
+        ] }
+    CALLSITES = { StmtHandle("f -> virt();") =>
+        [
+            CallHandle("f -> virt()") => 
+                Deref( USE, FieldAccess( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("f")), 1), __oa_vtable_ptr), 1), virt_void), 1)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("f -> virt()") =>
+        [
+            < 0, NamedRef( USE, SymHandle("f")) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("buf"), local > }
+    LOCATION = { < SymHandle("f"), local > }
+    LOCATION = { < SymHandle("SgClassDefinition:::foo"), not local > }
+    LOCATION = { < SymHandle("method:::foo::virt__L2R"), not local > }
+    LOCATION = { < SymHandle("method:::foo::operator new__L3R"), not local > }
+    LOCATION = { < SymHandle("method:::foo::foo__foo__scope__foo____Fb_v_Gb__Fe_"), not local > }

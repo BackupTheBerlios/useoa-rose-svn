@@ -525,7 +525,6 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
                         // original reference base, lest we get two of
                         // them.  This was inserted as the Sg_File_Info
                         // of the deref'ed MRE.  XXX:  Ugly.  Encapsulate.
-			//                        SgNode *node = (SgNode*)(actual_memref.hval());
                         SgNode *node = getNodePtr(actual_memref);
                         ROSE_ASSERT(node != NULL);
                  
@@ -537,8 +536,18 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
                         // Need to erase the mre w/o the deref.
                         mMemref2mreSetMap[hiddenMemref].erase(actual_mre);
 
-                    } else {
+		    } else if ( performsPtrArithmetic(actualNode) ) {
+                        // Apply reference conversion rule 4-- 
+                        // take the address of the rhs.  But, for 
+                        // a ptr arithmetic node, we have already taken
+                        // the address.
 
+                        ROSE_ASSERT(actual_mre->isaRefOp());
+                        OA::OA_ptr<OA::RefOp> refOp = actual_mre.convert<OA::RefOp>();
+                        ROSE_ASSERT(!refOp.ptrEqual(0));
+                        ROSE_ASSERT(refOp->isaAddressOf());
+
+                    } else {
                         // Apply reference conversion rules 2 and 4.
                         OA::OA_ptr<OA::MemRefExpr> addr_of_lhs_tmp_mre;
                         addr_of_lhs_tmp_mre =
@@ -548,7 +557,6 @@ SageIRInterface::createParamBindPtrAssignPairs(OA::StmtHandle stmt, SgNode *node
                                                                actualNode,
                                                                actual_memref,
                                                                actual_mre);
-
                         actual_mre = addr_of_lhs_tmp_mre;
                     }
 
@@ -655,6 +663,11 @@ applyReferenceConversionRules2And4(OA::StmtHandle stmt,
 
     SgType *referenceBaseType = referenceType->get_base_type();
     ROSE_ASSERT(referenceBaseType != NULL);
+    if ( !isConstType(referenceBaseType) ) {
+      SgNode *stmtNode = getNodePtr(stmt);
+      std::cout << "stmt = " << stmtNode->unparseToString() << std::endl;
+      dump(rhs_mre, std::cout);
+    }
     ROSE_ASSERT(isConstType(referenceBaseType));
  
     // Convert (1) to 
@@ -1434,12 +1447,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             // If the new expression uses placement args, it should
             // also have a handle to the invoked new operator.
-            // Otherwise, the invoked new operator should be builtin
-            // and we won't have a handle to its declaration.
-            ROSE_ASSERT( ( ( newDecl == NULL ) && ( placement_args == NULL ) ) ||
-			 ( ( newDecl != NULL ) && ( placement_args != NULL ) ) );
+            // However, we may have the handle without having placement
+            // args (i.e., the defined operator new may simply use
+            // the default size_t arg).
+            ROSE_ASSERT( ( newDecl != NULL ) || ( placement_args == NULL ) );
 
-            if ( ( newDecl != NULL ) && ( placement_args != NULL ) ) {
+            if ( newDecl != NULL ) {
                 // This is placement new--we are invoking a non-builtin
                 // operator new.  Therefore, we will treat this like
                 // an invocation (see SgFunctionCallExp case) of a
@@ -1449,7 +1462,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // of the lhs of the assignments is the ptr value
                 // returned from the function.
       
-                findAllMemRefsAndPtrAssigns(placement_args, stmt);
+                if ( placement_args != NULL ) {
+                    findAllMemRefsAndPtrAssigns(placement_args, stmt);
+                }
 
                 // newDecl could be a method declaration.  In fact,
                 // it likely is.  Therefore, we might be tempted to 
@@ -1486,7 +1501,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // Create the param bindings.  Note that the 
                 // first argument, sizeof(T), is implicit and will
                 // be in placement_args.
-                createParamBindPtrAssignPairs(stmt, newExp);
+                if ( placement_args != NULL ) {
+                    createParamBindPtrAssignPairs(stmt, newExp);
+                }
             } else {
                 // The MRE is the unnamed ref returned by the dynamic
                 // allocation.
@@ -2072,6 +2089,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 OA::MemRefHandle child_memref 
                     = findTopMemRefHandle(initName->get_initptr());
 
+                SgExpression *child_expr = isSgExpression(getNodePtr(child_memref));
+
                 // If this is an initialization of a member variable
                 // then we are going to need an implicit "this".
                 // We will associate it with our immediate child
@@ -2266,6 +2285,19 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                             // a pointer assignment.
 
                             makePtrAssignPair(stmt, mre, child_mre);
+                        } else if ( performsPtrArithmetic(child_expr) ) {
+                            // Apply reference conversion rule 4-- 
+                            // take the address of the rhs.  But, for 
+                            // a ptr arithmetic node, we have already taken
+                            // the address.
+
+                            ROSE_ASSERT(child_mre->isaRefOp());
+                            OA::OA_ptr<OA::RefOp> refOp = child_mre.convert<OA::RefOp>();
+                            ROSE_ASSERT(!refOp.ptrEqual(0));
+                            ROSE_ASSERT(refOp->isaAddressOf());
+
+                            makePtrAssignPair(stmt, mre, child_mre);
+
                         } else {
 
                             // Apply reference conversion rules 2 and 4.
@@ -2822,12 +2854,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     getEnclosingFunction(astNode);
 		ROSE_ASSERT(enclosingFunction != NULL);
 		std::cout << "enclosing function = " << enclosingFunction->unparseToString() << std::endl;
-            ROSE_ASSERT(0);
+		//ROSE_ASSERT(0);
             break;
         }
     case V_SgArrowStarOp:
         {
-            ROSE_ASSERT(0);
+            //ROSE_ASSERT(0);
             break;
         }
 
@@ -3755,6 +3787,19 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                                 // a pointer assignment.
                                 
                                 makePtrAssignPair(stmt, function, child_mre);
+                            } else if ( performsPtrArithmetic(child_node) ) {
+                                // Apply reference conversion rule 4-- 
+                                // take the address of the rhs.  But, for 
+                                // a ptr arithmetic node, we have already taken
+                                // the address.
+
+                                ROSE_ASSERT(child_mre->isaRefOp());
+                                OA::OA_ptr<OA::RefOp> refOp = child_mre.convert<OA::RefOp>();
+                                ROSE_ASSERT(!refOp.ptrEqual(0));
+                                ROSE_ASSERT(refOp->isaAddressOf());
+
+                                makePtrAssignPair(stmt, function, child_mre);
+
                             } else {
 
                                 // Apply reference conversion rules 2 and 4.
@@ -5518,6 +5563,107 @@ bool SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
         }
     }
     return nodeHasMemRefHandle;
+}
+
+// Based on createMemRefExprsForPtrArith and its calling context.
+// Returns true if expr performs ptr arithmetic.
+bool SageIRInterface::performsPtrArithmetic(SgNode *astNode)
+{
+    ROSE_ASSERT(astNode != NULL);
+    bool isPtrArithmetic = false;
+    switch(astNode->variantT()) {
+    case V_SgAddOp:
+    case V_SgSubtractOp:
+        {
+            // these two could be used in ptr arithmetic
+            SgBinaryOp *binaryOp = isSgBinaryOp(astNode);
+            ROSE_ASSERT(binaryOp != NULL);
+            
+            // if either of the children are array types or ptr types
+            // then this node should be a MemRefHandle
+            // because a[2] is represented as a+2 in Sage
+            // if either of the children are pointer types
+            // then this node should be a MemRefHandle due to 
+            // ptr arithmetic
+            SgType *lhs_type, *rhs_type;
+            lhs_type = lookThruReferenceType(binaryOp->get_lhs_operand()->get_type());
+            rhs_type = lookThruReferenceType(binaryOp->get_rhs_operand()->get_type());
+            bool rhs_ptr = false;  bool lhs_ptr = false;
+            lhs_ptr = isSgArrayType(lhs_type)||isSgPointerType(lhs_type);
+            rhs_ptr = isSgArrayType(rhs_type)||isSgPointerType(rhs_type);
+
+            // Only one of the children should be of pointer or array type.
+            // If both are then do not make this node a pointer
+            // arithmetic MemRefHandle.
+            if (lhs_ptr && !rhs_ptr) {
+                isPtrArithmetic = true;
+            } else if ( !lhs_ptr && rhs_ptr ) {
+                isPtrArithmetic = true;
+            }
+            break;
+        }
+    case V_SgPlusAssignOp:
+    case V_SgMinusAssignOp:
+        {
+            SgBinaryOp* binaryOp = isSgBinaryOp(astNode);
+            ROSE_ASSERT(binaryOp);
+
+            // if the lhs is an array type or ptr type
+            // then this node should be a MemRefHandle
+            // because a[2] is represented as a+2 in Sage
+            // if the operand is a pointer type
+            // then this node should be a MemRefHandle due to 
+            // ptr arithmetic
+
+            OA::MemRefHandle child_memref  = findTopMemRefHandle(binaryOp->get_lhs_operand());
+            SgExpression *child_node=NULL;
+            SgType *child_type;
+            if (child_memref!=OA::MemRefHandle(0)) {
+                child_node = isSgExpression(getSgNode(child_memref));
+                ROSE_ASSERT(child_node);
+                child_type = lookThruReferenceType(child_node->get_type());
+            }
+            if (child_node && 
+                (isSgArrayType(child_type)||isSgPointerType(child_type))) {
+                isPtrArithmetic = true;
+            }
+            break;
+        }
+
+    case V_SgMinusMinusOp:
+    case V_SgPlusPlusOp:
+        {
+            SgUnaryOp* unaryOp = isSgUnaryOp(astNode);
+            ROSE_ASSERT(unaryOp);
+
+            // if the operand is an array type or ptr type
+            // then this node should be a MemRefHandle
+            // because a[2] is represented as a+2 in Sage
+            // if the operand is a pointer type
+            // then this node should be a MemRefHandle due to 
+            // ptr arithmetic
+            OA::MemRefHandle child_memref  = findTopMemRefHandle(unaryOp->get_operand());
+            SgExpression *child_node=NULL;
+            SgType *child_type;
+            if (child_memref!=OA::MemRefHandle(0)) {
+                child_node = isSgExpression(getSgNode(child_memref));
+                ROSE_ASSERT(child_node);
+                child_type = lookThruReferenceType(child_node->get_type());
+            }
+            if (child_node && 
+                (isSgArrayType(child_type)||isSgPointerType(child_type))) {
+                isPtrArithmetic = true;
+            }
+            break;
+        }
+
+    default:
+        {
+            isPtrArithmetic = false;
+            break;
+        }      
+    }
+    return isPtrArithmetic;
 }
 
 void SageIRInterface::createUseDefForVarArg(OA::MemRefHandle memref,

@@ -4495,4 +4495,74 @@ Compilation terminated.
      createParamBindPtrAssignPairs, FindCallsitesPass::visit,
      toString(const OA::MemRefHandle h).
 
+1/28/08	    UseOA-ROSE svn trunk 332 Brian White		
 
+   - The bug fixes in this revision make possible the analysis
+     of 450.soplex and 471.omnetpp, though problems in ROSE's
+     backend remain, as noted below.  444.namd and 473.astar
+     previously passed through analysis.
+	
+   - Forgot to check in aliasAnalyzer in rev 328.  Did so here.
+
+   - Also forgot to add *placement* regression tests.  Did so now.
+	
+   - Added SageIRInterface::performsPtrArithmetic(SgExpression *expr),
+     which is based on createMemRefExprsForPtrArith and its calling context.
+     It returns true if expr performs ptr arithmetic.
+
+   - Fixed problem that occurs when trying to apply reference conversion
+     rules (2 and 4) to an expression that performs ptr arithmetic.
+
+     e.g., the problem occurs in the code fragment below.
+	
+     static bool hasKeyword(char*& pos1, const char* keyword) { ... }
+
+     static Real readInfinity(char*& pos) {
+	
+ 	hasKeyword(++pos, "inf[inity]");
+
+     }
+
+     ++pos performs ptr arithmetic and is represented as
+     AddressOf(USE, SubSetRef(USE, Deref(USE, Deref(USE, NamedRef(USE, SymHandle(pos)), 1), 1)))
+
+     When attempting to form param ptr pairs, we would like
+     pos1 = &(++pos).  However, ++pos is already represented as
+     &(++pos) (see above).  Therefore, it is not an lval.  So we 
+     can not take its address.  Therefore, we invoke 
+     applyReferenceConversionRules2And4.  An assertion therein fails
+     since we expect the lhs to be a const reference.
+
+     Modified the 3 calling contexts around applyReferenceConversionRules2And4
+     to first check if the expr is involved in ptr arithmetic.
+     In this case, it will be an addressOf and we can simply set the
+     lhs = rhs.
+	
+   - Reported bug unqualified-assignment-operator persists
+     in 450.soplex/src/didxset.cc, dsvector.cc, soplex.cc,
+     ssvector.cc, svset.cc, updatevector.cc.
+     in 471.omnetpp/src/EtherApp_m.cc, EtherCtrl_m.cc,
+     EtherFrame_m.cc, MACAddress.cc, 
+     src/libs/sim/carray.cc, cmessage.cc, cpar.cc, ctype.cc,
+     cchannel.cc, cfsm.cc, cmodule.cc, cpsquare.cc, cvarhist.cc,
+     cgate.cc, cmsgheap.cc, cqueue.cc, cdensity.cc, cnetmod.cc,
+     cdetect.cc, chist.cc, cstat.cc, cksplit.cc, cenum.cc, cllist.cc,
+     cpacket.cc.
+	
+   - Reported bug empty-sizeof persists
+     in 471.omnetpp/src/libs/sim/carray.cc.
+
+   - Reported bug empty-sizeof-class (presumably
+     related to reported bug empty-sizeof) persists 
+     in 471.omnetpp/src/libs/sim/cmodule.cc.
+	
+   - Reported by unqualified-bracket-operator (may be the same
+     as unqualified-assignment-operator) persists in
+     450.soplex/src/svset.cc.
+	
+   - Reported bug string-stream persists 
+     in 450.soplex/src/mpsinput.cc.
+
+   - Reported bug ctor-not-emitted persists
+     in 471.omnetpp/src/cmodule.cc, cqueue.cc, cllist.cc.
+	

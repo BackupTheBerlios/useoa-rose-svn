@@ -1,0 +1,1071 @@
+
+InterAliasMap(
+    AliasMap(
+        mProcHandle: ProcHandle(::foo::virt)
+        mNumSets: 9
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(this::::foo::virt__L2R)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(SgClassDefinition:::foo)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::virt__L2R)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            FieldAccess(
+                                mMemRefType: DEF
+                                mMRE: 
+                                NamedRef(
+                                    mMemRefType: USE
+                                    mSymHandle: SymHandle(SgClassDefinition:::foo)
+                                )
+                                mFieldName: virt_void
+                            )
+                            mNumDeref: 1
+                        )
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::foo__foo__scope__foo____Fb_v_Gb__Fe_)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle(new char [1000])
+                        mLocal: 0
+                    ) ] 
+                7	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: DEF
+                                mSymHandle: SymHandle(this::::foo::virt__L2R)
+                            )
+                            mNumDeref: 1
+                        )
+                    )    
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: DEF
+                                mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                            )
+                            mNumDeref: 1
+                        )
+                    )    
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mExprHandle: ExprHandle(new char [1000])
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    ) ] 
+                8	 => [ 
+                    LocFieldSubSet(
+                        mLoc: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(SgClassDefinition:::foo)
+                            mLocal: 0
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mFieldName: virt_void
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 1
+                4	 => 2
+                5	 => 2
+                6	 => 2
+                7	 => 1
+                8	 => 2
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(this::::foo::virt__L2R)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(SgClassDefinition:::foo)
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(method:::foo::virt__L2R)
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        FieldAccess(
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(SgClassDefinition:::foo)
+                            )
+                            mFieldName: virt_void
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(method:::foo::foo__foo__scope__foo____Fb_v_Gb__Fe_)
+                    ) ] 
+                6	 => [ 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle(new char [1000])
+                        mLocal: 0
+                    ) ] 
+                7	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::::foo::virt__L2R)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                        )
+                        mNumDeref: 1
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mExprHandle: ExprHandle(new char [1000])
+                            mLocal: 0
+                        )
+                    ) ] 
+                8	 => [ 
+                    FieldAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(SgClassDefinition:::foo)
+                        )
+                        mFieldName: virt_void
+                    ) ] 
+
+    )
+    AliasMap(
+        mProcHandle: ProcHandle(::foo::operator new)
+        mNumSets: 11
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(this::::foo::virt__L2R)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(buf)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(n)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(SgClassDefinition:::foo)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::virt__L2R)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            FieldAccess(
+                                mMemRefType: DEF
+                                mMRE: 
+                                NamedRef(
+                                    mMemRefType: USE
+                                    mSymHandle: SymHandle(SgClassDefinition:::foo)
+                                )
+                                mFieldName: virt_void
+                            )
+                            mNumDeref: 1
+                        )
+                    ) ] 
+                6	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                7	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::foo__foo__scope__foo____Fb_v_Gb__Fe_)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                8	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle(new char [1000])
+                        mLocal: 0
+                    ) ] 
+                9	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(buf)
+                            )
+                            mNumDeref: 1
+                        )
+                    )    
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: DEF
+                                mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                            )
+                            mNumDeref: 1
+                        )
+                    )    
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mExprHandle: ExprHandle(new char [1000])
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    ) ] 
+                10	 => [ 
+                    LocFieldSubSet(
+                        mLoc: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(SgClassDefinition:::foo)
+                            mLocal: 0
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mFieldName: virt_void
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+                4	 => 2
+                5	 => 1
+                6	 => 2
+                7	 => 2
+                8	 => 2
+                9	 => 1
+                10	 => 2
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                2	 => [ MemRefHandle(buf) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(this::::foo::virt__L2R)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(buf)
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(n)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(SgClassDefinition:::foo)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(method:::foo::virt__L2R)
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        FieldAccess(
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(SgClassDefinition:::foo)
+                            )
+                            mFieldName: virt_void
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                    ) ] 
+                7	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(method:::foo::foo__foo__scope__foo____Fb_v_Gb__Fe_)
+                    ) ] 
+                8	 => [ 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle(new char [1000])
+                        mLocal: 0
+                    ) ] 
+                9	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::::foo::virt__L2R)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(buf)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                        )
+                        mNumDeref: 1
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mExprHandle: ExprHandle(new char [1000])
+                            mLocal: 0
+                        )
+                    ) ] 
+                10	 => [ 
+                    FieldAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(SgClassDefinition:::foo)
+                        )
+                        mFieldName: virt_void
+                    ) ] 
+
+    )
+    AliasMap(
+        mProcHandle: ProcHandle(::foo::operator delete)
+        mNumSets: 10
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(this::::foo::virt__L2R)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(SgClassDefinition:::foo)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::virt__L2R)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            FieldAccess(
+                                mMemRefType: DEF
+                                mMRE: 
+                                NamedRef(
+                                    mMemRefType: USE
+                                    mSymHandle: SymHandle(SgClassDefinition:::foo)
+                                )
+                                mFieldName: virt_void
+                            )
+                            mNumDeref: 1
+                        )
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::foo__foo__scope__foo____Fb_v_Gb__Fe_)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                7	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle(new char [1000])
+                        mLocal: 0
+                    ) ] 
+                8	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: DEF
+                                mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                            )
+                            mNumDeref: 1
+                        )
+                    )    
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mExprHandle: ExprHandle(new char [1000])
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    ) ] 
+                9	 => [ 
+                    LocFieldSubSet(
+                        mLoc: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(SgClassDefinition:::foo)
+                            mLocal: 0
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mFieldName: virt_void
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+                4	 => 1
+                5	 => 2
+                6	 => 2
+                7	 => 2
+                8	 => 1
+                9	 => 2
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(this::::foo::virt__L2R)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(p)
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(SgClassDefinition:::foo)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(method:::foo::virt__L2R)
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        FieldAccess(
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(SgClassDefinition:::foo)
+                            )
+                            mFieldName: virt_void
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(method:::foo::foo__foo__scope__foo____Fb_v_Gb__Fe_)
+                    ) ] 
+                7	 => [ 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle(new char [1000])
+                        mLocal: 0
+                    ) ] 
+                8	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::::foo::virt__L2R)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                        )
+                        mNumDeref: 1
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mExprHandle: ExprHandle(new char [1000])
+                            mLocal: 0
+                        )
+                    ) ] 
+                9	 => [ 
+                    FieldAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(SgClassDefinition:::foo)
+                        )
+                        mFieldName: virt_void
+                    ) ] 
+
+    )
+    AliasMap(
+        mProcHandle: ProcHandle(main)
+        mNumSets: 12
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(this::::foo::virt__L2R)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(buf)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(f)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(SgClassDefinition:::foo)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::virt__L2R)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                7	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(method:::foo::foo__foo__scope__foo____Fb_v_Gb__Fe_)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                8	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle(new char [1000])
+                        mLocal: 0
+                    ) ] 
+                9	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: DEF
+                                mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                            )
+                            mNumDeref: 1
+                        )
+                    )    
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mExprHandle: ExprHandle(new char [1000])
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    ) ] 
+                10	 => [ 
+                    LocFieldSubSet(
+                        mLoc: 
+                        NamedLoc(
+                            mSymHandle: SymHandle(SgClassDefinition:::foo)
+                            mLocal: 0
+                            mFullOverlap: [  ] 
+                            mPartOverlap: [  ] 
+                        )
+                        mFieldName: virt_void
+                    ) ] 
+                11	 => [  ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+                4	 => 2
+                5	 => 1
+                6	 => 2
+                7	 => 2
+                8	 => 2
+                9	 => 1
+                10	 => 2
+                11	 => 2
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                2	 => [ MemRefHandle(buf)    MemRefHandle(buf)    MemRefHandle(( *((class foo *)buf)))    MemRefHandle(buf) ] 
+                3	 => [ MemRefHandle(f)    MemRefHandle(f) ] 
+                6	 => [ MemRefHandle(implicit actual this:)    MemRefHandle(new /* Output placement arguments for new operator */(buf,2) foo) ] 
+                7	 => [ MemRefHandle(::foo) ] 
+                10	 => [ MemRefHandle(( *((class foo *)buf)).virt)    MemRefHandle(f -> virt) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(this::::foo::virt__L2R)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(buf)
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(f)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(SgClassDefinition:::foo)
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        FieldAccess(
+                            mMemRefType: USE
+                            mMRE: 
+                            Deref(
+                                mMemRefType: USE
+                                mMRE: 
+                                NamedRef(
+                                    mMemRefType: USE
+                                    mSymHandle: SymHandle(buf)
+                                )
+                                mNumDeref: 1
+                            )
+                            mFieldName: __oa_vtable_ptr
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        FieldAccess(
+                            mMemRefType: USE
+                            mMRE: 
+                            Deref(
+                                mMemRefType: USE
+                                mMRE: 
+                                NamedRef(
+                                    mMemRefType: USE
+                                    mSymHandle: SymHandle(f)
+                                )
+                                mNumDeref: 1
+                            )
+                            mFieldName: __oa_vtable_ptr
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(method:::foo::virt__L2R)
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        FieldAccess(
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(SgClassDefinition:::foo)
+                            )
+                            mFieldName: virt_void
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        FieldAccess(
+                            mMemRefType: USE
+                            mMRE: 
+                            Deref(
+                                mMemRefType: USE
+                                mMRE: 
+                                FieldAccess(
+                                    mMemRefType: USE
+                                    mMRE: 
+                                    Deref(
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(buf)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                    mFieldName: __oa_vtable_ptr
+                                )
+                                mNumDeref: 1
+                            )
+                            mFieldName: virt_void
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        FieldAccess(
+                            mMemRefType: USE
+                            mMRE: 
+                            Deref(
+                                mMemRefType: USE
+                                mMRE: 
+                                FieldAccess(
+                                    mMemRefType: USE
+                                    mMRE: 
+                                    Deref(
+                                        mMemRefType: USE
+                                        mMRE: 
+                                        NamedRef(
+                                            mMemRefType: USE
+                                            mSymHandle: SymHandle(f)
+                                        )
+                                        mNumDeref: 1
+                                    )
+                                    mFieldName: __oa_vtable_ptr
+                                )
+                                mNumDeref: 1
+                            )
+                            mFieldName: virt_void
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                6	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                    ) ] 
+                7	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(method:::foo::foo__foo__scope__foo____Fb_v_Gb__Fe_)
+                    ) ] 
+                8	 => [ 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle(new char [1000])
+                        mLocal: 0
+                    ) ] 
+                9	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(this::::foo::virt__L2R)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(buf)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(f)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(method:::foo::operator new__L3R)
+                        )
+                        mNumDeref: 1
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mExprHandle: ExprHandle(new char [1000])
+                            mLocal: 0
+                        )
+                    ) ] 
+                10	 => [ 
+                    FieldAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(SgClassDefinition:::foo)
+                        )
+                        mFieldName: virt_void
+                    )    
+                    FieldAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            FieldAccess(
+                                mMemRefType: USE
+                                mMRE: 
+                                Deref(
+                                    mMemRefType: USE
+                                    mMRE: 
+                                    NamedRef(
+                                        mMemRefType: USE
+                                        mSymHandle: SymHandle(buf)
+                                    )
+                                    mNumDeref: 1
+                                )
+                                mFieldName: __oa_vtable_ptr
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: virt_void
+                    )    
+                    FieldAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            FieldAccess(
+                                mMemRefType: USE
+                                mMRE: 
+                                Deref(
+                                    mMemRefType: USE
+                                    mMRE: 
+                                    NamedRef(
+                                        mMemRefType: USE
+                                        mSymHandle: SymHandle(f)
+                                    )
+                                    mNumDeref: 1
+                                )
+                                mFieldName: __oa_vtable_ptr
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: virt_void
+                    ) ] 
+                11	 => [ 
+                    FieldAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(buf)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: __oa_vtable_ptr
+                    )    
+                    FieldAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(f)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: __oa_vtable_ptr
+                    ) ] 
+
+    )
+)
