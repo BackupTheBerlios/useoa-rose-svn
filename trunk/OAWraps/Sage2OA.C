@@ -3793,6 +3793,12 @@ class ExprTreeTraversal
                              OA::OA_ptr<OA::ExprTree::Node> inheritedAttribute)
   { 
 
+    // Michelle and Andy have seen efficiency problems here.
+    // I just want to verify that this isn't being invoked.
+    // i.e., this ROSE_ABORT() is for debugging purposes and may
+    // be removed.
+    ROSE_ABORT();
+
     // This is a top-down traversal and we are passing the parent
     // within the ExprTree as the inherited attribute.
     OA::OA_ptr<OA::ExprTree::Node> parent = inheritedAttribute;

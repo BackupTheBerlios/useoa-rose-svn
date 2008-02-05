@@ -3837,7 +3837,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
     case V_SgVariableDeclaration:
         {
-            
+	  SgType *type = NULL;
             // recurse on variables
             SgVariableDeclaration *varDecl = isSgVariableDeclaration(astNode);
             ROSE_ASSERT(varDecl != NULL);
@@ -3848,7 +3848,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 SgInitializedName *lhs = *varIter;
                 ROSE_ASSERT(lhs != NULL);
                 findAllMemRefsAndPtrAssigns(lhs,stmt);
-
+		type = lhs->get_type();
 #if 1
                 SgConstructorInitializer *ctorInitializer =
 		  isSgConstructorInitializer(lhs->get_initptr());
@@ -3922,6 +3922,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 #endif
 #endif
             }
+
             break;
         }
     case V_SgVariableDefinition:
@@ -5949,7 +5950,7 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
       }
 
       return mre;
-    }
+    } // if ( initName != NULL )
   
     // If the parent is a SgExprListExp, whose parent is a 
     // SgConstructorInitializer or a SgFunctionCallExp, then 
@@ -5962,8 +5963,17 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
     //
     // return the address of an anonymous memory obj-- use
     // the SgConstructorInitializer for t.
-    if ( isSgExprListExp(parent) ) {
+
+    // Another anonymous case occurs when the constructor is 
+    // invoked from within a conditional exp whose parent is
+    // an expression list whose parent is a function call.
+    // e.g., funcCall((URI==((0)) ? DOMString(0) : URI.clone()))
+
+    if ( isSgExprListExp(parent) || isSgExprListExp(parent->get_parent()) ) {
         SgNode *grandParent = parent->get_parent();
+        if ( isSgExprListExp(parent->get_parent()) ) {
+            grandParent = grandParent->get_parent();
+        }
         if ( isSgConstructorInitializer(grandParent) || 
              isSgFunctionCallExp(grandParent) ) {
 
@@ -6026,7 +6036,7 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
                 reference : other );
              return mre;
         }
-    }
+    } // if ( isSgExprListExp(parent) ) 
 
     // If the parent is an expression root, and its parent is
     // a return statement, then a copy constructor is invoked
@@ -6069,7 +6079,7 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
        // Record the type of the MRE (reference or non-reference).
        mMre2TypeMap[mre] = other;
        return mre;
-    }
+    } // if ( ( isSgExpressionRoot(parent) && isSgReturnStmt(grandParent2) ) || ( isSgReturnStmt(parent) ) )
 
     // It looks like the parent could be an assign op as well.
     // In that case, return the address of the lhs.
@@ -6112,7 +6122,7 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
         // Record the type of the MRE (reference or non-reference).
         mMre2TypeMap[mre] = other;
         return mre;
-    }
+    } // if ( isSgAssignOp(parent) )
 
     // At this point we know that the immediate parent is not
     // a SgInitializedName, because we took care of that case
@@ -6144,6 +6154,12 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
         // one of the anonymous memory object cases named above.
         // In that case, our parent had better be a SgNewExp.
         lhs = isSgNewExp(ctorInitializer->get_parent());
+    }
+    if (lhs == NULL) { 
+	  SgNode *node = ctorInitializer->get_parent()->get_parent()->get_parent();
+	  std::cout << "ctor = " << node->unparseToString() << std::endl;
+          printType pt;
+          pt.traverse(node, 0);
     }
     ROSE_ASSERT(lhs != NULL);
 

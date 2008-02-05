@@ -4565,4 +4565,43 @@ Compilation terminated.
 
    - Reported bug ctor-not-emitted persists
      in 471.omnetpp/src/cmodule.cc, cqueue.cc, cllist.cc.
+
+1/30/08	    UseOA-ROSE svn trunk 333 Brian White		
+
+   - We appear to be running out of memory (in buildAliasMaps).
+     Hopefully, this issue will be resolved when switching to the
+     new alias tag branch of OA.  I speculate this occurs because
+     we create a location for each < MemRefHandle (or so), ProcHandle >
+     pair.  Therefore, the memory usage blows up if there are many
+     procs.  An abort of a new invocation occurs when compiling
+     files SGXMLScanner.cpp, TraverseSchema.cpp.
+     For now, I have simply passed these files by, we will need
+     to revisit them later.
+
+   - Modified Sg_File_Info case of getFormalTypes to invoke
+     lookThruReferenceType to look past a const modified when
+     determining/ensuring that a variable has a class type.
+	
+   - Modified createConstructorInitializerReceiverMRE to create
+     MRE for anonymous object created by a constructor
+     invoked from within a conditional exp whose parent is
+     an expression list whose parent is a function call.
+     e.g., funcCall((URI==((0)) ? DOMString(0) : URI.clone())).
+	
+   - Reported bug two-declarations-in-for-loop persists 
+     in 483.xalancbmk/src/DOMRangeImpl.cpp.
+
+   - Reported bug unqualified-assignment-operator persists
+     in 483.xalancbmk/src/DOM_Attr.cpp, DOM_CDATASection.cpp,
+     DOM_CharacterData.cpp, DOM_Comment.cpp, DOM_Document.cpp,
+     DOM_DocumentFragment.cpp, DOM_DocumentType.cpp, DOM_Element.cpp,
+     DOM_Entity.cpp, DOM_EntityReference.cpp, DOM_Notation.cpp,
+     DOM_ProcessingInstruction.cpp, DOM_Text.cpp, DOM_XMLDecl.cpp,
+     SAXParseException.cpp, 
+
+   - Reported bug no-space-before-scope-operator persists 
+     in 483.xalancbmk/src/DOM_NamedNodeMap.cpp, DOM_Node.cpp,
+
+   - Reported bug empty-sizeof-class persists
+     in 483.xalancbmk/src/ReaderMgr.cpp, XSAnnotation.cpp.
 	

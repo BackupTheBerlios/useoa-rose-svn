@@ -500,10 +500,15 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
                 SgPointerType *ptrType = isSgPointerType(lookThruReferenceType(varType)); 
                 SgClassType *classType = NULL; 
                 if ( ptrType ) { 
-                    classType = isSgClassType(ptrType->get_base_type()); 
+                    classType = isSgClassType(lookThruReferenceType(ptrType->get_base_type())); 
                 } else { 
-                    classType = isSgClassType(varType); 
+                    classType = isSgClassType(lookThruReferenceType(varType)); 
                 } 
+                if ( classType == NULL ) {
+		    std::cout << "varType = " << varType->unparseToString() << std::endl;
+		    std::cout << "class_name = " << varType->sage_class_name() << std::endl;
+
+                }
                 ROSE_ASSERT(classType != NULL); 
 
                 SgClassDeclaration *classDeclaration =  
