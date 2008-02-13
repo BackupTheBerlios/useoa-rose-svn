@@ -1,0 +1,2744 @@
+
+AliasTagResults(
+    mMREToTags: OA::OA_ptr<MemRefExpr> 	 => OA::OA_ptr<std::set<AliasTag> > 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(strcmp)
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(strdup)
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(malloc)
+            )	 => [ 
+                Tag(
+                    mTagID: 3
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(free)
+            )	 => [ 
+                Tag(
+                    mTagID: 4
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(hash)
+            )	 => [ 
+                Tag(
+                    mTagID: 5
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(lookup)
+            )	 => [ 
+                Tag(
+                    mTagID: 6
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(install)
+            )	 => [ 
+                Tag(
+                    mTagID: 7
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(hashtab)
+            )	 => [ 
+                Tag(
+                    mTagID: 8
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(s)
+            )	 => [ 
+                Tag(
+                    mTagID: 9
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(hashval)
+            )	 => [ 
+                Tag(
+                    mTagID: 10
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(s)
+            )	 => [ 
+                Tag(
+                    mTagID: 11
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(np)
+            )	 => [ 
+                Tag(
+                    mTagID: 12
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(name)
+            )	 => [ 
+                Tag(
+                    mTagID: 13
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(defn)
+            )	 => [ 
+                Tag(
+                    mTagID: 14
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(np)
+            )	 => [ 
+                Tag(
+                    mTagID: 15
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(hashval)
+            )	 => [ 
+                Tag(
+                    mTagID: 16
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(retval)
+            )	 => [ 
+                Tag(
+                    mTagID: 17
+                ) ] 
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle((malloc(((sizeof(np))))))
+                mLocal: 0
+            )	 => [ 
+                Tag(
+                    mTagID: 18
+                )    
+                Tag(
+                    mTagID: 26
+                ) ] 
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("a")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 19
+                ) ] 
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("Argonne")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 20
+                ) ] 
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("n")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 21
+                ) ] 
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("National")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 22
+                ) ] 
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("l")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => [ 
+                Tag(
+                    mTagID: 23
+                )    
+                Tag(
+                    mTagID: 28
+                ) ] 
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("Lab")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => [ 
+                Tag(
+                    mTagID: 24
+                )    
+                Tag(
+                    mTagID: 29
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(strdup)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 25
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(lookup)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 26
+                )    
+                Tag(
+                    mTagID: 31
+                )    
+                Tag(
+                    mTagID: 32
+                )    
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(install)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 26
+                )    
+                Tag(
+                    mTagID: 31
+                )    
+                Tag(
+                    mTagID: 32
+                )    
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(hashtab)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 27
+                )    
+                Tag(
+                    mTagID: 30
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 28
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 28
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(np)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 26
+                )    
+                Tag(
+                    mTagID: 31
+                )    
+                Tag(
+                    mTagID: 32
+                )    
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(name)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 28
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(defn)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 29
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(np)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 26
+                )    
+                Tag(
+                    mTagID: 31
+                )    
+                Tag(
+                    mTagID: 32
+                )    
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(retval)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 26
+                )    
+                Tag(
+                    mTagID: 31
+                )    
+                Tag(
+                    mTagID: 32
+                )    
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                IdxExprAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(hashtab)
+                        )
+                        mNumDeref: 1
+                    )MemRefHandle(hashval)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 26
+                )    
+                Tag(
+                    mTagID: 31
+                )    
+                Tag(
+                    mTagID: 32
+                )    
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                IdxExprAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(hashtab)
+                        )
+                        mNumDeref: 1
+                    )MemRefHandle(hashval)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 26
+                )    
+                Tag(
+                    mTagID: 31
+                )    
+                Tag(
+                    mTagID: 32
+                )    
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                IdxExprAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(hashtab)
+                        )
+                        mNumDeref: 1
+                    )MemRefHandle(hash(s))
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 26
+                )    
+                Tag(
+                    mTagID: 31
+                )    
+                Tag(
+                    mTagID: 32
+                )    
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                FieldAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: next
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 26
+                )    
+                Tag(
+                    mTagID: 31
+                )    
+                Tag(
+                    mTagID: 32
+                )    
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                FieldAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: defn
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 25
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                FieldAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: name
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 25
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                FieldAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: next
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 26
+                )    
+                Tag(
+                    mTagID: 31
+                )    
+                Tag(
+                    mTagID: 32
+                )    
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            IdxExprAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(hashtab)
+                    )
+                    mNumDeref: 1
+                )MemRefHandle(hashval)
+            )	 => [ 
+                Tag(
+                    mTagID: 30
+                ) ] 
+            
+            IdxExprAccess(
+                mMemRefType: DEF
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(hashtab)
+                    )
+                    mNumDeref: 1
+                )MemRefHandle(hashval)
+            )	 => [ 
+                Tag(
+                    mTagID: 30
+                ) ] 
+            
+            IdxExprAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(hashtab)
+                    )
+                    mNumDeref: 1
+                )MemRefHandle(hash(s))
+            )	 => [ 
+                Tag(
+                    mTagID: 30
+                ) ] 
+            
+            FieldAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )
+                mFieldName: name
+            )	 => [ 
+                Tag(
+                    mTagID: 31
+                ) ] 
+            
+            FieldAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )
+                mFieldName: next
+            )	 => [ 
+                Tag(
+                    mTagID: 32
+                ) ] 
+            
+            FieldAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )
+                mFieldName: defn
+            )	 => [ 
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            FieldAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )
+                mFieldName: name
+            )	 => [ 
+                Tag(
+                    mTagID: 31
+                ) ] 
+            
+            FieldAccess(
+                mMemRefType: DEF
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )
+                mFieldName: next
+            )	 => [ 
+                Tag(
+                    mTagID: 32
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle((malloc(((sizeof(np))))))
+                    mLocal: 0
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 26
+                )    
+                Tag(
+                    mTagID: 31
+                )    
+                Tag(
+                    mTagID: 32
+                )    
+                Tag(
+                    mTagID: 33
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("a")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 28
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Argonne")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 29
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("n")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 28
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("National")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 29
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("l")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 28
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Lab")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 29
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 28
+                ) ] 
+
+    mTagToMREs: AliasTag	 => OA::OA_ptr<std::set<OA::OA_ptr<MemRefExpr> > > 
+            
+            Tag(
+                mTagID: 0
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("a")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )    
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Argonne")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )    
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("n")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )    
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("National")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(name)
+                    )
+                    mNumDeref: 1
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("a")
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
+                    )
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("n")
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
+                    )
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("l")
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
+                    )
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+            
+            Tag(
+                mTagID: 1
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(strcmp)
+                ) ] 
+            
+            Tag(
+                mTagID: 2
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(strdup)
+                ) ] 
+            
+            Tag(
+                mTagID: 3
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(malloc)
+                ) ] 
+            
+            Tag(
+                mTagID: 4
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(free)
+                ) ] 
+            
+            Tag(
+                mTagID: 5
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(hash)
+                ) ] 
+            
+            Tag(
+                mTagID: 6
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(lookup)
+                ) ] 
+            
+            Tag(
+                mTagID: 7
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(install)
+                ) ] 
+            
+            Tag(
+                mTagID: 8
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(hashtab)
+                ) ] 
+            
+            Tag(
+                mTagID: 9
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s)
+                ) ] 
+            
+            Tag(
+                mTagID: 10
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(hashval)
+                ) ] 
+            
+            Tag(
+                mTagID: 11
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s)
+                ) ] 
+            
+            Tag(
+                mTagID: 12
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(np)
+                ) ] 
+            
+            Tag(
+                mTagID: 13
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(name)
+                ) ] 
+            
+            Tag(
+                mTagID: 14
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(defn)
+                ) ] 
+            
+            Tag(
+                mTagID: 15
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(np)
+                ) ] 
+            
+            Tag(
+                mTagID: 16
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(hashval)
+                ) ] 
+            
+            Tag(
+                mTagID: 17
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(retval)
+                ) ] 
+            
+            Tag(
+                mTagID: 18
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle((malloc(((sizeof(np))))))
+                    mLocal: 0
+                ) ] 
+            
+            Tag(
+                mTagID: 19
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("a")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                ) ] 
+            
+            Tag(
+                mTagID: 20
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Argonne")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                ) ] 
+            
+            Tag(
+                mTagID: 21
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("n")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                ) ] 
+            
+            Tag(
+                mTagID: 22
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("National")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                ) ] 
+            
+            Tag(
+                mTagID: 23
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("l")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                ) ] 
+            
+            Tag(
+                mTagID: 24
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Lab")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                ) ] 
+            
+            Tag(
+                mTagID: 25
+            )	 => [ 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(strdup)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(np)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: defn
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(np)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: name
+                    )
+                    mNumDeref: 1
+                ) ] 
+            
+            Tag(
+                mTagID: 26
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle((malloc(((sizeof(np))))))
+                    mLocal: 0
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(lookup)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(install)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(retval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hashval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hashval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hash(s))
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(np)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: next
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(np)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: next
+                    )
+                    mNumDeref: 1
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle((malloc(((sizeof(np))))))
+                        mLocal: 0
+                    )
+                ) ] 
+            
+            Tag(
+                mTagID: 27
+            )	 => [ 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(hashtab)
+                    )
+                    mNumDeref: 1
+                ) ] 
+            
+            Tag(
+                mTagID: 28
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("l")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(name)
+                    )
+                    mNumDeref: 1
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("a")
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
+                    )
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("n")
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
+                    )
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("l")
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
+                    )
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(s)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+            
+            Tag(
+                mTagID: 29
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Lab")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(defn)
+                    )
+                    mNumDeref: 1
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("Argonne")
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
+                    )
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("National")
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
+                    )
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("Lab")
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
+                    )
+                ) ] 
+            
+            Tag(
+                mTagID: 30
+            )	 => [ 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(hashtab)
+                    )
+                    mNumDeref: 1
+                )    
+                IdxExprAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(hashtab)
+                        )
+                        mNumDeref: 1
+                    )MemRefHandle(hashval)
+                )    
+                IdxExprAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(hashtab)
+                        )
+                        mNumDeref: 1
+                    )MemRefHandle(hashval)
+                )    
+                IdxExprAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(hashtab)
+                        )
+                        mNumDeref: 1
+                    )MemRefHandle(hash(s))
+                ) ] 
+            
+            Tag(
+                mTagID: 31
+            )	 => [ 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(lookup)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(install)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(retval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hashval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hashval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hash(s))
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(np)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: next
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(np)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: next
+                    )
+                    mNumDeref: 1
+                )    
+                FieldAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: name
+                )    
+                FieldAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: name
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle((malloc(((sizeof(np))))))
+                        mLocal: 0
+                    )
+                ) ] 
+            
+            Tag(
+                mTagID: 32
+            )	 => [ 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(lookup)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(install)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(retval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hashval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hashval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hash(s))
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(np)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: next
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(np)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: next
+                    )
+                    mNumDeref: 1
+                )    
+                FieldAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: next
+                )    
+                FieldAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: next
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle((malloc(((sizeof(np))))))
+                        mLocal: 0
+                    )
+                ) ] 
+            
+            Tag(
+                mTagID: 33
+            )	 => [ 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(lookup)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(install)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(retval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hashval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hashval)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    IdxExprAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(hashtab)
+                            )
+                            mNumDeref: 1
+                        )MemRefHandle(hash(s))
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(np)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: next
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    FieldAccess(
+                        mMemRefType: DEF
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(np)
+                            )
+                            mNumDeref: 1
+                        )
+                        mFieldName: next
+                    )
+                    mNumDeref: 1
+                )    
+                FieldAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: defn
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle((malloc(((sizeof(np))))))
+                        mLocal: 0
+                    )
+                ) ] 
+
+    mMemRefToTags: MemRefHandle	 => OA::OA_ptr<std::set<AliasTag> > 
+            MemRefHandle(( *s))	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 28
+                ) ] 
+            MemRefHandle(( *s))	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 28
+                ) ] 
+
+    mMREToMustFlag: OA::OA_ptr<MemRefExpr> 	 => bool
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(strcmp)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(strdup)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(malloc)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(free)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(hash)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(lookup)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(install)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(hashtab)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(s)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(hashval)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(s)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(np)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(name)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(defn)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(np)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(hashval)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(retval)
+            )	 => 1
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle((malloc(((sizeof(np))))))
+                mLocal: 0
+            )	 => 0
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("a")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => 0
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("Argonne")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => 0
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("n")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => 0
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("National")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => 0
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("l")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => 0
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("Lab")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(strdup)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(lookup)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(install)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(hashtab)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(np)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(name)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(defn)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(np)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(retval)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                IdxExprAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(hashtab)
+                        )
+                        mNumDeref: 1
+                    )MemRefHandle(hashval)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                IdxExprAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(hashtab)
+                        )
+                        mNumDeref: 1
+                    )MemRefHandle(hashval)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                IdxExprAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(hashtab)
+                        )
+                        mNumDeref: 1
+                    )MemRefHandle(hash(s))
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                FieldAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: next
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                FieldAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: defn
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                FieldAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: name
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                FieldAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(np)
+                        )
+                        mNumDeref: 1
+                    )
+                    mFieldName: next
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            IdxExprAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(hashtab)
+                    )
+                    mNumDeref: 1
+                )MemRefHandle(hashval)
+            )	 => 0
+            
+            IdxExprAccess(
+                mMemRefType: DEF
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(hashtab)
+                    )
+                    mNumDeref: 1
+                )MemRefHandle(hashval)
+            )	 => 0
+            
+            IdxExprAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(hashtab)
+                    )
+                    mNumDeref: 1
+                )MemRefHandle(hash(s))
+            )	 => 0
+            
+            FieldAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )
+                mFieldName: name
+            )	 => 0
+            
+            FieldAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )
+                mFieldName: next
+            )	 => 0
+            
+            FieldAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )
+                mFieldName: defn
+            )	 => 0
+            
+            FieldAccess(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )
+                mFieldName: name
+            )	 => 0
+            
+            FieldAccess(
+                mMemRefType: DEF
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(np)
+                    )
+                    mNumDeref: 1
+                )
+                mFieldName: next
+            )	 => 0
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle((malloc(((sizeof(np))))))
+                    mLocal: 0
+                )
+            )	 => 0
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("a")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => 0
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Argonne")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => 0
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("n")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => 0
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("National")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => 0
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("l")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => 0
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Lab")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => 0
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s)
+                    )
+                    mNumDeref: 1
+                )
+            )	 => 0
+
+    mMemRefToMustFlag: MemRefHandle	 => bool
+            MemRefHandle(( *s))	 => 0
+            MemRefHandle(( *s))	 => 0
+
+)

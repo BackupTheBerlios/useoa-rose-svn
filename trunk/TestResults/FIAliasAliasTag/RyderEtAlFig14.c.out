@@ -1,0 +1,355 @@
+
+AliasTagResults(
+    mMREToTags: OA::OA_ptr<MemRefExpr> 	 => OA::OA_ptr<std::set<AliasTag> > 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(p)
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(q)
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(r)
+            )	 => [ 
+                Tag(
+                    mTagID: 3
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(s1)
+            )	 => [ 
+                Tag(
+                    mTagID: 4
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(s2)
+            )	 => [ 
+                Tag(
+                    mTagID: 5
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(s3)
+            )	 => [ 
+                Tag(
+                    mTagID: 6
+                )    
+                Tag(
+                    mTagID: 8
+                )    
+                Tag(
+                    mTagID: 9
+                )    
+                Tag(
+                    mTagID: 10
+                ) ] 
+            
+            FieldAccess(
+                mMemRefType: DEF
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s2)
+                )
+                mFieldName: a
+            )	 => [ 
+                Tag(
+                    mTagID: 7
+                ) ] 
+            
+            FieldAccess(
+                mMemRefType: DEF
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s3)
+                )
+                mFieldName: a
+            )	 => [ 
+                Tag(
+                    mTagID: 8
+                ) ] 
+            
+            FieldAccess(
+                mMemRefType: DEF
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s3)
+                )
+                mFieldName: b
+            )	 => [ 
+                Tag(
+                    mTagID: 9
+                ) ] 
+            
+            FieldAccess(
+                mMemRefType: DEF
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s3)
+                )
+                mFieldName: c
+            )	 => [ 
+                Tag(
+                    mTagID: 10
+                ) ] 
+
+    mTagToMREs: AliasTag	 => OA::OA_ptr<std::set<OA::OA_ptr<MemRefExpr> > > 
+            
+            Tag(
+                mTagID: 1
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(p)
+                ) ] 
+            
+            Tag(
+                mTagID: 2
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(q)
+                ) ] 
+            
+            Tag(
+                mTagID: 3
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(r)
+                ) ] 
+            
+            Tag(
+                mTagID: 4
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s1)
+                ) ] 
+            
+            Tag(
+                mTagID: 5
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s2)
+                ) ] 
+            
+            Tag(
+                mTagID: 6
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s3)
+                ) ] 
+            
+            Tag(
+                mTagID: 7
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s2)
+                )    
+                FieldAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s2)
+                    )
+                    mFieldName: a
+                ) ] 
+            
+            Tag(
+                mTagID: 8
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s3)
+                )    
+                FieldAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s3)
+                    )
+                    mFieldName: a
+                ) ] 
+            
+            Tag(
+                mTagID: 9
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s3)
+                )    
+                FieldAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s3)
+                    )
+                    mFieldName: b
+                ) ] 
+            
+            Tag(
+                mTagID: 10
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(s3)
+                )    
+                FieldAccess(
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(s3)
+                    )
+                    mFieldName: c
+                ) ] 
+
+    mMemRefToTags: MemRefHandle	 => OA::OA_ptr<std::set<AliasTag> > 
+            MemRefHandle(s2)	 => [ 
+                Tag(
+                    mTagID: 5
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+            MemRefHandle(s3)	 => [ 
+                Tag(
+                    mTagID: 6
+                )    
+                Tag(
+                    mTagID: 8
+                )    
+                Tag(
+                    mTagID: 9
+                )    
+                Tag(
+                    mTagID: 10
+                ) ] 
+            MemRefHandle(s3)	 => [ 
+                Tag(
+                    mTagID: 6
+                )    
+                Tag(
+                    mTagID: 8
+                )    
+                Tag(
+                    mTagID: 9
+                )    
+                Tag(
+                    mTagID: 10
+                ) ] 
+            MemRefHandle(s2)	 => [ 
+                Tag(
+                    mTagID: 5
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+
+    mMREToMustFlag: OA::OA_ptr<MemRefExpr> 	 => bool
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(p)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(q)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(r)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(s1)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(s2)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(s3)
+            )	 => 1
+            
+            FieldAccess(
+                mMemRefType: DEF
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s2)
+                )
+                mFieldName: a
+            )	 => 0
+            
+            FieldAccess(
+                mMemRefType: DEF
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s3)
+                )
+                mFieldName: a
+            )	 => 0
+            
+            FieldAccess(
+                mMemRefType: DEF
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s3)
+                )
+                mFieldName: b
+            )	 => 0
+            
+            FieldAccess(
+                mMemRefType: DEF
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(s3)
+                )
+                mFieldName: c
+            )	 => 0
+
+    mMemRefToMustFlag: MemRefHandle	 => bool
+            MemRefHandle(s2)	 => 1
+            MemRefHandle(s3)	 => 1
+            MemRefHandle(s3)	 => 1
+            MemRefHandle(s2)	 => 1
+
+)

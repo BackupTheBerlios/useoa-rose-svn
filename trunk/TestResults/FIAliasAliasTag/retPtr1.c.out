@@ -1,0 +1,745 @@
+
+AliasTagResults(
+    mMREToTags: OA::OA_ptr<MemRefExpr> 	 => OA::OA_ptr<std::set<AliasTag> > 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(puts)
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(my_strcpy)
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(destination)
+            )	 => [ 
+                Tag(
+                    mTagID: 3
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(source)
+            )	 => [ 
+                Tag(
+                    mTagID: 4
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(p)
+            )	 => [ 
+                Tag(
+                    mTagID: 5
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(strA)
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 6
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(strB)
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(cptr)
+            )	 => [ 
+                Tag(
+                    mTagID: 8
+                ) ] 
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("Laurel")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => [ 
+                Tag(
+                    mTagID: 9
+                )    
+                Tag(
+                    mTagID: 11
+                ) ] 
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("Hardy")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => [ 
+                Tag(
+                    mTagID: 10
+                )    
+                Tag(
+                    mTagID: 12
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(my_strcpy)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(destination)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(source)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 6
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(p)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(cptr)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Laurel")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 11
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Hardy")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 12
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(source)
+                    )
+                    mNumDeref: 1
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 6
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: DEF
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+
+    mTagToMREs: AliasTag	 => OA::OA_ptr<std::set<OA::OA_ptr<MemRefExpr> > > 
+            
+            Tag(
+                mTagID: 0
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(strA)
+                )    
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(strB)
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(my_strcpy)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(destination)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(source)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(cptr)
+                    )
+                    mNumDeref: 1
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(source)
+                        )
+                        mNumDeref: 1
+                    )
+                )    
+                SubSetRef(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(p)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+            
+            Tag(
+                mTagID: 1
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(puts)
+                ) ] 
+            
+            Tag(
+                mTagID: 2
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(my_strcpy)
+                ) ] 
+            
+            Tag(
+                mTagID: 3
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(destination)
+                ) ] 
+            
+            Tag(
+                mTagID: 4
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(source)
+                ) ] 
+            
+            Tag(
+                mTagID: 5
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(p)
+                ) ] 
+            
+            Tag(
+                mTagID: 6
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(strA)
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(source)
+                    )
+                    mNumDeref: 1
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(source)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+            
+            Tag(
+                mTagID: 7
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(strB)
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(my_strcpy)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(destination)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(cptr)
+                    )
+                    mNumDeref: 1
+                )    
+                SubSetRef(
+                    mMemRefType: DEF
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(p)
+                        )
+                        mNumDeref: 1
+                    )
+                ) ] 
+            
+            Tag(
+                mTagID: 8
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(cptr)
+                ) ] 
+            
+            Tag(
+                mTagID: 9
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Laurel")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                ) ] 
+            
+            Tag(
+                mTagID: 10
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Hardy")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                ) ] 
+            
+            Tag(
+                mTagID: 11
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Laurel")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("Laurel")
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
+                    )
+                ) ] 
+            
+            Tag(
+                mTagID: 12
+            )	 => [ 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Hardy")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle("Hardy")
+                        mLocal: 1
+                        mProcHandle: ProcHandle(main)
+                    )
+                ) ] 
+
+    mMemRefToTags: MemRefHandle	 => OA::OA_ptr<std::set<AliasTag> > 
+            MemRefHandle(strB)	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+            MemRefHandle(( *source))	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 6
+                ) ] 
+            MemRefHandle(*(p++))	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+            MemRefHandle(*(source++))	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 6
+                ) ] 
+            MemRefHandle(*p)	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+            MemRefHandle(strA)	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 6
+                ) ] 
+            MemRefHandle(strB)	 => [ 
+                Tag(
+                    mTagID: 0
+                )    
+                Tag(
+                    mTagID: 7
+                ) ] 
+
+    mMREToMustFlag: OA::OA_ptr<MemRefExpr> 	 => bool
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(puts)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(my_strcpy)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(destination)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(source)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(p)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(strA)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(strB)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(cptr)
+            )	 => 1
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("Laurel")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => 0
+            
+            UnnamedRef(
+                mMemRefType: USE
+                mExprHandle: ExprHandle("Hardy")
+                mLocal: 1
+                mProcHandle: ProcHandle(main)
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(my_strcpy)
+                )
+                mNumDeref: 1
+            )	 => 1
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(destination)
+                )
+                mNumDeref: 1
+            )	 => 1
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(source)
+                )
+                mNumDeref: 1
+            )	 => 1
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(p)
+                )
+                mNumDeref: 1
+            )	 => 1
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(cptr)
+                )
+                mNumDeref: 1
+            )	 => 1
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Laurel")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => 0
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                UnnamedRef(
+                    mMemRefType: USE
+                    mExprHandle: ExprHandle("Hardy")
+                    mLocal: 1
+                    mProcHandle: ProcHandle(main)
+                )
+            )	 => 0
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(source)
+                    )
+                    mNumDeref: 1
+                )
+            )	 => 1
+            
+            SubSetRef(
+                mMemRefType: DEF
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )
+            )	 => 1
+
+    mMemRefToMustFlag: MemRefHandle	 => bool
+            MemRefHandle(strB)	 => 1
+            MemRefHandle(( *source))	 => 1
+            MemRefHandle(*(p++))	 => 1
+            MemRefHandle(*(source++))	 => 1
+            MemRefHandle(*p)	 => 1
+            MemRefHandle(strA)	 => 1
+            MemRefHandle(strB)	 => 1
+
+)
