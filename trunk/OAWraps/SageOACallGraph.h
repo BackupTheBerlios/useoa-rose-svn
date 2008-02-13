@@ -8,7 +8,6 @@
 //#include <config.h>
 #endif
 #include "rose.h"
-#
 #include <OpenAnalysis/IRInterface/CallGraphIRInterface.hpp>
 #include "Sage2OA.h"
 

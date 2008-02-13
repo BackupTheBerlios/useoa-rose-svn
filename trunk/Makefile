@@ -74,7 +74,7 @@ clean-recursive:
 
 #bin_PROGRAMS = OATest CtoOA CHAandAliasVirtualMethodResolver
 #bin_PROGRAMS = OATest CtoOA genPairs
-bin_PROGRAMS = OATest CtoOA aliasAnalyzer
+bin_PROGRAMS = OATest #CtoOA #aliasAnalyzer
 
 # recursive
 

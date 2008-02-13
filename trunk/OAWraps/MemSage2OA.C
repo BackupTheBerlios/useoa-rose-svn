@@ -636,7 +636,6 @@ void SageIRInterface::initMemRefAndPtrAssignMaps()
   }
 }
 
-    
 OA::OA_ptr<OA::MemRefExpr> 
 SageIRInterface::
 applyReferenceConversionRules2And4(OA::StmtHandle stmt,

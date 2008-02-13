@@ -4,33 +4,36 @@
 #include "rose.h"
 
 #include <OpenAnalysis/IRInterface/CFGIRInterfaceDefault.hpp>
-#include <OpenAnalysis/IRInterface/SSAIRInterface.hpp>
+//<AIS|ATB> #include <OpenAnalysis/IRInterface/SSAIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/CallGraphIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/ICFGIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/ActivityIRInterface.hpp>
-#include <OpenAnalysis/IRInterface/AliasIRInterfaceDefault.hpp>
+//<AIS|ATB> #include <OpenAnalysis/IRInterface/AliasIRInterfaceDefault.hpp>
 #include <OpenAnalysis/IRInterface/ReachDefsIRInterface.hpp>
-#include <OpenAnalysis/IRInterface/UDDUChainsIRInterface.hpp>
-#include <OpenAnalysis/IRInterface/XAIFIRInterface.hpp>
+//<AIS|ATB> #include <OpenAnalysis/IRInterface/UDDUChainsIRInterface.hpp>
+//<AIS|ATB> #include <OpenAnalysis/IRInterface/XAIFIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/ParamBindingsIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/InterSideEffectIRInterfaceDefault.hpp>
-#include <OpenAnalysis/IRInterface/LinearityIRInterface.hpp>
-#include <OpenAnalysis/IRInterface/DataDepIRInterface.hpp>
-#include <OpenAnalysis/IRInterface/LoopIRInterface.hpp>
-#include <OpenAnalysis/IRInterface/auto_ReachingDefsIRInterface.hpp>
-#include <OpenAnalysis/IRInterface/LivenessIRInterface.hpp>
+//<AIS|ATB> #include <OpenAnalysis/IRInterface/LinearityIRInterface.hpp>
+//<AIS|ATB> #include <OpenAnalysis/IRInterface/DataDepIRInterface.hpp>
+//<AIS|ATB> #include <OpenAnalysis/IRInterface/LoopIRInterface.hpp>
+//<AIS|ATB> #include <OpenAnalysis/IRInterface/auto_ReachingDefsIRInterface.hpp>
+//<AIS|ATB> #include <OpenAnalysis/IRInterface/auto_AvailableExpressions.hpp>
+//<AIS|ATB> #include <OpenAnalysis/IRInterface/LivenessIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/ExprTreeIRInterface.hpp>
 #include <OpenAnalysis/SideEffect/ManagerInterSideEffectStandard.hpp>
 #include <OpenAnalysis/SideEffect/ManagerSideEffectStandard.hpp>
 #include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
 #include <OpenAnalysis/Alias/Interface.hpp>
 #include <OpenAnalysis/Alias/ManagerFIAlias.hpp>
 #include <OpenAnalysis/ExprTree/ExprTree.hpp>
-#include <OpenAnalysis/Loop/LoopAbstraction.hpp>
+//<AIS|ATB> #include <OpenAnalysis/NewExprTree/NewExprTree.hpp>
+//<AIS|ATB> #include <OpenAnalysis/Loop/LoopAbstraction.hpp>
 
 // ReachConsts
 #include <OpenAnalysis/IRInterface/ConstValBasicInterface.hpp>
 #include <OpenAnalysis/IRInterface/ConstValIntInterface.hpp>
-#include <OpenAnalysis/IRInterface/ReachConstsIRInterface.hpp>
+//<AIS|ATB> #include <OpenAnalysis/IRInterface/ReachConstsIRInterface.hpp>
 
 using namespace OA;
 
@@ -209,25 +212,8 @@ class SageMREIteratorImplementation : public P {
     OA_ptr<list<OA_ptr<T> > > mList;
 };
 
-// Construct a SageMREIteratorImplementation class
-#define BuildSgMREIter(A) \
-    typedef SageMREIteratorImplementation< \
-        A ## Iterator, A, list<OA_ptr< A > >::iterator >  \
-        Sage ## A ## Iterator;
-
-BuildSgMREIter(MemRefExpr);
-BuildSgMREIter(NamedRef);
-BuildSgMREIter(UnnamedRef);
-BuildSgMREIter(UnknownRef);
-BuildSgMREIter(RefOp);
-BuildSgMREIter(Deref);
-BuildSgMREIter(SubSetRef);
-BuildSgMREIter(IdxAccess);
-BuildSgMREIter(IdxExprAccess);
-BuildSgMREIter(FieldAccess);
-
-
-
+//<AIS|ATB>
+#if 0
 class SageIRUseDefIterator
 : public OA::IRHandleListIterator<OA::LeafHandle>,
   public virtual OA::SSA::IRUseDefIterator 
@@ -251,6 +237,7 @@ class SageIRUseDefIterator
   void reset()
   { return OA::IRHandleListIterator<OA::LeafHandle>::reset(); }
 };
+#endif
 
 
 #if 0
@@ -522,35 +509,159 @@ class SageIntegerConstVal
 };
 
 
+class SageOp
+  : public virtual OA::OpBasicInterface
+{
+  public:
+    enum OperatorType {
+        OP_ADD              = 100,
+        OP_AND_ASSIGN       = 200,
+        OP_AND              = 300,
+        OP_ASSIGN           = 400,
+        OP_BIT_AND          = 500,
+        OP_BIT_OR           = 600,
+        OP_BIT_XOR          = 700,
+        OP_COMMA_EXP        = 800,
+        OP_DIV_ASSIGN       = 900,
+        OP_DIVIDE           = 1000,
+        OP_EQUALITY         = 1100,
+        OP_GREATER_OR_EQUAL = 1200,
+        OP_GREATER_THAN     = 1300,
+        OP_INTEGER_DIVIDE   = 1400,
+        OP_IOR_ASSIGN       = 1500,
+        OP_LESS_OR_EQUAL    = 1600,
+        OP_LESS_THAN        = 1700,
+        OP_LSHIFT_ASSIGN    = 1800,
+        OP_LSHIFT           = 1900,
+        OP_MINUS_ASSIGN     = 2000,
+        OP_MOD_ASSIGN       = 2100,
+        OP_MOD              = 2200,
+        OP_MULT_ASSIGN      = 2300,
+        OP_MULTIPLY         = 2400,
+        OP_NOT_EQUAL        = 2500,
+        OP_OR               = 2600,
+        OP_PLUS_ASSIGN      = 2700,
+        OP_RSHIFT_ASSIGN    = 2800,
+        OP_RSHIFT           = 2900,
+        OP_SUBTRACT         = 3000,
+        OP_XOR_ASSIGN       = 3100,
+        OP_BIT_COMPLEMENT   = 3200,
+        OP_CAST             = 3300,
+        OP_MINUS_MINUS      = 3400,
+        OP_MINUS            = 3500,
+        OP_NOT              = 3600,
+        OP_PLUS_PLUS        = 3700,
+        OP_THROW            = 3800,
+        OP_UNARY_ADD        = 3900,
+        OP_ASSIGN_INIT      = 4000
+    };
+
+    SageOp(SageOp::OperatorType op) : mOpType(op) { }
+
+    virtual bool operator<(OpBasicInterface& other) {
+        SageOp& otherRecast = dynamic_cast<SageOp&>(other);
+        return mOpType < otherRecast.getOpType();
+    }
+
+    virtual bool operator==(OpBasicInterface& other) {
+        SageOp& otherRecast = dynamic_cast<SageOp&>(other);
+        return mOpType == otherRecast.getOpType();
+    }
+
+    virtual bool operator!=(OpBasicInterface& other) {
+        SageOp& otherRecast = dynamic_cast<SageOp&>(other);
+        return mOpType != otherRecast.getOpType();
+    }
+
+    virtual std::string toString() {
+        string opStr;
+
+        switch(mOpType) {
+            case OP_ADD:              opStr = "OP_ADD";               break;
+            case OP_AND_ASSIGN:       opStr = "OP_AND_ASSIGN";        break;
+            case OP_AND:              opStr = "OP_AND";               break;
+            case OP_ASSIGN:           opStr = "OP_ASSIGN";            break;
+            case OP_BIT_AND:          opStr = "OP_BIT_AND";           break;
+            case OP_BIT_OR:           opStr = "OP_BIT_OR";            break;
+            case OP_BIT_XOR:          opStr = "OP_BIT_XOR";           break;
+            case OP_COMMA_EXP:        opStr = "OP_COMMA_EXP";         break;
+            case OP_DIV_ASSIGN:       opStr = "OP_DIV_ASSIGN";        break;
+            case OP_DIVIDE:           opStr = "OP_DIVIDE";            break;
+            case OP_EQUALITY:         opStr = "OP_EQUALITY";          break;
+            case OP_GREATER_OR_EQUAL: opStr = "OP_GREATER_OR_EQUAL";  break;
+            case OP_GREATER_THAN:     opStr = "OP_GREATER_THAN";      break;
+            case OP_INTEGER_DIVIDE:   opStr = "OP_INTEGER_DIVIDE";    break;
+            case OP_IOR_ASSIGN:       opStr = "OP_IOR_ASSIGN";        break;
+            case OP_LESS_OR_EQUAL:    opStr = "OP_LESS_OR_EQUAL";     break;
+            case OP_LESS_THAN:        opStr = "OP_LESS_THAN";         break;
+            case OP_LSHIFT_ASSIGN:    opStr = "OP_LSHIFT_ASSIGN";     break;
+            case OP_LSHIFT:           opStr = "OP_LSHIFT";            break;
+            case OP_MINUS_ASSIGN:     opStr = "OP_MINUS_ASSIGN";      break;
+            case OP_MOD_ASSIGN:       opStr = "OP_MOD_ASSIGN";        break;
+            case OP_MOD:              opStr = "OP_MOD";               break;
+            case OP_MULT_ASSIGN:      opStr = "OP_MULT_ASSIGN";       break;
+            case OP_MULTIPLY:         opStr = "OP_MULTIPLY";          break;
+            case OP_NOT_EQUAL:        opStr = "OP_NOT_EQUAL";         break;
+            case OP_OR:               opStr = "OP_OR";                break;
+            case OP_PLUS_ASSIGN:      opStr = "OP_PLUS_ASSIGN";       break;
+            case OP_RSHIFT_ASSIGN:    opStr = "OP_RSHIFT_ASSIGN";     break;
+            case OP_RSHIFT:           opStr = "OP_RSHIFT";            break;
+            case OP_SUBTRACT:         opStr = "OP_SUBTRACT";          break;
+            case OP_XOR_ASSIGN:       opStr = "OP_XOR_ASSIGN";        break;
+            case OP_BIT_COMPLEMENT:   opStr = "OP_BIT_COMPLEMENT";    break;
+            case OP_CAST:             opStr = "OP_CAST";              break;
+            case OP_MINUS_MINUS:      opStr = "OP_MINUS_MINUS";       break;
+            case OP_MINUS:            opStr = "OP_MINUS";             break;
+            case OP_NOT:              opStr = "OP_NOT";               break;
+            case OP_PLUS_PLUS:        opStr = "OP_PLUS_PLUS";         break;
+            case OP_THROW:            opStr = "OP_THROW";             break;
+            case OP_UNARY_ADD:        opStr = "OP_UNARY_ADD";         break;
+            case OP_ASSIGN_INIT:      opStr = "OP_ASSIGN_INIT";       break;
+        }
+        return opStr;
+    }
+
+    OperatorType getOpType() {
+        return mOpType;
+    }
+
+  private:
+    OperatorType mOpType;
+};
+
+
 //#include "AttributePropagationIRInterface.hpp"
 
-class 
-SageIRInterface : public virtual OA::SSA::SSAIRInterface,
+class SageIRInterface :
+//<AIS|ATB>   public virtual OA::SSA::SSAIRInterface,
   public virtual OA::CFG::CFGIRInterfaceDefault,  
   public virtual OA::ICFG::ICFGIRInterface,
-  public virtual OA::CallGraph::CallGraphIRInterface,
-  public virtual OA::Activity::ActivityIRInterface,
-  public virtual OA::Alias::AliasIRInterfaceDefault,
-  public virtual OA::ReachDefs::ReachDefsIRInterface,
-  public virtual OA::UDDUChains::UDDUChainsIRInterface,
-  public virtual OA::XAIF::XAIFIRInterface,
-  public virtual OA::DataFlow::ParamBindingsIRInterface,
-  public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
-  public virtual OA::SideEffect::SideEffectIRInterface,
-  public virtual OA::SideEffect::InterSideEffectIRInterface,
-  public virtual OA::Linearity::LinearityIRInterface,
-  public virtual OA::ReachConsts::ReachConstsIRInterface,
+//<AIS|ATB> public virtual OA::CallGraph::CallGraphIRInterface,
+//<AIS|ATB> public virtual OA::Activity::ActivityIRInterface,
+  public virtual OA::Alias::AliasIRInterface
+//<AIS|ATB> public virtual OA::ReachDefs::ReachDefsIRInterface,
+//<AIS|ATB> public virtual OA::UDDUChains::UDDUChainsIRInterface,
+//<AIS|ATB> public virtual OA::XAIF::XAIFIRInterface,
+//<AIS|ATB> public virtual OA::DataFlow::ParamBindingsIRInterface,
+//<AIS|ATB> public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
+//<AIS|ATB> public virtual OA::SideEffect::SideEffectIRInterface
+//<AIS|ATB> public virtual OA::SideEffect::InterSideEffectIRInterface,
+//<AIS|ATB> public virtual OA::Linearity::LinearityIRInterface,
+//<AIS|ATB> public virtual OA::ReachConsts::ReachConstsIRInterface,
 		  //  public virtual OA::AttributePropagation::AttributePropagationIRInterface,
-  public virtual OA::DataDep::DataDepIRInterface,
-  public virtual OA::Loop::LoopIRInterface,
-  public virtual OA::Liveness::LivenessIRInterface,
-  public virtual OA::ReachingDefs::ReachingDefsIRInterface
+//<AIS|ATB> public virtual OA::DataDep::DataDepIRInterface,
+//<AIS|ATB> public virtual OA::Loop::LoopIRInterface,
+//<AIS|ATB> public virtual OA::Liveness::LivenessIRInterface,
+//<AIS|ATB> public virtual OA::ReachingDefs::ReachingDefsIRInterface,
+//<AIS|ATB> public virtual OA::AvailableExpressions::AvailableExpressionsIRInterface,
+//<AIS|ATB> public virtual OA::ExprTreeIRInterface
 {
   friend class SageIRMemRefIterator;
   friend class FindCallsitesPass;
   friend class SgPtrAssignPairStmtIterator;
   friend class SgParamBindPtrAssignIterator;
   friend class ExprTreeTraversal;
+//<AIS|ATB>  friend class NewExprTreeTraversal;
   friend class NumberTraversal;
   friend class SageExprHandleIterator;
   
@@ -707,7 +818,7 @@ public:
   OA::OA_ptr<OA::IRRegionStmtIterator> elseBody (OA::StmtHandle h);
 
   //Alias stuff
-  OA::OA_ptr<OA::MemRefHandleIterator> getAllMemRefs(OA::StmtHandle stmt);
+  //<AIS|ATB> OA::OA_ptr<OA::MemRefHandleIterator> getAllMemRefs(OA::StmtHandle stmt);
  
   /* Helper routine?
   // getAllMemRefs(OA::IRHandle h) is intended to be called by
@@ -719,9 +830,11 @@ public:
   OA::OA_ptr<OA::MemRefExprIterator> 
   getMemRefExprIterator(OA::MemRefHandle h);
 
+//<AIS|ATB>
+#if 0
   OA::OA_ptr<OA::Location::Location> 
   getLocation(OA::ProcHandle p, OA::SymHandle s);
-
+#endif
   OA::SymHandle getFormalSym(OA::ProcHandle, int);
 
   OA::OA_ptr<OA::MemRefExpr> getCallMemRefExpr(OA::CallHandle h);
@@ -729,8 +842,8 @@ public:
   OA::ProcHandle getProcHandle(OA::SymHandle sym);
 
   //ReachDefs
-  OA::OA_ptr<OA::MemRefHandleIterator> getDefMemRefs(OA::StmtHandle stmt);
-  OA::OA_ptr<OA::MemRefHandleIterator> getUseMemRefs(OA::StmtHandle stmt);
+  //<AIS|ATB> OA::OA_ptr<OA::MemRefHandleIterator> getDefMemRefs(OA::StmtHandle stmt);
+  //<AIS|ATB> OA::OA_ptr<OA::MemRefHandleIterator> getUseMemRefs(OA::StmtHandle stmt);
   
   //------------------------------
   //------------------------------
@@ -850,7 +963,30 @@ public:
   }
   void dump(OA::StmtHandle h, std::ostream& os) { os << toString(h); }
 
+  //-------------------------------------------------------------------------
+  // AliasIRInterface
+  //-------------------------------------------------------------------------
+  //! Return an iterator over all the memory reference handles that appear
+  //! in the given statement.  Order that memory references are iterated
+  //! over can be arbitrary.
+  OA_ptr<MemRefHandleIterator> getAllMemRefs(StmtHandle stmt);
   
+  //! If this is a PTR_ASSIGN_STMT then return an iterator over MemRefHandle
+  //! pairs where there is a source and target such that target
+  OA_ptr<OA::Alias::PtrAssignPairStmtIterator>
+      getPtrAssignStmtPairIterator(StmtHandle stmt);
+
+  //! Return an iterator over <int, MemRefExpr> pairs
+  //! where the integer represents which formal parameter 
+  //! and the MemRefExpr describes the corresponding actual argument. 
+  OA_ptr<OA::Alias::ParamBindPtrAssignIterator>
+      getParamBindPtrAssignIterator(CallHandle call);
+
+
+
+//<AIS|ATB> - No longer using AliasIRInterfaceDefault, now just using
+//            AliasIRInterface
+#if 0
   //-------------------------------------------------------------------------
   // AliasIRInterfaceDefault
   //-------------------------------------------------------------------------
@@ -871,11 +1007,13 @@ public:
 
   // returns true if given symbol is a pointer variable.
 //  bool isPointerVar(OA::SymHandle);
-  
+#endif
+
   //-------------------------------------------------------------------------
   // SSAIRInterface
   //-------------------------------------------------------------------------
-
+//<AIS|ATB>
+#if 0
   // Getsymhandle Given a LeafHandle containing a use or def, return
   // the referened SymHandle.
   OA::SymHandle getSymHandle(OA::LeafHandle h);
@@ -885,11 +1023,14 @@ public:
 
   //! Given a statement, return defs (variables defined)
   OA::OA_ptr<OA::SSA::IRUseDefIterator> getDefs(OA::StmtHandle h);
+#endif
 
   //-------------------------------------------------------------------------
   // ParamBindingsIRInterface
   //-------------------------------------------------------------------------
-  
+
+//<AIS|ATB> 
+#if 0
   //! Given a subprogram return an IRSymIterator for all
   //! symbols that are referenced within the subprogram
   //OA::OA_ptr<OA::IRSymIterator> getRefSymIterator(OA::ProcHandle h);
@@ -903,11 +1044,13 @@ public:
 
   // Given an ExprHandle, return an ExprTree 
   OA::OA_ptr<OA::ExprTree> getExprTree(OA::ExprHandle h);
+#endif
 
   //-------------------------------------------------------------------------
   // ActivityIRInterface
   //-------------------------------------------------------------------------
-
+//<AIS|ATB>
+#if 0
   //! Given a statement return a list to the pairs of 
   //! target MemRefHandle, ExprHandle where
   //! target = expr
@@ -925,14 +1068,15 @@ public:
   
   //! given a symbol return the size in bytes of that symbol
   int getSizeInBytes(OA::SymHandle h);
-
+#endif
   //-------------------------------------------------------------------------
   // LinearityIRInterface
   //-------------------------------------------------------------------------
-  
+//<AIS|ATB>
+#if 0
   //! get the operation type and returns a LinOpType
   OA::Linearity::LinOpType getLinearityOpType(OA::OpHandle op);
-
+#endif
 
   //-------------------------------------------------------------------------
   // ReachConstsInterface 
@@ -964,18 +1108,34 @@ public:
   //-------------------------------------------------------------------------
   // DataDepIRInterface
   //-------------------------------------------------------------------------
+//<AIS|ATB>
+#if 0
   int constValIntVal(OA::ConstValHandle h);
   OA::AffineExpr::OpType getOpType(OA::OpHandle h);
   OA::OA_ptr<OA::IdxExprAccessIterator>  getIdxExprAccessIter(ProcHandle p);
+#endif
+
+  //-------------------------------------------------------------------------
+  // AvailableExpressionsIRInterface
+  //-------------------------------------------------------------------------
+//<AIS|ATB>
+#if 0
+  OA_ptr<NewExprTree> getNewExprTree(OA::ExprHandle h);
+#endif
+
+  //-------------------------------------------------------------------------
+  // ExprTreeIRInterface
+  //-------------------------------------------------------------------------
+  OA_ptr<OpBasicInterface> getOpBasic(OpHandle hOp);
 
   //-------------------------------------------------------------------------
   // output methods
   //-------------------------------------------------------------------------
-  void dump(OA::OA_ptr<OA::NamedLoc> loc, std::ostream& os);
-  void dump(OA::OA_ptr<OA::UnnamedLoc> loc, std::ostream& os);
-  void dump(OA::OA_ptr<OA::InvisibleLoc> loc, std::ostream& os);
-  void dump(OA::OA_ptr<OA::UnknownLoc> loc, std::ostream& os);
-  void dump(OA::OA_ptr<OA::Location> loc, std::ostream& os);
+  //<AIS|ATB> void dump(OA::OA_ptr<OA::NamedLoc> loc, std::ostream& os);
+  //<AIS|ATB> void dump(OA::OA_ptr<OA::UnnamedLoc> loc, std::ostream& os);
+  //<AIS|ATB> void dump(OA::OA_ptr<OA::InvisibleLoc> loc, std::ostream& os);
+  //<AIS|ATB> void dump(OA::OA_ptr<OA::UnknownLoc> loc, std::ostream& os);
+  //<AIS|ATB> void dump(OA::OA_ptr<OA::Location> loc, std::ostream& os);
   void dump(OA::OA_ptr<OA::NamedRef> memRefExp, std::ostream& os);
   void dump(OA::OA_ptr<OA::UnnamedRef> memRefExp, std::ostream& os);
   void dump(OA::OA_ptr<OA::UnknownRef> memRefExp, std::ostream& os);
@@ -986,7 +1146,6 @@ public:
   void dump(OA::OA_ptr<OA::SubSetRef> memRefExp, std::ostream& os);
 
   string refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp);
-
   //-------------------------------------------------------------------------
   // Interface to ROSE
   //-------------------------------------------------------------------------
@@ -1008,7 +1167,7 @@ public:
   OA::CallHandle getProcExprHandle(SgNode *astNode);
   //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
   SgNode *getSgNode(OA::IRHandle h) { return getNodePtr(h); }
-  bool isMemRefNode(SgNode *astNode);
+  //<AIS|ATB> bool isMemRefNode(SgNode *astNode);
 
   void verifyCallHandleType(OA::CallHandle call);
   void verifyStmtHandleType(OA::StmtHandle stmt);
@@ -1202,11 +1361,13 @@ public:
   // Loop Assignments
   //-------------------------------------------------------------------------
   public:
+//<AIS|ATB>
+#if 0
   OA_ptr<std::list<OA_ptr<Loop::LoopAbstraction> > >
     gatherLoops(const ProcHandle &proc);
 
   StmtHandle findEnclosingLoop(const StmtHandle &stmt);
-
+#endif
   //-------------------------------------------------------------------------
   // Helper data structures and methods
   //-------------------------------------------------------------------------

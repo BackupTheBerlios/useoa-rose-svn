@@ -1317,6 +1317,8 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
 //! Return a list of all def  memory reference handles that appear
 //! in the given statement.
 //! This is nearly identical to Open64IRInterface::getDefMemRefs.
+//<AIS|ATB>
+#if 0
 OA::OA_ptr<OA::MemRefHandleIterator> 
 SageIRInterface::getDefMemRefs(OA::StmtHandle stmt) 
 {
@@ -1347,10 +1349,13 @@ SageIRInterface::getDefMemRefs(OA::StmtHandle stmt)
   retval = new SageMemRefHandleIterator(retList);
   return retval;
 }
+#endif
 
 //! Return a list of all use memory reference handles that appear
 //! in the given statement.
 //! This is nearly identical to Open64IRInterface::getUseMemRefs.
+//<AIS|ATB>
+#if 0
 OA::OA_ptr<OA::MemRefHandleIterator> 
 SageIRInterface::getUseMemRefs(OA::StmtHandle stmt)
 {
@@ -1382,26 +1387,17 @@ SageIRInterface::getUseMemRefs(OA::StmtHandle stmt)
   return retval;
 
 }
-
-//! Return a list of all the memory reference handles that appear
-//! in the given statement.
-OA::OA_ptr<OA::MemRefHandleIterator> 
-SageIRInterface::getAllMemRefs(OA::StmtHandle stmt)
-{
-  OA::OA_ptr<SageIRMemRefIterator> mIter;
-  mIter = new SageIRMemRefIterator(stmt,*this);
-  return mIter;
-}
+#endif
 
 
 OA::OA_ptr<OA::MemRefExprIterator> 
 SageIRInterface::getMemRefExprIterator(OA::MemRefHandle h)
 {
-  OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > retList;
-  retList = new std::list<OA::OA_ptr<OA::MemRefExpr> >;
+  OA::OA_ptr<std::set<OA::OA_ptr<OA::MemRefExpr> > > retList;
+  retList = new std::set<OA::OA_ptr<OA::MemRefExpr> >;
 
   // iterate over set of MemRefExpr's associated with
-  // the given MemRefHandle and put them in our list
+  // the given MemRefHandle and put them in our set
   set<OA::OA_ptr<OA::MemRefExpr> >::iterator mreIter;
   for (mreIter = mMemref2mreSetMap[h].begin();
        mreIter != mMemref2mreSetMap[h].end(); mreIter++ )
@@ -1412,11 +1408,11 @@ SageIRInterface::getMemRefExprIterator(OA::MemRefHandle h)
         }
       }
 
-      retList->push_back(*mreIter);
+      retList->insert(*mreIter);
     }
 
-  OA::OA_ptr<SageMemRefExprIterator> retval;
-  retval = new SageMemRefExprIterator(retList, this);
+  OA::OA_ptr<MemRefExprIterator> retval;
+  retval = new MemRefExprIterator(retList);
   return retval;
 }
 
@@ -1427,6 +1423,8 @@ SageIRInterface::getMemRefExprIterator(OA::MemRefHandle h)
    local here means visible only in that procedure.  
    Member variables are not local to any one method in a class.
 */
+//<AIS|ATB>
+#if 0
 OA::OA_ptr<OA::Location::Location> 
 SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
 {
@@ -1608,6 +1606,7 @@ SageIRInterface::getLocation(OA::ProcHandle p, OA::SymHandle s)
   loc = new OA::NamedLoc(s, isLocal);
   return loc;
 }
+#endif
 
 void
 NumberTraversal::visit ( SgNode* astNode )
@@ -3569,12 +3568,23 @@ SageIRInterface::getParamBindPtrAssignIterator(OA::CallHandle call)
   return retval;
 }
 
- 
+
+//-------------------------------------------------------------------------
+// AliasIRInterface
+//-------------------------------------------------------------------------
+OA_ptr<MemRefHandleIterator> SageIRInterface::getAllMemRefs(StmtHandle stmt)
+{
+    OA::OA_ptr<SageIRMemRefIterator> mIter;
+    mIter = new SageIRMemRefIterator(stmt,*this);
+    return mIter;
+}
+
 //-------------------------------------------------------------------------
 // SSAIRInterface
 //-------------------------------------------------------------------------
 
-
+//<AIS|ATB>
+#if 0
 // Getsymhandle Given a LeafHandle containing a use or def, return
 // the referened SymHandle.
 OA::SymHandle SageIRInterface::getSymHandle(OA::LeafHandle h)
@@ -3631,12 +3641,15 @@ OA::SymHandle SageIRInterface::getSymHandle(OA::LeafHandle h)
   return retHandle;
 
 }
+#endif
 
 
 //-------------------------------------------------------------------------
 // ParamBindingsIRInterface
 //-------------------------------------------------------------------------
 
+//<AIS|ATB>
+#if 0
 //! returns true if given symbol is a parameter 
 bool SageIRInterface::isParam(OA::SymHandle h)
 {   
@@ -3776,7 +3789,6 @@ OA::SymHandle SageIRInterface::getFormalForActual(OA::ProcHandle caller,
  *      For now, we favor MemRefNodes.  i.e., we first check if
  *      the node is a MemRefNode, if not we look to the other cases.
  */
-
 class ExprTreeTraversal
   : public AstTopDownProcessing<OA::OA_ptr<OA::ExprTree::Node> >
 { 
@@ -3792,6 +3804,8 @@ class ExprTreeTraversal
   evaluateInheritedAttribute(SgNode *astNode, 
                              OA::OA_ptr<OA::ExprTree::Node> inheritedAttribute)
   { 
+    //<AIS|ATB>
+    #if 0
 
     // Michelle and Andy have seen efficiency problems here.
     // I just want to verify that this isn't being invoked.
@@ -3965,15 +3979,270 @@ class ExprTreeTraversal
     }
 
     return parent;
+    #endif
+  }
+
+ private:
+  OA::OA_ptr<OA::ExprTree> mExprTree;
+  SageIRInterface          *mIR;
+};
+#endif
+
+//<AIS|ATB>
+#if 0
+class NewExprTreeTraversal
+  : public AstTopDownProcessing<OA::OA_ptr<OA::NewExprTree::Node> >
+{ 
+ public: 
+
+  NewExprTreeTraversal(
+    OA::OA_ptr<OA::NewExprTree> exprTree,
+    SageIRInterface *IR) 
+    :
+    mExprTree(exprTree), mIR(IR)  
+  { }
+   
+  virtual  
+  OA::OA_ptr<OA::NewExprTree::Node>
+  evaluateInheritedAttribute(SgNode *astNode, 
+                             OA::OA_ptr<OA::NewExprTree::Node> inheritedAttribute)
+  { 
+
+    // This is a top-down traversal and we are passing the parent
+    // within the ExprTree as the inherited attribute.
+    OA::OA_ptr<OA::NewExprTree::Node> parent = inheritedAttribute;
+
+    if ( isSgVarRefExp(astNode) || isSgThisExp(astNode) )
+    {
+      // ConstSymNode (with const type modifier) or
+      // MemRefNode (without const type modifier)
+      SgType *type    = NULL;
+      bool    isConst = false;
+      
+      SgVarRefExp *varRefExp = isSgVarRefExp(astNode);
+      SgThisExp   *thisExp   = isSgThisExp(astNode);
+      
+      // Get the type of this AST Node.
+      if (varRefExp != NULL) {
+        type = varRefExp->get_type();
+      } else if (thisExp != NULL) {
+        type = thisExp->get_type();
+      }
+      
+      // Determine whether the type has a const modifier.
+      ROSE_ASSERT(type != NULL);
+      
+      SgModifierNodes *modifierNodes = type->get_modifiers(); 
+
+      if (modifierNodes != NULL) {
+        SgModifierTypePtrVector modifierVector = modifierNodes->get_nodes(); 
+        for(SgModifierTypePtrVector::iterator it = modifierVector.begin(); 
+            it != modifierVector.end(); ++it) { 
+          
+          SgModifierType *modifierType = *it; 
+          ROSE_ASSERT(modifierType != NULL); 
+          
+          SgTypeModifier &typeModifier = modifierType->get_typeModifier(); 
+          
+          SgConstVolatileModifier &constVolatileModifier = 
+            typeModifier.get_constVolatileModifier(); 
+          
+          if ( constVolatileModifier.isConst() ) { 
+            
+            isConst = true;
+            break;
+            
+          } 
+        }
+      }
+      
+      if ( isConst ) {
+        
+        // This is a ConstSymNode.
+        OA::ConstSymHandle h = mIR->getNodeNumber(astNode);
+        OA::OA_ptr<OA::NewExprTree::ConstSymNode> node;
+        node = new OA::NewExprTree::ConstSymNode(h);
+        if ( !parent.ptrEqual(NULL) ) {
+          mExprTree->connect(parent, node);
+        } else {
+          mExprTree->addNode(node);
+        }
+        parent = node;
+        
+      } else { 
+
+        // This is a MemRefNode.
+        OA::OA_ptr<OA::NewExprTree::MemRefNode> node;
+
+        OA::MemRefHandle h = mIR->getNodeNumber(astNode);
+        OA::OA_ptr<OA::MemRefExprIterator> mreIter;
+        mreIter = mIR->getMemRefExprIterator(h);
+
+        node = new OA::NewExprTree::MemRefNode(mreIter->current());
+        ++(*mreIter);
+        assert(!mreIter->isValid());
+
+        if ( !parent.ptrEqual(NULL) ) {
+          mExprTree->connect(parent, node);
+        } else {
+          mExprTree->addNode(node);
+        }
+        parent = node;
+        
+      }
+
+    } else if ( mIR->isMemRefNode(astNode) ) {
+
+      // This is a MemRefNode.
+      OA::OA_ptr<OA::NewExprTree::MemRefNode> node;
+
+      OA::MemRefHandle h = mIR->getNodeNumber(astNode);
+      OA::OA_ptr<OA::MemRefExprIterator> mreIter;
+      mreIter = mIR->getMemRefExprIterator(h);
+
+      node = new OA::NewExprTree::MemRefNode(mreIter->current());
+      ++(*mreIter);
+      assert(!mreIter->isValid());
+
+      if ( !parent.ptrEqual(NULL) ) {
+        mExprTree->connect(parent, node);
+      } else {
+        mExprTree->addNode(node);
+      }
+      parent = node;
+
+    } else if ( isSgUnaryOp(astNode) || isSgBinaryOp(astNode) ||
+                isSgAssignInitializer(astNode) ) {
+      // OpNode
+      OA::OA_ptr<OA::NewExprTree::OpNode> node;
+      OA::OA_ptr<SageOp> opAbstraction;
+      SageOp::OperatorType opType;
+
+      // determine what operator type will be asscociated with the
+      // operator absraction (derives from the OpBasicInterface).
+           if(isSgAddOp(astNode))             { opType = SageOp::OP_ADD; }
+      else if(isSgAndAssignOp(astNode))       { opType = SageOp::OP_AND_ASSIGN; }
+      else if(isSgAndOp(astNode))             { opType = SageOp::OP_AND; }
+      else if(isSgAssignOp(astNode))          { opType = SageOp::OP_ASSIGN; }
+      else if(isSgBitAndOp(astNode))          { opType = SageOp::OP_BIT_AND; }
+      else if(isSgBitOrOp(astNode))           { opType = SageOp::OP_BIT_OR; }
+      else if(isSgBitXorOp(astNode))          { opType = SageOp::OP_BIT_XOR; }
+      else if(isSgCommaOpExp(astNode))        { opType = SageOp::OP_COMMA_EXP; }
+      else if(isSgDivAssignOp(astNode))       { opType = SageOp::OP_DIV_ASSIGN; }
+      else if(isSgDivideOp(astNode))          { opType = SageOp::OP_DIVIDE; }
+      else if(isSgEqualityOp(astNode))        { opType = SageOp::OP_EQUALITY; }
+      else if(isSgGreaterOrEqualOp(astNode))  { opType = SageOp::OP_GREATER_OR_EQUAL; }
+      else if(isSgGreaterThanOp(astNode))     { opType = SageOp::OP_GREATER_THAN; }
+      else if(isSgIntegerDivideOp(astNode))   { opType = SageOp::OP_INTEGER_DIVIDE; }
+      else if(isSgIorAssignOp(astNode))       { opType = SageOp::OP_IOR_ASSIGN; }
+      else if(isSgLessOrEqualOp(astNode))     { opType = SageOp::OP_LESS_OR_EQUAL; }
+      else if(isSgLessThanOp(astNode))        { opType = SageOp::OP_LESS_THAN; }
+      else if(isSgLshiftAssignOp(astNode))    { opType = SageOp::OP_LSHIFT_ASSIGN; }
+      else if(isSgLshiftOp(astNode))          { opType = SageOp::OP_LSHIFT; }
+      else if(isSgMinusAssignOp(astNode))     { opType = SageOp::OP_MINUS_ASSIGN; }
+      else if(isSgModAssignOp(astNode))       { opType = SageOp::OP_MOD_ASSIGN; }
+      else if(isSgModOp(astNode))             { opType = SageOp::OP_MOD; }
+      else if(isSgMultAssignOp(astNode))      { opType = SageOp::OP_MULT_ASSIGN; }
+      else if(isSgMultiplyOp(astNode))        { opType = SageOp::OP_MULTIPLY; }
+      else if(isSgNotEqualOp(astNode))        { opType = SageOp::OP_NOT_EQUAL; }
+      else if(isSgOrOp(astNode))              { opType = SageOp::OP_OR; }
+      else if(isSgPlusAssignOp(astNode))      { opType = SageOp::OP_PLUS_ASSIGN; }
+      else if(isSgRshiftAssignOp(astNode))    { opType = SageOp::OP_RSHIFT_ASSIGN; }
+      else if(isSgRshiftOp(astNode))          { opType = SageOp::OP_RSHIFT; }
+      else if(isSgSubtractOp(astNode))        { opType = SageOp::OP_SUBTRACT; }
+      else if(isSgXorAssignOp(astNode))       { opType = SageOp::OP_XOR_ASSIGN; }
+      else if(isSgCastExp(astNode))           { opType = SageOp::OP_CAST; }
+      else if(isSgMinusMinusOp(astNode))      { opType = SageOp::OP_MINUS_MINUS; }
+      else if(isSgMinusOp(astNode))           { opType = SageOp::OP_MINUS; }
+      else if(isSgNotOp(astNode))             { opType = SageOp::OP_NOT; }
+      else if(isSgPlusPlusOp(astNode))        { opType = SageOp::OP_PLUS_PLUS; }
+      else if(isSgThrowOp(astNode))           { opType = SageOp::OP_THROW; }
+      else if(isSgUnaryAddOp(astNode))        { opType = SageOp::OP_UNARY_ADD; }
+      else if(isSgAssignInitializer(astNode)) { opType = SageOp::OP_ASSIGN_INIT; }
+
+      opAbstraction = new SageOp(opType);
+      node = new OA::NewExprTree::OpNode(opAbstraction);
+
+      if ( !parent.ptrEqual(NULL) ) {
+        mExprTree->connect(parent, node);
+      } else {
+        mExprTree->addNode(node);
+      }
+        
+      parent = node;
+
+    } else if ( isSgDeleteExp(astNode) || isSgConstructorInitializer(astNode)
+                || isSgFunctionCallExp(astNode) ) {
+
+      // CallNode
+      OA::CallHandle h = mIR->getNodeNumber(astNode);
+      OA::OA_ptr<OA::NewExprTree::CallNode> node;
+      node = new OA::NewExprTree::CallNode(h);
+      if ( !parent.ptrEqual(NULL) ) {
+        mExprTree->connect(parent, node);
+      } else {
+        mExprTree->addNode(node);
+      }
+      parent = node;
+    
+    } else if ( isSgValueExp(astNode) ) {
+    
+      // ConstValNode
+      OA::OA_ptr<OA::NewExprTree::ConstValNode> node; 
+      OA::OA_ptr<OA::ConstValBasicInterface> constValAbstraction;
+      
+      OA::ConstValHandle h = mIR->getNodeNumber(astNode);
+      constValAbstraction  = mIR->getConstValBasic(h);
+
+      node = new OA::NewExprTree::ConstValNode(constValAbstraction);
+      if ( !parent.ptrEqual(NULL) ) {
+        mExprTree->connect(parent, node);
+      } else {
+        mExprTree->addNode(node);
+      }
+      parent = node;
+      
+    } else if ( isSgMemberFunctionRefExp(astNode) ||
+                isSgNewExp(astNode) || 
+                isSgSizeOfOp(astNode) || isSgVarArgCopyOp(astNode) || 
+                isSgVarArgEndOp(astNode) || isSgVarArgOp(astNode) || 
+                isSgVarArgStartOneOperandOp(astNode) || 
+                isSgVarArgStartOp(astNode) || 
+                isSgExprListExp(astNode)) {
+
+      // Do not create an expression node for these AST nodes.
+      // Do not adjust the parent/return value for this traversal.
+
+    } else {
+      cerr << "Can not create a vanilla node because it is virtual." << endl;
+      cerr << "Sage type " << astNode->sage_class_name() << " must correspond to a derived OA::NewExprTree node type"
+           << endl;
+      std::cerr << "astNode: " << astNode->unparseToString() << std::endl;
+      std::cerr << "astNode parent: " << astNode->get_parent()->unparseToString() << std::endl;
+      ROSE_ABORT();
+    }
+
+    return parent;
   
   }
 
  private:
-  OA::OA_ptr<OA::ExprTree>       mExprTree;
-  SageIRInterface               *mIR;
+  OA::OA_ptr<OA::NewExprTree> mExprTree;
+  SageIRInterface *mIR;
 };
+#endif
+
+
+
+
+
+
+
+
 
 // Given an ExprHandle, return an ExprTree 
+//<AIS|ATB>
+#if 0
 OA::OA_ptr<OA::ExprTree> SageIRInterface::getExprTree(OA::ExprHandle h)
 {
   SgNode *node = getNodePtr(h);
@@ -3988,11 +4257,13 @@ OA::OA_ptr<OA::ExprTree> SageIRInterface::getExprTree(OA::ExprHandle h)
 
   return exprTree;
 }
+#endif
 
 //-------------------------------------------------------------------------
 // LinearityIRInterface
 //-------------------------------------------------------------------------
-
+//<AIS|ATB>
+#if 0
 OA::Linearity::LinOpType 
   SageIRInterface::getLinearityOpType(OA::OpHandle op)
 {
@@ -4029,13 +4300,14 @@ OA::Linearity::LinOpType
 return opt;
 
 }
+#endif
 
 //-------------------------------------------------------------------------
 // ActivityIRInterface
 //-------------------------------------------------------------------------
 
-
-
+//<AIS|ATB>
+#if 0
 OA::OA_ptr<OA::ExprHandleIterator>
 SageIRInterface::getExprHandleIterator(OA::StmtHandle h)
 {
@@ -4058,8 +4330,10 @@ SageIRInterface::getExprHandleIterator(OA::StmtHandle h)
   retval = new SageExprHandleIterator(exprList);
   return retval;
 }
+#endif
 
-
+//<AIS|ATB>
+#if 0
 //! Given a statement return a list to the pairs of 
 //! target MemRefHandle, ExprHandle where
 //! target = expr
@@ -4257,7 +4531,7 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
   }
 
   OA::OA_ptr<OA::MemRefExprIterator> indepIter;
-  indepIter = new SageMemRefExprIterator(indepList,this);
+  indepIter = new MemRefExprIterator(indepList,this);
   return indepIter;
 
     
@@ -4433,7 +4707,7 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
 
 
   OA::OA_ptr<OA::MemRefExprIterator> depIter;
-  depIter = new SageMemRefExprIterator(depList,this);
+  depIter = new MemRefExprIterator(depList,this);
   return depIter;
 
 }
@@ -4454,6 +4728,8 @@ SageIRInterface::getSizeInBytes(OA::SymHandle h)
 
   return result;
 }
+
+#endif
 
 //-------------------------------------------------------------------------
 //
@@ -4653,6 +4929,7 @@ string SageIRInterface::refTypeToString(OA::OA_ptr<OA::MemRefExpr> memRefExp)
   return refTypeStr;
 }
 
+//<AIS|ATB>
 void SageIRInterface::dump(OA::OA_ptr<OA::NamedRef> memRefExp, 
                                std::ostream& os) 
 {
@@ -4991,6 +5268,8 @@ void SageIRInterface::dump(OA::OA_ptr<OA::MemRefExpr> memRefExp,
   }
 }
 
+//<AIS|ATB>
+#if 0
 void SageIRInterface::dump(OA::OA_ptr<OA::NamedLoc> loc, ostream& os)
 {
   OA::SymHandle symHandle = loc->getSymHandle();
@@ -5069,6 +5348,7 @@ SageIRInterface::getDefs(OA::StmtHandle h)
 {
   ROSE_ABORT();
 }
+#endif
 
 // getAttribute is a wrapper around the ROSE attribute mechanism
 // which returns a node's attribute.  This was defined for 
@@ -5525,8 +5805,10 @@ SageIRInterface::lookThroughCastExpAndAssignInitializer(SgNode *node)
   return ret;
 }
 
+//<AIS|ATB>
+#if 0
 bool SageIRInterface::isMemRefNode(SgNode *astNode)
-{ 
+{
     // initialize all of the mre information if it hasn't been done
     if (mStmt2allMemRefsMap.empty() ) {
         initMemRefAndPtrAssignMaps();
@@ -5540,6 +5822,7 @@ bool SageIRInterface::isMemRefNode(SgNode *astNode)
         return true;
     }
 }
+#endif
 
 OA::CallHandle SageIRInterface::getCallHandle(SgNode *astNode)
 { 
@@ -5778,6 +6061,9 @@ SageIRInterface::evalOp(OA::OpHandle op,
 //-------------------------------------------------------------------------
 // DataDepIRInterface
 //-------------------------------------------------------------------------
+
+//<AIS|ATB>
+#if 0
 int SageIRInterface::constValIntVal(OA::ConstValHandle h) {
     OA_ptr<ConstValBasicInterface> constValInterface;
     constValInterface = getConstValBasic(h);
@@ -5845,8 +6131,35 @@ OA::OA_ptr<OA::IdxExprAccessIterator> SageIRInterface::getIdxExprAccessIter(
     iterRet = new SageIdxExprAccessIterator(retList, this);
     return iterRet;
 }
+#endif
 
+//-------------------------------------------------------------------------
+// AvailableExpressionsIRInterface
+//-------------------------------------------------------------------------
 
+//<AIS|ATB>
+#if 0
+OA_ptr<NewExprTree> SageIRInterface::getNewExprTree(OA::ExprHandle h) {
+    SgNode *node = getNodePtr(h);
+    ROSE_ASSERT(node != NULL);
+
+    OA::OA_ptr<OA::NewExprTree> exprTree;
+    exprTree = new OA::NewExprTree();
+    NewExprTreeTraversal buildNewExprTree(exprTree, this);
+    OA::OA_ptr<OA::NewExprTree::Node> inheritedAttribute;
+    inheritedAttribute = NULL;
+    buildNewExprTree.traverse(node, inheritedAttribute);
+
+    return exprTree;
+}
+#endif
+
+//-------------------------------------------------------------------------
+// ExprTreeIRInterface
+//-------------------------------------------------------------------------
+OA_ptr<OpBasicInterface> SageIRInterface::getOpBasic(OpHandle hOp) {
+
+}
 
 
 
@@ -6023,3 +6336,4 @@ int
 SageIRInterface::returnOpEnumValInt(OA::OpHandle op) 
 {
 }
+

@@ -10,6 +10,7 @@
   {  0 , "oa-MemRefExpr",     CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-Alias",          CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-AliasMap",       CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
+  {  0 , "oa-AliasTag",       CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-CallGraph",      CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-ICFG",           CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-ICFGDep",        CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
@@ -34,45 +35,46 @@
 #include "SageOACallGraph.h"
 #include "MemSage2OA.h"
 #include "debug.h"
-#include <OpenAnalysis/Alias/ManagerAliasMapBasic.hpp>
-#include <OpenAnalysis/Alias/ManagerFIAliasEquivSets.hpp>
-#include <OpenAnalysis/Alias/ManagerFIAliasAliasMap.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Alias/ManagerAliasMapBasic.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Alias/ManagerFIAliasEquivSets.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Alias/ManagerFIAliasAliasMap.hpp>
+#include <OpenAnalysis/Alias/ManagerFIAliasAliasTag.hpp>
 #include <OpenAnalysis/Alias/Interface.hpp>
 #include <OpenAnalysis/CallGraph/ManagerCallGraph.hpp>
 #include <OpenAnalysis/CFG/ManagerCFG.hpp>
 #include <OpenAnalysis/CFG/EachCFGStandard.hpp>
 #include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
-#include <OpenAnalysis/DataDep/ManagerDataDepGCD.hpp>
+//<AIS|ATB>#include <OpenAnalysis/DataDep/ManagerDataDepGCD.hpp>
 #include <OpenAnalysis/ICFG/ManagerICFG.hpp>
 #include <OpenAnalysis/Activity/ManagerICFGDep.hpp>
 #include <OpenAnalysis/MemRefExpr/MemRefExpr.hpp>
-#include <OpenAnalysis/ReachDefs/ManagerReachDefsStandard.hpp>
+//<AIS|ATB>#include <OpenAnalysis/ReachDefs/ManagerReachDefsStandard.hpp>
 #include <OpenAnalysis/SideEffect/InterSideEffectStandard.hpp>
-#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
+//<AIS|ATB>#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
 #include <OpenAnalysis/Utils/Util.hpp>
-#include <OpenAnalysis/ReachConsts/ManagerReachConstsStandard.hpp>
-#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
-#include <OpenAnalysis/XAIF/UDDUChainsXAIF.hpp>
-#include <OpenAnalysis/XAIF/ManagerUDDUChainsXAIF.hpp>
+//<AIS|ATB>#include <OpenAnalysis/ReachConsts/ManagerReachConstsStandard.hpp>
+//<AIS|ATB>#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
+//<AIS|ATB>#include <OpenAnalysis/XAIF/UDDUChainsXAIF.hpp>
+//<AIS|ATB>#include <OpenAnalysis/XAIF/ManagerUDDUChainsXAIF.hpp>
 
 
-#include <OpenAnalysis/XAIF/AliasMapXAIF.hpp>
-#include<OpenAnalysis/XAIF/ManagerAliasMapXAIF.hpp>
-#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
-#include <OpenAnalysis/XAIF/UDDUChainsXAIF.hpp>
-#include <OpenAnalysis/XAIF/ManagerUDDUChainsXAIF.hpp>
-#include <OpenAnalysis/ReachConsts/ManagerICFGReachConsts.hpp>
-#include <OpenAnalysis/Activity/ManagerActiveStandard.hpp>
-#include <OpenAnalysis/Activity/ManagerEachActive.hpp>
-#include <OpenAnalysis/Activity/ManagerInterDep.hpp>
-#include <OpenAnalysis/Activity/ManagerICFGActive.hpp>
-#include <OpenAnalysis/Activity/ManagerICFGDep.hpp>
-#include <OpenAnalysis/Activity/ManagerICFGUseful.hpp>
-#include <OpenAnalysis/Activity/ManagerICFGVaryActive.hpp>
-#include <OpenAnalysis/Linearity/ManagerLinearityStandard.hpp>
+//<AIS|ATB>#include <OpenAnalysis/XAIF/AliasMapXAIF.hpp>
+//<AIS|ATB>#include <OpenAnalysis/XAIF/ManagerAliasMapXAIF.hpp>
+//<AIS|ATB>#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
+//<AIS|ATB>#include <OpenAnalysis/XAIF/UDDUChainsXAIF.hpp>
+//<AIS|ATB>#include <OpenAnalysis/XAIF/ManagerUDDUChainsXAIF.hpp>
+//<AIS|ATB>#include <OpenAnalysis/ReachConsts/ManagerICFGReachConsts.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Activity/ManagerActiveStandard.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Activity/ManagerEachActive.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Activity/ManagerInterDep.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Activity/ManagerICFGActive.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Activity/ManagerICFGDep.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Activity/ManagerICFGUseful.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Activity/ManagerICFGVaryActive.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Linearity/ManagerLinearityStandard.hpp>
 
-#include <OpenAnalysis/Loop/LoopManager.hpp>
+//<AIS|ATB>#include <OpenAnalysis/Loop/LoopManager.hpp>
 
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
 
@@ -105,15 +107,16 @@ void operator delete(void* ptr)
 
 using namespace std;
 using namespace OA;
-using namespace OA::DataDep;
+//<AIS|ATB>using namespace OA::DataDep;
 using namespace OA::Alias;
-using namespace OA::AffineExpr;
+//<AIS|ATB>using namespace OA::AffineExpr;
 
 int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
 int DoAlias(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool persistent_h);
-int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
-int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
-int DoFIAliasReachableAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+//<AIS|ATB>int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+//<AIS|ATB>int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+int DoFIAliasTag(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+//<AIS|ATB>int DoFIAliasReachableAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoCallGraph(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoICFG(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoICFGDep(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
@@ -138,6 +141,7 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 int DoLoop(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoAssignPairs(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+int DoCompareExpressionTrees(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 
 
 /* Debug flags:
@@ -188,6 +192,7 @@ void usage(char **argv)
   cerr << "          --silent" << endl;
   cerr << "     where opt is one of:" << endl;
   cerr << "          --oa-AliasMap" << endl;
+  cerr << "          --oa-AliasTag" << endl;
   cerr << "          --oa-AliasMapXAIF" << endl;
   cerr << "          --oa-CFG" << endl;
   cerr << "          --oa-CallGraph" << endl;
@@ -210,6 +215,7 @@ void usage(char **argv)
   cerr << "          --oa-SideEffect" << endl;
   cerr << "          --oa-UDDUChains" << endl;
   cerr << "          --oa-UDDUChainsXAIF" << endl;
+  cerr << "          --oa-CompareExpressionTrees" << endl;
 
   exit(-1);
 }
@@ -300,6 +306,8 @@ main ( unsigned argc,  char * argv[] )
               }     
           }
     }
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-MemRefExpr") )
     {
       //printf("TO DO, implement mem ref expr analysis\n");
@@ -364,12 +372,12 @@ main ( unsigned argc,  char * argv[] )
 		  OutputMemRefInfo(ir, stmt);
               }
 
-          }     
+          }
       }
-      
-      
-      
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if ( cmds->HasOption("--oa-ExprTree") )
     {
       for (int i = 0; i < filenum; ++i) 
@@ -391,7 +399,10 @@ main ( unsigned argc,  char * argv[] )
              }     
 	 } 
     }
+    #endif
 
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-AssignPairs") ) {
       for (int i = 0; i < filenum; ++i)
       {
@@ -413,9 +424,11 @@ main ( unsigned argc,  char * argv[] )
         }
       }
     }
+    #endif
 
 
-    
+    //<AIS|ATB>
+    #if 0
     else if( ( cmds->HasOption("--oa-FIAliasEquivSets") ) ||
 	     ( cmds->HasOption("--oa-FIAlias") ) )
     {
@@ -423,14 +436,27 @@ main ( unsigned argc,  char * argv[] )
       //      DoFIAliasAliasMap(sageProject, &nodeArray, p_h);
       //      DoFIAlias(sageProject, &nodeArray, FALSE);
     }
+    #endif
+    else if( cmds->HasOption("--oa-AliasTag") )
+    {
+      DoFIAliasTag(sageProject, &nodeArray, p_h);
+    }
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-FIAliasAliasMap") )
     {
       DoFIAliasAliasMap(sageProject, &nodeArray, p_h);
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-FIAliasReachableAliasMap") )
     {
       DoFIAliasReachableAliasMap(sageProject, &nodeArray, p_h);
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-AliasMap") )
     {
       //printf("TO DO, implement alias analysis\n");
@@ -453,42 +479,63 @@ main ( unsigned argc,  char * argv[] )
               }     
           }
     }
+    #endif
     /*else if( cmds->HasOption("--oa-AliasMap") )
     {
       printf("TO DO, implement alias map analysis\n");
       return 1;
     }*/
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-CallGraph") )
     {
        DoCallGraph(sageProject, &nodeArray, p_h);
       return 1;
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-ICFG") )
     {
        DoICFG(sageProject, &nodeArray, p_h);
       return 1;
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-ICFGDep") )
     {
        DoICFGDep(sageProject, &nodeArray, p_h);
       return 1;
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-ICFGActivity") )
     {
        DoICFGActivity(sageProject, &nodeArray, p_h);
       return 1;
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-ParamBindings") )
     {
       DoParamBinding(sageProject, &nodeArray, p_h);
        return 1;
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-SideEffect") )
     {
       DoSideEffect(sageProject, &nodeArray, p_h);
       return 1;
 		   
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-ReachDefs") )
     {
        for (int i = 0; i < filenum; ++i) 
@@ -510,6 +557,9 @@ main ( unsigned argc,  char * argv[] )
              }     
 	 } 
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-UDDUChains") )
     {
       for (int i = 0; i < filenum; ++i) 
@@ -531,6 +581,9 @@ main ( unsigned argc,  char * argv[] )
         }     
       }
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-UDDUChainsXAIF") )
     {
       for (int i = 0; i < filenum; ++i)
@@ -552,11 +605,14 @@ main ( unsigned argc,  char * argv[] )
       }
 
     }
+    #endif
     else if( cmds->HasOption("--oa-MPICFG") )
     {
       printf("TO DO, implement MPICFG analysis\n");
       return 1;
     }
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-ReachConsts") )
     {
         
@@ -581,6 +637,9 @@ main ( unsigned argc,  char * argv[] )
      
         return 1;
     } 
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-ICFGReachConsts") )
     {
         for (int i = 0; i < filenum; ++i)
@@ -602,7 +661,10 @@ main ( unsigned argc,  char * argv[] )
         }
 
         return 1;
-    }    
+    }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-AliasMapXAIF") )
     {
       for (int i = 0; i < filenum; ++i)
@@ -625,6 +687,9 @@ main ( unsigned argc,  char * argv[] )
      }
 
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-Linearity") )
     {
       printf("Linearity Analysis Start:\n");
@@ -648,18 +713,55 @@ main ( unsigned argc,  char * argv[] )
          }
       return 1;
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-Loop") )
     {
         printf("Loop Analysis Start:\n");
         DoLoop(sageProject, &nodeArray, p_h);
-        return 0;
+        return 1;
     }
+    #endif
 
+    //<AIS|ATB>
+    #if 0
     else if( cmds->HasOption("--oa-DataDepGCD") )
     {
       DoDataDepGCD(sageProject, &nodeArray, p_h, argc, argv);
-      return 0;
+      return 1;
     }
+    #endif
+    //<AIS|ATB>
+    #if 0
+    else if( cmds->HasOption("--oa-CompareExpressionTrees") )
+    {
+        // iterate through files than functions, perform the analysis on each
+        // function
+        for (int i = 0; i < filenum; ++i) 
+        {
+            SgFile &sageFile = sageProject->get_file(i);
+            SgGlobal *root = sageFile.get_root();
+            SgDeclarationStatementPtrList& declList = root->get_declarations();
+            for(SgDeclarationStatementPtrList::iterator p = declList.begin();
+                p != declList.end(); ++p) 
+            {
+               SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
+               if (func == 0){
+                   continue;
+	       }
+               SgFunctionDefinition *defn = func->get_definition();
+               if (defn == 0){     
+                 continue;
+	       }
+               DoCompareExpressionTrees(defn, sageProject, &nodeArray, p_h);
+            }     
+	 } 
+
+
+        return 1;
+    }
+    #endif
     else if(skipAnalysis == false)
     {
       printf("did not find any valid oa option on the command line\n");
@@ -782,7 +884,8 @@ int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> 
     }
 }
 
-
+//<AIS|ATB>
+#if 0
 int DoCallGraph(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 {
 	int returnvalue=FALSE;
@@ -820,7 +923,10 @@ int DoCallGraph(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 	return returnvalue;
 
 }
+#endif
 
+//<AIS|ATB>
+#if 0
 int DoICFG(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 {
   int returnvalue=FALSE;
@@ -873,7 +979,10 @@ int DoICFG(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 	return returnvalue;
 
 }
+#endif
 
+//<AIS|ATB>
+#if 0
 int DoICFGDep(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 {
 
@@ -950,8 +1059,10 @@ int DoICFGDep(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
   */
  
 }
+#endif
 
-
+//<AIS|ATB>
+#if 0
 int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 {
 
@@ -1005,8 +1116,10 @@ int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
   return returnvalue;
 
 }
+#endif
 
-
+//<AIS|ATB>
+#if 0
 int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 {
 
@@ -1041,11 +1154,12 @@ int DoParamBinding(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handl
 	
         return returnvalue;
  }
+#endif
 		                                        
 
 
-
-
+//<AIS|ATB>
+#if 0
 int DoAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
 	int returnvalue=FALSE;
@@ -1083,7 +1197,10 @@ int DoAlias(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, 
 	return returnvalue;
 
 }
+#endif
 
+//<AIS|ATB>
+#if 0
 int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
   int returnvalue=FALSE;
@@ -1110,7 +1227,10 @@ int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
   alias->output(*irInterface);
   */
 }
+#endif
 
+//<AIS|ATB>
+#if 0
 int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
   int returnvalue=FALSE;
@@ -1151,6 +1271,27 @@ int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
     if(!silent) { interAlias->output(*irInterface); }
   }
 }
+#endif
+
+int DoFIAliasTag(SgProject * p, std::vector<SgNode*> * na, bool p_handle) {
+  int returnvalue = FALSE;
+  if ( debug ) printf("*******start of FIAlias\n");
+  OA::OA_ptr<SageIRInterface> irInterface;
+  irInterface = new SageIRInterface(p, na, p_handle); 
+
+  //FIAlias
+  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasTag> fialiasman;
+  fialiasman = new OA::Alias::ManagerFIAliasAliasTag(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  procIter = new SageIRProcIterator(p, *irInterface);
+  
+  OA::OA_ptr<OA::Alias::Interface> results;
+  
+  if(!skipAnalysis) {
+    results = fialiasman->performAnalysis(procIter);
+    if(!silent) { results->output(*irInterface); }
+  }
+}
 
 /** Find main within a program. */
 SgFunctionDeclaration *findMain(SgProject *project)
@@ -1185,6 +1326,8 @@ SgFunctionDeclaration *findMain(SgProject *project)
     return mainFunc;
 }
 
+//<AIS|ATB>
+#if 0
 int DoFIAliasReachableAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
   int returnvalue=FALSE;
@@ -1226,7 +1369,10 @@ int DoFIAliasReachableAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_
     if(!silent) { interAlias->output(*irInterface); }
   }
 }
+#endif
 
+//<AIS|ATB>
+#if 0
 int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
   int returnvalue=FALSE;
@@ -1282,7 +1428,10 @@ int DoReachDef(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
 	return returnvalue;
 
 }
+#endif
 
+//<AIS|ATB>
+#if 0
 int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
    int returnvalue=FALSE;
@@ -1351,10 +1500,11 @@ int DoReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> 
    reachConsts->output(*irInterface); 
    std::cout << "\n*******  end of DoUDDUChains *********\n\n";
    return returnvalue;
-    
 }
+#endif
 
-
+//<AIS|ATB>
+#if 0
 int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle)
 {
    int returnvalue=FALSE;
@@ -1437,10 +1587,12 @@ int DoICFGActivity(SgProject * p, std::vector<SgNode*>* na, bool p_handle)
    std::cout << "\n*******  end of DoICFGActivity *********\n\n";
    return 0;
 }
+#endif
 
 
 
-
+//<AIS|ATB>
+#if 0
 int DoICFGReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*>* na, bool p_handle)
 {
    int returnvalue=FALSE;
@@ -1520,8 +1672,10 @@ int DoICFGReachConsts(SgFunctionDefinition * f, SgProject * p, std::vector<SgNod
    std::cout << "\n*******  end of DoICFGReachConsts *********\n\n";
    return returnvalue;
 }
+#endif
 
-
+//<AIS|ATB>
+#if 0
 int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
   int returnvalue=FALSE;
@@ -1575,8 +1729,10 @@ int DoUDDUChains(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> *
 
 
 }
+#endif
 
-
+//<AIS|ATB>
+#if 0
 int DoUDDUChainsXAIF(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
   int returnvalue=FALSE;
@@ -1686,11 +1842,14 @@ int DoUDDUChainsXAIF(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode
 	std::cout << "\n*******  end of DoUDDUChainsXAIF *********\n\n";
 	return returnvalue;
 }
+#endif
 
 // perform GCD Data-Dependence analysis.  For now this function manually
 // constructs a Loop object based on the command line arguments.  The
 // data-depanalysis manager uses this.  This is because OA doesn't yet have
 // Loop detection analysis.
+//<AIS|ATB>
+#if 0
 int DoDataDepGCD(
     SgProject * proj,
     std::vector<SgNode*> * na,
@@ -1774,7 +1933,10 @@ int DoDataDepGCD(
     results->output(*ir);
     */
 }
+#endif
 
+//<AIS|ATB>
+#if 0
 void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt)
 {
   //adapted from Nathan's code --should be specific IR independent only OA interface used
@@ -1817,6 +1979,7 @@ void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt)
     }
     //printf("outside outer loop\n"); 
 }
+#endif
 
 // The following was taken from 
 // ROSE/test/roseTests/programAnalysisTests/MemRefExprTest.C.
@@ -2169,6 +2332,8 @@ void dump(OA::OA_ptr<OA::MemRefExprIterator> memRefIterator,
 }
 */
 
+//<AIS|ATB>
+#if 0
 void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt) 
 {
   // Get all mem ref handles corresponding to USEs in this statement.
@@ -2217,8 +2382,11 @@ void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle s
   
   std::cout << std::endl;
 }
+#endif
 
 
+//<AIS|ATB>
+#if 0
 void analyzeSubscript(
     OA_ptr<IdxExprAccess> exp,
     OA_ptr<LoopIRInterface> ir,
@@ -2271,10 +2439,12 @@ void analyzeSubscript(
     }
     #endif
 }
+#endif
 
 
 
-
+//<AIS|ATB>
+#if 0
 int DoLoop(
     SgProject * p,
     std::vector<SgNode*> * na,
@@ -2339,11 +2509,13 @@ int DoLoop(
     // something like affine expression linearity analysis.
 
 }
+#endif
 
 
 
 
-
+//<AIS|ATB>
+#if 0
 int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
    int returnvalue=FALSE;
@@ -2392,7 +2564,10 @@ int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * 
    return returnvalue;
 
 }
+#endif
 
+//<AIS|ATB>
+#if 0
 int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
 
@@ -2425,8 +2600,6 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   }
   return 0;
 
-
-    
   /*  
   if ( debug ) printf("*******start of DoExprTree\n");
   OA::OA_ptr<SageIRInterface> ir;
@@ -2458,7 +2631,7 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
          OA::OA_ptr<OA::ExprTree> eTreePtr = ir->getExprTree(expr);
          eTreePtr->output(*ir);
       }
-     }
+     //}
 
     // print out all of the ExprTrees for the parameters
     // Iterate over procedure calls of a statement
@@ -2484,8 +2657,10 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   } 
   */
 }
+#endif
 
-
+//<AIS|ATB>
+#if 0
 int DoAssignPairs(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
   if ( debug ) printf("*******start of DoPtrAssign\n");
@@ -2513,4 +2688,78 @@ int DoAssignPairs(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> 
      }
   }
 }
+#endif
+
+
+//<AIS|ATB>
+#if 0
+// look at the last two expression trees in the source program's function and
+// determine their ordering.
+int DoCompareExpressionTrees(
+    SgFunctionDefinition *f,
+    SgProject *p,
+    std::vector<SgNode*> *na,
+    bool p_handle)
+{
+    ExprHandle prevExp = NULL, currentExp = NULL;
+    OA_ptr<NewExprTree> lhsExp, rhsExp;
+
+    OA::OA_ptr<SageIRInterface> ir;
+    ir = new SageIRInterface(p, na, p_handle);
+
+    // iterate over all statements
+    //   iterate over ExprHandles for the statement
+    //     create ExprTree(expr)
+    OA::ProcHandle proc((OA::irhandle_t)(ir->getNodeNumber(f)));
+    OA::OA_ptr<OA::IRStmtIterator> sIt = ir->getStmtIterator(proc);
+    for ( ; sIt->isValid(); (*sIt)++) {
+        OA::StmtHandle stmt = sIt->current();
+        OA::OA_ptr<OA::ExprHandleIterator> exprIter;
+        exprIter = ir->getExprHandleIterator(stmt);
+
+        if(exprIter->isValid()) {
+            prevExp = currentExp;
+            currentExp = exprIter->current();
+        }
+    }
+
+    assert((int)prevExp != NULL && (int)currentExp != NULL);
+
+    cout << "Compare expressions: " << endl;
+    cout << "\t lhs: " << ir->toString(prevExp) << endl;
+    cout << "\t rhs: " << ir->toString(currentExp) << endl;
+
+    lhsExp = ir->getNewExprTree(prevExp);
+    rhsExp = ir->getNewExprTree(currentExp);
+
+    lhsExp->output(*ir);
+    rhsExp->output(*ir);
+
+    cout << "\033[32mChecking lhs < rhs\033[0m\n";
+    bool lhsLTRhs = *lhsExp < *rhsExp;
+
+    cout << "\033[32mChecking rhs < lhs\033[0m\n";
+    bool rhsLTLhs = *rhsExp < *lhsExp;
+
+    cout << "\033[32mChecking lhs == rhs\033[0m\n";
+    bool lhsEqRhs = *lhsExp == *rhsExp;
+
+    cout << "\033[32mChecking rhs == lhs\033[0m\n";
+    bool rhsEqLhs = *rhsExp == *lhsExp;
+
+    if(lhsLTRhs) { cout << "(lhs < rhs)  == true\n";  }
+    else         { cout << "(lhs < rhs)  == false\n"; }
+
+    if(rhsLTLhs) { cout << "(rhs < lhs)  == true\n";  }
+    else         { cout << "(rhs < lhs)  == false\n"; }
+
+    if(lhsEqRhs) { cout << "(lhs == rhs) == true\n";  }
+    else         { cout << "(lhs == rhs) == false\n"; }
+
+    if(rhsEqLhs) { cout << "(rhs == lhs) == true\n";  }
+    else         { cout << "(rhs == lhs) == false\n"; }
+
+    return 0;
+}
+#endif
 
