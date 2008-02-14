@@ -2142,7 +2142,7 @@ void SageIRInterface::createNodeArray(SgNode * root)
   }
 }
 
-long SageIRInterface::getNodeNumber(SgNode * n) //can be zero
+long SageIRInterface::getNodeNumber(SgNode * n) const //can be zero
 {
   if(n==NULL)
   {
@@ -2169,7 +2169,7 @@ long SageIRInterface::getNodeNumber(SgNode * n) //can be zero
 
 //various toString methods
 
-std::string SageIRInterface::toString(const OA::OpHandle h)
+std::string SageIRInterface::toString(const OA::OpHandle h) const
 {
   SgNode *node = getNodePtr(h);
   std::string retstr;
@@ -2398,7 +2398,7 @@ std::string SageIRInterface::toString(const OA::OpHandle h)
 
 }
 
-std::string SageIRInterface::toString(const OA::ConstValHandle h)
+std::string SageIRInterface::toString(const OA::ConstValHandle h) const
 {
   SgNode *node = getNodePtr(h);
   if (node == NULL) {
@@ -2411,7 +2411,7 @@ std::string SageIRInterface::toString(const OA::ConstValHandle h)
   return retstr;
 }
 
-std::string SageIRInterface::toString(const OA::ProcHandle h) 
+std::string SageIRInterface::toString(const OA::ProcHandle h) const
 {
   SgNode *node = getNodePtr(h);
 
@@ -2581,7 +2581,7 @@ std::string getFileNameByTraversalBackToFileNode ( SgNode* astNode )
      return returnString;
    }
 
-std::string SageIRInterface::toString(const OA::MemRefHandle h)
+std::string SageIRInterface::toString(const OA::MemRefHandle h) const
 {
   std::string strdump;
   //  char val[20];
@@ -2697,7 +2697,7 @@ std::string SageIRInterface::toString(const OA::MemRefHandle h)
   return strdump;
 }
 
-std::string SageIRInterface::toString(const OA::CallHandle h) 
+std::string SageIRInterface::toString(const OA::CallHandle h) const
 {
   SgNode *node = getNodePtr(h);
   std::string retstr;
@@ -3220,7 +3220,7 @@ std::string SageIRInterface::toStringWithoutScope(SgNode *node)
   return ret; 
 }
 
-std::string SageIRInterface::toString(const OA::SymHandle h) 
+std::string SageIRInterface::toString(const OA::SymHandle h) const
 {
   SgNode *node = getNodePtr(h);
 
@@ -5355,7 +5355,7 @@ SageIRInterface::getDefs(OA::StmtHandle h)
 // compatibility between older versions of ROSE in which
 // attributes were an instance variable of a SgNode, and
 // newer versions in which attributes are accessible via a method call.
-AstAttributeMechanism &SageIRInterface::getAttribute(SgNode *n)
+AstAttributeMechanism &SageIRInterface::getAttribute(SgNode *n) const
 {
     ROSE_ASSERT(n);
     if ( n->get_attributeMechanism() == NULL ) {

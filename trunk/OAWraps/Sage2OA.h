@@ -416,7 +416,7 @@ class SageConstVal : public virtual OA::ConstValBasicInterface {
     virtual bool operator!=(OA::ConstValBasicInterface& x)
     { return true; }
 
-    virtual std::string toString() { return ""; }
+    virtual std::string toString() const { return ""; }
 
     // Methods used by source IR, default behavior
     virtual bool isaInteger() const { return false; }
@@ -485,7 +485,7 @@ class SageIntegerConstVal
         return true;
     }
 
-    std::string toString()
+    std::string toString() 
         { std::ostringstream oss; oss << mVal; return oss.str(); }
 
 
@@ -728,8 +728,8 @@ class SageIRInterface :
 
   void createNodeArray(SgNode * root);
   void numberASTNodes(SgNode *astNode);
-  SgNode * getNodePtr(OA::IRHandle h){if((int)h==0) return 0; else if(persistent_handles) return (*nodeArrayPtr)[h.hval()-1]; else return (SgNode*)h.hval();} //hvals start at 1
-  long getNodeNumber(SgNode *);  //can be zero
+  SgNode * getNodePtr(OA::IRHandle h) const {if((int)h==0) return 0; else if(persistent_handles) return (*nodeArrayPtr)[h.hval()-1]; else return (SgNode*)h.hval();} //hvals start at 1
+  long getNodeNumber(SgNode *) const;  //can be zero
   std::vector <SgNode *> * nodeArrayPtr;
 
   SgNode *getProject() { return wholeProject; }
@@ -872,8 +872,8 @@ public:
   // create a string for the given handle, should be succinct
   // and there should be no newlines
   //--------------------------------------------------------  
-  std::string toString(const OA::ProcHandle h);
-  std::string toString(const OA::StmtHandle h) 
+  std::string toString(const OA::ProcHandle h) const;
+  std::string toString(const OA::StmtHandle h) const
       {
           if(h!=0)
           {
@@ -911,20 +911,20 @@ public:
           }
           else return ("NULL stmt handle\n");
       }
-  std::string toString(const OA::ExprHandle h) 
+  std::string toString(const OA::ExprHandle h) const
       {
           SgExpression * ex=(SgExpression*)getNodePtr(h);
           if ( ex == NULL ) { return ("NULL ExprHandle\n"); }
 	  //	  std::cout << "exprType = " << ex->sage_class_name() << std::endl;
           return ex->unparseToString();
     }
-  std::string toString(const OA::CallHandle h);
-  std::string toString(const OA::OpHandle h);
-  std::string toString(const OA::MemRefHandle h);
-  std::string toString(const OA::SymHandle h); 
+  std::string toString(const OA::CallHandle h) const;
+  std::string toString(const OA::OpHandle h) const;
+  std::string toString(const OA::MemRefHandle h) const;
+  std::string toString(const OA::SymHandle h) const;  
   std::string toStringWithoutScope(const OA::SymHandle h); 
   std::string toStringWithoutScope(SgNode *node);
-  std::string toString(const OA::ConstSymHandle h) {
+  std::string toString(const OA::ConstSymHandle h) const {
     //-----
     // reasoning by BK:
     // when constructing an ExprTree, and deteriming if an ExprHandle
@@ -939,7 +939,7 @@ public:
     return ( toString(mrh) );
     //return ""; 
   }
-  std::string toString(const OA::ConstValHandle h);
+  std::string toString(const OA::ConstValHandle h) const;
   
   void dump(OA::OA_ptr<OA::MemRefExprIterator> memRefIterator,
             std::ostream& os);
@@ -1177,7 +1177,7 @@ public:
  protected:
 
   //! Return the attribute associated with a Sage node.
-  AstAttributeMechanism &getAttribute(SgNode *n);
+  AstAttributeMechanism &getAttribute(SgNode *n) const;
 
  private:
   bool mExcludeInputFiles;
