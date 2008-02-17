@@ -3,6 +3,8 @@
 
 #include "rose.h"
 
+#include "CallGraph.h"
+
 #include <OpenAnalysis/IRInterface/CFGIRInterfaceDefault.hpp>
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/SSAIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/CallGraphIRInterface.hpp>
@@ -742,6 +744,8 @@ private:
   OA::OA_ptr<OA::IRRegionStmtIterator> body (OA::StmtHandle h);
   bool persistent_handles;
   bool mUseVtableOpt;
+  // mClassHierarchy allows us to query the classes derived from a class.
+  ClassHierarchyWrapper *mClassHierarchy;
   //------------------------------
   // loops
   //------------------------------

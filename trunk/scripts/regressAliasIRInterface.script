@@ -290,3 +290,7 @@ echo "Testing TestCases/AliasTests/placementDelete1.C, TestResults/AliasIRInterf
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/placementDelete1.C >& t
 diff t TestResults/AliasIRInterface/placementDelete1.C.out
 
+echo "Testing TestCases/AliasTests/ptrToMbr.cc, TestResults/AliasIRInterface/ptrToMbr.cc.out checked by BSW 2/17/08"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/ptrToMbr.cc >& t
+diff t TestResults/AliasIRInterface/ptrToMbr.cc.out
+

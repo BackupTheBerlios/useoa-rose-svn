@@ -4566,18 +4566,51 @@ Compilation terminated.
    - Reported bug ctor-not-emitted persists
      in 471.omnetpp/src/cmodule.cc, cqueue.cc, cllist.cc.
 
-1/30/08	    UseOA-ROSE svn trunk 333 Brian White		
+1/30/08	    UseOA-ROSE svn trunk 341 Brian White		
 
+   - Changes made by Andy between revision 332 and this one require
+     that UseOA-ROSE be compiled against the AliasTag branch of
+     OpenAnalysis.  For now, all analyses aside from aliastag alias
+     analysis have been disabled.  Hence I am unable to verify
+     the correctness of the entire suite of regression tests.  However,
+     prior to updating/merging my local copy of UseOA-ROSE,
+     I verified that these changes did not break any of the
+     regression tests.
+	
    - We appear to be running out of memory (in buildAliasMaps).
      Hopefully, this issue will be resolved when switching to the
      new alias tag branch of OA.  I speculate this occurs because
      we create a location for each < MemRefHandle (or so), ProcHandle >
      pair.  Therefore, the memory usage blows up if there are many
      procs.  An abort of a new invocation occurs when compiling
-     files SGXMLScanner.cpp, TraverseSchema.cpp.
+     files SGXMLScanner.cpp, TraverseSchema.cpp, XTemplateSerializer.cpp.
      For now, I have simply passed these files by, we will need
      to revisit them later.
 
+   - Implemented SgDotStarOp/SgArrowStarOp.  
+
+     If the rhs of dot-star or arrow-star expression is a 
+     member variable pointer, represent the expression as
+     a SubSetRef of the lhs.  The lhs is first Deref'ed if
+     it is a SgArrowStarOp.
+
+     If the rhs is a method pointer, represent it via
+     a Deref of an UnnamedRef (whose ExprHandle is that of the rhs).
+     This will serve as an indirect method invocation,
+     where the invokable methods are assigned as implicit
+     ptr assignments to the UnnamedRef.  	
+
+     Added ptrToMbr.cc FIAlias and AliasIRInterface tests for
+     this functionality.
+	
+   - Fixed bug in isDeclaredVirtualWithinClassAncestry.
+     functionDeclaration is a virtual method if it is declared
+     virtual or if a functionDeclaration' with the same type signature
+     _and_ same name is declared virtual within the class ancestry
+     of the class defining functionDeclaration.  Previously,
+     I forgot to ensure that the names matched.
+     
+	
    - Modified Sg_File_Info case of getFormalTypes to invoke
      lookThruReferenceType to look past a const modified when
      determining/ensuring that a variable has a class type.

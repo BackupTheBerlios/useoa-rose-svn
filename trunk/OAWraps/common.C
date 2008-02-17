@@ -99,10 +99,11 @@ isNonStaticMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
   
     switch(expression->variantT()) {
     case V_SgDotExp:
+    case V_SgDotStarOp:
         {
             isMethod = true;
 
-            SgDotExp *dotExp = isSgDotExp(expression);
+            SgBinaryOp *dotExp = isSgBinaryOp(expression);
             ROSE_ASSERT(dotExp != NULL);
 
             SgExpression *lhs = dotExp->get_lhs_operand();
@@ -125,6 +126,7 @@ isNonStaticMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
             break;
         }
     case V_SgArrowExp:
+    case V_SgArrowStarOp:
         {
             isMethod = true;
             break;
@@ -398,6 +400,11 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
             SgFunctionCallExp *functionCallExp = isSgFunctionCallExp(node);
             ROSE_ASSERT(functionCallExp != NULL);
 
+            SgExpression *expr = functionCallExp->get_function();
+            ROSE_ASSERT(expr != NULL);
+
+            SgBinaryOp *binaryOp = isSgBinaryOp(expr);
+
             SgPointerDerefExp *pointerDerefExp =
                 isFunctionPointer(functionCallExp);
 
@@ -415,6 +422,19 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
                 }
 
                 ROSE_ASSERT(functionType != NULL);
+            } else if ( isSgArrowStarOp(binaryOp) ||
+                        isSgDotStarOp(binaryOp) ) {
+
+                SgExpression *rhs = binaryOp->get_rhs_operand();
+                ROSE_ASSERT(rhs != NULL);
+
+                SgPointerMemberType *rhsType = 
+                    isSgPointerMemberType(rhs->get_type());
+                ROSE_ASSERT(rhsType != NULL);
+                  
+                functionType = isSgMemberFunctionType(rhsType->get_base_type());
+                ROSE_ASSERT(functionType != NULL);
+
             } else {
                 SgFunctionDeclaration *functionDeclaration = 
                     getFunctionDeclaration(functionCallExp); 
@@ -497,8 +517,8 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
                 ROSE_ASSERT(varType != NULL); 
 
                 // Need getBaseType to look through typedefs.
-                SgPointerType *ptrType = isSgPointerType(lookThruReferenceType(varType)); 
-                SgClassType *classType = NULL; 
+                SgPointerType *ptrType = isSgPointerType(lookThruReferenceType(varType));
+                SgClassType *classType = NULL;
                 if ( ptrType ) { 
                     classType = isSgClassType(lookThruReferenceType(ptrType->get_base_type())); 
                 } else { 
@@ -1013,7 +1033,9 @@ isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration,
     SgType *functionType =
         functionDeclaration->get_type();
     ROSE_ASSERT(functionType != NULL);
-  
+
+    SgName funcName = functionDeclaration->get_name();
+
     // Look in each of the class' parent classes.
     SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances(); 
     for (SgBaseClassPtrList::iterator i = baseClassList.begin(); 
@@ -1049,8 +1071,15 @@ isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration,
                 {
                     SgMemberFunctionDeclaration *memberFunctionDeclaration =  
                         isSgMemberFunctionDeclaration(declarationStatement); 
+                    ROSE_ASSERT(memberFunctionDeclaration);
 
-                    if ( isVirtual(memberFunctionDeclaration) ) {
+                    SgName memberFuncName = 
+                        memberFunctionDeclaration->get_name();
+
+                    if ( ( ( ( *funcName.str() == '~' ) && 
+			     ( *memberFuncName.str() == '~') )
+                           || ( memberFuncName == funcName ) ) && 
+                         isVirtual(memberFunctionDeclaration) ) {
                         SgType *parentMemberFunctionType =
                             memberFunctionDeclaration->get_type();
                         ROSE_ASSERT(parentMemberFunctionType != NULL);
@@ -1261,6 +1290,51 @@ bool classHasVirtualMethods(SgClassDefinition *classDefinition)
 /** \brief  Return boolean indicating whether two functions have the
  *          same type signature.
  */
+bool consistentFunctionTypes(SgFunctionType *funcType1,
+                             SgFunctionType *funcType2)
+{
+
+    ROSE_ASSERT(funcType1 != NULL);
+    ROSE_ASSERT(funcType2 != NULL);
+
+    // Compare the return types of the two funcs.
+    SgType *func1Type = getBaseType(funcType1->get_return_type());
+    SgType *func2Type = getBaseType(funcType2->get_return_type());
+
+    std::string ret1Type, ret2Type;
+    getTypeInfo(func1Type, 0, &ret1Type);
+    getTypeInfo(func2Type, 0, &ret2Type);
+    if ( ret1Type != ret2Type ) {
+        return false;
+    }
+
+
+    SgTypePtrList &formal1Types = funcType1->get_arguments();
+    SgTypePtrList &formal2Types = funcType2->get_arguments();
+
+    if ( formal1Types.size() != formal2Types.size() ) {
+        return false;
+    }
+
+    for(SgTypePtrList::iterator it1 = formal1Types.begin(), it2 = formal2Types.begin(); it1 != formal1Types.end(); ++it1, ++it2) {
+        SgType *type1 = getBaseType(*it1);
+        ROSE_ASSERT(type1 != NULL);
+
+        SgType *type2 = getBaseType(*it2);
+        ROSE_ASSERT(type2 != NULL);
+
+        std::string param1Type, param2Type;
+        getTypeInfo(type1, 0, &param1Type);
+        getTypeInfo(type2, 0, &param2Type);
+        if (param1Type != param2Type) {
+            return false;
+        }
+
+    }
+
+    return true;
+}
+
 bool matchingFunctions(SgFunctionDeclaration *decl1, 
                        SgFunctionDeclaration *decl2)
 { 
@@ -1271,38 +1345,10 @@ bool matchingFunctions(SgFunctionDeclaration *decl1,
   if ( name1 != name2 )
     return false;
 
-  // Compare the return types of the two funcs.
-  SgType *func1Type = getBaseType(decl1->get_orig_return_type());
-  SgType *func2Type = getBaseType(decl2->get_orig_return_type());
+  SgFunctionType *funcType1 = decl1->get_type();
+  SgFunctionType *funcType2 = decl2->get_type();
 
-  std::string ret1Type, ret2Type;
-  getTypeInfo(func1Type, 0, &ret1Type);
-  getTypeInfo(func2Type, 0, &ret2Type);
-  if ( ret1Type != ret2Type )
-    return false;
-
-
-  // Compare the number and types of the formal arguments
-  SgInitializedNamePtrList &func1Params = decl1->get_args();
-  SgInitializedNamePtrList &func2Params = decl2->get_args();
-  if ( func1Params.size() != func2Params.size() )
-    return false;
-
-  SgInitializedNamePtrList::iterator p1 = func1Params.begin();
-  SgInitializedNamePtrList::iterator p2 = func2Params.begin();
-  for ( ; p1 != func1Params.end(); ++p1, ++p2) {
-    SgType* t1 = getBaseType((*p1)->get_type());
-    SgType* t2 = getBaseType((*p2)->get_type());
-    
-    std::string param1Type, param2Type;
-    getTypeInfo(t1, 0, &param1Type);
-    getTypeInfo(t2, 0, &param2Type);
-    if (param1Type != param2Type) {
-      return false;
-    }
-  }
-  //  std::cout << "Comparing decl1: " << decl1->unparseToString() << " and decl2: " << decl2->unparseToString() << " SAME" << std::endl;
-  return true;
+  return consistentFunctionTypes(funcType1, funcType2);
 }
 
 /** \brief Return a function's mangled name.
@@ -1362,6 +1408,22 @@ getClassDeclaration(SgType *type)
     }
 
     switch(type->variantT()) {
+    case V_SgPointerType:
+        {
+            SgPointerType *pointerType = isSgPointerType(type);
+            ROSE_ASSERT(pointerType != NULL);
+
+            classDeclaration = getClassDeclaration(pointerType->get_base_type()); 
+            break;
+        }
+    case V_SgReferenceType:
+        {
+            SgReferenceType *referenceType = isSgReferenceType(type);
+            ROSE_ASSERT(referenceType != NULL);
+
+            classDeclaration = getClassDeclaration(referenceType->get_base_type()); 
+            break;
+        }
     case V_SgTypedefType:
         {
             SgTypedefType *typedefType = isSgTypedefType(type);
@@ -1941,5 +2003,149 @@ bool isOperatorNew(SgFunctionDeclaration *functionDeclaration)
     return ( specialFunctionModifier.isOperator() && 
              functionName == SgName("operator new") ); 
 }
+
+/**
+ *  Return any function declarations defined in cls or any of
+ *  its derived classes, which have a function signature consistent
+ *  with funcType.
+ */
+std::vector<SgFunctionDeclaration *>
+getFunctionsInDerivedClasses(SgClassDefinition *cls, 
+                             SgFunctionType *funcType,
+                             ClassHierarchyWrapper *classHierarchy)
+{
+    std::vector<SgFunctionDeclaration *> funcs;
+
+    SgDeclarationStatementPtrList &members = cls->get_members(); 
+    for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
+         it != members.end(); ++it) { 
+	
+        SgMemberFunctionDeclaration *functionDeclaration =  
+            isSgMemberFunctionDeclaration(*it);
+        if ( functionDeclaration != NULL ) {
+            SgFunctionType *methodType = functionDeclaration->get_type();
+            ROSE_ASSERT(methodType != NULL);
+            if ( consistentFunctionTypes(methodType, funcType) ) {
+                funcs.push_back(functionDeclaration);
+            }
+        }   
+    }
+
+    SgClassDefinitionPtrList subclasses = 
+        classHierarchy->getSubclasses(cls);
+
+    // Iterate over all subclasses.
+    for (SgClassDefinitionPtrList::iterator subclassIt = subclasses.begin();
+          subclassIt != subclasses.end(); ++subclassIt) {
+      
+        SgClassDefinition *subclass = *subclassIt;
+        ROSE_ASSERT(subclass != NULL);
+
+        SgDeclarationStatementPtrList &members = subclass->get_members(); 
+        for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
+              it != members.end(); ++it) { 
+	
+            SgMemberFunctionDeclaration *functionDeclaration =  
+                isSgMemberFunctionDeclaration(*it);
+            if ( functionDeclaration != NULL ) {
+                SgFunctionType *methodType = functionDeclaration->get_type();
+                ROSE_ASSERT(methodType != NULL);
+                if ( consistentFunctionTypes(methodType, funcType) ) {
+                    funcs.push_back(functionDeclaration);
+                }
+            }   
+        }
+    }
+    return funcs;
+}
+
+/** 
+ *  Return the list of methods that may be called at a method pointer
+ *  invocation.  If the pointer is invoked on a receiver of type T,
+ *  the conservative set of methods that may be invoked include any
+ *  non-static, virtual or non-virtual method m with type signature
+ *  consistent with the method pointer that is defined in a class C.
+ *  C is any class derived from any of the ancestors of T.
+ */
+std::set<SgFunctionDeclaration *>
+getFunctionsConsistentWithMethodPointerInvocation(SgBinaryOp *dotStarOrArrowStar,
+                                                  ClassHierarchyWrapper *classHierarchy)
+{
+    SgDotStarOp *dotStar = isSgDotStarOp(dotStarOrArrowStar);
+    SgArrowStarOp *arrowStar = isSgArrowStarOp(dotStarOrArrowStar);
+    ROSE_ASSERT( ( dotStar != NULL ) || ( arrowStar != NULL ) );
+
+    SgType *lhsType = NULL;
+    SgExpression *receiver = dotStarOrArrowStar->get_lhs_operand();
+    ROSE_ASSERT(receiver != NULL);
+
+    SgType *receiverType = receiver->get_type();
+    ROSE_ASSERT(receiverType != NULL);
+
+    SgClassDeclaration *classDecl = getClassDeclaration(receiverType);
+    ROSE_ASSERT(classDecl != NULL);
+
+    classDecl = isSgClassDeclaration(getDefiningDeclaration(classDecl));
+    ROSE_ASSERT(classDecl != NULL);
+
+    SgClassDefinition *classDefn = classDecl->get_definition();  
+    ROSE_ASSERT(classDefn != NULL); 
+
+    SgExpression *rhs = dotStarOrArrowStar->get_rhs_operand();
+    ROSE_ASSERT(rhs != NULL);
+
+    SgPointerMemberType *rhsType = isSgPointerMemberType(rhs->get_type());
+    ROSE_ASSERT(rhsType != NULL);
+                  
+    SgMemberFunctionType *funcType = 
+        isSgMemberFunctionType(rhsType->get_base_type());
+    ROSE_ASSERT(funcType != NULL);
+
+    std::set<SgFunctionDeclaration *> funcs;
+
+    // Get all of the ancestors of the receiver type.
+    SgClassDefinitionPtrList ancestors = 
+        classHierarchy->getAncestorClasses(classDefn);
+    std::vector<SgClassDefinition *> classes;
+    classes.push_back(classDefn);
+
+    // Iterate over all ancestors.
+    for (SgClassDefinitionPtrList::iterator ancestorIt = ancestors.begin();
+          ancestorIt != ancestors.end(); ++ancestorIt) {
+      
+        SgClassDefinition *ancestor = *ancestorIt;
+        ROSE_ASSERT(ancestor != NULL);
+
+        classes.push_back(ancestor);
+
+    }
+
+    for (int i = 0; i < classes.size(); ++i) {
+
+        SgClassDefinition *cls = classes[i];
+        ROSE_ASSERT(cls != NULL);
+
+        std::vector<SgFunctionDeclaration *> funcsWithCompatibleTypes;
+        funcsWithCompatibleTypes = 
+            getFunctionsInDerivedClasses(cls,
+                                         funcType,
+                                         classHierarchy);
+         
+
+        for (int i = 0; i < funcsWithCompatibleTypes.size(); ++i) {
+            SgMemberFunctionDeclaration *funcDecl = 
+              isSgMemberFunctionDeclaration(funcsWithCompatibleTypes[i]);
+            ROSE_ASSERT(funcDecl != NULL);
+
+            if ( isNonStaticMethod(funcDecl) && 
+                 ( funcs.find(funcDecl) == funcs.end() ) ) {
+                funcs.insert(funcDecl);
+            }
+        }
+    }
+
+    return funcs;
+}
+
 
 } // end of namespace UseOA

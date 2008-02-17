@@ -3,6 +3,7 @@
 #define _USEOA_COMMON_H
 
 #include "rose.h"
+#include "CallGraph.h"
 #include <OpenAnalysis/IRInterface/IRHandles.hpp>
 
 namespace UseOA {
@@ -110,6 +111,10 @@ bool isPlacementNew(SgNewExp *newExp);
 SgFunctionDeclaration *isPlacementDelete(SgDeleteExp *deleteExp);
 
 bool isOperatorNew(SgFunctionDeclaration *functionDeclaration);
+
+std::set<SgFunctionDeclaration *>
+getFunctionsConsistentWithMethodPointerInvocation(SgBinaryOp *dotStarOrArrowStar,
+                                                  ClassHierarchyWrapper *classHierarchy);
 
 } // end of namespace UseOA
 

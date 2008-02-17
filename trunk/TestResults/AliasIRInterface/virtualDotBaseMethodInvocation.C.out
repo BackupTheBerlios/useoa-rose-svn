@@ -5,9 +5,7 @@ PROCEDURE = { < ProcHandle("::Base::Base"), SymHandle("method:::Base::Base__L0R"
             < 0, SymHandle("this::::Base::Base__L0R") >
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
-        [In unparseType(0x8a6be0): nm = ::Foo 
-In unparseType(0x8a6be0): nm = ::Foo 
-
+        [
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline Base::Base(){}") =>
         [
@@ -242,18 +240,16 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             , AddressOf( USE, NamedRef( USE, SymHandle("method:::Foo::virtMethod2__L9R"))) >
             < FieldAccess( DEF, NamedRef( USE, SymHandle("SgClassDefinition:::Foo")), virtMethodBase_void)
             , AddressOf( USE, NamedRef( USE, SymHandle("method:::Base::virtMethodBase__L4R"))) >
-            < FieldAccess( DEF, NamedRef( USE, SymHandle("SgClassDefinition:::Foo")), ~Foo_void)
-            , AddressOf( USE, NamedRef( USE, SymHandle("method:::Foo::~Foo__L6R"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("Warning: lhs and member function from different classes (linked though class derivation) 
-lhsClassDefinition = (nil) functionClassDefinition = 0x2afa989a4010 
-Looking for symbol = 0x8e96e0 
+lhsClassDefinition = (nil) functionClassDefinition = 0x2b828685b010 
+Looking for symbol = 0x8e86e0 
 int main(){class ::Foo f;/* Warning: lhs and member function from different classes(linked though class derivation) */f.virtMethodBase();return 0;}") =>
         [
         ] }
     MEMREFEXPRS = { StmtHandle("Warning: lhs and member function from different classes (linked though class derivation) 
-lhsClassDefinition = (nil) functionClassDefinition = 0x2afa989a4010 
-Looking for symbol = 0x8e96e0 
+lhsClassDefinition = (nil) functionClassDefinition = 0x2b828685b010 
+Looking for symbol = 0x8e86e0 
 {class ::Foo f;/* Warning: lhs and member function from different classes(linked though class derivation) */f.virtMethodBase();return 0;}") =>
         [
         ] }
@@ -279,8 +275,8 @@ Looking for symbol = 0x8e96e0
             < 0, AddressOf( USE, NamedRef( USE, SymHandle("f"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("Warning: lhs and member function from different classes (linked though class derivation) 
-lhsClassDefinition = (nil) functionClassDefinition = 0x2afa989a4010 
-Looking for symbol = 0x8e96e0 
+lhsClassDefinition = (nil) functionClassDefinition = 0x2b828685b010 
+Looking for symbol = 0x8e86e0 
 /* Warning: lhs and member function from different classes(linked though class derivation) */f.virtMethodBase();") =>
         [
             MemRefHandle("f") => 
@@ -289,19 +285,19 @@ Looking for symbol = 0x8e96e0
                 NamedRef( USE, SymHandle("method:::Base::virtMethodBase__L4R"))
         ] }
     CALLSITES = { StmtHandle("Warning: lhs and member function from different classes (linked though class derivation) 
-lhsClassDefinition = (nil) functionClassDefinition = 0x2afa989a4010 
-Looking for symbol = 0x8e96e0 
+lhsClassDefinition = (nil) functionClassDefinition = 0x2b828685b010 
+Looking for symbol = 0x8e86e0 
 /* Warning: lhs and member function from different classes(linked though class derivation) */f.virtMethodBase();") =>
         [
             CallHandle("Warning: lhs and member function from different classes (linked though class derivation) 
-lhsClassDefinition = (nil) functionClassDefinition = 0x2afa989a4010 
-Looking for symbol = 0x8e96e0 
+lhsClassDefinition = (nil) functionClassDefinition = 0x2b828685b010 
+Looking for symbol = 0x8e86e0 
 /* Warning: lhs and member function from different classes(linked though class derivation) */f.virtMethodBase()") => 
                 NamedRef( USE, SymHandle("method:::Base::virtMethodBase__L4R"))
         ] }
     PARAMBINDPTRASSIGNPAIRS = { CallHandle("Warning: lhs and member function from different classes (linked though class derivation) 
-lhsClassDefinition = (nil) functionClassDefinition = 0x2afa989a4010 
-Looking for symbol = 0x8e96e0 
+lhsClassDefinition = (nil) functionClassDefinition = 0x2b828685b010 
+Looking for symbol = 0x8e86e0 
 /* Warning: lhs and member function from different classes(linked though class derivation) */f.virtMethodBase()") =>
         [
             < 0, AddressOf( USE, NamedRef( USE, SymHandle("f"))) >
@@ -315,6 +311,5 @@ Looking for symbol = 0x8e96e0
     LOCATION = { < SymHandle("SgClassDefinition:::Foo"), not local > }
     LOCATION = { < SymHandle("method:::Base::virtMethodBase__L4R"), not local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
-    LOCATION = { < SymHandle("method:::Foo::~Foo__L6R"), not local > }
     LOCATION = { < SymHandle("method:::Foo::virtMethod1__L8R"), not local > }
     LOCATION = { < SymHandle("method:::Foo::virtMethod2__L9R"), not local > }

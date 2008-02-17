@@ -62,3 +62,4 @@ test::  placementNew2.C,       checked by 1/25/08
 #test::  refParam.C,             checked by ???
 #test::  RinardEtAlPLDI96Fig4.C, checked by ???
 #test::  ref.C,                  checked by ???
+test:: ptrToMbr.cc, checked by BSW 2/13/08

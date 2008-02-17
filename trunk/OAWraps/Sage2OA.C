@@ -70,6 +70,19 @@ SageIRInterface::SageIRInterface(SgNode *root,
     mFunctions[key] = functionDeclaration;
   }
 
+  // Create a class hierarchy object, which allows us to query the
+  // classes derived from a class.  Note that the ClassHierarchyWrapper
+  // constructor expects to be passed a SgProject, though the interface
+  // does not specify this.
+  SgNode *tmp = root;
+  while ( ( tmp != NULL ) && !isSgProject(tmp) ) {
+    tmp = tmp->get_parent();
+  }
+  SgProject *proj = isSgProject(tmp);
+  ROSE_ASSERT(proj != NULL);
+
+  mClassHierarchy = new ClassHierarchyWrapper(proj);
+
 } 
 
 SageIRInterface::~SageIRInterface()
@@ -3811,7 +3824,7 @@ class ExprTreeTraversal
     // I just want to verify that this isn't being invoked.
     // i.e., this ROSE_ABORT() is for debugging purposes and may
     // be removed.
-    ROSE_ABORT();
+    // ROSE_ABORT();
 
     // This is a top-down traversal and we are passing the parent
     // within the ExprTree as the inherited attribute.

@@ -5,11 +5,7 @@ PROCEDURE = { < ProcHandle("::Base::Base"), SymHandle("method:::Base::Base__L0R"
             < 0, SymHandle("this::::Base::Base__L0R") >
         ] }
     MEMREFEXPRS = { StmtHandle("") =>
-        [In unparseType(0x8a6db0): nm = ::Foo 
-In unparseType(0x8a6db0): nm = ::Foo 
-In unparseType(0x8a6db0): nm = ::Foo 
-In unparseType(0x8a6db0): nm = ::Foo 
-
+        [
         ] }
     MEMREFEXPRS = { StmtHandle("public: inline Base::Base(){}") =>
         [
@@ -265,8 +261,6 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             , AddressOf( USE, NamedRef( USE, SymHandle("method:::Foo::virtMethod2__L10R"))) >
             < FieldAccess( DEF, NamedRef( USE, SymHandle("SgClassDefinition:::Foo")), virtMethodBase_void)
             , AddressOf( USE, NamedRef( USE, SymHandle("method:::Base::virtMethodBase__L4R"))) >
-            < FieldAccess( DEF, NamedRef( USE, SymHandle("SgClassDefinition:::Foo")), ~Foo_void)
-            , AddressOf( USE, NamedRef( USE, SymHandle("method:::Foo::~Foo__L7R"))) >
         ] }
     MEMREFEXPRS = { StmtHandle("int main(){class ::Foo f;return 0;}") =>
         [
@@ -305,6 +299,5 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     LOCATION = { < SymHandle("method:::Base::virtMethodBase__L4R"), not local > }
     LOCATION = { < SymHandle("method:::Base::virtMethod2__L5R"), not local > }
     LOCATION = { < SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
-    LOCATION = { < SymHandle("method:::Foo::~Foo__L7R"), not local > }
     LOCATION = { < SymHandle("method:::Foo::virtMethod1__L9R"), not local > }
     LOCATION = { < SymHandle("method:::Foo::virtMethod2__L10R"), not local > }

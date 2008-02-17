@@ -98,3 +98,7 @@ echo "Testing TestCases/AliasTests/placementNew2.C, TestResults/FIAliasAliasMap/
 ./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/placementNew2.C >& t
 diff t TestResults/FIAliasAliasMap/placementNew2.C.out
 
+echo "Testing TestCases/AliasTests/ptrToMbr.cc, TestResults/FIAliasAliasMap/ptrToMbr.cc.out checked by BSW 2/13/08"
+./OATest --edg:no_warnings -w --oa-FIAliasAliasMap -c TestCases/AliasTests/ptrToMbr.cc >& t
+diff t TestResults/FIAliasAliasMap/ptrToMbr.cc.out
+

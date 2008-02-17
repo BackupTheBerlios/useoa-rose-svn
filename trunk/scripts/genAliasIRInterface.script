@@ -144,3 +144,5 @@ echo "Generating TestResults/AliasIRInterface/placementNew2.C.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/placementNew2.C >& TestResults/AliasIRInterface/placementNew2.C.out
 echo "Generating TestResults/AliasIRInterface/placementDelete1.C.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/placementDelete1.C >& TestResults/AliasIRInterface/placementDelete1.C.out
+echo "Generating TestResults/AliasIRInterface/ptrToMbr.cc.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/ptrToMbr.cc >& TestResults/AliasIRInterface/ptrToMbr.cc.out

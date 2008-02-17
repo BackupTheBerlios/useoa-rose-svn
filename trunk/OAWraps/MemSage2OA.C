@@ -929,7 +929,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     // a get_function() which returns a SgMemberFunctionRef,
                     // not an arrow or dot expression.
                     ROSE_ASSERT(isSgArrowExp(arrowOrDotExp) || 
-                                isSgDotExp(arrowOrDotExp));
+                                isSgDotExp(arrowOrDotExp) ||
+                                isSgArrowStarOp(arrowOrDotExp) ||
+                                isSgDotStarOp(arrowOrDotExp));
                     ROSE_ASSERT(arrowOrDotExp->get_lhs_operand() != NULL);
                 }
             } 
@@ -2846,19 +2848,169 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         }
 
     case V_SgDotStarOp:
-        {
-	  std::cout << "dotstar = " << astNode->unparseToString() << std::endl;
-              astNode->get_file_info()->display("dotstar:");
-                SgFunctionDefinition *enclosingFunction =
-                    getEnclosingFunction(astNode);
-		ROSE_ASSERT(enclosingFunction != NULL);
-		std::cout << "enclosing function = " << enclosingFunction->unparseToString() << std::endl;
-		//ROSE_ASSERT(0);
-            break;
-        }
     case V_SgArrowStarOp:
         {
-            //ROSE_ASSERT(0);
+            SgBinaryOp *binaryOp = isSgBinaryOp(astNode);
+            ROSE_ASSERT(binaryOp != NULL);
+
+            // If the rhs of dot-star or arrow-star expression is a 
+            // member variable pointer, represent the expression as
+            // a SubSetRef of the base object.  
+
+            // If the rhs is a method pointer, represent it via
+            // a Deref of an UnnamedRef (whose ExprHandle is that of the rhs).
+            // This will serve as an indirect method invocation,
+            // where the invokable methods are assigned as implicit
+            // ptr assignments to the UnnamedRef.  
+            SgExpression *rhs = binaryOp->get_rhs_operand();
+            ROSE_ASSERT(rhs != NULL);
+
+            // recurse on lhs and rhs
+            findAllMemRefsAndPtrAssigns(binaryOp->get_lhs_operand(),stmt);
+            findAllMemRefsAndPtrAssigns(binaryOp->get_rhs_operand(),stmt);
+
+            // is a MemRefHandle
+            OA::MemRefHandle memref = getMemRefHandle(astNode);
+            relateMemRefAndStmt(memref, stmt);
+
+            OA::MemRefHandle lhs_memref 
+                = findTopMemRefHandle(binaryOp->get_lhs_operand());
+            OA::MemRefHandle rhs_memref 
+                = findTopMemRefHandle(binaryOp->get_rhs_operand());
+
+            // If this is an arrow star operator, we need to 
+            // dereference the left-hand side. 
+            bool derefLhs = isSgArrowStarOp(astNode);
+
+            SgPointerMemberType *rhsType = isSgPointerMemberType(rhs->get_type());
+            ROSE_ASSERT(rhsType != NULL);
+
+
+            if ( isSgMemberFunctionType(rhsType->get_base_type()) ) {
+
+                // This is an access to a method pointer.
+
+                // Create the UnnamedRef.
+                OA::ExprHandle exprHandle = 
+                    findTopExprHandle(binaryOp->get_rhs_operand());
+                OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
+                OA::OA_ptr<OA::MemRefExpr> unnamedMre;
+                OA::OA_ptr<OA::MemRefExpr> mre;
+                unnamedMre = new OA::UnnamedRef(mrType, exprHandle);
+
+                // Record the type of the MRE (reference or non-reference).
+                mMre2TypeMap[unnamedMre] = other;
+
+                mre = derefMre(unnamedMre, OA::MemRefExpr::USE, 1);
+
+                // Record the type of the MRE (reference or non-reference).
+                mMre2TypeMap[mre] = other;
+
+                mMemref2mreSetMap[memref].insert(mre);
+
+                // Now create the assignments of the compatible
+                // functions to the unnamed ref.
+
+                // Notice that we look for compatible method declarations 
+                // defined within by any class c or any of its descendents, 
+                // where c is any ancestor of the type of the lhs of
+                // the star/dot operator.  We might think we can look only
+                // at the ancestor of the lhs type.  However, imagine
+                     
+                // Derived d;
+
+                // // Declare pmf to point to Base::nonvirt.  There is no
+                // // virtual pointer table entry for a non-virtual method.
+                // // This points to Base::nonvirt, itself.
+                // pmf = &Base::nonvirt;
+
+                // // All of these invoke Base::nonvirt, regardless of 
+                // // the (run-time) type of the receiver.
+                // (d.*pmf)(5.0);
+                std::set<SgFunctionDeclaration *> funcs;
+                funcs = getFunctionsConsistentWithMethodPointerInvocation(binaryOp,
+                                                                          mClassHierarchy);
+
+
+		OA::OA_ptr<OA::MemRefExpr> lhs_mre = unnamedMre->clone();
+		lhs_mre->setMemRefType(OA::MemRefExpr::DEF);                
+
+                for (std::set<SgFunctionDeclaration *>::iterator it = funcs.begin(); it != funcs.end(); ++it) {
+
+                    SgFunctionDeclaration *decl = *it;
+                    ROSE_ASSERT(decl != NULL);
+                    OA::SymHandle procSymHandle = getProcSymHandle(decl);
+                    OA::OA_ptr<OA::MemRefExpr> funcMRE;
+                    funcMRE = new OA::NamedRef(OA::MemRefExpr::USE,
+                                               procSymHandle);
+                    // Record the type of the MRE (reference or non-reference).
+                    mMre2TypeMap[funcMRE] = other;
+
+                    OA::OA_ptr<OA::AddressOf> address_mre;
+                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+
+                    address_mre = new OA::AddressOf(
+                                          OA::MemRefExpr::USE,
+                                          nullMRE);
+                    
+                    OA::OA_ptr<OA::MemRefExpr> rhs_mre;
+                    rhs_mre = address_mre->composeWith(funcMRE);
+                    mMre2TypeMap[rhs_mre] = other;
+
+                    makePtrAssignPair(stmt, lhs_mre, rhs_mre);
+
+                }
+
+            } else {
+
+                // This is an access to a member variable pointer.
+
+                OA::OA_ptr<OA::MemRefExprIterator> mIter
+                    = getMemRefExprIterator(lhs_memref);
+                for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
+
+                    OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
+                    if ( derefLhs ) {
+                        lhs_mre = derefMre(lhs_mre, OA::MemRefExpr::USE, 1);
+
+                        // Record the type of the MRE 
+                        // (reference or non-reference).
+                        mMre2TypeMap[lhs_mre] = other;
+                    }                
+
+                    OA::OA_ptr<OA::SubSetRef> subset_mre;
+                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
+                    subset_mre = new OA::SubSetRef(OA::MemRefExpr::USE,
+                                                   nullMRE);
+                    lhs_mre = subset_mre->composeWith(lhs_mre->clone());
+                    // Record the type of the MRE (reference or non-reference).
+                    mMre2TypeMap[lhs_mre] = other;
+
+                    mMemref2mreSetMap[memref].insert(lhs_mre);
+                }
+
+            }
+
+            // make rhs not a MemRefHandle
+            // Note that lhs continues to be a MemRefHandle.
+
+            mMemref2mreSetMap[rhs_memref].clear();
+            deleteMemRefStmtRelation(rhs_memref, stmt);
+
+            // We also need to be careful to remove the
+            // original reference base at the rhs, if one exists.
+            // If it does, it will be the Sg_File_Info of the rhs_memref.
+	    //            SgNode *node = (SgNode*)(rhs_memref.hval());
+
+            SgNode *node = getNodePtr(rhs_memref);
+            ROSE_ASSERT(node != NULL);
+                 
+            Sg_File_Info *fileInfo = node->get_file_info();
+            ROSE_ASSERT(fileInfo != NULL);
+
+	    OA::MemRefHandle hiddenMemref = getMemRefHandle(fileInfo);
+            mMemref2mreSetMap[hiddenMemref].clear();
+            deleteMemRefStmtRelation(hiddenMemref, stmt);
             break;
         }
 
