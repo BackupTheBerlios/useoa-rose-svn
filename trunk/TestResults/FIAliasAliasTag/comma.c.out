@@ -8,6 +8,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 1
+                    # NamedRef(printf)
                 ) ] 
             
             NamedRef(
@@ -16,6 +17,8 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 2
+                    # NamedRef(x)
+                    # Deref(NamedRef(q))
                 ) ] 
             
             NamedRef(
@@ -24,6 +27,9 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 3
+                    # NamedRef(y)
+                    # Deref(NamedRef(p))
+                    # Deref(NamedRef(r))
                 ) ] 
             
             NamedRef(
@@ -32,6 +38,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 4
+                    # NamedRef(z)
                 ) ] 
             
             NamedRef(
@@ -40,6 +47,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 5
+                    # NamedRef(p)
                 ) ] 
             
             NamedRef(
@@ -48,6 +56,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 6
+                    # NamedRef(q)
                 ) ] 
             
             NamedRef(
@@ -56,6 +65,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 7
+                    # NamedRef(r)
                 ) ] 
             
             UnnamedRef(
@@ -66,9 +76,12 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 8
+                    # UnnamedRef()
                 )    
                 Tag(
                     mTagID: 10
+                    # UnnamedRef()
+                    # SubSetRef(UnnamedRef())
                 ) ] 
             
             UnnamedRef(
@@ -79,9 +92,12 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 9
+                    # UnnamedRef()
                 )    
                 Tag(
                     mTagID: 11
+                    # UnnamedRef()
+                    # SubSetRef(UnnamedRef())
                 ) ] 
             
             Deref(
@@ -95,6 +111,9 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 3
+                    # NamedRef(y)
+                    # Deref(NamedRef(p))
+                    # Deref(NamedRef(r))
                 ) ] 
             
             Deref(
@@ -108,6 +127,8 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 2
+                    # NamedRef(x)
+                    # Deref(NamedRef(q))
                 ) ] 
             
             Deref(
@@ -121,6 +142,9 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 3
+                    # NamedRef(y)
+                    # Deref(NamedRef(p))
+                    # Deref(NamedRef(r))
                 ) ] 
             
             SubSetRef(
@@ -135,6 +159,8 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 10
+                    # UnnamedRef()
+                    # SubSetRef(UnnamedRef())
                 ) ] 
             
             SubSetRef(
@@ -149,12 +175,15 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 11
+                    # UnnamedRef()
+                    # SubSetRef(UnnamedRef())
                 ) ] 
 
     mTagToMREs: AliasTag	 => OA::OA_ptr<std::set<OA::OA_ptr<MemRefExpr> > > 
             
             Tag(
                 mTagID: 1
+                # NamedRef(printf)
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -163,6 +192,8 @@ AliasTagResults(
             
             Tag(
                 mTagID: 2
+                # NamedRef(x)
+                # Deref(NamedRef(q))
             )	 => [ 
                 NamedRef(
                     mMemRefType: DEF
@@ -180,6 +211,9 @@ AliasTagResults(
             
             Tag(
                 mTagID: 3
+                # NamedRef(y)
+                # Deref(NamedRef(p))
+                # Deref(NamedRef(r))
             )	 => [ 
                 NamedRef(
                     mMemRefType: DEF
@@ -206,6 +240,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 4
+                # NamedRef(z)
             )	 => [ 
                 NamedRef(
                     mMemRefType: DEF
@@ -214,6 +249,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 5
+                # NamedRef(p)
             )	 => [ 
                 NamedRef(
                     mMemRefType: DEF
@@ -222,6 +258,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 6
+                # NamedRef(q)
             )	 => [ 
                 NamedRef(
                     mMemRefType: DEF
@@ -230,6 +267,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 7
+                # NamedRef(r)
             )	 => [ 
                 NamedRef(
                     mMemRefType: DEF
@@ -238,6 +276,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 8
+                # UnnamedRef()
             )	 => [ 
                 UnnamedRef(
                     mMemRefType: USE
@@ -248,6 +287,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 9
+                # UnnamedRef()
             )	 => [ 
                 UnnamedRef(
                     mMemRefType: USE
@@ -258,6 +298,8 @@ AliasTagResults(
             
             Tag(
                 mTagID: 10
+                # UnnamedRef()
+                # SubSetRef(UnnamedRef())
             )	 => [ 
                 UnnamedRef(
                     mMemRefType: USE
@@ -278,6 +320,8 @@ AliasTagResults(
             
             Tag(
                 mTagID: 11
+                # UnnamedRef()
+                # SubSetRef(UnnamedRef())
             )	 => [ 
                 UnnamedRef(
                     mMemRefType: USE

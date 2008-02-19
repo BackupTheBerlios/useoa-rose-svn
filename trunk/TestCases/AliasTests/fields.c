@@ -1,5 +1,7 @@
 /*
    Testing field accesses through ptrs and direct.
+
+   FIAlias output?: (*x,y) (*z,x) (*((**z).p), n, *(*x.p) ) (*x.p,*y.p)
 */
 
 void main() {

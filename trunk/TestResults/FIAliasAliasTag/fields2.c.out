@@ -8,6 +8,9 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 1
+                    # NamedRef(x)
+                    # Deref(NamedRef(p))
+                    # Deref(FieldAccess(NamedRef(s)))
                 ) ] 
             
             NamedRef(
@@ -16,6 +19,8 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 2
+                    # NamedRef(y)
+                    # Deref(FieldAccess(NamedRef(s)))
                 ) ] 
             
             NamedRef(
@@ -24,6 +29,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 3
+                    # NamedRef(p)
                 ) ] 
             
             NamedRef(
@@ -32,12 +38,17 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 4
+                    # NamedRef(s)
                 )    
                 Tag(
                     mTagID: 5
+                    # NamedRef(s)
+                    # FieldAccess(NamedRef(s))
                 )    
                 Tag(
                     mTagID: 6
+                    # NamedRef(s)
+                    # FieldAccess(NamedRef(s))
                 ) ] 
             
             Deref(
@@ -51,6 +62,9 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 1
+                    # NamedRef(x)
+                    # Deref(NamedRef(p))
+                    # Deref(FieldAccess(NamedRef(s)))
                 ) ] 
             
             Deref(
@@ -69,6 +83,8 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 2
+                    # NamedRef(y)
+                    # Deref(FieldAccess(NamedRef(s)))
                 ) ] 
             
             Deref(
@@ -87,6 +103,9 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 1
+                    # NamedRef(x)
+                    # Deref(NamedRef(p))
+                    # Deref(FieldAccess(NamedRef(s)))
                 ) ] 
             
             FieldAccess(
@@ -100,6 +119,8 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 5
+                    # NamedRef(s)
+                    # FieldAccess(NamedRef(s))
                 ) ] 
             
             FieldAccess(
@@ -113,12 +134,17 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 6
+                    # NamedRef(s)
+                    # FieldAccess(NamedRef(s))
                 ) ] 
 
     mTagToMREs: AliasTag	 => OA::OA_ptr<std::set<OA::OA_ptr<MemRefExpr> > > 
             
             Tag(
                 mTagID: 1
+                # NamedRef(x)
+                # Deref(NamedRef(p))
+                # Deref(FieldAccess(NamedRef(s)))
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -150,6 +176,8 @@ AliasTagResults(
             
             Tag(
                 mTagID: 2
+                # NamedRef(y)
+                # Deref(FieldAccess(NamedRef(s)))
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -172,6 +200,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 3
+                # NamedRef(p)
             )	 => [ 
                 NamedRef(
                     mMemRefType: DEF
@@ -180,6 +209,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 4
+                # NamedRef(s)
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -188,6 +218,8 @@ AliasTagResults(
             
             Tag(
                 mTagID: 5
+                # NamedRef(s)
+                # FieldAccess(NamedRef(s))
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -205,6 +237,8 @@ AliasTagResults(
             
             Tag(
                 mTagID: 6
+                # NamedRef(s)
+                # FieldAccess(NamedRef(s))
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE

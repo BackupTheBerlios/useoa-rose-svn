@@ -1,3 +1,6 @@
+/*
+ * FIAlias results should be: (*r,y,*p) (*q,x) 
+ */
 #include <stdio.h>
 
 int main()

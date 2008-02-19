@@ -8,3 +8,13 @@ echo "Generating TestResults/FIAliasAliasTag/alias4b.c.out"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/alias4b.c >& TestResults/FIAliasAliasTag/alias4b.c.out
 echo "Generating TestResults/FIAliasAliasTag/alias4.c.out"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/alias4.c >& TestResults/FIAliasAliasTag/alias4.c.out
+echo "Generating TestResults/FIAliasAliasTag/comma.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/comma.c >& TestResults/FIAliasAliasTag/comma.c.out
+echo "Generating TestResults/FIAliasAliasTag/fields2.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/fields2.c >& TestResults/FIAliasAliasTag/fields2.c.out
+echo "Generating TestResults/FIAliasAliasTag/fields3.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/fields3.c >& TestResults/FIAliasAliasTag/fields3.c.out
+echo "Generating TestResults/FIAliasAliasTag/functionPtr2.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/functionPtr2.c >& TestResults/FIAliasAliasTag/functionPtr2.c.out
+echo "Generating TestResults/FIAliasAliasTag/functionPtr.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/functionPtr.c >& TestResults/FIAliasAliasTag/functionPtr.c.out
