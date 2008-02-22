@@ -3222,7 +3222,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 }
             }
 
-            relateMemRefAndStmt(memref, stmt);
+	    relateMemRefAndStmt(memref, stmt);
             break;
         }
     case V_SgAssignOp:
@@ -4377,18 +4377,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                  assert(0);
             }
 
-            OA::OA_ptr<OA::SubSetRef> subset_mre;
             OA::OA_ptr<OA::MemRefExpr> nullMRE;
             OA::OA_ptr<OA::MemRefExpr> composed_mre;
 
-            subset_mre = new OA::SubSetRef(
-                                           OA::MemRefExpr::USE,
-                                           nullMRE
-                                          );
-            mre
-                   = subset_mre->composeWith(mre->clone());
-
-            
             OA::OA_ptr<OA::AddressOf> address_mre;
 
             address_mre = new OA::AddressOf(
@@ -5646,6 +5637,7 @@ bool SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
                                               OA::MemRefExpr::USE,
                                               nullMRE);
                     child_mre = address_mre->composeWith(child_mre);
+
                 } 
  
                

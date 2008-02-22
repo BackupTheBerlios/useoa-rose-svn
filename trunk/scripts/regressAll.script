@@ -1,50 +1,56 @@
 echo "########################### running regressFIAliasAliasMap.script"
-source scripts/regressFIAliasAliasMap.script
+#source scripts/regressFIAliasAliasMap.script
 
 echo "########################### running regressFIAliasReachableAliasMap.script"
-source scripts/regressFIAliasReachableAliasMap.script
+#source scripts/regressFIAliasReachableAliasMap.script
+
+echo "########################### running regressFIAliasAliasTag.script"
+source scripts/regressFIAliasAliasTag.script
+
+echo "########################### running regressFIAliasAliasTagReachable.script"
+#source scripts/regressFIAliasAliasTagReachable.script
 
 echo "########################### running regressAliasIRInterface.script"
-source scripts/regressAliasIRInterface.script
+#source scripts/regressAliasIRInterface.script
 
 echo "########################### running regressCallGraph.script"
-source scripts/regressCallGraph.script
+#source scripts/regressCallGraph.script
 
 echo "########################### running regressParamBindings.script"
-source scripts/regressParamBindings.script
+#source scripts/regressParamBindings.script
 
 echo "########################### running regressICFG.script"
-source scripts/regressICFG.script
+#source scripts/regressICFG.script
 
 echo "########################### running regressSideEffect.script"
-source scripts/regressSideEffect.script
+#source scripts/regressSideEffect.script
 
 echo "########################### running regressReachDefs.script"
-source scripts/regressReachDefs.script
+#source scripts/regressReachDefs.script
 
 echo "########################### running regressUDDUChains.script"
-source scripts/regressUDDUChains.script
+#source scripts/regressUDDUChains.script
 
 echo "########################### running regressExprTree.script"
-source scripts/regressExprTree.script
+#source scripts/regressExprTree.script
 
 echo "########################### running regressLinearity.script"
-source scripts/regressLinearity.script
+#source scripts/regressLinearity.script
 
 #echo "########################### running regressICFGDep.script"
 #source scripts/regressICFGDep.script
 
 echo "########################### running regressICFGActivity.script"
-source scripts/regressICFGActivity.script
+#source scripts/regressICFGActivity.script
 
 #echo "########################### running regressReachConsts.script"
 #source scripts/regressReachConsts.script
 
 echo "########################### running regressICFGReachConsts.script"
-source scripts/regressICFGReachConsts.script
+#source scripts/regressICFGReachConsts.script
 
 echo "########################### running regressptrAssign.script"
-source scripts/regressAssignPairs.script
+#source scripts/regressAssignPairs.script
 
 
 

@@ -11,6 +11,7 @@
   {  0 , "oa-Alias",          CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-AliasMap",       CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-AliasTag",       CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
+  {  0 , "oa-AliasTagReachable", CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-CallGraph",      CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-ICFG",           CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
   {  0 , "oa-ICFGDep",        CLP::ARG_NONE, CLP::DUPOPT_ERR,  NULL },
@@ -116,6 +117,7 @@ int DoAlias(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, b
 //<AIS|ATB>int DoFIAliasEquivSets(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 //<AIS|ATB>int DoFIAliasAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoFIAliasTag(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
+int DoFIAliasTagReachable(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 //<AIS|ATB>int DoFIAliasReachableAliasMap(SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoCallGraph(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
 int DoICFG(SgProject * sgproject, std::vector<SgNode*> * na, bool persistent_h);
@@ -193,6 +195,7 @@ void usage(char **argv)
   cerr << "     where opt is one of:" << endl;
   cerr << "          --oa-AliasMap" << endl;
   cerr << "          --oa-AliasTag" << endl;
+  cerr << "          --oa-AliasTagReachable" << endl;
   cerr << "          --oa-AliasMapXAIF" << endl;
   cerr << "          --oa-CFG" << endl;
   cerr << "          --oa-CallGraph" << endl;
@@ -437,6 +440,10 @@ main ( unsigned argc,  char * argv[] )
       //      DoFIAlias(sageProject, &nodeArray, FALSE);
     }
     #endif
+    else if( cmds->HasOption("--oa-AliasTagReachable") )
+    {
+      DoFIAliasTagReachable(sageProject, &nodeArray, p_h);
+    }
     else if( cmds->HasOption("--oa-AliasTag") )
     {
       DoFIAliasTag(sageProject, &nodeArray, p_h);
@@ -1324,6 +1331,27 @@ SgFunctionDeclaration *findMain(SgProject *project)
         }
     }
     return mainFunc;
+}
+
+int DoFIAliasTagReachable(SgProject * p, std::vector<SgNode*> * na, bool p_handle) {
+  int returnvalue = FALSE;
+  if ( debug ) printf("*******start of FIAlias\n");
+  OA::OA_ptr<SageIRInterface> irInterface;
+  irInterface = new SageIRInterface(p, na, p_handle); 
+
+  //FIAlias
+  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasTag> fialiasman;
+  fialiasman = new OA::Alias::ManagerFIAliasAliasTag(irInterface);
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  procIter = new SageIRProcIterator(findMain(p), *irInterface);
+  
+  OA::OA_ptr<OA::Alias::Interface> results;
+  
+  if(!skipAnalysis) {
+    OA::Alias::FIAliasImplement implement = OA::Alias::REACHABLE_PROCS;
+    results = fialiasman->performAnalysis(procIter, implement);
+    if(!silent) { results->output(*irInterface); }
+  }
 }
 
 //<AIS|ATB>

@@ -4638,3 +4638,21 @@ Compilation terminated.
    - Reported bug empty-sizeof-class persists
      in 483.xalancbmk/src/ReaderMgr.cpp, XSAnnotation.cpp.
 	
+1/30/08	    UseOA-ROSE svn trunk 343 Brian White		
+
+   - Added --oa-AliasTagReachable option to OATest.
+	
+   - Added test suite for FIAliasAliasTagReachable, which
+     simply mirrors FIAliasAliasTag.
+
+   - As per Michelle's request, removed SubSetRef of UnnamedRef
+     for SgStringVals.  Michelle says that 'any alias analysis
+     should treat an UnnamedRef as a may access anyway.'  Updated
+     results for comma.c accordingly.
+	
+   - Commented out everything but regressFIAliasAliasTag,
+     regressFIAliasAliasTagReachable, and regressAliasIRInterface
+     from regressAll.  Actually, commented out regressAliasIRInterface,
+     which is seg fault'ing.
+
+	

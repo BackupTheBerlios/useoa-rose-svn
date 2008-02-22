@@ -10,11 +10,25 @@ echo "Generating TestResults/FIAliasAliasTag/alias4.c.out"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/alias4.c >& TestResults/FIAliasAliasTag/alias4.c.out
 echo "Generating TestResults/FIAliasAliasTag/comma.c.out"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/comma.c >& TestResults/FIAliasAliasTag/comma.c.out
+echo "Generating TestResults/FIAliasAliasTag/constQualified.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/constQualified.c >& TestResults/FIAliasAliasTag/constQualified.c.out
 echo "Generating TestResults/FIAliasAliasTag/fields2.c.out"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/fields2.c >& TestResults/FIAliasAliasTag/fields2.c.out
 echo "Generating TestResults/FIAliasAliasTag/fields3.c.out"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/fields3.c >& TestResults/FIAliasAliasTag/fields3.c.out
+echo "Generating TestResults/FIAliasAliasTag/funCall.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/funCall.c >& TestResults/FIAliasAliasTag/funCall.c.out
 echo "Generating TestResults/FIAliasAliasTag/functionPtr2.c.out"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/functionPtr2.c >& TestResults/FIAliasAliasTag/functionPtr2.c.out
 echo "Generating TestResults/FIAliasAliasTag/functionPtr.c.out"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/functionPtr.c >& TestResults/FIAliasAliasTag/functionPtr.c.out
+echo "Generating TestResults/FIAliasAliasTag/OAWikiEx.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/OAWikiEx.c >& TestResults/FIAliasAliasTag/OAWikiEx.c.out
+echo "Generating TestResults/FIAliasAliasTag/passIntPtrArrayRef2.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/passIntPtrArrayRef2.c >& TestResults/FIAliasAliasTag/passIntPtrArrayRef2.c.out
+echo "Generating TestResults/FIAliasAliasTag/passIntPtrArrayRef3.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/passIntPtrArrayRef3.c >& TestResults/FIAliasAliasTag/passIntPtrArrayRef3.c.out
+echo "Generating TestResults/FIAliasAliasTag/passIntPtrArrayRef.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/passIntPtrArrayRef.c >& TestResults/FIAliasAliasTag/passIntPtrArrayRef.c.out
+echo "Generating TestResults/FIAliasAliasTag/utke.c.out"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/utke.c >& TestResults/FIAliasAliasTag/utke.c.out

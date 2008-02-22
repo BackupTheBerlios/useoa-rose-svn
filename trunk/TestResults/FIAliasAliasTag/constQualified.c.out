@@ -8,6 +8,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 1
+                    # NamedRef(g)
                 ) ] 
             
             NamedRef(
@@ -16,6 +17,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 2
+                    # NamedRef(const_array)
                 ) ] 
             
             NamedRef(
@@ -24,6 +26,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 3
+                    # NamedRef(p)
                 ) ] 
             
             NamedRef(
@@ -32,6 +35,8 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 4
+                    # NamedRef(i)
+                    # Deref(NamedRef(p))
                 ) ] 
             
             NamedRef(
@@ -40,6 +45,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 5
+                    # NamedRef(x)
                 ) ] 
             
             NamedRef(
@@ -48,6 +54,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 6
+                    # NamedRef(y)
                 ) ] 
             
             NamedRef(
@@ -56,6 +63,7 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 7
+                    # NamedRef(q)
                 ) ] 
             
             Deref(
@@ -69,9 +77,13 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 8
+                    # Deref(NamedRef(const_array))
                 )    
                 Tag(
                     mTagID: 9
+                    # Deref(NamedRef(const_array))
+                    # Deref(NamedRef(q))
+                    # SubSetRef(Deref(NamedRef(const_array)))
                 ) ] 
             
             Deref(
@@ -85,6 +97,8 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 4
+                    # NamedRef(i)
+                    # Deref(NamedRef(p))
                 ) ] 
             
             Deref(
@@ -98,6 +112,9 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 9
+                    # Deref(NamedRef(const_array))
+                    # Deref(NamedRef(q))
+                    # SubSetRef(Deref(NamedRef(const_array)))
                 ) ] 
             
             SubSetRef(
@@ -115,12 +132,16 @@ AliasTagResults(
             )	 => [ 
                 Tag(
                     mTagID: 9
+                    # Deref(NamedRef(const_array))
+                    # Deref(NamedRef(q))
+                    # SubSetRef(Deref(NamedRef(const_array)))
                 ) ] 
 
     mTagToMREs: AliasTag	 => OA::OA_ptr<std::set<OA::OA_ptr<MemRefExpr> > > 
             
             Tag(
                 mTagID: 1
+                # NamedRef(g)
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -129,6 +150,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 2
+                # NamedRef(const_array)
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -137,6 +159,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 3
+                # NamedRef(p)
             )	 => [ 
                 NamedRef(
                     mMemRefType: DEF
@@ -145,6 +168,8 @@ AliasTagResults(
             
             Tag(
                 mTagID: 4
+                # NamedRef(i)
+                # Deref(NamedRef(p))
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -162,6 +187,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 5
+                # NamedRef(x)
             )	 => [ 
                 NamedRef(
                     mMemRefType: DEF
@@ -170,6 +196,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 6
+                # NamedRef(y)
             )	 => [ 
                 NamedRef(
                     mMemRefType: DEF
@@ -178,6 +205,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 7
+                # NamedRef(q)
             )	 => [ 
                 NamedRef(
                     mMemRefType: DEF
@@ -186,6 +214,7 @@ AliasTagResults(
             
             Tag(
                 mTagID: 8
+                # Deref(NamedRef(const_array))
             )	 => [ 
                 Deref(
                     mMemRefType: USE
@@ -199,6 +228,9 @@ AliasTagResults(
             
             Tag(
                 mTagID: 9
+                # Deref(NamedRef(const_array))
+                # Deref(NamedRef(q))
+                # SubSetRef(Deref(NamedRef(const_array)))
             )	 => [ 
                 Deref(
                     mMemRefType: USE
