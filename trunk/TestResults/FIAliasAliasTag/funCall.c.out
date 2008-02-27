@@ -301,6 +301,64 @@ AliasTagResults(
                 ) ] 
 
     mMemRefToTags: MemRefHandle	 => OA::OA_ptr<std::set<AliasTag> > 
+            MemRefHandle(i)	 => [ 
+                Tag(
+                    mTagID: 2
+                    # NamedRef(i)
+                ) ] 
+            MemRefHandle(j)	 => [ 
+                Tag(
+                    mTagID: 3
+                    # NamedRef(j)
+                ) ] 
+            MemRefHandle(b)	 => [ 
+                Tag(
+                    mTagID: 6
+                    # NamedRef(b)
+                    # Deref(NamedRef(j))
+                ) ] 
+            MemRefHandle(a)	 => [ 
+                Tag(
+                    mTagID: 5
+                    # NamedRef(a)
+                    # Deref(NamedRef(i))
+                ) ] 
+            MemRefHandle(b)	 => [ 
+                Tag(
+                    mTagID: 6
+                    # NamedRef(b)
+                    # Deref(NamedRef(j))
+                ) ] 
+            MemRefHandle(*i)	 => [ 
+                Tag(
+                    mTagID: 5
+                    # NamedRef(a)
+                    # Deref(NamedRef(i))
+                ) ] 
+            MemRefHandle(*j)	 => [ 
+                Tag(
+                    mTagID: 6
+                    # NamedRef(b)
+                    # Deref(NamedRef(j))
+                ) ] 
+            MemRefHandle(*a)	 => [ 
+                Tag(
+                    mTagID: 4
+                    # NamedRef(loc)
+                    # Deref(NamedRef(a))
+                    # Deref(NamedRef(b))
+                    # Deref(Deref(NamedRef(i)))
+                    # Deref(Deref(NamedRef(j)))
+                ) ] 
+            MemRefHandle(*b)	 => [ 
+                Tag(
+                    mTagID: 4
+                    # NamedRef(loc)
+                    # Deref(NamedRef(a))
+                    # Deref(NamedRef(b))
+                    # Deref(Deref(NamedRef(i)))
+                    # Deref(Deref(NamedRef(j)))
+                ) ] 
 
     mMREToMustFlag: OA::OA_ptr<MemRefExpr> 	 => bool
             
@@ -405,5 +463,14 @@ AliasTagResults(
             )	 => 1
 
     mMemRefToMustFlag: MemRefHandle	 => bool
+            MemRefHandle(i)	 => 1
+            MemRefHandle(j)	 => 1
+            MemRefHandle(b)	 => 1
+            MemRefHandle(a)	 => 1
+            MemRefHandle(b)	 => 1
+            MemRefHandle(*i)	 => 1
+            MemRefHandle(*j)	 => 1
+            MemRefHandle(*a)	 => 1
+            MemRefHandle(*b)	 => 1
 
 )
