@@ -627,8 +627,8 @@ void SageIRInterface::initMemRefAndPtrAssignMaps()
           SgNode *stmtNode = getSgNode(stmt);
           ROSE_ASSERT(stmtNode != NULL);          
 	  std::cout << "stmt = " << stmtNode->unparseToString() << std::endl;
-          printType pt;
-          pt.traverse(stmtNode, 0);
+          // printType pt;
+          // pt.traverse(stmtNode, 0);
 #endif
           // find all of the CallHandles and MemRefHandles within this Stmt
           findAllMemRefsAndPtrAssigns( getSgNode(stmt), stmt );
@@ -3121,9 +3121,16 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             findAllMemRefsAndPtrAssigns(arrRefExp->get_lhs_operand(), stmt);
             findAllMemRefsAndPtrAssigns(arrRefExp->get_rhs_operand(), stmt); 
 
-            // if through a constant pointer
-            if(!isSgPointerType(lookThruReferenceType(
-                            arrRefExp->get_lhs_operand()->get_type()))) 
+            // if through a constant pointer or an array 
+            // NB:  we do _not_ call lookThruReferenceType when
+            // invoking isConstType.  isConstType expects a SgModifierType,
+            // if the variable is indeed const.
+            SgType *type = arrRefExp->get_lhs_operand()->get_type();
+            ROSE_ASSERT(type != NULL);
+            if ( isConstType(type) ) {
+                ROSE_ASSERT(isSgPointerType(lookThruReferenceType(type)));
+            }
+            if( isConstType(type) || isSgArrayType(type) ) 
             {
                 // take the lhs MREs and make each of them have partial
                 // accuracy and assign them to this MemRefHandle -make lhs not
@@ -3143,17 +3150,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
                     OA_ptr<IdxExprAccess> rhs_mre;
 
-                    // if the lhs is an array, we need to dereference
-                    // it before wrapping in an IdxExprAccess.
-                    OA::OA_ptr<OA::Deref> deref_mre;
-                    int numDerefs = 1;
-                    OA::OA_ptr<OA::MemRefExpr> nullMRE;
-
-                    deref_mre = new OA::Deref( OA::MemRefExpr::USE,
-                                               nullMRE,
-                                               numDerefs);
-                    lhs_mre = deref_mre->composeWith(lhs_mre->clone());
-
                     rhs_mre = new OA::IdxExprAccess(
                         MemRefExpr::USE, lhs_mre, mref);
 
@@ -3164,7 +3160,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 }
             }
             // else if through a variable pointer
-            else {
+            else if ( isSgPointerType(type) ) {
                 // clone the lhs MREs and make each clone have partial accuracy
                 // and assign them to this MemRefHandle
                 OA::MemRefHandle lhs_memref 
@@ -3220,6 +3216,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
                     mMemref2mreSetMap[memref].insert(mre);
                 }
+            } else {
+                // Unexpected lhs type.
+		std::cerr << "Unexpected lhs array type: " << type->sage_class_name() << std::endl;
+                ROSE_ABORT();
             }
 
 	    relateMemRefAndStmt(memref, stmt);
@@ -3782,15 +3782,30 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // in case of Assignment Statement
             // a = b + c
 
+            // The MRE associated with an assignOp is that of the
+            // lhs (since the value of the assignOp is the value
+            // assigned to the lhs).  This is necessary when
+            // we have chained assignment:
+            //   a = b = c
+            // for which we want the DEFs NamedRef(a) and
+            // NamedRef(b) and the USEs NamedRef(b)
+            // (associated with the MemRefHandle/SgAssignOp 'b = c')
+            // and NamedRef(c).  
+            // Note that we do _not_ want a use for NamedRef(a)
+            // since we do not assign/use it on the rhs.
+            // If we did not take away the MRE below, we would
+            // get that NamedRef(a) associated with the first SgAssignOp
+            // 'a = b = c.'
+
             // Need to check if Statement is AssignOp type because
             // we dont want to remove all the TopMemRefHandles of
             // SgExprStatement.
             // e.g.  if(x) or *a or const_array[i]            
 
 #ifdef ROSE_PRE_0_8_10A
-            SgBinaryOp *assignOp = isSgBinaryOp(exprStatement->get_the_expr());
+            SgBinaryOp *assignOp = isSgAssignOp(exprStatement->get_the_expr());
 #else
-            SgBinaryOp *assignOp = isSgBinaryOp(exprStatement->get_expression());
+            SgBinaryOp *assignOp = isSgAssignOp(exprStatement->get_expression());
 #endif
             if(assignOp) {
 #ifdef ROSE_PRE_0_8_10A
@@ -5611,7 +5626,11 @@ bool SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
             = getMemRefExprIterator(child_memref);
         for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
             OA::OA_ptr<OA::MemRefExpr> child_mre = mIter->current();
-            if (isSgArrayType(child_type)) {
+            // We do not strip the SgModifierType off of the child_node type  
+            // (via lookThruReferenceType), since isSgConstType expects
+            // to see a SgModifierType if it is indeed const qualified.
+            // See the handling of SgPntrArrRefExp.
+            if (isSgArrayType(child_type) || isConstType(child_node->get_type())) {
                 if ( removeChild ) {
                     mMemref2mreSetMap[child_memref].erase(child_mre);
                     deleteMemRefStmtRelation(child_memref, stmt);
@@ -5645,7 +5664,7 @@ bool SageIRInterface::createMemRefExprsForPtrArith(SgExpression* node,
                 // belong to this node
                 mMemref2mreSetMap[memref].insert(child_mre);            
                 
-            }
+            } else 
             // MMS 10/2/07, not sure what status of the below code is
             if (isSgPointerType(child_type)) {
                 // want  Deref(NamedRef(a),addressOf=T,part)

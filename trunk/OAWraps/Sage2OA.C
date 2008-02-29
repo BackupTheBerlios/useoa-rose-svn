@@ -209,7 +209,7 @@ getGlobalObjectDeclarationsAndClassDefinitions(SgNode *project,
             SgClassType *classType = isSgClassType(initName->get_type());
 
             // We only collect object instantiations, not
-            // declarations of points to objects.
+            // declarations of pointers to objects.
             if ( classType ) {
               SgStatement *stmt = isSgStatement(child);
               ROSE_ASSERT(stmt != NULL);
@@ -276,6 +276,42 @@ getGlobalObjectDeclarationsAndClassDefinitions(SgNode *project,
   
 }
 
+void 
+getGlobalDeclarations(SgNode *project, std::set<SgStatement *> &globals)
+{
+  SgProject *proj = isSgProject(project);
+  if ( proj == NULL )
+    return;
+
+  // For each file in the project ...
+  for (int i = 0; i < proj->numberOfFiles(); ++i) {
+    SgFile &f = proj->get_file(i);
+
+    // Get the root of its AST.
+    SgGlobal *global = f.get_root();
+    ROSE_ASSERT(global != NULL);
+    
+    // Retrieve any global object declarations or class definitions.
+    vector<SgNode *> children = global->get_traversalSuccessorContainer();
+    for (vector<SgNode *>::iterator it = children.begin();
+         it != children.end(); ++it) {
+
+      SgNode *child = *it;
+      ROSE_ASSERT(child != NULL);
+
+      SgDeclarationStatement *decl = isSgDeclarationStatement(child);
+      // We don't need to collect function declarations.
+      if ( decl && !isSgFunctionDeclaration(decl) ) {
+          globals.insert(decl);
+          SgDeclarationStatement *definingDecl = decl->get_definingDeclaration();
+          if ( ( definingDecl != NULL ) && ( definingDecl != decl ) ) {
+              globals.insert(definingDecl);
+          }
+      }
+    }
+  }
+}
+
 SageIRStmtIterator::SageIRStmtIterator(SgFunctionDefinition* node, 
                                        SageIRInterface * in)
 {
@@ -314,9 +350,13 @@ SageIRStmtIterator::SageIRStmtIterator(SgFunctionDefinition* node,
     node->get_declaration();
   ROSE_ASSERT(functionDeclaration != NULL);
   if ( !strcmp(functionDeclaration->get_name().str(), "main") ) {
-    std::vector<SgStatement *> globals;
-    getGlobalObjectDeclarationsAndClassDefinitions(in->getProject(), globals);
-    for (std::vector<SgStatement *>::iterator it = globals.begin();
+    std::set<SgStatement *> globals;
+    // Previously we were only collecting global object declarations,
+    // but we need variable declarations as well (since they have be
+    // pointers with assignments).
+    getGlobalDeclarations(in->getProject(), globals);
+    // getGlobalObjectDeclarationsAndClassDefinitions(in->getProject(), globals);
+    for (std::set<SgStatement *>::iterator it = globals.begin();
          it != globals.end(); ++it) {
       SgStatement *n = *it;
       all_stmts.push_back(n);

@@ -4655,4 +4655,38 @@ Compilation terminated.
      from regressAll.  Actually, commented out regressAliasIRInterface,
      which is seg fault'ing.
 
-	
+2/28/08	    UseOA-ROSE svn trunk 346 Brian White			
+
+   - We were not collecting global variable declarations, only global
+     object declarations.  We need the former (as well), since they
+     may declare and initialize pointers.  Modified SageIRStmtIterator
+     to do so.  Global declarations are appended to main.
+
+   - Fixed handling of the two cases in SgPntrArrRefExp:
+
+     - The two cases are array/const pointer (i.e., int *const const_array_ptr,
+       not const int *const_array_element_ptr) and variable pointer.
+
+     - The array/const pointer case wraps the lhs MRE in an IdxExprAccess.
+       Previously, it first deref'ed the lhs MRE and then wrapped it in
+       an IdxExprAccess.
+
+     - The variable pointer case was correct:  deref the lhs MRE and
+       then wrap in a SubSetRef.
+
+     - Made similar mods to createMemRefExprsForPtrArith to get the
+       two cases correct.  Note that createMemRefExprsForPtrArith
+       continues to create SubSetRefs (instead of IdxExprAccesses)
+       for the array/const pointer case.  This is because we do not
+       have index MemRefHandles for the ++/-- and +=/-= cases.
+       Notice that 1 and n (for array += n) are not the current
+       indices for these cases, but rather increments to the
+       current indices.
+
+     - The old TestCases/AliasTests/constQualified.c might have been
+       ambiguously named.  I've added 
+       TestCases/AliasTests/constQualifiedArray.c, which declares an
+       int *const const_array) and 
+       TestCases/AliasTests/constQualifiedArrayElements.c, which declares
+       an const int *array_with_const_elements.
+

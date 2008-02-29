@@ -10,7 +10,7 @@ AliasTagResults(
                     mTagID: 1
                     # NamedRef(x)
                     # Deref(NamedRef(p))
-                    # Deref(FieldAccess(NamedRef(s)))
+                    # Deref(FieldAccess(NamedRef(s), g))
                 ) ] 
             
             NamedRef(
@@ -20,7 +20,7 @@ AliasTagResults(
                 Tag(
                     mTagID: 2
                     # NamedRef(y)
-                    # Deref(FieldAccess(NamedRef(s)))
+                    # Deref(FieldAccess(NamedRef(s), f))
                 ) ] 
             
             NamedRef(
@@ -43,12 +43,12 @@ AliasTagResults(
                 Tag(
                     mTagID: 5
                     # NamedRef(s)
-                    # FieldAccess(NamedRef(s))
+                    # FieldAccess(NamedRef(s), f)
                 )    
                 Tag(
                     mTagID: 6
                     # NamedRef(s)
-                    # FieldAccess(NamedRef(s))
+                    # FieldAccess(NamedRef(s), g)
                 ) ] 
             
             Deref(
@@ -64,7 +64,7 @@ AliasTagResults(
                     mTagID: 1
                     # NamedRef(x)
                     # Deref(NamedRef(p))
-                    # Deref(FieldAccess(NamedRef(s)))
+                    # Deref(FieldAccess(NamedRef(s), g))
                 ) ] 
             
             Deref(
@@ -84,7 +84,7 @@ AliasTagResults(
                 Tag(
                     mTagID: 2
                     # NamedRef(y)
-                    # Deref(FieldAccess(NamedRef(s)))
+                    # Deref(FieldAccess(NamedRef(s), f))
                 ) ] 
             
             Deref(
@@ -105,7 +105,7 @@ AliasTagResults(
                     mTagID: 1
                     # NamedRef(x)
                     # Deref(NamedRef(p))
-                    # Deref(FieldAccess(NamedRef(s)))
+                    # Deref(FieldAccess(NamedRef(s), g))
                 ) ] 
             
             FieldAccess(
@@ -120,7 +120,7 @@ AliasTagResults(
                 Tag(
                     mTagID: 5
                     # NamedRef(s)
-                    # FieldAccess(NamedRef(s))
+                    # FieldAccess(NamedRef(s), f)
                 ) ] 
             
             FieldAccess(
@@ -135,7 +135,7 @@ AliasTagResults(
                 Tag(
                     mTagID: 6
                     # NamedRef(s)
-                    # FieldAccess(NamedRef(s))
+                    # FieldAccess(NamedRef(s), g)
                 ) ] 
 
     mTagToMREs: AliasTag	 => OA::OA_ptr<std::set<OA::OA_ptr<MemRefExpr> > > 
@@ -144,7 +144,7 @@ AliasTagResults(
                 mTagID: 1
                 # NamedRef(x)
                 # Deref(NamedRef(p))
-                # Deref(FieldAccess(NamedRef(s)))
+                # Deref(FieldAccess(NamedRef(s), g))
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -177,7 +177,7 @@ AliasTagResults(
             Tag(
                 mTagID: 2
                 # NamedRef(y)
-                # Deref(FieldAccess(NamedRef(s)))
+                # Deref(FieldAccess(NamedRef(s), f))
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -219,7 +219,7 @@ AliasTagResults(
             Tag(
                 mTagID: 5
                 # NamedRef(s)
-                # FieldAccess(NamedRef(s))
+                # FieldAccess(NamedRef(s), f)
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -238,7 +238,7 @@ AliasTagResults(
             Tag(
                 mTagID: 6
                 # NamedRef(s)
-                # FieldAccess(NamedRef(s))
+                # FieldAccess(NamedRef(s), g)
             )	 => [ 
                 NamedRef(
                     mMemRefType: USE
@@ -269,13 +269,13 @@ AliasTagResults(
                 Tag(
                     mTagID: 5
                     # NamedRef(s)
-                    # FieldAccess(NamedRef(s))
+                    # FieldAccess(NamedRef(s), f)
                 ) ] 
             MemRefHandle(s.g)	 => [ 
                 Tag(
                     mTagID: 6
                     # NamedRef(s)
-                    # FieldAccess(NamedRef(s))
+                    # FieldAccess(NamedRef(s), g)
                 ) ] 
 
     mMREToMustFlag: OA::OA_ptr<MemRefExpr> 	 => bool

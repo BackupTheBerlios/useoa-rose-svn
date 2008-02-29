@@ -22,9 +22,13 @@ echo "Testing TestCases/AliasTests/comma.c, TestResults/FIAliasAliasTag/comma.c.
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/comma.c >& t
 diff t TestResults/FIAliasAliasTag/comma.c.out
 
-echo "Testing TestCases/AliasTests/constQualified.c, TestResults/FIAliasAliasTag/constQualified.c.out ???"
-./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/constQualified.c >& t
-diff t TestResults/FIAliasAliasTag/constQualified.c.out
+echo "Testing TestCases/AliasTests/constQualifiedArray.c, TestResults/FIAliasAliasTag/constQualifiedArray.c.out BSW (2/28/08)"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/constQualifiedArray.c >& t
+diff t TestResults/FIAliasAliasTag/constQualifiedArray.c.out
+
+echo "Testing TestCases/AliasTests/constQualifiedArrayElements.c, TestResults/FIAliasAliasTag/constQualifiedArrayElements.c.out BSW (2/28/08)"
+./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/constQualifiedArrayElements.c >& t
+diff t TestResults/FIAliasAliasTag/constQualifiedArrayElements.c.out
 
 echo "Testing TestCases/AliasTests/fields2.c, TestResults/FIAliasAliasTag/fields2.c.out MMS (2/18/08)"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/fields2.c >& t
@@ -34,7 +38,7 @@ echo "Testing TestCases/AliasTests/fields3.c, TestResults/FIAliasAliasTag/fields
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/fields3.c >& t
 diff t TestResults/FIAliasAliasTag/fields3.c.out
 
-echo "Testing TestCases/AliasTests/funCall.c, TestResults/FIAliasAliasTag/funCall.c.out ???"
+echo "Testing TestCases/AliasTests/funCall.c, TestResults/FIAliasAliasTag/funCall.c.out BSW (2/28/08)"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/funCall.c >& t
 diff t TestResults/FIAliasAliasTag/funCall.c.out
 
@@ -46,23 +50,11 @@ echo "Testing TestCases/AliasTests/functionPtr.c, TestResults/FIAliasAliasTag/fu
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/functionPtr.c >& t
 diff t TestResults/FIAliasAliasTag/functionPtr.c.out
 
-echo "Testing TestCases/AliasTests/OAWikiEx.c, TestResults/FIAliasAliasTag/OAWikiEx.c.out ???"
+echo "Testing TestCases/AliasTests/OAWikiEx.c, TestResults/FIAliasAliasTag/OAWikiEx.c.out BSW (2/28/08)"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/OAWikiEx.c >& t
 diff t TestResults/FIAliasAliasTag/OAWikiEx.c.out
 
-echo "Testing TestCases/AliasTests/passIntPtrArrayRef2.c, TestResults/FIAliasAliasTag/passIntPtrArrayRef2.c.out ???"
-./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/passIntPtrArrayRef2.c >& t
-diff t TestResults/FIAliasAliasTag/passIntPtrArrayRef2.c.out
-
-echo "Testing TestCases/AliasTests/passIntPtrArrayRef3.c, TestResults/FIAliasAliasTag/passIntPtrArrayRef3.c.out ???"
-./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/passIntPtrArrayRef3.c >& t
-diff t TestResults/FIAliasAliasTag/passIntPtrArrayRef3.c.out
-
-echo "Testing TestCases/AliasTests/passIntPtrArrayRef.c, TestResults/FIAliasAliasTag/passIntPtrArrayRef.c.out ???"
-./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/passIntPtrArrayRef.c >& t
-diff t TestResults/FIAliasAliasTag/passIntPtrArrayRef.c.out
-
-echo "Testing TestCases/AliasTests/utke.c, TestResults/FIAliasAliasTag/utke.c.out ???"
+echo "Testing TestCases/AliasTests/utke.c, TestResults/FIAliasAliasTag/utke.c.out BSW (2/28/08)"
 ./OATest --edg:no_warnings -w --oa-AliasTag -c TestCases/AliasTests/utke.c >& t
 diff t TestResults/FIAliasAliasTag/utke.c.out
 
