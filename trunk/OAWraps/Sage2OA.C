@@ -300,8 +300,8 @@ getGlobalDeclarations(SgNode *project, std::set<SgStatement *> &globals)
       ROSE_ASSERT(child != NULL);
 
       SgDeclarationStatement *decl = isSgDeclarationStatement(child);
-      // We don't need to collect function declarations.
-      if ( decl && !isSgFunctionDeclaration(decl) ) {
+      
+      if ( decl && ( isSgVariableDeclaration(decl) || isSgClassDeclaration(decl) ) ) {
           globals.insert(decl);
           SgDeclarationStatement *definingDecl = decl->get_definingDeclaration();
           if ( ( definingDecl != NULL ) && ( definingDecl != decl ) ) {
