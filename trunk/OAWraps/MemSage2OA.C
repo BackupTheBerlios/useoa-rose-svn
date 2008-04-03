@@ -887,6 +887,15 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     switch(astNode->variantT()) {
 
     // ---------------------------------------- Expression cases
+   case V_SgStatementExpression:
+        {
+            SgStatementExpression* stmtExp = isSgStatementExpression(astNode);
+            ROSE_ASSERT (stmtExp != NULL);  
+
+            // recurse on the statement (AIS - not sure if this is correct)
+            //findAllMemRefsAndPtrAssigns(stmtExp->get_statement(), stmt);
+        }break;
+
     case V_SgExprListExp:
         {
             SgExprListExp* exprListExp = isSgExprListExp(astNode);
@@ -1013,11 +1022,12 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::SymHandle sym = getNodeNumber(initName);
             // construct the NamedRef
             OA::OA_ptr<OA::MemRefExpr> mre;
-           
-            mre = new OA::NamedRef(mrType, sym);
+          
+            // AIS not sure if this is strictly local or not
+            mre = new OA::NamedRef(mrType, sym, false);
 
             // Record the type of the MRE (reference or non-reference).
-	        // mMre2TypeMap[mre] = ( isSgReferenceType(initName->get_type()) ? reference : other );
+            // mMre2TypeMap[mre] = ( isSgReferenceType(initName->get_type()) ? reference : other );
             mMre2TypeMap[mre] = other;
 
             // if is a reference type then 
@@ -1078,7 +1088,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // construct the NamedRef
             OA::OA_ptr<OA::MemRefExpr> mre;
 
-            mre = new OA::NamedRef(mrType, sym);
+            // AIS not sure if this is strictly local or not
+            mre = new OA::NamedRef(mrType, sym, false);
             
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[mre] = other;
@@ -1114,7 +1125,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // construct the NamedRef
             OA::OA_ptr<OA::MemRefExpr> mre;
 
-            mre = new OA::NamedRef(mrType, sym);
+            // not sure if this is strictly local or not
+            mre = new OA::NamedRef(mrType, sym, false);
  
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[mre] = other;
@@ -1488,7 +1500,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
                 OA::SymHandle sym = getProcSymHandle(newDecl);
                 // construct the NamedRef
-                call_mre = new OA::NamedRef(mrType, sym);
+                
+                // not sure if this is strictly local or not
+                call_mre = new OA::NamedRef(mrType, sym, false);
             
                 // Record the type of the MRE (reference or non-reference).
                 mMre2TypeMap[call_mre] = other;
@@ -1603,8 +1617,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 // Create a call handle for the delete operator.
                 OA::SymHandle deleteSymHandle = getProcSymHandle(deleteDecl);
                 OA::OA_ptr<OA::MemRefExpr> deleteMRE;
+                
+                // AIS - not sure if this is strictly local or not
                 deleteMRE = new OA::NamedRef(OA::MemRefExpr::USE,
-                                             deleteSymHandle);
+                                             deleteSymHandle, false);
                 // Record the type of the MRE (reference or non-reference).
                 mMre2TypeMap[deleteMRE] = other;
 
@@ -1846,8 +1862,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     
                        OA::SymHandle symHandle = getProcSymHandle(methodDecl);
       
+                       // AIS - Not sure if this is strictly local or not
                        method = new OA::NamedRef( OA::MemRefExpr::USE,
-                                                  symHandle);
+                                                  symHandle, false);
 
         
                        // Record the type of the MRE (reference or non-reference).
@@ -1901,8 +1918,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
             OA::OA_ptr<OA::MemRefExpr> mre;
 
+            // AIS - Not sure if this is strictly local or not
             mre = new OA::NamedRef(OA::MemRefExpr::USE,
-                                   symHandle);
+                                   symHandle, false);
 
                                    
             ROSE_ASSERT(!mre.ptrEqual(0));
@@ -1991,7 +2009,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
             OA::OA_ptr<OA::MemRefExpr> mre;
 
-            mre = new OA::NamedRef(mrType, formalSym);
+            // AIS - Not sure if this is strictly local or not
+            mre = new OA::NamedRef(mrType, formalSym, false);
   
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[mre] = other;
@@ -2132,8 +2151,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     // make a NamedRef for the variable being initialized
                     OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::DEF;
                     OA::SymHandle sym = getNodeNumber(initName);
-
-                    mre = new OA::NamedRef(mrType, sym);
+                    
+                    // AIS - Not sure if this is strictly local or not
+                    mre = new OA::NamedRef(mrType, sym, false);
  
                     // Record the type of the MRE (reference or non-reference).
                     mMre2TypeMap[mre] = ( isSgReferenceType(initName->get_type()) ? reference : other );
@@ -2147,8 +2167,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
 
                     OA::OA_ptr<OA::MemRefExpr> base;
 
-                    base = new OA::NamedRef(mrType,
-                                            symHandle);
+                    // AIS - Not sure if this is strictly local or not
+                    base = new OA::NamedRef(mrType, symHandle, false);
 
                    
                     mMemref2mreSetMap[receiver_memref].insert(base);
@@ -2437,8 +2457,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::MemRefHandle hiddenMemref = getMemRefHandle(astNode);
             OA::SymHandle anonymousSymHandle = getNodeNumber(astNode);
             OA::OA_ptr<OA::MemRefExpr> anonymousMRE;
+                    
+            // AIS - Not sure if this is strictly local or not
             anonymousMRE = new OA::NamedRef(OA::MemRefExpr::DEF,
-                                            anonymousSymHandle);
+                                            anonymousSymHandle, false);
             // Record the type of the MRE (reference or non-reference).
             mMre2TypeMap[anonymousMRE] = other;
             relateMemRefAndStmt(hiddenMemref, stmt);
@@ -2466,8 +2488,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         
                 OA::OA_ptr<OA::MemRefExpr> method;
 
+                // AIS - Not sure if this is strictly local or not
                 method = new OA::NamedRef(OA::MemRefExpr::USE,
-                                          symHandle);
+                                          symHandle, false);
 
     
                 // Record the type of the MRE (reference or non-reference).
@@ -2526,8 +2549,10 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                 OA::MemRefHandle hiddenMemref = getMemRefHandle(astNode);
                 OA::SymHandle anonymousSymHandle = getNodeNumber(astNode);
                 OA::OA_ptr<OA::MemRefExpr> anonymousMRE;
+            
+                // AIS - Not sure if this is strictly local or not
                 anonymousMRE = new OA::NamedRef(OA::MemRefExpr::DEF,
-                                                anonymousSymHandle);
+                                                anonymousSymHandle, false);
                 // Record the type of the MRE (reference or non-reference).
                 mMre2TypeMap[anonymousMRE] = other;
                 relateMemRefAndStmt(hiddenMemref, stmt);
@@ -2941,8 +2966,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     ROSE_ASSERT(decl != NULL);
                     OA::SymHandle procSymHandle = getProcSymHandle(decl);
                     OA::OA_ptr<OA::MemRefExpr> funcMRE;
+                    // AIS - Not sure if this is strictly local or not
                     funcMRE = new OA::NamedRef(OA::MemRefExpr::USE,
-                                               procSymHandle);
+                                               procSymHandle, false);
                     // Record the type of the MRE (reference or non-reference).
                     mMre2TypeMap[funcMRE] = other;
 
@@ -3127,6 +3153,13 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // if the variable is indeed const.
             SgType *type = arrRefExp->get_lhs_operand()->get_type();
             ROSE_ASSERT(type != NULL);
+
+            // If the type is from a typedef get the typedef'd type
+            while( isSgTypedefType(type) ) {
+                SgTypedefType *typedefType = isSgTypedefType(type);
+                type = typedefType->get_base_type();
+            }
+
             if ( isConstType(type) ) {
                 ROSE_ASSERT(isSgPointerType(lookThruReferenceType(type)));
             }
@@ -3874,8 +3907,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
         
                     OA::OA_ptr<OA::MemRefExpr> function;
 
+                    // AIS - Not sure if this is strictly local or not
                     function = new OA::NamedRef(OA::MemRefExpr::DEF,
-                                                symHandle);
+                                                symHandle, false);
 
     
                     // Record the type of the MRE (reference or non-reference).
@@ -4754,8 +4788,9 @@ createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
 	
             OA::OA_ptr<OA::MemRefExpr> classMRE;
 
+            // AIS - Not sure if this is strictly local or not
             classMRE = new OA::NamedRef(memRefType,
-                                        symHandle);
+                                        symHandle, false);
 
             OA::OA_ptr<OA::AddressOf> address_mre;
             OA::OA_ptr<OA::MemRefExpr> nullMRE;
@@ -4886,8 +4921,9 @@ createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
 
                             OA::OA_ptr<OA::MemRefExpr> method;
 
+                            // AIS - Not sure if this is strictly local or not
                             method = new OA::NamedRef(memRefType,
-                                                      symHandle);
+                                                      symHandle, false);
 
                             if(baseLHS->isaRefOp()) {
 
@@ -5398,8 +5434,9 @@ SageIRInterface::createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle s
     
                         OA::OA_ptr<OA::NamedRef> classMRE;
 
+                        // AIS - Not sure if this is strictly local or not
                         classMRE = new OA::NamedRef(memRefType,
-                                                    symHandle);
+                                                    symHandle, false);
 
     
                         // Record the type of the MRE (reference or non-reference).
@@ -5428,8 +5465,9 @@ SageIRInterface::createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle s
     	  
                         OA::OA_ptr<OA::MemRefExpr> method;
 
+                        // AIS - Not sure if this is strictly local or not
                         method = new OA::NamedRef(memRefType,
-                                                  symHandle);
+                                                  symHandle, false);
 
                         OA::OA_ptr<OA::AddressOf> address_mre;
                         OA::OA_ptr<OA::MemRefExpr> nullMRE;
@@ -6003,7 +6041,8 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
 
         OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
         OA::SymHandle sym = getNodeNumber(ctorInitializer);
-        mre = new OA::NamedRef(mrType, sym);
+        // AIS - Not sure if this is strictly local or not
+        mre = new OA::NamedRef(mrType, sym, false);
 
         OA::OA_ptr<OA::AddressOf> address_mre;
         OA::OA_ptr<OA::MemRefExpr> nullMRE;
@@ -6029,8 +6068,9 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
           // get the symbol for the implicit formal this.
           OA::SymHandle symHandle = getThisFormalSymHandle(initName);
 
+          // AIS - Not sure if this is strictly local or not
           mre = new OA::NamedRef( mrType,
-                                  symHandle);
+                                  symHandle, false );
 
           // Record the type of the MRE (reference or non-reference).
           mMre2TypeMap[mre] = other;
@@ -6045,7 +6085,8 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
           // get the symbol for the implicit formal this.
           OA::SymHandle symHandle = getThisFormalSymHandle(initName);
 
-          mre = new OA::NamedRef(mrType, symHandle);
+          // AIS - Not sure if this is strictly local or not
+          mre = new OA::NamedRef(mrType, symHandle, false);
           
           // Deref the MRE.
 
@@ -6092,7 +6133,8 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
           OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
           OA::SymHandle sym = getNodeNumber(initName);
 
-          mre = new OA::NamedRef(mrType, sym);
+          // AIS - Not sure if this is strictly local or not
+          mre = new OA::NamedRef(mrType, sym, false);
 
           OA::OA_ptr<OA::AddressOf> address_mre;
           OA::OA_ptr<OA::MemRefExpr> nullMRE;
@@ -6190,7 +6232,9 @@ SageIRInterface::createConstructorInitializerReceiverMRE( SgConstructorInitializ
              bool accuracy = true;
              OA::MemRefExpr::MemRefType mrType = OA::MemRefExpr::USE;
              OA::SymHandle sym = getNodeNumber(initName);
-             mre = new OA::NamedRef(mrType, sym);
+             
+             // AIS - Not sure if this is strictly local or not
+             mre = new OA::NamedRef(mrType, sym, false);
 
              // Record the type of the MRE (reference or non-reference).
              mMre2TypeMap[mre] =

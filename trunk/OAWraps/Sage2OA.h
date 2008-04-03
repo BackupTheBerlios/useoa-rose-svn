@@ -19,8 +19,8 @@
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/LinearityIRInterface.hpp>
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/DataDepIRInterface.hpp>
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/LoopIRInterface.hpp>
-//<AIS|ATB> #include <OpenAnalysis/IRInterface/auto_ReachingDefsIRInterface.hpp>
-//<AIS|ATB> #include <OpenAnalysis/IRInterface/auto_AvailableExpressions.hpp>
+#include <OpenAnalysis/IRInterface/auto_ReachingDefsIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/auto_LivenessIRInterface.hpp>
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/LivenessIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/ExprTreeIRInterface.hpp>
 #include <OpenAnalysis/SideEffect/ManagerInterSideEffectStandard.hpp>
@@ -640,8 +640,9 @@ class SageIRInterface :
   public virtual OA::ICFG::ICFGIRInterface,
 //<AIS|ATB> public virtual OA::CallGraph::CallGraphIRInterface,
 //<AIS|ATB> public virtual OA::Activity::ActivityIRInterface,
-  public virtual OA::Alias::AliasIRInterface
-//<AIS|ATB> public virtual OA::ReachDefs::ReachDefsIRInterface,
+  public virtual OA::Alias::AliasIRInterface,
+  public virtual OA::ReachDefs::ReachDefsIRInterface,
+  public virtual OA::Liveness::LivenessIRInterface,
 //<AIS|ATB> public virtual OA::UDDUChains::UDDUChainsIRInterface,
 //<AIS|ATB> public virtual OA::XAIF::XAIFIRInterface,
 //<AIS|ATB> public virtual OA::DataFlow::ParamBindingsIRInterface,
@@ -650,11 +651,11 @@ class SageIRInterface :
 //<AIS|ATB> public virtual OA::SideEffect::InterSideEffectIRInterface,
 //<AIS|ATB> public virtual OA::Linearity::LinearityIRInterface,
 //<AIS|ATB> public virtual OA::ReachConsts::ReachConstsIRInterface,
-		  //  public virtual OA::AttributePropagation::AttributePropagationIRInterface,
+//  public virtual OA::AttributePropagation::AttributePropagationIRInterface,
 //<AIS|ATB> public virtual OA::DataDep::DataDepIRInterface,
 //<AIS|ATB> public virtual OA::Loop::LoopIRInterface,
 //<AIS|ATB> public virtual OA::Liveness::LivenessIRInterface,
-//<AIS|ATB> public virtual OA::ReachingDefs::ReachingDefsIRInterface,
+  public virtual OA::ReachingDefs::ReachingDefsIRInterface
 //<AIS|ATB> public virtual OA::AvailableExpressions::AvailableExpressionsIRInterface,
 //<AIS|ATB> public virtual OA::ExprTreeIRInterface
 {
@@ -663,7 +664,6 @@ class SageIRInterface :
   friend class SgPtrAssignPairStmtIterator;
   friend class SgParamBindPtrAssignIterator;
   friend class ExprTreeTraversal;
-//<AIS|ATB>  friend class NewExprTreeTraversal;
   friend class NumberTraversal;
   friend class SageExprHandleIterator;
   
@@ -688,10 +688,10 @@ class SageIRInterface :
   OA::OA_ptr<OA::IRFormalParamIterator> getFormalParamIterator(OA::SymHandle h); 
 
   //! Given a ProcHandle, return its SymHandle
-  OA::SymHandle getProcSymHandle(OA::ProcHandle h);
+  OA::SymHandle getProcSymHandle(OA::ProcHandle h) const;
 
   // helper routines
-  OA::SymHandle getProcSymHandle(SgFunctionDeclaration *);
+  OA::SymHandle getProcSymHandle(SgFunctionDeclaration *) const;
   OA::SymHandle getVarSymHandle(SgInitializedName *);
   OA::MemRefHandle getSymMemRefHandle(OA::SymHandle h);
 
@@ -699,7 +699,7 @@ class SageIRInterface :
   SgFunctionDeclaration *getFuncDeclFromSymHandle(OA::SymHandle symHandle);
 
   // ??
-  OA::SymHandle getSymHandle(OA::ProcHandle h) {return getProcSymHandle(h);} //ask Michelle
+  OA::SymHandle getSymHandle(OA::ProcHandle h) const {return getProcSymHandle(h);} //ask Michelle
 
   OA::SymHandle getSymHandle(OA::ExprHandle expr);
 
@@ -846,8 +846,8 @@ public:
   OA::ProcHandle getProcHandle(OA::SymHandle sym);
 
   //ReachDefs
-  //<AIS|ATB> OA::OA_ptr<OA::MemRefHandleIterator> getDefMemRefs(OA::StmtHandle stmt);
-  //<AIS|ATB> OA::OA_ptr<OA::MemRefHandleIterator> getUseMemRefs(OA::StmtHandle stmt);
+  OA::OA_ptr<OA::MemRefHandleIterator> getDefMemRefs(OA::StmtHandle stmt);
+  OA::OA_ptr<OA::MemRefHandleIterator> getUseMemRefs(OA::StmtHandle stmt);
   
   //------------------------------
   //------------------------------
@@ -1045,10 +1045,10 @@ public:
   // return the formal parameter that an actual parameter is associated with 
   OA::SymHandle getFormalForActual(OA::ProcHandle caller, OA::CallHandle call, 
                                    OA::ProcHandle callee, OA::ExprHandle param);
+#endif
 
   // Given an ExprHandle, return an ExprTree 
   OA::OA_ptr<OA::ExprTree> getExprTree(OA::ExprHandle h);
-#endif
 
   //-------------------------------------------------------------------------
   // ActivityIRInterface
@@ -1060,10 +1060,11 @@ public:
   //! target = expr
   OA::OA_ptr<OA::AssignPairIterator> 
     getAssignPairIterator(OA::StmtHandle h);
-
+#endif
   // Iterator over Expressions in the given Statement
   OA::OA_ptr<OA::ExprHandleIterator> getExprHandleIterator(OA::StmtHandle stmt);
-
+//<AIS|ATB>
+#if 0
   //! Return an iterator over all independent MemRefExpr for given proc
   OA::OA_ptr<OA::MemRefExprIterator> getIndepMemRefExprIter(OA::ProcHandle h);
 
@@ -1171,7 +1172,7 @@ public:
   OA::CallHandle getProcExprHandle(SgNode *astNode);
   //  OA::ProcHandle getProcHandle(SgFunctionDeclaration *astNode);
   SgNode *getSgNode(OA::IRHandle h) { return getNodePtr(h); }
-  //<AIS|ATB> bool isMemRefNode(SgNode *astNode);
+  bool isMemRefNode(SgNode *astNode);
 
   void verifyCallHandleType(OA::CallHandle call);
   void verifyStmtHandleType(OA::StmtHandle stmt);
@@ -1392,6 +1393,9 @@ public:
   // the tree root at node.
   SgNode *lookThroughCastExpAndAssignInitializer(SgNode *node); 
 
+
+  public:
+    void reportTimes();
 };
 
 #define OA_VTABLE_STR "__oa_vtable_ptr"
