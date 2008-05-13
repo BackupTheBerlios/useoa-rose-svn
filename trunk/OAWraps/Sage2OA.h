@@ -848,7 +848,31 @@ public:
   //ReachDefs
   OA::OA_ptr<OA::MemRefHandleIterator> getDefMemRefs(OA::StmtHandle stmt);
   OA::OA_ptr<OA::MemRefHandleIterator> getUseMemRefs(OA::StmtHandle stmt);
-  
+
+  class FindUseMREVisitor : public OA::MemRefExprVisitor {
+      public:
+         FindUseMREVisitor();
+         ~FindUseMREVisitor();
+         OA::OA_ptr<std::set<OA::OA_ptr<OA::MemRefExpr> > > getAllUseMREs();
+         void visitNamedRef(OA::NamedRef& ref);
+         void visitUnnamedRef(OA::UnnamedRef& ref);
+         void visitUnknownRef(OA::UnknownRef& ref);
+         void visitDeref(OA::Deref& ref);
+         void visitAddressOf(OA::AddressOf& ref);
+         void visitSubSetRef(OA::SubSetRef& ref);
+      private:
+         bool do_not_add_mre;
+         OA::OA_ptr<std::set<OA::OA_ptr<OA::MemRefExpr> > > retSet;
+  };
+
+
+  OA::OA_ptr<OA::MemRefExprIterator> getUseMREs(OA::StmtHandle stmt);
+
+  OA::OA_ptr<OA::MemRefExprIterator> getDefMREs(OA::StmtHandle stmt);
+
+  OA::OA_ptr<OA::MemRefExprIterator> getDiffUseMREs(OA::StmtHandle stmt);
+
+ 
   //------------------------------
   //------------------------------
 
@@ -1293,6 +1317,9 @@ public:
 
   std::map<OA::OA_ptr<OA::MemRefExpr>, typeEnum >
     mMre2TypeMap;
+
+  //! Array Index Expressions are not differentiable
+  std::map<OA::StmtHandle, std::set<OA::MemRefHandle> > mStmtToIndexExprs;
 
   struct ltmre 
   { 

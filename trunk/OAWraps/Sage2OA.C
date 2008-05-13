@@ -1554,6 +1554,275 @@ SageIRInterface::getMemRefExprIterator(OA::MemRefHandle h)
   return retval;
 }
 
+
+
+
+
+SageIRInterface::FindUseMREVisitor::FindUseMREVisitor() {
+     retSet = new std::set<OA::OA_ptr<OA::MemRefExpr> >;
+     do_not_add_mre = false;
+}
+
+SageIRInterface::FindUseMREVisitor::~FindUseMREVisitor() { }
+
+OA::OA_ptr<std::set<OA::OA_ptr<OA::MemRefExpr> > >
+SageIRInterface::FindUseMREVisitor::getAllUseMREs() {
+     return retSet;
+}
+
+void SageIRInterface::FindUseMREVisitor::visitNamedRef(OA::NamedRef& ref) {
+     if ( (!do_not_add_mre) && (ref.getMRType() == OA::MemRefExpr::USE)) {
+          OA::OA_ptr<OA::MemRefExpr> mre;
+          mre = ref.clone();
+          retSet->insert(mre);
+     }
+}
+
+void SageIRInterface::FindUseMREVisitor::visitUnnamedRef(OA::UnnamedRef& ref) {
+     if ( (!do_not_add_mre) && (ref.getMRType() == OA::MemRefExpr::USE)) {
+          OA::OA_ptr<OA::MemRefExpr> mre;
+          mre = ref.clone();
+          retSet->insert(mre);
+     }
+}
+
+void SageIRInterface::FindUseMREVisitor::visitUnknownRef(OA::UnknownRef& ref) {
+     if ( (!do_not_add_mre) && (ref.getMRType() == OA::MemRefExpr::USE)) {
+          OA::OA_ptr<OA::MemRefExpr> mre;
+          mre = ref.clone();
+          retSet->insert(mre);
+     }
+}
+
+
+void SageIRInterface::FindUseMREVisitor::visitDeref(OA::Deref& ref) {
+     OA::OA_ptr<OA::MemRefExpr> mre;
+     mre = ref.clone();
+     if ( (!do_not_add_mre) && (ref.getMRType() == OA::MemRefExpr::USE)) {
+          retSet->insert(mre);
+     }
+     do_not_add_mre = false;
+     mre = ref.getMemRefExpr();
+     if(!mre.ptrEqual(0)) {
+         mre->acceptVisitor(*this);
+     }
+}
+
+
+
+void SageIRInterface::FindUseMREVisitor::visitAddressOf(OA::AddressOf& ref) {
+     do_not_add_mre = true;
+     OA::OA_ptr<OA::MemRefExpr> mre;
+     mre = ref.getMemRefExpr();
+     if (!mre.ptrEqual(0)) {
+         mre->acceptVisitor(*this);
+     }
+}
+
+void SageIRInterface::FindUseMREVisitor::visitSubSetRef(OA::SubSetRef& ref) {
+     OA::OA_ptr<OA::MemRefExpr> mre;
+     mre = ref.clone();
+     if ( !(do_not_add_mre) && (ref.getMRType() == OA::MemRefExpr::USE)) {
+          retSet->insert(mre);
+          do_not_add_mre = true;
+     }
+
+     if ( !(do_not_add_mre) && (ref.getMRType() == OA::MemRefExpr::DEF)) {
+          do_not_add_mre = true;
+     }
+
+     mre = ref.getMemRefExpr();
+     if(!mre.ptrEqual(0)) {
+         mre->acceptVisitor(*this);
+     }
+}
+
+
+
+
+
+
+
+//! ==============================================================
+//! We already have getUseMemRefs which returns Use Memory
+//! Reference Handles per Statement. Only UseMemory Reference handles
+//! are inadequate because they give us explicite Uses. We also need
+//! getUseMREs for the implicite Uses in the Statement.
+//! Consider an example,
+//! p=>t   Use[ ]
+//! a=p    Use[p, *p]
+//! where, p is Implicite Use. Similarly, array subscript access
+//! field access involve implicite Use Memory References.
+//! ==============================================================
+
+
+//! Get an Iterator over Use MREs
+OA::OA_ptr<OA::MemRefExprIterator>
+SageIRInterface::getUseMREs(OA::StmtHandle stmt)
+{
+   OA::OA_ptr<std::set<OA::OA_ptr<OA::MemRefExpr> > > retSet;
+   retSet = new std::set<OA::OA_ptr<OA::MemRefExpr> >;
+
+   OA::OA_ptr<OA::MemRefHandleIterator> mIter = getAllMemRefs(stmt);
+
+   for ( ; mIter->isValid(); (*mIter)++ ) {
+       OA::MemRefHandle memref = mIter->current();
+
+       set<OA::OA_ptr<OA::MemRefExpr> >::iterator mreIter;
+       for (mreIter = mMemref2mreSetMap[memref].begin();
+            mreIter != mMemref2mreSetMap[memref].end(); mreIter++ )
+            {
+              OA::OA_ptr<OA::MemRefExpr> mre;
+              mre = *mreIter;
+
+              FindUseMREVisitor visitor;
+              // visit the mre in the callee
+              mre->acceptVisitor(visitor);
+
+              OA::OA_ptr<std::set<OA::OA_ptr<OA::MemRefExpr> > > tmpList;
+              tmpList = visitor.getAllUseMREs();
+
+              std::set<OA::OA_ptr<OA::MemRefExpr> >::iterator mreIter;
+
+              for(mreIter = tmpList->begin(); mreIter != tmpList->end(); ++mreIter) {
+                  retSet->insert(*mreIter);
+              }
+       }
+   }
+
+   OA::OA_ptr<OA::MemRefExprIterator> retval;
+   retval = new OA::MemRefExprIterator(retSet);
+   return retval;
+}
+
+
+
+
+
+
+//! ==============================================================
+//! getDefMREs returns Define Memory Reference Expressions in the
+//! given statement.
+//! getDefMREs and getDefMemRefs return the same results, but the
+//! only difference is, getDefMREs return Define MemRefExpression
+//! whereas, getDefMemRefs return Define MemRefHandle.
+//! ==============================================================
+
+
+//! Get an Iterator over Use MREs
+OA::OA_ptr<OA::MemRefExprIterator>
+SageIRInterface::getDefMREs(OA::StmtHandle stmt)
+{
+    OA::OA_ptr<std::set<OA::OA_ptr<OA::MemRefExpr> > > retSet;
+    retSet = new std::set<OA::OA_ptr<OA::MemRefExpr> >;
+
+    OA::OA_ptr<OA::MemRefHandleIterator> mIter = getAllMemRefs(stmt);
+    for ( ; mIter->isValid(); (*mIter)++ ) {
+          OA::MemRefHandle memref = mIter->current();
+
+          // loop over memory reference expressions for this memref handle
+          set<OA::OA_ptr<OA::MemRefExpr> >::iterator mreIter;
+          for (mreIter = mMemref2mreSetMap[memref].begin();
+               mreIter != mMemref2mreSetMap[memref].end(); mreIter++ )
+          {
+               OA::OA_ptr<OA::MemRefExpr> mre = *mreIter;
+
+              //! ================================================
+              //! only map those MREs that do not involve an addressOf operation
+              //! added by PLM 09/14/06
+              //! ================================================
+
+               if(mre->isaRefOp()) {
+                  OA::OA_ptr<OA::RefOp> refop = mre.convert<OA::RefOp>();
+                  if(refop->isaAddressOf()) {
+                     continue;
+                  }
+               }
+
+               if (mre->isDef()) {
+                   retSet->insert(mre);
+                   break;
+               }
+          }
+    }
+    OA::OA_ptr<OA::MemRefExprIterator> retval;
+    retval = new OA::MemRefExprIterator(retSet);
+    return retval;
+}
+
+
+
+
+
+
+
+//! =============================================================
+//! getDiffUseMREs is same as getUseMREs except getDiffUseMREs
+//! only returns differentiable Uses in the statement
+//! Following are not consider as differentiable Uses,
+//! 1. array index expressions
+//! 2. pointer Expressions.
+//! =============================================================
+
+
+OA::OA_ptr<OA::MemRefExprIterator>
+SageIRInterface::getDiffUseMREs(OA::StmtHandle stmt)
+{
+   OA::OA_ptr<std::set<OA::OA_ptr<OA::MemRefExpr> > > retSet;
+   retSet = new std::set<OA::OA_ptr<OA::MemRefExpr> >;
+
+
+
+/*
+ * FIXME: Need to fix the mStmtToIndexExprs
+ * PLM May 12th 2008
+ *
+   //! getDiffUses
+   OA::OA_ptr<OA::MemRefHandleIterator> msetIter;
+   msetIter = getAllMemRefs(stmt);
+   for ( ; msetIter->isValid(); (*msetIter)++ ) {
+        OA::MemRefHandle memref = msetIter->current();
+
+        //! Do not process Index Expressions.
+        if(mStmtToIndexExprs[stmt].find(memref) !=
+           mStmtToIndexExprs[stmt].end()) {
+           continue;
+        }
+
+        //! dont need pointer expressions
+        OA::OA_ptr<OA::MemRefExprIterator> mreIter;
+        mreIter = getMemRefExprIterator(memref);
+        for ( ; mreIter->isValid(); (*mreIter)++ )
+        {
+             OA::OA_ptr<OA::MemRefExpr> mre;
+             mre = mreIter->current();
+
+             if(mre->isaRefOp()) {
+                OA::OA_ptr<OA::RefOp> refop = mre.convert<OA::RefOp>();
+                if(refop->isaAddressOf()) {
+                   continue;
+                }
+             }
+
+             if (mre->isUse()) {
+                 retSet->insert(mre);
+                 break;
+             }
+        }
+   }
+*/
+
+   OA::OA_ptr<OA::MemRefExprIterator> retval;
+   retval = new OA::MemRefExprIterator(retSet);
+   return retval;
+}
+
+
+
+
+
+
+
 /*! 
    Create a named location based on SymHandle.
 

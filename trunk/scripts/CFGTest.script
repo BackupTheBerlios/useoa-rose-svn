@@ -6,8 +6,10 @@ outputdir::TestResults/CFGtests
 driverexec::./OATest -edg:w --oa-CFG -c
 
 # list of tests
-#       input file,             status
-test::  for.c,  
-
+#       input file,     status
+test::  for.c,          Checked by PLM 05/12/08
+test::  while.c,        Checked by PLM 05/12/08
+test::  dowhile.c,      Checked by PLM 05/12/08
+test::  switch1.c,      Checked by PLM 05/12/08
 
 

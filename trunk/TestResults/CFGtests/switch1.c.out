@@ -1,0 +1,115 @@
+Frontend Time: 0.100000
+===== start of CFG =====
+
+graph DGraph:
+
+    Node 1: 
+        ====== CFG node 1 ======
+
+
+    Node 2: 
+        ====== CFG node 2 ======
+float x =(2.);
+float y =(3.);
+float z;
+switch(op){case '+':{z =(x + y);break;}case '-':{z =(x - y);break;}case '*':{z =(x * y);break;}case '/':{z =(x / y);}default:{z =(0);break;}}
+
+
+    Node 3: 
+        ====== CFG node 3 ======
+z =(x + y);
+break;
+
+
+    Node 4: 
+        ====== CFG node 4 ======
+z =(x - y);
+break;
+
+
+    Node 5: 
+        ====== CFG node 5 ======
+z =(x * y);
+break;
+
+
+    Node 6: 
+        ====== CFG node 6 ======
+z =(x / y);
+
+
+    Node 7: 
+        ====== CFG node 7 ======
+z =(0);
+break;
+
+
+    Node 8: 
+        ====== CFG node 8 ======
+return z;
+
+
+    Node 9: 
+        ====== CFG node 9 ======
+
+
+    Edge: 1 => 2
+        { FALLTHROUGH_EDGE expr(0) }
+
+    Edge: 2 => 3
+        { MULTIWAY_EDGE expr(10287744) }
+
+    Edge: 2 => 4
+        { MULTIWAY_EDGE expr(10287848) }
+
+    Edge: 2 => 5
+        { MULTIWAY_EDGE expr(10287952) }
+
+    Edge: 2 => 6
+        { MULTIWAY_EDGE expr(10288056) }
+
+    Edge: 6 => 7
+        { FALLTHROUGH_EDGE expr(0) }
+
+    Edge: 2 => 7
+        { MULTIWAY_EDGE expr(0) }
+
+    Edge: 3 => 8
+        { BREAK_EDGE expr(0) }
+
+    Edge: 4 => 8
+        { BREAK_EDGE expr(0) }
+
+    Edge: 5 => 8
+        { BREAK_EDGE expr(0) }
+
+    Edge: 7 => 8
+        { BREAK_EDGE expr(0) }
+
+    Edge: 8 => 9
+        { RETURN_EDGE expr(0) }
+
+
+digraph DGraph {
+    node [shape=rectangle];
+    1 [ label="====== CFG node 1 ======\n" ];
+    2 [ label="====== CFG node 2 ======\nfloat x =(2.);\nfloat y =(3.);\nfloat z;\nswitch(op){case '+':{z =(x + y);break;}case '-':{z =(x - y);break;}case '*':{z =(x * y);break;}case '/':{z =(x / y);}default:{z =(0);break;}}\n" ];
+    3 [ label="====== CFG node 3 ======\nz =(x + y);\nbreak;\n" ];
+    4 [ label="====== CFG node 4 ======\nz =(x - y);\nbreak;\n" ];
+    5 [ label="====== CFG node 5 ======\nz =(x * y);\nbreak;\n" ];
+    6 [ label="====== CFG node 6 ======\nz =(x / y);\n" ];
+    7 [ label="====== CFG node 7 ======\nz =(0);\nbreak;\n" ];
+    8 [ label="====== CFG node 8 ======\nreturn z;\n" ];
+    9 [ label="====== CFG node 9 ======\n" ];
+    1 -> 2 [ label="{ FALLTHROUGH_EDGE expr(0) }" ];
+    2 -> 3 [ label="{ MULTIWAY_EDGE expr(10287744) }" ];
+    2 -> 4 [ label="{ MULTIWAY_EDGE expr(10287848) }" ];
+    2 -> 5 [ label="{ MULTIWAY_EDGE expr(10287952) }" ];
+    2 -> 6 [ label="{ MULTIWAY_EDGE expr(10288056) }" ];
+    6 -> 7 [ label="{ FALLTHROUGH_EDGE expr(0) }" ];
+    2 -> 7 [ label="{ MULTIWAY_EDGE expr(0) }" ];
+    3 -> 8 [ label="{ BREAK_EDGE expr(0) }" ];
+    4 -> 8 [ label="{ BREAK_EDGE expr(0) }" ];
+    5 -> 8 [ label="{ BREAK_EDGE expr(0) }" ];
+    7 -> 8 [ label="{ BREAK_EDGE expr(0) }" ];
+    8 -> 9 [ label="{ RETURN_EDGE expr(0) }" ];}

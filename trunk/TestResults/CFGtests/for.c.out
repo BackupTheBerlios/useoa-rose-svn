@@ -1,26 +1,83 @@
-Found a NULL_FILE name in node->get_file_info() for node = SgReturnStmt 
-in CFG::addNode: node id: 1
-in CFG::addNode: node id: 2
-in CFG::addNode: node id: 4
-in CFG::addNode: node id: 6
-in CFG::addNode: node id: 7
-in CFG::addNode: node id: 8
+Frontend Time: 0.110000
+===== start of CFG =====
 
-digraph DGraphImplement {
+graph DGraph:
+
+    Node 1: 
+        ====== CFG node 1 ======
+
+
+    Node 2: 
+        ====== CFG node 2 ======
+int i;
+double x;
+double y;
+double f;
+f = 0.0;
+i = 0;
+
+
+    Node 3: 
+        ====== CFG node 3 ======
+for(i = 0;i < 20;i++) {x =((3 * i));y =((2) * x);f +=(x + y);}
+
+
+    Node 4: 
+        ====== CFG node 4 ======
+x =((3 * i));
+y =((2) * x);
+f +=(x + y);
+
+
+    Node 5: 
+        ====== CFG node 5 ======
+i++
+
+
+    Node 6: 
+        ====== CFG node 6 ======
+return 0;
+
+
+    Node 7: 
+        ====== CFG node 7 ======
+
+
+    Edge: 1 => 2
+        { FALLTHROUGH_EDGE expr(0) }
+
+    Edge: 2 => 3
+        { FALLTHROUGH_EDGE expr(0) }
+
+    Edge: 3 => 4
+        { TRUE_EDGE expr(0) }
+
+    Edge: 4 => 5
+        { FALLTHROUGH_EDGE expr(0) }
+
+    Edge: 5 => 3
+        { FALLTHROUGH_EDGE expr(0) }
+
+    Edge: 3 => 6
+        { FALSE_EDGE expr(0) }
+
+    Edge: 6 => 7
+        { RETURN_EDGE expr(0) }
+
+
+digraph DGraph {
     node [shape=rectangle];
     1 [ label="====== CFG node 1 ======\n" ];
-    2 [ label="====== CFG node 2 ======\nint i;\ndouble x;\ndouble y;\ndouble f;\nf = __builtin_huge_val();\ni = 0;\n" ];
+    2 [ label="====== CFG node 2 ======\nint i;\ndouble x;\ndouble y;\ndouble f;\nf = 0.0;\ni = 0;\n" ];
     3 [ label="====== CFG node 3 ======\nfor(i = 0;i < 20;i++) {x =((3 * i));y =((2) * x);f +=(x + y);}\n" ];
-    4 [ label="====== CFG node 4 ======\nx =((3 * i));\ny =((2) * x);\nf +=(x + y);\n\n" ];
+    4 [ label="====== CFG node 4 ======\nx =((3 * i));\ny =((2) * x);\nf +=(x + y);\n" ];
     5 [ label="====== CFG node 5 ======\ni++\n" ];
     6 [ label="====== CFG node 6 ======\nreturn 0;\n" ];
-    7 [ label="====== CFG node 7 ======\n\n" ];
-    8 [ label="====== CFG node 8 ======\n" ];
-    1 -> 2 [ label="{ 1 FALLTHROUGH_EDGE 0 }" ];
-    2 -> 3 [ label="{ 2 FALLTHROUGH_EDGE 0 }" ];
-    3 -> 4 [ label="{ 3 TRUE_EDGE 0 }" ];
-    4 -> 5 [ label="{ 4 FALLTHROUGH_EDGE 0 }" ];
-    5 -> 3 [ label="{ 5 FALLTHROUGH_EDGE 0 }" ];
-    3 -> 6 [ label="{ 6 FALSE_EDGE 0 }" ];
-    7 -> 8 [ label="{ 7 FALLTHROUGH_EDGE 0 }" ];
-    6 -> 8 [ label="{ 8 RETURN_EDGE 0 }" ];}
+    7 [ label="====== CFG node 7 ======\n" ];
+    1 -> 2 [ label="{ FALLTHROUGH_EDGE expr(0) }" ];
+    2 -> 3 [ label="{ FALLTHROUGH_EDGE expr(0) }" ];
+    3 -> 4 [ label="{ TRUE_EDGE expr(0) }" ];
+    4 -> 5 [ label="{ FALLTHROUGH_EDGE expr(0) }" ];
+    5 -> 3 [ label="{ FALLTHROUGH_EDGE expr(0) }" ];
+    3 -> 6 [ label="{ FALSE_EDGE expr(0) }" ];
+    6 -> 7 [ label="{ RETURN_EDGE expr(0) }" ];}

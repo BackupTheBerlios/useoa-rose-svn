@@ -241,20 +241,31 @@ class A {
     int val;
 };
 
+
+
 int
 main ( unsigned argc,  char * argv[] )
 {
+
   readDebuggingFlags();
 
-  bool p_h=FALSE; //for debugging only switch between persistent and "pointer" handles (pointers are faster, persistent are easier to debug
 
-//    bool p_h = TRUE;
+  //! ====================================================
+  //! for debugging only switch between persistent and 
+  //! "pointer" handles (pointers are faster, persistent 
+  //! are easier to debug
+  //! ====================================================
+
+  bool p_h=FALSE; 
+  //bool p_h = TRUE;
   
   std::vector<SgNode*> nodeArray;
 
-  // Figure out which analysis to do based on command-line args.
-  // Now we use CmdOptions and don't require the analysis option
-  // to be the first specified.
+  //! ============================================================
+  //! Figure out which analysis to do based on command-line args.
+  //! Now we use CmdOptions and don't require the analysis option
+  //! to be the first specified.
+  //! ===========================================================
   if(argc<3)
   {
     usage(argv);
@@ -267,6 +278,9 @@ main ( unsigned argc,  char * argv[] )
         (clock() - time) / (1.0 * CLOCKS_PER_SEC));
     int filenum = sageProject->numberOfFiles();
 
+
+
+
     CmdOptions *cmds = CmdOptions::GetInstance();
 #ifdef ROSE_PRE_0_9_0B
     cmds->SetOptions(argc, argv);
@@ -275,7 +289,14 @@ main ( unsigned argc,  char * argv[] )
     cmds->SetOptions(argvList);
 #endif
 
-    // debug flags, these can alternatively be set with the USEOA_DEBUG environmental
+
+
+
+    //! ============================================
+    //! debug flags, these can alternatively be set 
+    //! with the USEOA_DEBUG environmental
+    //! ============================================
+
     // variable.
     if ( cmds->HasOption("--debug") )        { debug = true; }
     if ( cmds->HasOption("--outputRose") )   { outputRose = true; }
@@ -285,7 +306,9 @@ main ( unsigned argc,  char * argv[] )
     if ( cmds->HasOption("--silent") )       { silent = true; }
 
 
-    // output AST if the flag to do so is set.
+
+
+    //! ======== output AST if the flag to do so is set. ========
     if(outputAST) {
         AstPDFGeneration pdftest;
         pdftest.generateInputFiles(sageProject);
@@ -302,100 +325,175 @@ main ( unsigned argc,  char * argv[] )
     shortCircuitingTransformation(sageProject);
     //    destructorCallAnnotator(sageProject);
 #endif
-    
+   
+
+
+
+
+
+    //! ===================================================
+    //! Analysis Drivers
+    //! ===================================================
+
+ 
     if( cmds->HasOption("--oa-CFG") )
     {
-        DoCFG(sageProject, &nodeArray, p_h);
-    /*
-        for (int i = 0; i < filenum; ++i) {
-            SgFile &sageFile = sageProject->get_file(i);
-            SgGlobal *root = sageFile.get_root();
-            SgDeclarationStatementPtrList& declList = root->get_declarations ();
-            for (SgDeclarationStatementPtrList::iterator p = declList.begin(); p != declList.end(); ++p) 
-              {
-                SgFunctionDeclaration *func = isSgFunctionDeclaration(*p);
-                if (func == 0)
-                  continue;
-                SgFunctionDefinition *defn = func->get_definition();
-                if (defn == 0)
-                  continue;
-                // SgBasicBlock *stmts = defn->get_body();  
-                // create a control flow graph and generate text output
-                DoOpenAnalysis(defn, sageProject, &nodeArray, p_h);
-              }     
-        }
-        */
+       //! ======= Control Flow Graph =========
+       DoCFG(sageProject, &nodeArray, p_h);
+
     }
-    //<AIS|ATB>
-    #if 0
     else if( cmds->HasOption("--oa-MemRefExpr") )
     {
-      //printf("TO DO, implement mem ref expr analysis\n");
+
+      //! ===== MemRefExpr Analysis =====
+     
       OA::OA_ptr<SageIRInterface> ir; 
       ir = new SageIRInterface(sageProject, &nodeArray, p_h);
+
       for (int i = 0; i < filenum; ++i) 
       {
+
           SgFile &sageFile = sageProject->get_file(i);
           SgGlobal *root = sageFile.get_root();
+
+
+          //! FIXME
+          //! PLM What is the Difference of ROSE 0_9_0B from other?
+    
 #ifdef ROSE_PRE_0_9_0B
+
+          //! ===== get the ROSE file =====
+
 	  const char *fileName = sageFile.getFileName();
-#else
-	  const char *fileName = sageFile.getFileName().c_str();
-#endif
-	  ROSE_ASSERT(fileName != NULL);
+          ROSE_ASSERT(fileName != NULL);
           ir->createNodeArray(root);
 
-#ifdef ROSE_PRE_0_9_0B
-	  list<SgNode *> nodes = 
-#else
-          NodeQuerySynthesizedAttributeType nodes =
-#endif
+
+          //! == get all the procedures in the program ==
+
+          list<SgNode *> nodes =
               NodeQuery::querySubTree(root,
-				      V_SgFunctionDefinition);
-#ifdef ROSE_PRE_0_9_0B
-	  for (list<SgNode *>::iterator it = nodes.begin();
-	       it != nodes.end(); ++it ) 
-#else
-	  for (NodeQuerySynthesizedAttributeType::iterator it = nodes.begin();
-	       it != nodes.end(); ++it ) 
-#endif
+                                      V_SgFunctionDefinition);
+          for (list<SgNode *>::iterator it = nodes.begin();
+               it != nodes.end(); ++it )
           {
-	    
-	    SgNode *n = *it;
-	    ROSE_ASSERT(n != NULL);
-	    
-	    SgFunctionDefinition *defn = isSgFunctionDefinition(n);
-	    ROSE_ASSERT(defn != NULL);
+               SgNode *n = *it;
+               ROSE_ASSERT(n != NULL);
 
-#if 1
-	      if (!defn->get_file_info())
-		continue;
-	      // Don't output junk we pull in from header files.
-#ifdef ROSE_PRE_0_9_0B
-	      if (!ROSE::isSameName(fileName,
-				    (defn->get_file_info())->get_filename()))
-		continue;
+               //! ===== Check if the procedure is defined =====
+
+               SgFunctionDefinition *defn = isSgFunctionDefinition(n);
+               ROSE_ASSERT(defn != NULL);
+
+           
+               //! ===== Filter Out  ? ===== 
+               if (!defn->get_file_info())  { continue; }
+
+              
+               //! ===== Filter Out ? =====
+               if (!ROSE::isSameName(fileName,
+                                    (defn->get_file_info())->get_filename()))
+               {  continue; }
+
+
+               //! ===== For each Procedure =====
+
+               OA::ProcHandle proc((OA::irhandle_t)(ir->getNodeNumber(defn)));
+
+
+               //! === Iterator over all the Statements in the Procedure ===
+
+               OA::OA_ptr<OA::IRStmtIterator> sIt = ir->getStmtIterator(proc);
+               for ( ; sIt->isValid(); (*sIt)++) {
+
+                    OA::StmtHandle stmt = sIt->current();
+  
+                    //! === Print MemRefHandles per Statement ===
+
+                    if ( outputRose ) {
+                         OutputMemRefInfoNoPointers(ir, stmt);
+                    }
+                    else {
+                         OutputMemRefInfo(ir, stmt);
+                    }
+
+               } //! ===== end for Statement Iter =====
+
+          } //! ===== end for SgNode Iter =====
+
 #else
-	      if (strcmp(fileName, (defn->get_file_info())->get_filename()))
-		continue;
-#endif
+
+          //! ===== get the ROSE file
+
+	  const char *fileName = sageFile.getFileName().c_str();
+          ROSE_ASSERT(fileName != NULL);
+          ir->createNodeArray(root);
+
+
+          //! == get all the procedures in the program ==
+
+          NodeQuerySynthesizedAttributeType nodes =
+              NodeQuery::querySubTree(root,
+                                      V_SgFunctionDefinition);
+
+          for (NodeQuerySynthesizedAttributeType::iterator it = nodes.begin();
+               it != nodes.end(); ++it )
+          {
+
+               SgNode *n = *it;
+               ROSE_ASSERT(n != NULL);
+
+               //! ===== Check if the procedure is defined =====
+
+               SgFunctionDefinition *defn = isSgFunctionDefinition(n);
+               ROSE_ASSERT(defn != NULL);
+
+
+               //! ===== Filter Out ? =====
+
+               if (!defn->get_file_info())  { continue; }
+               // Don't output junk we pull in from header files.
+
+
+               //! ===== Filter Out ? =====
+
+               if (strcmp(fileName, (defn->get_file_info())->get_filename()))
+               { continue; }
+
+
+               //! ===== For each Procedure =====
+
+               OA::ProcHandle proc((OA::irhandle_t)(ir->getNodeNumber(defn)));
+
+               //! ===== Iterator over all the Statements in the Procedure =====
+
+               OA::OA_ptr<OA::IRStmtIterator> sIt = ir->getStmtIterator(proc);
+               for ( ; sIt->isValid(); (*sIt)++)
+               {
+                    OA::StmtHandle stmt = sIt->current();
+
+                    //! === Print MemRefHandles per Statement ===       
+
+                    if ( outputRose ) {
+                         OutputMemRefInfoNoPointers(ir, stmt);
+                    }
+                    else {
+                         OutputMemRefInfo(ir, stmt);
+                    }
+
+               } //! ===== end for Statement Iter =====
+
+          } //! ===== end for SgNode Iter =====
 
 #endif
-              OA::ProcHandle proc((OA::irhandle_t)(ir->getNodeNumber(defn)));
-              OA::OA_ptr<OA::IRStmtIterator> sIt = ir->getStmtIterator(proc);
-              for ( ; sIt->isValid(); (*sIt)++) 
-              {
-                OA::StmtHandle stmt = sIt->current();
-		if ( outputRose )
-		  OutputMemRefInfoNoPointers(ir, stmt);
-		else
-		  OutputMemRefInfo(ir, stmt);
-              }
 
-          }
-      }
-    }
-    #endif
+      } //! ===== end for file Iter =====
+
+    } //! ===== end MemRefExpr driver =====
+
+
+
+
     //<AIS|ATB>
     #if 0
     else if ( cmds->HasOption("--oa-ExprTree") )
@@ -801,156 +899,217 @@ main ( unsigned argc,  char * argv[] )
    return 0;
 }
 
-int DoOpenAnalysis(SgFunctionDefinition* f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
-{
-static double total_time = 0.0;
-
-	int returnvalue=FALSE;
-	if ( debug )
-	  printf("*******start of DoOpenAnalysis\n");
-	OA::OA_ptr<SageIRInterface> irInterface; 
 
 
-double start_time = clock();
-        irInterface = new SageIRInterface(p, na, p_handle);
-total_time += clock() - start_time;
-cout << "--IRTime = " << total_time/(1.0*CLOCKS_PER_SEC) << endl;
-
-	if(!f->get_body())
-	{
-                if ( debug ) 
-                    printf("forward declaration, will not create CFG\n");
-		return FALSE;
-	}
- 
-	//try
-	//{
-        // create CFG Manager and then CFG
-        OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
-        cfgmanstd= new OA::CFG::ManagerCFGStandard(irInterface);
-        OA::OA_ptr<OA::CFG::CFG> cfg
-          = cfgmanstd->performAnalysis((OA::irhandle_t)(irInterface->getNodeNumber(f)));
 
 
-        irInterface->reportTimes();
 
-        //cfg->dump(std::cout, irInterface);
-	//}
-	//catch(Exception &e)
-	//{
-//		printf("error in try\n");
-		
-//	}
 
-        if(!silent) {
-            OA::OA_ptr<OA::OutputBuilderDOT> dotBuilder;
-            dotBuilder = new OA::OutputBuilderDOT();
-            cfg->configOutput(dotBuilder);
-            cfg->output(*irInterface);
-        }
 
-        if ( debug ) {
-	    printf("*********\n**********  printing CFG\n***********\n************\n"); //code mostly from wn2f.cxx
-	string cfgxaifout;
-	cfgxaifout+="<ControlFlowGraph subroutine_name=\"";
-	//SgName strname=((SgSymbol*)(cfg->subprog_name()))->get_name(); //"no longer available"
-	//cfgxaifout+=strname.str();
-	cfgxaifout+="\"/> \n";
 
-    OA::OA_ptr<OA::DGraph::NodesIteratorInterface> nodeItPtr 
-        = cfg->getNodesIterator();
-	for (; nodeItPtr->isValid(); ++(*nodeItPtr)) 
-	{
-		OA::OA_ptr<OA::CFG::Node> n = 
-		  (nodeItPtr->current()).convert<OA::CFG::Node>();
-		//FIXME: n->longdump(cfg, std::cerr); std::cerr << endl;
-  
-		// basic blocks
-		cfgxaifout+="<ControlFlowVertex, vertex_id= ";
-		char strid[100];
-		sprintf(strid, "\"%d\"/>", n->getId());
-		char newstrid[100];
-		sprintf(newstrid, "\%d", n->getId());
-		
-		cfgxaifout+=strid;
-		cfgxaifout+="\n";
-		cfgxaifout+="<Statement List>\n";
-		
-    OA::OA_ptr<OA::CFG::NodeStatementsIteratorInterface> stmtItPtr
-            = n->getNodeStatementsIterator();
-      for (; stmtItPtr->isValid(); ++(*stmtItPtr)) 
-      {
-        //for now we just unparse SgStatement
-        SgStatement * sgstmt=(SgStatement*)irInterface->getNodePtr(stmtItPtr->current());
-        cfgxaifout+=sgstmt->unparseToString();
-        cfgxaifout+="\n";
-        
-      }
-		cfgxaifout+="</Statement List>\n";
-		cfgxaifout+="</ControlFlowVertex>";
-		cfgxaifout+="\n";
-  }
-
-    cfgxaifout+="\n";
-    // output edges
-    OA::OA_ptr<OA::CFG::EdgesIteratorInterface> edgeItPtr 
-        = cfg->getCFGEdgesIterator();
-	for (; edgeItPtr->isValid(); ++(*edgeItPtr)) 
-    {
-      OA::OA_ptr<OA::CFG::EdgeInterface> e = edgeItPtr->currentCFGEdge();
-      OA::OA_ptr<OA::CFG::NodeInterface> n1 = e->getCFGSource();
-      OA::OA_ptr<OA::CFG::NodeInterface> n2 = e->getCFGSink();
-      
-      char tmpstr[100];
-      sprintf(tmpstr, "<ControlFlowEdge source=\"%d\" target=\"%d\"/>", 
-	      n1->getId(), n2->getId());
-      cfgxaifout+="\n";
-      cfgxaifout+=tmpstr;
-    }
-
-	cfgxaifout+="\n";
-    cfgxaifout+= "</ControlFlowGraph>";
-    if ( debug )
-       printf("CFG is \n %s\n", cfgxaifout.c_str());
-	
-	std::cout << "\n*******  end of DoOpenAnalysis *********\n\n";
-	return returnvalue;
-    }
-
-  
-}
-
+//! ===============================================================
+//! Driver for Control Flow Graph
+//! ===============================================================
 
 int DoCFG(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
-    int returnvalue = FALSE;
-    printf("*******start of CFG\n");
+    printf("===== start of CFG =====\n");
+    
+    //! ====== IRInterface ======= 
     OA::OA_ptr<SageIRInterface> irInterface;
     irInterface = new SageIRInterface(p, na, p_handle); 
 
-    // CFG
-    OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
-    cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
 
-    // eachCFG
-    OA::OA_ptr<OA::CFG::EachCFGInterface> eachCFG;
-    OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgman;
-    cfgman = new OA::CFG::ManagerCFGStandard(irInterface);
-    eachCFG = new OA::CFG::EachCFGStandard(cfgman);
-
-    // iterate through each proc, generate and dump CFG
+    //! ====== Iterator over all the procedures =====
     OA::OA_ptr<SageIRProcIterator> procIter;
     procIter = new SageIRProcIterator(p, *irInterface);
 
+
+    //! ====== Create Control Flow Graph Manager ======
+    OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgman;
+    cfgman = new OA::CFG::ManagerCFGStandard(irInterface);
+
+
+    //! ===== Get the CFG per procedure using CFG Manager  =====
+
+    OA::OA_ptr<OA::CFG::EachCFGInterface> eachCFG;
+    eachCFG = new OA::CFG::EachCFGStandard(cfgman);
+
+
+    //! PLM : I think CFG Manager and EachCFG are duplicated
+    //!       functionalities but according to Michelle the
+    //!       we must keep them seperate because in order to
+    //!       preserve the idea.
+
     for(; procIter->isValid(); ++(*procIter)) {
+
         OA::OA_ptr<OA::CFG::CFGInterface> cfg;
         cfg = eachCFG->getCFGResults(procIter->current());
 
         if(!silent) {
+            
+            //! Text Output
             cfg->output(*irInterface);
+
+           //! dot output
+           OA::OA_ptr<OA::OutputBuilder> outBuild;
+           outBuild = new OA::OutputBuilderDOT;
+           cfg->configOutput(outBuild);
+           cfg->output(*irInterface);
+
         }
     }
+
+    return true; 
 }
+
+
+
+
+
+//! ======================================================================
+//! Belong to MemRefExpr Driver
+//! ======================================================================
+
+void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt)
+{
+    //! ========================================================
+    //! adapted from Nathan's code --should be specific IR
+    //! independent only OA interface used.
+    //!
+    //! - For each MemRefHandle in the statement
+    //!    - Get MemRefExprs associated with the MemRefHandle
+    //!      - Output each MemRefExpr
+    //! ========================================================
+
+
+    std::cout << "======================================" << std::endl;
+    std::cout << "OA::StmtHandle: " << ir->toString(stmt) << std::endl;
+
+
+
+    //! ===== Iterate over all MemRefHandles in the Statement =====
+
+    OA::OA_ptr<OA::MemRefHandleIterator> mrIt = ir->getAllMemRefs(stmt);
+    for ( ; mrIt->isValid(); (*mrIt)++)
+    {
+
+         //! === MemRefHandle ===
+         OA::MemRefHandle memref = mrIt->current();
+         if ( debug ) {
+              std::cout << "  ===== OA::MemRefHandle: ===== ";
+              fflush(stdout);
+              ir->dump(memref, std::cout);
+         }
+
+
+         //! === Iterate over all MemRefExprs associated with MemRfHandle ===
+
+         OA::OA_ptr<OA::MemRefExprIterator> mreIterPtr;
+         mreIterPtr = ir->getMemRefExprIterator(memref);
+
+         for (; mreIterPtr->isValid(); (*mreIterPtr)++) {
+
+              //! === MemRefExpr ===
+              OA::OA_ptr<OA::MemRefExpr::MemRefExpr> mre;
+              mre = mreIterPtr->current();
+
+              //! ===== Output the MemRefExpr
+              std::cout << "\tmre = ";
+              mre->output(*ir);
+              std::cout << std::endl;
+
+         } //! === end for ===
+
+    } //! ===  end for ===
+
+} //! === end OutputMemRefInfo ===
+
+
+
+
+
+
+
+//! ======================================================================
+//! Belong to MemRefExpr Driver
+//! ======================================================================
+
+
+void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir,
+                                OA::StmtHandle stmt)
+{
+
+     //! FIXME:
+     //! PLM, May 12th 2008
+     //! I am not sure what this function is expected to do
+     //! Need to talk to Michelle, Andy or Brian.
+
+     std::cout << "======================================" << std::endl;
+     std::cout << "OA::StmtHandle: " << ir->toString(stmt) << std::endl;
+
+     //! =================================================================
+     //! Get all mem ref handles corresponding to USEs in this statement.
+     //! =================================================================
+
+     OA::OA_ptr<OA::MemRefHandleIterator> useIter;
+     useIter = ir->getUseMemRefs(stmt);
+
+     for ( ; useIter->isValid(); (*useIter)++ ) {
+
+          OA::MemRefHandle memRefHandle = useIter->current();
+
+          //! =======================================================
+          //! Finally, get all of the mem ref expressions associated
+          //! with this memRefHandle.
+          //! =======================================================
+           OA::OA_ptr<OA::MemRefExprIterator> memRefExprIterator;
+           memRefExprIterator = ir->getMemRefExprIterator(memRefHandle);
+
+     }
+
+     std::cout << std::endl;
+
+     std::cout << "DEFs within statement: " << ir->toString(stmt) << std::endl;
+
+     //! ================================================================
+     //! Get all mem ref handles corresponding to DEFs in this statement.
+     //! ================================================================
+     OA::OA_ptr<OA::MemRefHandleIterator> defIter;
+     defIter = ir->getDefMemRefs(stmt);
+
+     for ( ; defIter->isValid(); (*defIter)++ ) {
+
+          OA::MemRefHandle memRefHandle = defIter->current();
+
+         //! =========================================================
+         //! Finally, get all of the mem ref expressions associated
+         //! with this memRefHandle.
+         //! =========================================================
+         OA::OA_ptr<OA::MemRefExprIterator> memRefExprIterator;
+         memRefExprIterator = ir->getMemRefExprIterator(memRefHandle);
+
+     }
+
+     std::cout << std::endl;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2128,51 +2287,6 @@ int DoDataDepGCD(
 }
 #endif
 
-//<AIS|ATB>
-#if 0
-void OutputMemRefInfo(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt)
-{
-  //adapted from Nathan's code --should be specific IR independent only OA interface used
-    std::cout << "============================================" << std::endl;
-    std::cout << "OA::StmtHandle: " << ir->toString(stmt);
-    //    ir->dump(stmt, std::cout);
-    // std::cout << "AliasStmtType: " 
-    //	      << ir->toString(ir->getAliasStmtType(stmt)) << std::endl;
-    std::cout << std::endl;
-    
-    OA::OA_ptr<OA::MemRefHandleIterator> mrIt = ir->getAllMemRefs(stmt);
-    for ( ; mrIt->isValid(); (*mrIt)++) 
-    {
-      OA::MemRefHandle memref = mrIt->current();
-      if ( debug ) {
-	// print out the debugging information to give some context
-	std::cout << "  ***** OA::MemRefHandle: ";
-	fflush(stdout);
-	ir->dump(memref, std::cout);
-      }
-
-      // get and print the memory reference expressions for this handle
-      //OA::OA_ptr<std::list<OA::MemRefExpr::MemRefExpr> > mreList 
-       //                       = ir->getMemRefExprBasicList(memref);
-      
-      OA::OA_ptr<OA::MemRefExprIterator> mreIterPtr;
-      mreIterPtr = ir->getMemRefExprIterator(memref);
-
-      // for each mem-ref-expr associated with this memref
-      for (; mreIterPtr->isValid(); (*mreIterPtr)++) {
-        //printf("inside inner loop\n");
-        //fflush(stdout);
-        OA::OA_ptr<OA::MemRefExpr::MemRefExpr> mre = mreIterPtr->current();
-        std::cout << "\tmre = ";
-	mre->output(*ir);
-	//	mre->dump(std::cout, ir);
-        std::cout << std::endl;
-      }
-      //printf("outside inner loop\n");
-    }
-    //printf("outside outer loop\n"); 
-}
-#endif
 
 // The following was taken from 
 // ROSE/test/roseTests/programAnalysisTests/MemRefExprTest.C.
@@ -2524,58 +2638,6 @@ void dump(OA::OA_ptr<OA::MemRefExprIterator> memRefIterator,
   }
 }
 */
-
-//<AIS|ATB>
-#if 0
-void OutputMemRefInfoNoPointers(OA::OA_ptr<SageIRInterface> ir, OA::StmtHandle stmt) 
-{
-  // Get all mem ref handles corresponding to USEs in this statement.
-  std::cout << "USEs within statement: " << ir->toString(stmt) << std::endl;
-  
-  OA::OA_ptr<OA::MemRefHandleIterator> useIter;
-  useIter = ir->getUseMemRefs(stmt);
-  
-  for ( ; useIter->isValid(); (*useIter)++ ) {
-    
-    OA::MemRefHandle memRefHandle = useIter->current();
-    
-    // Finally, get all of the mem ref expressions associated
-    // with this memRefHandle.
-    OA::OA_ptr<OA::MemRefExprIterator> memRefExprIterator = 
-      ir->getMemRefExprIterator(memRefHandle);
-    
-    /* PLM 1/23/07
-     * dump(memRefExprIterator, ir.operator->(), std::cout);
-     */ 
-    
-  }
-  
-  std::cout << std::endl;
-  
-  std::cout << "DEFs within statement: " << ir->toString(stmt) << std::endl;
-  
-  // Get all mem ref handles corresponding to DEFs in this statement.
-  OA::OA_ptr<OA::MemRefHandleIterator> defIter;
-  defIter = ir->getDefMemRefs(stmt);
-  
-  for ( ; defIter->isValid(); (*defIter)++ ) {
-    
-  OA::MemRefHandle memRefHandle = defIter->current();
-    
-    // Finally, get all of the mem ref expressions associated
-    // with this memRefHandle.
-    OA::OA_ptr<OA::MemRefExprIterator> memRefExprIterator = 
-      ir->getMemRefExprIterator(memRefHandle);
-    
-    /* PLM 1/23/07
-    dump(memRefExprIterator, ir.operator->(), std::cout);
-    */
-    
-  }
-  
-  std::cout << std::endl;
-}
-#endif
 
 
 //<AIS|ATB>

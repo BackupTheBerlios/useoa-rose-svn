@@ -1,4 +1,4 @@
-/* while.c */
+/* CFG for the for-loop */
 
 int main() {
     int i;
