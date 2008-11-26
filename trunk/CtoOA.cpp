@@ -85,7 +85,10 @@ int main ( unsigned argc,  char * argv[] )
     {
 
         SgFile &sageFile = sageProject->get_file(i);
-        SgGlobal *root = sageFile.get_root();
+        SgSourceFile *srcFile = isSgSourceFile(&sageFile);
+        if(srcFile == NULL)
+            continue;
+        SgGlobal *root = srcFile->get_globalScope();
 
         // Loop through every function in the file of this project.
         std::vector<SgNode*> nodeArray;

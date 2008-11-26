@@ -1,6 +1,9 @@
 #ifndef _SAGE2OA_H
 #define _SAGE2OA_H
 
+#define FALSE false
+#define TRUE true
+
 #include "rose.h"
 
 #include "CallGraph.h"
@@ -21,6 +24,7 @@
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/LoopIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/auto_ReachingDefsIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/auto_LivenessIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/auto_LivenessBVIRInterface.hpp>
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/LivenessIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/ExprTreeIRInterface.hpp>
 #include <OpenAnalysis/SideEffect/ManagerInterSideEffectStandard.hpp>
@@ -643,6 +647,7 @@ class SageIRInterface :
   public virtual OA::Alias::AliasIRInterface,
   public virtual OA::ReachDefs::ReachDefsIRInterface,
   public virtual OA::Liveness::LivenessIRInterface,
+  public virtual OA::LivenessBV::LivenessBVIRInterface,
 //<AIS|ATB> public virtual OA::UDDUChains::UDDUChainsIRInterface,
 //<AIS|ATB> public virtual OA::XAIF::XAIFIRInterface,
 //<AIS|ATB> public virtual OA::DataFlow::ParamBindingsIRInterface,

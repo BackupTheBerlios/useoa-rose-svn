@@ -7,37 +7,6 @@ using namespace UseOA;
 
 static bool debug = false;
 
-#define START_CLOCK \
-    double start_time = clock();
-
-#define END_CLOCK(A) \
-    A += (clock() - start_time);
-
- static double time__procBody = 0.0;
- static double time__returnStatementsAllowed = 0.0;
- static double time__getCFGStmtType = 0.0;
- static double time__getLabel = 0.0;
- static double time__getFirstInCompound = 0.0;
- static double time__loopBody = 0.0;
- static double time__loopHeader = 0.0;
- static double time__getLoopIncrement = 0.0;
- static double time__loopIterationsDefinedAtEntry = 0.0;
- static double time__trueBody = 0.0;
- static double time__elseBody = 0.0;
- static double time__numMultiCases = 0.0;
- static double time__multiBody = 0.0;
- static double time__isBreakImplied = 0.0;
- static double time__isCatchAll = 0.0;
- static double time__getMultiCatchall = 0.0;
- static double time__getSMultiCondition = 0.0;
- static double time__getTargetLabel = 0.0;
- static double time__numUMultiTargets = 0.0;
- static double time__getUMultiTargetLabel = 0.0;
- static double time__getUMultiCatchallLabel = 0.0;
- static double time__getUMultiCondition = 0.0;
- static double time__parallelWithSuccessor = 0.0;
- static double time__numberOfDelaySlots = 0.0;
-
 //########################################################
 // Iterators
 //########################################################
@@ -204,9 +173,12 @@ getGlobalObjectDeclarationsAndClassDefinitions(SgNode *project,
   // For each file in the project ...
   for (int i = 0; i < proj->numberOfFiles(); ++i) {
     SgFile &f = proj->get_file(i);
+    SgSourceFile *sf = isSgSourceFile(&f);
+    if(sf == NULL)
+        continue;
 
     // Get the root of its AST.
-    SgGlobal *global = f.get_root();
+    SgGlobal *global = sf->get_globalScope();
     ROSE_ASSERT(global != NULL);
     
     // Retrieve any global object declarations or class definitions.
@@ -317,9 +289,12 @@ getGlobalDeclarations(SgNode *project, std::set<SgStatement *> &globals)
   // For each file in the project ...
   for (int i = 0; i < proj->numberOfFiles(); ++i) {
     SgFile &f = proj->get_file(i);
+    SgSourceFile *sf = isSgSourceFile(&f);
+    if(sf == NULL)
+        continue;
 
     // Get the root of its AST.
-    SgGlobal *global = f.get_root();
+    SgGlobal *global = sf->get_globalScope();
     ROSE_ASSERT(global != NULL);
     
     // Retrieve any global object declarations or class definitions.
@@ -802,50 +777,6 @@ OA::SymHandle SageIRInterface::getProcSymHandle(OA::ProcHandle ph) const
 OA::OA_ptr<OA::IRRegionStmtIterator> 
     SageIRInterface::procBody(OA::ProcHandle h) 
 {       
-START_CLOCK
-
-    OA::OA_ptr<SageIRRegionStmtIterator> irStmtIter;
-#if 1
-    SgFunctionDefinition* functionDefinition = 
-      (SgFunctionDefinition*)(getNodePtr(h));
-#else
-    SgNode *node = getNodePtr(h);
-    ROSE_ASSERT(node != NULL);
-
-    SgFunctionDeclaration *functionDeclaration = 
-      isSgFunctionDeclaration(node);
-    ROSE_ASSERT(functionDeclaration != NULL);
-
-    SgFunctionDefinition *functionDefinition =
-      functionDeclaration->get_definition();
-    ROSE_ASSERT(functionDefinition != NULL);
-#endif
-    if (functionDefinition) {
-        SgStatementPtrList & pl = 
-          functionDefinition->get_body()->get_statements();
-        irStmtIter=new SageIRRegionStmtIterator(pl, this);
-    } else {
-        cerr << "error in SageIRInterface::procBody\n";
-        irStmtIter = NULL;
-    }
-
-END_CLOCK(time__procBody);
-    return irStmtIter;
-}
-    
-
-
-//########################################################
-// Statements: General
-//########################################################
-
-
-// Are return statements allowed
-bool SageIRInterface::returnStatementsAllowed()
-{
-    START_CLOCK
-    END_CLOCK(time__returnStatementsAllowed)
-
     return true;
 }
 
@@ -853,8 +784,6 @@ bool SageIRInterface::returnStatementsAllowed()
 // Translate a Sage statement type into a CFG::IRStmtType.
 OA::CFG::IRStmtType SageIRInterface::getCFGStmtType(OA::StmtHandle h)
 {
-    START_CLOCK
-
         OA::CFG::IRStmtType ty;
 
         switch(((SgStatement*)(getNodePtr(h)))->variantT())
@@ -894,23 +823,17 @@ OA::CFG::IRStmtType SageIRInterface::getCFGStmtType(OA::StmtHandle h)
         }
 
 
-END_CLOCK(time__getCFGStmtType)
-
         return ty;
 }
 
 // Given a statement, return the label associated with it (or NULL if none).
 OA::StmtLabel SageIRInterface::getLabel(OA::StmtHandle h)
 {
-  START_CLOCK
-
   SgLabelStatement *labelStatement = isSgLabelStatement(getNodePtr(h));
   if (labelStatement == NULL) {
-    END_CLOCK(time__getLabel);
     return 0;
   }
 
-  END_CLOCK(time__getLabel);
   return (OA::irhandle_t)(getNodeNumber(labelStatement));
 }
 
@@ -918,8 +841,6 @@ OA::StmtLabel SageIRInterface::getLabel(OA::StmtHandle h)
 OA::OA_ptr<OA::IRRegionStmtIterator> 
     SageIRInterface::getFirstInCompound(OA::StmtHandle h)
 {
-    START_CLOCK
-
     OA::OA_ptr<SageIRRegionStmtIterator> retit;
         SgStatement * sptr=(SgStatement*)(getNodePtr(h));
         if(SgScopeStatement * scope=isSgScopeStatement(sptr))
@@ -933,7 +854,6 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
     retit = new SageIRRegionStmtIterator(this);
         }
 
-    END_CLOCK(time__getFirstInCompound);
         return retit;
 }
 
@@ -959,7 +879,6 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
 OA::OA_ptr<OA::IRRegionStmtIterator> 
     SageIRInterface::loopBody(OA::StmtHandle h)
 {
-    START_CLOCK
         OA::OA_ptr<SageIRRegionStmtIterator> retit;
         SgStatement * sptr = (SgStatement*)(getNodePtr(h));
         if(SgScopeStatement * scope = isSgScopeStatement(sptr))
@@ -972,13 +891,11 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
             printf("error in SageIRInterface::LoopBody\n");
             retit = new SageIRRegionStmtIterator(this);
         }
-    END_CLOCK(time__loopBody)
     return retit;
 }
 
 OA::StmtHandle SageIRInterface::loopHeader(OA::StmtHandle h)
 {
-START_CLOCK
         SgStatement * st=NULL;
         SgForStatement * forst=isSgForStatement((SgStatement *)getNodePtr(h));
         if(forst)
@@ -997,13 +914,11 @@ START_CLOCK
             ROSE_ASSERT(forst->get_init_stmt().size() <= 1);
         }
         
-END_CLOCK(time__loopHeader)
         return (OA::irhandle_t)(getNodeNumber(st));
 }
 
 OA::StmtHandle SageIRInterface::getLoopIncrement(OA::StmtHandle h)
 {
-START_CLOCK
         SgStatement * st=NULL;
         SgForStatement * forst=isSgForStatement((SgStatement *)(getNodePtr(h)));
 #if 0
@@ -1029,7 +944,6 @@ START_CLOCK
 #endif
         }
 
-END_CLOCK(time__getLoopIncrement);
         return (OA::irhandle_t)(getNodeNumber(exp));
 #endif
 
@@ -1038,16 +952,13 @@ END_CLOCK(time__getLoopIncrement);
 
 bool SageIRInterface::loopIterationsDefinedAtEntry(OA::StmtHandle h)
 {
-    START_CLOCK
         //this needs to be false for C (read comments in CFG.C)
-    END_CLOCK(time__loopIterationsDefinedAtEntry)
         return false;
 }
 
 
 OA::StmtLabel SageIRInterface::getTargetLabel(OA::StmtHandle h, int) 
 {
-START_CLOCK
   SgNode *node = getNodePtr(h);
   ROSE_ASSERT(node != NULL);
 
@@ -1075,7 +986,6 @@ START_CLOCK
       break;
     }
   }
-END_CLOCK(time__getTargetLabel);
   return targetLabel;
 }
 
@@ -1088,8 +998,6 @@ END_CLOCK(time__getTargetLabel);
 // The count does not include the optional default/catchall target.
 int SageIRInterface::numUMultiTargets(OA::StmtHandle h) 
 {
-START_CLOCK
-END_CLOCK(time__numUMultiTargets);
         //for now
   ROSE_ABORT();
         return 0;
@@ -1099,8 +1007,6 @@ END_CLOCK(time__numUMultiTargets);
 // statement at 'targetIndex'. The n targets are indexed [0..n-1]. 
 OA::StmtLabel SageIRInterface::getUMultiTargetLabel(OA::StmtHandle h, int)
 {
-START_CLOCK
-END_CLOCK(time__getUMultiTargetLabel);
         //for now
   ROSE_ABORT();
         return 0;
@@ -1110,8 +1016,6 @@ END_CLOCK(time__getUMultiTargetLabel);
 // default/catchall target. Return 0 if no default target.
 OA::StmtLabel SageIRInterface::getUMultiCatchallLabel(OA::StmtHandle h)
 {
-START_CLOCK
-END_CLOCK(time__getUMultiCatchallLabel);
         //for now
   ROSE_ABORT();
         return 0;
@@ -1120,8 +1024,6 @@ END_CLOCK(time__getUMultiCatchallLabel);
 OA::ExprHandle 
 SageIRInterface::getUMultiCondition (OA::StmtHandle h, int targetIndex)
 {
-START_CLOCK
-END_CLOCK(time__getUMultiCondition);
     // for now
   ROSE_ABORT();
     return 0;
@@ -1162,8 +1064,6 @@ END_CLOCK(time__getUMultiCondition);
 OA::OA_ptr<OA::IRRegionStmtIterator> 
     SageIRInterface::trueBody(OA::StmtHandle h)
 {
-  START_CLOCK
-
   OA::OA_ptr<SageIRRegionStmtIterator> retval;
   //return iterator of the true branch if  h if an if stmt
   //for now
@@ -1180,14 +1080,12 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
         } else { retval = new SageIRRegionStmtIterator(this); }
     }
 
-  END_CLOCK(time__trueBody)
   return retval; 
 }
 
 OA::OA_ptr<OA::IRRegionStmtIterator> 
     SageIRInterface::elseBody(OA::StmtHandle h)
 {
-  START_CLOCK
     OA::OA_ptr<SageIRRegionStmtIterator> retval;  retval = NULL;
         //printf("in ElseBody\n");
     if(SgIfStmt * ifs=isSgIfStmt((SgStatement*) getNodePtr(h)))
@@ -1198,14 +1096,14 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
         fflush(stdout);
         if(scope)
           {
-            retval = new SageIRRegionStmtIterator(scope->getStatementList(), this);     
+            retval = new SageIRRegionStmtIterator(
+                scope->getStatementList(), this);     
           }
         else
           {
             retval = new SageIRRegionStmtIterator(this);
           }
       }
-    END_CLOCK(time__elseBody)
     return retval;
 }
 /*
@@ -1287,7 +1185,6 @@ ExprHandle SageIRInterface::GetUMultiCondition(StmtHandle h, int targetIndex)
 // condition for multi body 
 OA::ExprHandle SageIRInterface::getSMultiCondition(OA::StmtHandle h, int bodyIndex)
 {
- START_CLOCK
   OA::ExprHandle ret=0;
   SgSwitchStatement * swstmt=isSgSwitchStatement((SgStatement*)getNodePtr(h));
   if(swstmt)
@@ -1308,7 +1205,6 @@ OA::ExprHandle SageIRInterface::getSMultiCondition(OA::StmtHandle h, int bodyInd
       }
     }
   }
-  END_CLOCK(time__getSMultiCondition)
   return ret;
 }
 
@@ -1333,7 +1229,6 @@ ExprHandle SageIRInterface::GetMultiExpr(StmtHandle h)
 
 int SageIRInterface::numMultiCases (OA::StmtHandle h)
 {
-  START_CLOCK
   int tot_len=0;
   SgSwitchStatement * sw=isSgSwitchStatement((SgStatement*)getNodePtr(h));
   if(sw)
@@ -1351,14 +1246,12 @@ int SageIRInterface::numMultiCases (OA::StmtHandle h)
 */
     }
   }
-  END_CLOCK(time__numMultiCases)
   return tot_len;
 }
 
 OA::OA_ptr<OA::IRRegionStmtIterator> 
     SageIRInterface::multiBody (OA::StmtHandle h, int bodyIndex)
 {
-  START_CLOCK
 
   OA::OA_ptr<OA::IRRegionStmtIterator> retval;  retval = NULL;
   SgSwitchStatement * swstmt=isSgSwitchStatement((SgStatement*)getNodePtr(h));
@@ -1381,20 +1274,16 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
     }
   } else { retval = new SageIRRegionStmtIterator(this); }
 
-  END_CLOCK(time__multiBody)
   return retval;
 }
 
 bool SageIRInterface::isBreakImplied (OA::StmtHandle multicond)
 {
-  START_CLOCK
-  END_CLOCK(time__isBreakImplied)
   return FALSE;  //break is not implied in C
 }
 
 bool SageIRInterface::isCatchAll(OA::StmtHandle h, int bodyIndex)
 {
-  START_CLOCK
   bool isDefault = false;
 
   SgSwitchStatement * swstmt=isSgSwitchStatement((SgStatement*)getNodePtr(h));
@@ -1423,7 +1312,6 @@ bool SageIRInterface::isCatchAll(OA::StmtHandle h, int bodyIndex)
 
     }
   }
-  END_CLOCK(time__isCatchAll)
   return isDefault;
 }
 
@@ -1435,7 +1323,6 @@ bool SageIRInterface::isCatchAll(OA::StmtHandle h, int bodyIndex)
 OA::OA_ptr<OA::IRRegionStmtIterator> 
     SageIRInterface::getMultiCatchall (OA::StmtHandle h)
 {
- START_CLOCK
   OA::OA_ptr<OA::IRRegionStmtIterator> retval;  retval = NULL;
   int tot_len=0;
   SgSwitchStatement * sw=isSgSwitchStatement((SgStatement*)getNodePtr(h));
@@ -1455,7 +1342,6 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
     }
   } else { retval = new SageIRRegionStmtIterator(this); }
 
-  END_CLOCK(time__getMultiCatchall)
   return retval;
 }
 
@@ -2979,7 +2865,7 @@ std::string getFileNameByTraversalBackToFileNode ( SgNode* astNode )
           ROSE_ASSERT (file != NULL);
           if (file != NULL)
              {
-               returnString = ROSE::getFileName(file);
+               returnString = file->getFileName();
              }
 
           ROSE_ASSERT (returnString.length() > 0);
@@ -6508,31 +6394,5 @@ SageIRInterface::returnOpEnumValInt(OA::OpHandle op)
 
 
 
-void SageIRInterface::reportTimes() {
-    cout << "time__procBody = " << time__procBody/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__returnStatementsAllowed = " << time__returnStatementsAllowed/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__getCFGStmtType = " << time__getCFGStmtType/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__getLabel = " << time__getLabel/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__getFirstInCompound = " << time__getFirstInCompound/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__loopBody = " << time__loopBody/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__loopHeader = " << time__loopHeader/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__getLoopIncrement = " << time__getLoopIncrement/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__loopIterationsDefinedAtEntry = " << time__loopIterationsDefinedAtEntry/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__trueBody = " << time__trueBody/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__elseBody = " << time__elseBody/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__numMultiCases = " << time__numMultiCases/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__multiBody = " << time__multiBody/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__isBreakImplied = " << time__isBreakImplied/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__isCatchAll = " << time__isCatchAll/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__getMultiCatchall = " << time__getMultiCatchall/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__getSMultiCondition = " << time__getSMultiCondition/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__getTargetLabel = " << time__getTargetLabel/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__numUMultiTargets = " << time__numUMultiTargets/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__getUMultiTargetLabel = " << time__getUMultiTargetLabel/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__getUMultiCatchallLabel = " << time__getUMultiCatchallLabel/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__getUMultiCondition = " << time__getUMultiCondition/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__parallelWithSuccessor = " << time__parallelWithSuccessor/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "time__numberOfDelaySlots = " << time__numberOfDelaySlots/(1.0*CLOCKS_PER_SEC) << endl;
-    cout << "---------------------------------------------------------" << endl;
-}
+void SageIRInterface::reportTimes() { }
 

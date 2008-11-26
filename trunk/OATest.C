@@ -48,12 +48,13 @@
 #include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
 //<AIS|ATB>#include <OpenAnalysis/DataDep/ManagerDataDepGCD.hpp>
 #include <OpenAnalysis/ICFG/ManagerICFG.hpp>
-#include <OpenAnalysis/Activity/ManagerICFGDep.hpp>
+//#include <OpenAnalysis/Activity/ManagerICFGDep.hpp>
 #include <OpenAnalysis/MemRefExpr/MemRefExpr.hpp>
 #include <OpenAnalysis/ReachDefs/ManagerReachDefsStandard.hpp>
 #include <OpenAnalysis/Liveness/ManagerLivenessStandard.hpp>
 #include <OpenAnalysis/SideEffect/InterSideEffectStandard.hpp>
 #include <OpenAnalysis/DFAGen/Liveness/auto_ManagerLiveness.hpp>
+#include <OpenAnalysis/DFAGen/LivenessBV/auto_ManagerLivenessBV.hpp>
 #include <OpenAnalysis/DFAGen/ReachingDefs/auto_ManagerReachingDefs.hpp>
 //<AIS|ATB>#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
@@ -151,6 +152,7 @@ int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * 
 int DoAssignPairs(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoCompareExpressionTrees(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoDFAGenLiveness(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
+int DoDFAGenLivenessBV(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 int DoDFAGenReachDefs(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 
 
@@ -229,6 +231,7 @@ void usage(char **argv)
   cerr << "          --oa-UDDUChainsXAIF" << endl;
   cerr << "          --oa-CompareExpressionTrees" << endl;
   cerr << "          --oa-DFAGen-Liveness" << endl;
+  cerr << "          --oa-DFAGen-LivenessBV" << endl;
   cerr << "          --oa-DFAGen-ReachDefs" << endl;
   cerr << "          --oa-DFAGen-AvailExprs" << endl;
 
@@ -354,7 +357,10 @@ main ( unsigned argc,  char * argv[] )
       {
 
           SgFile &sageFile = sageProject->get_file(i);
-          SgGlobal *root = sageFile.get_root();
+          SgSourceFile *srcFile = isSgSourceFile(&sageFile);
+          if(srcFile == NULL)
+            continue;
+          SgGlobal *root = srcFile->get_globalScope();
 
 
           //! FIXME
@@ -871,6 +877,10 @@ main ( unsigned argc,  char * argv[] )
     else if( cmds->HasOption("--oa-DFAGen-Liveness") )
     {
         return DoDFAGenLiveness(sageProject, &nodeArray, p_h);
+    }
+    else if( cmds->HasOption("--oa-DFAGen-LivenessBV") )
+    {
+        return DoDFAGenLivenessBV(sageProject, &nodeArray, p_h);
     }
     else if( cmds->HasOption("--oa-DFAGen-ReachDefs") )
     {
@@ -3084,14 +3094,14 @@ int DoDFAGenLiveness(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
     // Iterate through each proc doing Liveness
     procIter = new SageIRProcIterator(p, *irInterface);
     for(; procIter->isValid(); ++(*procIter)) {
-        OA::OA_ptr<OA::Liveness::Liveness> results;
-        results = liveMgr->performAnalysis(
+        //OA::OA_ptr<OA::Liveness::Liveness> results;
+        liveMgr->performAnalysis(
             procIter->current(),
             eachCFG->getCFGResults(procIter->current()),
             alias,
             interSideEffect); 
 
-        if(!silent) { results->output(*irInterface); }
+        //if(!silent) { results->dump(std::cout, irInterface, *alias); }
     }
     printf("Liveness Time: %lf\n",
         (clock() - time) / (1.0 * CLOCKS_PER_SEC));
@@ -3101,6 +3111,91 @@ int DoDFAGenLiveness(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
 
     return returnvalue;
 }
+
+int DoDFAGenLivenessBV(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
+{
+    int returnvalue=FALSE;
+    OA::OA_ptr<SageIRProcIterator> procIter;
+
+    if ( debug ) printf("*******start of DFAGen Liveness analysis\n");
+
+    double time = clock();
+
+    // contruct IR
+    OA::OA_ptr<SageIRInterface> irInterface;
+    irInterface = new SageIRInterface(p, na, p_handle);
+    printf("Construct IR Time: %lf\n",
+        (clock() - time) / (1.0 * CLOCKS_PER_SEC));
+    time = clock();
+
+    // CFG
+    OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
+    cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
+
+    // eachCFG
+    OA::OA_ptr<OA::CFG::EachCFGInterface> eachCFG;
+    OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgman;
+    cfgman = new OA::CFG::ManagerCFGStandard(irInterface);
+    eachCFG = new OA::CFG::EachCFGStandard(cfgman);
+
+    // force a CFG analysis on all procedures and time it
+    time = clock();
+    procIter = new SageIRProcIterator(p, *irInterface);
+    int count = 0;
+    for(; procIter->isValid(); ++(*procIter)) {
+        OA::OA_ptr<OA::CFG::CFGInterface> cfg;
+        cfg = eachCFG->getCFGResults(procIter->current());
+        count++;
+    }
+    printf("CFG Time: %lf, %d procs analyzed\n",
+        (clock() - time) / (1.0 * CLOCKS_PER_SEC), count);
+
+    //FIAlias
+    OA::OA_ptr<OA::Alias::ManagerFIAliasAliasTag> fialiasman;
+    fialiasman = new OA::Alias::ManagerFIAliasAliasTag(irInterface);
+    procIter = new SageIRProcIterator(p, *irInterface);
+    OA::OA_ptr<OA::Alias::Interface> alias;
+    alias = fialiasman->performAnalysis(procIter);
+    printf("FIAlias Time: %lf\n",
+        (clock() - time) / (1.0 * CLOCKS_PER_SEC));
+    time = clock();
+
+    //TODO: Need to create interprocedural alias to pass to side effects
+    OA::OA_ptr<OA::Alias::InterAliasInterface> interAlias;
+
+    // Interprocedural Side-Effect Analysis
+    // for now generate default conservative interprocedural side-effect results
+    OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
+    interSideEffect = new OA::SideEffect::InterSideEffectStandard(interAlias);
+    printf("Side-effects Time: %lf\n",
+        (clock() - time) / (1.0 * CLOCKS_PER_SEC));
+    time = clock();
+    
+    // Construct Liveness manager
+    OA::OA_ptr<OA::LivenessBV::ManagerLivenessBV> liveMgr;
+    liveMgr = new OA::LivenessBV::ManagerLivenessBV(irInterface);
+
+    // Iterate through each proc doing Liveness
+    procIter = new SageIRProcIterator(p, *irInterface);
+    for(; procIter->isValid(); ++(*procIter)) {
+        OA::OA_ptr<OA::LivenessBV::LivenessBV> results;
+        results = liveMgr->performAnalysis(
+            procIter->current(),
+            eachCFG->getCFGResults(procIter->current()),
+            alias,
+            interSideEffect);
+
+        if(!silent) { results->dump(std::cout, irInterface, *alias); }
+    }
+    printf("Liveness Time: %lf\n",
+        (clock() - time) / (1.0 * CLOCKS_PER_SEC));
+    time = clock();
+
+    std::cout << "\n*******  end of DFAGen LivenessBV analysis *********\n\n";
+
+    return returnvalue;
+}
+
 
 int DoDFAGenReachDefs(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
 {
