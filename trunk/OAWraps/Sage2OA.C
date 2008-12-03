@@ -776,10 +776,39 @@ OA::SymHandle SageIRInterface::getProcSymHandle(OA::ProcHandle ph) const
 
 OA::OA_ptr<OA::IRRegionStmtIterator> 
     SageIRInterface::procBody(OA::ProcHandle h) 
-{       
-    return true;
+{
+    OA::OA_ptr<SageIRRegionStmtIterator> irStmtIter;
+#if 1
+    SgFunctionDefinition* functionDefinition = 
+      (SgFunctionDefinition*)(getNodePtr(h));
+#else
+    SgNode *node = getNodePtr(h);
+    ROSE_ASSERT(node != NULL);
+
+    SgFunctionDeclaration *functionDeclaration = 
+      isSgFunctionDeclaration(node);
+    ROSE_ASSERT(functionDeclaration != NULL);
+
+    SgFunctionDefinition *functionDefinition =
+      functionDeclaration->get_definition();
+    ROSE_ASSERT(functionDefinition != NULL);
+#endif
+    if (functionDefinition) {
+        SgStatementPtrList & pl = 
+          functionDefinition->get_body()->get_statements();
+        irStmtIter=new SageIRRegionStmtIterator(pl, this);
+    } else {
+        cerr << "error in SageIRInterface::procBody\n";
+        irStmtIter = NULL;
+    }
+
+    return irStmtIter;
 }
 
+
+bool SageIRInterface::returnStatementsAllowed() {
+    return true;
+}
 
 // Translate a Sage statement type into a CFG::IRStmtType.
 OA::CFG::IRStmtType SageIRInterface::getCFGStmtType(OA::StmtHandle h)
@@ -1071,15 +1100,19 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
   //printf("in TrueBody\n");
   retval = NULL;
   if(SgIfStmt * ifs=isSgIfStmt((SgStatement*) getNodePtr(h)))
-    {
+  {
       SgStatement * sptr=ifs->get_true_body();
       SgScopeStatement * scope=isSgScopeStatement(sptr);
-      if(scope)
-        {
-          retval = new SageIRRegionStmtIterator(scope->getStatementList(), this);       
-        } else { retval = new SageIRRegionStmtIterator(this); }
-    }
-
+      if(scope && !isSgIfStmt(scope)) {
+          retval =
+            new SageIRRegionStmtIterator(scope->getStatementList(), this);
+      } else {
+          SgStatementPtrList *list;
+          list = new SgStatementPtrList();
+          list->push_back(sptr);
+          retval = new SageIRRegionStmtIterator(*list, this);
+      }
+  }
   return retval; 
 }
 
@@ -1094,14 +1127,17 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
         SgStatement * sptr=ifs->get_false_body();
         SgScopeStatement * scope=isSgScopeStatement(sptr);
         fflush(stdout);
-        if(scope)
+        if(scope && !isSgIfStmt(scope))
           {
             retval = new SageIRRegionStmtIterator(
                 scope->getStatementList(), this);     
           }
         else
           {
-            retval = new SageIRRegionStmtIterator(this);
+            SgStatementPtrList *list;
+            list = new SgStatementPtrList();
+            list->push_back(sptr);
+            retval = new SageIRRegionStmtIterator(*list, this);
           }
       }
     return retval;
@@ -6356,13 +6392,13 @@ SageIRInterface::getConstValBasic(OA::ConstValHandle c)
    } else if ( isSgFloatVal(sn) ) {
 
        SgFloatVal *floatvalsg = isSgFloatVal(sn);
-       int val = floatvalsg->get_value();
+       int val = (int)floatvalsg->get_value();
        cvb = new SageIntegerConstVal((int)val);
 
    } else if( isSgDoubleVal(sn) )
    { 
        SgDoubleVal *doublesg = isSgDoubleVal(sn);
-       int val = doublesg->get_value();
+       int val = (int)doublesg->get_value();
        cvb = new SageIntegerConstVal((int)val);
 
    } 

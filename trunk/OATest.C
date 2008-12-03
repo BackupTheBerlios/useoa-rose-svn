@@ -1,5 +1,4 @@
-/*
-// testAll.cpp
+/* // testAll.cpp
 
   This is a test driver that calls various OA analyses  depending on the command line option
 
@@ -54,7 +53,7 @@
 #include <OpenAnalysis/Liveness/ManagerLivenessStandard.hpp>
 #include <OpenAnalysis/SideEffect/InterSideEffectStandard.hpp>
 #include <OpenAnalysis/DFAGen/Liveness/auto_ManagerLiveness.hpp>
-#include <OpenAnalysis/DFAGen/LivenessBV/auto_ManagerLivenessBV.hpp>
+//#include <OpenAnalysis/DFAGen/LivenessBV/auto_ManagerLivenessBV.hpp>
 #include <OpenAnalysis/DFAGen/ReachingDefs/auto_ManagerReachingDefs.hpp>
 //<AIS|ATB>#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
@@ -152,7 +151,7 @@ int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * 
 int DoAssignPairs(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoCompareExpressionTrees(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle);
 int DoDFAGenLiveness(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
-int DoDFAGenLivenessBV(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
+//int DoDFAGenLivenessBV(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 int DoDFAGenReachDefs(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 
 
@@ -231,7 +230,7 @@ void usage(char **argv)
   cerr << "          --oa-UDDUChainsXAIF" << endl;
   cerr << "          --oa-CompareExpressionTrees" << endl;
   cerr << "          --oa-DFAGen-Liveness" << endl;
-  cerr << "          --oa-DFAGen-LivenessBV" << endl;
+//  cerr << "          --oa-DFAGen-LivenessBV" << endl;
   cerr << "          --oa-DFAGen-ReachDefs" << endl;
   cerr << "          --oa-DFAGen-AvailExprs" << endl;
 
@@ -281,9 +280,6 @@ main ( unsigned argc,  char * argv[] )
         (clock() - time) / (1.0 * CLOCKS_PER_SEC));
     int filenum = sageProject->numberOfFiles();
 
-
-
-
     CmdOptions *cmds = CmdOptions::GetInstance();
 #ifdef ROSE_PRE_0_9_0B
     cmds->SetOptions(argc, argv);
@@ -291,9 +287,6 @@ main ( unsigned argc,  char * argv[] )
     vector<string> argvList(argv, argv + argc);
     cmds->SetOptions(argvList);
 #endif
-
-
-
 
     //! ============================================
     //! debug flags, these can alternatively be set 
@@ -878,10 +871,10 @@ main ( unsigned argc,  char * argv[] )
     {
         return DoDFAGenLiveness(sageProject, &nodeArray, p_h);
     }
-    else if( cmds->HasOption("--oa-DFAGen-LivenessBV") )
+/*    else if( cmds->HasOption("--oa-DFAGen-LivenessBV") )
     {
         return DoDFAGenLivenessBV(sageProject, &nodeArray, p_h);
-    }
+    }*/
     else if( cmds->HasOption("--oa-DFAGen-ReachDefs") )
     {
         return DoDFAGenReachDefs(sageProject, &nodeArray, p_h);
@@ -970,6 +963,7 @@ int DoCFG(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
         }
     }
 
+    printf("Terminated succesfully\n");
     return true; 
 }
 
@@ -1519,6 +1513,8 @@ int DoFIAliasTag(SgProject * p, std::vector<SgNode*> * na, bool p_handle) {
   irInterface = new SageIRInterface(p, na, p_handle); 
 
   //FIAlias
+  double time = clock();
+ 
   OA::OA_ptr<OA::Alias::ManagerFIAliasAliasTag> fialiasman;
   fialiasman = new OA::Alias::ManagerFIAliasAliasTag(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
@@ -1526,7 +1522,10 @@ int DoFIAliasTag(SgProject * p, std::vector<SgNode*> * na, bool p_handle) {
   
   OA::OA_ptr<OA::Alias::Interface> results;
   results = fialiasman->performAnalysis(procIter);
-  
+
+  printf("FIAliasTag Time: %lf\n",
+    (clock() - time) / (1.0 * CLOCKS_PER_SEC));
+ 
   if(!skipAnalysis) {
     if(!silent) { results->output(*irInterface); }
   }
@@ -3111,7 +3110,7 @@ int DoDFAGenLiveness(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
 
     return returnvalue;
 }
-
+/*
 int DoDFAGenLivenessBV(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
 {
     int returnvalue=FALSE;
@@ -3194,8 +3193,7 @@ int DoDFAGenLivenessBV(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
     std::cout << "\n*******  end of DFAGen LivenessBV analysis *********\n\n";
 
     return returnvalue;
-}
-
+}*/
 
 int DoDFAGenReachDefs(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
 {
