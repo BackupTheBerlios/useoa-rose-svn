@@ -56,6 +56,7 @@
 //#include <OpenAnalysis/DFAGen/LivenessBV/auto_ManagerLivenessBV.hpp>
 #include <OpenAnalysis/DFAGen/ReachingDefs/auto_ManagerReachingDefs.hpp>
 #include <OpenAnalysis/DFAGen/Vary/auto_ManagerVary.hpp>
+#include <OpenAnalysis/DFAGen/Useful/auto_ManagerUseful.hpp>
 //<AIS|ATB>#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
 #include <OpenAnalysis/Utils/Util.hpp>
@@ -155,6 +156,7 @@ int DoDFAGenLiveness(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 //int DoDFAGenLivenessBV(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 int DoDFAGenReachDefs(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 int DoDFAGenVary(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
+int DoDFAGenUseful(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 
 
 /* Debug flags:
@@ -235,6 +237,7 @@ void usage(char **argv)
 //  cerr << "          --oa-DFAGen-LivenessBV" << endl;
   cerr << "          --oa-DFAGen-ReachDefs" << endl;
   cerr << "          --oa-DFAGen-Vary" << endl;
+  cerr << "          --oa-DFAGen-Useful" << endl;
   cerr << "          --oa-DFAGen-AvailExprs" << endl;
 
   exit(-1);
@@ -249,7 +252,7 @@ class A {
 
 
 int
-main ( unsigned argc,  char * argv[] )
+main ( int argc,  char * argv[] )
 {
 
   readDebuggingFlags();
@@ -885,6 +888,10 @@ main ( unsigned argc,  char * argv[] )
     else if( cmds->HasOption("--oa-DFAGen-Vary") )
     {
         return DoDFAGenVary(sageProject, &nodeArray, p_h);
+    }
+    else if( cmds->HasOption("--oa-DFAGen-Useful") )
+    {
+        return DoDFAGenUseful(sageProject, &nodeArray, p_h);
     }
     else if( cmds->HasOption("--oa-DFAGen-AvailExprs") )
     {
@@ -3096,7 +3103,7 @@ int DoDFAGenLiveness(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
     // Construct Liveness manager
     OA::OA_ptr<OA::Liveness::ManagerLiveness> liveMgr;
     liveMgr = new OA::Liveness::ManagerLiveness(irInterface);
-
+    
     // Iterate through each proc doing Liveness
     procIter = new SageIRProcIterator(p, *irInterface);
     for(; procIter->isValid(); ++(*procIter)) {
@@ -3371,4 +3378,89 @@ int DoDFAGenVary(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
 
     return returnvalue;
 }
+
+int DoDFAGenUseful(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
+{
+    int returnvalue=FALSE;
+    OA::OA_ptr<SageIRProcIterator> procIter;
+
+    if ( debug ) printf("*******start of DFAGen Useful analysis\n");
+
+    double time = clock();
+
+    // contruct IR
+    OA::OA_ptr<SageIRInterface> irInterface;
+    irInterface = new SageIRInterface(p, na, p_handle);
+    printf("Construct IR Time: %lf\n",
+        (clock() - time) / (1.0 * CLOCKS_PER_SEC));
+    time = clock();
+
+    // CFG
+    OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
+    cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
+
+    // eachCFG
+    OA::OA_ptr<OA::CFG::EachCFGInterface> eachCFG;
+    OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgman;
+    cfgman = new OA::CFG::ManagerCFGStandard(irInterface);
+    eachCFG = new OA::CFG::EachCFGStandard(cfgman);
+
+    // force a CFG analysis on all procedures and time it
+    time = clock();
+    procIter = new SageIRProcIterator(p, *irInterface);
+    int count = 0;
+    for(; procIter->isValid(); ++(*procIter)) {
+        OA::OA_ptr<OA::CFG::CFGInterface> cfg;
+        cfg = eachCFG->getCFGResults(procIter->current());
+        count++;
+    }
+    printf("CFG Time: %lf, %d procs analyzed\n",
+        (clock() - time) / (1.0 * CLOCKS_PER_SEC), count);
+
+    //FIAlias
+    OA::OA_ptr<OA::Alias::ManagerFIAliasAliasTag> fialiasman;
+    fialiasman = new OA::Alias::ManagerFIAliasAliasTag(irInterface);
+    procIter = new SageIRProcIterator(p, *irInterface);
+    OA::OA_ptr<OA::Alias::Interface> alias;
+    alias = fialiasman->performAnalysis(procIter);
+    printf("FIAlias Time: %lf\n",
+        (clock() - time) / (1.0 * CLOCKS_PER_SEC));
+    time = clock();
+
+    //TODO: Need to create interprocedural alias to pass to side effects
+    OA::OA_ptr<OA::Alias::InterAliasInterface> interAlias;
+
+    // Interprocedural Side-Effect Analysis
+    // for now generate default conservative interprocedural side-effect results
+    OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
+    interSideEffect = new OA::SideEffect::InterSideEffectStandard(interAlias);
+    printf("Side-effects Time: %lf\n",
+        (clock() - time) / (1.0 * CLOCKS_PER_SEC));
+    time = clock();
+    
+    // Construct reachdefs manager
+    OA::OA_ptr<OA::Useful::ManagerUseful> varyMgr;
+    varyMgr = new OA::Useful::ManagerUseful(irInterface);
+
+    // Iterate through each proc doing reaching definitions analysis
+    procIter = new SageIRProcIterator(p, *irInterface);
+    for(; procIter->isValid(); ++(*procIter)) {
+        OA::OA_ptr<OA::Useful::Useful> results;
+        results = varyMgr->performAnalysis(
+            procIter->current(),
+            eachCFG->getCFGResults(procIter->current()),
+            alias,
+            interSideEffect); 
+
+        if(!silent) { results->output(*irInterface); }
+    }
+    printf("Useful Time: %lf\n",
+        (clock() - time) / (1.0 * CLOCKS_PER_SEC));
+    time = clock();
+
+    std::cout << "\n*******  end of DFAGen ReachingDefs analysis *********\n\n";
+
+    return returnvalue;
+}
+
 

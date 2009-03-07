@@ -26,6 +26,7 @@
 #include <OpenAnalysis/IRInterface/auto_LivenessIRInterface.hpp>
 //#include <OpenAnalysis/IRInterface/auto_LivenessBVIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/auto_VaryIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/auto_UsefulIRInterface.hpp>
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/LivenessIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/ExprTreeIRInterface.hpp>
 #include <OpenAnalysis/SideEffect/ManagerInterSideEffectStandard.hpp>
@@ -650,6 +651,7 @@ class SageIRInterface :
   public virtual OA::Liveness::LivenessIRInterface,
 //  public virtual OA::LivenessBV::LivenessBVIRInterface,
   public virtual OA::Vary::VaryIRInterface,
+  public virtual OA::Useful::UsefulIRInterface,
 //<AIS|ATB> public virtual OA::UDDUChains::UDDUChainsIRInterface,
 //<AIS|ATB> public virtual OA::XAIF::XAIFIRInterface,
 //<AIS|ATB> public virtual OA::DataFlow::ParamBindingsIRInterface,

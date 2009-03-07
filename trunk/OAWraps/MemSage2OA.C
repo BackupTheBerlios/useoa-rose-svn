@@ -4555,7 +4555,7 @@ OA::MemRefHandle SageIRInterface::findTopMemRefHandle(SgNode *astNode)
                 // SgValueExps should only have one child-- the
                 // original expression tree.  Therefore, we should not
                 // be here.
-                ROSE_ABORT();
+                //ROSE_ABORT();
             } else if ( isSgCastExp(astNode) ) {
                 // If some analysis/optimization has determined that it
                 // was safe to fold an expression, then we should
@@ -4567,7 +4567,8 @@ OA::MemRefHandle SageIRInterface::findTopMemRefHandle(SgNode *astNode)
                 return findTopMemRefHandle(castExp->get_operand());
             }
 #endif
-            return getMemRefHandle(0);
+            //return getMemRefHandle(0);
+            return findTopMemRefHandle(kids[0]);
         }
     }
 }

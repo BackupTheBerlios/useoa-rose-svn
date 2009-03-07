@@ -1225,7 +1225,8 @@ OA::ExprHandle SageIRInterface::getSMultiCondition(OA::StmtHandle h, int bodyInd
   SgSwitchStatement * swstmt=isSgSwitchStatement((SgStatement*)getNodePtr(h));
   if(swstmt)
   {
-    SgBasicBlock * bb=swstmt->get_body();
+    SgStatement * body=swstmt->get_body();
+    SgBasicBlock * bb=isSgBasicBlock(body);
     if(bb)
     {
       SgNode * n=bb->get_traversalSuccessorContainer()[bodyIndex];
@@ -1269,7 +1270,8 @@ int SageIRInterface::numMultiCases (OA::StmtHandle h)
   SgSwitchStatement * sw=isSgSwitchStatement((SgStatement*)getNodePtr(h));
   if(sw)
   {
-    SgBasicBlock * bb=sw->get_body();
+    SgStatement * body=sw->get_body();
+    SgBasicBlock * bb=isSgBasicBlock(body);
     if(bb)
     {
       tot_len=bb->get_traversalSuccessorContainer().size();
@@ -1293,7 +1295,8 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
   SgSwitchStatement * swstmt=isSgSwitchStatement((SgStatement*)getNodePtr(h));
   if(swstmt)
   {
-    SgBasicBlock * bb=swstmt->get_body();
+    SgStatement * swbody=swstmt->get_body();
+    SgBasicBlock * bb=isSgBasicBlock(swbody);
     if(bb)
     {
       SgNode * n=bb->get_traversalSuccessorContainer()[bodyIndex];
@@ -1325,7 +1328,8 @@ bool SageIRInterface::isCatchAll(OA::StmtHandle h, int bodyIndex)
   SgSwitchStatement * swstmt=isSgSwitchStatement((SgStatement*)getNodePtr(h));
   if(swstmt)
   {
-    SgBasicBlock * bb=swstmt->get_body();
+    SgStatement * body=swstmt->get_body();
+    SgBasicBlock * bb=isSgBasicBlock(body);
     if(bb)
     {
       SgNode * n=bb->get_traversalSuccessorContainer()[bodyIndex];
@@ -1364,7 +1368,8 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
   SgSwitchStatement * sw=isSgSwitchStatement((SgStatement*)getNodePtr(h));
   if(sw)
   {
-    SgBasicBlock * bb=sw->get_body();
+    SgStatement * swbody=sw->get_body();
+    SgBasicBlock * bb=isSgBasicBlock(swbody);
     if(bb)
     {
       tot_len=bb->get_traversalSuccessorContainer().size();

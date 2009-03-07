@@ -32,7 +32,7 @@ void outputNotation(OA::ProcHandle proc,
 
 
 
-int main ( unsigned argc,  char * argv[] )
+int main ( int argc,  char * argv[] )
 {
     string sInputFile, sOutputFile;
     ofstream outputFile;
