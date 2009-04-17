@@ -4467,16 +4467,15 @@ OA::OA_ptr<OA::AssignPairIterator>
   espIter = new SageIRAssignPairIterator(assignPairList);
   return espIter;
 }
+#endif
 
 //! Return an iterator over all independent MemRefExpr for given proc
 OA::OA_ptr<OA::MemRefExprIterator> 
 SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
 { 
-
-    
   // Get independent variables
-  OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > indepList;
-  indepList = new std::list<OA::OA_ptr<OA::MemRefExpr> >;
+  OA::OA_ptr<std::set<OA::OA_ptr<OA::MemRefExpr> > > indepList;
+  indepList = new std::set<OA::OA_ptr<OA::MemRefExpr> >;
   //assert(0);
   // not implemented yet
 
@@ -4577,7 +4576,7 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
                    
                    if (isSgPointerType(type) || isSgArrayType(type)) {
 
-                       mre = new OA::NamedRef(OA::MemRefExpr::USE,sym);
+                       mre = new OA::NamedRef(OA::MemRefExpr::USE,sym,false);
                        mre = new OA::Deref(OA::MemRefExpr::USE, mre, 1);
 
                        if(fullAccuracy) {
@@ -4601,7 +4600,7 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
 		       // No!  We treat the first case (array type)
                        // as we would a pointer above.   bwhite 1/16/08
 
-                       mre = new OA::NamedRef(OA::MemRefExpr::USE, sym);
+                       mre = new OA::NamedRef(OA::MemRefExpr::USE, sym,false);
 
                        if(fullAccuracy) {
 
@@ -4617,7 +4616,7 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
                               = subset_mre->composeWith(mre->clone());
                        }
                    }
-                   indepList->push_back(mre);
+                   indepList->insert(mre);
                }
                varSymbol = scopeStmt->next_variable_symbol();
            }
@@ -4630,21 +4629,17 @@ SageIRInterface::getIndepMemRefExprIter(OA::ProcHandle h)
   }
 
   OA::OA_ptr<OA::MemRefExprIterator> indepIter;
-  indepIter = new MemRefExprIterator(indepList,this);
+  indepIter = new MemRefExprIterator(indepList);
   return indepIter;
-
-    
 }
 
 //! Return an iterator over all dependent MemRefExpr for given proc
 OA::OA_ptr<OA::MemRefExprIterator>
 SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
 {
-
-    
   // Get dependent variables
-  OA::OA_ptr<std::list<OA::OA_ptr<OA::MemRefExpr> > > depList;
-  depList = new std::list<OA::OA_ptr<OA::MemRefExpr> >;
+  OA::OA_ptr<std::set<OA::OA_ptr<OA::MemRefExpr> > > depList;
+  depList = new std::set<OA::OA_ptr<OA::MemRefExpr> >;
 
   //assert(0);
   // not implemented yet
@@ -4749,7 +4744,7 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
 
                    if(isSgPointerType(type) || isSgArrayType(type)) {
 
-                       mre = new OA::NamedRef(OA::MemRefExpr::USE,sym);
+                       mre = new OA::NamedRef(OA::MemRefExpr::USE,sym,false);
                        mre = new OA::Deref(OA::MemRefExpr::USE, mre, 1);
 
                        if(fullAccuracy) {
@@ -4773,7 +4768,7 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
 		       // No!  We treat the first case (array type)
                        // as we would a pointer above.   bwhite 1/16/08
 
-                       mre = new OA::NamedRef(OA::MemRefExpr::USE, sym);
+                       mre = new OA::NamedRef(OA::MemRefExpr::USE, sym,false);
 
                        if(fullAccuracy) {
 
@@ -4791,7 +4786,7 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
 
                    }
 
-                   depList->push_back(mre);
+                   depList->insert(mre);
                }
                varSymbol = scopeStmt->next_variable_symbol();
            }
@@ -4806,11 +4801,12 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
 
 
   OA::OA_ptr<OA::MemRefExprIterator> depIter;
-  depIter = new MemRefExprIterator(depList,this);
+  depIter = new MemRefExprIterator(depList);
   return depIter;
-
 }
 
+//<AIS|ATB>
+#if 0
 //! given a symbol return the size in bytes of that symbol
 int 
 SageIRInterface::getSizeInBytes(OA::SymHandle h)

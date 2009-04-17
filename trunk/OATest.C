@@ -1792,7 +1792,8 @@ int DoLiveness(SgProject * p, std::vector<SgNode*> * na, bool p_handle)
             interSideEffect,
             OA::DataFlow::ITERATIVE);
 
-        if(!silent) { results->output(*irInterface); }
+        //if(!silent) { results->output(*irInterface); }
+        //results->output(*irInterface);
     }
     printf("Liveness Time: %lf\n",
         (clock() - time) / (1.0 * CLOCKS_PER_SEC));
@@ -3115,7 +3116,7 @@ int DoDFAGenLiveness(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
             alias,
             interSideEffect); 
 
-        if(!silent) { results->dump(std::cout, irInterface, *alias); }
+        //if(!silent) { results->output(*irInterface); }
     }
     printf("Liveness Time: %lf\n",
         (clock() - time) / (1.0 * CLOCKS_PER_SEC));

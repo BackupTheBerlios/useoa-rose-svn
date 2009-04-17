@@ -1097,13 +1097,12 @@ public:
   // Iterator over Expressions in the given Statement
   OA::OA_ptr<OA::ExprHandleIterator> getExprHandleIterator(OA::StmtHandle stmt);
 //<AIS|ATB>
-#if 0
   //! Return an iterator over all independent MemRefExpr for given proc
   OA::OA_ptr<OA::MemRefExprIterator> getIndepMemRefExprIter(OA::ProcHandle h);
 
   //! Return an iterator over all dependent MemRefExpr for given proc
   OA::OA_ptr<OA::MemRefExprIterator> getDepMemRefExprIter(OA::ProcHandle h);
-  
+#if 0
   //! given a symbol return the size in bytes of that symbol
   int getSizeInBytes(OA::SymHandle h);
 #endif
