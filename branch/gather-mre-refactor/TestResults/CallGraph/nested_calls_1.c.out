@@ -1,0 +1,69 @@
+
+graph DGraph:
+
+    Node 1: 
+        head [defined]
+
+    Node 2: 
+        foo [defined]
+
+    Node 3: 
+        sin [referenced]
+
+    Node 4: 
+        cos [referenced]
+
+    Node 5: 
+        bar [defined]
+
+    Edge: 1 => 2
+        foo((x[1]),(x[2]),y[1])
+
+    Edge: 1 => 3
+        sin(((x[1]) *(x[2])))
+
+    Edge: 1 => 3
+        sin((x[3]))
+
+    Edge: 1 => 4
+        cos((x[4]))
+
+    Edge: 2 => 5
+        bar(b)
+
+    Edge: 5 => 4
+        cos((a * a))
+
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        foo((x[1]),(x[2]),y[1])	 => [ foo ] 
+        sin(((x[1]) *(x[2])))	 => [ warning: ProcHandle is 0   ] 
+        sin((x[3]))	 => [ warning: ProcHandle is 0   ] 
+        cos((x[4]))	 => [ warning: ProcHandle is 0   ] 
+        bar(b)	 => [ bar ] 
+        cos((a * a))	 => [ warning: ProcHandle is 0   ] 
+
+digraph DGraph {
+    node [shape=rectangle];
+    1 [ label="head [defined]" ];
+    2 [ label="foo [defined]" ];
+    3 [ label="sin [referenced]" ];
+    4 [ label="cos [referenced]" ];
+    5 [ label="bar [defined]" ];
+    1 -> 2 [ label="foo((x[1]),(x[2]),y[1])" ];
+    1 -> 3 [ label="sin(((x[1]) *(x[2])))" ];
+    1 -> 3 [ label="sin((x[3]))" ];
+    1 -> 4 [ label="cos((x[4]))" ];
+    2 -> 5 [ label="bar(b)" ];
+    5 -> 4 [ label="cos((a * a))" ];}
+
+mCallToCalleeProcSetMap: CallHandle	 => OA_ptr<std::set<ProcHandle> > 
+        foo((x[1]),(x[2]),y[1])	 => [ foo ] 
+        sin(((x[1]) *(x[2])))	 => [ warning: ProcHandle is 0   ] 
+        sin((x[3]))	 => [ warning: ProcHandle is 0   ] 
+        cos((x[4]))	 => [ warning: ProcHandle is 0   ] 
+        bar(b)	 => [ bar ] 
+        cos((a * a))	 => [ warning: ProcHandle is 0   ] 
+
+*******  end of DoCallGraph *********
+

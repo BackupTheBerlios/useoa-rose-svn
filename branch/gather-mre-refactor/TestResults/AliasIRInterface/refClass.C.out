@@ -1,0 +1,129 @@
+
+PROCEDURE = { < ProcHandle("::foo::foo"), SymHandle("method:::foo::foo__L0R") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::::foo::foo__L0R") >
+            < 1, SymHandle("x") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+            MemRefHandle("x") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("x")))
+            MemRefHandle("assign_or_agg_initializer:x") => 
+                NamedRef( USE, SymHandle("this::::foo::foo__L0R"))
+            MemRefHandle("assign_or_agg_initializer:((this) -> foo::someRef)") => 
+                NamedRef( USE, SymHandle("this::::foo::foo__L0R"))
+            MemRefHandle("(this)") => 
+                NamedRef( USE, SymHandle("this::::foo::foo__L0R"))
+            MemRefHandle("((this) -> foo::someRef)") => 
+                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someRef)
+            MemRefHandle("someRef&") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someRef)
+            MemRefHandle("someOtherRef&") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someOtherRef)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("") =>
+        [
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someOtherRef)
+            , FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someRef) >
+            < FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someRef)
+            , AddressOf( USE, NamedRef( USE, SymHandle("x"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline foo::foo(int *x) : someRef(x), someOtherRef(((this) -> someRef)){*x;*((this) -> someRef);*((this) -> someOtherRef);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{*x;*((this) -> someRef);*((this) -> someOtherRef);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("*x;") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"))
+            MemRefHandle("*x") => 
+                Deref( USE, NamedRef( USE, SymHandle("x")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("*((this) -> foo::someRef);") =>
+        [
+            MemRefHandle("refRelatedBaseOrTmp") => 
+                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someRef)
+            MemRefHandle("(this)") => 
+                NamedRef( USE, SymHandle("this::::foo::foo__L0R"))
+            MemRefHandle("((this) -> foo::someRef)") => 
+                Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someRef), 1)
+            MemRefHandle("*((this) -> foo::someRef)") => 
+                Deref( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someRef), 1), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("*((this) -> foo::someOtherRef);") =>
+        [
+            MemRefHandle("refRelatedBaseOrTmp") => 
+                FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someOtherRef)
+            MemRefHandle("(this)") => 
+                NamedRef( USE, SymHandle("this::::foo::foo__L0R"))
+            MemRefHandle("((this) -> foo::someOtherRef)") => 
+                Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someOtherRef), 1)
+            MemRefHandle("*((this) -> foo::someOtherRef)") => 
+                Deref( USE, Deref( USE, FieldAccess( USE, Deref( USE, NamedRef( USE, SymHandle("this::::foo::foo__L0R")), 1), someOtherRef), 1), 1)
+        ] }
+    LOCATION = { < SymHandle("this::::foo::foo__L0R"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("method:::foo::foo__L0R"), not local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class ::foo {public: inline foo::foo(int *x) : someRef(x), someOtherRef(((this) -> someRef)){*x;*((this) -> someRef);*((this) -> someOtherRef);}private: int *&someRef;int *&someOtherRef;};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int main(){int y;int *ptr = &y;class ::foo f(ptr);*ptr;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int y;int *ptr = &y;class ::foo f(ptr);*ptr;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int y;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *ptr = &y;") =>
+        [
+            MemRefHandle("&y") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("y")))
+            MemRefHandle("ptr") => 
+                NamedRef( DEF, SymHandle("ptr"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("int *ptr = &y;") =>
+        [
+            < NamedRef( DEF, SymHandle("ptr"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("y"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class foo f(ptr);") =>
+        [
+            MemRefHandle("::foo(ptr)") => 
+                NamedRef( USE, SymHandle("method:::foo::foo__L0R"))
+            MemRefHandle("ptr") => 
+                NamedRef( USE, SymHandle("ptr"))
+            MemRefHandle("implicit actual this:ptr") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("f")))
+        ] }
+    CALLSITES = { StmtHandle("class foo f(ptr);") =>
+        [
+            CallHandle("f") => 
+                NamedRef( USE, SymHandle("method:::foo::foo__L0R"))
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("f") =>
+        [
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("f"))) >
+            < 1, NamedRef( USE, SymHandle("ptr")) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("*ptr;") =>
+        [
+            MemRefHandle("ptr") => 
+                NamedRef( USE, SymHandle("ptr"))
+            MemRefHandle("*ptr") => 
+                Deref( USE, NamedRef( USE, SymHandle("ptr")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("y"), local > }
+    LOCATION = { < SymHandle("ptr"), local > }
+    LOCATION = { < SymHandle("f"), local > }
+    LOCATION = { < SymHandle("method:::foo::foo__L0R"), not local > }

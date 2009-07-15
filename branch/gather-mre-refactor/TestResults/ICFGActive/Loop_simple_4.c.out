@@ -1,0 +1,150 @@
+
+InterActive(
+    Procedure( foo ): 
+    ActiveLocSet([ 
+            InvisibleLoc(
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(x)
+                    )
+                    mNumDeref: 1
+                )
+            )    
+            InvisibleLoc(
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(y)
+                    )
+                    mNumDeref: 1
+                )
+            )    
+            LocSubSet(
+                mLoc: 
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(x)
+                        )
+                        mNumDeref: 1
+                    )
+                )
+                mFull: 0
+            )    
+            LocSubSet(
+                mLoc: 
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(y)
+                        )
+                        mNumDeref: 1
+                    )
+                )
+                mFull: 0
+            ) ] 
+    )
+    ActiveStmtSet([ 
+            StmtHandle(y[j] =((y[j]) +((x[i]) *(x[i])));) ] 
+    )
+    ActiveMemRefSet([ 
+            MemRefHandle(y[j])
+                MemRefHandle((y[j]))
+                MemRefHandle((x[i]))
+                MemRefHandle((x[i])) ] 
+    )
+    Procedure( head ): 
+    ActiveLocSet([ 
+            InvisibleLoc(
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(x)
+                    )
+                    mNumDeref: 1
+                )
+            )    
+            InvisibleLoc(
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(y)
+                    )
+                    mNumDeref: 1
+                )
+            )    
+            LocSubSet(
+                mLoc: 
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(x)
+                        )
+                        mNumDeref: 1
+                    )
+                )
+                mFull: 0
+            )    
+            LocSubSet(
+                mLoc: 
+                InvisibleLoc(
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(y)
+                        )
+                        mNumDeref: 1
+                    )
+                )
+                mFull: 0
+            ) ] 
+    )
+    ActiveStmtSet([  ] 
+    )
+    ActiveMemRefSet([  ] 
+    )
+    Procedure( main ): 
+    ActiveLocSet([  ] 
+    )
+    ActiveStmtSet([  ] 
+    )
+    ActiveMemRefSet([  ] 
+    )
+    mNumIterUseful: 5
+    mNumIterVary: 5
+    mNumIterActive: 1
+)
+
+
+Total Iters: 12
+
+*******  end of DoICFGActivity *********
+

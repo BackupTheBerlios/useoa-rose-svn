@@ -1,0 +1,98 @@
+
+UDDUChainsStandard(
+    mUDChainForStmt: StmtHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Use StatementHandle : StmtHandle(x =(y + y);)	 => 
+            Define Statements: [ StmtHandle(y =(5);) ] 
+            
+            Use StatementHandle : StmtHandle(y =(x *(5));)	 => 
+            Define Statements: [ StmtHandle(x =(y + y);) ] 
+            
+            Use StatementHandle : StmtHandle(z = y;)	 => 
+            Define Statements: [ StmtHandle(y =(x *(5));)    StmtHandle(y =(3);) ] 
+            
+            Use StatementHandle : StmtHandle(i++;)	 => 
+            Define Statements: [ StmtHandle(i = 1;)    StmtHandle(i++;) ] 
+            
+            Use StatementHandle : StmtHandle(while(i != 10){x =(2);if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}z = y;i++;})	 => 
+            Define Statements: [ StmtHandle(i = 1;)    StmtHandle(i++;) ] 
+            
+            Use StatementHandle : StmtHandle(if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);})	 => 
+            Define Statements: [ StmtHandle(x =(2);) ] 
+
+    mDUChainForStmt: StmtHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Def StmtHandle: StmtHandle(i = 1;)	 => 
+            Use Statements: [ StmtHandle(i++;)    StmtHandle(while(i != 10){x =(2);if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}z = y;i++;}) ] 
+            
+            Def StmtHandle: StmtHandle(x =(2);)	 => 
+            Use Statements: [ StmtHandle(if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}) ] 
+            
+            Def StmtHandle: StmtHandle(y =(5);)	 => 
+            Use Statements: [ StmtHandle(x =(y + y);) ] 
+            
+            Def StmtHandle: StmtHandle(x =(y + y);)	 => 
+            Use Statements: [ StmtHandle(y =(x *(5));) ] 
+            
+            Def StmtHandle: StmtHandle(y =(x *(5));)	 => 
+            Use Statements: [ StmtHandle(z = y;) ] 
+            
+            Def StmtHandle: StmtHandle(y =(3);)	 => 
+            Use Statements: [ StmtHandle(z = y;) ] 
+            
+            Def StmtHandle: StmtHandle(i++;)	 => 
+            Use Statements: [ StmtHandle(i++;)    StmtHandle(while(i != 10){x =(2);if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}z = y;i++;}) ] 
+
+    mUDChainForMemRef: MemRefHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Use MemRefHandle: MemRefHandle(i)	 => 
+            Def Statements: [ StmtHandle(i = 1;)    StmtHandle(i++;) ] 
+            
+            Use MemRefHandle: MemRefHandle(x)	 => 
+            Def Statements: [ StmtHandle(x =(2);) ] 
+            
+            Use MemRefHandle: MemRefHandle(y)	 => 
+            Def Statements: [ StmtHandle(y =(5);) ] 
+            
+            Use MemRefHandle: MemRefHandle(y)	 => 
+            Def Statements: [ StmtHandle(y =(5);) ] 
+            
+            Use MemRefHandle: MemRefHandle(x)	 => 
+            Def Statements: [ StmtHandle(x =(y + y);) ] 
+            
+            Use MemRefHandle: MemRefHandle(y)	 => 
+            Def Statements: [ StmtHandle(y =(x *(5));)    StmtHandle(y =(3);) ] 
+            
+            Use MemRefHandle: MemRefHandle(i)	 => 
+            Def Statements: [ StmtHandle(i = 1;)    StmtHandle(i++;) ] 
+            
+            Use MemRefHandle: MemRefHandle(i++)	 => 
+            Def Statements: [ StmtHandle(i = 1;)    StmtHandle(i++;) ] 
+
+    mDUChainForMemRef: MemRefHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Def MemRefHandle: MemRefHandle(i)	 => 
+            Use Statements: [ StmtHandle(i++;)    StmtHandle(while(i != 10){x =(2);if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}z = y;i++;}) ] 
+            
+            Def MemRefHandle: MemRefHandle(x)	 => 
+            Use Statements: [ StmtHandle(if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}) ] 
+            
+            Def MemRefHandle: MemRefHandle(y)	 => 
+            Use Statements: [ StmtHandle(x =(y + y);) ] 
+            
+            Def MemRefHandle: MemRefHandle(x)	 => 
+            Use Statements: [ StmtHandle(y =(x *(5));) ] 
+            
+            Def MemRefHandle: MemRefHandle(y)	 => 
+            Use Statements: [ StmtHandle(z = y;) ] 
+            
+            Def MemRefHandle: MemRefHandle(y)	 => 
+            Use Statements: [ StmtHandle(z = y;) ] 
+            
+            Def MemRefHandle: MemRefHandle(z)	 => 
+            Use Statements: [  ] 
+            
+            Def MemRefHandle: MemRefHandle(i)	 => 
+            Use Statements: [ StmtHandle(i++;)    StmtHandle(while(i != 10){x =(2);if(x >=(0)) {y =(5);x =(y + y);y =(x *(5));}else {y =(3);}z = y;i++;}) ] 
+
+    mMemRefToStmtMap: MemRefHandle	 => StmtHandle

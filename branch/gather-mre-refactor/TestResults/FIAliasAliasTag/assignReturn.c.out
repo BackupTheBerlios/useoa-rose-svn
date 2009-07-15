@@ -1,0 +1,331 @@
+
+AliasTagResults(
+    mMREToTags: OA::OA_ptr<MemRefExpr> 	 => OA::OA_ptr<std::set<AliasTag> > 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(foo)
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(g)
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(p)
+            )	 => [ 
+                Tag(
+                    mTagID: 3
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(a)
+            )	 => [ 
+                Tag(
+                    mTagID: 4
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(b)
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(q)
+            )	 => [ 
+                Tag(
+                    mTagID: 5
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(r)
+            )	 => [ 
+                Tag(
+                    mTagID: 6
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(foo)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            Deref(
+                mMemRefType: DEF
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(p)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 5
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(a)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(r)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+
+    mTagToMREs: AliasTag	 => OA::OA_ptr<std::set<OA::OA_ptr<MemRefExpr> > > 
+            
+            Tag(
+                mTagID: 1
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(foo)
+                ) ] 
+            
+            Tag(
+                mTagID: 2
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(g)
+                )    
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(b)
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(foo)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(a)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(r)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(p)
+                        )
+                        mNumDeref: 1
+                    )
+                    mNumDeref: 1
+                ) ] 
+            
+            Tag(
+                mTagID: 3
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(p)
+                ) ] 
+            
+            Tag(
+                mTagID: 4
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(a)
+                ) ] 
+            
+            Tag(
+                mTagID: 5
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(q)
+                )    
+                Deref(
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                ) ] 
+            
+            Tag(
+                mTagID: 6
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(r)
+                ) ] 
+
+    mMemRefToTags: MemRefHandle	 => OA::OA_ptr<std::set<AliasTag> > 
+
+    mMREToMustFlag: OA::OA_ptr<MemRefExpr> 	 => bool
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(foo)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(g)
+            )	 => 0
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(p)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(a)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(b)
+            )	 => 0
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(q)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(r)
+            )	 => 1
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(foo)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: DEF
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(p)
+                )
+                mNumDeref: 1
+            )	 => 1
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(a)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(r)
+                )
+                mNumDeref: 1
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: DEF
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )
+                mNumDeref: 1
+            )	 => 0
+
+    mMemRefToMustFlag: MemRefHandle	 => bool
+
+)

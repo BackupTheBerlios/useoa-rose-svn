@@ -1,0 +1,66 @@
+# Regression tests for FIAlias algorithm with tag results
+testname::FIAliasAliasTag
+inputdir::TestCases/AliasTests
+outputdir::TestResults/FIAliasAliasTag
+driverexec::./OATest --edg:no_warnings -w --oa-AliasTag -c
+
+# list of tests
+#       input file,             status
+#test::  addressOf.c,            ???
+#test::  aggregateInit.c,        ???
+test::  alias1.c,               AIS (2/13/08)
+test::  alias2.c,               AIS (2/13/08)
+test::  alias3.c,               AIS (2/13/08)
+test::  alias4b.c,              AIS (2/13/08)
+test::  alias4.c,               AIS (2/13/08)
+#test::  assignOps.c,            ???
+#test::  assignReturn.c,         ???
+test::  comma.c,                MMS (2/18/08)
+test::  constQualifiedArray.c,       BSW (2/28/08)
+test::  constQualifiedArrayElements.c,      BSW (2/28/08)
+#test::  diffArrays.c,           ???
+#test::  diffTypes.c,            ???
+test::  fields2.c,              MMS (2/18/08)
+test::  fields3.c,              MMS (2/18/08)
+#test::  fields.c,               ???
+test::  funCall.c,              BSW (2/28/08)
+#test::  func_call.c,            ???
+#test::  func-not-def.c,         ???
+test::  functionPtr2.c,         MMS (2/18/08)
+test::  functionPtr.c,          MMS (2/18/08)
+#test::  invLoc.c,               ???
+#test::  LiangEtAl00.c,          ???
+#test::  LiangEtAl99.c,          ???
+#test::  LiangEtAlICSM99Fig2.c,  ???
+#test::  LiangEtAlICSM99Fig5.c,  ???
+#test::  localNonLocal.c,        ???
+#test::  notConstQualified.c,    ???
+test::  OAWikiEx.c,             BSW (2/28/08)
+#test::  passArrayPtr.c,         ???
+#test::  passIntPtrArrayRef2.c,  ???
+#test::  passIntPtrArrayRef3.c,  ???
+#test::  passIntPtrArrayRef.c,   ???
+#test::  passIntPtr.c,           ???
+#test::  ptr-arith.c,            ???
+#test::  retPtr1.c,              ???
+#test::  retPtr2.c,              ???
+#test::  retPtr3.c,              ???
+#test::  retPtr4.c,              ???
+#test::  retPtr5.c,              ???
+#test::  RyderEtAlFig11.c,       ???
+#test::  RyderEtAlFig14.c,       ???
+#test::  RyderEtAlFig15.c,       ???
+#test::  RyderEtAlFig1a.c,       ???
+#test::  RyderEtAlFig1b.c,       ???
+#test::  RyderEtAlFig1c.c,       ???
+#test::  RyderEtAlFig2.c,        ???
+#test::  RyderEtAlFig3.c,        ???
+#test::  RyderEtAlFig7.c,        ???
+#test::  RyderEtAlFig9.c,        ???
+#test::  swap.c,                 ???
+#test::  switchWithFuncCall.c,   ???
+#test::  t1.c,                   ???
+#test::  ternop.c,               ???
+test::  utke.c,                 BSW (2/28/08)
+#test::  YongEtAlPLDI99.c,       ???
+ 

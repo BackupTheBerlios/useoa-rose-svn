@@ -1,0 +1,67 @@
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class ::foo {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int main(){char *buf = new char [1000];class ::foo *p = ::new /* Output placement arguments for new operator */((buf)) ::foo ;*p;*buf;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{char *buf = new char [1000];class ::foo *p = ::new /* Output placement arguments for new operator */((buf)) ::foo ;*p;*buf;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("char *buf = new char [1000];") =>
+        [
+            MemRefHandle("new char [1000]") => 
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new char [1000]"), 0)))
+            MemRefHandle("buf") => 
+                NamedRef( DEF, SymHandle("buf"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("char *buf = new char [1000];") =>
+        [
+            < NamedRef( DEF, SymHandle("buf"))
+            , AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new char [1000]"), 0))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("class foo *p = ::new /* Output placement arguments for new operator */((buf)) foo ;") =>
+        [
+            MemRefHandle("buf") => 
+                NamedRef( USE, SymHandle("buf"))
+            MemRefHandle("::new /* Output placement arguments for new operator */((buf)) foo") => 
+                NamedRef( USE, SymHandle("operator new"))
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("class foo *p = ::new /* Output placement arguments for new operator */((buf)) foo ;") =>
+        [
+            < NamedRef( DEF, SymHandle("p"))
+            , NamedRef( USE, SymHandle("operator new")) >
+        ] }
+    CALLSITES = { StmtHandle("class foo *p = ::new /* Output placement arguments for new operator */((buf)) foo ;") =>
+        [
+            CallHandle("::new /* Output placement arguments for new operator */((buf)) foo") => 
+                NamedRef( USE, SymHandle("operator new"))
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("::new /* Output placement arguments for new operator */((buf)) foo") =>
+        [
+            < 0, NamedRef( USE, SymHandle("buf")) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("*p;") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( USE, SymHandle("p"))
+            MemRefHandle("*p") => 
+                Deref( USE, NamedRef( USE, SymHandle("p")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("*buf;") =>
+        [
+            MemRefHandle("buf") => 
+                NamedRef( USE, SymHandle("buf"))
+            MemRefHandle("*buf") => 
+                Deref( USE, NamedRef( USE, SymHandle("buf")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("operator new"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("buf"), local > }
+    LOCATION = { < SymHandle("p"), local > }

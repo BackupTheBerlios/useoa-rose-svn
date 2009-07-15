@@ -1,0 +1,14 @@
+CHA virtual call site: ( *((this) -> nodePtr)).nodeValue() from caller: Tree__scope__value____MFb_Tree__Fb_f_Gb__Fe_
+	 CHA:  Method invocation has 4 possible resolutions 
+
+Alias analysis virtual call site: ( *((this) -> nodePtr)).nodeValue() from caller: Tree__scope__value____MFb_Tree__Fb_f_Gb__Fe_
+	 Alias analysis:  Method invocation has 3 possible resolutions 
+
+definedFunctions: 36
+definedVirtualFunctions: 8
+CHA virtual method callsites: 1
+Alias analysis virtual method callsites: 1
+Summary CHA monomorphic call sites: 0
+Summary Alias analysis monomorphic call sites: 0
+Summary CHA total (virtual) resolutions: 4
+Summary Alias analysis total (virtual) resolutions: 3

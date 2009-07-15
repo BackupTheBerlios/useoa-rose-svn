@@ -1,0 +1,24 @@
+# comment in file.test
+# Regression tests for ICFG generation
+# Regenreated after GraphRefactor for new Node Numbers PLM 08/24/06
+testname::ICFG
+inputdir::TestCases/ICFG
+outputdir::TestResults/ICFG
+driverexec::./OATest -edg:w --oa-ICFG -c
+
+# list of tests
+#       input file,     status
+test::  swap.c,         checked by BK 7/24/06
+test::  functionPtr.c,  checked by BK 7/24/06 
+test::  functionPtr1.c, checked by BK 7/24/06
+test::  functionPtr2.c, checked by BK 7/24/06
+test::  functionPtr3.c, checked by BK 7/24/06
+test::  functionPtr4.c, checked by BK 7/24/06
+test::  functionPtr5.c, checked by BK 7/24/06
+test::  functionPtr6.c, checked by BK 7/24/06
+test::  functions6.c,   checked by BK 7/24/06
+#test::  activity_proc_call1.C,     checked by ?? //06
+#test::  interalias_proc_call1.C,   checked by ?? //06
+#test::  nested_calls_1.C,          checked by ?? //06
+test::  multi_func_calls.c,        checked by BK 7/24/06
+test::  multi_func_calls_2.c,      checked by BK 7/24/06

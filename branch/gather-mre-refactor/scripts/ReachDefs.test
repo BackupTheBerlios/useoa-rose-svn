@@ -1,0 +1,22 @@
+# comment in file.test
+# Regression tests for Reaching Definitio 
+testname::ReachDefs
+inputdir::TestCases/ReachDefsTests
+outputdir::TestResults/ReachDefsTests
+driverexec::./OATest -edg:w --oa-ReachDefs -c
+
+# list of tests
+#       input file,             status
+test::  reachdef_if1.c,         Checked by PLM 07/23/06 
+test::  reachdef_if2.c,         Checked by PLM 07/23/06 
+test::  reachdef_loopif1.c,     Checked by PLM 07/23/06
+test::  alias2.c,               Checked by PLM 12/27/06
+test::  assignOps.c,            Checked by PLM 12/27/06
+test::  assignReturn.c,         Checked by PLM 12/27/06
+test::  comma.c,                Checked by PLM 12/27/06
+test::  diffTypes.c,            Checked by PLM 12/27/06
+
+
+
+
+

@@ -1,0 +1,10 @@
+# comment in file.test
+# Regression tests for AssignPairs
+testname::PtrAssign
+inputdir::TestCases/PtrAssign
+outputdir::TestResults/PtrAssign
+driverexec::./OATest -edg:w --oa-PtrAssign -c
+
+# list of tests
+#       input file,     status
+test::  integer_assignment.c,         

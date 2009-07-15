@@ -1,0 +1,17 @@
+# comment in file.test
+# Regression tests for Reaching Definitio 
+testname::UDDUChains
+inputdir::TestCases/UDDUChainsTests
+outputdir::TestResults/UDDUChainsTests
+driverexec::./OATest -edg:w --oa-UDDUChains -c
+
+# list of tests
+#       input file,             status
+test::  reachdef_if1.c,         Checked by PLM 4/25/07
+test::  reachdef_if2.c,         Checked by PLM 4/25/07
+test::  reachdef_loopif1.c,     Checked by PLM 4/25/07
+
+
+
+
+

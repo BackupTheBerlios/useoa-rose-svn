@@ -1,0 +1,58 @@
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int m;int *ptr = &m;int *&refPtr = ptr;*ptr;*refPtr;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int m;int *ptr = &m;int *&refPtr = ptr;*ptr;*refPtr;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int m;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *ptr = &m;") =>
+        [
+            MemRefHandle("&m") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("m")))
+            MemRefHandle("ptr") => 
+                NamedRef( DEF, SymHandle("ptr"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("int *ptr = &m;") =>
+        [
+            < NamedRef( DEF, SymHandle("ptr"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("m"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *&refPtr = ptr;") =>
+        [
+            MemRefHandle("ptr") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("ptr")))
+            MemRefHandle("refPtr&") => 
+                NamedRef( DEF, SymHandle("refPtr"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("int *&refPtr = ptr;") =>
+        [
+            < NamedRef( DEF, SymHandle("refPtr"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("ptr"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("*ptr;") =>
+        [
+            MemRefHandle("ptr") => 
+                NamedRef( USE, SymHandle("ptr"))
+            MemRefHandle("*ptr") => 
+                Deref( USE, NamedRef( USE, SymHandle("ptr")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("*refPtr;") =>
+        [
+            MemRefHandle("refRelatedBaseOrTmp") => 
+                NamedRef( USE, SymHandle("refPtr"))
+            MemRefHandle("refPtr") => 
+                Deref( USE, NamedRef( USE, SymHandle("refPtr")), 1)
+            MemRefHandle("*refPtr") => 
+                Deref( USE, Deref( USE, NamedRef( USE, SymHandle("refPtr")), 1), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("m"), local > }
+    LOCATION = { < SymHandle("ptr"), local > }
+    LOCATION = { < SymHandle("refPtr"), local > }

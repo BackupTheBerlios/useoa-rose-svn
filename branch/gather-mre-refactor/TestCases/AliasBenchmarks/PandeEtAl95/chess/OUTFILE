@@ -1,0 +1,2 @@
+Method invocation has 6 possible resolutions 
+( *((((this) -> config)[i])[j])).Rep()

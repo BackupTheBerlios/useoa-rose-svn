@@ -1,0 +1,36 @@
+include ./../GENERAL/Makefile
+
+
+# ============================================
+# ============ Libraries   ===================
+# ============================================
+SUBDIR = deltablue
+PROJECT = deltablue
+LIBDIR =
+
+VPROFINSTRUMENTEDPROGRAM = generateVPROF
+
+# ============================================
+# = Command-line arguments for the VPROF     =
+# = instrumented program		     =
+# ============================================
+
+INSTRUMENTEDPROGRAMCOMMANDLINE = 3000
+PROGRAMCOMMANDLINE = $(INSTRUMENTEDPROGRAMCOMMANDLINE)
+
+# ============================================
+# = flags for the type-feedback optimizer    =
+# ============================================
+
+TF_FLAGS =  +v +moreLikelyThan 00 +specificInputOnly
+
+
+#include $(MACHINE)
+
+
+
+
+
+
+
+

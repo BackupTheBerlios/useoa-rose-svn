@@ -1,0 +1,2 @@
+Method invocation has 4 possible resolutions 
+( *((this) -> nodePtr)).nodeValue()

@@ -1,0 +1,10 @@
+Method invocation has 3 possible resolutions 
+(this) -> simulation_unit::display()
+Method invocation has 3 possible resolutions 
+(this) -> simulation_unit::erase()
+Method invocation has 3 possible resolutions 
+(this) -> erase()
+Method invocation has 3 possible resolutions 
+(this) -> display()
+Method invocation has 3 possible resolutions 
+( *((s_grid[x_location])[y_location])).cycle()

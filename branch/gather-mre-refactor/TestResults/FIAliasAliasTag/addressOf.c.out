@@ -1,0 +1,304 @@
+
+AliasTagResults(
+    mMREToTags: OA::OA_ptr<MemRefExpr> 	 => OA::OA_ptr<std::set<AliasTag> > 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(a)
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(p)
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(q)
+            )	 => [ 
+                Tag(
+                    mTagID: 3
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(v)
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                )    
+                Tag(
+                    mTagID: 4
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(mystruct)
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                )    
+                Tag(
+                    mTagID: 5
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(p)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(q)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    )
+                    mNumDeref: 1
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                ) ] 
+            
+            FieldAccess(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(mystruct)
+                )
+                mFieldName: hello
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                ) ] 
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(v)
+                )
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                ) ] 
+
+    mTagToMREs: AliasTag	 => OA::OA_ptr<std::set<OA::OA_ptr<MemRefExpr> > > 
+            
+            Tag(
+                mTagID: 1
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(a)
+                )    
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(v)
+                )    
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(mystruct)
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(q)
+                        )
+                        mNumDeref: 1
+                    )
+                    mNumDeref: 1
+                )    
+                FieldAccess(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(mystruct)
+                    )
+                    mFieldName: hello
+                )    
+                SubSetRef(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(v)
+                    )
+                ) ] 
+            
+            Tag(
+                mTagID: 2
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(p)
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    )
+                    mNumDeref: 1
+                ) ] 
+            
+            Tag(
+                mTagID: 3
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(q)
+                ) ] 
+            
+            Tag(
+                mTagID: 4
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(v)
+                ) ] 
+            
+            Tag(
+                mTagID: 5
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(mystruct)
+                ) ] 
+
+    mMemRefToTags: MemRefHandle	 => OA::OA_ptr<std::set<AliasTag> > 
+
+    mMREToMustFlag: OA::OA_ptr<MemRefExpr> 	 => bool
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(a)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(p)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(q)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(v)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(mystruct)
+            )	 => 1
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(p)
+                )
+                mNumDeref: 1
+            )	 => 1
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(q)
+                )
+                mNumDeref: 1
+            )	 => 1
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(q)
+                    )
+                    mNumDeref: 1
+                )
+                mNumDeref: 1
+            )	 => 1
+            
+            FieldAccess(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(mystruct)
+                )
+                mFieldName: hello
+            )	 => 1
+            
+            SubSetRef(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(v)
+                )
+            )	 => 1
+
+    mMemRefToMustFlag: MemRefHandle	 => bool
+
+)

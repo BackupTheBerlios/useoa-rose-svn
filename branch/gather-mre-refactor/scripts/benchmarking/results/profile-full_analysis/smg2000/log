@@ -1,0 +1,64 @@
+
+#[08/03/06 10:22:59 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_1_8.files
+#                       File to produce: smg_1_8.stitch.c
+#[08/03/06 10:22:59 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_2_8.files
+#                       File to produce: smg_2_8.stitch.c
+#[08/03/06 10:22:59 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_3_8.files
+#                       File to produce: smg_3_8.stitch.c
+#[08/03/06 10:22:59 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_4_8.files
+#                       File to produce: smg_4_8.stitch.c
+#[08/03/06 10:22:59 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_5_8.files
+#                       File to produce: smg_5_8.stitch.c
+#[08/03/06 10:23:00 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_6_8.files
+#                       File to produce: smg_6_8.stitch.c
+#[08/03/06 10:23:00 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_7_8.files
+#                       File to produce: smg_7_8.stitch.c
+#[08/03/06 10:23:01 PM] Running a profile 
+#                       Files file: smg_1_8.stitch.c.files
+#                       Description: 1_eighths_slice_SMG
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/03/06 10:23:01 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py smg_1_8.stitch.c.files --oa-FIAliasAliasMap 1 1_eighths_slice_SMG
+#[08/03/06 10:23:35 PM] Running a profile 
+#                       Files file: smg_2_8.stitch.c.files
+#                       Description: 2_eighths_slice_SMG
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/03/06 10:23:35 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py smg_2_8.stitch.c.files --oa-FIAliasAliasMap 1 2_eighths_slice_SMG
+#[08/03/06 10:25:39 PM] Running a profile 
+#                       Files file: smg_3_8.stitch.c.files
+#                       Description: 3_eighths_slice_SMG
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/03/06 10:25:39 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py smg_3_8.stitch.c.files --oa-FIAliasAliasMap 1 3_eighths_slice_SMG
+#[08/03/06 10:28:56 PM] Running a profile 
+#                       Files file: smg_4_8.stitch.c.files
+#                       Description: 4_eighths_slice_SMG
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/03/06 10:28:56 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py smg_4_8.stitch.c.files --oa-FIAliasAliasMap 1 4_eighths_slice_SMG
+#[08/03/06 10:33:29 PM] Running a profile 
+#                       Files file: smg_5_8.stitch.c.files
+#                       Description: 5_eighths_slice_SMG
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/03/06 10:33:29 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py smg_5_8.stitch.c.files --oa-FIAliasAliasMap 1 5_eighths_slice_SMG
+#[08/03/06 10:40:50 PM] Running a profile 
+#                       Files file: smg_6_8.stitch.c.files
+#                       Description: 6_eighths_slice_SMG
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/03/06 10:40:50 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py smg_6_8.stitch.c.files --oa-FIAliasAliasMap 1 6_eighths_slice_SMG
+#[08/03/06 10:50:32 PM] Running a profile 
+#                       Files file: smg_7_8.stitch.c.files
+#                       Description: 7_eighths_slice_SMG
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/03/06 10:50:32 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py smg_7_8.stitch.c.files --oa-FIAliasAliasMap 1 7_eighths_slice_SMG

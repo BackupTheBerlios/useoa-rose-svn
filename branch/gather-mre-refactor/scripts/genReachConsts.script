@@ -1,0 +1,12 @@
+echo "Generating TestResults/ReachConstsTests/constprop_if1a.c.out"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_if1a.c >& TestResults/ReachConstsTests/constprop_if1a.c.out
+echo "Generating TestResults/ReachConstsTests/constprop_if1b.c.out"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_if1b.c >& TestResults/ReachConstsTests/constprop_if1b.c.out
+echo "Generating TestResults/ReachConstsTests/constprop_if1c.c.out"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_if1c.c >& TestResults/ReachConstsTests/constprop_if1c.c.out
+echo "Generating TestResults/ReachConstsTests/constprop_loop1.c.out"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_loop1.c >& TestResults/ReachConstsTests/constprop_loop1.c.out
+echo "Generating TestResults/ReachConstsTests/constprop_loop2.c.out"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_loop2.c >& TestResults/ReachConstsTests/constprop_loop2.c.out
+echo "Generating TestResults/ReachConstsTests/constprop_loop3.c.out"
+./OATest -edg:w --oa-ReachConsts -c TestCases/ReachConstsTests/constprop_loop3.c >& TestResults/ReachConstsTests/constprop_loop3.c.out

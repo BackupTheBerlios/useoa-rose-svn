@@ -1,0 +1,43 @@
+
+graph DGraph:
+
+    Node 1: 
+        ====== CFG node 1 ======
+
+
+    Node 2: 
+        ====== CFG node 2 ======
+int a;
+int b;
+a = 20;
+a++;
+b = ++a;
+b = a++;
+a += 45;
+return a =(b -= a);
+
+
+    Node 3: 
+        ====== CFG node 3 ======
+
+
+    Edge: 1 => 2
+        { FALLTHROUGH_EDGE 0 }
+
+    Edge: 2 => 3
+        { RETURN_EDGE 0 }
+
+
+ReachDefsStandard(
+    mReachDefs: StmtHandle	 => OA_ptr<std::set<StmtHandle> >
+            StmtHandle(a++;)	 => [ StmtHandle(a = 20;) ] 
+            StmtHandle(b = ++a;)	 => [ StmtHandle(a++;) ] 
+            StmtHandle(b = a++;)	 => [ StmtHandle(b = ++a;) ] 
+            StmtHandle(a += 45;)	 => [ StmtHandle(b = a++;) ] 
+            StmtHandle(return a =(b -= a);)	 => [ StmtHandle(b = a++;)    StmtHandle(a += 45;) ] 
+
+    mExitReachDefs: [ StmtHandle(return a =(b -= a);) ] 
+)
+
+*******  end of DoReachDef *********
+

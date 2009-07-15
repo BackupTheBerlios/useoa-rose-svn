@@ -1,0 +1,67 @@
+
+PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__L0R") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::::Foo::Foo__L0R") >
+            < 1, SymHandle("x") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline Foo::Foo(int x){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("this::::Foo::Foo__L0R"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("method:::Foo::Foo__L0R"), not local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class ::Foo {public: inline Foo::Foo(int x){}};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int main(){int y;class ::Foo *f = new ::Foo(y);return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int y;class ::Foo *f = new ::Foo(y);return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int y;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class Foo *f = new Foo(y);") =>
+        [
+            MemRefHandle("::Foo(y)") => 
+                NamedRef( USE, SymHandle("method:::Foo::Foo__L0R"))
+            MemRefHandle("implicit actual this:y") => 
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new Foo(y)"), 0)))
+            MemRefHandle("y") => 
+                NamedRef( USE, SymHandle("y"))
+            MemRefHandle("new Foo(y)") => 
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new Foo(y)"), 0)))
+            MemRefHandle("f") => 
+                NamedRef( DEF, SymHandle("f"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("class Foo *f = new Foo(y);") =>
+        [
+            < NamedRef( DEF, SymHandle("f"))
+            , AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new Foo(y)"), 0))) >
+        ] }
+    CALLSITES = { StmtHandle("class Foo *f = new Foo(y);") =>
+        [
+            CallHandle("new Foo(y)") => 
+                NamedRef( USE, SymHandle("method:::Foo::Foo__L0R"))
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("new Foo(y)") =>
+        [
+            < 0, AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("new Foo(y)"), 0))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("y"), local > }
+    LOCATION = { < SymHandle("f"), local > }
+    LOCATION = { < SymHandle("method:::Foo::Foo__L0R"), not local > }

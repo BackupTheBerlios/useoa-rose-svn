@@ -1,0 +1,85 @@
+
+#[08/03/06 08:57:51 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_1_8.files
+#                       File to produce: smg_1_8.stitch.c
+#[08/03/06 08:57:51 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_2_8.files
+#                       File to produce: smg_2_8.stitch.c
+#[08/03/06 08:57:51 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_3_8.files
+#                       File to produce: smg_3_8.stitch.c
+#[08/03/06 08:57:51 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_4_8.files
+#                       File to produce: smg_4_8.stitch.c
+#[08/03/06 08:57:51 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_5_8.files
+#                       File to produce: smg_5_8.stitch.c
+#[08/03/06 08:57:52 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_6_8.files
+#                       File to produce: smg_6_8.stitch.c
+#[08/03/06 08:57:52 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/smg_7_8.files
+#                       File to produce: smg_7_8.stitch.c
+#[08/03/06 08:57:52 PM] Run a timed benchmark
+#                       Files file: smg_1_8.stitch.c.files
+#                       Description: 1 eighths SMG slice
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/03/06 08:57:52 PM] /usr/bin/time -p ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_1_8.stitch.c --silent
+![08/03/06 08:58:05 PM] 1 eighths SMG slice
+!                       real 12.42
+!                       user 11.77
+!                       sys 0.17
+#[08/03/06 08:58:05 PM] Run a timed benchmark
+#                       Files file: smg_2_8.stitch.c.files
+#                       Description: 2 eighths SMG slice
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/03/06 08:58:05 PM] /usr/bin/time -p ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_2_8.stitch.c --silent
+![08/03/06 08:58:48 PM] 2 eighths SMG slice
+!                       real 42.58
+!                       user 42.24
+!                       sys 0.24
+#[08/03/06 08:58:48 PM] Run a timed benchmark
+#                       Files file: smg_3_8.stitch.c.files
+#                       Description: 3 eighths SMG slice
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/03/06 08:58:48 PM] /usr/bin/time -p ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_3_8.stitch.c --silent
+![08/03/06 09:00:08 PM] 3 eighths SMG slice
+!                       real 79.87
+!                       user 78.93
+!                       sys 0.51
+#[08/03/06 09:00:08 PM] Run a timed benchmark
+#                       Files file: smg_4_8.stitch.c.files
+#                       Description: 4 eighths SMG slice
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/03/06 09:00:08 PM] /usr/bin/time -p ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_4_8.stitch.c --silent
+![08/03/06 09:01:48 PM] 4 eighths SMG slice
+!                       real 100.27
+!                       user 99.15
+!                       sys 0.45
+#[08/03/06 09:01:49 PM] Run a timed benchmark
+#                       Files file: smg_5_8.stitch.c.files
+#                       Description: 5 eighths SMG slice
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/03/06 09:01:49 PM] /usr/bin/time -p ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_5_8.stitch.c --silent
+![08/03/06 09:04:07 PM] 5 eighths SMG slice
+!                       real 138.25
+!                       user 137.05
+!                       sys 0.59
+#[08/03/06 09:04:07 PM] Run a timed benchmark
+#                       Files file: smg_6_8.stitch.c.files
+#                       Description: 6 eighths SMG slice
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/03/06 09:04:07 PM] /usr/bin/time -p ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_6_8.stitch.c --silent
+![08/03/06 09:07:02 PM] 6 eighths SMG slice
+!                       real 174.73
+!                       user 173.65
+!                       sys 0.56
+#[08/03/06 09:07:02 PM] Run a timed benchmark
+#                       Files file: smg_7_8.stitch.c.files
+#                       Description: 7 eighths SMG slice
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/03/06 09:07:02 PM] /usr/bin/time -p ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/home/stone48/testprogs/small/smg2000/struct_ls -I/home/stone48/testprogs/small/smg2000/struct_mv -I/home/stone48/testprogs/small/smg2000/krylov -I/home/stone48/testprogs/small/smg2000/utilities -I/home/stone48/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_7_8.stitch.c --silent
+![08/03/06 09:10:44 PM] 7 eighths SMG slice
+!                       real 221.54
+!                       user 219.62
+!                       sys 0.73

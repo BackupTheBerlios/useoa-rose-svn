@@ -1,0 +1,72 @@
+echo "Testing TestCases/CallGraphTests/swap.c, TestResults/CallGraph/swap.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/swap.c >& t
+diff t TestResults/CallGraph/swap.c.out
+
+echo "Testing TestCases/CallGraphTests/functionPtr.c, TestResults/CallGraph/functionPtr.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr.c >& t
+diff t TestResults/CallGraph/functionPtr.c.out
+
+echo "Testing TestCases/CallGraphTests/functionPtr1.c, TestResults/CallGraph/functionPtr1.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr1.c >& t
+diff t TestResults/CallGraph/functionPtr1.c.out
+
+echo "Testing TestCases/CallGraphTests/functionPtr2.c, TestResults/CallGraph/functionPtr2.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr2.c >& t
+diff t TestResults/CallGraph/functionPtr2.c.out
+
+echo "Testing TestCases/CallGraphTests/functionPtr3.c, TestResults/CallGraph/functionPtr3.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr3.c >& t
+diff t TestResults/CallGraph/functionPtr3.c.out
+
+echo "Testing TestCases/CallGraphTests/functionPtr4.c, TestResults/CallGraph/functionPtr4.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr4.c >& t
+diff t TestResults/CallGraph/functionPtr4.c.out
+
+echo "Testing TestCases/CallGraphTests/functionPtr5.c, TestResults/CallGraph/functionPtr5.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr5.c >& t
+diff t TestResults/CallGraph/functionPtr5.c.out
+
+echo "Testing TestCases/CallGraphTests/functionPtr6.c, TestResults/CallGraph/functionPtr6.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functionPtr6.c >& t
+diff t TestResults/CallGraph/functionPtr6.c.out
+
+echo "Testing TestCases/CallGraphTests/functions2.c, TestResults/CallGraph/functions2.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions2.c >& t
+diff t TestResults/CallGraph/functions2.c.out
+
+echo "Testing TestCases/CallGraphTests/functions3.c, TestResults/CallGraph/functions3.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions3.c >& t
+diff t TestResults/CallGraph/functions3.c.out
+
+echo "Testing TestCases/CallGraphTests/functions4.c, TestResults/CallGraph/functions4.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions4.c >& t
+diff t TestResults/CallGraph/functions4.c.out
+
+echo "Testing TestCases/CallGraphTests/functions5.c, TestResults/CallGraph/functions5.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions5.c >& t
+diff t TestResults/CallGraph/functions5.c.out
+
+echo "Testing TestCases/CallGraphTests/functions6.c, TestResults/CallGraph/functions6.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/functions6.c >& t
+diff t TestResults/CallGraph/functions6.c.out
+
+echo "Testing TestCases/CallGraphTests/activity_proc_call1.C, TestResults/CallGraph/activity_proc_call1.C.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/activity_proc_call1.C >& t
+diff t TestResults/CallGraph/activity_proc_call1.C.out
+
+echo "Testing TestCases/CallGraphTests/interalias_proc_call1.C, TestResults/CallGraph/interalias_proc_call1.C.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/interalias_proc_call1.C >& t
+diff t TestResults/CallGraph/interalias_proc_call1.C.out
+
+echo "Testing TestCases/CallGraphTests/nested_calls_1.C, TestResults/CallGraph/nested_calls_1.C.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/nested_calls_1.C >& t
+diff t TestResults/CallGraph/nested_calls_1.C.out
+
+echo "Testing TestCases/CallGraphTests/multi_func_calls.c, TestResults/CallGraph/multi_func_calls.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/multi_func_calls.c >& t
+diff t TestResults/CallGraph/multi_func_calls.c.out
+
+echo "Testing TestCases/CallGraphTests/multi_func_calls_2.c, TestResults/CallGraph/multi_func_calls_2.c.out checked by BK 7/10/06"
+./OATest -edg:w --oa-CallGraph -c TestCases/CallGraphTests/multi_func_calls_2.c >& t
+diff t TestResults/CallGraph/multi_func_calls_2.c.out
+

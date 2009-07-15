@@ -1,0 +1,69 @@
+
+#[08/04/06 02:05:13 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/irs_1_8.files
+#                       File to produce: irs_1_8.stitch.c
+#[08/04/06 02:05:13 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/irs_2_8.files
+#                       File to produce: irs_2_8.stitch.c
+#[08/04/06 02:05:14 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/irs_3_8.files
+#                       File to produce: irs_3_8.stitch.c
+#[08/04/06 02:05:14 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/irs_4_8.files
+#                       File to produce: irs_4_8.stitch.c
+#[08/04/06 02:05:15 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/irs_5_8.files
+#                       File to produce: irs_5_8.stitch.c
+#[08/04/06 02:05:17 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/irs_6_8.files
+#                       File to produce: irs_6_8.stitch.c
+#[08/04/06 02:05:18 PM] Stitching files
+#                       Files file: /home/stone48/testprogs/irs_7_8.files
+#                       File to produce: irs_7_8.stitch.c
+#[08/04/06 02:05:20 PM] Running a profile 
+#                       Files file: irs_1_8.stitch.c.files
+#                       Description: 1_eighths_slice_IRS
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/04/06 02:05:20 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py irs_1_8.stitch.c.files --oa-FIAliasAliasMap 1 1_eighths_slice_IRS
+#[08/04/06 02:06:14 PM] Running a profile 
+#                       Files file: irs_2_8.stitch.c.files
+#                       Description: 2_eighths_slice_IRS
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/04/06 02:06:14 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py irs_2_8.stitch.c.files --oa-FIAliasAliasMap 1 2_eighths_slice_IRS
+#[08/04/06 02:07:44 PM] Running a profile 
+#                       Files file: irs_3_8.stitch.c.files
+#                       Description: 3_eighths_slice_IRS
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/04/06 02:07:44 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py irs_3_8.stitch.c.files --oa-FIAliasAliasMap 1 3_eighths_slice_IRS
+#[08/04/06 02:11:46 PM] Running a profile 
+#                       Files file: irs_4_8.stitch.c.files
+#                       Description: 4_eighths_slice_IRS
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/04/06 02:11:46 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py irs_4_8.stitch.c.files --oa-FIAliasAliasMap 1 4_eighths_slice_IRS
+#[08/04/06 02:21:39 PM] Running a profile 
+#                       Files file: irs_5_8.stitch.c.files
+#                       Description: 5_eighths_slice_IRS
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/04/06 02:21:39 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py irs_5_8.stitch.c.files --oa-FIAliasAliasMap 1 5_eighths_slice_IRS
+#[08/04/06 02:38:07 PM] recompiling UseOA-ROSE at: /home/stone48/UseOA-ROSE
+@[08/04/06 02:38:07 PM] make
+@[08/04/06 02:38:23 PM] make
+#[08/04/06 02:38:35 PM] Build log after compilation:
+#                       Compiling UseOA-ROSE on 08/04/06 at 02:38:23 PM PDT Compile started by stone48 OADIR='/home/stone48/berlios/openanalysis/OpenAnalysis/trunk' ROSEDIR='/export/0/tmp.stone48/gcc3.4.3' CXXFLAGS='-pg -g -O3' ARCH='i686-Linux'
+#[08/04/06 02:38:35 PM] Running a profile 
+#                       Files file: irs_6_8.stitch.c.files
+#                       Description: 6_eighths_slice_IRS
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/04/06 02:38:35 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py irs_6_8.stitch.c.files --oa-FIAliasAliasMap 1 6_eighths_slice_IRS
+#[08/04/06 03:06:57 PM] Running a profile 
+#                       Files file: irs_7_8.stitch.c.files
+#                       Description: 7_eighths_slice_IRS
+#                       Algorithm: --oa-FIAliasAliasMap
+#                       Redundencies: 1
+@[08/04/06 03:06:57 PM] /home/stone48/UseOA-ROSE/scripts/benchmarks/OABenchmark.py irs_7_8.stitch.c.files --oa-FIAliasAliasMap 1 7_eighths_slice_IRS

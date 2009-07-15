@@ -1,0 +1,105 @@
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int *p;int i;int x;int y;const int *q =(const_array + i);x = *q;p = &i;*p = 5;y = *q;g(x,y);const_array[i];return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int *p;int i;int x;int y;const int *q =(const_array + i);x = *q;p = &i;*p = 5;y = *q;g(x,y);const_array[i];return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *p;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int i;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int x;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int y;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("const int *q =(const_array + i);") =>
+        [
+            MemRefHandle("const_array") => 
+                NamedRef( USE, SymHandle("const_array"))
+            MemRefHandle("i") => 
+                NamedRef( USE, SymHandle("i"))
+            MemRefHandle("(const_array + i)") => 
+                AddressOf( USE, SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("const_array")), 1)))
+            MemRefHandle("q") => 
+                NamedRef( DEF, SymHandle("q"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("const int *q =(const_array + i);") =>
+        [
+            < NamedRef( DEF, SymHandle("q"))
+            , AddressOf( USE, SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("const_array")), 1))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("x = *q;") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( DEF, SymHandle("x"))
+            MemRefHandle("q") => 
+                NamedRef( USE, SymHandle("q"))
+            MemRefHandle("*q") => 
+                Deref( USE, NamedRef( USE, SymHandle("q")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("p = &i;") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
+            MemRefHandle("&i") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("i")))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p = &i;") =>
+        [
+            < NamedRef( DEF, SymHandle("p"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("i"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("*p = 5;") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( USE, SymHandle("p"))
+            MemRefHandle("*p") => 
+                Deref( DEF, NamedRef( USE, SymHandle("p")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("y = *q;") =>
+        [
+            MemRefHandle("y") => 
+                NamedRef( DEF, SymHandle("y"))
+            MemRefHandle("q") => 
+                NamedRef( USE, SymHandle("q"))
+            MemRefHandle("*q") => 
+                Deref( USE, NamedRef( USE, SymHandle("q")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("g(x,y);") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"))
+            MemRefHandle("y") => 
+                NamedRef( USE, SymHandle("y"))
+            MemRefHandle("g") => 
+                NamedRef( USE, SymHandle("g"))
+        ] }
+    CALLSITES = { StmtHandle("g(x,y);") =>
+        [
+            CallHandle("g(x,y)") => 
+                NamedRef( USE, SymHandle("g"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("const_array[i];") =>
+        [
+            MemRefHandle("const_array") => 
+                NamedRef( USE, SymHandle("const_array"))
+            MemRefHandle("i") => 
+                NamedRef( USE, SymHandle("i"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("g"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("const_array"), not local > }
+    LOCATION = { < SymHandle("p"), local > }
+    LOCATION = { < SymHandle("i"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("y"), local > }
+    LOCATION = { < SymHandle("q"), local > }

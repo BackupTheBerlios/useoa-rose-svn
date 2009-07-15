@@ -1,0 +1,130 @@
+
+PROCEDURE = { < ProcHandle("bar"), SymHandle("bar") > }
+    MEMREFEXPRS = { StmtHandle("int bar(){int x = 0;int *p;*hello() = x;fp = bar;( *fp)();bar();fp2 = hello;p =( *fp2)();p =((int *)(malloc(((sizeof(int ))))));return x;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int x = 0;int *p;*hello() = x;fp = bar;( *fp)();bar();fp2 = hello;p =( *fp2)();p =((int *)(malloc(((sizeof(int ))))));return x;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int x = 0;") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( DEF, SymHandle("x"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *p;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("*hello() = x;") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"))
+            MemRefHandle("hello") => 
+                NamedRef( USE, SymHandle("hello"))
+            MemRefHandle("hello()") => 
+                NamedRef( USE, SymHandle("hello"))
+            MemRefHandle("*hello()") => 
+                Deref( DEF, NamedRef( USE, SymHandle("hello")), 1)
+        ] }
+    CALLSITES = { StmtHandle("*hello() = x;") =>
+        [
+            CallHandle("hello()") => 
+                NamedRef( USE, SymHandle("hello"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("fp = bar;") =>
+        [
+            MemRefHandle("fp") => 
+                NamedRef( DEF, SymHandle("fp"))
+            MemRefHandle("bar") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("bar")))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("fp = bar;") =>
+        [
+            < NamedRef( DEF, SymHandle("fp"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("bar"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("( *fp)();") =>
+        [
+            MemRefHandle("fp") => 
+                NamedRef( USE, SymHandle("fp"))
+            MemRefHandle("( *fp)") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp")), 1)
+        ] }
+    CALLSITES = { StmtHandle("( *fp)();") =>
+        [
+            CallHandle("( *fp)()") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("bar();") =>
+        [
+            MemRefHandle("bar") => 
+                NamedRef( USE, SymHandle("bar"))
+        ] }
+    CALLSITES = { StmtHandle("bar();") =>
+        [
+            CallHandle("bar()") => 
+                NamedRef( USE, SymHandle("bar"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("fp2 = hello;") =>
+        [
+            MemRefHandle("fp2") => 
+                NamedRef( DEF, SymHandle("fp2"))
+            MemRefHandle("hello") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("hello")))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("fp2 = hello;") =>
+        [
+            < NamedRef( DEF, SymHandle("fp2"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("hello"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("p =( *fp2)();") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
+            MemRefHandle("fp2") => 
+                NamedRef( USE, SymHandle("fp2"))
+            MemRefHandle("( *fp2)()") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp2")), 1)
+            MemRefHandle("( *fp2)") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp2")), 1)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p =( *fp2)();") =>
+        [
+            < NamedRef( DEF, SymHandle("p"))
+            , Deref( USE, NamedRef( USE, SymHandle("fp2")), 1) >
+        ] }
+    CALLSITES = { StmtHandle("p =( *fp2)();") =>
+        [
+            CallHandle("( *fp2)()") => 
+                Deref( USE, NamedRef( USE, SymHandle("fp2")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("p =((int *)(malloc(((sizeof(int ))))));") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
+            MemRefHandle("malloc") => 
+                NamedRef( USE, SymHandle("malloc"))
+            MemRefHandle("(malloc(((sizeof(int )))))") => 
+                AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("(malloc(((sizeof(int )))))"), 0)))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p =((int *)(malloc(((sizeof(int ))))));") =>
+        [
+            < NamedRef( DEF, SymHandle("p"))
+            , AddressOf( USE, SubSetRef( USE, UnnamedRef( USE, ExprHandle("(malloc(((sizeof(int )))))"), 0))) >
+        ] }
+    CALLSITES = { StmtHandle("p =((int *)(malloc(((sizeof(int ))))));") =>
+        [
+            CallHandle("(malloc(((sizeof(int )))))") => 
+                NamedRef( USE, SymHandle("malloc"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("return x;") =>
+        [
+            MemRefHandle("x") => 
+                NamedRef( USE, SymHandle("x"))
+        ] }
+    LOCATION = { < SymHandle("malloc"), not local > }
+    LOCATION = { < SymHandle("hello"), not local > }
+    LOCATION = { < SymHandle("bar"), not local > }
+    LOCATION = { < SymHandle("fp"), not local > }
+    LOCATION = { < SymHandle("fp2"), not local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("p"), local > }

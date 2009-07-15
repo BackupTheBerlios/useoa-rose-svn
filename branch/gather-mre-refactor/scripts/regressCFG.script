@@ -1,0 +1,16 @@
+echo "Testing TestCases/CFGtests/for.c, TestResults/CFGtests/for.c.out Checked by PLM 05/12/08"
+./OATest -edg:w --oa-CFG -c TestCases/CFGtests/for.c >& t
+diff t TestResults/CFGtests/for.c.out
+
+echo "Testing TestCases/CFGtests/while.c, TestResults/CFGtests/while.c.out Checked by PLM 05/12/08"
+./OATest -edg:w --oa-CFG -c TestCases/CFGtests/while.c >& t
+diff t TestResults/CFGtests/while.c.out
+
+echo "Testing TestCases/CFGtests/dowhile.c, TestResults/CFGtests/dowhile.c.out Checked by PLM 05/12/08"
+./OATest -edg:w --oa-CFG -c TestCases/CFGtests/dowhile.c >& t
+diff t TestResults/CFGtests/dowhile.c.out
+
+echo "Testing TestCases/CFGtests/switch1.c, TestResults/CFGtests/switch1.c.out Checked by PLM 05/12/08"
+./OATest -edg:w --oa-CFG -c TestCases/CFGtests/switch1.c >& t
+diff t TestResults/CFGtests/switch1.c.out
+

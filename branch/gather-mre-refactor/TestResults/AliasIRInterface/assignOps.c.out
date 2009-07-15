@@ -1,0 +1,65 @@
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int a;int b;a = 20;a++;b = ++a;b = a++;a += 45;return a =(b -= a);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int a;int b;a = 20;a++;b = ++a;b = a++;a += 45;return a =(b -= a);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int a;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int b;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("a = 20;") =>
+        [
+            MemRefHandle("a") => 
+                NamedRef( DEF, SymHandle("a"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("a++;") =>
+        [
+            MemRefHandle("a") => 
+                NamedRef( USEDEF, SymHandle("a"))
+            MemRefHandle("a++") => 
+                NamedRef( USE, SymHandle("a"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("b = ++a;") =>
+        [
+            MemRefHandle("b") => 
+                NamedRef( DEF, SymHandle("b"))
+            MemRefHandle("a") => 
+                NamedRef( USEDEF, SymHandle("a"))
+            MemRefHandle("++a") => 
+                NamedRef( USE, SymHandle("a"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("b = a++;") =>
+        [
+            MemRefHandle("b") => 
+                NamedRef( DEF, SymHandle("b"))
+            MemRefHandle("a") => 
+                NamedRef( USEDEF, SymHandle("a"))
+            MemRefHandle("a++") => 
+                NamedRef( USE, SymHandle("a"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("a += 45;") =>
+        [
+            MemRefHandle("a") => 
+                NamedRef( USEDEF, SymHandle("a"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("return a =(b -= a);") =>
+        [
+            MemRefHandle("a") => 
+                NamedRef( DEF, SymHandle("a"))
+            MemRefHandle("b") => 
+                NamedRef( USEDEF, SymHandle("b"))
+            MemRefHandle("a") => 
+                NamedRef( USE, SymHandle("a"))
+            MemRefHandle("a =(b -= a)") => 
+                NamedRef( USE, SymHandle("a"))
+            MemRefHandle("(b -= a)") => 
+                NamedRef( USE, SymHandle("b"))
+        ] }
+    LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("b"), local > }

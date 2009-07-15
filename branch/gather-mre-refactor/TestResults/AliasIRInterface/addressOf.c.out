@@ -1,0 +1,112 @@
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int a;int b;int c;int *p;int **q;int v[3];struct temp {int hello;}mystruct;p = &a;q = &p;p = *q;p =(v + 2);p = p;p = &mystruct.hello;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int a;int b;int c;int *p;int **q;int v[3];struct temp {int hello;}mystruct;p = &a;q = &p;p = *q;p =(v + 2);p = p;p = &mystruct.hello;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int a;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int b;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int c;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *p;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int **q;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int v[3];") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct temp {int hello;}mystruct;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("p = &a;") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
+            MemRefHandle("&a") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("a")))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p = &a;") =>
+        [
+            < NamedRef( DEF, SymHandle("p"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("a"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("q = &p;") =>
+        [
+            MemRefHandle("q") => 
+                NamedRef( DEF, SymHandle("q"))
+            MemRefHandle("&p") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("p")))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("q = &p;") =>
+        [
+            < NamedRef( DEF, SymHandle("q"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("p"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("p = *q;") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
+            MemRefHandle("q") => 
+                NamedRef( USE, SymHandle("q"))
+            MemRefHandle("*q") => 
+                Deref( USE, NamedRef( USE, SymHandle("q")), 1)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p = *q;") =>
+        [
+            < NamedRef( DEF, SymHandle("p"))
+            , Deref( USE, NamedRef( USE, SymHandle("q")), 1) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("p =(v + 2);") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
+            MemRefHandle("(v + 2)") => 
+                AddressOf( USE, SubSetRef( USE, NamedRef( USE, SymHandle("v"))))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p =(v + 2);") =>
+        [
+            < NamedRef( DEF, SymHandle("p"))
+            , AddressOf( USE, SubSetRef( USE, NamedRef( USE, SymHandle("v")))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("p = p;") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
+            MemRefHandle("p") => 
+                NamedRef( USE, SymHandle("p"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p = p;") =>
+        [
+            < NamedRef( DEF, SymHandle("p"))
+            , NamedRef( USE, SymHandle("p")) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("p = &mystruct.hello;") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
+            MemRefHandle("&mystruct.hello") => 
+                AddressOf( USE, FieldAccess( USE, NamedRef( USE, SymHandle("mystruct")), hello))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p = &mystruct.hello;") =>
+        [
+            < NamedRef( DEF, SymHandle("p"))
+            , AddressOf( USE, FieldAccess( USE, NamedRef( USE, SymHandle("mystruct")), hello)) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("p"), local > }
+    LOCATION = { < SymHandle("q"), local > }
+    LOCATION = { < SymHandle("v"), local > }
+    LOCATION = { < SymHandle("mystruct"), local > }

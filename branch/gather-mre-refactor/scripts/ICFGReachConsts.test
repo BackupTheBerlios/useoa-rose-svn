@@ -1,0 +1,19 @@
+# comment in file.test
+# Regression tests for ICFG generation
+# Regenreated after GraphRefactor for new Node Numbers PLM 08/24/06
+testname::ICFGReachConsts
+inputdir::TestCases/ReachConstsTests
+outputdir::TestResults/ICFGReachConsts
+driverexec::./OATest -edg:w --oa-ICFGReachConsts -c
+
+# list of tests
+#       input file,     status
+test::constprop_if1a.c,  Checked by PLM 12/27/06 
+test::constprop_if1b.c,  Checked by PLM 12/27/06
+test::constprop_if1c.c,  Checked by PLM 12/27/06
+#test::constprop_loop1.c, Checked by PLM 12/27/06, Problem because ExprTree for the i++/++i is not correct   
+#test::constprop_loop2.c, Checked by PLM 12/27/06, Problem because ExprTree fot the i++/++i is nor correct.
+#test::constprop_proc1.c, Checked by PLM 12/27/06
+test::constprop_proc2.c, Checked by PLM 12/27/06
+
+

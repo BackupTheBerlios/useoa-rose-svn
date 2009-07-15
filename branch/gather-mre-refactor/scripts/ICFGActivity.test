@@ -1,0 +1,73 @@
+# comment in file.test
+# Regression tests for ICFGActivity generation
+testname::ICFGActivity
+inputdir::TestCases/ICFGActive
+outputdir::TestResults/ICFGActive
+driverexec::./OATest -edg:w --oa-ICFGActivity -c
+
+# list of tests
+#       input file,     status
+test::simple0.c,                   checked by PLM 04/09/07
+test::simple1.c,                   checked by PLM 04/09/07
+#test::simple2.c,                  
+test::simple3.c,                   checked by PLM /04/09/07
+#test::argumentArrayIndex2.c,
+#test::argumentArrayIndex3.c,
+#test::argumentArrayIndex.c,
+#test::argumentConversion_2.c,
+#test::argumentConversion_3.c,
+#test::argumentConversion_4.c,
+test::bat.c,                       checked by PLM 04/09/07  
+#test::cast1.c,        
+test::ConstFoldSimp0.c,            checked by PLM /04/09/07
+#test::constPrec.c,          
+#test::daerj.c,
+test::directDependency1.c,         checked by PLM 04/09/07
+#test::directDependency2.c,
+#test::directDependency3.c,
+#test::float_intrinsic.c,
+test::globalActive_1.c,            checked by PLM 04/09/07
+test::globalActive_2.c,            checked by PLM 04/09/07
+#test::globalActive_3.c,
+#test::globalActive_7.c,
+test::If_Loop1.c,                  checked by PLM 04/09/07
+test::If_Loop2.c,                  checked by PLM 04/09/07
+test::If_Loop3.c,                  checked by PLM 04/09/07
+#test::If_Loop5.c,
+test::IfStatement_1.c,             checked by PLM 04/09/07
+test::IfStatement_2.c,             checked by PLM 04/09/07
+test::lion.c,                      checked by PLM 04/09/07
+test::Loop_1.c,                    checked by PLM 04/09/07
+test::Loop_2.c,                    checked by PLM 04/09/07
+test::Loop_3.c,                    checked by PLM 04/09/07
+test::Loop_simple_1.c,             checked by PLM 04/09/07
+test::Loop_simple_2a.c,            checked by PLM 04/09/07
+test::Loop_simple_2.c,             checked by PLM 04/09/07
+test::Loop_simple_3.c,             chekcked by PLM 04/09/07 
+test::Loop_simple_4.c,             checked by PLM 04/09/07
+test::Loop_simple_5.c,             checked by PLM 04/09/07
+test::Loop_simple_6.c,             checked by PLM 04/09/07
+#test::nested_calls_1.c,
+#test::nested_calls_2.c,
+#test::nested_calls_3.c,
+#test::nested_calls_4.c,
+test::NestedIf.c,                  checked by PLM 04/09/07  
+test::NestedLoopIf.c,              checked by PLM 04/09/07
+test::NestedLoops.c,               checked by PLM 04/09/07
+#test::passiveStatement.c,
+#test::passiveSubroutine.c,
+#test::readWrite1.c,
+#test::readWrite2.c,
+test::SeqOfIfs.c,                  checked by PLM 04/09/07
+test::SeqOfLoops.c,                checked by PLM 04/09/07 
+#test::sideEffect_1.c,
+#test::sideEffect_2.c,
+#test::sideEffect_3.c,
+test::speelpenning.c,              checked by PLM 04/09/07
+test::tanh_f_arg.c,                checked by PLM 04/09/07
+test::multiple_assignments.c,      Assignment Pair Problem, not working
+test::conditional.c,               AssignmentPair Problem, not working
+
+
+
+

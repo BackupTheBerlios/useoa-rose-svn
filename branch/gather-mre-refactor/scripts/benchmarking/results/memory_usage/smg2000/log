@@ -1,0 +1,60 @@
+
+#[08/27/06 06:14:49 PM] Stitching files
+#                       Files file: /s/bach/e/proj/oadev/testprogs/smg_1_8.files
+#                       File to produce: smg_1_8.stitch.c
+#[08/27/06 06:14:49 PM] Stitching files
+#                       Files file: /s/bach/e/proj/oadev/testprogs/smg_2_8.files
+#                       File to produce: smg_2_8.stitch.c
+#[08/27/06 06:14:49 PM] Stitching files
+#                       Files file: /s/bach/e/proj/oadev/testprogs/smg_3_8.files
+#                       File to produce: smg_3_8.stitch.c
+#[08/27/06 06:14:50 PM] Stitching files
+#                       Files file: /s/bach/e/proj/oadev/testprogs/smg_4_8.files
+#                       File to produce: smg_4_8.stitch.c
+#[08/27/06 06:14:50 PM] Stitching files
+#                       Files file: /s/bach/e/proj/oadev/testprogs/smg_5_8.files
+#                       File to produce: smg_5_8.stitch.c
+#[08/27/06 06:14:51 PM] Stitching files
+#                       Files file: /s/bach/e/proj/oadev/testprogs/smg_6_8.files
+#                       File to produce: smg_6_8.stitch.c
+#[08/27/06 06:14:52 PM] Stitching files
+#                       Files file: /s/bach/e/proj/oadev/testprogs/smg_7_8.files
+#                       File to produce: smg_7_8.stitch.c
+#[08/27/06 06:14:54 PM] Determine peak memory usage 
+#                       Files file: smg_1_8.stitch.c.files
+#                       Description: Memory usage of 1 eighths slice of SMG benchmark
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/27/06 06:14:54 PM] ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/s/bach/e/proj/oadev/testprogs/small/smg2000/struct_ls -I/s/bach/e/proj/oadev/testprogs/small/smg2000/struct_mv -I/s/bach/e/proj/oadev/testprogs/small/smg2000/krylov -I/s/bach/e/proj/oadev/testprogs/small/smg2000/utilities -I/s/bach/e/proj/oadev/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_1_8.stitch.c &
+@[08/27/06 06:14:54 PM] /s/bach/l/under/stonea/UseOA-ROSE/scripts/benchmarking/peakMem.sh
+![08/27/06 06:14:54 PM] Memory usage of 1 eighths slice of SMG benchmark
+!                       Peak memory usage = 0
+#[08/27/06 06:14:54 PM] Determine peak memory usage 
+#                       Files file: smg_2_8.stitch.c.files
+#                       Description: Memory usage of 2 eighths slice of SMG benchmark
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/27/06 06:14:54 PM] ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/s/bach/e/proj/oadev/testprogs/small/smg2000/struct_ls -I/s/bach/e/proj/oadev/testprogs/small/smg2000/struct_mv -I/s/bach/e/proj/oadev/testprogs/small/smg2000/krylov -I/s/bach/e/proj/oadev/testprogs/small/smg2000/utilities -I/s/bach/e/proj/oadev/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_2_8.stitch.c &
+@[08/27/06 06:14:54 PM] /s/bach/l/under/stonea/UseOA-ROSE/scripts/benchmarking/peakMem.sh
+![08/27/06 06:14:54 PM] Memory usage of 2 eighths slice of SMG benchmark
+!                       Peak memory usage = 0
+#[08/27/06 06:14:54 PM] Determine peak memory usage 
+#                       Files file: smg_3_8.stitch.c.files
+#                       Description: Memory usage of 3 eighths slice of SMG benchmark
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/27/06 06:14:54 PM] ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/s/bach/e/proj/oadev/testprogs/small/smg2000/struct_ls -I/s/bach/e/proj/oadev/testprogs/small/smg2000/struct_mv -I/s/bach/e/proj/oadev/testprogs/small/smg2000/krylov -I/s/bach/e/proj/oadev/testprogs/small/smg2000/utilities -I/s/bach/e/proj/oadev/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_3_8.stitch.c &
+@[08/27/06 06:14:54 PM] /s/bach/l/under/stonea/UseOA-ROSE/scripts/benchmarking/peakMem.sh
+![08/27/06 06:14:54 PM] Memory usage of 3 eighths slice of SMG benchmark
+!                       Peak memory usage = 0
+#[08/27/06 06:14:54 PM] Determine peak memory usage 
+#                       Files file: smg_4_8.stitch.c.files
+#                       Description: Memory usage of 4 eighths slice of SMG benchmark
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/27/06 06:14:54 PM] ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/s/bach/e/proj/oadev/testprogs/small/smg2000/struct_ls -I/s/bach/e/proj/oadev/testprogs/small/smg2000/struct_mv -I/s/bach/e/proj/oadev/testprogs/small/smg2000/krylov -I/s/bach/e/proj/oadev/testprogs/small/smg2000/utilities -I/s/bach/e/proj/oadev/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_4_8.stitch.c &
+@[08/27/06 06:14:54 PM] /s/bach/l/under/stonea/UseOA-ROSE/scripts/benchmarking/peakMem.sh
+![08/27/06 06:14:55 PM] Memory usage of 4 eighths slice of SMG benchmark
+!                       Peak memory usage = 0
+#[08/27/06 06:14:55 PM] Determine peak memory usage 
+#                       Files file: smg_5_8.stitch.c.files
+#                       Description: Memory usage of 5 eighths slice of SMG benchmark
+#                       Algorithm: --oa-FIAliasAliasMap
+@[08/27/06 06:14:55 PM] ./OATest --oa-FIAliasAliasMap -O -DHYPRE_USING_MPI -DHYPRE_SEQUENTIAL -DTIMER_USE_MPI -I/nfs/apps/mpich/new/include -I/s/bach/e/proj/oadev/testprogs/small/smg2000/struct_ls -I/s/bach/e/proj/oadev/testprogs/small/smg2000/struct_mv -I/s/bach/e/proj/oadev/testprogs/small/smg2000/krylov -I/s/bach/e/proj/oadev/testprogs/small/smg2000/utilities -I/s/bach/e/proj/oadev/testprogs/small/smg2000/ -edg:w -O -DTIMER_USE_MPI -DHYPRE_TIMING -c smg_5_8.stitch.c &
+@[08/27/06 06:14:55 PM] /s/bach/l/under/stonea/UseOA-ROSE/scripts/benchmarking/peakMem.sh

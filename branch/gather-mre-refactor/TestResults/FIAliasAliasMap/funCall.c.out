@@ -1,0 +1,267 @@
+
+InterAliasMap(
+    AliasMap(
+        mProcHandle: ProcHandle(makeAlias)
+        mNumSets: 7
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(makeAlias)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(i)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(j)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(i)
+                            )
+                            mNumDeref: 1
+                        )
+                    ) ] 
+                5	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(j)
+                            )
+                            mNumDeref: 1
+                        )
+                    ) ] 
+                6	 => [ 
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            Deref(
+                                mMemRefType: DEF
+                                mMRE: 
+                                NamedRef(
+                                    mMemRefType: USE
+                                    mSymHandle: SymHandle(i)
+                                )
+                                mNumDeref: 1
+                            )
+                            mNumDeref: 1
+                        )
+                    )    
+                    InvisibleLoc(
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            Deref(
+                                mMemRefType: USE
+                                mMRE: 
+                                NamedRef(
+                                    mMemRefType: USE
+                                    mSymHandle: SymHandle(j)
+                                )
+                                mNumDeref: 1
+                            )
+                            mNumDeref: 1
+                        )
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+                4	 => 1
+                5	 => 1
+                6	 => 1
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                2	 => [ MemRefHandle(i) ] 
+                3	 => [ MemRefHandle(j) ] 
+                4	 => [ MemRefHandle(*i) ] 
+                5	 => [ MemRefHandle(*j) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(makeAlias)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(i)
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(j)
+                    ) ] 
+                4	 => [ 
+                    Deref(
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(i)
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                5	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(j)
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                6	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: DEF
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(i)
+                            )
+                            mNumDeref: 1
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        Deref(
+                            mMemRefType: USE
+                            mMRE: 
+                            NamedRef(
+                                mMemRefType: USE
+                                mSymHandle: SymHandle(j)
+                            )
+                            mNumDeref: 1
+                        )
+                        mNumDeref: 1
+                    ) ] 
+
+    )
+    AliasMap(
+        mProcHandle: ProcHandle(main)
+        mNumSets: 5
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(makeAlias)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(loc)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(a)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(b)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+                4	 => 2
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                1	 => [ MemRefHandle(makeAlias) ] 
+                2	 => [ MemRefHandle(*a)    MemRefHandle(*b) ] 
+                3	 => [ MemRefHandle(a) ] 
+                4	 => [ MemRefHandle(b)    MemRefHandle(b) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(makeAlias)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(loc)
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(b)
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(a)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(b)
+                    ) ] 
+
+    )
+)

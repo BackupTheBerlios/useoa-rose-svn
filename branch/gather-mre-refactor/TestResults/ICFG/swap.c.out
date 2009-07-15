@@ -1,0 +1,136 @@
+
+graph ICFG:
+
+    subgraph swap_0:
+
+        Node 6: 
+            ==  ICFG ENTRY_NODE 6 ==
+
+
+        Node 7: 
+            ==  ICFG CFLOW_NODE 7 ==
+int temp;
+temp =(v[i]);
+v[i] =(v[j]);
+v[j] = temp;
+
+
+        Node 8: 
+            ==  ICFG EXIT_NODE 8 ==
+
+
+        Edge: 6 => 7
+            
+
+        Edge: 7 => 8
+            
+
+
+    subgraph main_1:
+
+        Node 16: 
+            ==  ICFG ENTRY_NODE 16 == (entry)
+
+
+        Node 17: 
+            ==  ICFG CFLOW_NODE 17 ==
+int a[5];
+int i;
+int j;
+i = 0;
+
+
+        Node 18: 
+            ==  ICFG CFLOW_NODE 18 ==
+for(i = 0;i < 4;i++) {swap(a,i,(i + 1));}
+
+
+        Node 21: 
+            ==  ICFG CALL_NODE 21 ==
+swap(a,i,(i + 1));
+
+
+        Node 23: 
+            ==  ICFG RETURN_NODE 23 ==
+
+
+        Node 24: 
+            ==  ICFG CFLOW_NODE 24 ==
+i++
+
+
+        Node 25: 
+            ==  ICFG CFLOW_NODE 25 ==
+return 0;
+
+
+        Node 26: 
+            ==  ICFG EXIT_NODE 26 == (exit)
+
+
+        Edge: 21 => 23
+            CALL_RETURN
+
+        Edge: 16 => 17
+            
+
+        Edge: 17 => 18
+            
+
+        Edge: 24 => 18
+            
+
+        Edge: 18 => 21
+            
+
+        Edge: 23 => 24
+            
+
+        Edge: 18 => 25
+            
+
+        Edge: 25 => 26
+            
+
+
+    Edge: 21 => 6
+        CALL_(swap(a,i,(i + 1))),style=dashed,color=red
+
+    Edge: 8 => 23
+        RETURN_(swap(a,i,(i + 1))),style=dashed,color=blue
+
+
+digraph ICFG {
+    node [shape=rectangle];
+    subgraph cluster_swap_0 {
+        label="swap_0"
+        6 [ label="==  ICFG ENTRY_NODE 6 ==\n" ];
+        7 [ label="==  ICFG CFLOW_NODE 7 ==\nint temp;\ntemp =(v[i]);\nv[i] =(v[j]);\nv[j] = temp;\n" ];
+        8 [ label="==  ICFG EXIT_NODE 8 ==\n" ];
+        6 -> 7 [ label="" ];
+        7 -> 8 [ label="" ];
+    }
+    subgraph cluster_main_1 {
+        label="main_1"
+        16 [ label="==  ICFG ENTRY_NODE 16 == (entry)\n" ];
+        17 [ label="==  ICFG CFLOW_NODE 17 ==\nint a[5];\nint i;\nint j;\ni = 0;\n" ];
+        18 [ label="==  ICFG CFLOW_NODE 18 ==\nfor(i = 0;i < 4;i++) {swap(a,i,(i + 1));}\n" ];
+        21 [ label="==  ICFG CALL_NODE 21 ==\nswap(a,i,(i + 1));\n" ];
+        23 [ label="==  ICFG RETURN_NODE 23 ==\n" ];
+        24 [ label="==  ICFG CFLOW_NODE 24 ==\ni++\n" ];
+        25 [ label="==  ICFG CFLOW_NODE 25 ==\nreturn 0;\n" ];
+        26 [ label="==  ICFG EXIT_NODE 26 == (exit)\n" ];
+        21 -> 23 [ label="CALL_RETURN" ];
+        16 -> 17 [ label="" ];
+        17 -> 18 [ label="" ];
+        24 -> 18 [ label="" ];
+        18 -> 21 [ label="" ];
+        23 -> 24 [ label="" ];
+        18 -> 25 [ label="" ];
+        25 -> 26 [ label="" ];
+    }
+    21 -> 6 [ label="CALL_(swap(a,i,(i + 1)))",style=dashed,color=red ];
+    8 -> 23 [ label="RETURN_(swap(a,i,(i + 1)))",style=dashed,color=blue ];}
+
+*******  end of DoICFG *********
+

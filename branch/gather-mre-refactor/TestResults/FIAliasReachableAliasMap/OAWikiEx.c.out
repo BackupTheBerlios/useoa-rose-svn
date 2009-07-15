@@ -1,0 +1,141 @@
+
+InterAliasMap(
+    AliasMap(
+        mProcHandle: ProcHandle(main)
+        mNumSets: 8
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(malloc)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(g)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(a)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(y)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                5	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(p)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                6	 => [ 
+                    UnnamedLoc(
+                        mExprHandle: ExprHandle((malloc((((sizeof(int )) *(y))))))
+                        mLocal: 0
+                    ) ] 
+                7	 => [ 
+                    LocSubSet(
+                        mLoc: 
+                        UnnamedLoc(
+                            mExprHandle: ExprHandle((malloc((((sizeof(int )) *(y))))))
+                            mLocal: 0
+                        )
+                        mFull: 0
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+                4	 => 2
+                5	 => 2
+                6	 => 2
+                7	 => 1
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                1	 => [ MemRefHandle(malloc) ] 
+                2	 => [ MemRefHandle(g) ] 
+                3	 => [ MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a)    MemRefHandle(a) ] 
+                4	 => [ MemRefHandle(y)    MemRefHandle(y) ] 
+                5	 => [ MemRefHandle(p)    MemRefHandle(p)    MemRefHandle(p) ] 
+                7	 => [ MemRefHandle(*a)    MemRefHandle(*a) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(malloc)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(g)
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(a)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(y)
+                    ) ] 
+                5	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(p)
+                    ) ] 
+                6	 => [ 
+                    UnnamedRef(
+                        mMemRefType: USE
+                        mExprHandle: ExprHandle((malloc((((sizeof(int )) *(y))))))
+                        mLocal: 0
+                    ) ] 
+                7	 => [ 
+                    Deref(
+                        mMemRefType: DEF
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(p)
+                        )
+                        mNumDeref: 1
+                    )    
+                    SubSetRef(
+                        mMemRefType: USE
+                        mMRE: 
+                        UnnamedRef(
+                            mMemRefType: USE
+                            mExprHandle: ExprHandle((malloc((((sizeof(int )) *(y))))))
+                            mLocal: 0
+                        )
+                    ) ] 
+
+    )
+)

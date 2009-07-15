@@ -1,0 +1,80 @@
+The Procedure ismain
+
+AliasMapXAIF(ProcHandle(main)
+    mIdToLocTupleSetMap: int	 => OA_ptr<std::set<LocTuple> >
+            1	 => [ 
+                LocTuple(
+                    mRange: 
+                    LocRange(
+                        mStart: 2
+                        mEnd: 2
+                    )
+                    mFullOverlap: 1
+                ) ] 
+            2	 => [ 
+                LocTuple(
+                    mRange: 
+                    LocRange(
+                        mStart: 3
+                        mEnd: 3
+                    )
+                    mFullOverlap: 1
+                ) ] 
+            3	 => [ 
+                LocTuple(
+                    mRange: 
+                    LocRange(
+                        mStart: 4
+                        mEnd: 4
+                    )
+                    mFullOverlap: 1
+                ) ] 
+            4	 => [ 
+                LocTuple(
+                    mRange: 
+                    LocRange(
+                        mStart: 5
+                        mEnd: 5
+                    )
+                    mFullOverlap: 1
+                ) ] 
+            5	 => [ 
+                LocTuple(
+                    mRange: 
+                    LocRange(
+                        mStart: 1
+                        mEnd: 1
+                    )
+                    mFullOverlap: 1
+                )    
+                LocTuple(
+                    mRange: 
+                    LocRange(
+                        mStart: 6
+                        mEnd: 6
+                    )
+                    mFullOverlap: 1
+                ) ] 
+
+    mMemRefToIdMap: MemRefHandle	 => int
+            MemRefHandle(locPtr)	 => 1
+            MemRefHandle(a)	 => 2
+            MemRefHandle(locPtr)	 => 1
+            MemRefHandle(b)	 => 3
+            MemRefHandle(locPtr)	 => 1
+            MemRefHandle(c)	 => 4
+            MemRefHandle(locPtr)	 => 1
+            MemRefHandle(a)	 => 2
+            MemRefHandle(b)	 => 3
+            MemRefHandle(c)	 => 4
+            MemRefHandle(a)	 => 2
+            MemRefHandle(a)	 => 2
+            MemRefHandle(b)	 => 3
+            MemRefHandle(c)	 => 4
+            MemRefHandle(locPtr)	 => 1
+            MemRefHandle(*a)	 => 5
+            MemRefHandle(*b)	 => 5
+            MemRefHandle(*c)	 => 5
+            MemRefHandle(*locPtr)	 => 5
+
+)

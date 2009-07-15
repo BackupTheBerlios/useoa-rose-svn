@@ -1,0 +1,40 @@
+
+ParamBindings(
+    mCallerToCalleeMap: CallHandle	 => std::map<ProcHandle, std::map<MemRefHandle, SymHandle> > 
+            CallHandle(f(x))	 => 
+            second: ProcHandle	 => std::map<MemRefHandle, SymHandle> 
+                    ProcHandle(f)	 => 
+                    second: MemRefHandle	 => SymHandle
+                            MemRefHandle(x)	 => SymHandle(n)
+
+
+
+    mCalleeToCallerMap: CallHandle	 => std::map<SymHandle, MemRefHandle> 
+            CallHandle(f(x))	 => 
+            second: SymHandle	 => MemRefHandle
+                    SymHandle(n)	 => MemRefHandle(x)
+
+
+    mProcToFormalSetMap: ProcHandle	 => OA_ptr<std::set<SymHandle> >
+            ProcHandle(f)	 => [ SymHandle(n) ] 
+
+    mCallToActualSetMap: CallHandle	 => OA_ptr<std::set<MemRefHandle> >
+            CallHandle(f(x))	 => [ MemRefHandle(x) ] 
+
+    mCallToExprListMap: CallHandle	 => OA_ptr<std::list<ExprHandle>
+            CallHandle(f(x))	 => [ ExprHandle(x) ] 
+
+    mExprToTreeMap: ExprHandle	 => OA_ptr<ExprTree>
+            ExprHandle(x)	 => 
+            graph EXPRESSION TREE:
+
+                Node 0: ET MemRefNode ( x )
+
+
+    mCallToFormalToActualMap: CallHandle	 => SymToExprHandleMap
+            CallHandle(f(x))	 => 
+            symToExprMap: SymHandle	 => ExprHandle
+                    SymHandle(n)	 => ExprHandle(x)
+
+
+)

@@ -1,0 +1,41 @@
+
+InterActive(
+    Procedure( main ): 
+    ActiveLocSet([ 
+            NamedLoc(
+                mSymHandle: SymHandle(a)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
+            NamedLoc(
+                mSymHandle: SymHandle(b)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            )    
+            NamedLoc(
+                mSymHandle: SymHandle(c)
+                mLocal: 1
+                mFullOverlap: [  ] 
+                mPartOverlap: [  ] 
+            ) ] 
+    )
+    ActiveStmtSet([ 
+            StmtHandle(a =((a <= 0)?b:c);) ] 
+    )
+    ActiveMemRefSet([ 
+            MemRefHandle(a)
+                MemRefHandle(a)
+                MemRefHandle((a <= 0)?b:c) ] 
+    )
+    mNumIterUseful: 2
+    mNumIterVary: 2
+    mNumIterActive: 1
+)
+
+
+Total Iters: 6
+
+*******  end of DoICFGActivity *********
+

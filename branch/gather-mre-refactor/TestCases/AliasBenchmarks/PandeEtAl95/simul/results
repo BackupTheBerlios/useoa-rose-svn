@@ -1,0 +1,43 @@
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 1 possible resolutions 
+	caller:simulation_unit::simulation_unit
+	(this) -> simulation_unit::display()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:simulation_unit::~simulation_unit
+	(this) -> simulation_unit::erase()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 1 possible resolutions 
+	caller:simulation_unit::move
+	(this) -> erase()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 1 possible resolutions 
+	caller:simulation_unit::move
+	(this) -> display()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 1 possible resolutions 
+	caller:pop_around::pop_around
+	(this) -> pop_around::display()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 1 possible resolutions 
+	caller:crawl_around::crawl_around
+	(this) -> crawl_around::display()
+CHA:  Method invocation has 3 possible resolutions 
+Alias analysis:  Method invocation has 1 possible resolutions 
+	caller:main
+	( *((s_grid[x_location])[y_location])).cycle()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:pop_around::~pop_around
+	((class simulation_unit *)(this)) -> ~simulation_unit()
+CHA:  Method invocation has 1 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:crawl_around::~crawl_around
+	((class simulation_unit *)(this)) -> ~simulation_unit()
+definedFunctions: 53
+definedVirtualFunctions: 8
+virtual method callsites: 7
+Summary CHA monomorphic call sites: 4
+Summary Alias analysis monomorphic call sites: 6
+Summary CHA total (virtual) resolutions: 19
+Summary Alias analysis total (virtual) resolutions: 6

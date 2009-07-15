@@ -1,0 +1,21 @@
+# comment in file.test
+# Regression tests for Reaching Constants 
+testname::ReachConsts
+inputdir::TestCases/ReachConstsTests
+outputdir::TestResults/ReachConstsTests
+driverexec::./OATest -edg:w --oa-ReachConsts -c
+
+# list of tests
+#       input file,             status
+test::  constprop_if1a.c,       Checked by PLM 12/27/06
+test::  constprop_if1b.c,       Checked by PLM 12/27/06
+test::  constprop_if1c.c,       Checked by PLM 12/27/06
+test::  constprop_loop1.c,      Checked by PLM 12/27/06
+test::  constprop_loop2.c,      Checked by PLM 12/27/06
+test::  constprop_loop3.c,      Checked by PLM 12/27/06
+
+
+
+
+
+

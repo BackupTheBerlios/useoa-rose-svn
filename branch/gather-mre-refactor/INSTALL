@@ -1,0 +1,24 @@
+================================================================================
+UseOA-ROSE INSTALL
+================================================================================
+
+UseOA-ROSE depends on the OpenAnalysis library and the ROSE library.
+
+The build system for UseOA-ROSE requires that the following two
+environment variables be set:
+    OADIR - should be set to the path to the OpenAnalysis directory
+    ROSEDIR - should be set to the path to a ROSE build directory
+
+Once the above two environment variables are set, UseOA-ROSE can be
+built by typing:
+    % make
+
+The following executables are generated:
+    OATest
+    CtoOA
+    ...
+
+It is also possible to set environment variables such as CXX, CXXFLAGS, etc.
+for incorporation into the build process.  For example,
+    % setenv CXXFLAGS '-g -O0'
+

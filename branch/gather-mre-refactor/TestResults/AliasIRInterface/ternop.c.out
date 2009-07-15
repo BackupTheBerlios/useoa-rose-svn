@@ -1,0 +1,87 @@
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int *r;int *p;int **q;int a;int b;r = &a;p = &b;q = &p;*(((r < *q)?r: *q)) = 42;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int *r;int *p;int **q;int a;int b;r = &a;p = &b;q = &p;*(((r < *q)?r: *q)) = 42;return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *r;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *p;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int **q;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int a;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int b;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("r = &a;") =>
+        [
+            MemRefHandle("r") => 
+                NamedRef( DEF, SymHandle("r"))
+            MemRefHandle("&a") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("a")))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("r = &a;") =>
+        [
+            < NamedRef( DEF, SymHandle("r"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("a"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("p = &b;") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
+            MemRefHandle("&b") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("b")))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("p = &b;") =>
+        [
+            < NamedRef( DEF, SymHandle("p"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("b"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("q = &p;") =>
+        [
+            MemRefHandle("q") => 
+                NamedRef( DEF, SymHandle("q"))
+            MemRefHandle("&p") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("p")))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("q = &p;") =>
+        [
+            < NamedRef( DEF, SymHandle("q"))
+            , AddressOf( USE, NamedRef( USE, SymHandle("p"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("*(((r < *q)?r: *q)) = 42;") =>
+        [
+            MemRefHandle("r") => 
+                NamedRef( USE, SymHandle("r"))
+            MemRefHandle("q") => 
+                NamedRef( USE, SymHandle("q"))
+            MemRefHandle("q") => 
+                NamedRef( USE, SymHandle("q"))
+            MemRefHandle("*q") => 
+                Deref( USE, NamedRef( USE, SymHandle("q")), 1)
+            MemRefHandle("*(((r < *q)?r: *q))") => 
+                Deref( DEF, NamedRef( USE, SymHandle("r")), 1)
+            MemRefHandle("*(((r < *q)?r: *q))") => 
+                Deref( DEF, Deref( USE, NamedRef( USE, SymHandle("q")), 1), 1)
+            MemRefHandle("((r < *q)?r: *q)") => 
+                NamedRef( USE, SymHandle("r"))
+            MemRefHandle("((r < *q)?r: *q)") => 
+                Deref( USE, NamedRef( USE, SymHandle("q")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("r"), local > }
+    LOCATION = { < SymHandle("p"), local > }
+    LOCATION = { < SymHandle("q"), local > }
+    LOCATION = { < SymHandle("a"), local > }
+    LOCATION = { < SymHandle("b"), local > }

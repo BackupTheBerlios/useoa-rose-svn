@@ -1,0 +1,106 @@
+
+========================stmt============================
+
+stmt = struct ::exception {};
+
+========================stmt============================
+
+stmt = int main(){double a;double f;double t;double x;foo(a,f,x,t);return 0;}
+
+========================stmt============================
+
+stmt = {double a;double f;double t;double x;foo(a,f,x,t);return 0;}
+
+========================stmt============================
+
+stmt = double a;
+
+========================stmt============================
+
+stmt = double f;
+
+========================stmt============================
+
+stmt = double t;
+
+========================stmt============================
+
+stmt = double x;
+
+========================stmt============================
+
+stmt = foo(a,f,x,t);
+
+	--expr----------------------------------------
+	  expr = a
+	----------------------------------------------
+graph EXPRESSION TREE:
+
+    Node 0: ET MemRefNode ( a )
+
+	--expr----------------------------------------
+	  expr = f
+	----------------------------------------------
+graph EXPRESSION TREE:
+
+    Node 0: ET MemRefNode ( f )
+
+	--expr----------------------------------------
+	  expr = x
+	----------------------------------------------
+graph EXPRESSION TREE:
+
+    Node 0: ET MemRefNode ( x )
+
+	--expr----------------------------------------
+	  expr = t
+	----------------------------------------------
+graph EXPRESSION TREE:
+
+    Node 0: ET MemRefNode ( t )
+
+========================stmt============================
+
+stmt = return 0;
+
+========================stmt============================
+
+stmt = void foo(double a,double f,double x,double t){int i;a =((a * x) + sin(t));}
+
+========================stmt============================
+
+stmt = {int i;a =((a * x) + sin(t));}
+
+========================stmt============================
+
+stmt = int i;
+
+========================stmt============================
+
+stmt = a =((a * x) + sin(t));
+
+	--expr----------------------------------------
+	  expr = t
+	----------------------------------------------
+graph EXPRESSION TREE:
+
+    Node 0: ET MemRefNode ( t )
+
+	--expr----------------------------------------
+	  expr = ((a * x) + sin(t))
+	----------------------------------------------
+graph EXPRESSION TREE:
+
+    Node 0: ET OpNode ( + )
+    Edge: 
+        0 => 
+        Node 1: ET OpNode ( * )
+        Edge: 
+            1 => 
+            Node 2: ET MemRefNode ( a )
+        Edge: 
+            1 => 
+            Node 3: ET MemRefNode ( x )
+    Edge: 
+        0 => 
+        Node 4: ET CallNode ( sin(t) )

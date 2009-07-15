@@ -1,0 +1,56 @@
+
+PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline Foo::Foo(){(this) -> mX = 5;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{(this) -> mX = 5;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("(this) -> Foo::mX = 5;") =>
+        [
+            MemRefHandle("(this)") => 
+                NamedRef( USE, SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"))
+            MemRefHandle("(this) -> Foo::mX") => 
+                FieldAccess( DEF, Deref( USE, NamedRef( USE, SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_")), 1), mX)
+        ] }
+    LOCATION = { < SymHandle("this::::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), local > }
+    LOCATION = { < SymHandle("method:::Foo::Foo__Foo__scope__Foo____MFb_Foo__Fb_v_Gb__Fe_"), not local > }
+
+PROCEDURE = { < ProcHandle("::Foo::~Foo"), SymHandle("method:::Foo::~Foo__L0R") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::::Foo::~Foo__L0R") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline Foo::~Foo(){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("this::::Foo::~Foo__L0R"), local > }
+    LOCATION = { < SymHandle("method:::Foo::~Foo__L0R"), not local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class ::Foo {public: inline Foo::Foo(){(this) -> mX = 5;}inline Foo::~Foo(){}int mX;};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int main(){return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("main"), not local > }

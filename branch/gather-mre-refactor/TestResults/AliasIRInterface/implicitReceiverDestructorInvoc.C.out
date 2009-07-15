@@ -1,0 +1,105 @@
+
+PROCEDURE = { < ProcHandle("::Base::Base"), SymHandle("method:::Base::Base__L0R") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::::Base::Base__L0R") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline Base::Base(){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("this::::Base::Base__L0R"), local > }
+    LOCATION = { < SymHandle("method:::Base::Base__L0R"), not local > }
+
+PROCEDURE = { < ProcHandle("::Base::~Base"), SymHandle("method:::Base::~Base__L1R") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::::Base::~Base__L1R") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline Base::~Base(){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("this::::Base::~Base__L1R"), local > }
+    LOCATION = { < SymHandle("method:::Base::~Base__L1R"), not local > }
+
+PROCEDURE = { < ProcHandle("::Foo::Foo"), SymHandle("method:::Foo::Foo__L2R") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::::Foo::Foo__L2R") >
+            < 1, SymHandle("x") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline Foo::Foo(int x){}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{}") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("this::::Foo::Foo__L2R"), local > }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("method:::Foo::Foo__L2R"), not local > }
+
+PROCEDURE = { < ProcHandle("::Foo::~Foo"), SymHandle("method:::Foo::~Foo__L3R") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("this::::Foo::~Foo__L3R") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("public: inline Foo::~Foo(){(this) -> Base::~Base();}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{(this) -> Base::~Base();}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("(this) -> Base::~Base();") =>
+        [
+            MemRefHandle("(this)") => 
+                NamedRef( USE, SymHandle("this::::Foo::~Foo__L3R"))
+            MemRefHandle("(this) -> Base::~Base") => 
+                NamedRef( USE, SymHandle("method:::Base::~Base__L1R"))
+        ] }
+    CALLSITES = { StmtHandle("(this) -> Base::~Base();") =>
+        [
+            CallHandle("(this) -> Base::~Base()") => 
+                NamedRef( USE, SymHandle("method:::Base::~Base__L1R"))
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("(this) -> Base::~Base()") =>
+        [
+            < 0, NamedRef( USE, SymHandle("this::::Foo::~Foo__L3R")) >
+        ] }
+    LOCATION = { < SymHandle("this::::Foo::~Foo__L3R"), local > }
+    LOCATION = { < SymHandle("method:::Base::~Base__L1R"), not local > }
+    LOCATION = { < SymHandle("method:::Foo::~Foo__L3R"), not local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("class ::Base {public: inline Base::Base(){}inline Base::~Base(){}};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("class ::Foo : public Base{public: inline Foo::Foo(int x){}inline Foo::~Foo(){(this) -> Base::~Base();}};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int main(){return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("main"), not local > }

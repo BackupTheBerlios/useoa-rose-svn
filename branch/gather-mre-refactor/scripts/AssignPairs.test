@@ -1,0 +1,10 @@
+# comment in file.test
+# Regression tests for AssignPairs
+testname::AssignPairs
+inputdir::TestCases/AssignPairs
+outputdir::TestResults/AssignPairs
+driverexec::./OATest -edg:w --oa-AssignPairs -c
+
+# list of tests
+#       input file,     status
+test::  integer_assignment.c,         

@@ -1,0 +1,460 @@
+
+1. CHESS
+
+Method invocation has 6 possible resolutions 
+( *((((this) -> config)[i])[j])).Rep()
+
+
+2. DRIV1
+
+Method invocation has 3 possible resolutions 
+( *((this) -> first)).print_me()
+Method invocation has 3 possible resolutions 
+( *((this) -> second)).print_me()
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(at)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(at)
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(at)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(at)
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(at)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(at)
+Method invocation has 3 possible resolutions 
+( *c.const_expr::deriv(("x"))).print_me()
+Method invocation has 3 possible resolutions 
+( *x.var_expr::deriv(("x"))).print_me()
+Method invocation has 3 possible resolutions 
+( *simple.prod_expr::deriv(("y"))).print_me()
+Method invocation has 3 possible resolutions 
+( *simple.prod_expr::deriv(("x"))).print_me()
+Method invocation has 3 possible resolutions 
+( *((this) -> first)).print_me()
+Method invocation has 3 possible resolutions 
+( *((this) -> second)).print_me()
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(at)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(at)
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(at)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(at)
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(at)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(at)
+Method invocation has 3 possible resolutions 
+( *c.const_expr::deriv(("x"))).print_me()
+Method invocation has 3 possible resolutions 
+( *x.var_expr::deriv(("x"))).print_me()
+Method invocation has 3 possible resolutions 
+( *simple.prod_expr::deriv(("y"))).print_me()
+Method invocation has 3 possible resolutions 
+( *simple.prod_expr::deriv(("x"))).print_me()
+
+
+3. DRIV2
+
+
+
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(numb)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(numb)
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(numb)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(numb)
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(numb)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(numb)
+Method invocation has 3 possible resolutions 
+( *((this) -> first)).print_me()
+Method invocation has 3 possible resolutions 
+( *((this) -> second)).print_me()
+Method invocation has 3 possible resolutions 
+(dvfirst -> isconst())
+Method invocation has 5 possible resolutions 
+dvfirst -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvfirst -> isconst())
+Method invocation has 5 possible resolutions 
+dvfirst -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvfirst -> isconst())
+Method invocation has 5 possible resolutions 
+dvfirst -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvfirst -> isconst())
+Method invocation has 5 possible resolutions 
+dvfirst -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval((0))
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval((0))
+Method invocation has 3 possible resolutions 
+(dvfirst -> isconst())
+Method invocation has 5 possible resolutions 
+dvfirst -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+( *c.const_expr::deriv(("x"))).print_me()
+Method invocation has 3 possible resolutions 
+( *x.var_expr::deriv(("x"))).print_me()
+Method invocation has 3 possible resolutions 
+( *simple.prod_expr::deriv(("y"))).print_me()
+Method invocation has 3 possible resolutions 
+( *simple.prod_expr::deriv(("x"))).print_me()
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(numb)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(numb)
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(numb)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(numb)
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval(numb)
+Method invocation has 5 possible resolutions 
+( *((this) -> second)).eval(numb)
+Method invocation has 3 possible resolutions 
+( *((this) -> first)).print_me()
+Method invocation has 3 possible resolutions 
+( *((this) -> second)).print_me()
+Method invocation has 3 possible resolutions 
+(dvfirst -> isconst())
+Method invocation has 5 possible resolutions 
+dvfirst -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvfirst -> isconst())
+Method invocation has 5 possible resolutions 
+dvfirst -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvfirst -> isconst())
+Method invocation has 5 possible resolutions 
+dvfirst -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvfirst -> isconst())
+Method invocation has 5 possible resolutions 
+dvfirst -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval((0))
+Method invocation has 5 possible resolutions 
+( *((this) -> first)).eval((0))
+Method invocation has 3 possible resolutions 
+(dvfirst -> isconst())
+Method invocation has 5 possible resolutions 
+dvfirst -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+(dvsecond -> isconst())
+Method invocation has 5 possible resolutions 
+dvsecond -> eval((0))
+Method invocation has 3 possible resolutions 
+( *c.const_expr::deriv(("x"))).print_me()
+Method invocation has 3 possible resolutions 
+( *x.var_expr::deriv(("x"))).print_me()
+Method invocation has 3 possible resolutions 
+( *simple.prod_expr::deriv(("y"))).print_me()
+Method invocation has 3 possible resolutions 
+( *simple.prod_expr::deriv(("x"))).print_me()
+
+
+
+4. family
+
+Method invocation has 3 possible resolutions 
+(this) -> Parent::answerName()
+Method invocation has 2 possible resolutions 
+(this) -> Child::answerName()
+Method invocation has 3 possible resolutions 
+f0.answerName()
+Method invocation has 3 possible resolutions 
+f1.answerName()
+Method invocation has 3 possible resolutions 
+f2.answerName()
+
+
+5. fsm
+
+compilation error
+
+
+
+6. garage
+
+Method invocation has 3 possible resolutions 
+( *(((this) -> parked)[bay])).identify()
+
+
+
+7. greed
+
+compilation error
+
+
+8. life
+
+
+Method invocation has 4 possible resolutions 
+( *((w[((this) -> row) + i])[((this) -> column) + j])).who()
+Method invocation has 4 possible resolutions 
+( *((w_old[i])[j])).next(w_old)
+
+
+9. np
+
+compilation error
+
+
+
+10. objects
+
+
+Method invocation has 3 possible resolutions 
+((*(this))==o)
+Method invocation has 2 possible resolutions 
+(this) -> Insert(p,(this) -> Nelem())
+Method invocation has 3 possible resolutions 
+(this) -> Append(p)
+Method invocation has 2 possible resolutions 
+(this) -> Insert(o,pos)
+Method invocation has 2 possible resolutions 
+(this) -> Get((this) -> CurInd())
+Method invocation has 2 possible resolutions 
+(this) -> Get(0)
+Method invocation has 2 possible resolutions 
+(this) -> Get(((this) -> CurInd() + 1))
+Method invocation has 2 possible resolutions 
+(this) -> Get(((this) -> CurInd() - 1))
+Method invocation has 2 possible resolutions 
+(this) -> Get(((this) -> Nelem() - 1))
+Method invocation has 2 possible resolutions 
+(this) -> Get(pos)
+Method invocation has 3 possible resolutions 
+(obj== *(this) -> Get(i))
+Method invocation has 2 possible resolutions 
+(this) -> Get(i)
+Method invocation has 6 possible resolutions 
+tblobj.Type()
+Method invocation has 3 possible resolutions 
+(this) -> Type()
+Method invocation has 2 possible resolutions 
+tblptr -> Get(i)
+Method invocation has 2 possible resolutions 
+(this) -> Get(i)
+Method invocation has 2 possible resolutions 
+(this) -> Get(idx)
+Method invocation has 3 possible resolutions 
+((*p)==o)
+Method invocation has 6 possible resolutions 
+o.Type()
+Method invocation has 2 possible resolutions 
+(this) -> Type()
+Method invocation has 6 possible resolutions 
+o.Type()
+Method invocation has 2 possible resolutions 
+a -> Assign((a1))
+Method invocation has 2 possible resolutions 
+a -> Assign((a2),2)
+Method invocation has 2 possible resolutions 
+(a -> Fetch(2))
+Method invocation has 2 possible resolutions 
+a3 -> Type()
+
+
+11. ocean
+
+compilation error
+
+
+
+12. office
+
+Method invocation has 4 possible resolutions 
+staff1 -> display()
+Method invocation has 4 possible resolutions 
+staff2 -> display()
+Method invocation has 4 possible resolutions 
+staff3 -> display()
+Method invocation has 4 possible resolutions 
+staff4 -> display()
+Method invocation has 4 possible resolutions 
+staff1 -> display()
+Method invocation has 4 possible resolutions 
+staff2 -> display()
+Method invocation has 4 possible resolutions 
+staff3 -> display()
+Method invocation has 4 possible resolutions 
+staff4 -> display()
+
+
+13. primes
+
+Method invocation has 4 possible resolutions 
+( *((this) -> source)).out()
+Method invocation has 4 possible resolutions 
+( *((this) -> source)).out()
+
+
+14. shapes
+
+Method invocation has 3 possible resolutions 
+p -> draw()
+Method invocation has 2 possible resolutions 
+q -> north()
+Method invocation has 2 possible resolutions 
+p -> south()
+Method invocation has 3 possible resolutions 
+p -> move(((n -> x) - (s -> x)),(((n -> y) - (s -> y)) + 1))
+Method invocation has 2 possible resolutions 
+(this) -> rectangle::draw()
+Method invocation has 2 possible resolutions 
+(this) -> rectangle::move(a,b)
+Method invocation has 3 possible resolutions 
+p3 -> move((-10),(-10))
+Method invocation has 3 possible resolutions 
+p -> draw()
+Method invocation has 2 possible resolutions 
+q -> north()
+Method invocation has 2 possible resolutions 
+p -> south()
+Method invocation has 3 possible resolutions 
+p -> move(((n -> x) - (s -> x)),(((n -> y) - (s -> y)) + 1))
+Method invocation has 2 possible resolutions 
+(this) -> rectangle::draw()
+Method invocation has 2 possible resolutions 
+(this) -> rectangle::move(a,b)
+Method invocation has 3 possible resolutions 
+p3 -> move((-10),(-10))
+
+
+15. simul
+
+Method invocation has 3 possible resolutions 
+(this) -> simulation_unit::display()
+Method invocation has 3 possible resolutions 
+(this) -> simulation_unit::erase()
+Method invocation has 3 possible resolutions 
+(this) -> erase()
+Method invocation has 3 possible resolutions 
+(this) -> display()
+Method invocation has 3 possible resolutions 
+( *((s_grid[x_location])[y_location])).cycle()
+
+
+16. tree
+
+Method invocation has 4 possible resolutions 
+( *((this) -> nodePtr)).nodeValue()
+
+
+17. vcirc
+
+Method invocation has 2 possible resolutions 
+(this) -> Hide()
+Method invocation has 2 possible resolutions 
+(this) -> Show()

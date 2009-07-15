@@ -1,0 +1,69 @@
+
+InterAliasMap(
+    AliasMap(
+        mProcHandle: ProcHandle(main)
+        mNumSets: 4
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(a)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(b)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [  ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 2
+                3	 => 2
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                1	 => [ MemRefHandle(a) ] 
+                2	 => [ MemRefHandle(b) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(a)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(b)
+                    ) ] 
+                3	 => [ 
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: DEF
+                            mSymHandle: SymHandle(a)
+                        )
+                        mNumDeref: 1
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(b)
+                        )
+                        mNumDeref: 1
+                    ) ] 
+
+    )
+)

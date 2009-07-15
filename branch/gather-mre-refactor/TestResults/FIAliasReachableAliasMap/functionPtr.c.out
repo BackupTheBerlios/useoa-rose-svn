@@ -1,0 +1,95 @@
+
+InterAliasMap(
+    AliasMap(
+        mProcHandle: ProcHandle(main)
+        mNumSets: 5
+        mStartId: 0
+        mIdToLocSetMap: int	 => OA::OA_ptr<LocSet> 
+                0	 => [ 
+                    UnknownLoc(
+                    ) ] 
+                1	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(read)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                2	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(foo)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    )    
+                    NamedLoc(
+                        mSymHandle: SymHandle(bar)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                3	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(fp)
+                        mLocal: 0
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+                4	 => [ 
+                    NamedLoc(
+                        mSymHandle: SymHandle(x)
+                        mLocal: 1
+                        mFullOverlap: [  ] 
+                        mPartOverlap: [  ] 
+                    ) ] 
+
+        mIdToSetStatusMap: int	 => AliasResultType
+                0	 => 1
+                1	 => 2
+                2	 => 1
+                3	 => 2
+                4	 => 2
+
+        mIdToMemRefSetMap: int	 => MemRefSet
+                1	 => [ MemRefHandle(read) ] 
+                2	 => [ MemRefHandle(( *fp)) ] 
+                3	 => [ MemRefHandle(fp)    MemRefHandle(fp)    MemRefHandle(fp) ] 
+                4	 => [ MemRefHandle(x)    MemRefHandle(x) ] 
+
+        mIdToMRESetMap: int	 => MemRefExprSet
+                1	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(read)
+                    ) ] 
+                2	 => [ 
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(foo)
+                    )    
+                    NamedRef(
+                        mMemRefType: USE
+                        mSymHandle: SymHandle(bar)
+                    )    
+                    Deref(
+                        mMemRefType: USE
+                        mMRE: 
+                        NamedRef(
+                            mMemRefType: USE
+                            mSymHandle: SymHandle(fp)
+                        )
+                        mNumDeref: 1
+                    ) ] 
+                3	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(fp)
+                    ) ] 
+                4	 => [ 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(x)
+                    ) ] 
+
+    )
+)

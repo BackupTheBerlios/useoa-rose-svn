@@ -1,0 +1,28 @@
+# comment in file.test
+# Regression tests for CallGraph generation
+testname::CallGraph
+inputdir::TestCases/CallGraphTests
+outputdir::TestResults/CallGraph
+driverexec::./OATest -edg:w --oa-CallGraph -c
+
+# list of tests
+#       input file,     status
+test::  swap.c,         checked by BK 7/10/06
+test::  functionPtr.c,  checked by BK 7/10/06 
+test::  functionPtr1.c, checked by BK 7/10/06
+test::  functionPtr2.c, checked by BK 7/10/06
+test::  functionPtr3.c, checked by BK 7/10/06
+test::  functionPtr4.c, checked by BK 7/10/06
+test::  functionPtr5.c, checked by BK 7/10/06
+test::  functionPtr6.c, checked by BK 7/10/06
+test::  functions2.c,   checked by BK 7/10/06
+test::  functions3.c,   checked by BK 7/10/06
+#test::  functions3.cpp, checked by BK 7/10/06 on Okapi, Rose + GCC 3.2
+test::  functions4.c,   checked by BK 7/10/06
+test::  functions5.c,   checked by BK 7/10/06
+test::  functions6.c,   checked by BK 7/10/06
+test::  activity_proc_call1.C,     checked by BK 7/10/06
+test::  interalias_proc_call1.C,   checked by BK 7/10/06
+test::  nested_calls_1.C,          checked by BK 7/10/06
+test::  multi_func_calls.c,        checked by BK 7/10/06
+test::  multi_func_calls_2.c,      checked by BK 7/10/06

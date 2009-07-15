@@ -1,0 +1,32 @@
+"/s/bach/e/proj/oadev/stone-hd/useoa-rose/TestCases/AliasTests/retPtr3.c", line 48: error: 
+          identifier "isalpha" is undefined
+          if(isalpha(word[0]))
+             ^
+
+"/s/bach/e/proj/oadev/stone-hd/useoa-rose/TestCases/AliasTests/retPtr3.c", line 50: error: 
+          identifier "binsearch" is undefined
+              if((p = binsearch(word, keytab, NKEYS)) != NULL)
+                      ^
+
+"/s/bach/e/proj/oadev/stone-hd/useoa-rose/TestCases/AliasTests/retPtr3.c", line 70: error: 
+          declaration is incompatible with previous "binsearch" (declared at
+          line 50)
+  struct key *binsearch(char *word, struct key *tab, int n)
+              ^
+
+"/s/bach/e/proj/oadev/stone-hd/useoa-rose/TestCases/AliasTests/retPtr3.c", line 105: error: 
+          identifier "isspace" is undefined
+      while(isspace( c = getch()))
+            ^
+
+"/s/bach/e/proj/oadev/stone-hd/useoa-rose/TestCases/AliasTests/retPtr3.c", line 115: error: 
+          identifier "isalpha" is undefined
+      if(!isalpha(c))
+          ^
+
+"/s/bach/e/proj/oadev/stone-hd/useoa-rose/TestCases/AliasTests/retPtr3.c", line 123: error: 
+          identifier "isalnum" is undefined
+          if(!isalnum(*w = getch()))
+              ^
+
+Errors in Processing: (frontendErrorLevel > 3)

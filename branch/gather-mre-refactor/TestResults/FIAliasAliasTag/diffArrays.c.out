@@ -1,0 +1,11 @@
+"/s/bach/e/proj/oadev/stone-hd/useoa-rose/TestCases/AliasTests/diffArrays.c", line 27: error: 
+          identifier "new" is undefined
+    b = new int[5];
+        ^
+
+"/s/bach/e/proj/oadev/stone-hd/useoa-rose/TestCases/AliasTests/diffArrays.c", line 27: error: 
+          expected a ";"
+    b = new int[5];
+            ^
+
+Errors in Processing: (frontendErrorLevel > 3)

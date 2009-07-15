@@ -1,0 +1,11 @@
+CHA:  Method invocation has 6 possible resolutions 
+Alias analysis:  Method invocation has 0 possible resolutions 
+	caller:Board::Dump
+	( *((((this) -> config)[i])[j])).Rep()
+definedFunctions: 19
+definedVirtualFunctions: 0
+invokedVirtualFunctions: 1
+Summary CHA monomorphic call sites: 0
+Summary Alias analysis monomorphic call sites: 0
+Summary CHA total (virtual) resolutions: 6
+Summary Alias analysis total (virtual) resolutions: 0

@@ -1,0 +1,76 @@
+
+AliasTagResults(
+    mMREToTags: OA::OA_ptr<MemRefExpr> 	 => OA::OA_ptr<std::set<AliasTag> > 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(j)
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(k)
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(i)
+            )	 => [ 
+                Tag(
+                    mTagID: 3
+                ) ] 
+
+    mTagToMREs: AliasTag	 => OA::OA_ptr<std::set<OA::OA_ptr<MemRefExpr> > > 
+            
+            Tag(
+                mTagID: 1
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(j)
+                ) ] 
+            
+            Tag(
+                mTagID: 2
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(k)
+                ) ] 
+            
+            Tag(
+                mTagID: 3
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(i)
+                ) ] 
+
+    mMemRefToTags: MemRefHandle	 => OA::OA_ptr<std::set<AliasTag> > 
+
+    mMREToMustFlag: OA::OA_ptr<MemRefExpr> 	 => bool
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(j)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(k)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(i)
+            )	 => 1
+
+    mMemRefToMustFlag: MemRefHandle	 => bool
+
+)

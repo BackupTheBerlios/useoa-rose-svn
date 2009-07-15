@@ -1,0 +1,189 @@
+
+PROCEDURE = { < ProcHandle("my_strcpy"), SymHandle("my_strcpy") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("destination") >
+            < 1, SymHandle("source") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("char *my_strcpy(char *destination,char *source){char *p = destination;while((( *source)) != '\0'){*(p++) = *(source++);}*p =('\0');return destination;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{char *p = destination;while((( *source)) != '\0'){*(p++) = *(source++);}*p =('\0');return destination;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("char *p = destination;") =>
+        [
+            MemRefHandle("destination") => 
+                NamedRef( USE, SymHandle("destination"))
+            MemRefHandle("p") => 
+                NamedRef( DEF, SymHandle("p"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("char *p = destination;") =>
+        [
+            < NamedRef( DEF, SymHandle("p"))
+            , NamedRef( USE, SymHandle("destination")) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("while((( *source)) != '\0'){*(p++) = *(source++);}") =>
+        [
+            MemRefHandle("source") => 
+                NamedRef( USE, SymHandle("source"))
+            MemRefHandle("( *source)") => 
+                Deref( USE, NamedRef( USE, SymHandle("source")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("{*(p++) = *(source++);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("*(p++) = *(source++);") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( USEDEF, SymHandle("p"))
+            MemRefHandle("source") => 
+                NamedRef( USEDEF, SymHandle("source"))
+            MemRefHandle("*(p++)") => 
+                SubSetRef( DEF, Deref( USE, NamedRef( USE, SymHandle("p")), 1))
+            MemRefHandle("*(source++)") => 
+                SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("source")), 1))
+            MemRefHandle("(p++)") => 
+                AddressOf( USE, SubSetRef( DEF, Deref( USE, NamedRef( USE, SymHandle("p")), 1)))
+            MemRefHandle("(source++)") => 
+                AddressOf( USE, SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("source")), 1)))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("*(p++) = *(source++);") =>
+        [
+            < NamedRef( USEDEF, SymHandle("source"))
+            , AddressOf( USE, SubSetRef( USE, Deref( USE, NamedRef( USE, SymHandle("source")), 1))) >
+            < NamedRef( USEDEF, SymHandle("p"))
+            , AddressOf( USE, SubSetRef( DEF, Deref( USE, NamedRef( USE, SymHandle("p")), 1))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("*p =('\0');") =>
+        [
+            MemRefHandle("p") => 
+                NamedRef( USE, SymHandle("p"))
+            MemRefHandle("*p") => 
+                Deref( DEF, NamedRef( USE, SymHandle("p")), 1)
+        ] }
+    MEMREFEXPRS = { StmtHandle("return destination;") =>
+        [
+            MemRefHandle("destination") => 
+                NamedRef( USE, SymHandle("destination"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("return destination;") =>
+        [
+            < NamedRef( DEF, SymHandle("my_strcpy"))
+            , NamedRef( USE, SymHandle("destination")) >
+        ] }
+    LOCATION = { < SymHandle("my_strcpy"), not local > }
+    LOCATION = { < SymHandle("destination"), local > }
+    LOCATION = { < SymHandle("source"), local > }
+    LOCATION = { < SymHandle("p"), local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_step_data ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct __gconv_trans_data ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_trans_data {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_step {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct ::__gconv_step_data {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct _IO_FILE ;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct ::_IO_marker {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("struct ::_IO_FILE {};") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stdin_;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stdout_;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("extern struct _IO_FILE_plus _IO_2_1_stderr_;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int main(){char strA[] = "Laurel";char strB[] = "Hardy";char *cptr = my_strcpy(strB,strA);puts((strB));}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{char strA[] = "Laurel";char strB[] = "Hardy";char *cptr = my_strcpy(strB,strA);puts((strB));}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("char strA[] = "Laurel";") =>
+        [
+            MemRefHandle(""Laurel"") => 
+                SubSetRef( USE, UnnamedRef( USE, ExprHandle(""Laurel""), 1, ProcHandle("main")))
+            MemRefHandle("strA") => 
+                NamedRef( DEF, SymHandle("strA"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("char strB[] = "Hardy";") =>
+        [
+            MemRefHandle(""Hardy"") => 
+                SubSetRef( USE, UnnamedRef( USE, ExprHandle(""Hardy""), 1, ProcHandle("main")))
+            MemRefHandle("strB") => 
+                NamedRef( DEF, SymHandle("strB"))
+        ] }
+    MEMREFEXPRS = { StmtHandle("char *cptr = my_strcpy(strB,strA);") =>
+        [
+            MemRefHandle("strB") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("strB")))
+            MemRefHandle("strA") => 
+                AddressOf( USE, NamedRef( USE, SymHandle("strA")))
+            MemRefHandle("my_strcpy") => 
+                NamedRef( USE, SymHandle("my_strcpy"))
+            MemRefHandle("my_strcpy(strB,strA)") => 
+                NamedRef( USE, SymHandle("my_strcpy"))
+            MemRefHandle("cptr") => 
+                NamedRef( DEF, SymHandle("cptr"))
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("char *cptr = my_strcpy(strB,strA);") =>
+        [
+            < NamedRef( DEF, SymHandle("cptr"))
+            , NamedRef( USE, SymHandle("my_strcpy")) >
+        ] }
+    CALLSITES = { StmtHandle("char *cptr = my_strcpy(strB,strA);") =>
+        [
+            CallHandle("my_strcpy(strB,strA)") => 
+                NamedRef( USE, SymHandle("my_strcpy"))
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("my_strcpy(strB,strA)") =>
+        [
+            < 0, AddressOf( USE, NamedRef( USE, SymHandle("strB"))) >
+            < 1, AddressOf( USE, NamedRef( USE, SymHandle("strA"))) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("puts((strB));") =>
+        [
+            MemRefHandle("strB") => 
+                NamedRef( USE, SymHandle("strB"))
+            MemRefHandle("puts") => 
+                NamedRef( USE, SymHandle("puts"))
+        ] }
+    CALLSITES = { StmtHandle("puts((strB));") =>
+        [
+            CallHandle("puts((strB))") => 
+                NamedRef( USE, SymHandle("puts"))
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("puts((strB))") =>
+        [
+            < 0, NamedRef( USE, SymHandle("strB")) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("return '\0';") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("puts"), not local > }
+    LOCATION = { < SymHandle("my_strcpy"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }
+    LOCATION = { < SymHandle("strA"), local > }
+    LOCATION = { < SymHandle("strB"), local > }
+    LOCATION = { < SymHandle("cptr"), local > }

@@ -1,0 +1,56 @@
+
+UDDUChainsStandard(
+    mUDChainForStmt: StmtHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Use StatementHandle : StmtHandle(x =(y + y);)	 => 
+            Define Statements: [ StmtHandle(y =(5);) ] 
+            
+            Use StatementHandle : StmtHandle(z = y;)	 => 
+            Define Statements: [ StmtHandle(y =(5);)    StmtHandle(y =(3);) ] 
+            
+            Use StatementHandle : StmtHandle(if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);})	 => 
+            Define Statements: [ StmtHandle(x =(2);) ] 
+
+    mDUChainForStmt: StmtHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Def StmtHandle: StmtHandle(x =(2);)	 => 
+            Use Statements: [ StmtHandle(if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);}) ] 
+            
+            Def StmtHandle: StmtHandle(y =(5);)	 => 
+            Use Statements: [ StmtHandle(x =(y + y);)    StmtHandle(z = y;) ] 
+            
+            Def StmtHandle: StmtHandle(y =(3);)	 => 
+            Use Statements: [ StmtHandle(z = y;) ] 
+
+    mUDChainForMemRef: MemRefHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Use MemRefHandle: MemRefHandle(x)	 => 
+            Def Statements: [ StmtHandle(x =(2);) ] 
+            
+            Use MemRefHandle: MemRefHandle(y)	 => 
+            Def Statements: [ StmtHandle(y =(5);) ] 
+            
+            Use MemRefHandle: MemRefHandle(y)	 => 
+            Def Statements: [ StmtHandle(y =(5);) ] 
+            
+            Use MemRefHandle: MemRefHandle(y)	 => 
+            Def Statements: [ StmtHandle(y =(5);)    StmtHandle(y =(3);) ] 
+
+    mDUChainForMemRef: MemRefHandle	 => OA::OA_ptr<StmtSet> 
+            
+            Def MemRefHandle: MemRefHandle(x)	 => 
+            Use Statements: [ StmtHandle(if(x >=(0)) {y =(5);x =(y + y);}else {y =(3);}) ] 
+            
+            Def MemRefHandle: MemRefHandle(y)	 => 
+            Use Statements: [ StmtHandle(x =(y + y);)    StmtHandle(z = y;) ] 
+            
+            Def MemRefHandle: MemRefHandle(x)	 => 
+            Use Statements: [  ] 
+            
+            Def MemRefHandle: MemRefHandle(y)	 => 
+            Use Statements: [ StmtHandle(z = y;) ] 
+            
+            Def MemRefHandle: MemRefHandle(z)	 => 
+            Use Statements: [  ] 
+
+    mMemRefToStmtMap: MemRefHandle	 => StmtHandle

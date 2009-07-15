@@ -1,0 +1,60 @@
+
+ParamBindings(
+    mCallerToCalleeMap: CallHandle	 => std::map<ProcHandle, std::map<MemRefHandle, SymHandle> > 
+            CallHandle(swap(a,i,(i + 1)))	 => 
+            second: ProcHandle	 => std::map<MemRefHandle, SymHandle> 
+                    ProcHandle(swap)	 => 
+                    second: MemRefHandle	 => SymHandle
+                            MemRefHandle(a)	 => SymHandle(v)
+                            MemRefHandle(i)	 => SymHandle(i)
+
+
+
+    mCalleeToCallerMap: CallHandle	 => std::map<SymHandle, MemRefHandle> 
+            CallHandle(swap(a,i,(i + 1)))	 => 
+            second: SymHandle	 => MemRefHandle
+                    SymHandle(v)	 => MemRefHandle(a)
+                    SymHandle(i)	 => MemRefHandle(i)
+
+
+    mProcToFormalSetMap: ProcHandle	 => OA_ptr<std::set<SymHandle> >
+            ProcHandle(swap)	 => [ SymHandle(v)    SymHandle(i)    SymHandle(j) ] 
+
+    mCallToActualSetMap: CallHandle	 => OA_ptr<std::set<MemRefHandle> >
+            CallHandle(swap(a,i,(i + 1)))	 => [ MemRefHandle(a)    MemRefHandle(i) ] 
+
+    mCallToExprListMap: CallHandle	 => OA_ptr<std::list<ExprHandle>
+            CallHandle(swap(a,i,(i + 1)))	 => [ ExprHandle(a)    ExprHandle(i)    ExprHandle((i + 1)) ] 
+
+    mExprToTreeMap: ExprHandle	 => OA_ptr<ExprTree>
+            ExprHandle(a)	 => 
+            graph EXPRESSION TREE:
+
+                Node 0: ET MemRefNode ( a )
+
+            ExprHandle(i)	 => 
+            graph EXPRESSION TREE:
+
+                Node 0: ET MemRefNode ( i )
+
+            ExprHandle((i + 1))	 => 
+            graph EXPRESSION TREE:
+
+                Node 0: ET OpNode ( + )
+                Edge: 
+                    0 => 
+                    Node 1: ET MemRefNode ( i )
+                Edge: 
+                    0 => 
+                    Node 2: ET ConstValNode ( 1 )
+
+
+    mCallToFormalToActualMap: CallHandle	 => SymToExprHandleMap
+            CallHandle(swap(a,i,(i + 1)))	 => 
+            symToExprMap: SymHandle	 => ExprHandle
+                    SymHandle(v)	 => ExprHandle(a)
+                    SymHandle(i)	 => ExprHandle(i)
+                    SymHandle(j)	 => ExprHandle((i + 1))
+
+
+)

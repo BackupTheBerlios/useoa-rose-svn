@@ -1,0 +1,146 @@
+
+AliasTagResults(
+    mMREToTags: OA::OA_ptr<MemRefExpr> 	 => OA::OA_ptr<std::set<AliasTag> > 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(B)
+            )	 => [ 
+                Tag(
+                    mTagID: 1
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(A)
+            )	 => [ 
+                Tag(
+                    mTagID: 2
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(p)
+            )	 => [ 
+                Tag(
+                    mTagID: 3
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(q)
+            )	 => [ 
+                Tag(
+                    mTagID: 4
+                ) ] 
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(r)
+            )	 => [ 
+                Tag(
+                    mTagID: 4
+                ) ] 
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(p)
+                )
+                mNumDeref: 1
+            )	 => [ 
+                Tag(
+                    mTagID: 4
+                ) ] 
+
+    mTagToMREs: AliasTag	 => OA::OA_ptr<std::set<OA::OA_ptr<MemRefExpr> > > 
+            
+            Tag(
+                mTagID: 1
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(B)
+                ) ] 
+            
+            Tag(
+                mTagID: 2
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(A)
+                ) ] 
+            
+            Tag(
+                mTagID: 3
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(p)
+                ) ] 
+            
+            Tag(
+                mTagID: 4
+            )	 => [ 
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(q)
+                )    
+                NamedRef(
+                    mMemRefType: USE
+                    mSymHandle: SymHandle(r)
+                )    
+                Deref(
+                    mMemRefType: USE
+                    mMRE: 
+                    NamedRef(
+                        mMemRefType: DEF
+                        mSymHandle: SymHandle(p)
+                    )
+                    mNumDeref: 1
+                ) ] 
+
+    mMemRefToTags: MemRefHandle	 => OA::OA_ptr<std::set<AliasTag> > 
+
+    mMREToMustFlag: OA::OA_ptr<MemRefExpr> 	 => bool
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(B)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(A)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: DEF
+                mSymHandle: SymHandle(p)
+            )	 => 1
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(q)
+            )	 => 0
+            
+            NamedRef(
+                mMemRefType: USE
+                mSymHandle: SymHandle(r)
+            )	 => 0
+            
+            Deref(
+                mMemRefType: USE
+                mMRE: 
+                NamedRef(
+                    mMemRefType: DEF
+                    mSymHandle: SymHandle(p)
+                )
+                mNumDeref: 1
+            )	 => 0
+
+    mMemRefToMustFlag: MemRefHandle	 => bool
+
+)

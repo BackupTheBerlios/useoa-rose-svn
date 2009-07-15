@@ -1,0 +1,107 @@
+
+PROCEDURE = { < ProcHandle("ellipsis_intptrs"), SymHandle("ellipsis_intptrs") > }
+    FORMALS = {
+        [
+            < 0, SymHandle("i") >
+            < 1, SymHandle("") >
+        ] }
+    MEMREFEXPRS = { StmtHandle("void ellipsis_intptrs(int i,... ){int *j;va_list ap;__builtin_va_start(ap,((const void *)i));j =(va_arg(ap,int *));va_end(ap);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int *j;va_list ap;__builtin_va_start(ap,((const void *)i));j =(va_arg(ap,int *));va_end(ap);}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int *j;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("va_list ap;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("__builtin_va_start(ap,((const void *)i));") =>
+        [
+            MemRefHandle("__builtin_va_start(ap,((const void *)i))") => 
+                Deref( USEDEF, NamedRef( USE, SymHandle("ap"), F, full), 1, F, part)
+            MemRefHandle("ap") => 
+                NamedRef( USE, SymHandle("ap"), F, full)
+            MemRefHandle("i") => 
+                NamedRef( USE, SymHandle("i"), F, full)
+        ] }
+    MEMREFEXPRS = { StmtHandle("j =(va_arg(ap,int *));") =>
+        [
+            MemRefHandle("j") => 
+                NamedRef( DEF, SymHandle("j"), F, full)
+            MemRefHandle("ap") => 
+                NamedRef( USE, SymHandle("ap"), F, full)
+            MemRefHandle("(va_arg(ap,int *))") => 
+                NamedRef( USE, SymHandle(""), F, full)
+            MemRefHandle("(va_arg(ap,int *))") => 
+                Deref( USEDEF, NamedRef( USE, SymHandle("ap"), F, full), 1, F, part)
+            MemRefHandle("j =(va_arg(ap,int *))") => 
+                NamedRef( USE, SymHandle("j"), F, full)
+        ] }
+    PTRASSIGNPAIRS = { StmtHandle("j =(va_arg(ap,int *));") =>
+        [
+            < NamedRef( DEF, SymHandle("j"), F, full)
+            , NamedRef( USE, SymHandle(""), F, full) >
+            < NamedRef( DEF, SymHandle("j"), F, full)
+            , Deref( USEDEF, NamedRef( USE, SymHandle("ap"), F, full), 1, F, part) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("va_end(ap);") =>
+        [
+            MemRefHandle("ap") => 
+                NamedRef( USE, SymHandle("ap"), F, full)
+            MemRefHandle("va_end(ap)") => 
+                Deref( USEDEF, NamedRef( USE, SymHandle("ap"), F, full), 1, F, part)
+        ] }
+    LOCATION = { < SymHandle("i"), local > }
+    LOCATION = { < SymHandle(""), local > }
+    LOCATION = { < SymHandle("j"), local > }
+    LOCATION = { < SymHandle("ap"), local > }
+    LOCATION = { < SymHandle("ellipsis_intptrs"), not local > }
+
+PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
+    MEMREFEXPRS = { StmtHandle("int main(){int x;int y;int z;ellipsis_intptrs(3,&x,&y,&z);return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("{int x;int y;int z;ellipsis_intptrs(3,&x,&y,&z);return 0;}") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int x;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int y;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("int z;") =>
+        [
+        ] }
+    MEMREFEXPRS = { StmtHandle("ellipsis_intptrs(3,&x,&y,&z);") =>
+        [
+            MemRefHandle("ellipsis_intptrs") => 
+                NamedRef( USE, SymHandle("ellipsis_intptrs"), F, full)
+            MemRefHandle("&x") => 
+                NamedRef( USE, SymHandle("x"), T, full)
+            MemRefHandle("&y") => 
+                NamedRef( USE, SymHandle("y"), T, full)
+            MemRefHandle("&z") => 
+                NamedRef( USE, SymHandle("z"), T, full)
+        ] }
+    CALLSITES = { StmtHandle("ellipsis_intptrs(3,&x,&y,&z);") =>
+        [
+            CallHandle("ellipsis_intptrs(3,&x,&y,&z)") => 
+                NamedRef( USE, SymHandle("ellipsis_intptrs"), F, full)
+        ] }
+    PARAMBINDPTRASSIGNPAIRS = { CallHandle("ellipsis_intptrs(3,&x,&y,&z)") =>
+        [
+            < 1, NamedRef( USE, SymHandle("x"), T, full) >
+            < 1, NamedRef( USE, SymHandle("y"), T, full) >
+            < 1, NamedRef( USE, SymHandle("z"), T, full) >
+        ] }
+    MEMREFEXPRS = { StmtHandle("return 0;") =>
+        [
+        ] }
+    LOCATION = { < SymHandle("x"), local > }
+    LOCATION = { < SymHandle("y"), local > }
+    LOCATION = { < SymHandle("z"), local > }
+    LOCATION = { < SymHandle("ellipsis_intptrs"), not local > }
+    LOCATION = { < SymHandle("main"), not local > }

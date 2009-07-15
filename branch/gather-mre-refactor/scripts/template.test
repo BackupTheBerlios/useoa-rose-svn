@@ -1,0 +1,9 @@
+# Regression tests for _______________
+testname::___________
+inputdir::TestCases/_________
+outputdir::TestResults/________
+driverexec::./OATest -edg:w --oa-_______ -c
+
+# list of tests
+#       input file,             status
+
