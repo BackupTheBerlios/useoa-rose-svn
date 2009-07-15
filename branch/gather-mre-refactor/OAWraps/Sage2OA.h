@@ -1223,79 +1223,6 @@ public:
   //-------------------------------------------------------------------------
   //! traverses AST and initializes the maps involving MemRefHandles and MREs
   void initMemRefAndPtrAssignMaps();
-  void findAllMemRefsAndPtrAssigns(SgNode *astNode, OA::StmtHandle stmt);
-
-  //! finds the topmost MemRefHandle in the subtree rooted at the given node
-  //! if the tree represents only an rvalue, then MemRefHandle(0) is returned
-  //! unless the rvalue is an addressOf, which is assigned a MemRefHandle
-  OA::MemRefHandle findTopMemRefHandle(SgNode *node);
-
-  //! finds the topmost ExprHandle in the subtree rooted at the given node
-  OA::ExprHandle findTopExprHandle(SgNode *node);
-
-  //! Determine if all the MREs associated with a given memref are lval
-  //  bool is_lval(OA::MemRefHandle memref);
-
-  //! A utility function _only_ to be invoked from within makePtrAssignPair.
-  void _makePtrAssignPair(OA::StmtHandle stmt,
-                          OA::OA_ptr<OA::MemRefExpr> lhs_mre,
-                          OA::OA_ptr<OA::MemRefExpr> rhs_mre);
-
-  void makePtrAssignPair(OA::StmtHandle stmt,
-                         OA::MemRefHandle lhs_memref,
-                         OA::MemRefHandle rhs_memref);
-
-  void makePtrAssignPair(OA::StmtHandle stmt,
-                         OA::OA_ptr<OA::MemRefExpr> lhs_mre,
-                         OA::MemRefHandle rhs_memref);
-
-  void makePtrAssignPair(OA::StmtHandle stmt,
-                         OA::OA_ptr<OA::MemRefExpr> lhs_mre,
-                         OA::OA_ptr<OA::MemRefExpr> rhs_mre);
-
-
-  void makeParamPtrPair(OA::CallHandle call,
-                       int formal,
-                        OA::OA_ptr<OA::MemRefExpr> actual);
-
-  //! Create an assignment pair, where the memrefs are not
-  //! necessarily pointers.
-  void makeAssignPair(OA::StmtHandle stmt,
-                      OA::MemRefHandle lhs_memref,
-                      OA::ExprHandle rhs_expr);
-
-  std::string findFieldName(OA::MemRefHandle memref);
-
-  void createImplicitPtrAssignPairsForVirtualMethods(OA::StmtHandle stmt,
-          OA::OA_ptr<OA::MemRefExpr> lhsMRE,
-          SgClassDefinition *classDefinition,
-          std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods);
-
-  void createImplicitPtrAssignPairsForDynamicObjectAllocation(
-          OA::StmtHandle stmt, OA::OA_ptr<OA::MemRefExpr> lhs_mre, 
-          OA::OA_ptr<OA::MemRefExpr> rhs_mre);
-
-
-   void createImplicitPtrAssignPairsForObjectDeclaration(OA::StmtHandle stmt, 
-                                             OA::OA_ptr<OA::MemRefExpr> lhs_mre,
-                                             SgInitializedName *initName);
-
-   void createImplicitPtrAssignPairsForClassDefinition(OA::StmtHandle stmt,
-               SgClassDefinition *topClassDefinition,
-               SgClassDefinition *classDefinition,
-               std::list<SgMemberFunctionDeclaration *> &visitedVirtualMethods);
-
-  bool createMemRefExprsForPtrArith(SgExpression* node, 
-                                    SgExpression* child, OA::StmtHandle stmt,
-                                    bool removeChild);
-
-  bool performsPtrArithmetic(SgNode *astNode);
-
-  void createUseDefForVarArg(OA::MemRefHandle memref,
-                             OA::MemRefHandle valist_memref);
-
-  OA::OA_ptr<OA::MemRefExpr> 
-  createConstructorInitializerReceiverMRE( SgConstructorInitializer *ctorInitializer);
 
   OA::SymHandle getThisFormalSymHandle(SgNode *astNode);
 
@@ -1303,9 +1230,6 @@ public:
   //! corresponding SgThisExp.  This symbol handle references
   //! a SgFunctionParameterList.
   OA::SymHandle getThisExpSymHandle(SgNode *node);
-
-  //! Associate a SgNode with an MRE. 
-  void mapMREToSgNode(OA::OA_ptr<OA::MemRefExpr> mre, SgNode *node); 
 
   // assumption is that StmtHandles and MemRefHandles are unique across
   // different program and procedure contexts for which analysis is being
@@ -1328,7 +1252,7 @@ public:
 
   //! Array Index Expressions are not differentiable
   std::map<OA::StmtHandle, std::set<OA::MemRefHandle> > mStmtToIndexExprs;
-
+/*
   struct ltmre 
   { 
     bool operator()(OA::OA_ptr<OA::MemRefExpr> mre1, 
@@ -1349,7 +1273,7 @@ public:
   //! remove relations between the specified memref and stmt in the
   //! mStmt2allMemRefsMap and mMemRef2StmtMap maps
   void deleteMemRefStmtRelation(OA::MemRefHandle mref, OA::StmtHandle stmt);
-
+*/
   public:
   //! Temporary hack to get a MemRefHandle given a MemRefExpr, code
   //! iterates through the 'MemRefHandle -> set<MemRefExpr>' map until
