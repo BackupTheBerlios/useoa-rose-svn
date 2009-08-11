@@ -5595,7 +5595,6 @@ SageIRInterface::makeAssignPair(OA::StmtHandle stmt,
 
     // Store all ExprHandles for the Statement
     mStmt2allExprsMap[stmt].insert(rhs_expr);
-
 }
 
 void

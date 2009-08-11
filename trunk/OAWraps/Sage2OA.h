@@ -342,6 +342,41 @@ class SgPtrAssignPairStmtIterator
   SageIRInterface *mIR;
 };
 
+class SgAssignPairStmtIterator 
+    : public OA::Alias::AssignPairStmtIterator
+{ 
+ public:
+  SgAssignPairStmtIterator() : mValid(false), mIR(NULL) { }
+  SgAssignPairStmtIterator(OA::StmtHandle stmt, SageIRInterface * ir)
+    : mIR(ir) 
+  { create(stmt); reset(); mValid = true; }
+  virtual ~SgAssignPairStmtIterator() { };
+  
+  //! left hand side
+  virtual OA::MemRefHandle currentTarget() const { return (*mIter).first; }
+  //! right hand side
+  virtual OA::ExprHandle currentSource() const { return (*mIter).second; }
+
+  virtual bool isValid() const { 
+    return ( mValid && ( mIter != mEnd ) ); 
+  }
+          
+  virtual void operator++() { if (isValid()) mIter++; }
+  virtual void reset();
+
+ private:
+  void create(OA::StmtHandle h);
+
+  typedef std::list<std::pair<OA::MemRefHandle, OA::ExprHandle> > 
+    AssignPairList;
+
+  AssignPairList mList;
+  AssignPairList::iterator mEnd, mBegin, mIter;;
+
+  bool mValid;
+  SageIRInterface *mIR;
+};
+
 typedef std::pair<OA::MemRefHandle,OA::ExprHandle>AssignPair;
 typedef std::list<AssignPair> AssignPairList;
 class SageIRAssignPairIterator 
@@ -671,6 +706,7 @@ class SageIRInterface :
   friend class SageIRMemRefIterator;
   friend class FindCallsitesPass;
   friend class SgPtrAssignPairStmtIterator;
+  friend class SgAssignPairStmtIterator;
   friend class SgParamBindPtrAssignIterator;
   friend class ExprTreeTraversal;
   friend class NumberTraversal;
@@ -1012,6 +1048,9 @@ public:
   //! pairs where there is a source and target such that target
   OA_ptr<OA::Alias::PtrAssignPairStmtIterator>
       getPtrAssignStmtPairIterator(StmtHandle stmt);
+
+  OA_ptr<OA::Alias::AssignPairStmtIterator>
+      getAssignStmtPairIterator(StmtHandle stmt);
 
   //! Return an iterator over <int, MemRefExpr> pairs
   //! where the integer represents which formal parameter 

@@ -3756,6 +3756,14 @@ SgPtrAssignPairStmtIterator::reset()
 }
 
 void
+SgAssignPairStmtIterator::reset()
+{
+  mIter = mList.begin();
+  mEnd = mList.end();
+  mBegin = mList.begin();
+}
+
+void
 SgParamBindPtrAssignIterator::reset()
 {
   mIter = mPairList.begin();
@@ -3794,6 +3802,20 @@ void SgPtrAssignPairStmtIterator::create(OA::StmtHandle stmt)
        pairIter++)
   {
       mMemRefList.push_back(*pairIter);
+  }
+}
+
+// Create iterator consisting of lhs/rhs (memrefhandle/expression) pairs
+// from assignments in stmt.
+void SgAssignPairStmtIterator::create(OA::StmtHandle stmt)
+{
+  // loop through the pairs we found in initMemRefsAndPtrAssigns
+  std::set<std::pair<OA::MemRefHandle, OA::ExprHandle> >::iterator pairIter;
+  for (pairIter=mIR->mStmtToAssignPairs[stmt].begin();
+       pairIter!=mIR->mStmtToAssignPairs[stmt].end();
+       pairIter++)
+  {
+      mList.push_back(*pairIter);
   }
 }
 
@@ -3891,6 +3913,14 @@ SageIRInterface::getPtrAssignStmtPairIterator(OA::StmtHandle stmt)
 {   
   OA::OA_ptr<OA::Alias::PtrAssignPairStmtIterator> retval;
   retval = new SgPtrAssignPairStmtIterator(stmt, this);
+  return retval;
+}
+
+OA::OA_ptr<OA::Alias::AssignPairStmtIterator>
+SageIRInterface::getAssignStmtPairIterator(OA::StmtHandle stmt)
+{   
+  OA::OA_ptr<OA::Alias::AssignPairStmtIterator> retval;
+  retval = new SgAssignPairStmtIterator(stmt, this);
   return retval;
 }
 
