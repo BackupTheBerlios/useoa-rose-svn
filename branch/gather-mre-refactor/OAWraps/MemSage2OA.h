@@ -63,6 +63,8 @@ class SageMemRefHandleIterator
 
 class MREVisitor {
   public:
+    MREVisitor(SageIRInterface &ir) : mIR(ir) {}
+
     void visit(SgNode *node, OA::StmtHandle stmt);
 
   private:
@@ -446,6 +448,10 @@ class MREVisitor {
 
     void visitSgComplexVal(
         SgComplexVal *node, OA::StmtHandle stmt);
+
+
+    // member variables
+    SageIRInterface &mIR;
 };
 
 #endif

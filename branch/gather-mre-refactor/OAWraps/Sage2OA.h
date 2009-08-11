@@ -342,6 +342,42 @@ class SgPtrAssignPairStmtIterator
   SageIRInterface *mIR;
 };
 
+class SgAssignPairStmtIterator 
+    : public OA::Alias::AssignPairStmtIterator
+{ 
+ public:
+  SgAssignPairStmtIterator() : mValid(false), mIR(NULL) { }
+  SgAssignPairStmtIterator(OA::StmtHandle stmt, SageIRInterface * ir)
+    : mIR(ir) 
+  { create(stmt); reset(); mValid = true; }
+  virtual ~SgAssignPairStmtIterator() { };
+  
+  //! left hand side
+  virtual OA::MemRefHandle currentTarget() const { return (*mIter).first; }
+  //! right hand side
+  virtual OA::ExprHandle currentSource() const { return (*mIter).second; }
+
+  virtual bool isValid() const { 
+    return ( mValid && ( mIter != mEnd ) ); 
+  }
+          
+  virtual void operator++() { if (isValid()) mIter++; }
+  virtual void reset();
+
+ private:
+  void create(OA::StmtHandle h);
+
+  typedef std::list<std::pair<OA::MemRefHandle, OA::ExprHandle> > 
+    AssignPairList;
+
+  AssignPairList mList;
+  AssignPairList::iterator mEnd, mBegin, mIter;;
+
+  bool mValid;
+  SageIRInterface *mIR;
+};
+
+
 typedef std::pair<OA::MemRefHandle,OA::ExprHandle>AssignPair;
 typedef std::list<AssignPair> AssignPairList;
 class SageIRAssignPairIterator 
@@ -671,6 +707,7 @@ class SageIRInterface :
   friend class SageIRMemRefIterator;
   friend class FindCallsitesPass;
   friend class SgPtrAssignPairStmtIterator;
+  friend class SgAssignPairStmtIterator;
   friend class SgParamBindPtrAssignIterator;
   friend class ExprTreeTraversal;
   friend class NumberTraversal;
@@ -1013,6 +1050,9 @@ public:
   OA_ptr<OA::Alias::PtrAssignPairStmtIterator>
       getPtrAssignStmtPairIterator(StmtHandle stmt);
 
+  OA_ptr<OA::Alias::AssignPairStmtIterator>
+      getAssignStmtPairIterator(StmtHandle stmt);
+
   //! Return an iterator over <int, MemRefExpr> pairs
   //! where the integer represents which formal parameter 
   //! and the MemRefExpr describes the corresponding actual argument. 
@@ -1224,6 +1264,20 @@ public:
   //! traverses AST and initializes the maps involving MemRefHandles and MREs
   void initMemRefAndPtrAssignMaps();
 
+ public:
+  void relateMemRefAndStmt(OA::MemRefHandle memref, OA::StmtHandle stmt)
+  {
+      mStmt2allMemRefsMap[stmt].insert(memref);
+      mMemRef2StmtMap[memref] = stmt;
+  }
+
+  void relateMemRefAndMRE(
+    OA::MemRefHandle memref, OA::OA_ptr<OA::MemRefExpr> mre)
+  {
+      mMemref2mreSetMap[memref].insert(mre);
+  }
+
+ private:
   OA::SymHandle getThisFormalSymHandle(SgNode *astNode);
 
   //! Given a SgNode return a symbol handle to represent the
@@ -1252,28 +1306,7 @@ public:
 
   //! Array Index Expressions are not differentiable
   std::map<OA::StmtHandle, std::set<OA::MemRefHandle> > mStmtToIndexExprs;
-/*
-  struct ltmre 
-  { 
-    bool operator()(OA::OA_ptr<OA::MemRefExpr> mre1, 
-                    OA::OA_ptr<OA::MemRefExpr> mre2) const  
-    { 
-      return ( *mre1 < *mre2 ); 
-    } 
-  }; 
- 
- 
-  std::map<OA::OA_ptr<OA::MemRefExpr>, SgNode*, ltmre > 
-    mMre2SgNode; 
 
-  //! given a memory reference handle and a statement handle asscociate them
-  //! in the mStmt2allMemRefsMap and mMemRef2StmtMap maps
-  void relateMemRefAndStmt(OA::MemRefHandle mref, OA::StmtHandle stmt);
-
-  //! remove relations between the specified memref and stmt in the
-  //! mStmt2allMemRefsMap and mMemRef2StmtMap maps
-  void deleteMemRefStmtRelation(OA::MemRefHandle mref, OA::StmtHandle stmt);
-*/
   public:
   //! Temporary hack to get a MemRefHandle given a MemRefExpr, code
   //! iterates through the 'MemRefHandle -> set<MemRefExpr>' map until

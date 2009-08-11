@@ -64,7 +64,6 @@ SageIRMemRefIterator::create(OA::StmtHandle h)
     {
       mMemRefList.push_back(*setIter);
     }
-
 }
 
 SageMemRefHandleIterator::SageMemRefHandleIterator (OA::OA_ptr<std::list<OA::MemRefHandle> > pList)
@@ -79,7 +78,7 @@ SageMemRefHandleIterator::SageMemRefHandleIterator (OA::OA_ptr<std::list<OA::Mem
  * pointer assignments, and function calls in those statements.
  **/
 void SageIRInterface::initMemRefAndPtrAssignMaps() {
-    MREVisitor visitor;
+    MREVisitor visitor(*this);
 
     // iterate over all procedures
     OA_ptr<IRProcIterator> procIter;
@@ -104,14 +103,23 @@ void SageIRInterface::initMemRefAndPtrAssignMaps() {
 void MREVisitor::visit(SgNode *node, OA::StmtHandle stmt) {
     // if node pointer is null ignoare
     if(node == NULL) { return; }
+    VariantT nType = node->variantT();
 
-    // recurse on children
-    typedef vector<SgNode *> VectorOfNodes;
-    VectorOfNodes children = node->get_traversalSuccessorContainer();
-    for(VectorOfNodes::iterator i = children.begin();
-        i != children.end(); i++)
+    // if not a node that should not recurse, recurse on children
+    
+    if(nType != V_SgSourceFile &&
+       nType != V_SgGlobal &&
+       nType != V_SgFunctionDeclaration &&
+       nType != V_SgFunctionDefinition &&
+       nType != V_SgBasicBlock)
     {
-        visit(*i, stmt);
+        typedef vector<SgNode *> VectorOfNodes;
+        VectorOfNodes children = node->get_traversalSuccessorContainer();
+        for(VectorOfNodes::iterator i = children.begin();
+            i != children.end(); i++)
+        {
+            visit(*i, stmt);
+        }
     }
 
     // process this node
@@ -650,7 +658,89 @@ void MREVisitor::visitSgExprListExp(
 void MREVisitor::visitSgVarRefExp(
     SgVarRefExp *node, OA::StmtHandle stmt)
 {
-    cout << "in a " << "SgVarRefExp visit function" << endl;
+    /**
+     * The variable reference represented by this node may be for both an
+     * DEF (lhs of an assignment) or a USE.  At this point of the traversal we
+     * assume it be a USE.
+     *
+     * A special case occurs when the variable being accessed is a reference
+     * variable.  In this case the access should be modeled as a dereference.
+     *
+     * common post-conditions:
+     *    - A memref handle relates to this statement
+     *    - all MRE's on the lhs have MRType DEF
+     *
+     * Example normal case:
+     *   Source:
+     *     1) int i;
+     *     2) i = 5;
+     *   AST (for line 2):
+     *     SgExpressionStatement
+     *       SgAssignOp         <-----
+     *          SgVarRefExp     
+     *       SgIntVal
+     *   CToOA output after this function
+     *      MEMREFEXPRS = { StmtHandle("i = 5;") =>
+     *         [
+     *              MemRefHandle("i") => 
+     *                  NamedRef( DEF, SymHandle("i"))
+     *         ] }
+    **/
+
+    //-----------------------------------------------------------------------
+    // common post-conditions:
+    MemRefHandle hMemRef;
+    hMemRef = mIR.getMemRefHandle(node);
+    mIR.relateMemRefAndStmt(hMemRef, stmt);
+    OA_ptr<MemRefExpr> mre;
+    
+    //-----------------------------------------------------------------------
+    // common intermediate conditions:
+    SymHandle hSymRef;
+    OA_ptr<NamedRef> namedRef;
+    
+    SgVariableSymbol *symbol = node->get_symbol();
+    ROSE_ASSERT(symbol != NULL);
+    SgInitializedName *initName = symbol->get_declaration();
+    ROSE_ASSERT(initName != NULL);
+    OA::SymHandle sym = mIR.getNodeNumber(initName);
+ 
+    namedRef = new NamedRef(MemRefExpr::USE, sym, false);
+    mre = namedRef;
+    
+    //-----------------------------------------------------------------------
+    // Special case (variable is a reference variable)
+    SgType *type = getBaseType(node->get_type());
+    if(isSgReferenceType(type)) {
+        // wrap the NamedRef in a Deref, but before doing so also
+        // create a MemRefHandle/MRE pair for the reference itself.
+        // Use the Sg_File_Info as the MemRefHandle.  This should
+        // effectively hide the MRE from anyone calling findTopMemRefHandle,
+        // e.g., to create ptr assign pairs.  That's good, because the
+        // deref should be the top memrefhandle.
+        Sg_File_Info *fileInfo = node->get_file_info();
+        ROSE_ASSERT(fileInfo != NULL);
+            MemRefHandle hiddenMemref = mIR.getMemRefHandle(fileInfo);
+        mIR.relateMemRefAndStmt(hiddenMemref, stmt);
+//        mMemref2mreSetMap[hiddenMemref].insert(mre);
+        cerr << "not handeling var ref special case" << endl;
+        assert(false);
+
+        int numderefs = 1;
+//        mre = derefMre(mre, MemRefExpr::USE, numderefs);
+
+        // It is the deref that we will see as the top mem ref handle
+        // and ask whether the access it reprsents is to a reference.
+//        mMre2TypeMap[mre] = reference;
+
+//        mMemref2mreSetMap[hMemRef].insert(reference);
+    }
+
+    //-----------------------------------------------------------------------
+    // Normal case
+    else {
+        mIR.relateMemRefAndMRE(hMemRef, namedRef);
+    }
 }
 
 void MREVisitor::visitSgClassNameRefExp(
@@ -913,8 +1003,90 @@ void MREVisitor::visitSgPntrArrRefExp(
 
 void MREVisitor::visitSgAssignOp(
     SgAssignOp *node, OA::StmtHandle stmt)
-{
-    cout << "in a " << "SgAssignOp visit function" << endl;
+{   /**
+     * The variable specified by the l-value of the left hand side expression
+     * is assigned to the value of the right hand side expression.
+     *
+     * common post-conditions:
+     *    - Definition
+     *
+     * common intermediate conditions:
+     *    - A namedref MRE is constructed representing the variable access
+     *    - A sym-handle is captured for the variable
+     * special case (is for a reference variable):
+     *    - a deref MRE wraps around the NamedRef MRE, and is asscociated with
+     *      this statement
+     * normal post-conditions:
+     *    - the namedref MRE is asscociated with this statement
+     *
+     * Example normal case:
+     *   Source:
+     *     1) int i;
+     *     2) i = 5;
+     *   AST (for line 2):
+     *     SgExpressionStatement
+     *       SgAssignOp
+     *          SgVarRefExp     <-----
+     *       SgIntVal
+     *   CToOA output after this function
+     *      MEMREFEXPRS = { StmtHandle("i = 5;") =>
+     *         [
+     *              MemRefHandle("i") => 
+     *                  NamedRef( USE, SymHandle("i"))
+     *         ] }
+     *
+     *  Example special case (for access to reference var)
+     *   Source:
+     *     1) int val;
+     *     2) int &ref = val;
+     *     3) ref = 5;
+     *   AST (for line 3):
+     *      SgExpressionStatement
+     *       SgAssignOp
+     *          SgVarRefExp     <-----
+     *       SgIntVal
+     *   CToOA:
+     *       MEMREFEXPRS = { StmtHandle("ref = 5;") =>
+     *          [
+     *              MemRefHandle("refRelatedBaseOrTmp") => 
+     *                  NamedRef( USE, SymHandle("ref"))
+     *              MemRefHandle("ref") => 
+     *                  Deref( USE, NamedRef( USE, SymHandle("ref")), 1)
+     *          ] }
+     *    Notes:
+     *      - The AST for this example is the same as the AST for the normal
+     *        example.  The way to differentiate between the two cases
+     *        is through fields in SgVarRefExp to determine if is a reference
+     *        variable or not.
+     */
+
+    // astNode is a MemRefHandle because it results in a use 
+    // of the location indicated by the lhs            
+    //OA::MemRefHandle memref = getMemRefHandle(node);
+    //relateMemRefAndStmt(memref, stmt);
+    
+    // common post-conditions:
+    MemRefHandle hMemRef;
+    hMemRef = mIR.getMemRefHandle(node);
+    mIR.relateMemRefAndStmt(hMemRef, stmt);
+
+    // change the MRType of all MRE's on the lhs to DEF.
+    MemRefHandle lhs_memref = mIR.getMemRefHandle(node->get_lhs_operand());
+    OA::OA_ptr<OA::MemRefExprIterator> mIter =
+        mIR.getMemRefExprIterator(lhs_memref);
+    for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
+        OA_ptr<MemRefExpr> lhs_mre = mIter->current();
+    /*
+        OA::OA_ptr<OA::MemRefExpr> lhs_mre = mIter->current();
+        // 1) take the lhs mres, clone them, set to USE
+        OA::OA_ptr<OA::MemRefExpr> mre = lhs_mre->clone();
+
+        // Transfer type to cloned MRE
+        mMre2TypeMap[mre] = mMre2TypeMap[lhs_mre];
+        */
+
+        lhs_mre->setMemRefType(MemRefExpr::DEF);
+    }
 }
 
 void MREVisitor::visitSgPlusAssignOp(
@@ -1395,3 +1567,10 @@ void MREVisitor::visitSgComplexVal(
     SgComplexVal *node, OA::StmtHandle stmt)
 {
     cout << "in a " << "MREVisito visit function" << endl;
+}
+
+/**
+ * Notes on reading visit function comments:
+ *  The output of the examples reflects the state after the function finishes,
+ *  not neccessarily what the final result will be once CToOA has completed.
+ */
