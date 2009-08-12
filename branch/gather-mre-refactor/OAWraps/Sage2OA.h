@@ -712,6 +712,7 @@ class SageIRInterface :
   friend class ExprTreeTraversal;
   friend class NumberTraversal;
   friend class SageExprHandleIterator;
+  friend class MREVisitor;
   
   public:
   //! Constructor.
@@ -1264,6 +1265,31 @@ public:
   //! traverses AST and initializes the maps involving MemRefHandles and MREs
   void initMemRefAndPtrAssignMaps();
 
+  //! finds the topmost MemRefHandle in the subtree rooted at the given node
+  //! if the tree represents only an rvalue, then MemRefHandle(0) is returned
+  //! unless the rvalue is an addressOf, which is assigned a MemRefHandle
+  OA::MemRefHandle findTopMemRefHandle(SgNode *node);
+
+  //! finds the topmost ExprHandle in the subtree rooted at the given node
+  OA::ExprHandle findTopExprHandle(SgNode *node);
+
+  //! A utility function _only_ to be invoked from within makePtrAssignPair.
+  void _makePtrAssignPair(OA::StmtHandle stmt,
+                          OA::OA_ptr<OA::MemRefExpr> lhs_mre,
+                          OA::OA_ptr<OA::MemRefExpr> rhs_mre);
+
+  void makePtrAssignPair(OA::StmtHandle stmt,
+                         OA::MemRefHandle lhs_memref,
+                         OA::MemRefHandle rhs_memref);
+
+  void makePtrAssignPair(OA::StmtHandle stmt,
+                         OA::OA_ptr<OA::MemRefExpr> lhs_mre,
+                         OA::MemRefHandle rhs_memref);
+
+  void makePtrAssignPair(OA::StmtHandle stmt,
+                         OA::OA_ptr<OA::MemRefExpr> lhs_mre,
+                         OA::OA_ptr<OA::MemRefExpr> rhs_mre);
+
  public:
   void relateMemRefAndStmt(OA::MemRefHandle memref, OA::StmtHandle stmt)
   {
@@ -1275,6 +1301,17 @@ public:
     OA::MemRefHandle memref, OA::OA_ptr<OA::MemRefExpr> mre)
   {
       mMemref2mreSetMap[memref].insert(mre);
+  }
+
+  void makeAssignPair(
+    OA::StmtHandle stmt, OA::MemRefHandle lhs_memref, OA::ExprHandle rhs_expr)
+  {
+      mStmtToAssignPairs[stmt].insert(
+        pair<OA::MemRefHandle,
+             OA::ExprHandle>(lhs_memref, rhs_expr));
+    
+      // Store all ExprHandles for the Statement
+      mStmt2allExprsMap[stmt].insert(rhs_expr);
   }
 
  private:
