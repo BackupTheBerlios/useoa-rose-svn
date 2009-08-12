@@ -206,7 +206,7 @@ SageIRInterface::makePtrAssignPair(OA::StmtHandle stmt,
     // We need to create implicit pointer assignment pairs
     // to model virtual method calls if the RHS allocates
     // and instantiates an object via new. 
-
+    
     // AIS for refactoring w/ visitor: I'm commenting this out for now.
     //createImplicitPtrAssignPairsForDynamicObjectAllocation(stmt, lhs_mre, rhs_mre);
 }
@@ -1377,7 +1377,42 @@ void MREVisitor::visitSgPointerDerefExp(
 void MREVisitor::visitSgAddressOfOp(
     SgAddressOfOp *node, OA::StmtHandle stmt)
 {
-    //cout << "in a " << "SgAddressOfOp visit function" << endl;
+    /**
+     *
+     * common post-conditions:
+     *    - A memrefhandle is emitted for the statement with this node
+     *    - memrefhandle for child node is removed
+     *    - All child MREs are wrapped in AdresssOf MREs.
+     *    
+     * common intermediate conditions:
+     * special case (is for a reference variable):
+     * normal post-conditions:
+     *
+     * Example normal case:
+     */
+
+    //-----------------------------------------------------------------------
+    // common post-conditions:
+    MemRefHandle hMemRef;
+    hMemRef = mIR.getMemRefHandle(node);
+    mIR.relateMemRefAndStmt(hMemRef, stmt);
+   
+    // iterate through all of the child's MREs, wrap them in AdressOf MREs
+    MemRefHandle child_memref = mIR.findTopMemRefHandle(node->get_operand_i());
+    OA_ptr<MemRefExprIterator> iter = mIR.getMemRefExprIterator(child_memref);
+    for(iter->reset(); iter->isValid(); ++(*iter)) {
+        OA_ptr<MemRefExpr> child_mre = iter->current();
+        OA_ptr<AddressOf> address_mre;
+        OA_ptr<MemRefExpr> nullMRE;
+
+        address_mre = new AddressOf(MemRefExpr::USE, nullMRE);
+        child_mre = address_mre->composeWith(child_mre);
+
+        mIR.mMemref2mreSetMap[hMemRef].insert(child_mre);
+    }
+
+    // grab child node and remove the memrefhandle for the node
+    mIR.removeMemRefHandle(child_memref, stmt);
 }
 
 void MREVisitor::visitSgMinusMinusOp(

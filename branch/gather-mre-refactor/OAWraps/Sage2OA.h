@@ -1290,6 +1290,13 @@ public:
                          OA::OA_ptr<OA::MemRefExpr> lhs_mre,
                          OA::OA_ptr<OA::MemRefExpr> rhs_mre);
 
+    
+  void removeMemRefHandle(OA::MemRefHandle memref, OA::StmtHandle stmt) {
+      mStmt2allMemRefsMap[stmt].erase(memref);
+      mMemref2mreSetMap[memref].clear();
+      mMemRef2StmtMap.erase(memref);
+  }
+
  public:
   void relateMemRefAndStmt(OA::MemRefHandle memref, OA::StmtHandle stmt)
   {
