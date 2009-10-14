@@ -11,16 +11,16 @@ test::  alias1.c,                checked AIS (10/2009)
 test::  alias2.c,                checked AIS (10/2009)
 test::  alias3.c,                checked AIS (10/2009)
 test::  alias4.c,                checked AIS (10/2009)
-#test::  alias4b.c,               checked by MMS 8/13/06
+test::  alias4b.c,               checked AIS (10/2009)
 
+#test::  addressOf.c,             checked by MMS 8/20/06 
+#test::  assignOps.c,             checked by MMS 8/13/06
+#test::  assignReturn.c,          checked by MMS 8/28/06
 #test::  parambinds-formals.C,	 error email sent 4/19/06 MMS
 #test::  func-ptrs.C,		  	 assertion failure 4/24/06 MMS
 #test::	t1.c,				     error 4/24/06 MMS
 #test::  smg2000-typedefStruct.C, assertion failure 6/26/06 AIS
-#test::  addressOf.c,             checked by MMS 8/20/06 
 #test::  aggregateInit.c,         checked by MMS 8/29/06
-#test::  assignOps.c,             checked by MMS 8/13/06
-#test::  assignReturn.c,          checked by MMS 8/28/06
 #test::  class.C,                 checked by MMS 9/8/06
 #test::  comma.c,                 checked by MMS 8/31/06
 #test::  dataMemberPtrs.C,        aborts MMS 8/7/06
