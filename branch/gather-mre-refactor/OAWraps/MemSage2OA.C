@@ -85,18 +85,23 @@ OA::MemRefHandle SageIRInterface::findTopMemRefHandle(SgNode *astNode)
     // if there are MREs assocated with this node, then return node    
     if (!mMemref2mreSetMap[memref].empty()) {
         return getMemRefHandle(astNode);
-                         
     } else {             
         // determine the number of children the node has
         std::vector< SgNode * > kids 
             = astNode->get_traversalSuccessorContainer();
-                         
+        
         // if only one child the return topMemRefHandle on that
         if (kids.size()==1) {
             return findTopMemRefHandle(kids[0]);
                          
-        // else if two or more children then return MemRefHandle(0) 
+        // else if two or more children then return MemRefHandle(0)
+        // unless one of those children is an assignment in which case
+        // return the LHS of that assignment
         } else {
+            if ( isSgAssignOp(astNode) ) {
+                SgAssignOp *node = isSgAssignOp(astNode);
+                return getMemRefHandle(node->get_lhs_operand());
+            }
             // One of these children may be a folded expression,
             // while the other is the original expression
             // (accessible via get_originalExpressionTree).
@@ -104,7 +109,7 @@ OA::MemRefHandle SageIRInterface::findTopMemRefHandle(SgNode *astNode)
             // operator is in the expression tree and has been folded)
             // and for SgCastExp.  Handle these two cases
             // explicitly.
-            if ( isSgValueExp(astNode) ) {
+            else if ( isSgValueExp(astNode) ) {
                 // SgValueExps should only have one child-- the
                 // original expression tree.  Therefore, we should not
                 // be here.
@@ -1177,22 +1182,20 @@ void MREVisitor::visitSgAssignOp(
     SgAssignOp *node, OA::StmtHandle stmt)
 {
     /**
-     * The variable reference represented by this node may be for both an
-     * DEF (lhs of an assignment) or a USE.  At this point of the traversal we
-     * assume it be a USE.
-     *
      * A special case occurs when the variable being accessed is a reference
      * variable.  In this case the access should be modeled as a dereference.
      *
      * common post-conditions:
      *    - A memref handle relates to this statement
      *    - all MRE's on the lhs have MRType DEF
+     *    - all MRE's on the rhs have MRType USE appended to them (they become
+     *      DEFUSE if already DEF)
      *    - an assign pair is emitted relating the memrefhandle of the lhs
      *      and the exprhandle of the rhs
      * special case (assignment of a pointer):
      *    - a pointer assign pair is created
      *
-     * Example normal case:
+     * Example of a normal case:
      *   Source:
      *     1) int i;
      *     2) i = 5;
@@ -1231,6 +1234,19 @@ void MREVisitor::visitSgAssignOp(
         lhs_mre->setMemRefType(MemRefExpr::DEF);
     }
 
+    // if any of the MRTypes of the MRE's on the rhs are DEF change them
+    // to DEFUSE
+    MemRefHandle rhs_memref = mIR.findTopMemRefHandle(node->get_rhs_operand());
+    mIter = mIR.getMemRefExprIterator(rhs_memref);
+    for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
+        OA_ptr<MemRefExpr> rhs_mre = mIter->current();
+
+        // set rhs to DEFUSE if already DEF
+        if(rhs_mre->getMRType() == MemRefExpr::DEF) {
+            rhs_mre->setMemRefType(MemRefExpr::DEFUSE);
+        }
+    }
+
     // create an assign pair for this node
     ExprHandle rhs_expr = mIR.getMemRefHandle(node->get_rhs_operand());
     mIR.makeAssignPair(stmt, lhs_memref, rhs_expr);
@@ -1239,7 +1255,7 @@ void MREVisitor::visitSgAssignOp(
     //-----------------------------------------------------------------------
     // special case (assignment of a pointer):
     SgType *lhs_type = getBaseType(node->get_lhs_operand()->get_type());
-    MemRefHandle rhs_memref = mIR.findTopMemRefHandle(node->get_rhs_operand());
+    rhs_memref = mIR.findTopMemRefHandle(node->get_rhs_operand());
 
     // if the RHS is a memory reference (as opposed to a value)
     if(rhs_memref != MemRefHandle(0) && isSgPointerType(lhs_type)) {

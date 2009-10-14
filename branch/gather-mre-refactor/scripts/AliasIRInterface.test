@@ -9,7 +9,7 @@ driverexec::./CtoOA --edg:no_warnings -w
 #       input file,    			 status
 test::  alias1.c,                checked AIS (10/2009)
 test::  alias2.c,                checked AIS (10/2009)
-test::  alias3.c,                in progress AIS (10/2009)
+test::  alias3.c,                checked AIS (10/2009)
 #test::  alias4.c,                checked by MMS 8/13/06
 #test::  alias4b.c,               checked by MMS 8/13/06
 

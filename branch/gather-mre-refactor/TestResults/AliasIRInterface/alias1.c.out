@@ -52,4 +52,3 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
- 

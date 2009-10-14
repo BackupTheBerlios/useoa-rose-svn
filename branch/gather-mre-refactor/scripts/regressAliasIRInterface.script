@@ -6,7 +6,7 @@ echo "Testing TestCases/AliasTests/alias2.c, TestResults/AliasIRInterface/alias2
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/alias2.c >& t
 diff t TestResults/AliasIRInterface/alias2.c.out
 
-echo "Testing TestCases/AliasTests/alias3.c, TestResults/AliasIRInterface/alias3.c.out in progress AIS (10/2009)"
+echo "Testing TestCases/AliasTests/alias3.c, TestResults/AliasIRInterface/alias3.c.out checked AIS (10/2009)"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/alias3.c >& t
 diff t TestResults/AliasIRInterface/alias3.c.out
 
