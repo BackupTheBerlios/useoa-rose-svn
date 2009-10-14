@@ -4,3 +4,5 @@ echo "Generating TestResults/AliasIRInterface/alias2.c.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/alias2.c >& TestResults/AliasIRInterface/alias2.c.out
 echo "Generating TestResults/AliasIRInterface/alias3.c.out"
 ./CtoOA --edg:no_warnings -w TestCases/AliasTests/alias3.c >& TestResults/AliasIRInterface/alias3.c.out
+echo "Generating TestResults/AliasIRInterface/alias4.c.out"
+./CtoOA --edg:no_warnings -w TestCases/AliasTests/alias4.c >& TestResults/AliasIRInterface/alias4.c.out

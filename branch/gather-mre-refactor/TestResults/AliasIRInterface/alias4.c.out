@@ -19,6 +19,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("b") => 
                 NamedRef( USE, SymHandle("b"))
         ] }
+    ASSIGNPAIRS = { StmtHandle("a = b;") =>
+        [
+            < MemRefHandle("a")
+            , ExprHandle("b") >
+        ] }
     PTRASSIGNPAIRS = { StmtHandle("a = b;") =>
         [
             < NamedRef( DEF, SymHandle("a"))
@@ -27,6 +32,3 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
-    LOCATION = { < SymHandle("main"), not local > }
-    LOCATION = { < SymHandle("a"), local > }
-    LOCATION = { < SymHandle("b"), local > }

@@ -10,7 +10,7 @@ driverexec::./CtoOA --edg:no_warnings -w
 test::  alias1.c,                checked AIS (10/2009)
 test::  alias2.c,                checked AIS (10/2009)
 test::  alias3.c,                checked AIS (10/2009)
-#test::  alias4.c,                checked by MMS 8/13/06
+test::  alias4.c,                checked AIS (10/2009)
 #test::  alias4b.c,               checked by MMS 8/13/06
 
 #test::  parambinds-formals.C,	 error email sent 4/19/06 MMS
