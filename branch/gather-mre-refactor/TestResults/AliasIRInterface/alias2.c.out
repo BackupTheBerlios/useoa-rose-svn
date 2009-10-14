@@ -25,6 +25,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("&loc") => 
                 AddressOf( USE, NamedRef( USE, SymHandle("loc")))
         ] }
+    ASSIGNPAIRS = { StmtHandle("locPtr = &loc;") =>
+        [
+            < MemRefHandle("locPtr")
+            , ExprHandle("&loc") >
+        ] }
     PTRASSIGNPAIRS = { StmtHandle("locPtr = &loc;") =>
         [
             < NamedRef( DEF, SymHandle("locPtr"))
@@ -37,6 +42,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
             MemRefHandle("locPtr") => 
                 NamedRef( USE, SymHandle("locPtr"))
         ] }
+    ASSIGNPAIRS = { StmtHandle("a = locPtr;") =>
+        [
+            < MemRefHandle("a")
+            , ExprHandle("locPtr") >
+        ] }
     PTRASSIGNPAIRS = { StmtHandle("a = locPtr;") =>
         [
             < NamedRef( DEF, SymHandle("a"))
@@ -48,6 +58,11 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
                 NamedRef( DEF, SymHandle("b"))
             MemRefHandle("locPtr") => 
                 NamedRef( USE, SymHandle("locPtr"))
+        ] }
+    ASSIGNPAIRS = { StmtHandle("b = locPtr;") =>
+        [
+            < MemRefHandle("b")
+            , ExprHandle("locPtr") >
         ] }
     PTRASSIGNPAIRS = { StmtHandle("b = locPtr;") =>
         [
@@ -71,8 +86,4 @@ PROCEDURE = { < ProcHandle("main"), SymHandle("main") > }
     MEMREFEXPRS = { StmtHandle("return 0;") =>
         [
         ] }
-    LOCATION = { < SymHandle("main"), not local > }
-    LOCATION = { < SymHandle("loc"), local > }
-    LOCATION = { < SymHandle("locPtr"), local > }
-    LOCATION = { < SymHandle("a"), local > }
-    LOCATION = { < SymHandle("b"), local > }
+   

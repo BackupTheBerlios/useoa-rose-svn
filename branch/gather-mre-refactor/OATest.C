@@ -282,8 +282,6 @@ main ( int argc,  char * argv[] )
   {
     double time = clock();
     SgProject * sageProject =frontend( (int)(argc-1),&argv[1]);
-    printf("Frontend Time: %lf\n",
-        (clock() - time) / (1.0 * CLOCKS_PER_SEC));
     int filenum = sageProject->numberOfFiles();
 
     CmdOptions *cmds = CmdOptions::GetInstance();
@@ -564,7 +562,8 @@ main ( int argc,  char * argv[] )
     {
       DoFIAliasTagReachable(sageProject, &nodeArray, p_h);
     }
-    else if( cmds->HasOption("--oa-AliasTag") )
+    else if( cmds->HasOption("--oa-AliasTag") ||
+        cmds->HasOption("--oa-FIAliasAliasTag"))
     {
       DoFIAliasTag(sageProject, &nodeArray, p_h);
     }
@@ -1537,9 +1536,6 @@ int DoFIAliasTag(SgProject * p, std::vector<SgNode*> * na, bool p_handle) {
   OA::OA_ptr<OA::Alias::Interface> results;
   results = fialiasman->performAnalysis(procIter);
 
-  printf("FIAliasTag Time: %lf\n",
-    (clock() - time) / (1.0 * CLOCKS_PER_SEC));
- 
   if(!skipAnalysis) {
     if(!silent) { results->output(*irInterface); }
   }

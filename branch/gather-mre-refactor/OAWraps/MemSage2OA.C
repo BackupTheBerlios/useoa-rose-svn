@@ -97,7 +97,6 @@ OA::MemRefHandle SageIRInterface::findTopMemRefHandle(SgNode *astNode)
                          
         // else if two or more children then return MemRefHandle(0) 
         } else {
-#ifdef ROSE_0_8_9a      
             // One of these children may be a folded expression,
             // while the other is the original expression
             // (accessible via get_originalExpressionTree).
@@ -120,7 +119,7 @@ OA::MemRefHandle SageIRInterface::findTopMemRefHandle(SgNode *astNode)
 
                 return findTopMemRefHandle(castExp->get_operand());
             }
-#endif
+            
             //return getMemRefHandle(0);
             return findTopMemRefHandle(kids[0]);
         }
@@ -1227,6 +1226,8 @@ void MREVisitor::visitSgAssignOp(
         mIR.getMemRefExprIterator(lhs_memref);
     for (mIter->reset(); mIter->isValid(); ++(*mIter) ) {
         OA_ptr<MemRefExpr> lhs_mre = mIter->current();
+
+        // set lhs to DEf
         lhs_mre->setMemRefType(MemRefExpr::DEF);
     }
 
@@ -1371,7 +1372,35 @@ void MREVisitor::visitSgTypeIdOp(
 void MREVisitor::visitSgPointerDerefExp(
     SgPointerDerefExp *node, OA::StmtHandle stmt)
 {
-    //cout << "in a " << "SgPointerDerefExp visit function" << endl;
+    /**
+     * common post-conditions:
+     *    - Emit a memrefhandle for the node
+     *    - All child MREs are wrapped in Deref MREs.
+     *    
+     * Example normal case:
+     *      TODO
+     */
+
+    //-----------------------------------------------------------------------
+    // common post-conditions:
+    MemRefHandle hMemRef;
+    hMemRef = mIR.getMemRefHandle(node);
+    mIR.relateMemRefAndStmt(hMemRef, stmt);
+ 
+    // iterate through all of the child's MREs, wrap them in DEREF MREs
+    MemRefHandle child_memref = mIR.findTopMemRefHandle(node->get_operand_i());
+    OA_ptr<MemRefExprIterator> iter = mIR.getMemRefExprIterator(child_memref);
+    for(iter->reset(); iter->isValid(); ++(*iter)) {
+        OA_ptr<MemRefExpr> child_mre = iter->current();
+        OA_ptr<Deref> deref_mre;
+        OA_ptr<MemRefExpr> composed_mre;
+        OA_ptr<MemRefExpr> nullMRE;
+
+        deref_mre = new Deref(MemRefExpr::USE, nullMRE, 1);
+        composed_mre = deref_mre->composeWith(child_mre);
+
+        mIR.mMemref2mreSetMap[hMemRef].insert(composed_mre);
+    }
 }
 
 void MREVisitor::visitSgAddressOfOp(
@@ -1384,11 +1413,8 @@ void MREVisitor::visitSgAddressOfOp(
      *    - memrefhandle for child node is removed
      *    - All child MREs are wrapped in AdresssOf MREs.
      *    
-     * common intermediate conditions:
-     * special case (is for a reference variable):
-     * normal post-conditions:
-     *
      * Example normal case:
+     *      TODO
      */
 
     //-----------------------------------------------------------------------

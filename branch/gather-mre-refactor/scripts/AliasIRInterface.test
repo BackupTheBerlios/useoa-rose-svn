@@ -7,96 +7,97 @@ driverexec::./CtoOA --edg:no_warnings -w
 
 # list of tests
 #       input file,    			 status
+test::  alias1.c,                checked AIS (10/2009)
+test::  alias2.c,                checked AIS (10/2009)
+test::  alias3.c,                in progress AIS (10/2009)
+#test::  alias4.c,                checked by MMS 8/13/06
+#test::  alias4b.c,               checked by MMS 8/13/06
+
 #test::  parambinds-formals.C,	 error email sent 4/19/06 MMS
 #test::  func-ptrs.C,		  	 assertion failure 4/24/06 MMS
 #test::	t1.c,				     error 4/24/06 MMS
 #test::  smg2000-typedefStruct.C, assertion failure 6/26/06 AIS
-test::  addressOf.c,             checked by MMS 8/20/06 
-test::  aggregateInit.c,         checked by MMS 8/29/06
-test::  alias1.c,                checked by MMS 8/13/06
-test::  alias2.c,                checked by MMS 8/13/06
-#test::  alias3.c,                error 6/26/06 AIS
-test::  alias4.c,                checked by MMS 8/13/06
-test::  alias4b.c,               checked by MMS 8/13/06
-test::  assignOps.c,             checked by MMS 8/13/06
-test::  assignReturn.c,          checked by MMS 8/28/06
-test::  class.C,                 checked by MMS 9/8/06
-test::  comma.c,                 checked by MMS 8/31/06
+#test::  addressOf.c,             checked by MMS 8/20/06 
+#test::  aggregateInit.c,         checked by MMS 8/29/06
+#test::  assignOps.c,             checked by MMS 8/13/06
+#test::  assignReturn.c,          checked by MMS 8/28/06
+#test::  class.C,                 checked by MMS 9/8/06
+#test::  comma.c,                 checked by MMS 8/31/06
 #test::  dataMemberPtrs.C,        aborts MMS 8/7/06
-test::  fields.c,                checked by MMS 8/20/06
-test::  constQualified.c,        checked by MMS 9/6/06
+#test::  fields.c,                checked by MMS 8/20/06
+#test::  constQualified.c,        checked by MMS 9/6/06
 #test::  utke.c,                 checked by ???
 #test::  OAWikiEx.c,             checked by ???
 #test::  funCall.c,              checked by ???
-test::  func_call.c,             checked by MMS 8/25/06
-test::  functionPtr.c,           checked by MMS 8/22/06
-test::  functionPtr2.c,          checked by MMS 8/22/06
-test::  implicitMemberVarAccess.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
-test::  implicitMemberVarAccessInCtorList.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
-test::  implicitMemberVarObjDefnInCtorList.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
-test::  implicitMemberVarRefDefnInCtorList.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
-test::  implicitReceiverCtorInvoc.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
-test::  implicitReceiverDestructorInvoc.C,  checked by BSW 9/7/06
-test::  implicitReceiverMethodInvoc.C,  checked by BSW 9/7/06
-test::  invokeBaseCtor.C,        checked by MMS 9/8/96
-test::  invokeBaseCtorInCtorList.C,  checked by BSW 9/7/60test::  localNonLocal.c,         checked by BSW 6/28/06 (rechecked by MMS 8/21/06)
-test::  passArrayPtr.c,          checked by MMS 8/29/06
+#test::  func_call.c,             checked by MMS 8/25/06
+#test::  functionPtr.c,           checked by MMS 8/22/06
+#test::  functionPtr2.c,          checked by MMS 8/22/06
+#test::  implicitMemberVarAccess.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
+#test::  implicitMemberVarAccessInCtorList.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
+#test::  implicitMemberVarObjDefnInCtorList.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
+#test::  implicitMemberVarRefDefnInCtorList.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
+#test::  implicitReceiverCtorInvoc.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
+#test::  implicitReceiverDestructorInvoc.C,  checked by BSW 9/7/06
+#test::  implicitReceiverMethodInvoc.C,  checked by BSW 9/7/06
+#test::  invokeBaseCtor.C,        checked by MMS 9/8/96
+#test::  invokeBaseCtorInCtorList.C,  checked by BSW 9/7/60test::  localNonLocal.c,         checked by BSW 6/28/06 (rechecked by MMS 8/21/06)
+#test::  passArrayPtr.c,          checked by MMS 8/29/06
 #test::  parambinds-formals-intPtrs.C,   ROSE assert 10/19/06 MMS
-test::  paramBindingsForArrowMethodInvoc.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
-test::  paramBindingsForDotMethodInvoc.C,  checked by BSW 9/06/06 (rechecked MMS 9/8/06)
-test::  passIntPtrArrayRef.c,    checked by MMS 8/29/06
-test::  passIntPtrArrayRef2.c,   checked by MMS 8/29/06
-test::  passIntPtrArrayRef3.c,   checked by MMS 8/31/06
-test::  passIntPtr.c,            checked by MMS 8/21/06
-test::  refParam.C,              checked by MMS 8/24/06 (rechecked by BSW 9/13/06)
-test::  ref.C,                   checked by MMS 8/21/06
-test::  refClass.C,              checked by MMS 9/8/06  (rechecked by BSW 9/13/06)
-test::  refClass2.C,             checked by MMS 9/14/06
-test::  retPtr1.c,               checked by MMS 9/14/06
-test::  sizeOf.C,                checked by MMS 8/24/06               
-test::  swap.c,                  checked by MMS 8/31/06
-test::  ternop.c,                checked by MMS 8/24/06
+#test::  paramBindingsForArrowMethodInvoc.C,  checked by BSW 9/7/06 (rechecked MMS 9/8/06)
+#test::  paramBindingsForDotMethodInvoc.C,  checked by BSW 9/06/06 (rechecked MMS 9/8/06)
+#test::  passIntPtrArrayRef.c,    checked by MMS 8/29/06
+#test::  passIntPtrArrayRef2.c,   checked by MMS 8/29/06
+#test::  passIntPtrArrayRef3.c,   checked by MMS 8/31/06
+#test::  passIntPtr.c,            checked by MMS 8/21/06
+#test::  refParam.C,              checked by MMS 8/24/06 (rechecked by BSW 9/13/06)
+#test::  ref.C,                   checked by MMS 8/21/06
+#test::  refClass.C,              checked by MMS 9/8/06  (rechecked by BSW 9/13/06)
+#test::  refClass2.C,             checked by MMS 9/14/06
+#test::  retPtr1.c,               checked by MMS 9/14/06
+#test::  sizeOf.C,                checked by MMS 8/24/06               
+#test::  swap.c,                  checked by MMS 8/31/06
+#test::  ternop.c,                checked by MMS 8/24/06
 #test::  retPtr2.c,              Added by PLM 08/01/06, BUG 008270 
 #test::  retPtr3.c,              Added by PLM 08/01/06, core dump
 #test::  retPtr4.c,              Added by PLM 08/01/06, BUG 008270
 #test::  retPtr5.c,              Added by PLM 08/01/06, core dump 
-test::  paramBindingsForStaticMethodInvoc.C,  checked by BSW 9/7/06
-test::  staticMemberVarAccess.C,  checked by BSW 9/7/06
-test::  paramBindingsForStackCtorInvoc.C,  checked by BSW 9/7/06
-test::  paramBindingsForDynamicCtorInvoc.C,  checked by BSW 9/7/06
-test::  paramBindingsForDestructorInvoc.C,  checked by BSW 9/7/06
+#test::  paramBindingsForStaticMethodInvoc.C,  checked by BSW 9/7/06
+#test::  staticMemberVarAccess.C,  checked by BSW 9/7/06
+#test::  paramBindingsForStackCtorInvoc.C,  checked by BSW 9/7/06
+#test::  paramBindingsForDynamicCtorInvoc.C,  checked by BSW 9/7/06
+#test::  paramBindingsForDestructorInvoc.C,  checked by BSW 9/7/06
 
 # Specifically for virtual methods
-test::  stackInitOfClassWithVirtualMethods.C,  checked by BSW 9/14/06
-test::  dynamicInitOfClassWithVirtualMethods.C,  checked by BSW 9/14/06
-test::  virtualDotMethodInvocation.C,  checked by BSW 9/14/06
-test::  virtualArrowMethodInvocation.C,  checked by BSW 9/14/06
-test::  assignOfObjectPtrWithVirtualMethods.C, checked by BSW 9/15/06
-test::  stackInitOfClassWhoseBaseClassHasVirtualMethods.C, checked by BSW 9/15/06
-test::  dynamicInitOfClassWhoseBaseClassHasVirtualMethods.C, checked by BSW 9/15/06
-test::  virtualDotBaseMethodInvocation.C, checked by BSW 9/15/06
-test::  virtualDotRefBaseMethodInvocation.C, checked by BSW 9/15/06
-test::  virtualArrowBaseMethodInvocation.C, checked by BSW 9/15/06
-test::  assignOfObjPtrWhoseBaseClassHasVirtualMethods.C, checked by BSW 9/15/06
-test::  stackInitOfClassThatOverloadsBaseClassVirtualMethods.C, checked by BSW 9/15/06
-test::  stackInitOfClassThatOverloadsBaseClassPureVirtualMethods.C, checked by BSW 9/15/06
-test::  dynamicInitOfClassThatOverloadsBaseClassVirtualMethods.C, checked by BSW 9/15/06
-test::  dynamicInitOfClassThatOverloadsBaseClassPureVirtualMethods.C, checked by BSW 9/15/06
-test::  virtualDotOverloadedBaseMethodInvocation.C, checked by BSW 9/15/06
-test::  virtualArrowOverloadedBaseMethodInvocation.C, checked by BSW 9/15/06
-test::  assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C, checked by BSW 9/15/06
-test::  assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C, checked by BSW 9/15/06
+#test::  stackInitOfClassWithVirtualMethods.C,  checked by BSW 9/14/06
+#test::  dynamicInitOfClassWithVirtualMethods.C,  checked by BSW 9/14/06
+#test::  virtualDotMethodInvocation.C,  checked by BSW 9/14/06
+#test::  virtualArrowMethodInvocation.C,  checked by BSW 9/14/06
+#test::  assignOfObjectPtrWithVirtualMethods.C, checked by BSW 9/15/06
+#test::  stackInitOfClassWhoseBaseClassHasVirtualMethods.C, checked by BSW 9/15/06
+#test::  dynamicInitOfClassWhoseBaseClassHasVirtualMethods.C, checked by BSW 9/15/06
+#test::  virtualDotBaseMethodInvocation.C, checked by BSW 9/15/06
+#test::  virtualDotRefBaseMethodInvocation.C, checked by BSW 9/15/06
+#test::  virtualArrowBaseMethodInvocation.C, checked by BSW 9/15/06
+#test::  assignOfObjPtrWhoseBaseClassHasVirtualMethods.C, checked by BSW 9/15/06
+#test::  stackInitOfClassThatOverloadsBaseClassVirtualMethods.C, checked by BSW 9/15/06
+#test::  stackInitOfClassThatOverloadsBaseClassPureVirtualMethods.C, checked by BSW 9/15/06
+#test::  dynamicInitOfClassThatOverloadsBaseClassVirtualMethods.C, checked by BSW 9/15/06
+#test::  dynamicInitOfClassThatOverloadsBaseClassPureVirtualMethods.C, checked by BSW 9/15/06
+#test::  virtualDotOverloadedBaseMethodInvocation.C, checked by BSW 9/15/06
+#test::  virtualArrowOverloadedBaseMethodInvocation.C, checked by BSW 9/15/06
+#test::  assignOfObjPtrThatOverloadsBaseClassVirtualMethods.C, checked by BSW 9/15/06
+#test::  assignOfObjPtrThatOverloadsBaseClassPureVirtualMethods.C, checked by BSW 9/15/06
 
 # Specifically testing references
-test::  ctorReferenceInit.C,        checked by MMS 9/14/06
-test::  refPtrFormal.C,             checked by MMS 9/14/06
-test::  referenceMemVarAccesses.C,  checked by MMS 9/14/06
-test::  referenceInit.C,            checked by BSW 10/10/06
-test::  returnReference.C,          checked by BSW 10/10/06
-test::  referenceFormal.C,          checked by BSW 10/10/06
-test::  refCall.C,                  checked by BSW 10/10/06
-test::  placementNew1.C,                  checked by BSW 1/25/08
-test::  placementNew2.C,                  checked by BSW 1/25/08
-test::  placementDelete1.C,                  checked by BSW 1/28/08
+#test::  ctorReferenceInit.C,        checked by MMS 9/14/06
+#test::  refPtrFormal.C,             checked by MMS 9/14/06
+#test::  referenceMemVarAccesses.C,  checked by MMS 9/14/06
+#test::  referenceInit.C,            checked by BSW 10/10/06
+#test::  returnReference.C,          checked by BSW 10/10/06
+#test::  referenceFormal.C,          checked by BSW 10/10/06
+#test::  refCall.C,                  checked by BSW 10/10/06
+#test::  placementNew1.C,                  checked by BSW 1/25/08
+#test::  placementNew2.C,                  checked by BSW 1/25/08
+#test::  placementDelete1.C,                  checked by BSW 1/28/08
 #test::  placementDelete2.C,                  checked by BSW 1/28/08
-test::  ptrToMbr.cc,                  checked by BSW 2/17/08
+#test::  ptrToMbr.cc,                  checked by BSW 2/17/08

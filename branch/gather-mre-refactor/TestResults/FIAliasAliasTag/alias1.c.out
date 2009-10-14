@@ -1,11 +1,14 @@
 
 AliasTagResults(
-    mMREToTags: OA::OA_ptr<MemRefExpr> 	 => OA::OA_ptr<std::set<AliasTag> > 
+    mMREToTags: OA::OA_ptr<MemRefExpr> 	 => OA::OA_ptr<AliasTagSet> 
             
             NamedRef(
                 mMemRefType: USE
                 mSymHandle: SymHandle(loc)
-            )	 => [ 
+                mStrictlyLocal: 0
+            )	 => 
+            mIsMust: false
+            mTags([ 
                 Tag(
                     mTagID: 1
                     # NamedRef(loc)
@@ -37,6 +40,7 @@ AliasTagResults(
                 NamedRef(
                     mMemRefType: DEF
                     mSymHandle: SymHandle(a)
+                    mStrictlyLocal: 0
                 )
                 mNumDeref: 1
             )	 => [ 
@@ -53,6 +57,7 @@ AliasTagResults(
                 NamedRef(
                     mMemRefType: DEF
                     mSymHandle: SymHandle(b)
+                    mStrictlyLocal: 0
                 )
                 mNumDeref: 1
             )	 => [ 
@@ -74,6 +79,7 @@ AliasTagResults(
                 NamedRef(
                     mMemRefType: USE
                     mSymHandle: SymHandle(loc)
+                    mStrictlyLocal: 0
                 )    
                 Deref(
                     mMemRefType: USE
@@ -81,6 +87,7 @@ AliasTagResults(
                     NamedRef(
                         mMemRefType: DEF
                         mSymHandle: SymHandle(a)
+                        mStrictlyLocal: 0
                     )
                     mNumDeref: 1
                 )    
@@ -90,6 +97,7 @@ AliasTagResults(
                     NamedRef(
                         mMemRefType: DEF
                         mSymHandle: SymHandle(b)
+                        mStrictlyLocal: 0
                     )
                     mNumDeref: 1
                 ) ] 
@@ -101,6 +109,7 @@ AliasTagResults(
                 NamedRef(
                     mMemRefType: DEF
                     mSymHandle: SymHandle(a)
+                    mStrictlyLocal: 0
                 ) ] 
             
             Tag(
@@ -110,6 +119,7 @@ AliasTagResults(
                 NamedRef(
                     mMemRefType: DEF
                     mSymHandle: SymHandle(b)
+                    mStrictlyLocal: 0
                 ) ] 
 
     mMemRefToTags: MemRefHandle	 => OA::OA_ptr<std::set<AliasTag> > 
@@ -147,6 +157,7 @@ AliasTagResults(
                 NamedRef(
                     mMemRefType: DEF
                     mSymHandle: SymHandle(a)
+                    mStrictlyLocal: 0
                 )
                 mNumDeref: 1
             )	 => 1
@@ -157,6 +168,7 @@ AliasTagResults(
                 NamedRef(
                     mMemRefType: DEF
                     mSymHandle: SymHandle(b)
+                    mStrictlyLocal: 0
                 )
                 mNumDeref: 1
             )	 => 1
