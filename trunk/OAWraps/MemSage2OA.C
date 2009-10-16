@@ -201,21 +201,6 @@ OA::MemRefHandle SageIRInterface::getMemRefHandle(
     return 0;
 }*/
 
-OA::OA_ptr<OA::MemRefExpr> SageIRInterface::convertSymToMemRefExpr(OA::SymHandle sym)
-{
-  OA::MemRefHandle memrefhandle =  getSymMemRefHandle(sym);
-  OA::OA_ptr<OA::MemRefExprIterator> memRefExprIter = getMemRefExprIterator(memrefhandle);
-  
-  // for each mem-ref-expr associated with this memref
-  //SHK  - we just return the first 
-  for (memRefExprIter->reset();memRefExprIter->isValid();
-       (*memRefExprIter)++) {
-    return memRefExprIter->current();
-  }
-  
-  // If you are here then you have not found an existing MemrefExprManagerFIAliasAliasTag
-}
-
 OA::StmtHandle SageIRInterface::getStmt(OA::MemRefHandle mref) {
     return mMemRef2StmtMap[mref];
 }

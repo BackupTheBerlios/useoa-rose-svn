@@ -28,6 +28,9 @@
 //#include <config.h>
 #endif
 
+#define TRUE 1
+#define FALSE 0
+
 #include <rose.h>
 #include <unistd.h>
 #include <time.h>
@@ -652,21 +655,17 @@ main ( int argc,  char * argv[] )
        return 1;
     }
     #endif
-    //<AIS|ATB>
-    #if 0
     else if( cmds->HasOption("--oa-SideEffect") )
     {
       DoSideEffect(sageProject, &nodeArray, p_h);
       return 1;
-		   
     }
-    #endif
+    #if 0
+    //<AIS|ATB>
     else if( cmds->HasOption("--oa-ReachDefs") )
     {
        DoReachDef(sageProject, &nodeArray, p_h);
     }
-    //<AIS|ATB>
-    #if 0
     else if( cmds->HasOption("--oa-UDDUChains") )
     {
       for (int i = 0; i < filenum; ++i) 
@@ -1308,62 +1307,58 @@ int DoICFGDep(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 }
 #endif
 
-//<AIS|ATB>
-#if 0
 int DoSideEffect(SgProject* sgproject, std::vector<SgNode*> * na, bool p_handle)
 {
 
   int returnvalue=FALSE;
-  if ( debug )
-    {
-      printf("*******start of ParamBinding \n");
-    }
   OA::OA_ptr<SageIRInterface> irInterface;
   irInterface = new SageIRInterface(sgproject, na, p_handle);
   
-  //FIAlias
-  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasMap> fialiasman;
-  fialiasman= new OA::Alias::ManagerFIAliasAliasMap(irInterface);
   OA::OA_ptr<SageIRProcIterator> procIter;
-  procIter = new SageIRProcIterator(sgproject,*irInterface);
-  OA::OA_ptr<OA::Alias::InterAliasMap> interAlias;
-  interAlias = fialiasman->performAnalysis(procIter);
 
-  OA::OA_ptr<OA::CallGraph::ManagerCallGraphStandard> callgraphmanstd;
-  callgraphmanstd= new OA::CallGraph::ManagerCallGraphStandard(irInterface);
-  OA::OA_ptr<OA::CallGraph::CallGraph> callgraph
-    = callgraphmanstd->performAnalysis(procIter,interAlias);
-  //callgraph->output(*irInterface);
-   
+  //FIAlias
+  OA::OA_ptr<OA::Alias::ManagerFIAliasAliasTag> fialiasman;
+  fialiasman = new OA::Alias::ManagerFIAliasAliasTag(irInterface);
+  procIter = new SageIRProcIterator(sgproject, *irInterface);
+  OA::OA_ptr<OA::Alias::Interface> alias;
+  alias = fialiasman->performAnalysis(procIter);
+  OA::OA_ptr<OA::Alias::InterAliasResults> interAlias;
+  interAlias = new InterAliasResults(alias);
 
-  
-  OA::OA_ptr<OA::DataFlow::ManagerParamBindings> pbman;
-  pbman = new OA::DataFlow::ManagerParamBindings(irInterface);
-  OA::OA_ptr<OA::DataFlow::ParamBindings> parambind;
+  // call graph
+  OA_ptr<CallGraph::ManagerCallGraphStandard> callgraphmanstd;
+  callgraphmanstd = new CallGraph::ManagerCallGraphStandard(irInterface);
+  OA_ptr<CallGraph::CallGraph> callgraph =
+    callgraphmanstd->performAnalysis(procIter, alias);
+ 
+  // eachCFG
+  OA::OA_ptr<OA::CFG::EachCFGInterface> eachCFG;
+  OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgman;
+  cfgman = new OA::CFG::ManagerCFGStandard(irInterface);
+  eachCFG = new OA::CFG::EachCFGStandard(cfgman);
+
+  // param bindings
+  OA_ptr<DataFlow::ManagerParamBindings> pbman;
+  pbman = new DataFlow::ManagerParamBindings(irInterface);
+  OA_ptr<DataFlow::ParamBindings> parambind;
   parambind = pbman->performAnalysis(callgraph);
-  parambind->output(*irInterface);
-  //  parambind->dump(std::cout, irInterface);
-
 
   // Intra Side-Effect
-  OA::OA_ptr<OA::SideEffect::ManagerSideEffectStandard> sideeffectman;
-  sideeffectman = new OA::SideEffect::ManagerSideEffectStandard(irInterface);  
+  OA_ptr<SideEffect::ManagerSideEffectStandard> sideeffectman;
+  sideeffectman = new SideEffect::ManagerSideEffectStandard(irInterface);  
 
   // InterSideEffect
-  OA::OA_ptr<OA::SideEffect::ManagerInterSideEffectStandard> interSEman;
-  interSEman = new OA::SideEffect::ManagerInterSideEffectStandard(irInterface);
+  OA_ptr<SideEffect::ManagerInterSideEffectStandard> interSEman;
+  interSEman = new SideEffect::ManagerInterSideEffectStandard(irInterface);
 
-  OA::OA_ptr<OA::SideEffect::InterSideEffectStandard> interSE;
-  interSE = interSEman->performAnalysis(callgraph, parambind, interAlias, 
-                                        sideeffectman,
-                                        OA::DataFlow::ITERATIVE);  
+  OA_ptr<OA::SideEffect::InterSideEffectStandard> interSE;
+  interSE = interSEman->performAnalysis(
+    callgraph, parambind, interAlias, sideeffectman, OA::DataFlow::ITERATIVE);
+    
+  if(!silent) { interSE->output(*irInterface, *alias); }
 
-  interSE->output(*irInterface); 
-  
   return returnvalue;
-
 }
-#endif
 
 //<AIS|ATB>
 #if 0

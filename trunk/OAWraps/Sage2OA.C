@@ -3937,6 +3937,12 @@ SageIRInterface::getParamBindPtrAssignIterator(OA::CallHandle call)
 //-------------------------------------------------------------------------
 // AliasIRInterface
 //-------------------------------------------------------------------------
+bool SageIRInterface::isRefParam(OA::SymHandle sym) {
+    SgExpression *expnode = isSgExpression(getSgNode(sym)); 
+    assert(expnode != NULL);
+    return isSgReferenceType(expnode->get_type());
+}
+
 OA_ptr<MemRefHandleIterator> SageIRInterface::getAllMemRefs(StmtHandle stmt)
 {
     OA::OA_ptr<SageIRMemRefIterator> mIter;
@@ -4013,8 +4019,6 @@ OA::SymHandle SageIRInterface::getSymHandle(OA::LeafHandle h)
 // ParamBindingsIRInterface
 //-------------------------------------------------------------------------
 
-//<AIS|ATB>
-//#if 0
 //! returns true if given symbol is a parameter
 bool SageIRInterface::isParam(OA::SymHandle h)
 {
@@ -4125,7 +4129,6 @@ OA::SymHandle SageIRInterface::getFormalForActual(OA::ProcHandle caller,
 
   return retFormal;
 }
-//#endif
 
 
 class ExprTreeTraversal
@@ -4391,6 +4394,20 @@ OA::OA_ptr<OA::ExprTree> SageIRInterface::getExprTree(OA::ExprHandle h)
   buildExprTree.traverse(node, inheritedAttribute);
 
   return exprTree;
+}
+
+OA::OA_ptr<OA::MemRefExpr> SageIRInterface::convertSymToMemRefExpr(
+    OA::SymHandle sym)
+{
+    // Create an MRE for the symbol, just wrap a NamedRef around it.
+    OA_ptr<OA::MemRefExpr> mre;
+    bool isAddrOf = false;
+    bool fullAccuracy = false;
+    MemRefExpr::MemRefType hty;
+    hty = OA::MemRefExpr::USE;
+    mre = new NamedRef(hty, sym, false);
+
+    return mre;
 }
 
 //-------------------------------------------------------------------------
@@ -6463,4 +6480,17 @@ SageIRInterface::returnOpEnumValInt(OA::OpHandle op)
 
 
 void SageIRInterface::reportTimes() { }
+
+//-------------------------------------------------------------------------
+// InterSideEffectIRInterface
+//-------------------------------------------------------------------------
+
+OA_ptr<SideEffect::SideEffectStandard> 
+SageIRInterface::getSideEffect(ProcHandle caller, SymHandle calleesym)
+{
+    // this function should not be called.  If it is called it means that
+    // interprocedural side-effect analysis is being run on less than a
+    // whole-program which is not currently supported.
+    assert(false);
+}
 

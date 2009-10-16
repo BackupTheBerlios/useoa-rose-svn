@@ -697,10 +697,10 @@ class SageIRInterface :
   public virtual OA::XAIF::XAIFIRInterface,
   public virtual OA::Alias::AliasTagResults,
 //  public virtual OA::XAIF::ManagerAliasMapXAIF,
-public virtual OA::DataFlow::ParamBindingsIRInterface,
-public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
-public virtual OA::SideEffect::SideEffectIRInterface,
-public virtual OA::SideEffect::InterSideEffectIRInterface,
+  public virtual OA::DataFlow::ParamBindingsIRInterface,
+  public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
+  public virtual OA::SideEffect::SideEffectIRInterface,
+  public virtual OA::SideEffect::InterSideEffectIRInterface,
 //<AIS|ATB> public virtual OA::Linearity::LinearityIRInterface,
 //<AIS|ATB> public virtual OA::ReachConsts::ReachConstsIRInterface,
 //  public virtual OA::AttributePropagation::AttributePropagationIRInterface,
@@ -1082,10 +1082,10 @@ public:
   
   OA::OA_ptr<OA::Alias::ParamBindPtrAssignIterator>
   getParamBindPtrAssignIterator(OA::CallHandle call);
-
+#endif
   // returns true if given symbol is a reference variable.
-//  bool isRefParam(OA::SymHandle); has been deprecated
-
+  bool isRefParam(OA::SymHandle);
+#if 0
   // returns true if given MemRefExpr is a reference variable.
 //  bool isReferenceExpr(OA::OA_ptr<OA::MemRefExpr>);
 
@@ -1113,19 +1113,12 @@ public:
   // ParamBindingsIRInterface
   //-------------------------------------------------------------------------
 
-//<AIS|ATB> 
-//#if 0
-  //! Given a subprogram return an IRSymIterator for all
-  //! symbols that are referenced within the subprogram
-  //OA::OA_ptr<OA::IRSymIterator> getRefSymIterator(OA::ProcHandle h);
-
   //! returns true if given symbol is a parameter 
   bool isParam(OA::SymHandle);
 
   // return the formal parameter that an actual parameter is associated with 
   OA::SymHandle getFormalForActual(OA::ProcHandle caller, OA::CallHandle call, 
                                    OA::ProcHandle callee, OA::ExprHandle param);
-//#endif
 
   // Given an ExprHandle, return an ExprTree 
   OA::OA_ptr<OA::ExprTree> getExprTree(OA::ExprHandle h);
@@ -1214,6 +1207,12 @@ public:
   // ExprTreeIRInterface
   //-------------------------------------------------------------------------
   OA_ptr<OpBasicInterface> getOpBasic(OpHandle hOp);
+
+  //-------------------------------------------------------------------------
+  // InterSideEffectIRInterface
+  //-------------------------------------------------------------------------
+  virtual OA_ptr<SideEffect::SideEffectStandard> 
+      getSideEffect(ProcHandle caller, SymHandle calleesym);
 
   //-------------------------------------------------------------------------
   // output methods
@@ -1486,4 +1485,3 @@ public:
 #define OA_VTABLE_STR "__oa_vtable_ptr"
 
 #endif
-
