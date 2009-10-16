@@ -1,9 +1,6 @@
 #ifndef _SAGE2OA_H
 #define _SAGE2OA_H
 
-#define FALSE false
-#define TRUE true
-
 #include "rose.h"
 
 #include "CallGraph.h"
@@ -15,8 +12,8 @@
 #include <OpenAnalysis/IRInterface/ActivityIRInterface.hpp>
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/AliasIRInterfaceDefault.hpp>
 #include <OpenAnalysis/IRInterface/ReachDefsIRInterface.hpp>
-//<AIS|ATB> #include <OpenAnalysis/IRInterface/UDDUChainsIRInterface.hpp>
-//<AIS|ATB> #include <OpenAnalysis/IRInterface/XAIFIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/UDDUChainsIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/XAIFIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/ParamBindingsIRInterface.hpp>
 #include <OpenAnalysis/IRInterface/InterSideEffectIRInterfaceDefault.hpp>
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/LinearityIRInterface.hpp>
@@ -33,8 +30,17 @@
 #include <OpenAnalysis/SideEffect/ManagerSideEffectStandard.hpp>
 #include <OpenAnalysis/DataFlow/ManagerParamBindings.hpp>
 #include <OpenAnalysis/Alias/Interface.hpp>
+#include <OpenAnalysis/Alias/AliasTagResults.hpp>
 #include <OpenAnalysis/Alias/ManagerFIAlias.hpp>
 #include <OpenAnalysis/ExprTree/ExprTree.hpp>
+#include <OpenAnalysis//ReachDefsOverwrite/ManagerReachDefsOverwriteStandard.hpp>
+//#include <OpenAnalysis/ExprTree/ExprTree.hpp>
+//#include <OpenAnalysis/XAIF/ManagerAliasTagXAIF.hpp>
+//#include <OpenAnalysis/XAIF/ManagerAliasMapXAIF.hpp>
+//#include <OpenAnalysis/XAIF/AliasTagXAIF.hpp>
+//#include <OpenAnalysis/XAIF/AliasMapXAIF.hpp>
+
+
 //<AIS|ATB> #include <OpenAnalysis/NewExprTree/NewExprTree.hpp>
 //<AIS|ATB> #include <OpenAnalysis/Loop/LoopAbstraction.hpp>
 
@@ -42,7 +48,6 @@
 #include <OpenAnalysis/IRInterface/ConstValBasicInterface.hpp>
 #include <OpenAnalysis/IRInterface/ConstValIntInterface.hpp>
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/ReachConstsIRInterface.hpp>
-
 using namespace OA;
 
 class SageIRInterface;
@@ -86,7 +91,7 @@ public:
 class SageIRRegionStmtIterator: public OA::IRRegionStmtIterator {
 public:
   SageIRRegionStmtIterator (SgStatementPtrList & lst, SageIRInterface * ir);
-  SageIRRegionStmtIterator (SageIRInterface * in) { valid=FALSE; mTheList=NULL; mLength=0; mIndex=0; ir=in;}
+  SageIRRegionStmtIterator (SageIRInterface * in) { valid=false; mTheList=NULL; mLength=0; mIndex=0; ir=in;}
   ~SageIRRegionStmtIterator () {}
 
   OA::StmtHandle current () const;
@@ -112,7 +117,7 @@ class SageIRStmtIterator: public OA::IRStmtIterator
 {
  public:
   SageIRStmtIterator (SgFunctionDefinition * node, SageIRInterface * ir); 
-  SageIRStmtIterator (SageIRInterface * in) {valid=FALSE; mLength=0; mIndex=0; ir=in;}
+  SageIRStmtIterator (SageIRInterface * in) {valid=false; mLength=0; mIndex=0; ir=in;}
   ~SageIRStmtIterator () {}
 
   OA::StmtHandle current () const;
@@ -343,12 +348,12 @@ class SgPtrAssignPairStmtIterator
 };
 
 class SgAssignPairStmtIterator 
-    : public OA::Alias::AssignPairStmtIterator
+: public OA::Alias::AssignPairStmtIterator
 { 
- public:
+public:
   SgAssignPairStmtIterator() : mValid(false), mIR(NULL) { }
   SgAssignPairStmtIterator(OA::StmtHandle stmt, SageIRInterface * ir)
-    : mIR(ir) 
+  : mIR(ir) 
   { create(stmt); reset(); mValid = true; }
   virtual ~SgAssignPairStmtIterator() { };
   
@@ -356,23 +361,23 @@ class SgAssignPairStmtIterator
   virtual OA::MemRefHandle currentTarget() const { return (*mIter).first; }
   //! right hand side
   virtual OA::ExprHandle currentSource() const { return (*mIter).second; }
-
+  
   virtual bool isValid() const { 
     return ( mValid && ( mIter != mEnd ) ); 
   }
-          
+  
   virtual void operator++() { if (isValid()) mIter++; }
   virtual void reset();
-
- private:
+  
+private:
   void create(OA::StmtHandle h);
-
+  
   typedef std::list<std::pair<OA::MemRefHandle, OA::ExprHandle> > 
     AssignPairList;
-
+  
   AssignPairList mList;
   AssignPairList::iterator mEnd, mBegin, mIter;;
-
+  
   bool mValid;
   SageIRInterface *mIR;
 };
@@ -679,20 +684,23 @@ class SageIRInterface :
 //<AIS|ATB>   public virtual OA::SSA::SSAIRInterface,
   public virtual OA::CFG::CFGIRInterfaceDefault,  
   public virtual OA::ICFG::ICFGIRInterface,
-//<AIS|ATB> public virtual OA::CallGraph::CallGraphIRInterface,
+  public virtual OA::CallGraph::CallGraphIRInterface,
 //<AIS|ATB> public virtual OA::Activity::ActivityIRInterface,
   public virtual OA::Alias::AliasIRInterface,
+  public virtual OA::Alias::Interface,
   public virtual OA::ReachDefs::ReachDefsIRInterface,
   public virtual OA::Liveness::LivenessIRInterface,
 //  public virtual OA::LivenessBV::LivenessBVIRInterface,
   public virtual OA::Vary::VaryIRInterface,
   public virtual OA::Useful::UsefulIRInterface,
-//<AIS|ATB> public virtual OA::UDDUChains::UDDUChainsIRInterface,
-//<AIS|ATB> public virtual OA::XAIF::XAIFIRInterface,
-//<AIS|ATB> public virtual OA::DataFlow::ParamBindingsIRInterface,
-//<AIS|ATB> public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
-//<AIS|ATB> public virtual OA::SideEffect::SideEffectIRInterface
-//<AIS|ATB> public virtual OA::SideEffect::InterSideEffectIRInterface,
+  public virtual OA::UDDUChains::UDDUChainsIRInterface,
+  public virtual OA::XAIF::XAIFIRInterface,
+  public virtual OA::Alias::AliasTagResults,
+//  public virtual OA::XAIF::ManagerAliasMapXAIF,
+public virtual OA::DataFlow::ParamBindingsIRInterface,
+public virtual OA::SideEffect::InterSideEffectIRInterfaceDefault,
+public virtual OA::SideEffect::SideEffectIRInterface,
+public virtual OA::SideEffect::InterSideEffectIRInterface,
 //<AIS|ATB> public virtual OA::Linearity::LinearityIRInterface,
 //<AIS|ATB> public virtual OA::ReachConsts::ReachConstsIRInterface,
 //  public virtual OA::AttributePropagation::AttributePropagationIRInterface,
@@ -716,9 +724,9 @@ class SageIRInterface :
   //! Constructor.
   SageIRInterface(SgNode *root, 
                   std::vector<SgNode*> *na, 
-                  bool use_persistent_handles = FALSE,
-                  bool useVtableOpt = TRUE,
-                  bool excludeInputFiles = FALSE);
+                  bool use_persistent_handles = false,
+                  bool useVtableOpt = true,
+                  bool excludeInputFiles = false);
   ~SageIRInterface();
 
     
@@ -1051,7 +1059,7 @@ public:
 
   OA_ptr<OA::Alias::AssignPairStmtIterator>
       getAssignStmtPairIterator(StmtHandle stmt);
-
+  
   //! Return an iterator over <int, MemRefExpr> pairs
   //! where the integer represents which formal parameter 
   //! and the MemRefExpr describes the corresponding actual argument. 
@@ -1106,7 +1114,7 @@ public:
   //-------------------------------------------------------------------------
 
 //<AIS|ATB> 
-#if 0
+//#if 0
   //! Given a subprogram return an IRSymIterator for all
   //! symbols that are referenced within the subprogram
   //OA::OA_ptr<OA::IRSymIterator> getRefSymIterator(OA::ProcHandle h);
@@ -1117,10 +1125,13 @@ public:
   // return the formal parameter that an actual parameter is associated with 
   OA::SymHandle getFormalForActual(OA::ProcHandle caller, OA::CallHandle call, 
                                    OA::ProcHandle callee, OA::ExprHandle param);
-#endif
+//#endif
 
   // Given an ExprHandle, return an ExprTree 
   OA::OA_ptr<OA::ExprTree> getExprTree(OA::ExprHandle h);
+  
+  //Given a symbol handle return a MemRefExpr
+  OA::OA_ptr<OA::MemRefExpr> convertSymToMemRefExpr(OA::SymHandle sym);
 
   //-------------------------------------------------------------------------
   // ActivityIRInterface
@@ -1141,7 +1152,7 @@ public:
 
   //! Return an iterator over all dependent MemRefExpr for given proc
   OA::OA_ptr<OA::MemRefExprIterator> getDepMemRefExprIter(OA::ProcHandle h);
-#if 0
+#if 0  
   //! given a symbol return the size in bytes of that symbol
   int getSizeInBytes(OA::SymHandle h);
 #endif

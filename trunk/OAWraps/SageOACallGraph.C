@@ -22,7 +22,7 @@ SageIRCallsiteIterator::SageIRCallsiteIterator(SgStatement * sgstmt,
   begin = calls_in_stmt.begin();
   st_iter = calls_in_stmt.begin();
   end = calls_in_stmt.end();
-  valid=TRUE;
+  valid=true;
 }
 
 void SageIRCallsiteIterator::FindCallsitesInSgStmt(SgStatement *sgstmt, std::list<SgNode*> & lst)
@@ -129,7 +129,7 @@ SageIRProcIterator::SageIRProcIterator(SgNode *node,
   begin = procs_in_proj.begin();
   st_iter = procs_in_proj.begin();
   end = procs_in_proj.end();
-  valid=TRUE;
+  valid=true;
 }
 
 

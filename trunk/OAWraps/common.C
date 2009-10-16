@@ -8,7 +8,7 @@ namespace UseOA {
  *               type).
  *  \returns  A string holding name stripped of the "const" prefix.
  *
- *  This was copied from 
+ *  This was copied from
  *  .../ROSE/src/midend/astUtil/astInterface/AstInterface.C
  *
  *  To do:  move this to a generally-accessible utilities file
@@ -29,8 +29,8 @@ static std::string stripParameterType( const std::string& name)
             result.push_back(r[i]);
         }
     }
-    return result; 
-} 
+    return result;
+}
 
 /** \brief Return a type's name and size.
  *  \param t  A Sage type.
@@ -41,14 +41,14 @@ static std::string stripParameterType( const std::string& name)
  *               this size corresponds to.  Certainly not the size
  *               of the type (which needn't be a word) or string.
  *
- *  This was copied from 
+ *  This was copied from
  *  .../ROSE/src/midend/astUtil/astInterface/AstInterface.C
  *
  *  To do:  move this to a generally-accessible utilities file
  *          or make it accessible from AstInterface (by adding
  *          its declaration to AstInterface.h).
  */
-void getTypeInfo(SgType *t, std::string *tname, 
+void getTypeInfo(SgType *t, std::string *tname,
 		 std::string* stripname, int* size)
 {
     std::string r1 = get_type_name(t);
@@ -74,16 +74,16 @@ void getTypeInfo(SgType *t, std::string *tname,
  *         method).
  *  \param functionCall A Sage node representing a function call expression.
  *  \param isDotExp  On output, a boolean indicating whether the
- *                   receiver of a method invocation is an object 
+ *                   receiver of a method invocation is an object
  *                   (isDotExp = true) or a pointer (isDotExp = false).
  *  \returns  Boolean indicating whether the invoked procedure is a method.
  *
  *  Be Careful!  For the purposes of isNonStaticMethodCall a method is anything
  *  which has or creates a receiver/"this."  That is a constructor
- *  (which creates a this and may modify/initialization it), a 
+ *  (which creates a this and may modify/initialization it), a
  *  destructor, or a non-static method.  Each of these is passed
  *  an implicit "this" parameter.  A static method may only
- *  access static member variables, therefore we need not pass an 
+ *  access static member variables, therefore we need not pass an
  *  implicit "this" (which is convenient, since we don't have one).
  */
 bool
@@ -93,10 +93,10 @@ isNonStaticMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
 
     SgExpression *expression = functionCall->get_function();
     ROSE_ASSERT(expression != NULL);
-  
+
     bool isMethod = false;
     isDotExp = false;
-  
+
     switch(expression->variantT()) {
     case V_SgDotExp:
     case V_SgDotStarOp:
@@ -108,10 +108,10 @@ isNonStaticMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
 
             SgExpression *lhs = dotExp->get_lhs_operand();
             ROSE_ASSERT(lhs != NULL);
-      
+
             SgPointerDerefExp *pointerDerefExp =
                 isSgPointerDerefExp(lhs);
-      
+
             if ( pointerDerefExp != NULL ) {
 	        ;
             } else {
@@ -139,10 +139,10 @@ isNonStaticMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
         }
     default:
         {
-	    std::cerr << "Was not expecting an " 
-                      << expression->sage_class_name() 
+	    std::cerr << "Was not expecting an "
+                      << expression->sage_class_name()
                       << std::endl
-                      << "in a function call." 
+                      << "in a function call."
                       << std::endl;
             ROSE_ABORT();
         }
@@ -150,18 +150,18 @@ isNonStaticMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp)
     return isMethod;
 }
 
-/*!  
+/*!
    Returns a SgPointerDerefExp if the function call is made
    through a pointer and NULL otherwise.
 */
 SgPointerDerefExp *
-isFunctionPointer(SgFunctionCallExp *functionCall) 
-{ 
-    SgFunctionDeclaration *funcDec = NULL; 
+isFunctionPointer(SgFunctionCallExp *functionCall)
+{
+    SgFunctionDeclaration *funcDec = NULL;
 
     SgExpression *expression = functionCall->get_function();
     ROSE_ASSERT(expression != NULL);
-  
+
     SgPointerDerefExp *pointerDerefExp = NULL;
 
     switch(expression->variantT()) {
@@ -177,7 +177,7 @@ isFunctionPointer(SgFunctionCallExp *functionCall)
     }
 
     return pointerDerefExp;
-} 
+}
 
 /** \brief  Return the SgFunctionDeclaration invoked by a function call.
  *  \param  functionCall  A SgFunctionCallExp representing a function
@@ -190,10 +190,10 @@ isFunctionPointer(SgFunctionCallExp *functionCall)
  *  If functionCall is a pointer dereference expression, this function
  *  will abort.
  */
-SgFunctionDeclaration * 
-getFunctionDeclaration(SgFunctionCallExp *functionCall) 
-{ 
-    SgFunctionDeclaration *funcDec = NULL; 
+SgFunctionDeclaration *
+getFunctionDeclaration(SgFunctionCallExp *functionCall)
+{
+    SgFunctionDeclaration *funcDec = NULL;
 
     SgExpression *expression = functionCall->get_function();
     ROSE_ASSERT(expression != NULL);
@@ -205,7 +205,7 @@ getFunctionDeclaration(SgFunctionCallExp *functionCall)
                 isSgMemberFunctionRefExp(expression);
             ROSE_ASSERT(memberFunctionRefExp != NULL);
 
-            funcDec = memberFunctionRefExp->get_symbol_i()->get_declaration(); 
+            funcDec = memberFunctionRefExp->get_symbol_i()->get_declaration();
             ROSE_ASSERT(funcDec != NULL);
 
             break;
@@ -230,12 +230,12 @@ getFunctionDeclaration(SgFunctionCallExp *functionCall)
         }
     case V_SgFunctionRefExp:
         {
-            SgFunctionRefExp *functionRefExp = 
+            SgFunctionRefExp *functionRefExp =
                 isSgFunctionRefExp(expression);
             ROSE_ASSERT(functionRefExp != NULL);
-      
-            // found a standard function reference  
-            funcDec = functionRefExp->get_symbol_i()->get_declaration(); 
+
+            // found a standard function reference
+            funcDec = functionRefExp->get_symbol_i()->get_declaration();
             ROSE_ASSERT(funcDec != NULL);
 
             break;
@@ -251,8 +251,8 @@ getFunctionDeclaration(SgFunctionCallExp *functionCall)
         }
     }
 
-    return funcDec; 
-} 
+    return funcDec;
+}
 
 /*!
    Verify that a node intended to be used as a call handle
@@ -279,12 +279,12 @@ void verifyCallHandleNodeType(SgNode *node)
             break;
         }
     case V_SgDeleteExp:
-        {     
+        {
             // SgDeleteExp is used to represent the invocation of
             // a delete operator, not a destructor.
             SgDeleteExp *deleteExp = isSgDeleteExp(node);
-            SgFunctionDeclaration *deleteDecl = 
-                isPlacementDelete(deleteExp);          
+            SgFunctionDeclaration *deleteDecl =
+                isPlacementDelete(deleteExp);
             if ( !deleteDecl ) {
                 std::cerr << "verifyCallHandleNodeType:  was not expecting a "
                           << "non-placement delete expression" << std::endl;
@@ -294,11 +294,11 @@ void verifyCallHandleNodeType(SgNode *node)
         }
     case V_Sg_File_Info:
         {
-            // (BW 5/3/07)  Needed to add this since we now represent   
-            // constructor invocations via the Sg_File_Info of the 
+            // (BW 5/3/07)  Needed to add this since we now represent
+            // constructor invocations via the Sg_File_Info of the
             // SgConstructorInitializer, rather than the SgConstructorInitializer.
 
-            // We now use the Sg_File_Info of a SgDeleteExp to 
+            // We now use the Sg_File_Info of a SgDeleteExp to
             // model destructor invocation.
             SgNode *parent = node->get_parent();
             if ( isSgConstructorInitializer(parent) || isSgDeleteExp(parent) ) {
@@ -382,8 +382,8 @@ void verifySymHandleNodeType(SgNode *node)
  *            invoked function/method/constructor.
  *
  *  NB:  This does not return the type of the implicit formal
- *       parameter corresponding to the 'this' pointer.  Contrast this with 
- *       getCallsiteParams which folds the actual 
+ *       parameter corresponding to the 'this' pointer.  Contrast this with
+ *       getCallsiteParams which folds the actual
  *       corresponding to the 'this' pointer in as the first argument.
  */
 void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
@@ -416,8 +416,8 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
                 if ( functionType == NULL ) {
                     SgPointerType *pointerType = isSgPointerType(type);
                     ROSE_ASSERT(pointerType != NULL);
-  
-                    functionType = 
+
+                    functionType =
                         isSgFunctionType(pointerType->get_base_type());
                 }
 
@@ -428,16 +428,16 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
                 SgExpression *rhs = binaryOp->get_rhs_operand();
                 ROSE_ASSERT(rhs != NULL);
 
-                SgPointerMemberType *rhsType = 
+                SgPointerMemberType *rhsType =
                     isSgPointerMemberType(rhs->get_type());
                 ROSE_ASSERT(rhsType != NULL);
-                  
+
                 functionType = isSgMemberFunctionType(rhsType->get_base_type());
                 ROSE_ASSERT(functionType != NULL);
 
             } else {
-                SgFunctionDeclaration *functionDeclaration = 
-                    getFunctionDeclaration(functionCallExp); 
+                SgFunctionDeclaration *functionDeclaration =
+                    getFunctionDeclaration(functionCallExp);
                 ROSE_ASSERT(functionDeclaration != NULL);
 
                 functionType = functionDeclaration->get_type();
@@ -449,14 +449,14 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
         {
             SgNewExp *newExp = isSgNewExp(node);
             ROSE_ASSERT(newExp != NULL);
-	  
+
             if ( !isPlacementNew(newExp) ) {
                 std::cerr << "getFormalTypes was not expecting a "
                           << "non-placement new expression" << std::endl;
                 ROSE_ABORT();
             }
 
-            SgFunctionDeclaration *functionDeclaration = 
+            SgFunctionDeclaration *functionDeclaration =
                 newExp->get_newOperatorDeclaration();
             ROSE_ASSERT(functionDeclaration != NULL);
 
@@ -469,7 +469,7 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
             // corresponding actual is not passed explicitly.  Therefore,
             // and since the actual is not a pointer and does not induce
             // side effects, we will not include the formal in the list of
-            // formals and their types. 
+            // formals and their types.
 	    SgTypePtrList::iterator it = typePtrList.begin();
             ++it;
             for(; it != typePtrList.end(); ++it) {
@@ -487,7 +487,7 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
                 isSgConstructorInitializer(node);
             ROSE_ASSERT(ctorInitializer != NULL);
 
-            SgFunctionDeclaration *functionDeclaration = 
+            SgFunctionDeclaration *functionDeclaration =
                 ctorInitializer->get_declaration();
             ROSE_ASSERT(functionDeclaration != NULL);
 
@@ -502,53 +502,53 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
             ROSE_ASSERT(fileInfo != NULL);
 
             // Invocations of destructors are represented by
-            // the Sg_File_Info of a SgDeleteExp.  
+            // the Sg_File_Info of a SgDeleteExp.
             // Note that invocations of constructors are represented
             // by the Sg_File_Info of a SgConstructorInitializer,
             // with the latter being passed to this function.
-  
+
             SgDeleteExp *deleteExp = isSgDeleteExp(node->get_parent());
             if ( deleteExp != NULL ) {
 
-                SgExpression *var = deleteExp->get_variable(); 
-                ROSE_ASSERT(var != NULL); 
+                SgExpression *var = deleteExp->get_variable();
+                ROSE_ASSERT(var != NULL);
 
-                SgType *varType = var->get_type(); 
-                ROSE_ASSERT(varType != NULL); 
+                SgType *varType = var->get_type();
+                ROSE_ASSERT(varType != NULL);
 
                 // Need getBaseType to look through typedefs.
                 SgPointerType *ptrType = isSgPointerType(lookThruReferenceType(varType));
                 SgClassType *classType = NULL;
-                if ( ptrType ) { 
-                    classType = isSgClassType(lookThruReferenceType(ptrType->get_base_type())); 
-                } else { 
-                    classType = isSgClassType(lookThruReferenceType(varType)); 
-                } 
+                if ( ptrType ) {
+                    classType = isSgClassType(lookThruReferenceType(ptrType->get_base_type()));
+                } else {
+                    classType = isSgClassType(lookThruReferenceType(varType));
+                }
                 if ( classType == NULL ) {
 		    std::cout << "varType = " << varType->unparseToString() << std::endl;
 		    std::cout << "class_name = " << varType->sage_class_name() << std::endl;
 
                 }
-                ROSE_ASSERT(classType != NULL); 
+                ROSE_ASSERT(classType != NULL);
 
-                SgClassDeclaration *classDeclaration =  
-                    isSgClassDeclaration(classType->get_declaration()); 
-                ROSE_ASSERT(classDeclaration != NULL); 
+                SgClassDeclaration *classDeclaration =
+                    isSgClassDeclaration(classType->get_declaration());
+                ROSE_ASSERT(classDeclaration != NULL);
 
-                classDeclaration = 
+                classDeclaration =
                     isSgClassDeclaration(getDefiningDeclaration(classDeclaration));
                 ROSE_ASSERT(classDeclaration != NULL);
 
-                SgClassDefinition *classDefn  =  
-                    classDeclaration->get_definition();  
-                ROSE_ASSERT(classDefn != NULL); 
+                SgClassDefinition *classDefn  =
+                    classDeclaration->get_definition();
+                ROSE_ASSERT(classDefn != NULL);
 
-                // This assumes that the AST has been normalized. 
-                // Without it, the destructor declaration may 
-                // not exist if it is compiler generated. 
-                SgMemberFunctionDeclaration *funcDecl = 
-                    lookupDestructorInClass(classDefn); 
-                ROSE_ASSERT(funcDecl != NULL); 
+                // This assumes that the AST has been normalized.
+                // Without it, the destructor declaration may
+                // not exist if it is compiler generated.
+                SgMemberFunctionDeclaration *funcDecl =
+                    lookupDestructorInClass(classDefn);
+                ROSE_ASSERT(funcDecl != NULL);
 
                 functionType = funcDecl->get_type();
                 ROSE_ASSERT(functionType != NULL);
@@ -579,7 +579,7 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
     default:
         {
             ROSE_ABORT();
- 
+
             break;
         }
     }
@@ -587,7 +587,7 @@ void getFormalTypes(SgNode *node, std::vector<SgType *> &formalTypes)
     ROSE_ASSERT(functionType != NULL);
     SgTypePtrList &typePtrList = functionType->get_arguments();
 
-	    
+
     for(SgTypePtrList::iterator it = typePtrList.begin(); it != typePtrList.end(); ++it) {
         SgType *type = *it;
         ROSE_ASSERT(type != NULL);
@@ -611,7 +611,7 @@ bool isDestructor(SgMemberFunctionDeclaration *memberFunctionDeclaration)
     return specialFunctionModifier.isDestructor();
 }
 
-/** \brief   Returns a destructor method declaration within a class 
+/** \brief   Returns a destructor method declaration within a class
  *           if it exists.
  *  \param   classDefinition  a SgNode representing a class definition.
  *  \returns A SgMemberFunctionDeclaration from classDefinition that
@@ -623,18 +623,18 @@ lookupDestructorInClass(SgClassDefinition *classDefinition)
 {
     ROSE_ASSERT(classDefinition != NULL);
 
-    SgDeclarationStatementPtrList &members = classDefinition->get_members(); 
-    for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
-         it != members.end(); ++it) { 
-	
-        SgDeclarationStatement *declarationStatement = *it; 
+    SgDeclarationStatementPtrList &members = classDefinition->get_members();
+    for (SgDeclarationStatementPtrList::iterator it = members.begin();
+         it != members.end(); ++it) {
+
+        SgDeclarationStatement *declarationStatement = *it;
         ROSE_ASSERT(declarationStatement != NULL);
 
         switch(declarationStatement->variantT()) {
         case V_SgMemberFunctionDeclaration:
             {
-                SgMemberFunctionDeclaration *functionDeclaration =  
-                    isSgMemberFunctionDeclaration(declarationStatement); 
+                SgMemberFunctionDeclaration *functionDeclaration =
+                    isSgMemberFunctionDeclaration(declarationStatement);
                 ROSE_ASSERT(functionDeclaration != NULL);
 
                 if ( isDestructor(functionDeclaration) ) {
@@ -675,7 +675,7 @@ lookupDestructorInClass(SgClassDefinition *classDefinition)
  *       (new Foo)->methodCall();
  *
  *   For cases involving the invocation of a baseclass constructor:
- * 
+ *
  *       class Foo : public Bar { Foo(Foo &f) : Bar(f) { } };
  *
  *   we represent the actual implicit 'this' via a SgExprListExp.
@@ -689,11 +689,11 @@ getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer)
 {
     ROSE_ASSERT( ctorInitializer != NULL );
     SgNode *lhs = NULL;
-  
+
     // Recurse up the parents of ctorInitializer.  Return the lhs
     // of an assignment or the SgInitializedName of a
     // SgAssignInitializer.  These handle a new expression.
-    // If the parent of the constructor initializer is a 
+    // If the parent of the constructor initializer is a
     // SgInitializedName, return that.  This handles a constructor
     // invoked through a stack declaration.  Stop the recursion and return
     // NULL if we reach a SgStatement without first finding
@@ -722,11 +722,11 @@ getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer)
       }
 
     }
-  
+
     bool expectInit = false;
-  
+
     while ( ( parent != NULL ) && ( !isSgGlobal(parent) ) ) {
-    
+
         if ( isSgStatement(parent) ) break;
 
         if ( isSgAssignInitializer(parent) ) {
@@ -755,7 +755,7 @@ getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer)
     return lhs;
 }
 
-/**  \brief  Return the actual arguments from a method, which 
+/**  \brief  Return the actual arguments from a method, which
  *           may include a constructor or destructor, or function
  *           invocation.
  *   \param  node  A Sage node representing a method or function
@@ -768,18 +768,18 @@ getConstructorInitializerLhs(SgConstructorInitializer *ctorInitializer)
  *        a constructor or destructor call, then the first
  *        actual is the receiver.  Yes, the receiver, i.e., the
  *        object that is being allocated, is returned for a
- *        constructor.  
+ *        constructor.
  *
  *   Notice that the receiver may not be a named variable.
- *   e.g., 
+ *   e.g.,
  *      (new D)->foo();
  *      bar(new D);
  *      return (new D);
  *   In each of these cases we return the expression 'new D'
  *   as the actual for the implicit receiver.
- */  
-void getActuals(SgNode *node, std::list<SgNode *> &actuals) 
-{ 
+ */
+void getActuals(SgNode *node, std::list<SgNode *> &actuals)
+{
     ROSE_ASSERT(node != NULL);
 
     switch(node->variantT()) {
@@ -807,14 +807,14 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
             // Now, get the non-implicit receiver actuals and
             // push them on the result list.
             SgExprListExp* exprListExp = functionCallExp->get_args();
-            ROSE_ASSERT (exprListExp != NULL);  
+            ROSE_ASSERT (exprListExp != NULL);
 
-            SgExpressionPtrList & actualArgs =  
-                exprListExp->get_expressions();  
+            SgExpressionPtrList & actualArgs =
+                exprListExp->get_expressions();
 
-            for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
-                actualIt != actualArgs.end(); ++actualIt) { 
- 
+            for(SgExpressionPtrList::iterator actualIt = actualArgs.begin();
+                actualIt != actualArgs.end(); ++actualIt) {
+
                 SgExpression *actual = *actualIt;
 
                 ROSE_ASSERT(actual != NULL);
@@ -823,8 +823,8 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
 	    }
 
             break;
-        }      
-    case V_SgNewExp: 
+        }
+    case V_SgNewExp:
         {
             SgNewExp *newExp = isSgNewExp(node);
             ROSE_ASSERT(newExp != NULL);
@@ -837,12 +837,12 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
             SgExprListExp* exprListExp = newExp->get_placement_args();
             if ( exprListExp != NULL ) {
 
-                SgExpressionPtrList & actualArgs =  
-                    exprListExp->get_expressions();  
+                SgExpressionPtrList & actualArgs =
+                    exprListExp->get_expressions();
 
-                for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
-                    actualIt != actualArgs.end(); ++actualIt) { 
- 
+                for(SgExpressionPtrList::iterator actualIt = actualArgs.begin();
+                    actualIt != actualArgs.end(); ++actualIt) {
+
                     SgExpression *actual = *actualIt;
                     ROSE_ASSERT(actual != NULL);
 
@@ -850,11 +850,11 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
    	        }
             }
             break;
-        }  
+        }
     case V_Sg_File_Info:
         {
-            // (BW 5/3/07)  Needed to add this since we now represent   
-            // constructor invocations via the Sg_File_Info of the 
+            // (BW 5/3/07)  Needed to add this since we now represent
+            // constructor invocations via the Sg_File_Info of the
             // SgConstructorInitializer, rather than the SgConstructorInitializer.
 
             // We now also use the Sg_File_Info of a SgDeleteExp to
@@ -869,8 +869,8 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
 
                 // The only actual passed to a destructor is
                 // the receiver.
-                SgExpression *var = deleteExp->get_variable(); 
-                ROSE_ASSERT(var != NULL); 
+                SgExpression *var = deleteExp->get_variable();
+                ROSE_ASSERT(var != NULL);
 
                 actuals.push_back(var);
                 break;
@@ -890,19 +890,19 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
             // a constructor to be invoked on an object.
             // The implicit "this" actual is stored at the SgExprListExp node
             SgExprListExp* exprListExp = ctorInitializer->get_args();
-            ROSE_ASSERT (exprListExp != NULL);  
+            ROSE_ASSERT (exprListExp != NULL);
 
             actuals.push_back(exprListExp);
 
             // Now, get the non-implicit receiver actuals and
             // push them on the result list.
 
-            SgExpressionPtrList & actualArgs =  
-                exprListExp->get_expressions();  
+            SgExpressionPtrList & actualArgs =
+                exprListExp->get_expressions();
 
-            for(SgExpressionPtrList::iterator actualIt = actualArgs.begin(); 
-                actualIt != actualArgs.end(); ++actualIt) { 
- 
+            for(SgExpressionPtrList::iterator actualIt = actualArgs.begin();
+                actualIt != actualArgs.end(); ++actualIt) {
+
                 SgExpression *actual = *actualIt;
                 ROSE_ASSERT(actual != NULL);
 
@@ -918,10 +918,10 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
             SgDeleteExp *deleteExp = isSgDeleteExp(node);
             ROSE_ASSERT(deleteExp != NULL);
 
-            SgFunctionDeclaration *deleteDecl = 
-                isPlacementDelete(deleteExp);          
+            SgFunctionDeclaration *deleteDecl =
+                isPlacementDelete(deleteExp);
             if ( deleteDecl == NULL ) {
-		std::cerr << "getActuals was not expecting a " 
+		std::cerr << "getActuals was not expecting a "
                           << "non-placement delete" << std::endl;
                 ROSE_ABORT();
             }
@@ -932,8 +932,8 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals)
             // that the type signature of operator delete needed
             // to match that of operator new, which can have
             // more than one argument.
-            SgExpression *var = deleteExp->get_variable(); 
-            ROSE_ASSERT(var != NULL); 
+            SgExpression *var = deleteExp->get_variable();
+            ROSE_ASSERT(var != NULL);
 
             actuals.push_back(var);
 
@@ -977,7 +977,7 @@ SgFunctionDefinition *getEnclosingFunction(SgNode *node)
         isSgFunctionDeclaration(node);
 
     if ( functionDeclaration != NULL ) {
-        functionDeclaration = 
+        functionDeclaration =
             isSgFunctionDeclaration(functionDeclaration->get_definingDeclaration());
         ROSE_ASSERT(functionDeclaration != NULL);
         return getEnclosingFunction(functionDeclaration->get_definition());
@@ -992,7 +992,7 @@ SgFunctionDefinition *getEnclosingFunction(SgNode *node)
  *  \param  functionDeclaration  A function declaration within the AST.
  *  \returns  Boolean indicating whether functionDeclaration is virtual.
  */
-static bool 
+static bool
 isVirtualWithinDefiningClass(SgFunctionDeclaration *functionDeclaration)
 {
 
@@ -1026,8 +1026,8 @@ isVirtualWithinDefiningClass(SgFunctionDeclaration *functionDeclaration)
  *  \param  functionDeclaration  A function declaration within the AST.
  *  \returns  Boolean indicating whether functionDeclaration is virtual.
  */
-bool 
-isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration, 
+bool
+isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration,
                                      SgClassDefinition *classDefinition)
 {
     SgType *functionType =
@@ -1037,48 +1037,48 @@ isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration,
     SgName funcName = functionDeclaration->get_name();
 
     // Look in each of the class' parent classes.
-    SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances(); 
-    for (SgBaseClassPtrList::iterator i = baseClassList.begin(); 
+    SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances();
+    for (SgBaseClassPtrList::iterator i = baseClassList.begin();
          i != baseClassList.end(); ++i) {
-     
+
         SgBaseClass *baseClass = *i;
         ROSE_ASSERT(baseClass != NULL);
 
-        SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
+        SgClassDeclaration *classDeclaration = baseClass->get_base_class();
         ROSE_ASSERT(classDeclaration != NULL);
 
         classDeclaration = isSgClassDeclaration(getDefiningDeclaration(classDeclaration));
         ROSE_ASSERT(classDeclaration != NULL);
 
-        SgClassDefinition  *parentClassDefinition  = 
-            classDeclaration->get_definition(); 
+        SgClassDefinition  *parentClassDefinition  =
+            classDeclaration->get_definition();
         ROSE_ASSERT(parentClassDefinition != NULL);
 
         // Visit all methods in the parent class.
-        SgDeclarationStatementPtrList &members = 
-            parentClassDefinition->get_members(); 
+        SgDeclarationStatementPtrList &members =
+            parentClassDefinition->get_members();
 
         bool isDeclaredVirtual = false;
 
-        for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
-             it != members.end(); ++it) { 
+        for (SgDeclarationStatementPtrList::iterator it = members.begin();
+             it != members.end(); ++it) {
 
-            SgDeclarationStatement *declarationStatement = *it; 
+            SgDeclarationStatement *declarationStatement = *it;
             ROSE_ASSERT(declarationStatement != NULL);
 
             switch(declarationStatement->variantT()) {
             case V_SgMemberFunctionDeclaration:
                 {
-                    SgMemberFunctionDeclaration *memberFunctionDeclaration =  
-                        isSgMemberFunctionDeclaration(declarationStatement); 
+                    SgMemberFunctionDeclaration *memberFunctionDeclaration =
+                        isSgMemberFunctionDeclaration(declarationStatement);
                     ROSE_ASSERT(memberFunctionDeclaration);
 
-                    SgName memberFuncName = 
+                    SgName memberFuncName =
                         memberFunctionDeclaration->get_name();
 
-                    if ( ( ( ( *funcName.str() == '~' ) && 
+                    if ( ( ( ( *funcName.str() == '~' ) &&
 			     ( *memberFuncName.str() == '~') )
-                           || ( memberFuncName == funcName ) ) && 
+                           || ( memberFuncName == funcName ) ) &&
                          isVirtual(memberFunctionDeclaration) ) {
                         SgType *parentMemberFunctionType =
                             memberFunctionDeclaration->get_type();
@@ -1098,7 +1098,7 @@ isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration,
             }
         }
 
-        if ( isDeclaredVirtualWithinClassAncestry(functionDeclaration, 
+        if ( isDeclaredVirtualWithinClassAncestry(functionDeclaration,
                                                   parentClassDefinition) ) {
             return true;
         }
@@ -1112,7 +1112,7 @@ isDeclaredVirtualWithinClassAncestry(SgFunctionDeclaration *functionDeclaration,
  *  \param  functionDeclaration  A function declaration within the AST.
  *  \returns  Boolean indicating whether functionDeclaration is virtual.
  */
-static bool 
+static bool
 isDeclaredVirtualWithinAncestor(SgFunctionDeclaration *functionDeclaration)
 {
     SgMemberFunctionDeclaration *memberFunctionDeclaration =
@@ -1121,7 +1121,7 @@ isDeclaredVirtualWithinAncestor(SgFunctionDeclaration *functionDeclaration)
         return false;
     }
 
-    SgClassDefinition *classDefinition = 
+    SgClassDefinition *classDefinition =
         isSgClassDefinition(memberFunctionDeclaration->get_scope());
     ROSE_ASSERT(classDefinition != NULL);
 
@@ -1147,7 +1147,7 @@ bool isConstructor(SgMemberFunctionDeclaration *memberFunctionDeclaration)
 
 /** \brief  Return boolean indicating whether a function is
  *          virtual-- i.e., whether it is declared virtual
- *          in its defining class or any of that class' 
+ *          in its defining class or any of that class'
  *          base classes.
  */
 bool
@@ -1172,7 +1172,7 @@ isVirtual(SgFunctionDeclaration *functionDeclaration)
     if ( isVirtualWithinDefiningClass(functionDeclaration) ) {
         return true;
     }
-    
+
     return isDeclaredVirtualWithinAncestor(functionDeclaration);
 }
 
@@ -1185,7 +1185,7 @@ bool isPureVirtual(SgFunctionDeclaration *functionDeclaration)
 {
   if ( functionDeclaration == NULL ) return false;
 
-  if ( functionDeclaration->get_functionModifier().isPureVirtual() ) 
+  if ( functionDeclaration->get_functionModifier().isPureVirtual() )
     return true;
 
   SgDeclarationStatement *firstNondefiningDeclaration =
@@ -1222,7 +1222,7 @@ bool hasDefinition(SgFunctionDeclaration *functionDeclaration)
   return false;
 }
 
-/** \brief Return true if a class or any of its base classes 
+/** \brief Return true if a class or any of its base classes
  *         has a virtual method.
  *  \param classDefinition  a SgNode representing a class definition.
  *  \return boolean indicating whether the class represented by
@@ -1235,18 +1235,18 @@ bool classHasVirtualMethods(SgClassDefinition *classDefinition)
 
     if ( classDefinition == NULL ) return hasMethods;
 
-    SgDeclarationStatementPtrList &members = classDefinition->get_members(); 
-    for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
-         it != members.end(); ++it) { 
+    SgDeclarationStatementPtrList &members = classDefinition->get_members();
+    for (SgDeclarationStatementPtrList::iterator it = members.begin();
+         it != members.end(); ++it) {
 
-        SgDeclarationStatement *declarationStatement = *it; 
+        SgDeclarationStatement *declarationStatement = *it;
         ROSE_ASSERT(declarationStatement != NULL);
 
         switch(declarationStatement->variantT()) {
         case V_SgMemberFunctionDeclaration:
             {
-                SgMemberFunctionDeclaration *functionDeclaration =  
-                    isSgMemberFunctionDeclaration(declarationStatement); 
+                SgMemberFunctionDeclaration *functionDeclaration =
+                    isSgMemberFunctionDeclaration(declarationStatement);
                 if ( isVirtual(functionDeclaration) ) {
                     return true;
                 }
@@ -1265,18 +1265,18 @@ bool classHasVirtualMethods(SgClassDefinition *classDefinition)
 
     // The class did not directly define any virtual methods, look in
     // its base classes.
-    SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances(); 
-    for (SgBaseClassPtrList::iterator i = baseClassList.begin(); 
+    SgBaseClassPtrList & baseClassList = classDefinition->get_inheritances();
+    for (SgBaseClassPtrList::iterator i = baseClassList.begin();
          i != baseClassList.end(); ++i) {
 
         SgBaseClass *baseClass = *i;
         ROSE_ASSERT(baseClass != NULL);
 
-        SgClassDeclaration *classDeclaration = baseClass->get_base_class(); 
+        SgClassDeclaration *classDeclaration = baseClass->get_base_class();
         ROSE_ASSERT(classDeclaration != NULL);
 
-        SgClassDefinition  *parentClassDefinition  = 
-            classDeclaration->get_definition(); 
+        SgClassDefinition  *parentClassDefinition  =
+            classDeclaration->get_definition();
 
         if ( parentClassDefinition != NULL ) {
             if ( classHasVirtualMethods(parentClassDefinition) ) {
@@ -1335,9 +1335,9 @@ bool consistentFunctionTypes(SgFunctionType *funcType1,
     return true;
 }
 
-bool matchingFunctions(SgFunctionDeclaration *decl1, 
+bool matchingFunctions(SgFunctionDeclaration *decl1,
                        SgFunctionDeclaration *decl2)
-{ 
+{
   //  std::cout << "Comparing decl1: " << decl1->unparseToString() << " and decl2: " << decl2->unparseToString() << std::endl;
   // Compare the names of the two methods.
   SgName name1 = decl1->get_name();
@@ -1358,7 +1358,7 @@ bool matchingFunctions(SgFunctionDeclaration *decl1,
  *  for a member function.  This will undermine its use
  *  in a virtual method field because we want a single
  *  field to be able to point to any of a number of
- *  virtual methods defined/declared within a class 
+ *  virtual methods defined/declared within a class
  *  hierarchy.
  *
  *  For now, just include the function name and the
@@ -1370,11 +1370,11 @@ std::string mangleFunctionName(SgFunctionDeclaration *functionDeclaration)
 {
     ROSE_ASSERT(functionDeclaration != NULL);
     std::string mangled;
- 
+
     mangled = functionDeclaration->get_name().str();
 
     SgType *funcType = getBaseType(functionDeclaration->get_orig_return_type());
-  
+
     // Include the function's return type.
     std::string retType;
     getTypeInfo(funcType, 0, &retType);
@@ -1413,7 +1413,7 @@ getClassDeclaration(SgType *type)
             SgPointerType *pointerType = isSgPointerType(type);
             ROSE_ASSERT(pointerType != NULL);
 
-            classDeclaration = getClassDeclaration(pointerType->get_base_type()); 
+            classDeclaration = getClassDeclaration(pointerType->get_base_type());
             break;
         }
     case V_SgReferenceType:
@@ -1421,7 +1421,7 @@ getClassDeclaration(SgType *type)
             SgReferenceType *referenceType = isSgReferenceType(type);
             ROSE_ASSERT(referenceType != NULL);
 
-            classDeclaration = getClassDeclaration(referenceType->get_base_type()); 
+            classDeclaration = getClassDeclaration(referenceType->get_base_type());
             break;
         }
     case V_SgTypedefType:
@@ -1432,7 +1432,7 @@ getClassDeclaration(SgType *type)
             SgDeclarationStatement *declStmt = typedefType->get_declaration();
             ROSE_ASSERT(declStmt != NULL);
 
-            SgTypedefDeclaration *typedefDeclaration = 
+            SgTypedefDeclaration *typedefDeclaration =
                 isSgTypedefDeclaration(declStmt);
             ROSE_ASSERT(typedefDeclaration != NULL);
 
@@ -1440,13 +1440,13 @@ getClassDeclaration(SgType *type)
             ROSE_ASSERT(baseType != NULL);
 
             if ( isSgTypedefType(baseType) ) {
-                // Recursive case:  base type of typedef is also a 
+                // Recursive case:  base type of typedef is also a
                 // typedef type.
                 classDeclaration = getClassDeclaration(baseType);
             } else if ( isSgNamedType(baseType) ) {
                 SgNamedType *namedType = isSgNamedType(type);
 
-                SgDeclarationStatement *innerDecl = 
+                SgDeclarationStatement *innerDecl =
                     namedType->get_declaration();
                 ROSE_ASSERT(innerDecl != NULL);
 
@@ -1494,7 +1494,7 @@ getClassDefinition(SgType *type)
     SgClassDeclaration *classDeclaration = getClassDeclaration(type);
     ROSE_ASSERT(classDeclaration != NULL);
 
-    SgClassDefinition *classDefinition = 
+    SgClassDefinition *classDefinition =
         classDeclaration->get_definition();
 
     return classDefinition;
@@ -1519,7 +1519,7 @@ SgClassDeclaration *getDefiningDeclaration(SgClassDeclaration *classDecl)
  *            function is funcName.
  */
 bool isFunc(SgFunctionCallExp *functionCallExp,
-                             char *funcName)
+            ::std::string funcName)
 {
   if( functionCallExp == NULL) return false;
 
@@ -1530,13 +1530,13 @@ bool isFunc(SgFunctionCallExp *functionCallExp,
 
   if (functionRefExp == NULL) return false;
 
-  // Found a standard function reference.  
+  // Found a standard function reference.
   SgFunctionDeclaration *functionDeclaration =
     functionRefExp->get_symbol_i()->get_declaration();
   ROSE_ASSERT(functionDeclaration != NULL);
 
   SgName name = functionDeclaration->get_name();
-  return ( !strcmp(funcName, name.str() ) );
+  return ( !strcmp(funcName.c_str(), name.str() ) );
 }
 
 bool returnsReference(SgFunctionCallExp *functionCallExp)
@@ -1575,7 +1575,6 @@ bool returnsAddress(SgFunctionCallExp *functionCallExp)
   ROSE_ASSERT(functionCallExp != NULL);
 
   bool returnsAddr = false;
-
   SgType *type = functionCallExp->get_type();
   //  SgType *type = functionCallExp->get_return_type();
   ROSE_ASSERT(type != NULL);
@@ -1645,7 +1644,7 @@ SgNode *getThisExpNode(SgNode *node)
             SgThisExp *thisExp = isSgThisExp(node);
             ROSE_ASSERT(thisExp != NULL);
 
-            SgFunctionDefinition *functionDefinition = 
+            SgFunctionDefinition *functionDefinition =
                 getEnclosingFunction(thisExp);
             ROSE_ASSERT(functionDefinition != NULL);
 
@@ -1659,7 +1658,7 @@ SgNode *getThisExpNode(SgNode *node)
                       << "methods' SgFunctionParameterList."
                       << std::endl
                       << "Don't know how to extract a SgFunctionParameterList "
-                      << "from a " << node->sage_class_name() 
+                      << "from a " << node->sage_class_name()
                       << std::endl;
             ROSE_ABORT();
             break;
@@ -1668,7 +1667,7 @@ SgNode *getThisExpNode(SgNode *node)
 
     ROSE_ASSERT(functionDeclaration != NULL);
 
-    SgFunctionParameterList *paramList = 
+    SgFunctionParameterList *paramList =
         functionDeclaration->get_parameterList();
     ROSE_ASSERT(paramList != NULL);
 
@@ -1689,8 +1688,8 @@ SgNode *getThisExpNode(SgNode *node)
  *  Foo *f = new Foo;
  *  class Foo : public Bar { Foo(Foo &f) : Bar(f) { } }
  *
- *  Notice that the Bar in Bar(f) in the initializer is represented 
- *  by a SgInitializedName, whose name is 'Bar'.  Thus if the name 
+ *  Notice that the Bar in Bar(f) in the initializer is represented
+ *  by a SgInitializedName, whose name is 'Bar'.  Thus if the name
  *  of the SgInitializedName and of the invoked constructor are the
  *  same, this is an invocation of a base class constructor.
  */
@@ -1721,7 +1720,7 @@ bool isBaseClassInvocation(SgConstructorInitializer *ctorInitializer)
       // If the parent is a SgInitializedName whose name is the
       // same as the constructor being invoked, then that SgInitializedName
       // is not a variable, but a base class.
-      SgMemberFunctionDeclaration *invokedCtor = 
+      SgMemberFunctionDeclaration *invokedCtor =
         ctorInitializer->get_declaration();
       if ( invokedCtor == NULL ) {
           // The constructor initializer is NULL, so we can not determine
@@ -1739,7 +1738,7 @@ bool isBaseClassInvocation(SgConstructorInitializer *ctorInitializer)
 
 	  //	  std::string typeName = initType->unparseToString();
 	  //	  std::cout << "initName: " << initName->get_name().str() << " type = " << typeName << std::endl;
-          if ( ( namedType != NULL ) && 
+          if ( ( namedType != NULL ) &&
                ( namedType->get_name() == initName->get_name() ) ) {
             return true;
           }
@@ -1768,8 +1767,8 @@ getInvokedMethod(SgMemberFunctionRefExp *memberFunctionRefExp)
     // Get the declaration of the function.
     SgFunctionSymbol *functionSymbol = memberFunctionRefExp->get_symbol();
     ROSE_ASSERT(functionSymbol != NULL);
-      
-    SgFunctionDeclaration *functionDeclaration = 
+
+    SgFunctionDeclaration *functionDeclaration =
         functionSymbol->get_declaration();
     ROSE_ASSERT(functionDeclaration != NULL);
 
@@ -1804,7 +1803,7 @@ isVaStart(SgFunctionCallExp *functionCallExp)
 }
 
 // Utility function to look through typedefs to return a type.
-SgType* getBaseType(SgType *type) 
+SgType* getBaseType(SgType *type)
 {
   if ( type == NULL ) return NULL;
 
@@ -1825,7 +1824,7 @@ SgType* getBaseType(SgType *type)
   return type;
 }
 
-SgType* lookThruReferenceType(SgType *type) 
+SgType* lookThruReferenceType(SgType *type)
 {
   if ( type == NULL ) return NULL;
 
@@ -1844,7 +1843,7 @@ SgType* lookThruReferenceType(SgType *type)
   }
 
   SgReferenceType *refType = isSgReferenceType(type);
-  if (refType) { 
+  if (refType) {
     return lookThruReferenceType(refType->get_base_type());
   }
 
@@ -1861,23 +1860,23 @@ bool isConstType(SgType *type)
 
     // Determine whether the type has a const modifier.
     ROSE_ASSERT(type != NULL);
-      
-    SgModifierNodes *modifierNodes = type->get_modifiers(); 
+
+    SgModifierNodes *modifierNodes = type->get_modifiers();
 
     if (modifierNodes != NULL) {
-        SgModifierTypePtrVector modifierVector = modifierNodes->get_nodes(); 
-        for(SgModifierTypePtrVector::iterator it = modifierVector.begin(); 
-            it != modifierVector.end(); ++it) { 
-          
-            SgModifierType *modifierType = *it; 
-            ROSE_ASSERT(modifierType != NULL); 
-          
-            SgTypeModifier &typeModifier = modifierType->get_typeModifier(); 
-          
-            SgConstVolatileModifier &constVolatileModifier = 
-                typeModifier.get_constVolatileModifier(); 
-          
-            if ( constVolatileModifier.isConst() ) { 
+        SgModifierTypePtrVector modifierVector = modifierNodes->get_nodes();
+        for(SgModifierTypePtrVector::iterator it = modifierVector.begin();
+            it != modifierVector.end(); ++it) {
+
+            SgModifierType *modifierType = *it;
+            ROSE_ASSERT(modifierType != NULL);
+
+            SgTypeModifier &typeModifier = modifierType->get_typeModifier();
+
+            SgConstVolatileModifier &constVolatileModifier =
+                typeModifier.get_constVolatileModifier();
+
+            if ( constVolatileModifier.isConst() ) {
                 return true;
             }
         }
@@ -1886,18 +1885,18 @@ bool isConstType(SgType *type)
     return false;
 }
 #endif
-   
+
 #if 0
 // evidently defined in src/midend/astInlining/typeTraits.C
 /**
- *  \brief isNonconstReference returns boolean indicating whether type is a 
+ *  \brief isNonconstReference returns boolean indicating whether type is a
  *         non-const reference type.
- */   
+ */
 bool isNonconstReference(SgType *type)
 {
   // This probably isn't what you want.  This looks for a const reference,
   // I'm not sure if such a beast exists.  You probably want a reference
-  // to a const type.  
+  // to a const type.
   ROSE_ABORT();
 
     ROSE_ASSERT(type != NULL);
@@ -1908,7 +1907,7 @@ bool isNonconstReference(SgType *type)
 //! Returns true if function is a SgArrowExp or a SgDotExp
 //! whose operand is a SgPointerDerefExp or a SgDotExp
 //! whose lhs is a reference.  In this latter case
-//! we will convert the lhs to appear as a pointer.  
+//! we will convert the lhs to appear as a pointer.
 //! i.e., returns true if function represents a->method() or (*a).method().
 bool isArrowExp(SgExpression *function)
 {
@@ -1925,7 +1924,7 @@ bool isArrowExp(SgExpression *function)
 
     SgDotExp *dotExp = isSgDotExp(function);
     if ( dotExp != NULL ) {
-      
+
       SgPointerDerefExp *pointerDerefExp =
 	isSgPointerDerefExp(lhs);
 
@@ -1949,14 +1948,14 @@ bool findNodeInSubtree(SgNode *needle, SgNode *haystack)
     if ( ( haystack == NULL ) || ( needle == NULL ) ) {
         return false;
     }
-     
+
     NodeQuerySynthesizedAttributeType nodeLst = NodeQuery::querySubTree(haystack, V_SgNode);
 
-    for (NodeQuerySynthesizedAttributeType::iterator nodeIt = nodeLst.begin(); 
+    for (NodeQuerySynthesizedAttributeType::iterator nodeIt = nodeLst.begin();
          nodeIt != nodeLst.end(); ++nodeIt ) {
 
         SgNode *n = *nodeIt;
-        ROSE_ASSERT(n != NULL);      
+        ROSE_ASSERT(n != NULL);
 
         if ( n == needle ) {
             return true;
@@ -1985,7 +1984,7 @@ bool isPlacementNew(SgNewExp *newExp)
 SgFunctionDeclaration *isPlacementDelete(SgDeleteExp *deleteExp)
 {
     ROSE_ASSERT(deleteExp != NULL);
-    SgFunctionDeclaration *deleteDecl = 
+    SgFunctionDeclaration *deleteDecl =
         deleteExp->get_deleteOperatorDeclaration();
     return deleteDecl;
 }
@@ -1993,15 +1992,15 @@ SgFunctionDeclaration *isPlacementDelete(SgDeleteExp *deleteExp)
 bool isOperatorNew(SgFunctionDeclaration *functionDeclaration)
 {
     ROSE_ASSERT(functionDeclaration != NULL);
-    SgSpecialFunctionModifier &specialFunctionModifier = 
-        functionDeclaration->get_specialFunctionModifier(); 
- 
-    SgName functionName = functionDeclaration->get_name(); 
- 
+    SgSpecialFunctionModifier &specialFunctionModifier =
+        functionDeclaration->get_specialFunctionModifier();
+
+    SgName functionName = functionDeclaration->get_name();
+
     //   std::cout << "functionName = " << functionName.str() << " operator = " << specialFunctionModifier.isOperator() << std::endl;
 
-    return ( specialFunctionModifier.isOperator() && 
-             functionName == SgName("operator new") ); 
+    return ( specialFunctionModifier.isOperator() &&
+             functionName == SgName("operator new") );
 }
 
 /**
@@ -2010,17 +2009,17 @@ bool isOperatorNew(SgFunctionDeclaration *functionDeclaration)
  *  with funcType.
  */
 std::vector<SgFunctionDeclaration *>
-getFunctionsInDerivedClasses(SgClassDefinition *cls, 
+getFunctionsInDerivedClasses(SgClassDefinition *cls,
                              SgFunctionType *funcType,
                              ClassHierarchyWrapper *classHierarchy)
 {
     std::vector<SgFunctionDeclaration *> funcs;
 
-    SgDeclarationStatementPtrList &members = cls->get_members(); 
-    for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
-         it != members.end(); ++it) { 
-	
-        SgMemberFunctionDeclaration *functionDeclaration =  
+    SgDeclarationStatementPtrList &members = cls->get_members();
+    for (SgDeclarationStatementPtrList::iterator it = members.begin();
+         it != members.end(); ++it) {
+
+        SgMemberFunctionDeclaration *functionDeclaration =
             isSgMemberFunctionDeclaration(*it);
         if ( functionDeclaration != NULL ) {
             SgFunctionType *methodType = functionDeclaration->get_type();
@@ -2028,24 +2027,24 @@ getFunctionsInDerivedClasses(SgClassDefinition *cls,
             if ( consistentFunctionTypes(methodType, funcType) ) {
                 funcs.push_back(functionDeclaration);
             }
-        }   
+        }
     }
 
-    SgClassDefinitionPtrList subclasses = 
+    SgClassDefinitionPtrList subclasses =
         classHierarchy->getSubclasses(cls);
 
     // Iterate over all subclasses.
     for (SgClassDefinitionPtrList::iterator subclassIt = subclasses.begin();
           subclassIt != subclasses.end(); ++subclassIt) {
-      
+
         SgClassDefinition *subclass = *subclassIt;
         ROSE_ASSERT(subclass != NULL);
 
-        SgDeclarationStatementPtrList &members = subclass->get_members(); 
-        for (SgDeclarationStatementPtrList::iterator it = members.begin(); 
-              it != members.end(); ++it) { 
-	
-            SgMemberFunctionDeclaration *functionDeclaration =  
+        SgDeclarationStatementPtrList &members = subclass->get_members();
+        for (SgDeclarationStatementPtrList::iterator it = members.begin();
+              it != members.end(); ++it) {
+
+            SgMemberFunctionDeclaration *functionDeclaration =
                 isSgMemberFunctionDeclaration(*it);
             if ( functionDeclaration != NULL ) {
                 SgFunctionType *methodType = functionDeclaration->get_type();
@@ -2053,13 +2052,13 @@ getFunctionsInDerivedClasses(SgClassDefinition *cls,
                 if ( consistentFunctionTypes(methodType, funcType) ) {
                     funcs.push_back(functionDeclaration);
                 }
-            }   
+            }
         }
     }
     return funcs;
 }
 
-/** 
+/**
  *  Return the list of methods that may be called at a method pointer
  *  invocation.  If the pointer is invoked on a receiver of type T,
  *  the conservative set of methods that may be invoked include any
@@ -2088,23 +2087,23 @@ getFunctionsConsistentWithMethodPointerInvocation(SgBinaryOp *dotStarOrArrowStar
     classDecl = isSgClassDeclaration(getDefiningDeclaration(classDecl));
     ROSE_ASSERT(classDecl != NULL);
 
-    SgClassDefinition *classDefn = classDecl->get_definition();  
-    ROSE_ASSERT(classDefn != NULL); 
+    SgClassDefinition *classDefn = classDecl->get_definition();
+    ROSE_ASSERT(classDefn != NULL);
 
     SgExpression *rhs = dotStarOrArrowStar->get_rhs_operand();
     ROSE_ASSERT(rhs != NULL);
 
     SgPointerMemberType *rhsType = isSgPointerMemberType(rhs->get_type());
     ROSE_ASSERT(rhsType != NULL);
-                  
-    SgMemberFunctionType *funcType = 
+
+    SgMemberFunctionType *funcType =
         isSgMemberFunctionType(rhsType->get_base_type());
     ROSE_ASSERT(funcType != NULL);
 
     std::set<SgFunctionDeclaration *> funcs;
 
     // Get all of the ancestors of the receiver type.
-    SgClassDefinitionPtrList ancestors = 
+    SgClassDefinitionPtrList ancestors =
         classHierarchy->getAncestorClasses(classDefn);
     std::vector<SgClassDefinition *> classes;
     classes.push_back(classDefn);
@@ -2112,7 +2111,7 @@ getFunctionsConsistentWithMethodPointerInvocation(SgBinaryOp *dotStarOrArrowStar
     // Iterate over all ancestors.
     for (SgClassDefinitionPtrList::iterator ancestorIt = ancestors.begin();
           ancestorIt != ancestors.end(); ++ancestorIt) {
-      
+
         SgClassDefinition *ancestor = *ancestorIt;
         ROSE_ASSERT(ancestor != NULL);
 
@@ -2126,18 +2125,18 @@ getFunctionsConsistentWithMethodPointerInvocation(SgBinaryOp *dotStarOrArrowStar
         ROSE_ASSERT(cls != NULL);
 
         std::vector<SgFunctionDeclaration *> funcsWithCompatibleTypes;
-        funcsWithCompatibleTypes = 
+        funcsWithCompatibleTypes =
             getFunctionsInDerivedClasses(cls,
                                          funcType,
                                          classHierarchy);
-         
+
 
         for (int i = 0; i < funcsWithCompatibleTypes.size(); ++i) {
-            SgMemberFunctionDeclaration *funcDecl = 
+            SgMemberFunctionDeclaration *funcDecl =
               isSgMemberFunctionDeclaration(funcsWithCompatibleTypes[i]);
             ROSE_ASSERT(funcDecl != NULL);
 
-            if ( isNonStaticMethod(funcDecl) && 
+            if ( isNonStaticMethod(funcDecl) &&
                  ( funcs.find(funcDecl) == funcs.end() ) ) {
                 funcs.insert(funcDecl);
             }
@@ -2145,6 +2144,22 @@ getFunctionsConsistentWithMethodPointerInvocation(SgBinaryOp *dotStarOrArrowStar
     }
 
     return funcs;
+}
+
+/*
+ * SHK: Wrapper to return globalScope of an SgFile
+ */
+SgGlobal * globalScope(SgFile * file){
+  //SHK - sgFile->root is not longer supported.
+  if(SgSourceFile * source = isSgSourceFile(file)){
+    return source->get_globalScope();
+  }else if(SgSourceFile * unknown =isSgSourceFile(file)){
+    return unknown->get_globalScope();
+  }else{
+    //classify_SgNode(file);
+    //fatal(" An SgFile node is neither a sourcefile nor an Unkownfile. It is classified above :");
+    ROSE_ASSERT(0);
+  }
 }
 
 

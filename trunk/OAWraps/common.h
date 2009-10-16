@@ -6,6 +6,7 @@
 #include "CallGraph.h"
 #include <OpenAnalysis/IRInterface/IRHandles.hpp>
 
+
 namespace UseOA {
 
 bool isNonStaticMethodCall(SgFunctionCallExp *functionCall, bool &isDotExp);
@@ -30,12 +31,12 @@ void getActuals(SgNode *node, std::list<SgNode *> &actuals);
 //! Return the method in which node occurs.
 SgFunctionDefinition *getEnclosingFunction(SgNode *node);
 
-void getTypeInfo(SgType *t, std::string *tname, 
+void getTypeInfo(SgType *t, std::string *tname,
                  std::string* stripname, int* size = 0);
 
 struct eqTypes
 {
-    bool operator()(SgType* t1, SgType* t2) const 
+    bool operator()(SgType* t1, SgType* t2) const
     {
         std::string t1Str, t2Str;
         getTypeInfo(t1, 0, &t1Str);
@@ -61,11 +62,10 @@ getClassDefinition(SgType *type);
 SgFunctionDeclaration *getDefiningDeclaration(SgFunctionDeclaration *funcDecl);
 SgClassDeclaration *getDefiningDeclaration(SgClassDeclaration *funcDecl);
 
-bool matchingFunctions(SgFunctionDeclaration *decl1, 
+bool matchingFunctions(SgFunctionDeclaration *decl1,
                        SgFunctionDeclaration *decl2);
 
-bool isFunc(SgFunctionCallExp *functionCallExp,
-                             char *funcName);
+bool isFunc(SgFunctionCallExp *functionCallExp, std::string funcName);
 
 bool returnsReference(SgFunctionCallExp *functionCallExp);
 
@@ -101,6 +101,9 @@ bool isArrowExp(SgExpression *function);
 bool hasDefinition(SgFunctionDeclaration *functionDeclaration);
 
 bool isConstructor(SgMemberFunctionDeclaration *memberFunctionDeclaration);
+
+//SHK - This has been reimplemented in canon and xaif
+SgGlobal * globalScope(SgFile * file);
 
 bool isDestructor(SgMemberFunctionDeclaration *memberFunctionDeclaration);
 
