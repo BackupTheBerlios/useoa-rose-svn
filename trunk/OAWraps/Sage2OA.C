@@ -4396,11 +4396,11 @@ OA::OA_ptr<OA::ExprTree> SageIRInterface::getExprTree(OA::ExprHandle h)
   return exprTree;
 }
 
-OA::OA_ptr<OA::MemRefExpr> SageIRInterface::convertSymToMemRefExpr(
+OA::OA_ptr<OA::NamedRef> SageIRInterface::createNamedRef(
     OA::SymHandle sym)
 {
     // Create an MRE for the symbol, just wrap a NamedRef around it.
-    OA_ptr<OA::MemRefExpr> mre;
+    OA_ptr<OA::NamedRef> mre;
     bool isAddrOf = false;
     bool fullAccuracy = false;
     MemRefExpr::MemRefType hty;

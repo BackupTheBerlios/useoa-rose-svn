@@ -1124,7 +1124,7 @@ public:
   OA::OA_ptr<OA::ExprTree> getExprTree(OA::ExprHandle h);
   
   //Given a symbol handle return a MemRefExpr
-  OA::OA_ptr<OA::MemRefExpr> convertSymToMemRefExpr(OA::SymHandle sym);
+  OA::OA_ptr<OA::NamedRef> createNamedRef(OA::SymHandle sym);
 
   //-------------------------------------------------------------------------
   // ActivityIRInterface
