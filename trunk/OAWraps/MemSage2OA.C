@@ -1047,7 +1047,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             OA::OA_ptr<OA::MemRefExpr> mre;
 
             // AIS not sure if this is strictly local or not
-            mre = new OA::NamedRef(mrType, sym, false);
+            mre = new OA::NamedRef(mrType, sym, isLocal(varRefExp));
 
             // Record the type of the MRE (reference or non-reference).
             // mMre2TypeMap[mre] = ( isSgReferenceType(initName->get_type()) ? reference : other );

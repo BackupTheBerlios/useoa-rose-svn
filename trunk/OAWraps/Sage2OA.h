@@ -1477,6 +1477,8 @@ public:
   // the tree root at node.
   SgNode *lookThroughCastExpAndAssignInitializer(SgNode *node); 
 
+  bool isLocal(SgVarRefExp *var);
+
 
   public:
     void reportTimes();

@@ -4405,7 +4405,7 @@ OA::OA_ptr<OA::NamedRef> SageIRInterface::createNamedRef(
     bool fullAccuracy = false;
     MemRefExpr::MemRefType hty;
     hty = OA::MemRefExpr::USE;
-    mre = new NamedRef(hty, sym, false);
+    mre = new NamedRef(hty, sym, true);
 
     return mre;
 }
@@ -6492,5 +6492,35 @@ SageIRInterface::getSideEffect(ProcHandle caller, SymHandle calleesym)
     // interprocedural side-effect analysis is being run on less than a
     // whole-program which is not currently supported.
     assert(false);
+}
+
+
+
+bool SageIRInterface::isLocal(SgVarRefExp *var) {
+    // the variable is local if:
+    //      1) if it is a non-reference parameter
+    //      2) if it is from a normal variable declaration outside of the
+    //         global scope
+
+    // check if it is a non-reference parameter
+    SgDeclarationStatement *decl =
+        var->get_symbol()->get_declaration()->get_declaration();
+    if(isSgFunctionParameterList(decl)) {
+        SgType *type = var->get_symbol()->get_declaration()->get_type();
+        if(!isSgReferenceType(type)) {
+            return true;
+        }
+    }
+
+    // if it is from a normal var decl check that is outside the global scope
+    if(isSgVariableDeclaration(decl)) {
+        SgScopeStatement *scope =
+            var->get_symbol()->get_declaration()->get_scope();
+        if(!isSgGlobal(scope)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
