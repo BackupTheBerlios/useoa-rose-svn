@@ -6494,8 +6494,6 @@ SageIRInterface::getSideEffect(ProcHandle caller, SymHandle calleesym)
     assert(false);
 }
 
-
-
 bool SageIRInterface::isLocal(SgVarRefExp *var) {
     // the variable is local if:
     //      1) if it is a non-reference parameter

@@ -502,14 +502,15 @@ main ( int argc,  char * argv[] )
 
 
 
-    //<AIS|ATB>
-    #if 0
     else if ( cmds->HasOption("--oa-ExprTree") )
     {
       for (int i = 0; i < filenum; ++i) 
         {
             SgFile &sageFile = sageProject->get_file(i);
-            SgGlobal *root = sageFile.get_root();
+            SgSourceFile *srcFile = isSgSourceFile(&sageFile);
+            if(srcFile == NULL)
+                continue;
+            SgGlobal *root = srcFile->get_globalScope();
             SgDeclarationStatementPtrList& declList = root->get_declarations ();
             for (SgDeclarationStatementPtrList::iterator p = declList.begin(); p != declList.end(); ++p) 
              {
@@ -525,7 +526,6 @@ main ( int argc,  char * argv[] )
              }     
 	 } 
     }
-    #endif
 
     //<AIS|ATB>
     #if 0
@@ -2840,8 +2840,6 @@ int DoLinearity(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * 
 }
 #endif
 
-//<AIS|ATB>
-#if 0
 int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * na, bool p_handle)
 {
 
@@ -2931,7 +2929,6 @@ int DoExprTree(SgFunctionDefinition * f, SgProject * p, std::vector<SgNode*> * n
   } 
   */
 }
-#endif
 
 //<AIS|ATB>
 #if 0
