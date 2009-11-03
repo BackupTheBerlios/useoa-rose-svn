@@ -1212,7 +1212,7 @@ public:
   // InterSideEffectIRInterface
   //-------------------------------------------------------------------------
   virtual OA_ptr<SideEffect::SideEffectStandard> 
-      getSideEffect(ProcHandle caller, SymHandle calleesym);
+      getSideEffect(ProcHandle caller, SymHandle calleesym, OA::OA_ptr<OA::Alias::InterAliasInterface> interalias);
 
   //-------------------------------------------------------------------------
   // output methods

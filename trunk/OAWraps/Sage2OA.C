@@ -4211,25 +4211,26 @@ class ExprTreeTraversal
         parent = node;
 
       } else {
-
-        // This is a MemRefNode.
-        OA::OA_ptr<OA::ExprTree::MemRefNode> node;
-
-        OA::MemRefHandle h = mIR->getNodeNumber(astNode);
-        OA::OA_ptr<OA::MemRefExprIterator> mreIter;
-        mreIter = mIR->getMemRefExprIterator(h);
-
-        node = new OA::ExprTree::MemRefNode(mreIter->current());
-        ++(*mreIter);
-        assert(!mreIter->isValid());
-
-        if ( !parent.ptrEqual(NULL) ) {
-          mExprTree->connect(parent, node);
-        } else {
-          mExprTree->addNode(node);
-        }
-        parent = node;
-
+        if ( mIR->isMemRefNode(astNode)) {
+            // This is a MemRefNode.
+            OA::OA_ptr<OA::ExprTree::MemRefNode> node;
+            
+            OA::MemRefHandle h = mIR->getNodeNumber(astNode);
+            OA::OA_ptr<OA::MemRefExprIterator> mreIter;
+            mreIter = mIR->getMemRefExprIterator(h);
+            
+            node = new OA::ExprTree::MemRefNode(mreIter->current());
+            ++(*mreIter);
+            assert(!mreIter->isValid());
+            
+            if ( !parent.ptrEqual(NULL) ) {
+            mExprTree->connect(parent, node);
+            } else {
+            mExprTree->addNode(node);
+            }
+            parent = node;
+        } else
+            cerr <<"\n "+ astNode->unparseToString() + " is Not a memrefnode";
       }
 
     } else if ( mIR->isMemRefNode(astNode) ) {
@@ -6486,12 +6487,29 @@ void SageIRInterface::reportTimes() { }
 //-------------------------------------------------------------------------
 
 OA_ptr<SideEffect::SideEffectStandard> 
-SageIRInterface::getSideEffect(ProcHandle caller, SymHandle calleesym)
+SageIRInterface::getSideEffect(ProcHandle caller, SymHandle calleesym, OA::OA_ptr<OA::Alias::InterAliasInterface> interalias)
 {
     // this function should not be called.  If it is called it means that
     // interprocedural side-effect analysis is being run on less than a
     // whole-program which is not currently supported.
-    assert(false);
+  //SHK - For now return empty SideEffect.
+  OA::ProcHandle calleeprochandle = getProcHandle(calleesym);
+  OA_ptr<SideEffect::SideEffectStandard> procSideEffect;
+  OA_ptr<Alias::Interface> alias;
+  alias = interalias->getAliasResults(calleeprochandle);
+  procSideEffect = new SideEffect::SideEffectStandard(alias);
+  
+  // empty out all the sets
+  procSideEffect->emptyLMOD();
+  procSideEffect->emptyMOD();
+  procSideEffect->emptyLDEF();
+  procSideEffect->emptyDEF();
+  procSideEffect->emptyLUSE();
+  procSideEffect->emptyUSE();
+  procSideEffect->emptyLREF();
+  procSideEffect->emptyREF();
+  
+  return procSideEffect;
 }
 
 bool SageIRInterface::isLocal(SgVarRefExp *var) {
