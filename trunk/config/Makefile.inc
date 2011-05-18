@@ -91,10 +91,10 @@ endif
 OPENANALYSIS_LIB =-L$(OADIR)/$(ARCH)/lib -lOAul
 OPENANALYSIS_INC =-I$(OADIR)/$(ARCH)/include 
 
-ROSE_INCLUDES=-I$(ROSEDIR)/include
+ROSE_INCLUDES=-I$(ROSEDIR)/include -I$(BOOSTDIR)/include
 #ROSE_LIBS=-Wl,-rpath,$(ROSEDIR)/lib -L$(ROSEDIR)/lib -lrose -ledg -lm -lfl -lrt -lpthread
-ROSE_LIBS=-Wl,-rpath,$(ROSEDIR)/lib -L$(ROSEDIR)/lib -lrose -lfl -lm -lrt 
-
+ROSE_LIBS=-L$(ROSEDIR)/lib -lrose -lfl -lm  
+#ROSE_LIBS_WITH_PATH=-L$(ROSEDIR)/lib -lrose -lfl -lm 
 # ================ end of package-specific settings ================
 
 .SUFFIXES: .cpp

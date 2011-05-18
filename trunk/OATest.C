@@ -85,6 +85,13 @@
 //<AIS|ATB>#include <OpenAnalysis/Linearity/ManagerLinearityStandard.hpp>
 
 //<AIS|ATB>#include <OpenAnalysis/Loop/LoopManager.hpp>
+#include <OpenAnalysis/Loop/LoopAbstraction.hpp>
+#include <OpenAnalysis/IRInterface/ReuseDistanceIRInterface.hpp>
+#include<OpenAnalysis/Alias/ManagerCallContexts.hpp>
+#include <OpenAnalysis/Alias/ManagerCSFIAliasAliasTag.hpp>
+#include <OpenAnalysis/ReuseDistance/ReuseDistanceEdgeDecoration.hpp>
+#include <OpenAnalysis/ReuseDistance/ManagerReuseDistanceStandard.hpp>
+
 
 //#include "SageAttr.h"  // needed for findSymbolFromStmt
 
@@ -160,6 +167,7 @@ int DoDFAGenLiveness(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 int DoDFAGenReachDefs(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 int DoDFAGenVary(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 int DoDFAGenUseful(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
+void doReuseDistanceAnalysis(SgProject *p, std::vector<SgNode*> *na, bool p_handle, int ccmax = 1);
 
 
 /* Debug flags:
@@ -242,7 +250,7 @@ void usage(char **argv)
   cerr << "          --oa-DFAGen-Vary" << endl;
   cerr << "          --oa-DFAGen-Useful" << endl;
   cerr << "          --oa-DFAGen-AvailExprs" << endl;
-
+  cerr << "          --oa-Reuse-Distance"<< endl;
   exit(-1);
 }
 
@@ -896,6 +904,10 @@ main ( int argc,  char * argv[] )
     {
         // TODO: Implement
         assert(false);
+    }
+    else if( cmds->HasOption("--oa-Reuse-Distance") )
+    {
+      doReuseDistanceAnalysis(sageProject, &nodeArray, p_h, 1);
     }
     else if(skipAnalysis == false)
     {
@@ -3456,4 +3468,119 @@ int DoDFAGenUseful(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
     return returnvalue;
 }
 
+//void OAtoXAIFConverter::ReuseDistanceAnalysis(std::vector<SgNode*> * na, bool p_handle, int ccmax)
+void doReuseDistanceAnalysis(SgProject *p, std::vector<SgNode*> *na, bool p_handle, int ccmax)
 
+{
+
+
+    // contruct IR
+    OA::OA_ptr<SageIRInterface> irInterface;
+    irInterface = new SageIRInterface(p, na, p_handle);
+
+    OA::OA_ptr<SageIRProcIterator> procIter;
+    procIter = new SageIRProcIterator(p, *irInterface);
+	for (procIter->reset() ; procIter->isValid(); ++(*procIter)) {
+		OA::ProcHandle proc = procIter->current();
+		if(proc.hval()==0)
+			printf(" proc is null in prociter");
+	}
+	//! ManagerCFGStandard
+	OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
+	cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
+
+	for (procIter->reset() ; procIter->isValid(); ++(*procIter)) {
+		OA::ProcHandle proc = procIter->current();
+		if(proc.hval()==0)
+			printf(" proc is null in prociter1");
+	}
+
+	OA::OA_ptr<OA::Alias::ManagerFIAliasAliasTag> fialiasman;
+	fialiasman= new OA::Alias::ManagerFIAliasAliasTag(irInterface);
+	OA::OA_ptr<OA::Alias::Interface> alias;
+	alias = fialiasman->performAnalysis(procIter);
+
+	for (procIter->reset() ; procIter->isValid(); ++(*procIter)) {
+		OA::ProcHandle proc = procIter->current();
+		if(proc.hval()==0)
+			printf(" proc is null in prociter2");
+	}
+
+	// call graph
+	OA::OA_ptr<OA::CallGraph::ManagerCallGraphStandard> cgraphman;
+	cgraphman = new OA::CallGraph::ManagerCallGraphStandard(irInterface);
+	OA::OA_ptr<OA::CallGraph::CallGraph> cgraph =
+			cgraphman->performAnalysis(procIter, alias);
+	//cgraph->output(*irInterface);
+
+	// Obtain the iterators to the edges in the OACallGraph
+	printf("\nEgdes in the CallGraph - Start\n");
+	OA::OA_ptr<OA::CallGraph::EdgesIteratorInterface>  OACallGraph_edgesIter;
+	OACallGraph_edgesIter = cgraph->getCallGraphEdgesIterator();
+	/*for ( ; OACallGraph_edgesIter->isValid(); (*OACallGraph_edgesIter)++ ) {
+    //Obtain the handles to the source and sink nodes
+    OA::OA_ptr<OA::CallGraph::Edge> edge = (OACallGraph_edgesIter->current()).convert<OA::CallGraph::Edge>();
+    edge->output(*irInterface);
+  }*/
+	printf("\nEgdes in the CallGraph - Ends\n");
+
+	for (procIter->reset() ; procIter->isValid(); ++(*procIter)) {
+		OA::ProcHandle proc = procIter->current();
+		if(proc.hval()==0)
+			printf(" proc is null in prociter3");
+	}
+
+	OA::OA_ptr<OA::CallGraph::NodesIteratorInterface>  OACallGraphIter;
+	OACallGraphIter = cgraph->getCallGraphNodesIterator();
+
+	//Iterate over the OACallGraphnodes
+	for ( ; OACallGraphIter->isValid(); (*OACallGraphIter)++ ) {
+		OA::OA_ptr<OA::CallGraph::NodeInterface> node = (OACallGraphIter->current()).convert<OA::CallGraph::NodeInterface>();
+		OA::ProcHandle proc = node->getProc();
+		if(proc.hval()==0)
+			printf("\n proc is null in OA2XAFI\n");
+	}
+
+
+	// set CallContext k-level to ccmax
+	OA::Alias::CallContext::setMaxDegree((unsigned int) ccmax);
+	//std::cout << "CallContext::setMaxDegree(" << ccmax << "\n\n";
+
+	OA::OA_ptr<OA::Alias::ManagerCallContexts> ccman;
+	ccman = new OA::Alias::ManagerCallContexts(irInterface);
+	OA::OA_ptr<OA::Alias::CCSetPerProc> ccResults;
+	ccResults = ccman->performAnalysis(cgraph);
+	//ccResults->output(*irInterface);
+
+
+
+	OA::OA_ptr<OA::Alias::ManagerCSFIAliasAliasTag> csfialiasman;
+	csfialiasman = new OA::Alias::ManagerCSFIAliasAliasTag(irInterface);
+	OA::OA_ptr<OA::Alias::Interface> csfialias;
+	csfialias = csfialiasman->performAnalysis(cgraph, ccResults);
+
+	//csfialias->output(*irInterface);
+
+	//SHK - Not sure if this is the correct fix! But this should not die at runetime
+	OA::OA_ptr<OA::Alias::InterAliasResults> interaliasresults;
+	interaliasresults = new OA::Alias::InterAliasResults(alias);
+
+	// SideEffect
+	// Interprocedural Side-Effect Analysis
+	// for now generate default conservative interprocedural side-effect results
+	OA::OA_ptr<OA::SideEffect::InterSideEffectInterface> interSideEffect;
+	interSideEffect = new OA::SideEffect::InterSideEffectStandard(interaliasresults);
+
+
+	OA::OA_ptr<OA::ReuseDistance::ManagerReuseDistanceStandard> reuseman;
+	reuseman = new OA::ReuseDistance::ManagerReuseDistanceStandard(irInterface);
+	OA_ptr<OA::ReuseDistance::ReuseDistanceStandard> reusedistancestandard;
+	for (procIter->reset() ; procIter->isValid(); ++(*procIter)) {
+		OA::ProcHandle proc = procIter->current();
+		OA::OA_ptr<OA::CFG::CFG> cfg= cfgmanstd->performAnalysis(proc);
+
+		reusedistancestandard = reuseman->performAnalysis(proc, cfg,
+				alias, interSideEffect, OA::DataFlow::ITERATIVE);
+	}
+
+}

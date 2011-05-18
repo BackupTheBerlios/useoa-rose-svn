@@ -11,119 +11,35 @@
    abstracted into a LoopAbstraction object. */
 
 
-#include "Sage2OA.h"
-#include <rose.h>
-using namespace std;
-using namespace OA;
-using namespace Loop;
+#include "LoopIRInterface.h"
+
 
 // various debugging flags can be set by the OA_DEBUG environmental variable.
 // when one of the debugging flags is on it will output loops that fail
 // the associated requirement.
-bool loopDebug       = false;   // set with LoopStats. Turns on the flags below
+bool debugLoop       = false;   // set with LoopStats. Turns on the flags below
 bool debugBadInit    = false;   // set with LoopStats_BadInit
 bool debugLowerBound = false;   // set with LoopStats_BadLowerBound
 bool debugUpperBound = false;   // set with LoopStats_BadUpperBound
 bool debugBadStep    = false;   // set with LoopStats_BadStep
 
-class LoopAnalStatistics {
-  public:
-    enum Rejection {
-        BAD_INIT = 0,
-        BAD_LOWER_BOUND,
-        BAD_UPPER_BOUND,
-        BAD_STEP,
-        REDEFINITION,
-        INCLUDES_FUNCTION_CALL,
-        INCLUDES_DEREF
+
+void LoopAnalStatistics::incrementRejectedCounter(Rejection reason) {
+    switch(reason) {
+        case BAD_INIT:        mnRejected_BadInit++;       break;
+        case BAD_LOWER_BOUND: mnRejected_BadLowerBound++; break;
+        case BAD_UPPER_BOUND: mnRejected_BadUpperBound++; break;
+        case BAD_STEP:        mnRejected_BadStep++;       break;
+        case REDEFINITION:    mnRejected_Redefinition++;  break;
+        case INCLUDES_FUNCTION_CALL: mnRejected_FunctionCall++; break;
+        case INCLUDES_DEREF:         mnRejected_Deref++; break;
     };
 
-    static const char *rejectionStr[];
-
-    LoopAnalStatistics() :
-        mnAccepted(0),
-        mnRejected_BadLowerBound(0),
-        mnRejected_BadUpperBound(0),
-        mnRejected_BadStep(0),
-        mnForLoops(0),
-        mnWhileLoops(0),
-        mnDoWhileLoops(0)
-    { }
-
-    void incrementAcceptedCounter() { mnAccepted++; }
-    void encounteredForLoop() { mnForLoops++; }
-    void encounteredWhileLoop() { mnWhileLoops++; }
-    void encounteredDoWhileLoop() { mnDoWhileLoops++; }
-
-    void incrementRejectedCounter(Rejection reason) {
-        switch(reason) {
-            case BAD_INIT:        mnRejected_BadInit++;       break;
-            case BAD_LOWER_BOUND: mnRejected_BadLowerBound++; break;
-            case BAD_UPPER_BOUND: mnRejected_BadUpperBound++; break;
-            case BAD_STEP:        mnRejected_BadStep++;       break;
-            case REDEFINITION:    mnRejected_Redefinition++;  break;
-            case INCLUDES_FUNCTION_CALL: mnRejected_FunctionCall++; break;
-            case INCLUDES_DEREF:         mnRejected_Deref++; break;
-        };
-
-        if(loopDebug) {
-            cerr << "Loop was rejected for: "
-                 << rejectionStr[reason] << endl;
-        }
+    if(debugLoop) {
+        cerr << "Loop was rejected for: "
+             << rejectionStr[reason] << endl;
     }
-
-    int getNumForLoops() { return mnForLoops; }
-    int getNumWhileLoops() { return mnWhileLoops; }
-    int getNumDoWhileLoops() { return mnDoWhileLoops; }
-    int getNumAccepted() { return mnAccepted; }
-    int getNumBadInit() { return mnRejected_BadInit; }
-    int getNumBadLowerBound() { return mnRejected_BadLowerBound; }
-    int getNumBadUpperBound() { return mnRejected_BadUpperBound; }
-    int getNumBadStep() { return mnRejected_BadStep; }
-    int getNumRedfinition() { return mnRejected_Redefinition; }
-    int getNumLoopsWithFunctionCall() { return mnRejected_FunctionCall; }
-    int getNumLoopsWithDeref() { return mnRejected_Deref; }
-
-    int getNumRejected() {
-        return getNumBadInit() +
-               getNumBadLowerBound() +
-               getNumBadUpperBound() +
-               getNumBadStep() +
-               getNumRedfinition() +
-               getNumLoopsWithFunctionCall() +
-               getNumLoopsWithDeref();
-    }
-
-    void output() {
-        cerr << "Number of for loops:             " << getNumForLoops()
-           << "\nNumber of while loops:           " << getNumWhileLoops()
-           << "\nNumber of do while loops:        " << getNumDoWhileLoops()
-           << "\nNumber of loops accepted:        " << getNumAccepted()
-           << "\nNumber of loops rejected:        " << getNumRejected()
-           << "\n  Rejected for bad initi:        " << getNumBadInit()
-           << "\n  Rejected for bad lower bound:  " << getNumBadLowerBound()
-           << "\n  Rejected for bad upper bound:  " << getNumBadUpperBound()
-           << "\n  Rejected for bad step:         " << getNumBadStep()
-           << "\n  Rejected for ivar redfinition: " << getNumRedfinition()
-           << "\n  Rejected for function call:    "
-           << getNumLoopsWithFunctionCall()
-           << "\n  Rejected for pointer deref:    " << getNumLoopsWithDeref()
-           << endl;
-    }
-
-  private:
-    int mnAccepted;
-    int mnRejected_BadInit;
-    int mnRejected_BadLowerBound;
-    int mnRejected_BadUpperBound;
-    int mnRejected_BadStep;
-    int mnRejected_Redefinition;
-    int mnRejected_FunctionCall;
-    int mnRejected_Deref;
-    int mnForLoops;
-    int mnWhileLoops;
-    int mnDoWhileLoops;
-};
+}
 
 const char *LoopAnalStatistics::rejectionStr[] = {
     "bad initialization of index variable.",
@@ -134,138 +50,6 @@ const char *LoopAnalStatistics::rejectionStr[] = {
     "includes function call.",
     "includes pointer dereference."
 };
-
-
-
-static LoopAnalStatistics gStatistics;
-
-
-/*! Inherited attribute for a ROSE AST traversal.  This attribute will
-    keep track of what, and how many loops have been encountered, while
-    performing a top-down traversal. */
-class LoopNestAttribute {
-  public:
-    LoopNestAttribute();
-    LoopNestAttribute(const LoopNestAttribute &orig);
-
-    /*! Add a new loop to this attribute.  Every time the traversal visits
-        a loop it should be added, this running list of loops will keeps track
-        of what loops any given node in the AST is nested under. */
-    void addNestedLoop(OA_ptr<LoopAbstraction> loop);
-
-    /*! Returns the last loop added to the attribute.  This is usually the
-        parent of a new loop being constructed.  If the list is empty
-        NULL is returned */
-    OA_ptr<LoopAbstraction> getLastLoop() const {
-        OA_ptr<LoopAbstraction> ret;
-
-        if(!mNestedLoops.empty()) { 
-            ret = mNestedLoops.back();
-        }
-
-        return ret;
-    }
-
-  private:
-    list<OA_ptr<LoopAbstraction> > mNestedLoops;
-};
-
-/*! Analysis to determine the loop nesting structure */
-class LoopNestProcessor : public AstTopDownProcessing<LoopNestAttribute>
-{
-  public:
-    LoopNestProcessor(
-        OA_ptr<list<OA_ptr<LoopAbstraction> > > results,
-        SageIRInterface &ir,
-        ProcHandle proc)
-        :
-        mResults(results),
-        mIR(ir),
-        mProc(proc)
-        { }
-
-    /*! Called as the traversal visits nodes in the AST, the attribute
-        calculated for the parent node is passed by the traversal as an
-        argument. */
-    LoopNestAttribute evaluateInheritedAttribute(
-        SgNode *astNode,
-        LoopNestAttribute attrib);
-
-  private:
-    /*! Given a node to a for statement in a SAGE AST construct a loop
-        abstraction object if possible.  If no such object can be
-        constructed return NULL. Abstractions are prevented from being
-        built when they don't fall neatly into the format:
-        'for(int idxVariable = lowerBound; idxVariable < upperBound;
-             idxVariabl++);' */
-    OA_ptr<LoopAbstraction> buildLoopAbstraction(
-        SgNode *forStatementNode,
-        LoopNestAttribute const &attrib);
-
-    /* Given a SAGE for-statement initialization node, extract the named
-       location where the loop's index variable resides. If an index
-       variable can not be determined return NULL and set error to true. */
-    OA_ptr<NamedLoc> extractIndexVariable(
-        SgForInitStatement *forStatementNode,
-        bool *error,
-        bool *isCStyleLoop);
-
-    /* Extract the index variable in a C-style loop. */
-    OA_ptr<NamedLoc> extractIndexVariableInCStyleLoop(
-        SgForInitStatement *forStatementNode,
-        bool *error);
-
-    /* Extract the index variable in a C++ style loop. */
-    OA_ptr<NamedLoc> extractIndexVariableInCPPStyleLoop(
-        SgForInitStatement *forStatementNode,
-        bool *error);
-
-    /* Determine the lower bound specified in a well-formatted for statement */
-    int extractLowerBound(
-        OA_ptr<NamedLoc> indexVariable,
-        SgForInitStatement *init,
-        bool *error,
-        bool isCStyleLoop);
-
-    /* Extract the lower bound a C-style loop. */
-    int extractLowerBoundInCStyleLoop(
-        OA_ptr<NamedLoc> indexVariable,
-        SgForInitStatement *init,
-        bool *error);
-
-    /* Extract the lower bound in a C++ style loop. */
-    int extractLowerBoundInCPPStyleLoop(
-        OA_ptr<NamedLoc> indexVariable,
-        SgForInitStatement *init,
-        bool *error);
-
-    /* Determine the upper bound specified in a well-formatted for statement */
-    int extractUpperBound(
-        OA_ptr<NamedLoc> indexVariable,
-        SgStatement *condition,
-        bool *error);
-
-    /* Determine the loop step */
-    int extractLoopStep(
-        OA_ptr<NamedLoc> indexVariable,
-        SgExpression *stepExpr,
-        bool *error);
-
-    /* Given a node to a variable reference and an OA location abstraction
-       to an index variable determine if they refer to the same thing */
-    bool isIndexVariable(SgVarRefExp *varRef, OA_ptr<NamedLoc> idxVar);
-
-    /* Given a statement handle for a loop extract the last statement
-       the loop contains.  If the last statement is a loop recurse. */
-    StmtHandle extractLastLoopStmt(StmtHandle stmt);
-
-    // Member vars:
-    OA_ptr<list<OA_ptr<LoopAbstraction> > > mResults;
-    SageIRInterface &mIR;
-    ProcHandle mProc;
-};
-
-
 
 
 LoopNestAttribute::LoopNestAttribute() { }
@@ -303,6 +87,7 @@ LoopNestAttribute LoopNestProcessor::evaluateInheritedAttribute(
 
     // the attribute only needs to be modified within for statements
     else if(astNode->variantT() == V_SgForStatement) {
+    	std::cout<<"\n$$$Traversal found a forloop";
         gStatistics.encounteredForLoop();
         SgForStatement *stmt = isSgForStatement(astNode);
         assert(stmt != NULL);
@@ -315,6 +100,8 @@ LoopNestAttribute LoopNestProcessor::evaluateInheritedAttribute(
 
         // add this new loop to the results and to the nest
         if(!loop.ptrEqual(0)) {
+        	std::cout<<"\n$$$Traversal found a forloop";
+
             mResults->push_back(loop);
             attrib.addNestedLoop(loop);
         }
@@ -324,10 +111,10 @@ LoopNestAttribute LoopNestProcessor::evaluateInheritedAttribute(
 }
 
 
-OA_ptr<NamedLoc> LoopNestProcessor::extractIndexVariable(
+OA_ptr<MemRefExpr> LoopNestProcessor::extractIndexVariable(
     SgForInitStatement *init, bool *error, bool *isCStyleLoop) 
 {
-    OA_ptr<NamedLoc> ret;
+    OA_ptr<MemRefExpr> ret;
 
     // There are two different types of loop initializations handeled.
     // 'C-style' and 'C++ style'. C style loops do not declare the index
@@ -366,10 +153,10 @@ OA_ptr<NamedLoc> LoopNestProcessor::extractIndexVariable(
 }
 
 
-OA_ptr<NamedLoc> LoopNestProcessor::extractIndexVariableInCStyleLoop(
+OA_ptr<MemRefExpr> LoopNestProcessor::extractIndexVariableInCStyleLoop(
     SgForInitStatement *init, bool *error)
 {
-    OA_ptr<NamedLoc> ret;
+    OA_ptr<MemRefExpr> ret;
 
     // First look for C style for loops, that is loops where the index
     // variable is declared outside of the 'for' statement, but initialized
@@ -407,16 +194,17 @@ OA_ptr<NamedLoc> LoopNestProcessor::extractIndexVariableInCStyleLoop(
 
     // Convert the variable to a location
     SymHandle hSym = mIR.getVarSymHandle(initName);
-    ret = (mIR.getLocation(mProc, hSym)).convert<NamedLoc>();
+    //ret = (mIR.getLocation(mProc, hSym)).convert<NamedLoc>();
+    ret = mIR.createNamedRef(hSym);
 
     return ret;
 }
 
 
-OA_ptr<NamedLoc> LoopNestProcessor::extractIndexVariableInCPPStyleLoop(
+OA_ptr<MemRefExpr> LoopNestProcessor::extractIndexVariableInCPPStyleLoop(
     SgForInitStatement *init, bool *error)
 {
-    OA_ptr<NamedLoc> ret;
+    OA_ptr<MemRefExpr> ret;
 
     // check to see if the init statement has a single variable
     // assignment, within the assignment get the variable reference
@@ -445,18 +233,19 @@ OA_ptr<NamedLoc> LoopNestProcessor::extractIndexVariableInCPPStyleLoop(
     
     // Convert the variable to a location
     SymHandle hSym = mIR.getVarSymHandle(var);
-    ret = (mIR.getLocation(mProc, hSym)).convert<NamedLoc>();
+    //ret = (mIR.getLocation(mProc, hSym)).convert<NamedLoc>();
+    ret = mIR.createNamedRef(hSym);
 
     return ret;
 }
 
 int LoopNestProcessor::extractLowerBound(
-    OA_ptr<NamedLoc> indexVariable,
+    OA_ptr<MemRefExpr> indexVariable,
     SgForInitStatement *init,
     bool *error,
     bool isCStyleLoop)
 {
-    OA_ptr<NamedLoc> ret;
+    OA_ptr<MemRefExpr> ret;
 
     // determine how to extract the lower bound based on what type of loop
     // is being analyzed
@@ -469,11 +258,11 @@ int LoopNestProcessor::extractLowerBound(
 
 
 int LoopNestProcessor::extractLowerBoundInCStyleLoop(
-    OA_ptr<NamedLoc> indexVariable,
+    OA_ptr<MemRefExpr> indexVariable,
     SgForInitStatement *init,
     bool *error)
 {
-    OA_ptr<NamedLoc> ret;
+    OA_ptr<MemRefExpr> ret;
 
     // The subtree for the initialization cluase in a C style loop looks
     // like this:
@@ -512,11 +301,16 @@ int LoopNestProcessor::extractLowerBoundInCStyleLoop(
 
 
 int LoopNestProcessor::extractLowerBoundInCPPStyleLoop(
-    OA_ptr<NamedLoc> indexVariable,
+    OA_ptr<MemRefExpr> indexVariablemre,
     SgForInitStatement *init,
     bool *error)
 {
-    OA_ptr<NamedLoc> ret;
+    OA_ptr<MemRefExpr> ret;
+
+    ROSE_ASSERT(indexVariablemre->isaNamed());
+    OA::OA_ptr<OA::NamedRef> indexVariable = indexVariablemre.convert<OA::NamedRef>();
+    ROSE_ASSERT(!indexVariable.ptrEqual(0));
+    ROSE_ASSERT(indexVariable->isaNamed());
 
     // get the node where the index variable is initialized, from
     // there get the node where it's assigned, from there get the
@@ -536,7 +330,7 @@ int LoopNestProcessor::extractLowerBoundInCPPStyleLoop(
 
 
 int LoopNestProcessor::extractUpperBound(
-    OA_ptr<NamedLoc> indexVariable,
+    OA_ptr<MemRefExpr> indexVariable,
     SgStatement *condition,
     bool *error)
 {
@@ -568,7 +362,7 @@ int LoopNestProcessor::extractUpperBound(
 
 
 int LoopNestProcessor::extractLoopStep(
-    OA_ptr<NamedLoc> indexVariable,
+    OA_ptr<MemRefExpr> indexVariable,
     SgExpression *stepExpr,
     bool *error)
 {
@@ -668,8 +462,13 @@ int LoopNestProcessor::extractLoopStep(
 
 bool LoopNestProcessor::isIndexVariable(
     SgVarRefExp *varRef,
-    OA_ptr<NamedLoc> idxVar)
+    OA_ptr<MemRefExpr> idxVarmre)
 {
+    ROSE_ASSERT(idxVarmre->isaNamed());
+    OA::OA_ptr<OA::NamedRef> idxVar = idxVarmre.convert<OA::NamedRef>();
+    ROSE_ASSERT(!idxVar.ptrEqual(0));
+    ROSE_ASSERT(idxVar->isaNamed());
+
     // convert the OA abstraction to a SAGE node
     SgInitializedName *indexVarNode = 
         isSgInitializedName(mIR.getNodePtr(idxVar->getSymHandle()));
@@ -728,7 +527,7 @@ static NodeQuerySynthesizedAttributeType queryAssignments(SgNode *astNode) {
 OA_ptr<LoopAbstraction> LoopNestProcessor::buildLoopAbstraction(
     SgNode *forStatementNode, const LoopNestAttribute &attrib)
 {
-    OA_ptr<NamedLoc> indexVariable;
+    OA_ptr<MemRefExpr> indexVariable;
     OA_ptr<LoopAbstraction> loopAbstraction;
     bool rejected = false;
     bool error    = false;
@@ -736,7 +535,7 @@ OA_ptr<LoopAbstraction> LoopNestProcessor::buildLoopAbstraction(
     int lowerBound, upperBound, step;
 
 
-    if(loopDebug) {
+    if(debugLoop) {
         cerr << "Trying to build an abstraction from the statement: "
              << forStatementNode->unparseToString() << endl;
     }
@@ -911,7 +710,7 @@ SageIRInterface::gatherLoops(const ProcHandle &proc)
 {
     // check the OA_DEBUG environmental variable to see what sorts of debugging
     // information should be output
-    OA_DEBUG_CTRL_MACRO("LoopStats:ALL", loopDebug);
+    OA_DEBUG_CTRL_MACRO("LoopStats:ALL", debugLoop);
     OA_DEBUG_CTRL_MACRO("LoopStats:LoopStats_BadInit:ALL", debugBadInit);
     OA_DEBUG_CTRL_MACRO("LoopStats:LoopStats_BadLowerBound:ALL",
                         debugLowerBound);
@@ -919,8 +718,8 @@ SageIRInterface::gatherLoops(const ProcHandle &proc)
                         debugUpperBound);
     OA_DEBUG_CTRL_MACRO("LoopStats:LoopStats_BadStep:ALL", debugBadStep);
 
-    loopDebug = true;
-    if(loopDebug) {
+    debugLoop = true;
+    if(debugLoop) {
         cerr << endl;
         cerr << "Gather loops for procedure: "
              << toString(proc) << endl;
@@ -939,7 +738,7 @@ SageIRInterface::gatherLoops(const ProcHandle &proc)
     processor.traverse(getNodePtr(proc), attrib);
 
     // if debug mode is on output results:
-    if(loopDebug) {
+    if(debugLoop) {
 //        outputListOfLoops(loops, *this);
 //        cerr << endl;
         gStatistics.output();
@@ -954,6 +753,24 @@ StmtHandle SageIRInterface::findEnclosingLoop(const StmtHandle &stmt)
     // traverse from the statement up to the top of the tree until we
     // find a for loop
     SgNode *current = (getNodePtr(stmt))->get_parent();
+    while(isSgForStatement(current) == NULL && current != NULL) {
+        current = current->get_parent();
+    }
+
+    // if we didn't reach the top convert the SgNode to a statement handle
+    // and return it, otherwise return the NULL StmtHandle
+    if(current != NULL) {
+        return (irhandle_t)(getNodeNumber(current));
+    } else {
+        return 0;
+    }
+}
+
+StmtHandle SageIRInterface::findEnclosingLoop(const SgNode *node)
+{
+    // traverse from the node up to the top of the tree until we
+    // find a for loop
+    SgNode *current = node->get_parent();
     while(isSgForStatement(current) == NULL && current != NULL) {
         current = current->get_parent();
     }

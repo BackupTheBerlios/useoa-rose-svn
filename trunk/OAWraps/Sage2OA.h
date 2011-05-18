@@ -42,12 +42,15 @@
 
 
 //<AIS|ATB> #include <OpenAnalysis/NewExprTree/NewExprTree.hpp>
-//<AIS|ATB> #include <OpenAnalysis/Loop/LoopAbstraction.hpp>
+#include <OpenAnalysis/Loop/LoopAbstraction.hpp>
 
 // ReachConsts
 #include <OpenAnalysis/IRInterface/ConstValBasicInterface.hpp>
 #include <OpenAnalysis/IRInterface/ConstValIntInterface.hpp>
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/ReachConstsIRInterface.hpp>
+#include <OpenAnalysis/IRInterface/ReuseDistanceIRInterface.hpp>
+#include <OpenAnalysis/ReuseDistance/ReuseDistanceEdgeDecoration.hpp>
+
 using namespace OA;
 
 class SageIRInterface;
@@ -707,7 +710,9 @@ class SageIRInterface :
 //<AIS|ATB> public virtual OA::DataDep::DataDepIRInterface,
 //<AIS|ATB> public virtual OA::Loop::LoopIRInterface,
 //<AIS|ATB> public virtual OA::Liveness::LivenessIRInterface,
-  public virtual OA::ReachingDefs::ReachingDefsIRInterface
+  public virtual OA::ReachingDefs::ReachingDefsIRInterface,
+  public virtual OA::ReuseDistance::ReuseDistanceIRInterface
+
 //<AIS|ATB> public virtual OA::AvailableExpressions::AvailableExpressionsIRInterface,
 //<AIS|ATB> public virtual OA::ExprTreeIRInterface
 {
@@ -1451,12 +1456,13 @@ public:
   //-------------------------------------------------------------------------
   public:
 //<AIS|ATB>
-#if 0
   OA_ptr<std::list<OA_ptr<Loop::LoopAbstraction> > >
     gatherLoops(const ProcHandle &proc);
 
   StmtHandle findEnclosingLoop(const StmtHandle &stmt);
-#endif
+
+  StmtHandle findEnclosingLoop(const SgNode *node);
+
   //-------------------------------------------------------------------------
   // Helper data structures and methods
   //-------------------------------------------------------------------------
@@ -1482,6 +1488,41 @@ public:
 
   public:
     void reportTimes();
+
+    //-------------------------------------------------------------------------
+    // ReuseDistanceIRInterface
+    //-------------------------------------------------------------------------
+    //! Return the number of dimensions given a memrefexpr to an array reference
+    //! The function should return -1, if the memrefexpr is to an array reference
+    //! is not the top array reference.
+    int findArrayDimension(OA::OA_ptr<OA::MemRefExpr> memrefexpr);
+
+
+    //! Return true if the node's parent is not an SgPntrArrRefExp else return false
+    bool isTopArrayReference(SgPntrArrRefExp * pntrarrref);
+
+
+    //! Recursive descend through the subtree and count the number of dimensions.
+    int traverseAndCountDimensions(SgPntrArrRefExp * pntrarrref);
+
+    //! Recursively descend through the subtree and return MemRefExprs of the indices.
+    void traverseAndGetIndices(SgExpression * expr, std::list <OA::OA_ptr<OA::MemRefExpr> > & indexlist);
+
+    //! Recursively descend through the subtree and return the MemRefExpr of the array name.
+    OA::OA_ptr<OA::MemRefExpr> traverseAndGetName(SgPntrArrRefExp * pntrarrref);
+
+    //! Given a memrefexp, check if it is to top node of an arrayreference sub-AST. If yes,
+    //!return a list that of the reference's indices.
+    std::list <OA::OA_ptr<OA::MemRefExpr> > getIndexList(OA::OA_ptr<OA::MemRefExpr> memrefexpr);
+
+    //! Given a memrefexp, check if it is to top node of an arrayreference sub-AST. If yes,
+    //!return the name of the array being referenced.
+    OA::OA_ptr<OA::MemRefExpr> getArrayName(OA::OA_ptr<OA::MemRefExpr> memrefexpr);
+
+    //! Given a memrefexp, check if it is to top node of an arrayreference sub-AST. If yes,
+    //! return a map between each MemRefExpr used in the arrayreference as an index and
+    //! an LoopIndex as to how it varies
+    std::map<OA::OA_ptr<MemRefExpr>, OA_ptr<Loop::LoopIndex> > getIndexLoopIndexMap(OA::OA_ptr<MemRefExpr> memrefexpr, StmtHandle stmthandle);
 };
 
 #define OA_VTABLE_STR "__oa_vtable_ptr"

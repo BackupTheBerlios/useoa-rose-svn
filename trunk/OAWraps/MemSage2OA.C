@@ -157,28 +157,64 @@ void SageIRInterface::mapMREToSgNode(
 
 SgNode *SageIRInterface::getSgNode(OA::OA_ptr<OA::MemRefExpr> mre)
 {
-    ROSE_ASSERT(!mre.ptrEqual(0));
-    if ( mMre2SgNode.find(mre) != mMre2SgNode.end() ) {
-        return mMre2SgNode[mre];
-    } else {
-        if ( mre->isaNamed() ) {
-            std::cout << "getSgNode(mre) with named mre" << std::endl;
-            OA::OA_ptr<OA::NamedRef> namedRef = mre.convert<OA::NamedRef>();
-            ROSE_ASSERT(!namedRef.ptrEqual(0));
+	ROSE_ASSERT(!mre.ptrEqual(0));
+	if ( mMre2SgNode.find(mre) != mMre2SgNode.end() ) {
+		//std::cout << "In getSgNode found and entry in mMre2SgNode";
+		return mMre2SgNode[mre];
+	} else {
+		if ( mre->isaNamed() ) {
+			//std::cout << "getSgNode(mre) with named mre" << std::endl;
+			OA::OA_ptr<OA::NamedRef> namedRef = mre.convert<OA::NamedRef>();
+			ROSE_ASSERT(!namedRef.ptrEqual(0));
 
-            OA::SymHandle symHandle = namedRef->getSymHandle();
-            SgNode *node = getSgNode(symHandle);
-            if ( node != NULL ) {
-                std::cout << "getSgNode was NULL but got a named mre for "
-                          << node->sage_class_name()
-                          << " "
-                          << node->unparseToString()
-                          << std::endl;
-                return node;
-            }
-        }
-    }
-    return NULL;
+			OA::SymHandle symHandle = namedRef->getSymHandle();
+			SgNode *node = getSgNode(symHandle);
+			if ( node != NULL ) {
+				//std::cout << "getSgNode was NULL but got a named mre for "
+				//          << node->sage_class_name()
+				//          << " "
+				//          << node->unparseToString()
+				//          << std::endl;
+				return node;
+			}
+		} else if ( mre->isaIdxExprAccess() ) {
+			//std::cout << "getSgNode(mre) with isaIdxExprAccess" << std::endl;
+			OA::OA_ptr<OA::IdxExprAccess> idxExprAccess = mre.convert<OA::IdxExprAccess>();
+			ROSE_ASSERT(!idxExprAccess.ptrEqual(0));
+
+			OA_ptr<MemRefExpr> basemre = idxExprAccess->getMemRefExpr();
+			ROSE_ASSERT(!basemre.ptrEqual(0));
+
+			SgNode *node = getSgNode(basemre);
+			ROSE_ASSERT(node!=NULL);
+
+			while (!isSgPntrArrRefExp(node)){
+				std::cout << "\ngetSgNode(mre) with isaIdxExprAccess sageclassname" << std::string(node->sage_class_name());
+				node = node->get_parent();
+				ROSE_ASSERT(node!=NULL);
+			}
+			return node;
+		} else if ( mre->isaUnnamed() ) {
+			std::cout << "getSgNode(mre) with isaUnnamed" << std::endl;
+		} else if ( mre->isaUnknown() ) {
+			std::cout << "getSgNode(mre) with isaUnknown" << std::endl;
+		} else if ( mre->isaAddressOf() ) {
+			std::cout << "getSgNode(mre) with isaAddressOf" << std::endl;
+		} else if ( mre->isaDeref() ) {
+			std::cout << "getSgNode(mre) with isaDeref" << std::endl;
+		} else if ( mre->isaIdxAccess() ) {
+			std::cout << "getSgNode(mre) with isaIdxAccess" << std::endl;
+		} else if ( mre->isaFieldAccess() ) {
+			std::cout << "getSgNode(mre) with isaFieldAccess" << std::endl;
+		} else if ( mre->isaSubSetRef() ) {
+			std::cout << "getSgNode(mre) with isaSubSetRef" << std::endl;
+		} else {
+			std::cout << "getSgNode(mre) does not match any known memrefexp" << std::endl;
+			mre.dump(std::cout);
+			ROSE_ASSERT(0);
+		}
+	}
+	return NULL;
 }
 
 /*
@@ -3213,6 +3249,9 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     mMre2TypeMap[rhs_mre] = other;
 
                     mMemref2mreSetMap[memref].insert(rhs_mre);
+
+                    mapMREToSgNode(rhs_mre, arrRefExp);
+
                 }
             }
             // else if through a variable pointer
@@ -3271,6 +3310,8 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     mMre2TypeMap[mre] = other;
 
                     mMemref2mreSetMap[memref].insert(mre);
+
+                    mapMREToSgNode(mre, arrRefExp);
                 }
             } else {
                 // Unexpected lhs type.

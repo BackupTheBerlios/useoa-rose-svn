@@ -15,11 +15,11 @@ srcdir = $(USEOAROSEDIR)/OAWraps/
 DEFINES = -DHAVE_CONFIG_H -DOA_IRHANDLETYPE_UL $(GLOBAL_DEFINES) #-DOA_OPEN64 
 INCLUDES = -I. -I.. $(ROSE_INCLUDES) $(OPENANALYSIS_INC) -I/fusion/research2/bwhite/cpp-annotation-language
 INCLUDES = -I. -I.. $(ROSE_INCLUDES) $(OPENANALYSIS_INC)
-LIBS= $(ROSE_LIBS) -lm -lfl -lrt -lpthread $(OPENANALYSIS_LIB)
+LIBS= $(ROSE_LIBS) -lm -lfl -lpthread $(OPENANALYSIS_LIB)
 CXXFLAGS_2 = $(CXXFLAGS) -fPIC -ftemplate-depth-50 
 LDFLAGS = -fPIC $(PROFILE_OPTIONS)
 AR = ar
-CXX_SHARED_LIB_UPDATE = ${CXX} $(OPENANALYSIS_LIB) -shared -o 
+CXX_SHARED_LIB_UPDATE = ${CXX} $(LIBS) -shared -o 
 CXX_STATIC_LIB_UPDATE = ${AR} cru
 
 CXXCOMPILE = $(CXX) $(DEFINES) $(INCLUDES) $(CXXFLAGS_2)
@@ -33,7 +33,7 @@ OBJEXT = o
 EXEEXT = 
 
 #<AIS|ATB> libSage2OASources = Sage2OA.C LoopIRInterface.C MemSage2OA.C SageOACallGraph.C common.C
-libSage2OASources = Sage2OA.C Sage2OA.C SageOACallGraph.C common.C
+libSage2OASources = Sage2OA.C Sage2OA.C LoopIRInterface.C SageOACallGraph.C common.C
 
 
 #lib_LIBRARIES = libSage2OA.a
@@ -43,7 +43,7 @@ LIBRARIES = $(lib_LIBRARIES)
 
 libSage2OA_so_SOURCES = $(libSage2OASources)
 #<AIS|ATB> am__objects_1 = Sage2OA.$(OBJEXT) LoopIRInterface.$(OBJEXT) SageOACallGraph.$(OBJEXT) MemSage2OA.$(OBJEXT) common.$(OBJEXT)
-am__objects_1 = Sage2OA.$(OBJEXT) MemSage2OA.$(OBJEXT) SageOACallGraph.$(OBJEXT) common.$(OBJEXT)
+am__objects_1 = Sage2OA.$(OBJEXT) LoopIRInterface.$(OBJEXT) MemSage2OA.$(OBJEXT) SageOACallGraph.$(OBJEXT) common.$(OBJEXT)
 am_libSage2OA_so_OBJECTS = $(am__objects_1)
 libSage2OA_so_OBJECTS = $(am_libSage2OA_so_OBJECTS)
 
