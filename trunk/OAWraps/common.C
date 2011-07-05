@@ -17,7 +17,7 @@ namespace UseOA {
  */
 static std::string stripParameterType( const std::string& name)
 {
-    char *const_start = strstr( name.c_str(), "const");
+    char *const_start = (char *) strstr( name.c_str(), "const");
     std::string r = (const_start == 0)? name : std::string(const_start + 5);
     int end = r.size()-1;
     if (r[end] == '&') {
@@ -2030,11 +2030,11 @@ getFunctionsInDerivedClasses(SgClassDefinition *cls,
         }
     }
 
-    SgClassDefinitionPtrList subclasses =
+    ClassHierarchyWrapper::ClassDefSet subclasses =
         classHierarchy->getSubclasses(cls);
 
     // Iterate over all subclasses.
-    for (SgClassDefinitionPtrList::iterator subclassIt = subclasses.begin();
+    for (ClassHierarchyWrapper::ClassDefSet::iterator subclassIt = subclasses.begin();
           subclassIt != subclasses.end(); ++subclassIt) {
 
         SgClassDefinition *subclass = *subclassIt;
@@ -2103,13 +2103,13 @@ getFunctionsConsistentWithMethodPointerInvocation(SgBinaryOp *dotStarOrArrowStar
     std::set<SgFunctionDeclaration *> funcs;
 
     // Get all of the ancestors of the receiver type.
-    SgClassDefinitionPtrList ancestors =
+    ClassHierarchyWrapper::ClassDefSet ancestors =
         classHierarchy->getAncestorClasses(classDefn);
     std::vector<SgClassDefinition *> classes;
     classes.push_back(classDefn);
 
     // Iterate over all ancestors.
-    for (SgClassDefinitionPtrList::iterator ancestorIt = ancestors.begin();
+    for (ClassHierarchyWrapper::ClassDefSet::iterator ancestorIt = ancestors.begin();
           ancestorIt != ancestors.end(); ++ancestorIt) {
 
         SgClassDefinition *ancestor = *ancestorIt;

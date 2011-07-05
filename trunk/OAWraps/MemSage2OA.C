@@ -1,6 +1,7 @@
+#include "common.h"
 #include "MemSage2OA.h"
 #include "SageOACallGraph.h"
-#include "common.h"
+#include "debug.h"
 
 #define ROSE_0_8_9a
 
