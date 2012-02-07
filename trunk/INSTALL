@@ -4,14 +4,16 @@ UseOA-ROSE INSTALL
 
 UseOA-ROSE depends on the OpenAnalysis library and the ROSE library.
 
-The build system for UseOA-ROSE requires that the following two
-environment variables be set:
-    OADIR - should be set to the path to the OpenAnalysis directory
-    ROSEDIR - should be set to the path to a ROSE build directory
+The build system for UseOA-ROSE uses autotools
 
 Once the above two environment variables are set, UseOA-ROSE can be
 built by typing:
+    % ./autogen.sh
+    % ./configure --with-rose=PATH_TO_ROSE_INSTALL \
+                  --with-openanalysis=PATH_TO_OPENANALYSIS_INSTALL \
+                  --prefix=INSTALLATION_PATH
     % make
+    % make install
 
 The following executables are generated:
     OATest

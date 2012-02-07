@@ -63,6 +63,7 @@
 //<AIS|ATB>#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 #include <OpenAnalysis/Utils/OutputBuilderDOT.hpp>
 #include <OpenAnalysis/Utils/Util.hpp>
+#include <OpenAnalysis/Utils/NestedSCR.hpp>
 //<AIS|ATB>#include <OpenAnalysis/ReachConsts/ManagerReachConstsStandard.hpp>
 //<AIS|ATB>#include <OpenAnalysis/UDDUChains/ManagerUDDUChainsStandard.hpp>
 //<AIS|ATB>#include <OpenAnalysis/XAIF/UDDUChainsXAIF.hpp>
@@ -167,7 +168,7 @@ int DoDFAGenLiveness(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 int DoDFAGenReachDefs(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 int DoDFAGenVary(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
 int DoDFAGenUseful(SgProject *p, std::vector<SgNode*> *na, bool p_handle);
-void doReuseDistanceAnalysis(SgProject *p, std::vector<SgNode*> *na, bool p_handle, int ccmax = 1);
+//void doReuseDistanceAnalysis(SgProject *p, std::vector<SgNode*> *na, bool p_handle, int ccmax = 1);
 
 
 /* Debug flags:
@@ -905,10 +906,12 @@ main ( int argc,  char * argv[] )
         // TODO: Implement
         assert(false);
     }
+#if 0
     else if( cmds->HasOption("--oa-Reuse-Distance") )
     {
       doReuseDistanceAnalysis(sageProject, &nodeArray, p_h, 1);
     }
+#endif
     else if(skipAnalysis == false)
     {
       printf("did not find any valid oa option on the command line\n");
@@ -3467,7 +3470,7 @@ int DoDFAGenUseful(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
 
     return returnvalue;
 }
-
+#if 0
 //void OAtoXAIFConverter::ReuseDistanceAnalysis(std::vector<SgNode*> * na, bool p_handle, int ccmax)
 void doReuseDistanceAnalysis(SgProject *p, std::vector<SgNode*> *na, bool p_handle, int ccmax)
 
@@ -3584,3 +3587,66 @@ void doReuseDistanceAnalysis(SgProject *p, std::vector<SgNode*> *na, bool p_hand
 	}
 
 }
+#endif
+
+int DoNestedSCR(SgProject *p, std::vector<SgNode*> *na, bool p_handle)
+{
+  int returnvalue=FALSE;
+  OA::OA_ptr<SageIRProcIterator> procIter;
+  
+  if ( debug ) printf("*******start of NestedSCR analysis\n");
+  
+  double time = clock();
+  
+  // contruct IR
+  OA::OA_ptr<SageIRInterface> irInterface;
+  irInterface = new SageIRInterface(p, na, p_handle);
+  printf("Construct IR Time: %lf\n",
+         (clock() - time) / (1.0 * CLOCKS_PER_SEC));
+  time = clock();
+  
+  // CFG
+  OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgmanstd;
+  cfgmanstd = new OA::CFG::ManagerCFGStandard(irInterface);
+  
+  // eachCFG
+  OA::OA_ptr<OA::CFG::EachCFGInterface> eachCFG;
+  OA::OA_ptr<OA::CFG::ManagerCFGStandard> cfgman;
+  cfgman = new OA::CFG::ManagerCFGStandard(irInterface);
+  eachCFG = new OA::CFG::EachCFGStandard(cfgman);
+  
+  // force a CFG analysis on all procedures and time it
+  time = clock();
+  procIter = new SageIRProcIterator(p, *irInterface);
+  int count = 0;
+  for(; procIter->isValid(); ++(*procIter)) {
+    OA::OA_ptr<OA::CFG::CFGInterface> cfg;
+    cfg = eachCFG->getCFGResults(procIter->current());
+    count++;
+  }
+  printf("CFG Time: %lf, %d procs analyzed\n",
+         (clock() - time) / (1.0 * CLOCKS_PER_SEC), count);
+  
+  // Iterate through each proc doing Nested SCR analysis
+  procIter = new SageIRProcIterator(p, *irInterface);
+  for(; procIter->isValid(); ++(*procIter)) {
+    OA::OA_ptr<OA::CFG::CFGInterface> cfg;
+    cfg = eachCFG->getCFGResults(procIter->current());
+
+    OA::OA_ptr<OA::RIFG::RIFG> rifg;
+    rifg = new OA::RIFG::RIFG(cfg, cfg->getEntry(), cfg->getExit());
+    
+    OA::OA_ptr<OA::NestedSCR> nestedscr;
+    nestedscr = new OA::NestedSCR(rifg);
+    nestedscr->dump(std::cout);
+  }
+  printf("NestedSCR Time: %lf\n",
+         (clock() - time) / (1.0 * CLOCKS_PER_SEC));
+  time = clock();
+  
+  std::cout << "\n*******  end of NestedSCR analysis *********\n\n";
+  
+  return returnvalue;
+}
+
+

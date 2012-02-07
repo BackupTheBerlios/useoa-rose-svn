@@ -6540,7 +6540,7 @@ bool SageIRInterface::isLocal(SgVarRefExp *var) {
 
     return false;
 }
-
+/*
 //-------------------------------------------------------------------------
 // ReuseDistanceIRInterface
 //-------------------------------------------------------------------------
@@ -6741,4 +6741,4 @@ std::map<OA::OA_ptr<MemRefExpr>, OA_ptr<Loop::LoopIndex> > SageIRInterface::getI
 
 	return indexloopindexmap;
 }
-
+*/

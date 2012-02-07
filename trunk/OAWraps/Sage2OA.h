@@ -33,7 +33,7 @@
 #include <OpenAnalysis/Alias/AliasTagResults.hpp>
 #include <OpenAnalysis/Alias/ManagerFIAlias.hpp>
 #include <OpenAnalysis/ExprTree/ExprTree.hpp>
-#include <OpenAnalysis//ReachDefsOverwrite/ManagerReachDefsOverwriteStandard.hpp>
+#include <OpenAnalysis/ReachDefsOverwrite/ManagerReachDefsOverwriteStandard.hpp>
 //#include <OpenAnalysis/ExprTree/ExprTree.hpp>
 //#include <OpenAnalysis/XAIF/ManagerAliasTagXAIF.hpp>
 //#include <OpenAnalysis/XAIF/ManagerAliasMapXAIF.hpp>
@@ -48,8 +48,8 @@
 #include <OpenAnalysis/IRInterface/ConstValBasicInterface.hpp>
 #include <OpenAnalysis/IRInterface/ConstValIntInterface.hpp>
 //<AIS|ATB> #include <OpenAnalysis/IRInterface/ReachConstsIRInterface.hpp>
-#include <OpenAnalysis/IRInterface/ReuseDistanceIRInterface.hpp>
-#include <OpenAnalysis/ReuseDistance/ReuseDistanceEdgeDecoration.hpp>
+//#include <OpenAnalysis/IRInterface/ReuseDistanceIRInterface.hpp>
+//#include <OpenAnalysis/ReuseDistance/ReuseDistanceEdgeDecoration.hpp>
 
 using namespace OA;
 
@@ -710,8 +710,8 @@ class SageIRInterface :
 //<AIS|ATB> public virtual OA::DataDep::DataDepIRInterface,
 //<AIS|ATB> public virtual OA::Loop::LoopIRInterface,
 //<AIS|ATB> public virtual OA::Liveness::LivenessIRInterface,
-  public virtual OA::ReachingDefs::ReachingDefsIRInterface,
-  public virtual OA::ReuseDistance::ReuseDistanceIRInterface
+  public virtual OA::ReachingDefs::ReachingDefsIRInterface
+//  public virtual OA::ReuseDistance::ReuseDistanceIRInterface
 
 //<AIS|ATB> public virtual OA::AvailableExpressions::AvailableExpressionsIRInterface,
 //<AIS|ATB> public virtual OA::ExprTreeIRInterface
@@ -1488,7 +1488,7 @@ public:
 
   public:
     void reportTimes();
-
+/*
     //-------------------------------------------------------------------------
     // ReuseDistanceIRInterface
     //-------------------------------------------------------------------------
@@ -1523,6 +1523,7 @@ public:
     //! return a map between each MemRefExpr used in the arrayreference as an index and
     //! an LoopIndex as to how it varies
     std::map<OA::OA_ptr<MemRefExpr>, OA_ptr<Loop::LoopIndex> > getIndexLoopIndexMap(OA::OA_ptr<MemRefExpr> memrefexpr, StmtHandle stmthandle);
+*/
 };
 
 #define OA_VTABLE_STR "__oa_vtable_ptr"
