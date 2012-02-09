@@ -6,7 +6,7 @@
 # present and contain the correct files, or else the user
 # must give the directory that contains the correct files.
 #------------------------------------------------------------------------------
-AC_DEFUN([USEOAROSE_PROG_DOXYGEN],
+AC_DEFUN([ROSE2OA_PROG_DOXYGEN],
 [
 AC_PREREQ(2.59)
 anl_dox_dirs="

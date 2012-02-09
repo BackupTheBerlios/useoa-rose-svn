@@ -5,7 +5,7 @@ define([AC_CACHE_LOAD], )dnl
 define([AC_CACHE_SAVE], )dnl
 AC_PREREQ(2.61)
 
-AC_INIT([useoarose], [0.2.0], [adic@mcs.anl.gov])
+AC_INIT([rose2OA], [0.2.0], [adic@mcs.anl.gov])
 AC_CONFIG_MACRO_DIR([config])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR([OAWraps/Sage2OA.C])
@@ -15,13 +15,18 @@ dnl ---- Automake ----
 AM_INIT_AUTOMAKE([foreign 1.10])
 AM_MAINTAINER_MODE
 
-AC_CONFIG_HEADERS([OAWraps/config.h])
+# dump the configuration options
+AC_CONFIG_HEADERS([OAWraps/rose2OAconfig.h])
+AH_TOP([
+#ifndef ROSE2OA_CONFIG_H
+#define ROSE2OA_CONFIG_H
+])
+AH_BOTTOM([
+/* Include unconfig.pp to undefine autoconf-defined macros like VERSION or PACKAGE that tend to clash with other configure files */
+#include "rose2OAunconfig.h"
+#endif 
+])
 
-dnl This is the share directory
-SHARE_DIR=$prefix/share
-AC_SUBST(SHARE_DIR)
-
-AM_SANITY_CHECK
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -49,21 +54,21 @@ dnl AC_C_CONST
 dnl AC_C_INLINE
 AC_STRUCT_TM
 
-dnl USEOAROSE_OMEGALIBRARY
-USEOAROSE_OPENANALYSIS
-USEOAROSE_ROSE
-dnl USEOAROSE_BOOST
-dnl AX_BOOST
+dnl ROSE2OA_OMEGALIBRARY
+ROSE2OA_OPENANALYSIS
+ROSE2OA_ROSE
+
 
 dnl Check for doxygen
-dnl USEOAROSE_PROG_DOXYGEN
+dnl ROSE2OA_PROG_DOXYGEN
 
-AC_DEFINE(USEOAROSE_TARGET_LANGUAGE_FORTRAN, [FALSE], [Is Fortran the target language?])
+
+AC_DEFINE(ROSE2OA_FORTRAN, [FALSE], [Is the input in Fortran?])
 AC_ARG_ENABLE(targetfortran,
 [  --enable-targetfortran    Fortran is the input language],
 [case "${enableval}" in
   yes) 
-    AC_DEFINE(USEOAROSE_TARGET_LANGUAGE_FORTRAN, [TRUE], [Is Fortran the target language?])
+    AC_DEFINE(ROSE2OA_FORTRAN, [TRUE], [Is the input in Fortran?])
     targetfortran=true 
     ;;
   no)  
@@ -76,7 +81,7 @@ AM_CONDITIONAL(TARGET_LANGUAGE_FORTRAN, test x$targetfortran = xtrue)
 
 AC_SUBST(SHELL)
 
-USEOAROSE_SRCDIR=`pwd`
+ROSE2OA_SRCDIR=`pwd`
 
 AC_CONFIG_FILES([Makefile OAWraps/Makefile])
 AC_OUTPUT

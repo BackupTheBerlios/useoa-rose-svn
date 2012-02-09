@@ -1,5 +1,5 @@
 # Version 1.11 of anl-rose.m4 by norris@cutie.local, modified on 04/09/05. -*- Autoconf -*-
-AC_DEFUN([USEOAROSE_ROSE],
+AC_DEFUN([ROSE2OA_ROSE],
 [
 AC_PREREQ(2.59)
 AC_ARG_WITH(rose,

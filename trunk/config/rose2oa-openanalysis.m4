@@ -1,5 +1,5 @@
 # Version 1.10 of anl-newoa.m4 by norris@cutie.local, modified on 04/09/05. -*- Autoconf -*-
-AC_DEFUN([USEOAROSE_OPENANALYSIS],
+AC_DEFUN([ROSE2OA_OPENANALYSIS],
 [
 AC_PREREQ(2.59)
 openanalysis_dirs="
