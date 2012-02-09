@@ -9,17 +9,10 @@ OATest_CPPFLAGS =  -ftemplate-depth-50 -DHAVE_CONFIG_H -DOA_OPEN64 -DOA_IRHANDLE
     -IOAWraps/ @ROSE_INCLUDES@  -I@OPENANALYSIS_DIR@/include
 OATest_LDADD = OAWraps/liboarose.la -L@ROSE_LIB_DIR@ -lrose -L@OPENANALYSIS_DIR@/lib -lOAul \
     -lm -lpthread
-if TARGET_LANGUAGE_FORTRAN    
-OATest_CPPFLAGS += -DAD_FORTRAN_SPECIFIC
-endif
-
 
 CtoOA_SOURCES = CtoOA.cpp
 CtoOA_CPPFLAGS =  -ftemplate-depth-50 -DHAVE_CONFIG_H -DOA_OPEN64 -DOA_IRHANDLETYPE_UL \
     -IOAWraps/ @ROSE_INCLUDES@  -I@OPENANALYSIS_DIR@/include
 CtoOA_LDADD = OAWraps/liboarose.la -L@ROSE_LIB_DIR@ -lrose -L@OPENANALYSIS_DIR@/lib -lOAul \
     -lm -lpthread
-if TARGET_LANGUAGE_FORTRAN    
-CtoOA_CPPFLAGS += -DAD_FORTRAN_SPECIFIC
-endif
 

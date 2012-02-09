@@ -4059,7 +4059,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             ROSE_ASSERT(0);
             break;
         }
-#ifdef ROSE_FORTRAN_SPECIFIC
+#ifdef ROSE2OA_FORTRAN
     case V_SgUseStatement:
     {
 
@@ -4274,7 +4274,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             }
             break;
         }
-#ifdef ROSE_FORTRAN_SPECIFIC
+#ifdef ROSE2OA_FORTRAN
     case V_SgFortranDo :  {
         SgFortranDo *fortranDo = isSgFortranDo(astNode);
         mStmt2allExprsMap[stmt].insert(getMemRefHandle(astNode));
@@ -4511,7 +4511,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgFunctionDeclaration:
     case V_SgNullExpression:
     case V_SgNullStatement:
-#ifdef ROSE_FORTRAN_SPECIFIC
+#ifdef ROSE2OA_FORTRAN
     case V_SgImplicitStatement:
     case V_SgContainsStatement:
     case V_SgProcedureHeaderStatement:

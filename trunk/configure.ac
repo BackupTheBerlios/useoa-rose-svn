@@ -63,12 +63,12 @@ dnl Check for doxygen
 dnl ROSE2OA_PROG_DOXYGEN
 
 
-AC_DEFINE(ROSE2OA_FORTRAN, [FALSE], [Is the input in Fortran?])
+dnl AC_DEFINE(ROSE2OA_FORTRAN, [FALSE], [Is the input in Fortran?])
 AC_ARG_ENABLE(targetfortran,
 [  --enable-targetfortran    Fortran is the input language],
 [case "${enableval}" in
   yes) 
-    AC_DEFINE(ROSE2OA_FORTRAN, [TRUE], [Is the input in Fortran?])
+    AC_DEFINE(ROSE2OA_FORTRAN, [], [Is the input in Fortran?])
     targetfortran=true 
     ;;
   no)  
@@ -77,7 +77,7 @@ AC_ARG_ENABLE(targetfortran,
   *) 
      AC_MSG_ERROR(bad value ${targetfortran} for --enable-targetfortran) ;;
 esac],[targetfortran=false])
-AM_CONDITIONAL(TARGET_LANGUAGE_FORTRAN, test x$targetfortran = xtrue)
+dnl AM_CONDITIONAL(TARGET_LANGUAGE_FORTRAN, test x$targetfortran = xtrue)
 
 AC_SUBST(SHELL)
 
