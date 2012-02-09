@@ -15,7 +15,7 @@ dnl ---- Automake ----
 AM_INIT_AUTOMAKE([foreign 1.10])
 AM_MAINTAINER_MODE
 
-dnl AC_CONFIG_HEADERS([OAWraps/config.h])
+AC_CONFIG_HEADERS([OAWraps/config.h])
 
 dnl This is the share directory
 SHARE_DIR=$prefix/share
@@ -58,12 +58,19 @@ dnl AX_BOOST
 dnl Check for doxygen
 dnl USEOAROSE_PROG_DOXYGEN
 
+AC_DEFINE(USEOAROSE_TARGET_LANGUAGE_FORTRAN, [FALSE], [Is Fortran the target language?])
 AC_ARG_ENABLE(targetfortran,
 [  --enable-targetfortran    Fortran is the input language],
 [case "${enableval}" in
-  yes) targetfortran=true ;;
-  no)  targetfortran=false ;;
-  *) AC_MSG_ERROR(bad value ${targetfortran} for --enable-targetfortran) ;;
+  yes) 
+    AC_DEFINE(USEOAROSE_TARGET_LANGUAGE_FORTRAN, [TRUE], [Is Fortran the target language?])
+    targetfortran=true 
+    ;;
+  no)  
+    targetfortran=false 
+    ;;
+  *) 
+     AC_MSG_ERROR(bad value ${targetfortran} for --enable-targetfortran) ;;
 esac],[targetfortran=false])
 AM_CONDITIONAL(TARGET_LANGUAGE_FORTRAN, test x$targetfortran = xtrue)
 

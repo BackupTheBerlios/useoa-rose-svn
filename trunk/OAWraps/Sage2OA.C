@@ -1,7 +1,6 @@
 #include "SageOACallGraph.h"
 #include "MemSage2OA.h"
 #include "common.h"
-#include "LoopIRInterface.h"
 
 using namespace std;
 using namespace UseOA;
@@ -826,6 +825,7 @@ OA::CFG::IRStmtType SageIRInterface::getCFGStmtType(OA::StmtHandle h)
                         ty=OA::CFG::END_TESTED_LOOP;
                         break;
                 case V_SgForStatement:
+                case V_SgFortranDo:
                         ty=OA::CFG::LOOP;
                         break;
                 case V_SgIfStmt:
@@ -1379,7 +1379,7 @@ OA::OA_ptr<OA::IRRegionStmtIterator>
       SgDefaultOptionStmt * dopt;
       if( ( dopt=isSgDefaultOptionStmt(n) ) != NULL )
       {
-        //printf("found default!!!!!!!!!!!!\n");
+        //printf("found default#######!!!!\n");
         retval = body((OA::irhandle_t)(getNodeNumber((dopt->get_body()))));
       }
     }
@@ -4150,6 +4150,7 @@ class ExprTreeTraversal
                              OA::OA_ptr<OA::ExprTree::Node> inheritedAttribute)
   {
 
+    //cerr <<"\n "+ astNode->unparseToString() + " class : "+astNode->sage_class_name() +" ####### being considered";
     // This is a top-down traversal and we are passing the parent
     // within the ExprTree as the inherited attribute.
     OA::OA_ptr<OA::ExprTree::Node> parent = inheritedAttribute;
@@ -4231,7 +4232,7 @@ class ExprTreeTraversal
             }
             parent = node;
         } else
-            cerr <<"\n "+ astNode->unparseToString() + " is Not a memrefnode";
+            cerr <<"\n "+ astNode->unparseToString() + " ####### is Not a memrefnode";
       }
 
     } else if ( mIR->isMemRefNode(astNode) ) {
@@ -4861,10 +4862,10 @@ SageIRInterface::getDepMemRefExprIter(OA::ProcHandle h)
 int
 SageIRInterface::getSizeInBytes(OA::SymHandle h)
 {
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //############################!!!
   // FIXME
   // BK: this routine is incomplete.
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //############################!!!
 
   int result = 0;
 
@@ -6494,6 +6495,8 @@ SageIRInterface::getSideEffect(ProcHandle caller, SymHandle calleesym, OA::OA_pt
     // interprocedural side-effect analysis is being run on less than a
     // whole-program which is not currently supported.
   //SHK - For now return empty SideEffect.
+ // OA_ptr<SideEffect::SideEffectStandard> retSideEffect;
+  //return retSideEffect;
   OA::ProcHandle calleeprochandle = getProcHandle(calleesym);
   OA_ptr<SideEffect::SideEffectStandard> procSideEffect;
   OA_ptr<Alias::Interface> alias;
@@ -6511,7 +6514,15 @@ SageIRInterface::getSideEffect(ProcHandle caller, SymHandle calleesym, OA::OA_pt
   procSideEffect->emptyREF();
   
   return procSideEffect;
+  SgNode * clr = isSgNode(getNodePtr(caller));
+  SgNode * cle = isSgNode(getNodePtr(calleesym));
+  if(clr && cle){
+    ;//cerr<<endl<<"caller : "<<clr->unparseToString()<<" callee : "<<cle->unparseToString();
+  }
+  assert(false);
 }
+
+
 
 bool SageIRInterface::isLocal(SgVarRefExp *var) {
     // the variable is local if:
@@ -6540,205 +6551,4 @@ bool SageIRInterface::isLocal(SgVarRefExp *var) {
 
     return false;
 }
-/*
-//-------------------------------------------------------------------------
-// ReuseDistanceIRInterface
-//-------------------------------------------------------------------------
-//! Return the number of dimensions given a memrefexpr to an array reference
-//! The function should return -1, if the memrefexpr is to an array reference
-//! is not the top array reference.
-int SageIRInterface::findArrayDimension(OA_ptr<MemRefExpr> memrefexpr)
-{
 
-	if(!memrefexpr->isaIdxExprAccess()) {
-		std::cout<<"In SageIRInterface::findArrayDimension memrefexpr is not an IdxExprAccess\n";
-		ROSE_ASSERT(0);
-	}
-	SgNode * expr = getSgNode(memrefexpr);
-	if(!expr){
-		std::cout<<"In SageIRInterface::findArrayDimension getSgNode(memrefexpr) returns NULL\n";
-		ROSE_ASSERT(0);
-	}
-	SgPntrArrRefExp * pntrarrref = isSgPntrArrRefExp(expr);
-	if(!pntrarrref){
-		std::cout<<"In SageIRInterface::findArrayDimension expr is not a SgPntrArrRef\n";
-		ROSE_ASSERT(0);
-	}
-	if(!isTopArrayReference(pntrarrref))
-		return -1;
-
-	return traverseAndCountDimensions(pntrarrref);
-}
-
-//! Return true if the node's parent is not an SgPntrArrRefExp else return false
-bool SageIRInterface::isTopArrayReference(SgPntrArrRefExp * pntrarrref)
-{
-	SgNode * parent = pntrarrref->get_parent();
-	if(isSgPntrArrRefExp(parent))
-		return false;
-	return true;
-}
-
-//! Recursively descend through the subtree and count the number of dimensions.
-int SageIRInterface::traverseAndCountDimensions(SgPntrArrRefExp * pntrarrref)
-{
-	if(!isSgPntrArrRefExp(pntrarrref->get_lhs_operand()))
-		return 1;
-	else
-		return 1+ traverseAndCountDimensions(isSgPntrArrRefExp(pntrarrref->get_lhs_operand()));
-}
-
-//! Recursively descend through the subtree and return MemRefExprs of the indices.
-void SageIRInterface::traverseAndGetIndices(SgExpression * expr, std::list <OA::OA_ptr<MemRefExpr> > & indexlist)
-{
-
-	ROSE_ASSERT(expr!=NULL);
-	SgPntrArrRefExp * pntrarrref = isSgPntrArrRefExp(expr);
-	if(!pntrarrref){
-		return;
-	}
-
-	SgVarRefExp *varRef = isSgVarRefExp(pntrarrref->get_rhs_operand());
-	if(varRef == NULL) { ROSE_ASSERT(0); }
-
-	// determine where the variable is declared, this declaration node
-	// is what we use to derive the symbol handle for the index variable
-	SgVariableSymbol  *varSym   = varRef->get_symbol();
-	SgInitializedName *initName = varSym->get_declaration();
-
-	// Convert the variable to a location
-	SymHandle hSym = getVarSymHandle(initName);
-	ROSE_ASSERT(hSym!=SymHandle(0));
-	OA_ptr<MemRefExpr> memref;
-	memref = createNamedRef(hSym);
-
-	//Push the namedref to the list and recursively traverse the trees
-	indexlist.push_back(memref);
-	traverseAndGetIndices(pntrarrref->get_lhs_operand(), indexlist);
-
-}
-
-//! Recursively descend through the subtree and return MemRefExprs of the name.
-OA::OA_ptr<MemRefExpr> SageIRInterface::traverseAndGetName(SgPntrArrRefExp * pntrarrref)
-{
-	if(!isSgPntrArrRefExp(pntrarrref->get_lhs_operand())){
-		SgVarRefExp *varRef = isSgVarRefExp(pntrarrref->get_lhs_operand());
-		if(varRef == NULL) { ROSE_ASSERT(0); }
-
-		// determine where the variable is declared, this declaration node
-		// is what we use to derive the symbol handle for the index variable
-		SgVariableSymbol  *varSym   = varRef->get_symbol();
-		SgInitializedName *initName = varSym->get_declaration();
-
-		// Convert the variable to a location
-		SymHandle hSym = getVarSymHandle(initName);
-		//ret = (mIR.getLocation(mProc, hSym)).convert<NamedLoc>();
-		OA_ptr<MemRefExpr> ret;
-		ret = createNamedRef(hSym);
-		return ret;
-	} else
-		traverseAndGetName(isSgPntrArrRefExp(pntrarrref->get_lhs_operand()));
-}
-
-//! Given a memrefexp, check if it is to top node of an arrayreference sub-AST. If yes,
-//!return a list that of the reference's indices.
-std::list <OA::OA_ptr<MemRefExpr> > SageIRInterface::getIndexList(OA::OA_ptr<MemRefExpr> memrefexpr)
-{
-	std::list <OA::OA_ptr<MemRefExpr> > indexlist;
-	if(!memrefexpr->isaIdxExprAccess()) {
-		std::cout<<"In SageIRInterface::getIndexList memrefexpr is not an IdxExprAccess\n";
-		ROSE_ASSERT(0);
-	}
-	SgNode * expr = getSgNode(memrefexpr);
-	if(!expr){
-		std::cout<<"In SageIRInterface::getIndexList getSgNode(memrefexpr) returns NULL\n";
-		ROSE_ASSERT(0);
-	}
-	SgPntrArrRefExp * pntrarrref = isSgPntrArrRefExp(expr);
-	if(!pntrarrref){
-		std::cout<<"In SageIRInterface::getIndexList expr is not a SgPntrArrRef\n";
-		ROSE_ASSERT(0);
-	}
-	if(!isTopArrayReference(pntrarrref)){
-		return indexlist;
-	}
-
-	traverseAndGetIndices(pntrarrref, indexlist);
-	return indexlist;
-}
-
-//! Given a memrefexp, check if it is to top node of an arrayreference sub-AST. If yes,
-//!return the name of the array being referenced.
-OA::OA_ptr<MemRefExpr> SageIRInterface::getArrayName(OA::OA_ptr<MemRefExpr> memrefexpr)
-{
-	std::list <OA::OA_ptr<MemRefExpr> > indexlist;
-	if(!memrefexpr->isaIdxExprAccess()) {
-		std::cout<<"In SageIRInterface::getArrayName memrefexpr is not an IdxExprAccess\n";
-		ROSE_ASSERT(0);
-	}
-	SgNode * expr = getSgNode(memrefexpr);
-	if(!expr){
-		std::cout<<"In SageIRInterface::getArrayName getSgNode(memrefexpr) returns NULL\n";
-		ROSE_ASSERT(0);
-	}
-	SgPntrArrRefExp * pntrarrref = isSgPntrArrRefExp(expr);
-	if(!pntrarrref){
-		std::cout<<"In SageIRInterface::getArrayName expr is not a SgPntrArrRef\n";
-		ROSE_ASSERT(0);
-	}
-	if(!isTopArrayReference(pntrarrref)){
-		std::cout<<"In SageIRInterface::getArrayName expr is not a top level SgPntrArrRef\n";
-		ROSE_ASSERT(0);
-	}
-
-	return traverseAndGetName(pntrarrref);
-}
-
-//! Given a memrefexp, check if it is to top node of an arrayreference sub-AST. If yes,
-//! return a map between each MemRefExpr used in the arrayreference as an index and
-//! an LoopIndex as to how it varies
-std::map<OA::OA_ptr<MemRefExpr>, OA_ptr<Loop::LoopIndex> > SageIRInterface::getIndexLoopIndexMap(OA::OA_ptr<MemRefExpr> memrefexpr, StmtHandle stmthandle)
-{
-	std::map<OA_ptr<MemRefExpr>, OA_ptr<Loop::LoopIndex> > indexloopindexmap;
-	std::list <OA::OA_ptr<MemRefExpr> >  indexlist = getIndexList(memrefexpr);
-
-	std::list <OA::OA_ptr<MemRefExpr> >::iterator iter =  indexlist.begin();
-	SgNode *node = getSgNode(stmthandle);
-	ROSE_ASSERT(node!=NULL);
-	StmtHandle enclosingloopstmthandle = findEnclosingLoop(node);
-	ROSE_ASSERT(enclosingloopstmthandle!=StmtHandle(0));
-	OA_ptr<list<OA_ptr<LoopAbstraction> > > results;
-	results = new list<OA_ptr<LoopAbstraction> >();
-	SgNode * forloopnode =  getNodePtr(enclosingloopstmthandle);
-
-	SgFunctionDefinition * functiondefinition = getEnclosingFunction(forloopnode);
-
-	OA::ProcHandle proc = getProcHandle(functiondefinition);
-	ROSE_ASSERT(proc!=ProcHandle(0));
-
-	for( ; iter!=indexlist.end(); iter++) {
-		LoopNestAttribute *lnestatrr = new LoopNestAttribute();
-		//! SHK _ This is probably inefficient. It should be possible to perform the analysis once and
-		//! store the results.
-		LoopNestProcessor *loopnestprocvar = new LoopNestProcessor(results, *this, proc);
-		loopnestprocvar->traverse(functiondefinition, *lnestatrr);
-
-		OA_ptr<list<OA_ptr<LoopAbstraction> > > abstractionresults = loopnestprocvar->getResults();
-		list<OA_ptr<LoopAbstraction> >::iterator loopabstriter = (*abstractionresults).begin();
-		int found =0;
-
-		for ( ; loopabstriter!=(*abstractionresults).end(); loopabstriter++) {
-			if(!(*loopabstriter).ptrEqual(0)){
-				OA::OA_ptr<Loop::LoopIndex> loopindex = (*loopabstriter)->getLoopIndex();
-				if(loopindex->getVariable()==(*iter)) {
-					loopindex->output(*this);
-					indexloopindexmap[(*iter)] = loopindex;
-					found=1;
-				}
-			}
-		}
-	}
-
-	return indexloopindexmap;
-}
-*/

@@ -17,19 +17,16 @@ namespace UseOA {
  */
 static std::string stripParameterType( const std::string& name)
 {
-    char *const_start = (char *) strstr( name.c_str(), "const");
-    std::string r = (const_start == 0)? name : std::string(const_start + 5);
-    int end = r.size()-1;
-    if (r[end] == '&') {
-        r[end] = ' ';
-    }
-    std::string result = "";
-    for (unsigned int i = 0; i < r.size(); ++i) {
-        if (r[i] != ' ') {
-            result.push_back(r[i]);
-        }
-    }
-    return result;
+   std::string constQualifier = "const";
+   std::string strippedName(name);
+   std::string::size_type qStart = strippedName.find(constQualifier);
+   if (qStart != std::string::npos)
+   strippedName.erase(qStart, strippedName.length( ));
+   if (strippedName[strippedName.size()-1] == '&') {
+       strippedName[strippedName.size()-1]= ' ';
+   }
+   strippedName.erase(remove_if(strippedName.begin(), strippedName.end(), isspace), strippedName.end());
+   return strippedName;
 }
 
 /** \brief Return a type's name and size.
@@ -2103,13 +2100,13 @@ getFunctionsConsistentWithMethodPointerInvocation(SgBinaryOp *dotStarOrArrowStar
     std::set<SgFunctionDeclaration *> funcs;
 
     // Get all of the ancestors of the receiver type.
-    ClassHierarchyWrapper::ClassDefSet ancestors =
+    ClassHierarchyWrapper::ClassDefSet ancestors = 
         classHierarchy->getAncestorClasses(classDefn);
     std::vector<SgClassDefinition *> classes;
     classes.push_back(classDefn);
 
     // Iterate over all ancestors.
-    for (ClassHierarchyWrapper::ClassDefSet::iterator ancestorIt = ancestors.begin();
+    for (ClassHierarchyWrapper::ClassDefSet::iterator ancestorIt = ancestors.begin();    
           ancestorIt != ancestors.end(); ++ancestorIt) {
 
         SgClassDefinition *ancestor = *ancestorIt;

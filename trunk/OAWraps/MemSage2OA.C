@@ -1,7 +1,7 @@
-#include "common.h"
 #include "MemSage2OA.h"
 #include "SageOACallGraph.h"
-//#include "debug.h"
+#include "common.h"
+#include "debug.h"
 
 #define ROSE_0_8_9a
 
@@ -158,64 +158,28 @@ void SageIRInterface::mapMREToSgNode(
 
 SgNode *SageIRInterface::getSgNode(OA::OA_ptr<OA::MemRefExpr> mre)
 {
-	ROSE_ASSERT(!mre.ptrEqual(0));
-	if ( mMre2SgNode.find(mre) != mMre2SgNode.end() ) {
-		//std::cout << "In getSgNode found and entry in mMre2SgNode";
-		return mMre2SgNode[mre];
-	} else {
-		if ( mre->isaNamed() ) {
-			//std::cout << "getSgNode(mre) with named mre" << std::endl;
-			OA::OA_ptr<OA::NamedRef> namedRef = mre.convert<OA::NamedRef>();
-			ROSE_ASSERT(!namedRef.ptrEqual(0));
+    ROSE_ASSERT(!mre.ptrEqual(0));
+    if ( mMre2SgNode.find(mre) != mMre2SgNode.end() ) {
+        return mMre2SgNode[mre];
+    } else {
+        if ( mre->isaNamed() ) {
+            std::cout << "getSgNode(mre) with named mre" << std::endl;
+            OA::OA_ptr<OA::NamedRef> namedRef = mre.convert<OA::NamedRef>();
+            ROSE_ASSERT(!namedRef.ptrEqual(0));
 
-			OA::SymHandle symHandle = namedRef->getSymHandle();
-			SgNode *node = getSgNode(symHandle);
-			if ( node != NULL ) {
-				//std::cout << "getSgNode was NULL but got a named mre for "
-				//          << node->sage_class_name()
-				//          << " "
-				//          << node->unparseToString()
-				//          << std::endl;
-				return node;
-			}
-		} else if ( mre->isaIdxExprAccess() ) {
-			//std::cout << "getSgNode(mre) with isaIdxExprAccess" << std::endl;
-			OA::OA_ptr<OA::IdxExprAccess> idxExprAccess = mre.convert<OA::IdxExprAccess>();
-			ROSE_ASSERT(!idxExprAccess.ptrEqual(0));
-
-			OA_ptr<MemRefExpr> basemre = idxExprAccess->getMemRefExpr();
-			ROSE_ASSERT(!basemre.ptrEqual(0));
-
-			SgNode *node = getSgNode(basemre);
-			ROSE_ASSERT(node!=NULL);
-
-			while (!isSgPntrArrRefExp(node)){
-				std::cout << "\ngetSgNode(mre) with isaIdxExprAccess sageclassname" << std::string(node->sage_class_name());
-				node = node->get_parent();
-				ROSE_ASSERT(node!=NULL);
-			}
-			return node;
-		} else if ( mre->isaUnnamed() ) {
-			std::cout << "getSgNode(mre) with isaUnnamed" << std::endl;
-		} else if ( mre->isaUnknown() ) {
-			std::cout << "getSgNode(mre) with isaUnknown" << std::endl;
-		} else if ( mre->isaAddressOf() ) {
-			std::cout << "getSgNode(mre) with isaAddressOf" << std::endl;
-		} else if ( mre->isaDeref() ) {
-			std::cout << "getSgNode(mre) with isaDeref" << std::endl;
-		} else if ( mre->isaIdxAccess() ) {
-			std::cout << "getSgNode(mre) with isaIdxAccess" << std::endl;
-		} else if ( mre->isaFieldAccess() ) {
-			std::cout << "getSgNode(mre) with isaFieldAccess" << std::endl;
-		} else if ( mre->isaSubSetRef() ) {
-			std::cout << "getSgNode(mre) with isaSubSetRef" << std::endl;
-		} else {
-			std::cout << "getSgNode(mre) does not match any known memrefexp" << std::endl;
-			mre.dump(std::cout);
-			ROSE_ASSERT(0);
-		}
-	}
-	return NULL;
+            OA::SymHandle symHandle = namedRef->getSymHandle();
+            SgNode *node = getSgNode(symHandle);
+            if ( node != NULL ) {
+                std::cout << "getSgNode was NULL but got a named mre for "
+                          << node->sage_class_name()
+                          << " "
+                          << node->unparseToString()
+                          << std::endl;
+                return node;
+            }
+        }
+    }
+    return NULL;
 }
 
 /*
@@ -3250,9 +3214,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     mMre2TypeMap[rhs_mre] = other;
 
                     mMemref2mreSetMap[memref].insert(rhs_mre);
-
-                    mapMREToSgNode(rhs_mre, arrRefExp);
-
                 }
             }
             // else if through a variable pointer
@@ -3311,8 +3272,6 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
                     mMre2TypeMap[mre] = other;
 
                     mMemref2mreSetMap[memref].insert(mre);
-
-                    mapMREToSgNode(mre, arrRefExp);
                 }
             } else {
                 // Unexpected lhs type.
@@ -4100,6 +4059,13 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             ROSE_ASSERT(0);
             break;
         }
+#ifdef AD_FORTRAN_SPECIFIC
+    case V_SgUseStatement:
+    {
+
+      break;
+    }
+#endif
     case V_SgVariableDeclaration:
         {
 	  SgType *type = NULL;
@@ -4308,7 +4274,20 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             }
             break;
         }
-
+#ifdef AD_FORTRAN_SPECIFIC
+    case V_SgFortranDo :  {
+        SgFortranDo *fortranDo = isSgFortranDo(astNode);
+        mStmt2allExprsMap[stmt].insert(getMemRefHandle(astNode));
+        SgExpression *fortranDoPart_p;
+        if (fortranDoPart_p=fortranDo->get_initialization())
+        	findAllMemRefsAndPtrAssigns(fortranDoPart_p,stmt);
+        if (fortranDoPart_p=fortranDo->get_bound())
+        	findAllMemRefsAndPtrAssigns(fortranDoPart_p,stmt);
+        if (fortranDoPart_p=fortranDo->get_increment())
+        	findAllMemRefsAndPtrAssigns(fortranDoPart_p,stmt);
+        break;
+    }
+#endif
     case V_SgForInitStatement:
         {
             SgForInitStatement *initStmt = isSgForInitStatement(astNode);
@@ -4532,6 +4511,11 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
     case V_SgFunctionDeclaration:
     case V_SgNullExpression:
     case V_SgNullStatement:
+#ifdef AD_FORTRAN_SPECIFIC
+    case V_SgImplicitStatement:
+    case V_SgContainsStatement:
+    case V_SgProcedureHeaderStatement:
+#endif
         break;
 
     case V_SgBoolValExp:
@@ -4573,10 +4557,7 @@ void SageIRInterface::findAllMemRefsAndPtrAssigns(SgNode *astNode,
             // I think we should ROSE_ABORT().  If you think we _really_
             // should not be handling a case, add it to the no-op case
             // directly above.  BW 8/22/06
-            std::cerr << "Do not know how to handle a "
-                      << astNode->sage_class_name()
-                      << std::endl;
-            ROSE_ABORT();
+            USEOA_THROW_MACRO("Do not know how to handle a " << astNode->sage_class_name());
             break;
         }
 
@@ -4603,9 +4584,21 @@ OA::MemRefHandle SageIRInterface::findTopMemRefHandle(SgNode *astNode)
             = astNode->get_traversalSuccessorContainer();
 
         // if only one child the return topMemRefHandle on that
-        if (kids.size()==1) {
-            return findTopMemRefHandle(kids[0]);
+        if (kids.size()==0) {
+            return getMemRefHandle(0);
+        } else if (kids.size()==1) {
 
+        	//SHK - In some cases, ROSE seems to return a vector of size one
+        	//where the element is NULL. This case manifests itself with valueexps.
+        	// For example, for the statement int i =1; findAllMemRefsAndPtrAssigns will call this
+        	//function for an SgValueExp which has a traversalSuccessorContainer of size 1,
+        	// therefore, I am adding a check to return a MemRefHandle to the element itself,
+        	// which makes sense and prevents errors
+        	if (kids[0] == NULL || !isSgNode(kids[0])) {
+        		return getMemRefHandle(0);
+        	}
+
+            return findTopMemRefHandle(kids[0]);
         // else if two or more children then return MemRefHandle(0)
         } else {
 #ifdef ROSE_0_8_9a
@@ -4633,6 +4626,9 @@ OA::MemRefHandle SageIRInterface::findTopMemRefHandle(SgNode *astNode)
             }
 #endif
           //return getMemRefHandle(0);
+          if (kids[0] == NULL || !isSgNode(kids[0])) {
+            return getMemRefHandle(0);
+          }
           return findTopMemRefHandle(kids[0]);
         }
     }

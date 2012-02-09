@@ -2,9 +2,9 @@
 #define MemSage2OA_H
 
 #include <list>
+#include "rose.h"
 #include <OpenAnalysis/IRInterface/AliasIRInterface.hpp>
 #include <OpenAnalysis/MemRefExpr/MemRefExpr.hpp>
-#include "rose.h"
 
 #include "Sage2OA.h"
 

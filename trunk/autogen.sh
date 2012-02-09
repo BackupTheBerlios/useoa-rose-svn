@@ -23,5 +23,6 @@ if [ "x$OS" = "xDarwin" ]; then
 fi
 $libtoolize --force --copy --ltdl --automake
 autoconf
+autoheader
 automake --add-missing
 
